@@ -15,11 +15,11 @@ from unittest.mock import MagicMock, Mock, mock_open, patch
 import pandas as pd
 import pytest
 
-from scitex.resource import (
+from scitex.resource import log_processor_usages
+from scitex.resource._log_processor_usages import (
     _add,
     _ensure_log_file,
     _log_processor_usages,
-    log_processor_usages,
 )
 
 

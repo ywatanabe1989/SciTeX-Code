@@ -15,7 +15,7 @@ from ._search_pubmed import (
     parse_args,
     run_main,
 )
-from ._summarize_url import summarize_url, extract_main_content, crawl_url
+from ._summarize_url import summarize_url, extract_main_content, crawl_url, crawl_to_json, summarize_all
 
 __all__ = [
     "search_pubmed",
@@ -33,4 +33,6 @@ __all__ = [
     "summarize_url",
     "extract_main_content",
     "crawl_url",
+    "crawl_to_json",
+    "summarize_all",
 ]

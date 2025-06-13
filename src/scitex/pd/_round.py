@@ -33,17 +33,35 @@ def round(df: pd.DataFrame, factor: int = 3) -> pd.DataFrame:
     """
 
     def custom_round(column):
+        # Skip non-numeric types like datetime, categorical, string
+        if pd.api.types.is_datetime64_any_dtype(column):
+            return column
+        if pd.api.types.is_categorical_dtype(column):
+            return column
+        if pd.api.types.is_string_dtype(column):
+            return column
+        # Note: boolean types are allowed to be converted to numeric
+        if pd.api.types.is_object_dtype(column) and not pd.api.types.is_numeric_dtype(column) and not pd.api.types.is_bool_dtype(column):
+            return column
+            
         try:
+            # Handle boolean columns explicitly
+            if pd.api.types.is_bool_dtype(column):
+                return column.astype(int)
+                
             numeric_column = pd.to_numeric(column, errors="coerce")
             if np.issubdtype(numeric_column.dtype, np.integer):
                 return numeric_column.astype(int)
+            
+            # For float columns, round first
             rounded = numeric_column.round(factor)
-
-            # Try converting to int if possible
-            if (rounded == rounded.astype(int)).all():
+            
+            # If factor is 0 and all values are whole numbers, convert to int
+            if factor == 0 and (rounded % 1 == 0).all() and not rounded.isna().any():
                 return rounded.astype(int)
-
+                
             return rounded
+            
         except (ValueError, TypeError):
             return column
 

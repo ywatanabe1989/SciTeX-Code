@@ -20,7 +20,6 @@ from scitex.web import (
     crawl_to_json,
     summarize_all,
     summarize_url,
-    main
 )
 
 

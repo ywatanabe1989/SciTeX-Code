@@ -203,9 +203,9 @@ def test_combined_decorator_dependencies():
     """Test that required decorator dependencies can be imported."""
     # Test that individual decorators can be imported
     from scitex.decorators import batch_fn
-from scitex.decorators import torch_fn
-from scitex.decorators import numpy_fn
-from scitex.decorators import pandas_fn
+    from scitex.decorators import torch_fn
+    from scitex.decorators import numpy_fn
+    from scitex.decorators import pandas_fn
     
     # Test that they are callable
     assert callable(batch_fn)

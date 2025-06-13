@@ -125,11 +125,11 @@ class TestRound:
         )
 
         result = round(df, factor=2)
-        # Columns with NaN are returned unrounded due to the (rounded == rounded.astype(int)).all() check
+        # NaN values are preserved, non-NaN values are rounded
         expected = pd.DataFrame(
             {
-                "A": [1.234, np.nan, 3.456],  # Not rounded due to NaN
-                "B": [np.nan, 2.345, np.nan],  # Not rounded due to NaN
+                "A": [1.23, np.nan, 3.46],  # Rounded, NaN preserved
+                "B": [np.nan, 2.35, np.nan],  # Rounded, NaN preserved
                 "C": [1.23, 2.35, 3.46],  # Rounded correctly - no NaN
             }
         )
@@ -149,11 +149,11 @@ class TestRound:
         )
 
         result = round(df, factor=2)
-        # Columns with inf are returned unrounded due to the comparison check
+        # inf values are preserved, finite values are rounded
         expected = pd.DataFrame(
             {
-                "A": [1.234, np.inf, -np.inf],  # Not rounded due to inf
-                "B": [np.inf, 2.345, -np.inf],  # Not rounded due to inf
+                "A": [1.23, np.inf, -np.inf],  # Rounded, inf preserved
+                "B": [np.inf, 2.35, -np.inf],  # Rounded, inf preserved
                 "C": [1.23, 2.35, 3.46],  # Rounded correctly - no inf
             }
         )
@@ -217,12 +217,13 @@ class TestRound:
         )
 
         result = round(df, factor=3)
-        # These should be rounded to 3 decimal places
+        # Values less than 0.001 will be rounded to 0.0 when rounding to 3 decimal places
+        # Large values remain unchanged as they have no decimal component
         expected = pd.DataFrame(
-            {"A": [1.234e-5, 2.345e-5, 3.456e-5], "B": [1.234e5, 2.345e5, 3.456e5]}
+            {"A": [0.0, 0.0, 0.0], "B": [123400.0, 234500.0, 345600.0]}
         )
 
-        np.testing.assert_allclose(result.values, expected.values, rtol=1e-10)
+        pd.testing.assert_frame_equal(result, expected)
 
     def test_very_small_values(self):
         """Test rounding very small values."""
@@ -231,7 +232,8 @@ class TestRound:
         df = pd.DataFrame({"A": [0.000123456, 0.000234567, 0.000345678]})
 
         result = round(df, factor=3)
-        expected = pd.DataFrame({"A": [0.000123, 0.000235, 0.000346]})
+        # Rounding to 3 decimal places means values < 0.001 become 0.0
+        expected = pd.DataFrame({"A": [0.0, 0.0, 0.0]})
 
         pd.testing.assert_frame_equal(result, expected)
 

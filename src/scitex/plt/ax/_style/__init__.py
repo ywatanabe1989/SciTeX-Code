@@ -17,7 +17,7 @@ from ._format_label import format_label
 from ._hide_spines import hide_spines
 from ._map_ticks import map_ticks
 from ._rotate_labels import rotate_labels
-from ._sci_note import sci_note
+from ._sci_note import sci_note, OOMFormatter
 from ._set_n_ticks import set_n_ticks
 from ._set_size import set_size
 from ._set_supxyt import set_supxyt, set_supxytc

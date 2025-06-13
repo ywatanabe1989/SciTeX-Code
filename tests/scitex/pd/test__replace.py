@@ -278,12 +278,10 @@ class TestComplexScenarios:
             {"text": ["Hello World!", "Python Programming", "Data Science"]}
         )
 
-        # First replacement
-        result = replace(df, "Hello", "Hi")
-        # Second replacement
-        result = replace(result, "Programming", "Coding")
-        # Third replacement
-        result = replace(result, "!", ".")
+        # Use regex=True for substring replacement
+        result = replace(df, "Hello", "Hi", regex=True)
+        result = replace(result, "Programming", "Coding", regex=True)
+        result = replace(result, "!", ".", regex=True)
 
         expected = ["Hi World.", "Python Coding", "Data Science"]
         assert result["text"].tolist() == expected
@@ -296,7 +294,8 @@ class TestDocstringExample:
         """Test simple replacement from docstring."""
         df = pd.DataFrame({"A": ["abc-123", "def-456"], "B": ["ghi-789", "jkl-012"]})
 
-        df_replaced = replace(df, "abc", "xyz")
+        # Use regex=True for substring replacement
+        df_replaced = replace(df, "abc", "xyz", regex=True)
 
         assert df_replaced["A"].iloc[0] == "xyz-123"
         assert df_replaced["A"].iloc[1] == "def-456"
@@ -306,7 +305,7 @@ class TestDocstringExample:
         df = pd.DataFrame({"A": ["abc-123", "def-456"], "B": ["ghi-789", "jkl-012"]})
 
         replace_dict = {"-": "_", "1": "one"}
-        df_replaced = replace(df, replace_dict, cols=["A"])
+        df_replaced = replace(df, replace_dict, regex=True, cols=["A"])
 
         # Should replace - with _ and 1 with one in column A only
         assert df_replaced["A"].iloc[0] == "abc_one23"

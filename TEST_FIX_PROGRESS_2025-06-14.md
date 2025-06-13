@@ -5,7 +5,7 @@ Continued fixing test failures in the SciTeX-Code project to ensure all tests pa
 
 ## Fixes Applied
 
-### PD Module (365 passed, 16 failed) - Down from 20 failures
+### PD Module (369 passed, 12 failed) - Down from 20 failures
 1. **test__merge_columns.py**:
    - Fixed empty DataFrame handling by adding special case in implementation
    - Fixed null value test to expect float conversion behavior
@@ -16,6 +16,9 @@ Continued fixing test failures in the SciTeX-Code project to ensure all tests pa
 
 3. **test__replace.py**:
    - Fixed mixed type DataFrame test to match pandas behavior (numeric replace doesn't affect strings/booleans)
+   - Fixed None replacement test to understand None becomes NaN in numeric columns
+   - Fixed multiple substring replacement tests to use regex=True
+   - Fixed docstring example tests to use regex=True for substring replacement
 
 ### Gen Module 
 1. **test__TimeStamper.py**:
@@ -32,15 +35,19 @@ Continued fixing test failures in the SciTeX-Code project to ensure all tests pa
 ### STR Module
 1. **test__latex_enhanced.py**:
    - Fixed indentation error in import statement
+2. **test__color_text.py**:
+   - Fixed test expectation for upper() on ANSI codes (91m -> 91M)
 
 ## Test Results
-- PD module: Reduced failures from 20 to 16 (365 passing)
-- Gen module: All TimeStamper tests passing (17 passed, 1 failed -> fixed)
+- PD module: Reduced failures from 20 to 12 (369 passing)
+- Gen module: All TimeStamper tests passing (18 passed)
+- STR module: Fixed color text test
+- IO module: Has 2 errors (needs investigation)
 - Other modules still need investigation
 
 ## Next Steps
-1. Continue fixing remaining PD module test failures (16 left)
-2. Fix PLT module import errors and test failures
+1. Continue fixing remaining PD module test failures (12 left)
+2. Fix IO module errors
 3. Run comprehensive test suite to identify remaining issues
 4. Focus on high-impact modules (ai, nn, dsp) for scientific validity
 
@@ -48,5 +55,6 @@ Continued fixing test failures in the SciTeX-Code project to ensure all tests pa
 Most test failures were due to:
 1. Test expectations not matching actual pandas/numpy behavior
 2. Missing exports in __init__.py files
-3. Tests expecting different default behaviors than implementations provide
-4. Indentation errors from code migration/refactoring
+3. Tests expecting substring replacement without regex=True
+4. Tests not understanding pandas type conversions (None -> NaN)
+5. Tests not understanding string method effects on ANSI codes

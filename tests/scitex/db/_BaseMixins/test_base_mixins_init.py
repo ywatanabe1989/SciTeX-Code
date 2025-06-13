@@ -78,7 +78,7 @@ def test_basemixins_init_is_empty():
 def test_base_mixin_classes_functionality():
     """Test basic functionality of base mixin classes."""
     from scitex.db._BaseMixins import _BaseConnectionMixin
-from scitex.db._BaseMixins import _BaseBatchMixin
+    from scitex.db._BaseMixins import _BaseBatchMixin
     
     # Test that mixins can be instantiated (basic smoke test)
     connection_mixin = _BaseConnectionMixin()

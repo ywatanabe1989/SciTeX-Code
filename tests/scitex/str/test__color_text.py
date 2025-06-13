@@ -322,7 +322,8 @@ class TestColorTextIntegration:
         
         # List comprehension
         upper_colored = [item.upper() for item in colored_list]
-        assert "\033[91mRED\033[0m" in upper_colored[0]
+        # Note: upper() also uppercases the ANSI codes (91m -> 91M)
+        assert "\033[91MRED\033[0M" in upper_colored[0]
 
 
 class TestColorTextPerformance:
