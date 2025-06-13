@@ -1,0 +1,26 @@
+[pytest]
+pythonpath = .
+testpaths =
+    ./tests/scitex/plt
+norecursedirs =
+    *.egg
+    .eggs
+    dist
+    build
+    docs
+    .tox
+    .git
+    __pycache__
+    .old
+python_files =
+    test_*.py
+addopts =
+    --import-mode=importlib
+    -q
+    --no-header
+    --tb=short
+    --color=yes
+    -s
+env =
+    PYTHONPATH=.
+    TESTING=True
