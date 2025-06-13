@@ -16,7 +16,7 @@ import warnings
 
 
 def test_interpolate():
-from scitex.plt.color import interpolate
+    from scitex.plt.color import interpolate
 
     # Test with basic colors and small number of points
     color_start = "red"
@@ -44,7 +44,7 @@ from scitex.plt.color import interpolate
 
 def test_gen_interpolate_basic():
     """Test gen_interpolate with basic functionality."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     # Test with named colors
     colors = gen_interpolate("red", "blue", 5)
@@ -58,7 +58,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_hex_colors():
     """Test gen_interpolate with hex color codes."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("#FF0000", "#0000FF", 3)
     assert len(colors) == 3
@@ -70,7 +70,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_rgb_tuples():
     """Test gen_interpolate with RGB tuples."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate((1, 0, 0), (0, 0, 1), 4)
     assert len(colors) == 4
@@ -83,7 +83,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_rgba_tuples():
     """Test gen_interpolate with RGBA tuples including alpha."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate((1, 0, 0, 0.5), (0, 0, 1, 1.0), 3)
     assert len(colors) == 3
@@ -96,7 +96,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_single_point():
     """Test gen_interpolate with single point."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("red", "blue", 1)
     assert len(colors) == 1
@@ -106,7 +106,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_two_points():
     """Test gen_interpolate with two points."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("red", "blue", 2)
     assert len(colors) == 2
@@ -116,7 +116,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_large_number():
     """Test gen_interpolate with large number of points."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("black", "white", 100)
     assert len(colors) == 100
@@ -130,7 +130,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_custom_rounding():
     """Test gen_interpolate with custom rounding."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     # Test with different rounding values
     colors_round_1 = gen_interpolate("red", "blue", 3, round=1)
@@ -148,7 +148,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_same_colors():
     """Test gen_interpolate when start and end colors are the same."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("red", "red", 5)
     assert len(colors) == 5
@@ -161,7 +161,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_interpolate_deprecation_warning():
     """Test that interpolate function raises deprecation warning."""
-from scitex.plt.color import interpolate
+    from scitex.plt.color import interpolate
     
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
@@ -178,7 +178,7 @@ from scitex.plt.color import interpolate
 
 def test_gen_interpolate_invalid_color():
     """Test gen_interpolate with invalid color names."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     with pytest.raises(ValueError):
         gen_interpolate("not_a_color", "blue", 3)
@@ -189,7 +189,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_zero_points():
     """Test gen_interpolate with zero points."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("red", "blue", 0)
     assert len(colors) == 0
@@ -198,7 +198,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_negative_points():
     """Test gen_interpolate with negative number of points."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     # NumPy linspace should handle this gracefully
     colors = gen_interpolate("red", "blue", -5)
@@ -208,7 +208,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_grayscale():
     """Test gen_interpolate with grayscale colors."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     colors = gen_interpolate("gray", "lightgray", 5)
     assert len(colors) == 5
@@ -221,7 +221,7 @@ from scitex.plt.color import gen_interpolate
 
 def test_gen_interpolate_css_colors():
     """Test gen_interpolate with CSS color names."""
-from scitex.plt.color import gen_interpolate
+    from scitex.plt.color import gen_interpolate
     
     # Test with various CSS color names
     css_colors = [

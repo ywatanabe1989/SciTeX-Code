@@ -17,7 +17,7 @@ class TestSaveTextBasic:
 
     def test_save_simple_text(self):
         """Test saving simple text string."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Hello, World!"
 
@@ -33,7 +33,7 @@ from scitex.io import _save_text
 
     def test_save_multiline_text(self):
         """Test saving multiline text."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = """Line 1
 Line 2
@@ -52,7 +52,7 @@ Final line"""
 
     def test_save_empty_string(self):
         """Test saving empty string."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = ""
 
@@ -69,7 +69,7 @@ from scitex.io import _save_text
 
     def test_save_text_with_special_characters(self):
         """Test saving text with special characters."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = 'Special chars: !@#$%^&*()_+{}[]|\\:";<>?,./~`'
 
@@ -88,7 +88,7 @@ class TestSaveTextUnicode:
 
     def test_save_unicode_text(self):
         """Test saving Unicode text."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Unicode: 你好世界 🌍 Café résumé naïve"
 
@@ -103,7 +103,7 @@ from scitex.io import _save_text
 
     def test_save_emoji_text(self):
         """Test saving text with emojis."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Emojis: 😀😃😄😁😆😅🤣😂🙂🙃😉😊"
 
@@ -118,7 +118,7 @@ from scitex.io import _save_text
 
     def test_save_mixed_language_text(self):
         """Test saving text with multiple languages."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = """English: Hello
 Chinese: 你好
@@ -142,7 +142,7 @@ class TestSaveTextPaths:
 
     def test_save_with_nested_directory(self):
         """Test saving to nested directory path."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Nested directory test"
 
@@ -162,7 +162,7 @@ from scitex.io import _save_text
 
     def test_save_with_pathlib_path(self):
         """Test saving with pathlib Path object."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Pathlib test"
 
@@ -177,7 +177,7 @@ from scitex.io import _save_text
 
     def test_overwrite_existing_file(self):
         """Test overwriting an existing file."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         original_text = "Original content"
         new_text = "New content that replaces the original"
@@ -207,7 +207,7 @@ class TestSaveTextContent:
 
     def test_save_long_text(self):
         """Test saving very long text."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         # Create a long text (1MB)
         test_text = "A" * 1024 * 1024
@@ -225,7 +225,7 @@ from scitex.io import _save_text
 
     def test_save_json_like_text(self):
         """Test saving JSON-formatted text."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = """{
     "name": "test",
@@ -246,7 +246,7 @@ from scitex.io import _save_text
 
     def test_save_csv_like_text(self):
         """Test saving CSV-formatted text."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = """header1,header2,header3
 value1,value2,value3
@@ -263,7 +263,7 @@ data1,data2,data3"""
 
     def test_save_text_with_tabs(self):
         """Test saving text with tab characters."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "Column1\tColumn2\tColumn3\nData1\tData2\tData3"
 
@@ -283,7 +283,7 @@ class TestSaveTextErrorHandling:
 
     def test_save_to_nonexistent_directory(self):
         """Test saving to a directory that doesn't exist."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "This should fail"
 
@@ -297,7 +297,7 @@ from scitex.io import _save_text
 
     def test_save_non_string_object(self):
         """Test saving non-string objects (should fail)."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         # Try to save various non-string objects
         non_string_objects = [
@@ -318,7 +318,7 @@ from scitex.io import _save_text
 
     def test_save_to_readonly_file(self):
         """Test saving to a read-only file."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_text = "This should fail"
 
@@ -343,7 +343,7 @@ class TestSaveTextIntegration:
 
     def test_round_trip_save_load(self):
         """Test saving and loading text maintains integrity."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         test_texts = [
             "Simple text",
@@ -368,7 +368,7 @@ from scitex.io import _save_text
 
     def test_save_multiple_files_same_directory(self):
         """Test saving multiple files to same directory."""
-from scitex.io import _save_text
+        from scitex.io import _save_text
 
         files = {
             "file1.txt": "Content of file 1",

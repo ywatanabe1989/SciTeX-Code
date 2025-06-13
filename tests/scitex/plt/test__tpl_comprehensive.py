@@ -15,7 +15,7 @@ class TestTermplotImport:
 
     def test_import_termplot(self):
         """Test that termplot function can be imported."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         assert callable(termplot)
 
     def test_dependencies_available(self):
@@ -36,7 +36,7 @@ class TestTermplotBasicFunctionality:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_single_argument(self, mock_figure):
         """Test termplot with single y-values argument."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Setup mock
         mock_fig = Mock()
@@ -63,7 +63,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_two_arguments(self, mock_figure):
         """Test termplot with both x and y arguments."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Setup mock
         mock_fig = Mock()
@@ -91,7 +91,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_numpy_arrays(self, mock_figure):
         """Test termplot with numpy arrays."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Setup mock
         mock_fig = Mock()
@@ -111,7 +111,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_empty_array(self, mock_figure):
         """Test termplot with empty array."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Setup mock
         mock_fig = Mock()
@@ -142,7 +142,7 @@ class TestTermplotDataTypes:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_integers(self, mock_figure):
         """Test termplot with integer data."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -155,7 +155,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_floats(self, mock_figure):
         """Test termplot with float data."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -168,7 +168,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_mixed_types(self, mock_figure):
         """Test termplot with mixed numeric types."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -181,7 +181,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_negative_values(self, mock_figure):
         """Test termplot with negative values."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -194,7 +194,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_large_values(self, mock_figure):
         """Test termplot with large values."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -210,14 +210,14 @@ class TestTermplotEdgeCases:
 
     def test_termplot_no_arguments(self):
         """Test termplot with no arguments raises appropriate error."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         with pytest.raises(UnboundLocalError):
             termplot()
 
     def test_termplot_too_many_arguments(self):
         """Test termplot with too many arguments."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # The function only handles 1 or 2 arguments
         # With 3+ arguments, current implementation has UnboundLocalError
@@ -232,7 +232,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_single_value(self, mock_figure):
         """Test termplot with single value."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -253,7 +253,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_mismatched_lengths(self, mock_figure):
         """Test termplot with mismatched x and y lengths."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -274,7 +274,7 @@ class TestTermplotMathematicalFunctions:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_linear_function(self, mock_figure):
         """Test termplot with linear function."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -296,7 +296,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_quadratic_function(self, mock_figure):
         """Test termplot with quadratic function."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -311,7 +311,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_sine_wave(self, mock_figure):
         """Test termplot with sine wave."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -326,7 +326,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_exponential_function(self, mock_figure):
         """Test termplot with exponential function."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -345,7 +345,7 @@ class TestTermplotSpecialValues:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_with_nan(self, mock_figure):
         """Test termplot with NaN values."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -360,7 +360,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_with_inf(self, mock_figure):
         """Test termplot with infinite values."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -375,7 +375,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_with_negative_inf(self, mock_figure):
         """Test termplot with negative infinite values."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -394,7 +394,7 @@ class TestTermplotPerformance:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_large_dataset(self, mock_figure):
         """Test termplot with large dataset."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -411,7 +411,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_repeated_calls(self, mock_figure):
         """Test multiple calls to termplot."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -433,7 +433,7 @@ class TestTermplotIntegration:
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_figure_creation(self, mock_figure):
         """Test that termplot creates figures correctly."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         mock_fig = Mock()
         mock_figure.return_value = mock_fig
@@ -449,7 +449,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl.figure')
     def test_termplot_error_handling(self, mock_figure):
         """Test termplot error handling."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Mock figure that raises an error
         mock_figure.side_effect = Exception("Termplotlib error")
@@ -463,7 +463,7 @@ from scitex.plt import termplot
     @patch('scitex.plt._tpl.tpl')
     def test_termplot_module_integration(self, mock_tpl):
         """Test termplot integration with termplotlib module."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Mock the entire termplotlib module
         mock_fig = Mock()
@@ -483,7 +483,7 @@ class TestTermplotDocumentation:
 
     def test_termplot_function_exists(self):
         """Test that termplot function exists and is discoverable."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Function should exist
         assert termplot is not None
@@ -491,7 +491,7 @@ from scitex.plt import termplot
 
     def test_termplot_introspection(self):
         """Test termplot function introspection."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         import inspect
         
         # Should be introspectable
@@ -506,7 +506,7 @@ from scitex.plt import termplot
 
     def test_termplot_docstring(self):
         """Test termplot docstring availability."""
-from scitex.plt import termplot
+        from scitex.plt import termplot
         
         # Should have a docstring
         assert termplot.__doc__ is not None

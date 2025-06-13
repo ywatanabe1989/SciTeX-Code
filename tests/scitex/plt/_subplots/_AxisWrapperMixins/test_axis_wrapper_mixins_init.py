@@ -19,7 +19,7 @@ import inspect
 def test_imports():
     """Test that all required mixins are properly exported from the module."""
     # Import the package
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -56,7 +56,7 @@ def test_import_consistency():
 
 def test_mixin_inheritance():
     """Test that all mixins are proper class objects that can be inherited."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -85,7 +85,7 @@ from scitex.plt._subplots import (
 
 def test_multiple_mixin_inheritance():
     """Test that multiple mixins can be combined in a single class."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -143,7 +143,7 @@ def test_no_unexpected_exports():
 
 def test_mixin_basic_structure():
     """Test that each mixin has basic class structure."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -169,7 +169,7 @@ from scitex.plt._subplots import (
 def test_import_from_different_levels():
     """Test importing from different module levels."""
     # Direct import
-from scitex.plt._subplots import AdjustmentMixin as Direct
+    from scitex.plt._subplots import AdjustmentMixin as Direct
     
     # Import module then access
     import scitex.plt._subplots._AxisWrapperMixins
@@ -182,7 +182,7 @@ from scitex.plt._subplots import AdjustmentMixin as Direct
 def test_reimport_consistency():
     """Test that reimporting gives the same objects."""
     # First import
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin as First,
         MatplotlibPlotMixin as FirstPlot,
     )
@@ -191,7 +191,7 @@ from scitex.plt._subplots import (
     if "scitex.plt._subplots._AxisWrapperMixins" in sys.modules:
         del sys.modules["scitex.plt._subplots._AxisWrapperMixins"]
     
-from scitex.plt._subplots import (
+        from scitex.plt._subplots import (
         AdjustmentMixin as Second,
         MatplotlibPlotMixin as SecondPlot,
     )
@@ -203,7 +203,7 @@ from scitex.plt._subplots import (
 
 def test_mixin_not_instantiable_directly():
     """Test behavior when trying to instantiate mixins directly."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -251,7 +251,7 @@ def test_module_reload():
 
 def test_mixin_methods_availability():
     """Test that mixins provide methods when inherited."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,
@@ -277,7 +277,7 @@ from scitex.plt._subplots import (
 def test_import_error_handling():
     """Test behavior when importing non-existent items."""
     with pytest.raises(ImportError):
-from scitex.plt._subplots import NonExistentMixin
+        from scitex.plt._subplots import NonExistentMixin
     
     with pytest.raises(AttributeError):
         import scitex.plt._subplots._AxisWrapperMixins as mixins
@@ -298,7 +298,7 @@ def test_module_path_structure():
 
 def test_all_imports_are_classes():
     """Test that all imported items are actually classes."""
-from scitex.plt._subplots import (
+    from scitex.plt._subplots import (
         AdjustmentMixin,
         MatplotlibPlotMixin,
         SeabornMixin,

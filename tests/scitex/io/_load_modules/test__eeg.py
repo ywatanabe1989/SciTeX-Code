@@ -16,7 +16,7 @@ class TestLoadEegData:
     
     def test_valid_extension_check(self):
         """Test that function validates supported EEG extensions"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Test invalid extensions
         invalid_files = ["file.txt", "data.wav", "signal.mat", "test.xlsx"]
@@ -27,7 +27,7 @@ from scitex.io._load_modules import _load_eeg_data
     
     def test_supported_extensions_list(self):
         """Test that all documented EEG extensions are supported"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Test that function recognizes all supported formats
         supported_extensions = [
@@ -55,7 +55,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.warnings')
     def test_brainvision_vhdr_loading(self, mock_warnings, mock_mne):
         """Test loading BrainVision .vhdr files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Mock MNE raw object
         mock_raw = MagicMock()
@@ -76,7 +76,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_brainvision_vmrk_loading(self, mock_mne):
         """Test loading BrainVision .vmrk files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_brainvision.return_value = mock_raw
@@ -89,7 +89,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_edf_loading(self, mock_mne):
         """Test loading European Data Format (.edf) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_edf.return_value = mock_raw
@@ -102,7 +102,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_bdf_loading(self, mock_mne):
         """Test loading BioSemi Data Format (.bdf) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_bdf.return_value = mock_raw
@@ -115,7 +115,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_gdf_loading(self, mock_mne):
         """Test loading General Data Format (.gdf) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_gdf.return_value = mock_raw
@@ -128,7 +128,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_cnt_loading(self, mock_mne):
         """Test loading Neuroscan CNT (.cnt) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_cnt.return_value = mock_raw
@@ -141,7 +141,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_egi_loading(self, mock_mne):
         """Test loading EGI simple binary (.egi) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_egi.return_value = mock_raw
@@ -154,7 +154,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_set_loading(self, mock_mne):
         """Test loading EEGLAB SET (.set) files"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw.return_value = mock_raw
@@ -168,7 +168,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_eeg_brainvision_detection(self, mock_mne, mock_isfile):
         """Test .eeg file detection for BrainVision format"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Mock file existence - BrainVision files present
         def mock_file_exists(path):
@@ -188,7 +188,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_eeg_nihon_koden_detection(self, mock_mne, mock_isfile):
         """Test .eeg file detection for Nihon Koden format"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Mock file existence - Nihon Koden files present
         def mock_file_exists(path):
@@ -207,7 +207,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_mne_exception_propagation(self, mock_mne):
         """Test that MNE exceptions are properly propagated"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Test file not found error
         mock_mne.io.read_raw_edf.side_effect = FileNotFoundError("EDF file not found")
@@ -224,7 +224,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_kwargs_forwarding(self, mock_mne):
         """Test that kwargs are properly forwarded to MNE functions"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_edf.return_value = mock_raw
@@ -245,7 +245,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_preload_always_true(self, mock_mne):
         """Test that preload=True is always enforced"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_cnt.return_value = mock_raw
@@ -260,7 +260,7 @@ from scitex.io._load_modules import _load_eeg_data
     
     def test_function_signature(self):
         """Test function signature and type annotations"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         import inspect
         
         sig = inspect.signature(_load_eeg_data)
@@ -275,7 +275,7 @@ from scitex.io._load_modules import _load_eeg_data
     
     def test_function_docstring(self):
         """Test that function has comprehensive docstring"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         assert hasattr(_load_eeg_data, '__doc__')
         assert _load_eeg_data.__doc__ is not None
@@ -293,7 +293,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_warnings_suppression(self, mock_mne):
         """Test that runtime warnings are suppressed during loading"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         import warnings
         
         mock_raw = MagicMock()
@@ -310,7 +310,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_real_world_eeg_scenarios(self, mock_mne):
         """Test realistic EEG data loading scenarios"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Scenario 1: Clinical EEG with 19 channels
         mock_raw = MagicMock()
@@ -335,7 +335,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_extension_extraction_edge_cases(self, mock_mne):
         """Test edge cases in file extension extraction"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         mock_raw = MagicMock()
         mock_mne.io.read_raw_edf.return_value = mock_raw
@@ -361,7 +361,7 @@ from scitex.io._load_modules import _load_eeg_data
     
     def test_case_sensitive_extension_check(self):
         """Test case sensitivity of extensions"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Test uppercase extensions (should fail)
         uppercase_files = ["file.EDF", "data.BDF", "test.CNT"]
@@ -374,7 +374,7 @@ from scitex.io._load_modules import _load_eeg_data
     @patch('scitex.io._load_modules._eeg.mne')
     def test_eeg_extension_no_associated_files(self, mock_mne, mock_isfile):
         """Test .eeg file handling when no associated files are found"""
-from scitex.io._load_modules import _load_eeg_data
+        from scitex.io._load_modules import _load_eeg_data
         
         # Mock no associated files found
         mock_isfile.return_value = False

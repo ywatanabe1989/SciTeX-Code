@@ -15,7 +15,7 @@ from unittest.mock import patch, MagicMock
 
 def test_init_bandpass_filters_basic():
     """Test basic initialization of bandpass filters."""
-from scitex.dsp.utils import init_bandpass_filters
+    from scitex.dsp.utils import init_bandpass_filters
     
     sig_len = 1000
     fs = 250
@@ -42,7 +42,7 @@ from scitex.dsp.utils import init_bandpass_filters
 
 def test_init_bandpass_filters_custom_params():
     """Test bandpass filter initialization with custom parameters."""
-from scitex.dsp.utils import init_bandpass_filters
+    from scitex.dsp.utils import init_bandpass_filters
     
     sig_len = 2000
     fs = 500
@@ -80,7 +80,7 @@ from scitex.dsp.utils import init_bandpass_filters
 
 def test_build_bandpass_filters_basic():
     """Test basic bandpass filter building."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     sig_len = 1000
     fs = 250
@@ -105,7 +105,7 @@ from scitex.dsp.utils import build_bandpass_filters
 
 def test_build_bandpass_filters_gradients():
     """Test that gradients flow through bandpass filter building."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     sig_len = 500
     fs = 250
@@ -132,7 +132,7 @@ from scitex.dsp.utils import build_bandpass_filters
 
 def test_build_bandpass_filters_torch_fn_decorator():
     """Test that torch_fn decorator works correctly."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     sig_len = 500
     fs = 250
@@ -153,7 +153,7 @@ from scitex.dsp.utils import build_bandpass_filters
 
 def test_bandpass_filters_real_eeg_scenario():
     """Test bandpass filters with realistic EEG parameters."""
-from scitex.dsp.utils import init_bandpass_filters
+    from scitex.dsp.utils import init_bandpass_filters
     
     # Realistic EEG parameters
     fs = 250  # Common EEG sampling rate
@@ -198,7 +198,7 @@ from scitex.dsp.utils import init_bandpass_filters
 
 def test_bandpass_filters_different_signal_lengths():
     """Test bandpass filters with different signal lengths."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     fs = 250
     pha_mids = torch.linspace(2, 20, 5)
@@ -224,7 +224,7 @@ from scitex.dsp.utils import build_bandpass_filters
 
 def test_bandpass_filters_edge_cases():
     """Test bandpass filters with edge cases."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     try:
         # Test with single band
@@ -248,7 +248,7 @@ from scitex.dsp.utils import build_bandpass_filters
 
 def test_bandpass_filters_parameter_validation():
     """Test parameter validation in bandpass filter functions."""
-from scitex.dsp.utils import build_bandpass_filters
+    from scitex.dsp.utils import build_bandpass_filters
     
     sig_len = 1000
     fs = 250

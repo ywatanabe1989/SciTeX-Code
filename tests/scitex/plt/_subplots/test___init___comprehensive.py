@@ -105,20 +105,20 @@ class TestSubmoduleAccess:
         
         # The actual classes are in separate files
         try:
-from scitex.plt._subplots import AxisWrapper
+            from scitex.plt._subplots import AxisWrapper
             assert AxisWrapper is not None
         except ImportError:
             # Might not be directly importable
             pass
         
         try:
-from scitex.plt._subplots import FigWrapper
+            from scitex.plt._subplots import FigWrapper
             assert FigWrapper is not None
         except ImportError:
             pass
         
         try:
-from scitex.plt._subplots import SubplotsWrapper
+            from scitex.plt._subplots import SubplotsWrapper
             assert SubplotsWrapper is not None
         except ImportError:
             pass

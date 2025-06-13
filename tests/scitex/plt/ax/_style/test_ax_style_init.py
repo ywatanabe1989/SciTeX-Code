@@ -22,77 +22,77 @@ class TestStyleModuleImports:
     
     def test_add_marginal_ax_import(self):
         """Test add_marginal_ax function import."""
-from scitex.plt.ax import add_marginal_ax
+        from scitex.plt.ax import add_marginal_ax
         assert callable(add_marginal_ax)
     
     def test_add_panel_import(self):
         """Test add_panel function import."""
-from scitex.plt.ax import add_panel
+        from scitex.plt.ax import add_panel
         assert callable(add_panel)
     
     def test_extend_import(self):
         """Test extend function import."""
-from scitex.plt.ax import extend
+        from scitex.plt.ax import extend
         assert callable(extend)
     
     def test_force_aspect_import(self):
         """Test force_aspect function import."""
-from scitex.plt.ax import force_aspect
+        from scitex.plt.ax import force_aspect
         assert callable(force_aspect)
     
     def test_format_label_import(self):
         """Test format_label function import."""
-from scitex.plt.ax import format_label
+        from scitex.plt.ax import format_label
         assert callable(format_label)
     
     def test_hide_spines_import(self):
         """Test hide_spines function import."""
-from scitex.plt.ax import hide_spines
+        from scitex.plt.ax import hide_spines
         assert callable(hide_spines)
     
     def test_map_ticks_import(self):
         """Test map_ticks function import."""
-from scitex.plt.ax import map_ticks
+        from scitex.plt.ax import map_ticks
         assert callable(map_ticks)
     
     def test_rotate_labels_import(self):
         """Test rotate_labels function import."""
-from scitex.plt.ax import rotate_labels
+        from scitex.plt.ax import rotate_labels
         assert callable(rotate_labels)
     
     def test_sci_note_import(self):
         """Test sci_note function import."""
-from scitex.plt.ax import sci_note
+        from scitex.plt.ax import sci_note
         assert callable(sci_note)
     
     def test_set_n_ticks_import(self):
         """Test set_n_ticks function import."""
-from scitex.plt.ax import set_n_ticks
+        from scitex.plt.ax import set_n_ticks
         assert callable(set_n_ticks)
     
     def test_set_size_import(self):
         """Test set_size function import."""
-from scitex.plt.ax import set_size
+        from scitex.plt.ax import set_size
         assert callable(set_size)
     
     def test_set_supxyt_import(self):
         """Test set_supxyt function import."""
-from scitex.plt.ax import set_supxyt
+        from scitex.plt.ax import set_supxyt
         assert callable(set_supxyt)
     
     def test_set_ticks_import(self):
         """Test set_ticks function import."""
-from scitex.plt.ax import set_ticks
+        from scitex.plt.ax import set_ticks
         assert callable(set_ticks)
     
     def test_set_xyt_import(self):
         """Test set_xyt function import."""
-from scitex.plt.ax import set_xyt
+        from scitex.plt.ax import set_xyt
         assert callable(set_xyt)
     
     def test_shift_import(self):
         """Test shift function import."""
-from scitex.plt.ax import shift
+        from scitex.plt.ax import shift
         assert callable(shift)
 
 
@@ -101,37 +101,37 @@ class TestShareAxesFunctions:
     
     def test_sharexy_import(self):
         """Test sharexy function import."""
-from scitex.plt.ax import sharexy
+        from scitex.plt.ax import sharexy
         assert callable(sharexy)
     
     def test_sharex_import(self):
         """Test sharex function import."""
-from scitex.plt.ax import sharex
+        from scitex.plt.ax import sharex
         assert callable(sharex)
     
     def test_sharey_import(self):
         """Test sharey function import."""
-from scitex.plt.ax import sharey
+        from scitex.plt.ax import sharey
         assert callable(sharey)
     
     def test_get_global_xlim_import(self):
         """Test get_global_xlim function import."""
-from scitex.plt.ax import get_global_xlim
+        from scitex.plt.ax import get_global_xlim
         assert callable(get_global_xlim)
     
     def test_get_global_ylim_import(self):
         """Test get_global_ylim function import."""
-from scitex.plt.ax import get_global_ylim
+        from scitex.plt.ax import get_global_ylim
         assert callable(get_global_ylim)
     
     def test_set_xlims_import(self):
         """Test set_xlims function import."""
-from scitex.plt.ax import set_xlims
+        from scitex.plt.ax import set_xlims
         assert callable(set_xlims)
     
     def test_set_ylims_import(self):
         """Test set_ylims function import."""
-from scitex.plt.ax import set_ylims
+        from scitex.plt.ax import set_ylims
         assert callable(set_ylims)
 
 
@@ -147,7 +147,7 @@ class TestBasicFunctionality:
     
     def test_hide_spines_basic(self, mock_axes):
         """Test basic hide_spines functionality."""
-from scitex.plt.ax import hide_spines
+        from scitex.plt.ax import hide_spines
         
         # Function should be callable with axes
         try:
@@ -158,7 +158,7 @@ from scitex.plt.ax import hide_spines
     
     def test_sci_note_basic(self, mock_axes):
         """Test basic sci_note functionality."""
-from scitex.plt.ax import sci_note
+        from scitex.plt.ax import sci_note
         
         # Function should be callable with axes
         try:
@@ -169,7 +169,7 @@ from scitex.plt.ax import sci_note
     
     def test_force_aspect_basic(self, mock_axes):
         """Test basic force_aspect functionality."""
-from scitex.plt.ax import force_aspect
+        from scitex.plt.ax import force_aspect
         
         # Function should be callable with axes
         try:
@@ -180,7 +180,7 @@ from scitex.plt.ax import force_aspect
     
     def test_rotate_labels_basic(self, mock_axes):
         """Test basic rotate_labels functionality."""
-from scitex.plt.ax import rotate_labels
+        from scitex.plt.ax import rotate_labels
         
         # Function should be callable with axes
         try:

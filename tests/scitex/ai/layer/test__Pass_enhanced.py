@@ -22,7 +22,7 @@ try:
 except ImportError:
     HAS_HYPOTHESIS = False
 
-from scitex.ai.layer import Pass
+    from scitex.ai.layer import Pass
 
 __FILE__ = "./tests/scitex/ai/layer/test__Pass_enhanced.py"
 __DIR__ = os.path.dirname(__FILE__)

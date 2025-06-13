@@ -19,13 +19,13 @@ class TestCodeFlowAnalyzerBasic:
     
     def test_import(self):
         """Test that CodeFlowAnalyzer and analyze_code_flow can be imported."""
-from scitex.dev import CodeFlowAnalyzer, analyze_code_flow
+        from scitex.dev import CodeFlowAnalyzer, analyze_code_flow
         assert callable(CodeFlowAnalyzer)
         assert callable(analyze_code_flow)
     
     def test_initialization(self):
         """Test CodeFlowAnalyzer initialization."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer("test.py")
         assert analyzer.file_path == "test.py"
@@ -35,7 +35,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_skip_functions_populated(self):
         """Test that skip_functions contains expected values."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer("test.py")
         
@@ -48,7 +48,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_analyze_simple_file(self):
         """Test analyzing a simple Python file."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def hello():
@@ -77,7 +77,7 @@ class TestCodeFlowAnalyzerTracing:
     
     def test_trace_function_definitions(self):
         """Test tracing function definitions."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def func1():
@@ -104,7 +104,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_trace_function_calls(self):
         """Test tracing function calls."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def helper():
@@ -125,7 +125,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_trace_method_calls(self):
         """Test tracing method calls with attributes."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def process():
@@ -145,7 +145,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_skip_builtin_functions(self):
         """Test that built-in functions are skipped."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def process():
@@ -167,7 +167,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_depth_tracking(self):
         """Test that depth is tracked correctly."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def outer():
@@ -189,7 +189,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_sequence_numbering(self):
         """Test that sequence numbers increment correctly."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def func1():
@@ -216,7 +216,7 @@ class TestCodeFlowAnalyzerFormatting:
     
     def test_format_output_structure(self):
         """Test the structure of formatted output."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer(None)
         analyzer.execution_flow = [
@@ -234,7 +234,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_format_indentation(self):
         """Test proper indentation based on depth."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer(None)
         analyzer.execution_flow = [
@@ -255,7 +255,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_skip_private_methods(self):
         """Test that private methods are filtered out."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer(None)
         analyzer.execution_flow = [
@@ -278,7 +278,7 @@ class TestCodeFlowAnalyzerErrorHandling:
     
     def test_nonexistent_file(self):
         """Test handling of non-existent file."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer("/nonexistent/file.py")
         result = analyzer.analyze()
@@ -288,7 +288,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_invalid_python_syntax(self):
         """Test handling of invalid Python syntax."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = "def invalid syntax here:"
         
@@ -306,7 +306,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_empty_file(self):
         """Test analyzing empty file."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
             f.write("")
@@ -322,7 +322,7 @@ from scitex.dev import CodeFlowAnalyzer
     @patch('builtins.open', side_effect=PermissionError("Access denied"))
     def test_permission_error(self, mock_file):
         """Test handling of permission errors."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         analyzer = CodeFlowAnalyzer("protected.py")
         result = analyzer.analyze()
@@ -337,7 +337,7 @@ class TestAnalyzeCodeFlowFunction:
     
     def test_analyze_code_flow_wrapper(self):
         """Test analyze_code_flow wrapper function."""
-from scitex.dev import analyze_code_flow
+        from scitex.dev import analyze_code_flow
         
         code = dedent("""
         def test_function():
@@ -358,7 +358,7 @@ from scitex.dev import analyze_code_flow
     @patch('scitex.dev._analyze_code_flow.CodeFlowAnalyzer')
     def test_analyze_code_flow_creates_analyzer(self, mock_analyzer_class):
         """Test that analyze_code_flow creates CodeFlowAnalyzer instance."""
-from scitex.dev import analyze_code_flow
+        from scitex.dev import analyze_code_flow
         
         mock_instance = MagicMock()
         mock_instance.analyze.return_value = "Test result"
@@ -376,7 +376,7 @@ class TestCodeFlowAnalyzerMainGuard:
     
     def test_truncate_at_main_guard(self):
         """Test that code after main guard is ignored."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def before_main():
@@ -402,7 +402,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_no_main_guard(self):
         """Test files without main guard."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def func1():
@@ -433,7 +433,7 @@ class TestCodeFlowAnalyzerComplexCases:
     
     def test_nested_classes_and_methods(self):
         """Test nested classes and methods."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         class OuterClass:
@@ -456,7 +456,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_decorators(self):
         """Test handling of decorated functions."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         @decorator1
@@ -479,7 +479,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_lambda_functions(self):
         """Test handling of lambda functions."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def use_lambda():
@@ -497,7 +497,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_comprehensions(self):
         """Test handling of comprehensions."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         def use_comprehensions():
@@ -521,7 +521,7 @@ class TestGetFuncName:
     
     def test_get_func_name_simple(self):
         """Test getting simple function names."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = "func()"
         tree = ast.parse(code)
@@ -534,7 +534,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_get_func_name_attribute(self):
         """Test getting attribute function names."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = "obj.method()"
         tree = ast.parse(code)
@@ -547,7 +547,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_get_func_name_nested_attribute(self):
         """Test getting nested attribute names."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = "module.submodule.function()"
         tree = ast.parse(code)
@@ -560,7 +560,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_get_func_name_skip_function(self):
         """Test that skip functions return None."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = "print('hello')"
         tree = ast.parse(code)
@@ -577,7 +577,7 @@ class TestCodeFlowAnalyzerRealWorld:
     
     def test_django_view(self):
         """Test analyzing Django-style view."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         from django.shortcuts import render
@@ -607,7 +607,7 @@ from scitex.dev import CodeFlowAnalyzer
     
     def test_data_science_workflow(self):
         """Test analyzing data science workflow."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         
         code = dedent("""
         import pandas as pd
@@ -652,7 +652,7 @@ class TestCodeFlowAnalyzerPerformance:
     
     def test_large_file_performance(self):
         """Test analyzing large file completes in reasonable time."""
-from scitex.dev import CodeFlowAnalyzer
+        from scitex.dev import CodeFlowAnalyzer
         import time
         
         # Generate large code file
@@ -685,7 +685,7 @@ class TestCodeFlowAnalyzerIntegration:
     @patch('builtins.print')
     def test_main_function(self, mock_print):
         """Test main function execution."""
-from scitex.dev import main
+        from scitex.dev import main
         
         # Create mock args
         args = MagicMock()
@@ -700,7 +700,7 @@ from scitex.dev import main
     
     def test_parse_args(self):
         """Test argument parsing."""
-from scitex.dev import parse_args
+        from scitex.dev import parse_args
         
         with patch('sys.argv', ['script.py', '--var', '5', '--flag']):
             with patch('scitex.str.printc'):  # Mock the print function

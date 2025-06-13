@@ -17,7 +17,7 @@ import yaml
 
 def test_load_yaml_basic():
     """Test loading a basic YAML file."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     # Create a temporary YAML file
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
@@ -44,7 +44,7 @@ list:
 
 def test_load_yaml_yml_extension():
     """Test loading a .yml file."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
         f.write("test: yml_extension")
@@ -59,7 +59,7 @@ from scitex.io._load_modules import _load_yaml
 
 def test_load_yaml_complex_structure():
     """Test loading YAML with nested structures."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     yaml_data = """
 nested:
@@ -98,7 +98,7 @@ multiline: |
 
 def test_load_yaml_lowercase_keys():
     """Test loading YAML with lowercase key option."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     yaml_data = """
 UpperCase: value1
@@ -135,7 +135,7 @@ ALLCAPS: value4
 
 def test_load_yaml_invalid_extension():
     """Test that loading non-YAML file raises ValueError."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     with pytest.raises(ValueError, match="File must have .yaml or .yml extension"):
         _load_yaml("test.txt")
@@ -146,7 +146,7 @@ from scitex.io._load_modules import _load_yaml
 
 def test_load_yaml_invalid_yaml_content():
     """Test handling of invalid YAML content."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     # Create a file with invalid YAML
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
@@ -162,7 +162,7 @@ from scitex.io._load_modules import _load_yaml
 
 def test_load_yaml_empty_file():
     """Test loading an empty YAML file."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
         temp_path = f.name
@@ -176,7 +176,7 @@ from scitex.io._load_modules import _load_yaml
 
 def test_load_yaml_unicode_content():
     """Test loading YAML with Unicode characters."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     yaml_data = """
 japanese: こんにちは
@@ -200,7 +200,7 @@ mixed: Hello 世界
 
 def test_load_yaml_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_yaml
+    from scitex.io._load_modules import _load_yaml
     
     with pytest.raises(FileNotFoundError):
         _load_yaml("/nonexistent/path/file.yaml")

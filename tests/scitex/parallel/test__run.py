@@ -13,7 +13,7 @@ import pytest
 
 def test_run_basic_functionality():
     """Test basic parallel function execution."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -27,7 +27,7 @@ from scitex.parallel import run
 
 def test_run_single_argument():
     """Test parallel execution with single argument functions."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def square(x):
         return x * x
@@ -40,7 +40,7 @@ from scitex.parallel import run
 
 def test_run_multiple_arguments():
     """Test parallel execution with multiple argument functions."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def multiply_three(x, y, z):
         return x * y * z
@@ -53,7 +53,7 @@ from scitex.parallel import run
 
 def test_run_tuple_returns():
     """Test parallel execution with functions returning tuples."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def divmod_func(x, y):
         return divmod(x, y)
@@ -70,7 +70,7 @@ from scitex.parallel import run
 
 def test_run_mixed_tuple_returns():
     """Test parallel execution with mixed tuple returns."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def stats(numbers):
         return sum(numbers), len(numbers), sum(numbers) / len(numbers)
@@ -87,7 +87,7 @@ from scitex.parallel import run
 
 def test_run_empty_args_list():
     """Test that empty args_list raises ValueError."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def dummy(x):
         return x
@@ -98,7 +98,7 @@ from scitex.parallel import run
 
 def test_run_non_callable_func():
     """Test that non-callable func raises ValueError."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     args_list = [(1, 2), (3, 4)]
     
@@ -111,7 +111,7 @@ from scitex.parallel import run
 
 def test_run_n_jobs_auto_detection():
     """Test automatic CPU count detection with n_jobs=-1."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -126,7 +126,7 @@ from scitex.parallel import run
 
 def test_run_n_jobs_explicit():
     """Test explicit n_jobs setting."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -139,7 +139,7 @@ from scitex.parallel import run
 
 def test_run_n_jobs_warning():
     """Test warning when n_jobs exceeds CPU count."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -158,7 +158,7 @@ from scitex.parallel import run
 
 def test_run_n_jobs_invalid():
     """Test invalid n_jobs values."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -174,7 +174,7 @@ from scitex.parallel import run
 
 def test_run_custom_description():
     """Test custom progress bar description."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def add(x, y):
         return x + y
@@ -188,7 +188,7 @@ from scitex.parallel import run
 
 def test_run_order_preservation():
     """Test that results maintain order despite parallel execution."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def delayed_identity(x, delay):
         time.sleep(delay)
@@ -204,7 +204,7 @@ from scitex.parallel import run
 
 def test_run_exception_handling():
     """Test that exceptions in worker functions are properly raised."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def failing_func(x):
         if x == 2:
@@ -220,7 +220,7 @@ from scitex.parallel import run
 
 def test_run_complex_data_types():
     """Test parallel execution with complex data types."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def process_dict(data_dict, multiplier):
         return {k: v * multiplier for k, v in data_dict.items()}
@@ -242,7 +242,7 @@ from scitex.parallel import run
 
 def test_run_large_dataset():
     """Test parallel execution with larger dataset for performance validation."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def compute_factorial(n):
         if n <= 1:
@@ -265,7 +265,7 @@ from scitex.parallel import run
 
 def test_run_thread_safety():
     """Test thread safety with shared state."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def increment_and_return(base, increment):
         # Pure function, no shared state
@@ -280,7 +280,7 @@ from scitex.parallel import run
 
 def test_run_memory_efficiency():
     """Test that results are properly allocated and ordered."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def create_list(size, value):
         return [value] * size
@@ -300,7 +300,7 @@ from scitex.parallel import run
 
 def test_run_string_operations():
     """Test parallel execution with string operations."""
-from scitex.parallel import run
+    from scitex.parallel import run
 
     def format_string(template, value):
         return template.format(value)

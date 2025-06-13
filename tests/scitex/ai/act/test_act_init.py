@@ -105,7 +105,7 @@ class TestActInit:
     def test_function_preservation(self):
         """Test that imported function maintains its properties."""
         from scitex.ai.act import define
-from scitex.ai.act import define as original_define
+        from scitex.ai.act import define as original_define
         
         # Should be the same function
         assert define is original_define

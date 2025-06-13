@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-02-26 09:02:48 (ywatanabe)"
-# File: ./src/scitex/ai/_gen_ai/_Anthropic.py
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_Anthropic.py"
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Time-stamp: "2025-02-26 09:02:48 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/ai/_gen_ai/_Anthropic.py
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_Anthropic.py"
+# Timestamp: "2025-06-13 23:00:56 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_Anthropic.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/ai/_gen_ai/_Anthropic.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
 """
 Functionality:
@@ -27,20 +26,15 @@ Prerequisites:
 """
 
 """Imports"""
-import os
 import sys
-from typing import Any, Dict, Generator, List, Optional, Union
+from typing import Dict, Generator, List, Optional
 
 import anthropic
 import matplotlib.pyplot as plt
 
 from ._BaseGenAI import BaseGenAI
-import re
-
 
 """Functions & Classes"""
-
-
 class Anthropic(BaseGenAI):
     def __init__(
         self,
@@ -164,7 +158,9 @@ def main() -> None:
 if __name__ == "__main__":
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+        sys, plt, verbose=False
+    )
     main()
     scitex.gen.close(CONFIG, verbose=False, notify=False)
 

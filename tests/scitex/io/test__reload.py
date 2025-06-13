@@ -18,7 +18,7 @@ class TestReloadModule:
 
     def test_reload_module_in_sys_modules(self):
         """Test reloading a module that exists in sys.modules."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a mock module
         mock_module = MagicMock(spec=types.ModuleType)
@@ -45,7 +45,7 @@ from scitex.io import reload
 
     def test_reload_module_by_name(self):
         """Test reloading a module when it has __name__ attribute."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a mock module with __name__
         mock_module = MagicMock()
@@ -64,7 +64,7 @@ from scitex.io import reload
 
     def test_reload_module_verbose(self):
         """Test reload with verbose output."""
-from scitex.io import reload
+        from scitex.io import reload
 
         mock_module = MagicMock()
         mock_module.__name__ = "verbose_module"
@@ -89,7 +89,7 @@ class TestReloadFunction:
 
     def test_reload_function(self):
         """Test reloading module containing a function."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a mock function with __module__ attribute
         mock_function = MagicMock()
@@ -113,7 +113,7 @@ from scitex.io import reload
 
     def test_reload_function_module_not_found(self):
         """Test reloading function when its module is not in sys.modules."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create mock function with module that's not loaded
         mock_function = MagicMock()
@@ -129,7 +129,7 @@ from scitex.io import reload
 
     def test_reload_class(self):
         """Test reloading module containing a class."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a mock class with __module__ attribute
         mock_class = MagicMock()
@@ -157,7 +157,7 @@ class TestReloadErrorHandling:
 
     def test_reload_unrecognized_object(self):
         """Test reloading an object that's neither module nor function/class."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create object without __module__ or __name__ in sys.modules
         unrecognized_obj = MagicMock()
@@ -177,7 +177,7 @@ from scitex.io import reload
 
     def test_reload_module_not_in_sys_modules(self):
         """Test reloading when module is not in sys.modules."""
-from scitex.io import reload
+        from scitex.io import reload
 
         mock_module = MagicMock()
         mock_module.__name__ = "missing_module"
@@ -193,7 +193,7 @@ from scitex.io import reload
 
     def test_reload_importlib_exception(self):
         """Test handling of exception during importlib.reload."""
-from scitex.io import reload
+        from scitex.io import reload
 
         mock_module = MagicMock()
         mock_module.__name__ = "error_module"
@@ -214,7 +214,7 @@ from scitex.io import reload
 
     def test_reload_keyerror(self):
         """Test handling of KeyError during reload."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a function that claims to be from a module that doesn't exist
         mock_function = MagicMock()
@@ -242,7 +242,7 @@ class TestReloadIntegration:
 
     def test_reload_actual_module(self):
         """Test reloading an actual imported module."""
-from scitex.io import reload
+        from scitex.io import reload
         import json  # Use a standard library module
 
         # Store original module reference
@@ -262,7 +262,7 @@ from scitex.io import reload
 
     def test_reload_from_imported_function(self):
         """Test reloading from an imported function."""
-from scitex.io import reload
+        from scitex.io import reload
         from os.path import join  # Import a function
 
         with patch("importlib.reload") as mock_importlib_reload:
@@ -274,7 +274,7 @@ from scitex.io import reload
 
     def test_reload_edge_case_module_in_sys_modules_branch(self):
         """Test the first branch where module is directly in sys.modules."""
-from scitex.io import reload
+        from scitex.io import reload
 
         # Create a module name that will trigger the first if condition
         module_name = "direct_module"

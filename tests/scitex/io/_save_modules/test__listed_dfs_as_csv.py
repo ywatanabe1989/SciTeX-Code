@@ -21,7 +21,7 @@ class TestSaveListedDfsBasic:
 
     def test_save_single_dataframe(self, tmp_path):
         """Test saving a single DataFrame in a list."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         # Create test DataFrame
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["a", "b", "c"]})
@@ -42,7 +42,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_save_multiple_dataframes(self, tmp_path):
         """Test saving multiple DataFrames."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         # Create test DataFrames
         df1 = pd.DataFrame({"X": [1, 2], "Y": [3, 4]})
@@ -67,7 +67,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_custom_suffixes(self, tmp_path):
         """Test saving with custom suffixes."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df1 = pd.DataFrame({"A": [1, 2]})
         df2 = pd.DataFrame({"B": [3, 4]})
@@ -88,7 +88,7 @@ class TestSaveListedDfsOptions:
 
     def test_overwrite_true(self, tmp_path):
         """Test overwrite=True moves existing file."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         output_file = tmp_path / "overwrite_test.csv"
 
@@ -105,7 +105,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_verbose_output(self, tmp_path, capsys):
         """Test verbose output."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame({"A": [1]})
         output_file = tmp_path / "verbose_test.csv"
@@ -117,7 +117,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_append_mode(self, tmp_path):
         """Test that function appends to existing file."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         output_file = tmp_path / "append_test.csv"
 
@@ -141,7 +141,7 @@ class TestSaveListedDfsDataTypes:
 
     def test_empty_dataframe(self, tmp_path):
         """Test saving empty DataFrame."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame()
         output_file = tmp_path / "empty_df.csv"
@@ -156,7 +156,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_mixed_dtypes(self, tmp_path):
         """Test DataFrames with mixed data types."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame(
             {
@@ -178,7 +178,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_dataframe_with_nan(self, tmp_path):
         """Test DataFrame containing NaN values."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame({"A": [1, np.nan, 3], "B": ["x", "y", None]})
 
@@ -191,7 +191,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_dataframe_with_multiindex(self, tmp_path):
         """Test DataFrame with MultiIndex."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         # Create MultiIndex DataFrame
         arrays = [["A", "A", "B", "B"], [1, 2, 1, 2]]
@@ -211,7 +211,7 @@ class TestSaveListedDfsFormatting:
 
     def test_separator_rows(self, tmp_path):
         """Test that empty separator rows are added between DataFrames."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df1 = pd.DataFrame({"A": [1]})
         df2 = pd.DataFrame({"B": [2]})
@@ -229,7 +229,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_index_preserved(self, tmp_path):
         """Test that DataFrame index is preserved."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame({"A": [1, 2, 3]}, index=["row1", "row2", "row3"])
         df.index.name = "custom_index"
@@ -245,7 +245,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_headers_preserved(self, tmp_path):
         """Test that column headers are preserved."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame({"Column One": [1, 2], "Column Two": [3, 4]})
 
@@ -264,7 +264,7 @@ class TestSaveListedDfsErrorHandling:
 
     def test_empty_list(self, tmp_path):
         """Test saving empty list of DataFrames."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         output_file = tmp_path / "empty_list.csv"
 
@@ -274,7 +274,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_non_dataframe_in_list(self, tmp_path):
         """Test behavior with non-DataFrame objects."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         output_file = tmp_path / "non_df.csv"
 
@@ -288,7 +288,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_mismatched_suffix_length(self, tmp_path):
         """Test when suffix list length doesn't match DataFrame list."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df1 = pd.DataFrame({"A": [1]})
         df2 = pd.DataFrame({"B": [2]})
@@ -303,7 +303,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_permission_error(self, tmp_path):
         """Test handling permission errors."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame({"A": [1]})
 
@@ -319,7 +319,7 @@ class TestSaveListedDfsIntegration:
 
     def test_large_dataframe_list(self, tmp_path):
         """Test saving many DataFrames."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         # Create 10 DataFrames
         dfs = []
@@ -342,7 +342,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_round_trip(self, tmp_path):
         """Test that data can be recovered from saved file."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         # Create test data
         df1 = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
@@ -368,7 +368,7 @@ from scitex.io import _save_listed_dfs_as_csv
 
     def test_unicode_content(self, tmp_path):
         """Test saving DataFrames with Unicode content."""
-from scitex.io import _save_listed_dfs_as_csv
+        from scitex.io import _save_listed_dfs_as_csv
 
         df = pd.DataFrame(
             {

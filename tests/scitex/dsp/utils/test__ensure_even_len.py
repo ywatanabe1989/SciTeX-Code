@@ -13,7 +13,7 @@ import torch
 
 def test_ensure_even_len_already_even():
     """Test ensure_even_len with already even length."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test 1D tensor with even length
     x = torch.randn(100)  # Even length
@@ -27,7 +27,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_odd_to_even():
     """Test ensure_even_len with odd length."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test 1D tensor with odd length
     x = torch.randn(101)  # Odd length
@@ -41,7 +41,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_2d_tensor():
     """Test ensure_even_len with 2D tensor."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test 2D tensor with odd last dimension
     x = torch.randn(10, 101)  # (batch, odd_seq_len)
@@ -55,7 +55,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_3d_tensor():
     """Test ensure_even_len with 3D tensor."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test 3D tensor with odd last dimension
     x = torch.randn(5, 8, 99)  # (batch, channels, odd_seq_len)
@@ -69,7 +69,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_4d_tensor():
     """Test ensure_even_len with 4D tensor."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test 4D tensor with odd last dimension
     x = torch.randn(2, 3, 4, 51)  # Odd last dimension
@@ -83,7 +83,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_numpy_array():
     """Test ensure_even_len with numpy arrays."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test with numpy array
     x = np.random.randn(101)  # Odd length
@@ -97,7 +97,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_preserves_dtype():
     """Test that ensure_even_len preserves data type."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test different dtypes
     dtypes = [torch.float32, torch.float64, torch.int32, torch.int64]
@@ -110,7 +110,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_preserves_device():
     """Test that ensure_even_len preserves device."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test CPU tensor
     x_cpu = torch.randn(101)
@@ -126,7 +126,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_preserves_requires_grad():
     """Test that ensure_even_len preserves gradient tracking."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test with requires_grad=True
     x = torch.randn(101, requires_grad=True)
@@ -141,7 +141,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_gradient_flow():
     """Test that gradients flow through ensure_even_len."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     x = torch.randn(101, requires_grad=True)
     result = ensure_even_len(x)
@@ -159,7 +159,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_small_tensors():
     """Test ensure_even_len with small tensors."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test length 1 (odd)
     x1 = torch.tensor([5.0])
@@ -179,7 +179,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_empty_tensor():
     """Test ensure_even_len with empty tensor."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     x = torch.empty(0)
     result = ensure_even_len(x)
@@ -191,7 +191,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_consistency():
     """Test that ensure_even_len is consistent across calls."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     x = torch.randn(101)
     
@@ -204,7 +204,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_real_signal_example():
     """Test ensure_even_len with realistic signal processing example."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Simulate EEG signal with odd number of samples
     fs = 250  # Hz
@@ -229,7 +229,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_multichannel_signal():
     """Test ensure_even_len with multi-channel signals."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Simulate multi-channel EEG data
     n_channels = 64
@@ -246,7 +246,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_batch_processing():
     """Test ensure_even_len with batch of signals."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Simulate batch of signals
     batch_size = 32
@@ -264,7 +264,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_fft_compatibility():
     """Test ensure_even_len for FFT preprocessing."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Create a signal that needs to be even for FFT
     signal = torch.randn(1023)  # Odd length
@@ -283,7 +283,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_memory_view():
     """Test that ensure_even_len returns a view when possible."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # For even length, should return the same tensor (view)
     x_even = torch.randn(100)
@@ -299,7 +299,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_different_shapes():
     """Test ensure_even_len with various tensor shapes."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Test various shapes where last dimension is odd
     shapes = [
@@ -324,7 +324,7 @@ from scitex.dsp.utils import ensure_even_len
 
 def test_ensure_even_len_integration_test():
     """Integration test for ensure_even_len in signal processing pipeline."""
-from scitex.dsp.utils import ensure_even_len
+    from scitex.dsp.utils import ensure_even_len
     
     # Simulate a complete signal processing pipeline
     

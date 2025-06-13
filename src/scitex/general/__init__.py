@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
-"""Scitex general - imports from mngs.general."""
+"""Scitex general - general utilities (currently empty)."""
 
-from mngs.general import *
+# This module is currently empty but preserved for compatibility
+__all__ = []

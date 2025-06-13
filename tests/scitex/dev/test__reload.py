@@ -27,12 +27,12 @@ class TestReloadBasic:
     
     def test_reload_function_exists(self):
         """Test that reload function can be imported."""
-from scitex.dev import reload
+        from scitex.dev import reload
         assert callable(reload)
     
     def test_reload_returns_module(self):
         """Test that reload returns the reloaded module."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # First ensure scitex is imported
         import scitex
@@ -47,7 +47,7 @@ from scitex.dev import reload
     
     def test_reload_handles_submodules(self):
         """Test that reload handles scitex submodules."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Import some submodules first
         import scitex.gen
@@ -74,7 +74,7 @@ from scitex.dev import reload
     @patch('importlib.reload')
     def test_reload_calls_importlib_reload(self, mock_reload):
         """Test that reload uses importlib.reload."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Set up mock to return a module
         mock_module = MagicMock()
@@ -89,7 +89,7 @@ from scitex.dev import reload
     
     def test_reload_handles_import_errors(self):
         """Test that reload handles errors gracefully."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Even with a broken submodule, reload should not crash
         # Add a fake broken module to sys.modules
@@ -112,7 +112,7 @@ class TestReloadSubmodules:
     
     def test_reload_finds_all_scitex_modules(self):
         """Test that reload finds all modules starting with 'scitex'."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Import various scitex modules
         import scitex
@@ -136,7 +136,7 @@ from scitex.dev import reload
     @patch('importlib.reload')
     def test_reload_attempts_all_submodules(self, mock_reload):
         """Test that reload attempts to reload all scitex submodules."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Add some fake scitex modules
         fake_modules = ['scitex', 'scitex.test1', 'scitex.test2', 'scitex.test3']
@@ -158,7 +158,7 @@ from scitex.dev import reload
     
     def test_reload_preserves_module_state(self):
         """Test that reload preserves important module state."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # Import and set some state
         import scitex
@@ -179,17 +179,17 @@ class TestAutoReload:
     
     def test_reload_auto_function_exists(self):
         """Test that reload_auto function can be imported."""
-from scitex.dev import reload_auto
+        from scitex.dev import reload_auto
         assert callable(reload_auto)
     
     def test_reload_stop_function_exists(self):
         """Test that reload_stop function can be imported."""
-from scitex.dev import reload_stop
+        from scitex.dev import reload_stop
         assert callable(reload_stop)
     
     def test_auto_reload_starts_thread(self):
         """Test that reload_auto starts a background thread."""
-from scitex.dev import reload_auto, reload_stop, _reload_thread
+        from scitex.dev import reload_auto, reload_stop, _reload_thread
         
         # Ensure stopped first
         reload_stop()
@@ -212,7 +212,7 @@ from scitex.dev import reload_auto, reload_stop, _reload_thread
     
     def test_auto_reload_with_custom_interval(self):
         """Test auto-reload with custom interval."""
-from scitex.dev import reload_auto, reload_stop
+        from scitex.dev import reload_auto, reload_stop
         
         # Stop any existing reload
         reload_stop()
@@ -230,7 +230,7 @@ from scitex.dev import reload_auto, reload_stop
     
     def test_reload_stop_stops_thread(self):
         """Test that reload_stop stops the auto-reload thread."""
-from scitex.dev import reload_auto, reload_stop, _running
+        from scitex.dev import reload_auto, reload_stop, _running
         
         # Start auto reload
         reload_auto(interval=1)
@@ -247,7 +247,7 @@ from scitex.dev import reload_auto, reload_stop, _running
     
     def test_multiple_reload_auto_calls(self):
         """Test that multiple reload_auto calls don't create multiple threads."""
-from scitex.dev import reload_auto, reload_stop, _reload_thread
+        from scitex.dev import reload_auto, reload_stop, _reload_thread
         
         # Stop any existing
         reload_stop()
@@ -276,7 +276,7 @@ class TestAutoReloadLoop:
     @patch('time.sleep')
     def test_auto_reload_loop_calls_reload(self, mock_sleep, mock_reload):
         """Test that auto-reload loop calls reload periodically."""
-from scitex.dev import _auto_reload_loop, _running
+        from scitex.dev import _auto_reload_loop, _running
         
         # Set up test
         call_count = 0
@@ -306,7 +306,7 @@ from scitex.dev import _auto_reload_loop, _running
     @patch('builtins.print')
     def test_auto_reload_handles_exceptions(self, mock_print, mock_reload):
         """Test that auto-reload handles reload exceptions."""
-from scitex.dev import _auto_reload_loop
+        from scitex.dev import _auto_reload_loop
         
         # Make reload raise exception
         mock_reload.side_effect = Exception("Test exception")
@@ -352,7 +352,7 @@ class TestGlobalState:
     
     def test_reload_thread_cleanup(self):
         """Test that reload thread is properly cleaned up."""
-from scitex.dev import reload_auto, reload_stop, _reload_thread
+        from scitex.dev import reload_auto, reload_stop, _reload_thread
         
         # Start and stop
         reload_auto(interval=1)
@@ -377,7 +377,7 @@ class TestEdgeCases:
             del sys.modules[mod]
         
         try:
-from scitex.dev import reload
+            from scitex.dev import reload
             
             # Should still work (will import scitex)
             result = reload()
@@ -388,7 +388,7 @@ from scitex.dev import reload
     
     def test_reload_auto_with_zero_interval(self):
         """Test auto-reload with zero interval."""
-from scitex.dev import reload_auto, reload_stop
+        from scitex.dev import reload_auto, reload_stop
         
         # Should handle zero interval
         reload_auto(interval=0)
@@ -400,7 +400,7 @@ from scitex.dev import reload_auto, reload_stop
     
     def test_reload_auto_with_negative_interval(self):
         """Test auto-reload with negative interval."""
-from scitex.dev import reload_auto, reload_stop
+        from scitex.dev import reload_auto, reload_stop
         
         # Should handle negative interval (might treat as 0 or absolute value)
         reload_auto(interval=-5)
@@ -413,7 +413,7 @@ from scitex.dev import reload_auto, reload_stop
     @patch('threading.Thread')
     def test_reload_auto_thread_creation_failure(self, mock_thread_class):
         """Test handling of thread creation failure."""
-from scitex.dev import reload_auto
+        from scitex.dev import reload_auto
         
         # Make thread creation fail
         mock_thread_class.side_effect = Exception("Thread creation failed")
@@ -431,7 +431,7 @@ class TestIntegration:
     
     def test_reload_updates_module_changes(self):
         """Test that reload picks up module changes."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         # This test would require modifying actual module files
         # which is not practical in a test environment
@@ -445,7 +445,7 @@ from scitex.dev import reload
     
     def test_reload_performance(self):
         """Test reload performance with many submodules."""
-from scitex.dev import reload
+        from scitex.dev import reload
         import time
         
         # Import many submodules
@@ -469,7 +469,7 @@ class TestDocumentation:
     
     def test_reload_has_docstring(self):
         """Test that reload has a docstring."""
-from scitex.dev import reload
+        from scitex.dev import reload
         
         assert reload.__doc__ is not None
         assert "reload" in reload.__doc__.lower()
@@ -477,7 +477,7 @@ from scitex.dev import reload
     
     def test_reload_auto_has_docstring(self):
         """Test that reload_auto has a docstring."""
-from scitex.dev import reload_auto
+        from scitex.dev import reload_auto
         
         assert reload_auto.__doc__ is not None
         assert "auto" in reload_auto.__doc__.lower()
@@ -485,7 +485,7 @@ from scitex.dev import reload_auto
     
     def test_reload_stop_has_docstring(self):
         """Test that reload_stop has a docstring."""
-from scitex.dev import reload_stop
+        from scitex.dev import reload_stop
         
         assert reload_stop.__doc__ is not None
         assert "stop" in reload_stop.__doc__.lower()
@@ -496,7 +496,7 @@ class TestThreadSafety:
     
     def test_concurrent_reload_calls(self):
         """Test concurrent calls to reload."""
-from scitex.dev import reload
+        from scitex.dev import reload
         import concurrent.futures
         
         # Run multiple reloads concurrently
@@ -509,7 +509,7 @@ from scitex.dev import reload
     
     def test_reload_auto_stop_thread_safety(self):
         """Test thread safety of start/stop operations."""
-from scitex.dev import reload_auto, reload_stop
+        from scitex.dev import reload_auto, reload_stop
         import concurrent.futures
         
         def start_stop_cycle():

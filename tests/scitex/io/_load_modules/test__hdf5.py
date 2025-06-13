@@ -33,7 +33,7 @@ class TestLoadHDF5:
 
     def test_basic_hdf5_loading(self):
         """Test loading basic HDF5 file with simple datasets."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Create test data
         data = {'array': np.random.rand(10, 20), 'scalar': 42}
@@ -55,7 +55,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_hdf5_extension_validation(self):
         """Test that function validates .hdf5 and .h5 extensions."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         invalid_extensions = [
             "file.txt",
@@ -74,7 +74,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_group_structures(self):
         """Test loading HDF5 files with nested group structures."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         with tempfile.NamedTemporaryFile(suffix='.h5', delete=False) as f:
             with h5py.File(f.name, 'w') as hf:
@@ -113,7 +113,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_numpy_data_types(self):
         """Test loading various numpy data types and conversions."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Create data with different numpy types
         test_data = {
@@ -171,7 +171,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_string_and_bytes_handling(self):
         """Test loading and conversion of string and bytes data."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Test data with strings and bytes
         string_data = "Hello, HDF5 World! 🌍"
@@ -215,7 +215,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_pickled_objects(self):
         """Test loading pickled objects stored in HDF5."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Create complex Python objects to pickle
         test_objects = {
@@ -249,7 +249,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_large_datasets(self):
         """Test loading large datasets for performance validation."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Create large arrays for performance testing
         large_1d = np.random.rand(1000000)  # 1M elements
@@ -286,7 +286,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_attributes_and_metadata(self):
         """Test handling of HDF5 attributes and metadata."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=False) as f:
             with h5py.File(f.name, 'w') as hf:
@@ -325,7 +325,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_empty_groups_and_datasets(self):
         """Test handling of empty groups and datasets."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=False) as f:
             with h5py.File(f.name, 'w') as hf:
@@ -366,7 +366,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_error_handling(self):
         """Test error handling for various failure conditions."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Test with non-existent file
         with pytest.raises(FileNotFoundError):
@@ -385,7 +385,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_scientific_computing_scenarios(self):
         """Test real-world scientific computing scenarios."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=False) as f:
             with h5py.File(f.name, 'w') as hf:
@@ -434,7 +434,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_edge_cases_and_corner_cases(self):
         """Test edge cases and corner case scenarios."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=False) as f:
             with h5py.File(f.name, 'w') as hf:
@@ -524,7 +524,7 @@ from scitex.io._load_modules import _load_hdf5
 
     def test_kwargs_forwarding(self):
         """Test that kwargs are properly handled."""
-from scitex.io._load_modules import _load_hdf5
+        from scitex.io._load_modules import _load_hdf5
         
         # Create test file
         with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=False) as f:

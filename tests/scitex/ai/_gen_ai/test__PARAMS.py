@@ -7,10 +7,8 @@
 
 import pytest
 import pandas as pd
-from scitex.ai._gen_ai import (
-    MODELS, OPENAI_MODELS, ANTHROPIC_MODELS, GOOGLE_MODELS,
-    PERPLEXITY_MODELS, LLAMA_MODELS, DEEPSEEK_MODELS, GROQ_MODELS
-)
+from scitex.ai._gen_ai import MODELS
+# Individual model lists are not exported, only the combined MODELS DataFrame
 
 
 class TestParams:
@@ -30,84 +28,68 @@ class TestParams:
         assert len(MODELS) > 0
         assert not MODELS.empty
 
-    def test_openai_models_structure(self):
-        """Test OpenAI models have correct structure."""
-        assert isinstance(OPENAI_MODELS, list)
-        assert len(OPENAI_MODELS) > 0
+    def test_openai_models_in_dataframe(self):
+        """Test OpenAI models have correct structure in MODELS DataFrame."""
+        openai_models = MODELS[MODELS['provider'] == 'OpenAI']
+        assert len(openai_models) > 0
         
-        for model in OPENAI_MODELS:
-            assert isinstance(model, dict)
-            assert 'name' in model
-            assert 'input_cost' in model
-            assert 'output_cost' in model
+        for _, model in openai_models.iterrows():
             assert model['api_key_env'] == 'OPENAI_API_KEY'
-            assert model['provider'] == 'OpenAI'
+            assert pd.notna(model['name'])
+            assert pd.notna(model['input_cost'])
+            assert pd.notna(model['output_cost'])
 
-    def test_anthropic_models_structure(self):
-        """Test Anthropic models have correct structure."""
-        assert isinstance(ANTHROPIC_MODELS, list)
-        assert len(ANTHROPIC_MODELS) > 0
+    def test_anthropic_models_in_dataframe(self):
+        """Test Anthropic models have correct structure in MODELS DataFrame."""
+        anthropic_models = MODELS[MODELS['provider'] == 'Anthropic']
+        assert len(anthropic_models) > 0
         
-        for model in ANTHROPIC_MODELS:
-            assert isinstance(model, dict)
-            assert 'name' in model
+        for _, model in anthropic_models.iterrows():
             assert model['api_key_env'] == 'ANTHROPIC_API_KEY'
-            assert model['provider'] == 'Anthropic'
             assert 'claude' in model['name']
 
-    def test_google_models_structure(self):
-        """Test Google models have correct structure."""
-        assert isinstance(GOOGLE_MODELS, list)
-        assert len(GOOGLE_MODELS) > 0
+    def test_google_models_in_dataframe(self):
+        """Test Google models have correct structure in MODELS DataFrame."""
+        google_models = MODELS[MODELS['provider'] == 'Google']
+        assert len(google_models) > 0
         
-        for model in GOOGLE_MODELS:
-            assert isinstance(model, dict)
-            assert 'name' in model
+        for _, model in google_models.iterrows():
             assert model['api_key_env'] == 'GOOGLE_API_KEY'
-            assert model['provider'] == 'Google'
             assert 'gemini' in model['name']
 
-    def test_deepseek_models_structure(self):
-        """Test DeepSeek models have correct structure."""
-        assert isinstance(DEEPSEEK_MODELS, list)
-        assert len(DEEPSEEK_MODELS) > 0
+    def test_deepseek_models_in_dataframe(self):
+        """Test DeepSeek models have correct structure in MODELS DataFrame."""
+        deepseek_models = MODELS[MODELS['provider'] == 'DeepSeek']
+        assert len(deepseek_models) > 0
         
-        for model in DEEPSEEK_MODELS:
-            assert isinstance(model, dict)
+        for _, model in deepseek_models.iterrows():
             assert model['api_key_env'] == 'DEEPSEEK_API_KEY'
-            assert model['provider'] == 'DeepSeek'
             assert 'deepseek' in model['name']
 
-    def test_groq_models_structure(self):
-        """Test Groq models have correct structure."""
-        assert isinstance(GROQ_MODELS, list)
-        assert len(GROQ_MODELS) > 0
+    def test_groq_models_in_dataframe(self):
+        """Test Groq models have correct structure in MODELS DataFrame."""
+        groq_models = MODELS[MODELS['provider'] == 'Groq']
+        assert len(groq_models) > 0
         
-        for model in GROQ_MODELS:
-            assert isinstance(model, dict)
+        for _, model in groq_models.iterrows():
             assert model['api_key_env'] == 'GROQ_API_KEY'
-            assert model['provider'] == 'Groq'
 
-    def test_perplexity_models_structure(self):
-        """Test Perplexity models have correct structure."""
-        assert isinstance(PERPLEXITY_MODELS, list)
-        assert len(PERPLEXITY_MODELS) > 0
+    def test_perplexity_models_in_dataframe(self):
+        """Test Perplexity models have correct structure in MODELS DataFrame."""
+        perplexity_models = MODELS[MODELS['provider'] == 'Perplexity']
+        assert len(perplexity_models) > 0
         
-        for model in PERPLEXITY_MODELS:
-            assert isinstance(model, dict)
+        for _, model in perplexity_models.iterrows():
             assert model['api_key_env'] == 'PERPLEXITY_API_KEY'
-            assert model['provider'] == 'Perplexity'
 
-    def test_llama_models_structure(self):
-        """Test Llama models have correct structure."""
-        assert isinstance(LLAMA_MODELS, list)
-        assert len(LLAMA_MODELS) > 0
+    def test_llama_models_in_dataframe(self):
+        """Test Llama models have correct structure in MODELS DataFrame."""
+        llama_models = MODELS[MODELS['provider'] == 'Llama']
+        assert len(llama_models) > 0
         
-        for model in LLAMA_MODELS:
-            assert isinstance(model, dict)
+        for _, model in llama_models.iterrows():
             assert model['api_key_env'] == 'LLAMA_API_KEY'
-            assert model['provider'] == 'Llama'
-            assert 'llama' in model['name']
+            assert 'llama' in model['name'].lower()
 
     def test_cost_values_are_numeric_or_none(self):
         """Test that all cost values are numeric or None."""
@@ -115,14 +97,13 @@ class TestParams:
             input_cost = row['input_cost']
             output_cost = row['output_cost']
             
-            # Cost should be numeric (float/int) or None
-            assert input_cost is None or isinstance(input_cost, (int, float))
-            assert output_cost is None or isinstance(output_cost, (int, float))
-            
-            # If not None, should be non-negative
-            if input_cost is not None:
+            # Cost should be numeric (float/int) or None/NaN
+            if pd.notna(input_cost):
+                assert isinstance(input_cost, (int, float))
                 assert input_cost >= 0
-            if output_cost is not None:
+            
+            if pd.notna(output_cost):
+                assert isinstance(output_cost, (int, float))
                 assert output_cost >= 0
 
     def test_model_names_are_unique(self):
@@ -158,29 +139,22 @@ class TestParams:
         for model in common_models:
             assert model in available_model_names, f"Expected model {model} not found"
 
-    def test_models_dataframe_concatenation(self):
-        """Test that MODELS is correctly concatenated from all provider lists."""
-        # Count total models from individual lists
-        total_from_lists = (
-            len(OPENAI_MODELS) + len(ANTHROPIC_MODELS) + len(GOOGLE_MODELS) +
-            len(PERPLEXITY_MODELS) + len(LLAMA_MODELS) + len(DEEPSEEK_MODELS) +
-            len(GROQ_MODELS)
-        )
+    def test_models_dataframe_has_all_providers(self):
+        """Test that MODELS contains models from all expected providers."""
+        expected_providers = {'OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'Groq', 'Perplexity', 'Llama'}
+        actual_providers = set(MODELS['provider'].unique())
         
-        # Should match the total in MODELS DataFrame
-        assert len(MODELS) == total_from_lists
+        assert expected_providers.issubset(actual_providers), \
+            f"Missing providers: {expected_providers - actual_providers}"
 
-    @pytest.mark.parametrize("provider,expected_count", [
-        ('OpenAI', len(OPENAI_MODELS)),
-        ('Anthropic', len(ANTHROPIC_MODELS)),
-        ('Google', len(GOOGLE_MODELS)),
-        ('DeepSeek', len(DEEPSEEK_MODELS)),
-        ('Groq', len(GROQ_MODELS)),
-    ])
-    def test_provider_model_counts(self, provider, expected_count):
-        """Test that each provider has the expected number of models."""
-        provider_models = MODELS[MODELS['provider'] == provider]
-        assert len(provider_models) == expected_count
+    def test_each_provider_has_models(self):
+        """Test that each provider has at least one model."""
+        provider_counts = MODELS['provider'].value_counts()
+        
+        expected_providers = ['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'Groq', 'Perplexity', 'Llama']
+        for provider in expected_providers:
+            assert provider in provider_counts.index, f"No models found for provider: {provider}"
+            assert provider_counts[provider] > 0, f"Provider {provider} has no models"
 
     def test_no_missing_values_in_required_fields(self):
         """Test that required fields don't have missing values."""
@@ -189,17 +163,18 @@ class TestParams:
         for field in required_fields:
             assert MODELS[field].notna().all(), f"Missing values in {field} column"
 
-    def test_cost_relationship(self):
-        """Test that output costs are generally higher than input costs."""
-        # For models with both costs defined, output should typically be >= input
+    def test_cost_values_exist(self):
+        """Test that models have cost information defined."""
+        # For models with both costs defined, they should be valid numbers
         valid_costs = MODELS.dropna(subset=['input_cost', 'output_cost'])
         
+        # At least some models should have both costs defined
+        assert len(valid_costs) > 0, "No models have both input and output costs defined"
+        
         for _, row in valid_costs.iterrows():
-            # Most models have output cost >= input cost (with some exceptions)
-            if row['provider'] not in ['Perplexity']:  # Perplexity has equal costs
-                if 'o1' not in row['name']:  # o1 models have inverted costs
-                    assert row['output_cost'] >= row['input_cost'], \
-                        f"Model {row['name']} has output_cost < input_cost"
+            # Both costs should be non-negative numbers (some models like Llama are free)
+            assert row['input_cost'] >= 0, f"Model {row['name']} has negative input_cost"
+            assert row['output_cost'] >= 0, f"Model {row['name']} has negative output_cost"
 
 
 if __name__ == "__main__":

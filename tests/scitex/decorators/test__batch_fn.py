@@ -222,7 +222,7 @@ class TestBatchFnWithOtherDecorators:
     
     def test_nested_decorator_context(self):
         """Test nested decorator context handling"""
-from scitex.decorators import is_nested_decorator
+        from scitex.decorators import is_nested_decorator
         
         @batch_fn
         @torch_fn

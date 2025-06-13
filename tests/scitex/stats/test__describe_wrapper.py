@@ -11,7 +11,7 @@ from unittest.mock import patch, Mock
 
 def test_describe_wrapper_basic_functionality():
     """Test basic describe wrapper functionality."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Basic array
     data = np.array([1, 2, 3, 4, 5])
@@ -26,7 +26,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_numpy_array():
     """Test describe wrapper with numpy array."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # 1D numpy array
     data = np.random.randn(100)
@@ -38,7 +38,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_torch_tensor():
     """Test describe wrapper with torch tensor."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Torch tensor
     data = torch.randn(50)
@@ -50,7 +50,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_list_input():
     """Test describe wrapper with list input."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Python list
     data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -62,7 +62,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_multidimensional():
     """Test describe wrapper with multidimensional data."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # 2D array
     data = np.random.randn(20, 5)
@@ -74,7 +74,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_with_kwargs():
     """Test describe wrapper with additional keyword arguments."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     data = np.array([1, 2, 3, 4, 5])
     
@@ -87,7 +87,7 @@ from scitex.stats import describe
 @patch('scitex.stats._describe_wrapper._describe_internal')
 def test_describe_wrapper_calls_internal(mock_describe_internal):
     """Test that wrapper calls internal describe function."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Mock the internal function
     mock_describe_internal.return_value = {
@@ -111,7 +111,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_empty_data():
     """Test describe wrapper with empty data."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Empty array
     data = np.array([])
@@ -126,7 +126,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_single_value():
     """Test describe wrapper with single value."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Single value
     data = np.array([42])
@@ -140,7 +140,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_constant_data():
     """Test describe wrapper with constant data."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # All same values
     data = np.array([5, 5, 5, 5, 5])
@@ -154,7 +154,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_with_nan():
     """Test describe wrapper with NaN values."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Data with NaN
     data = np.array([1, 2, np.nan, 4, 5])
@@ -170,7 +170,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_with_inf():
     """Test describe wrapper with infinite values."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Data with infinity
     data = np.array([1, 2, np.inf, 4, 5])
@@ -185,7 +185,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_large_data():
     """Test describe wrapper with large dataset."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Large array
     data = np.random.randn(10000)
@@ -203,7 +203,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_return_types():
     """Test that describe wrapper returns correct types."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     data = np.array([1, 2, 3, 4, 5])
     result = describe(data)
@@ -218,7 +218,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_consistency():
     """Test that describe wrapper is consistent."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     data = np.array([1, 2, 3, 4, 5])
     
@@ -234,7 +234,7 @@ from scitex.stats import describe
 
 def test_describe_wrapper_different_dtypes():
     """Test describe wrapper with different data types."""
-from scitex.stats import describe
+    from scitex.stats import describe
     
     # Different dtypes
     dtypes = [np.int32, np.int64, np.float32, np.float64]

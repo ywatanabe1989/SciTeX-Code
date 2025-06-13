@@ -17,7 +17,7 @@ class TestLoadCon:
     
     def test_valid_extension_check(self):
         """Test that function validates .con extension"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Test invalid extensions
         invalid_files = ["file.txt", "data.fif", "connectivity.csv", "test.xlsx"]
@@ -29,7 +29,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_mne_read_raw_fif_called_correctly(self, mock_read_raw):
         """Test that mne.io.read_raw_fif is called with correct parameters"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Mock the MNE raw object
         mock_raw = MagicMock()
@@ -52,7 +52,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_dataframe_conversion_and_samp_rate_addition(self, mock_read_raw):
         """Test that raw data is converted to DataFrame and samp_rate is added"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Create mock data
         mock_raw = MagicMock()
@@ -84,7 +84,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_sampling_rate_extraction(self, mock_read_raw):
         """Test different sampling rate scenarios"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         sampling_rates = [250.0, 500.0, 1000.0, 2048.0]
         
@@ -103,7 +103,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_kwargs_forwarding(self, mock_read_raw):
         """Test that kwargs are properly forwarded to mne.io.read_raw_fif"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         mock_raw = MagicMock()
         mock_df = pd.DataFrame({'data': [1, 2, 3]})
@@ -127,7 +127,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_mne_exception_propagation(self, mock_read_raw):
         """Test that MNE exceptions are properly propagated"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Test file not found error
         mock_read_raw.side_effect = FileNotFoundError("File not found")
@@ -144,7 +144,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_empty_dataframe_handling(self, mock_read_raw):
         """Test handling of empty dataframes"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         mock_raw = MagicMock()
         mock_df = pd.DataFrame()  # Empty DataFrame
@@ -161,7 +161,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_large_dataframe_handling(self, mock_read_raw):
         """Test handling of large dataframes"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Create large mock DataFrame (1000 samples, 64 channels)
         import numpy as np
@@ -185,7 +185,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_missing_sfreq_info(self, mock_read_raw):
         """Test handling when sfreq is missing from info"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         mock_raw = MagicMock()
         mock_df = pd.DataFrame({'channel': [1, 2, 3]})
@@ -198,7 +198,7 @@ from scitex.io._load_modules import _load_con
     
     def test_function_signature(self):
         """Test function signature and type annotations"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         import inspect
         
         sig = inspect.signature(_load_con)
@@ -213,7 +213,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_real_world_eeg_scenario(self, mock_read_raw):
         """Test realistic EEG connectivity file scenario"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         # Simulate realistic EEG data
         eeg_channels = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2']
@@ -247,7 +247,7 @@ from scitex.io._load_modules import _load_con
     @patch('mne.io.read_raw_fif')
     def test_preload_always_true(self, mock_read_raw):
         """Test that preload=True is always enforced"""
-from scitex.io._load_modules import _load_con
+        from scitex.io._load_modules import _load_con
         
         mock_raw = MagicMock()
         mock_df = pd.DataFrame({'data': [1]})

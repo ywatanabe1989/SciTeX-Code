@@ -10,7 +10,7 @@ from typing import Dict, Any
 
 def test_statistical_tests_brunner_munzel_test_exists():
     """Test that brunner_munzel_test wrapper function exists."""
-from scitex.stats import brunner_munzel_test
+    from scitex.stats import brunner_munzel_test
     
     assert brunner_munzel_test is not None
     assert callable(brunner_munzel_test)
@@ -18,7 +18,7 @@ from scitex.stats import brunner_munzel_test
 
 def test_statistical_tests_smirnov_grubbs_exists():
     """Test that smirnov_grubbs wrapper function exists."""
-from scitex.stats import smirnov_grubbs
+    from scitex.stats import smirnov_grubbs
     
     assert smirnov_grubbs is not None
     assert callable(smirnov_grubbs)
@@ -26,7 +26,7 @@ from scitex.stats import smirnov_grubbs
 
 def test_statistical_tests_brunner_munzel_test_functionality():
     """Test brunner_munzel_test wrapper functionality."""
-from scitex.stats import brunner_munzel_test
+    from scitex.stats import brunner_munzel_test
     
     # Create test data
     sample1 = np.array([1, 2, 3, 4, 5])
@@ -46,7 +46,7 @@ from scitex.stats import brunner_munzel_test
 
 def test_statistical_tests_smirnov_grubbs_functionality():
     """Test smirnov_grubbs wrapper functionality."""
-from scitex.stats import smirnov_grubbs
+    from scitex.stats import smirnov_grubbs
     
     # Create test data with a clear outlier
     data = np.array([1, 2, 3, 4, 100])  # 100 is outlier
@@ -86,14 +86,14 @@ def test_statistical_tests_imports():
     assert Any is not None
     
     # Test that the module can import its dependencies
-from scitex.stats import brunner_munzel_test, smirnov_grubbs
+    from scitex.stats import brunner_munzel_test, smirnov_grubbs
     assert brunner_munzel_test is not None
     assert smirnov_grubbs is not None
 
 
 def test_statistical_tests_brunner_munzel_input_validation():
     """Test brunner_munzel_test input validation."""
-from scitex.stats import brunner_munzel_test
+    from scitex.stats import brunner_munzel_test
     
     # Test with valid inputs
     try:
@@ -107,7 +107,7 @@ from scitex.stats import brunner_munzel_test
 
 def test_statistical_tests_smirnov_grubbs_input_validation():
     """Test smirnov_grubbs with different input types."""
-from scitex.stats import smirnov_grubbs
+    from scitex.stats import smirnov_grubbs
     
     try:
         # Test with list input
@@ -135,7 +135,7 @@ def test_statistical_tests_module_structure():
 
 def test_statistical_tests_function_signatures():
     """Test that functions have the expected signatures."""
-from scitex.stats import brunner_munzel_test, smirnov_grubbs
+    from scitex.stats import brunner_munzel_test, smirnov_grubbs
     import inspect
     
     # Test brunner_munzel_test signature

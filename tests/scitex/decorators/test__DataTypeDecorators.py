@@ -35,7 +35,7 @@ class TestDataTypeDecorators:
 
     def test_conversion_warning(self):
         """Test conversion warning functionality"""
-from scitex.decorators import (
+        from scitex.decorators import (
             _conversion_warning,
             ConversionWarning,
         )
@@ -53,7 +53,7 @@ from scitex.decorators import (
 
     def test_cached_warning(self):
         """Test cached warning to avoid repetition"""
-from scitex.decorators import _cached_warning
+        from scitex.decorators import _cached_warning
 
         message = "Test warning message"
 
@@ -71,7 +71,7 @@ from scitex.decorators import _cached_warning
 
     def test_try_device(self):
         """Test device movement with fallback"""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
 
         tensor = torch.tensor([1.0, 2.0, 3.0])
 
@@ -91,7 +91,7 @@ from scitex.decorators import _try_device
 
     def test_is_torch(self, setup_tensors):
         """Test torch tensor detection"""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
 
         # Test with torch tensor
         assert is_torch(setup_tensors["torch"]) is True
@@ -108,7 +108,7 @@ from scitex.decorators import is_torch
 
     def test_is_cuda(self, setup_tensors):
         """Test CUDA tensor detection"""
-from scitex.decorators import is_cuda
+        from scitex.decorators import is_cuda
 
         # Test with CPU tensor
         assert is_cuda(setup_tensors["torch"]) is False
@@ -128,7 +128,7 @@ from scitex.decorators import is_cuda
         # we'll create a mock test
 
         # Assuming there's a decorator that converts inputs
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
 
         # Mock function to be decorated
         def sample_function(x):
@@ -156,14 +156,14 @@ from scitex.decorators import _try_device
     )
     def test_type_detection(self, input_type, expected_torch, expected_cuda):
         """Test various input type detections"""
-from scitex.decorators import is_torch, is_cuda
+        from scitex.decorators import is_torch, is_cuda
 
         assert is_torch(input_type) == expected_torch
         assert is_cuda(input_type) == expected_cuda
 
     def test_conversion_with_multiple_inputs(self):
         """Test conversion with multiple input arguments"""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
 
         # Mix of tensor and non-tensor inputs
         inputs = [
@@ -178,7 +178,7 @@ from scitex.decorators import is_torch
 
     def test_device_fallback(self):
         """Test device fallback when CUDA not available"""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
 
         tensor = torch.tensor([1.0, 2.0, 3.0])
 

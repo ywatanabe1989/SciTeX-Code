@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 def test_ensure_3d_1d_input():
     """Test ensure_3d with 1D input."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Create 1D tensor (seq_len,)
     x = torch.randn(100)
@@ -28,7 +28,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_2d_input():
     """Test ensure_3d with 2D input."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Create 2D tensor (batch_size, seq_len)
     x = torch.randn(32, 100)
@@ -42,7 +42,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_3d_input():
     """Test ensure_3d with 3D input (should remain unchanged)."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Create 3D tensor (batch_size, n_channels, seq_len)
     x = torch.randn(32, 5, 100)
@@ -56,7 +56,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_0d_input():
     """Test ensure_3d with 0D input (scalar)."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Create 0D tensor (scalar)
     x = torch.tensor(5.0)
@@ -69,7 +69,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_4d_input():
     """Test ensure_3d with 4D input (should remain unchanged)."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Create 4D tensor
     x = torch.randn(10, 5, 20, 100)
@@ -83,7 +83,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_preserves_dtype():
     """Test that ensure_3d preserves data type."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test different dtypes
     dtypes = [torch.float32, torch.float64, torch.int32, torch.int64]
@@ -96,7 +96,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_preserves_device():
     """Test that ensure_3d preserves device."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test CPU tensor
     x_cpu = torch.randn(100)
@@ -112,7 +112,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_preserves_requires_grad():
     """Test that ensure_3d preserves gradient tracking."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test with requires_grad=True
     x = torch.randn(100, requires_grad=True)
@@ -127,7 +127,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_gradient_flow():
     """Test that gradients flow through ensure_3d."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     x = torch.randn(100, requires_grad=True)
     result = ensure_3d(x)
@@ -143,7 +143,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_with_different_sizes():
     """Test ensure_3d with various input sizes."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test various 1D sizes
     sizes_1d = [1, 10, 100, 1000]
@@ -164,7 +164,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_empty_tensors():
     """Test ensure_3d with empty tensors."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test empty 1D tensor
     x = torch.empty(0)
@@ -179,7 +179,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_torch_fn_decorator():
     """Test that the torch_fn decorator works correctly."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test with numpy array input (should be converted by decorator)
     x_np = np.random.randn(100)
@@ -193,7 +193,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_torch_fn_with_list():
     """Test torch_fn decorator with list input."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test with list input
     x_list = [1.0, 2.0, 3.0, 4.0, 5.0]
@@ -208,7 +208,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_real_signal_example():
     """Test ensure_3d with realistic signal processing example."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Simulate a realistic EEG signal scenario
     fs = 250  # sampling frequency
@@ -229,7 +229,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_consistency_across_calls():
     """Test that ensure_3d is consistent across multiple calls."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     x = torch.randn(100)
     
@@ -242,7 +242,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_memory_efficiency():
     """Test that ensure_3d doesn't unnecessarily copy data."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # For 3D input, should return the same tensor (view)
     x = torch.randn(32, 5, 100)
@@ -254,7 +254,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_shape_semantics():
     """Test the semantic meaning of dimensions after ensure_3d."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     # Test 1D: (seq_len,) -> (batch=1, channels=1, seq_len)
     seq_len = 200
@@ -275,7 +275,7 @@ from scitex.dsp.utils import ensure_3d
 
 def test_ensure_3d_integration_with_torch_operations():
     """Test that ensure_3d output works with common torch operations."""
-from scitex.dsp.utils import ensure_3d
+    from scitex.dsp.utils import ensure_3d
     
     x = torch.randn(100)
     result = ensure_3d(x)

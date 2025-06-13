@@ -17,7 +17,7 @@ class TestLinspace:
     
     def test_linspace_basic_n_samples(self):
         """Test basic linspace functionality with n_samples"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 0, 10)
@@ -32,7 +32,7 @@ from scitex.dt import linspace
     
     def test_linspace_basic_sampling_rate(self):
         """Test basic linspace functionality with sampling_rate"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 0, 1)  # 1 second
@@ -47,7 +47,7 @@ from scitex.dt import linspace
     
     def test_linspace_uniform_spacing(self):
         """Test that linspace creates uniform spacing"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 1, 0)  # 1 minute
@@ -62,7 +62,7 @@ from scitex.dt import linspace
     
     def test_linspace_parameter_validation(self):
         """Test parameter validation"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -77,7 +77,7 @@ from scitex.dt import linspace
     
     def test_linspace_type_checking(self):
         """Test type checking for all parameters"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -100,7 +100,7 @@ from scitex.dt import linspace
     
     def test_linspace_value_validation(self):
         """Test value validation for parameters"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -131,7 +131,7 @@ from scitex.dt import linspace
     
     def test_linspace_microsecond_precision(self):
         """Test microsecond precision in datetime handling"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 0, 0, 10000)  # 10 milliseconds
@@ -145,7 +145,7 @@ from scitex.dt import linspace
     
     def test_linspace_large_range(self):
         """Test with large datetime ranges"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Year-scale range
         start = datetime.datetime(2020, 1, 1)
@@ -164,7 +164,7 @@ from scitex.dt import linspace
     
     def test_linspace_small_range(self):
         """Test with very small datetime ranges"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Microsecond-scale range
         start = datetime.datetime(2023, 1, 1, 0, 0, 0, 0)
@@ -178,7 +178,7 @@ from scitex.dt import linspace
     
     def test_linspace_high_frequency_sampling(self):
         """Test high frequency sampling scenarios"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 0, 1)  # 1 second
@@ -202,7 +202,7 @@ from scitex.dt import linspace
     
     def test_linspace_timezone_aware(self):
         """Test with timezone-aware datetimes"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # UTC timezone
         start = datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
@@ -217,7 +217,7 @@ from scitex.dt import linspace
     
     def test_linspace_float_n_samples(self):
         """Test behavior with float n_samples (should be converted to int)"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -228,7 +228,7 @@ from scitex.dt import linspace
     
     def test_linspace_edge_case_single_sample(self):
         """Test edge case with n_samples=1"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -241,7 +241,7 @@ from scitex.dt import linspace
     
     def test_linspace_numerical_stability(self):
         """Test numerical stability with very small intervals"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1, 0, 0, 0, 0)
         end = datetime.datetime(2023, 1, 1, 0, 0, 0, 100)  # 100 microseconds
@@ -254,7 +254,7 @@ from scitex.dt import linspace
     
     def test_linspace_sampling_rate_calculation(self):
         """Test accurate sampling rate calculation"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Test various durations
         test_cases = [
@@ -275,7 +275,7 @@ from scitex.dt import linspace
     
     def test_linspace_return_type(self):
         """Test that return type is always numpy array of datetime objects"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         start = datetime.datetime(2023, 1, 1)
         end = datetime.datetime(2023, 1, 2)
@@ -294,7 +294,7 @@ from scitex.dt import linspace
     
     def test_linspace_practical_eeg_timestamps(self):
         """Test practical use case: EEG timestamp generation"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Common EEG sampling rates
         eeg_rates = {
@@ -323,7 +323,7 @@ from scitex.dt import linspace
     
     def test_linspace_hourly_daily_schedules(self):
         """Test practical use case: hourly/daily schedules"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Hourly schedule for a day
         start = datetime.datetime(2023, 1, 1, 0, 0, 0)
@@ -339,7 +339,7 @@ from scitex.dt import linspace
     
     def test_linspace_data_logging_scenario(self):
         """Test practical use case: data logging at specific intervals"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         
         # Log data every 5 minutes for 1 hour
         start = datetime.datetime(2023, 1, 1, 9, 0, 0)
@@ -357,7 +357,7 @@ from scitex.dt import linspace
     
     def test_linspace_performance(self):
         """Test performance with large number of samples"""
-from scitex.dt import linspace
+        from scitex.dt import linspace
         import time
         
         start = datetime.datetime(2023, 1, 1)

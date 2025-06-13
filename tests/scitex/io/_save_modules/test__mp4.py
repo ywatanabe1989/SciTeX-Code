@@ -32,7 +32,7 @@ try:
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
 
-from scitex.io._save_modules import save_mp4
+    from scitex.io._save_modules import save_mp4
 
 
 class TestSaveMP4:

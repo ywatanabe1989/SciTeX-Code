@@ -17,7 +17,7 @@ class TestLoadSQLite3DB:
     
     def test_valid_extension_check(self):
         """Test that function validates .db extension"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Test invalid extensions
         invalid_files = ["file.txt", "data.sql", "database.sqlite", "test.xlsx"]
@@ -29,7 +29,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_sqlite3_object_creation_default_params(self, mock_sqlite3):
         """Test that SQLite3 object is created with correct default parameters"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -44,7 +44,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_sqlite3_object_creation_with_use_temp(self, mock_sqlite3):
         """Test SQLite3 object creation with use_temp parameter"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -65,7 +65,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_sqlite3_exception_handling(self, mock_sqlite3):
         """Test that SQLite3 exceptions are caught and re-raised as ValueError"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Test file not found error
         mock_sqlite3.side_effect = FileNotFoundError("Database file not found")
@@ -88,7 +88,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_return_type_verification(self, mock_sqlite3):
         """Test that function returns the SQLite3 object"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_db.__class__.__name__ = 'SQLite3'
@@ -101,7 +101,7 @@ from scitex.io._load_modules import _load_sqlite3db
     
     def test_function_signature(self):
         """Test function signature and type annotations"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         import inspect
         
         sig = inspect.signature(_load_sqlite3db)
@@ -119,7 +119,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_absolute_path_handling(self, mock_sqlite3):
         """Test handling of absolute paths"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -134,7 +134,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_relative_path_handling(self, mock_sqlite3):
         """Test handling of relative paths"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -149,7 +149,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_special_database_names(self, mock_sqlite3):
         """Test handling of special database names"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -173,7 +173,7 @@ from scitex.io._load_modules import _load_sqlite3db
     
     def test_real_world_database_scenario(self):
         """Test with actual temporary SQLite database"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Create a temporary database file
         with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
@@ -227,7 +227,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_use_temp_parameter_variations(self, mock_sqlite3):
         """Test various values for use_temp parameter"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db
@@ -243,7 +243,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_memory_database_handling(self, mock_sqlite3):
         """Test handling of in-memory database paths"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # In-memory databases don't have .db extension, so should raise ValueError
         with pytest.raises(ValueError, match="File must have .db extension"):
@@ -252,7 +252,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_concurrent_database_access(self, mock_sqlite3):
         """Test multiple simultaneous database connections"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Create multiple mock database objects
         mock_db1 = MagicMock()
@@ -270,7 +270,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_exception_message_preservation(self, mock_sqlite3):
         """Test that original exception messages are preserved"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         original_message = "Custom database initialization error"
         mock_sqlite3.side_effect = RuntimeError(original_message)
@@ -280,7 +280,7 @@ from scitex.io._load_modules import _load_sqlite3db
     
     def test_case_sensitive_extension_check(self):
         """Test case sensitivity of .db extension"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Test case variations that should fail
         case_variations = ["file.DB", "file.Db", "file.dB", "file.db.TXT"]
@@ -293,7 +293,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_empty_string_handling(self, mock_sqlite3):
         """Test handling of empty and invalid path strings"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         # Test empty string
         with pytest.raises(ValueError, match="File must have .db extension"):
@@ -306,7 +306,7 @@ from scitex.io._load_modules import _load_sqlite3db
     @patch('scitex.io._load_modules._db.SQLite3')
     def test_long_path_handling(self, mock_sqlite3):
         """Test handling of very long file paths"""
-from scitex.io._load_modules import _load_sqlite3db
+        from scitex.io._load_modules import _load_sqlite3db
         
         mock_db = MagicMock()
         mock_sqlite3.return_value = mock_db

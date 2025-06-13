@@ -31,7 +31,7 @@ from unittest.mock import patch, MagicMock
 
 # Try direct import
 try:
-from scitex.plt._subplots import export_as_csv, format_record, _format_imshow2d
+    from scitex.plt._subplots import export_as_csv, format_record, _format_imshow2d
 except ImportError:
     # Skip tests if module not properly available
     pytest.skip("Module scitex.plt._subplots._export_as_csv not available", allow_module_level=True)

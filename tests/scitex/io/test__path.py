@@ -18,7 +18,7 @@ class TestFindTheGitRootDir:
 
     def test_find_git_root_in_repo(self):
         """Test finding git root in a git repository."""
-from scitex.io import find_the_git_root_dir
+        from scitex.io import find_the_git_root_dir
 
         # Mock git.Repo
         with patch("git.Repo") as mock_repo_class:
@@ -33,7 +33,7 @@ from scitex.io import find_the_git_root_dir
 
     def test_find_git_root_not_in_repo(self):
         """Test behavior when not in a git repository."""
-from scitex.io import find_the_git_root_dir
+        from scitex.io import find_the_git_root_dir
 
         # Mock git.Repo to raise exception
         with patch("git.Repo") as mock_repo_class:
@@ -52,7 +52,7 @@ class TestSplitFpath:
 
     def test_split_fpath_basic(self):
         """Test basic file path splitting."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         fpath = "/home/user/data/file.txt"
         dirname, fname, ext = split_fpath(fpath)
@@ -63,7 +63,7 @@ from scitex.io import split_fpath
 
     def test_split_fpath_complex_extension(self):
         """Test splitting with complex extensions."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         # Double extension (only last one is considered extension)
         fpath = "/path/to/archive.tar.gz"
@@ -75,7 +75,7 @@ from scitex.io import split_fpath
 
     def test_split_fpath_no_extension(self):
         """Test splitting file with no extension."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         fpath = "/path/to/README"
         dirname, fname, ext = split_fpath(fpath)
@@ -86,7 +86,7 @@ from scitex.io import split_fpath
 
     def test_split_fpath_root_file(self):
         """Test splitting file in root directory."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         fpath = "/file.txt"
         dirname, fname, ext = split_fpath(fpath)
@@ -97,7 +97,7 @@ from scitex.io import split_fpath
 
     def test_split_fpath_relative_path(self):
         """Test splitting relative path."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         fpath = "../data/01/day1/split_octave/2kHz_mat/tt8-2.mat"
         dirname, fname, ext = split_fpath(fpath)
@@ -108,7 +108,7 @@ from scitex.io import split_fpath
 
     def test_split_fpath_hidden_file(self):
         """Test splitting hidden file."""
-from scitex.io import split_fpath
+        from scitex.io import split_fpath
 
         fpath = "/home/user/.config"
         dirname, fname, ext = split_fpath(fpath)
@@ -123,7 +123,7 @@ class TestTouch:
 
     def test_touch_creates_new_file(self, tmp_path):
         """Test that touch creates a new file."""
-from scitex.io import touch
+        from scitex.io import touch
 
         test_file = tmp_path / "new_file.txt"
         assert not test_file.exists()
@@ -135,7 +135,7 @@ from scitex.io import touch
 
     def test_touch_updates_existing_file(self, tmp_path):
         """Test that touch updates modification time of existing file."""
-from scitex.io import touch
+        from scitex.io import touch
         import time
 
         test_file = tmp_path / "existing.txt"
@@ -159,7 +159,7 @@ from scitex.io import touch
 
     def test_touch_nested_directory(self, tmp_path):
         """Test touch with nested directory path."""
-from scitex.io import touch
+        from scitex.io import touch
 
         nested_dir = tmp_path / "level1" / "level2"
         nested_dir.mkdir(parents=True)
@@ -175,7 +175,7 @@ class TestFind:
 
     def test_find_files_only(self, tmp_path):
         """Test finding files only."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create test structure
         (tmp_path / "file1.txt").touch()
@@ -191,7 +191,7 @@ from scitex.io import find
 
     def test_find_directories_only(self, tmp_path):
         """Test finding directories only."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create test structure
         (tmp_path / "dir1").mkdir()
@@ -207,7 +207,7 @@ from scitex.io import find
 
     def test_find_with_pattern(self, tmp_path):
         """Test finding with specific pattern."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create mixed files
         (tmp_path / "test1.py").touch()
@@ -223,7 +223,7 @@ from scitex.io import find
 
     def test_find_multiple_patterns(self, tmp_path):
         """Test finding with multiple patterns."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create various files
         (tmp_path / "test.py").touch()
@@ -239,7 +239,7 @@ from scitex.io import find
 
     def test_find_all_types(self, tmp_path):
         """Test finding both files and directories."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create mixed structure
         (tmp_path / "file.txt").touch()
@@ -252,7 +252,7 @@ from scitex.io import find
 
     def test_find_recursive(self, tmp_path):
         """Test recursive finding."""
-from scitex.io import find
+        from scitex.io import find
 
         # Create nested structure
         (tmp_path / "level1").mkdir()
@@ -273,7 +273,7 @@ class TestFindLatest:
 
     def test_find_latest_basic(self, tmp_path):
         """Test finding latest version of file."""
-from scitex.io import find_latest
+        from scitex.io import find_latest
 
         # Create versioned files
         (tmp_path / "report_v1.txt").touch()
@@ -288,7 +288,7 @@ from scitex.io import find_latest
 
     def test_find_latest_custom_prefix(self, tmp_path):
         """Test finding latest with custom version prefix."""
-from scitex.io import find_latest
+        from scitex.io import find_latest
 
         # Create files with custom prefix
         (tmp_path / "data-ver1.csv").touch()
@@ -302,7 +302,7 @@ from scitex.io import find_latest
 
     def test_find_latest_no_matches(self, tmp_path):
         """Test when no matching files exist."""
-from scitex.io import find_latest
+        from scitex.io import find_latest
 
         # Create non-matching files
         (tmp_path / "other.txt").touch()
@@ -314,7 +314,7 @@ from scitex.io import find_latest
 
     def test_find_latest_special_characters(self, tmp_path):
         """Test with special characters in filename."""
-from scitex.io import find_latest
+        from scitex.io import find_latest
 
         # Create files with special characters
         (tmp_path / "data.backup_v1.tar.gz").touch()
@@ -327,7 +327,7 @@ from scitex.io import find_latest
 
     def test_find_latest_zero_padding(self, tmp_path):
         """Test with zero-padded version numbers."""
-from scitex.io import find_latest
+        from scitex.io import find_latest
 
         # Create files with zero-padded versions
         (tmp_path / "doc_v001.pdf").touch()
@@ -345,7 +345,7 @@ class TestPathIntegration:
 
     def test_combined_workflow(self, tmp_path):
         """Test a combined workflow using multiple functions."""
-from scitex.io import touch, find, split_fpath
+        from scitex.io import touch, find, split_fpath
 
         # Create test structure
         data_dir = tmp_path / "data"
@@ -368,7 +368,7 @@ from scitex.io import touch, find, split_fpath
 
     def test_unicode_handling(self, tmp_path):
         """Test handling of Unicode in paths."""
-from scitex.io import touch, find, split_fpath
+        from scitex.io import touch, find, split_fpath
 
         # Create file with Unicode name
         unicode_file = tmp_path / "文档_v1.txt"

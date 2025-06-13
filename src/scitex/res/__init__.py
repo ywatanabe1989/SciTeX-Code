@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
-"""Scitex res - imports from mngs.res."""
+"""Scitex res - resource module (currently empty)."""
 
-from mngs.res import *
+# This module is currently empty but preserved for compatibility
+__all__ = []

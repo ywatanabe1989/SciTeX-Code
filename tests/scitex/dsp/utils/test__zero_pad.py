@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 def test_zero_pad_1d_basic():
     """Test basic 1D zero padding."""
-from scitex.dsp.utils import _zero_pad_1d
+    from scitex.dsp.utils import _zero_pad_1d
     
     x = torch.tensor([1, 2, 3])
     result = _zero_pad_1d(x, 7)
@@ -30,7 +30,7 @@ from scitex.dsp.utils import _zero_pad_1d
 
 def test_zero_pad_1d_even_padding():
     """Test 1D zero padding with even padding."""
-from scitex.dsp.utils import _zero_pad_1d
+    from scitex.dsp.utils import _zero_pad_1d
     
     x = torch.tensor([1, 2])
     result = _zero_pad_1d(x, 6)
@@ -45,7 +45,7 @@ from scitex.dsp.utils import _zero_pad_1d
 
 def test_zero_pad_1d_odd_padding():
     """Test 1D zero padding with odd padding."""
-from scitex.dsp.utils import _zero_pad_1d
+    from scitex.dsp.utils import _zero_pad_1d
     
     x = torch.tensor([1, 2])
     result = _zero_pad_1d(x, 5)
@@ -60,7 +60,7 @@ from scitex.dsp.utils import _zero_pad_1d
 
 def test_zero_pad_1d_no_padding_needed():
     """Test 1D zero padding when no padding is needed."""
-from scitex.dsp.utils import _zero_pad_1d
+    from scitex.dsp.utils import _zero_pad_1d
     
     x = torch.tensor([1, 2, 3, 4, 5])
     result = _zero_pad_1d(x, 5)
@@ -71,7 +71,7 @@ from scitex.dsp.utils import _zero_pad_1d
 
 def test_zero_pad_1d_numpy_input():
     """Test 1D zero padding with numpy input."""
-from scitex.dsp.utils import _zero_pad_1d
+    from scitex.dsp.utils import _zero_pad_1d
     
     x = np.array([1, 2, 3])
     result = _zero_pad_1d(x, 7)
@@ -85,7 +85,7 @@ from scitex.dsp.utils import _zero_pad_1d
 
 def test_zero_pad_basic():
     """Test basic zero padding of multiple tensors."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1, 2, 3])
     x2 = torch.tensor([4, 5])
@@ -108,7 +108,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_mixed_inputs():
     """Test zero padding with mixed input types."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1, 2, 3])  # torch tensor
     x2 = np.array([4, 5])         # numpy array
@@ -128,7 +128,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_single_tensor():
     """Test zero padding with single tensor."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x = torch.tensor([1, 2, 3, 4])
     result = zero_pad([x])
@@ -140,7 +140,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_empty_list():
     """Test zero padding with empty list."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     with pytest.raises(ValueError):
         zero_pad([])
@@ -148,7 +148,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_different_dimensions():
     """Test zero padding with different stacking dimensions."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1, 2])
     x2 = torch.tensor([3, 4, 5])
@@ -164,7 +164,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_preserve_dtype():
     """Test that zero padding preserves data types."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     # Test different dtypes
     dtypes = [torch.float32, torch.float64, torch.int32, torch.int64]
@@ -179,7 +179,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_preserve_device():
     """Test that zero padding preserves device."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1, 2])
     x2 = torch.tensor([3, 4, 5])
@@ -197,7 +197,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_large_size_difference():
     """Test zero padding with large size differences."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1])              # length 1
     x2 = torch.tensor(list(range(100))) # length 100
@@ -214,7 +214,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_real_signal_example():
     """Test zero padding with realistic signal processing example."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     # Simulate different length EEG trials
     fs = 250  # Hz
@@ -247,7 +247,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_gradient_flow():
     """Test that gradients flow through zero padding."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1.0, 2.0], requires_grad=True)
     x2 = torch.tensor([3.0, 4.0, 5.0], requires_grad=True)
@@ -265,7 +265,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_empty_tensors():
     """Test zero padding with empty tensors."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.empty(0)
     x2 = torch.tensor([1, 2, 3])
@@ -282,7 +282,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_consistency():
     """Test that zero padding is consistent across calls."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     x1 = torch.tensor([1, 2])
     x2 = torch.tensor([3, 4, 5])
@@ -295,7 +295,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_different_numeric_types():
     """Test zero padding with different numeric types."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     # Test with integers
     x1 = [1, 2]
@@ -312,7 +312,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_edge_cases():
     """Test zero padding edge cases."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     # Test with single element tensors
     x1 = torch.tensor([42])
@@ -325,7 +325,7 @@ from scitex.dsp.utils import zero_pad
 
 def test_zero_pad_memory_efficiency():
     """Test zero padding memory efficiency."""
-from scitex.dsp.utils import zero_pad
+    from scitex.dsp.utils import zero_pad
     
     # Create large tensors
     x1 = torch.randn(1000)

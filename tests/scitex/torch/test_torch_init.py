@@ -127,7 +127,7 @@ class TestTorchModuleInit:
         for func in expected_functions:
             assert hasattr(scitex.torch, func)
             # Should be the same object as in _nan_funcs
-from scitex.torch import nanmax
+            from scitex.torch import nanmax
             if func == 'nanmax':
                 assert getattr(scitex.torch, func) is nanmax
 

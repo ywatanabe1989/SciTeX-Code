@@ -27,7 +27,7 @@ try:
 except ImportError:
     CATBOOST_AVAILABLE = False
 
-from scitex.io._save_modules import _save_catboost as save_catboost
+    from scitex.io._save_modules import _save_catboost as save_catboost
 
 
 @pytest.mark.skipif(not CATBOOST_AVAILABLE, reason="CatBoost not installed")

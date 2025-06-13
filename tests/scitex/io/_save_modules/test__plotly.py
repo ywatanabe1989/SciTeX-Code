@@ -28,7 +28,7 @@ def _is_plotly_available():
 @pytest.mark.skipif(not _is_plotly_available(), reason="Plotly is not installed")
 def test_save_plotly_html_simple():
     """Test saving a simple Plotly figure to HTML."""
-from scitex.io._save_modules import _save_plotly_html
+    from scitex.io._save_modules import _save_plotly_html
     import plotly.graph_objects as go
     
     # Create a simple Plotly figure
@@ -66,7 +66,7 @@ from scitex.io._save_modules import _save_plotly_html
 @pytest.mark.skipif(not _is_plotly_available(), reason="Plotly is not installed")
 def test_save_plotly_html_complex():
     """Test saving a more complex Plotly figure to HTML."""
-from scitex.io._save_modules import _save_plotly_html
+    from scitex.io._save_modules import _save_plotly_html
     import plotly.graph_objects as go
     
     # Create a more complex Plotly figure with multiple traces
@@ -128,7 +128,7 @@ from scitex.io._save_modules import _save_plotly_html
 @pytest.mark.skipif(not _is_plotly_available(), reason="Plotly is not installed")
 def test_save_plotly_html_invalid_input():
     """Test that _save_plotly_html raises TypeError for non-Plotly figures."""
-from scitex.io._save_modules import _save_plotly_html
+    from scitex.io._save_modules import _save_plotly_html
     
     # Create a non-Plotly object
     test_object = {"data": [1, 2, 3]}

@@ -10,7 +10,7 @@ from unittest.mock import patch, Mock
 
 def test_bonferroni_correction_basic():
     """Test basic Bonferroni correction functionality."""
-from scitex.stats import bonferroni_correction
+    from scitex.stats import bonferroni_correction
     
     # Sample p-values
     p_values = np.array([0.01, 0.02, 0.03, 0.04, 0.05])
@@ -23,7 +23,7 @@ from scitex.stats import bonferroni_correction
 
 def test_bonferroni_correction_single_value():
     """Test Bonferroni correction with single p-value."""
-from scitex.stats import bonferroni_correction
+    from scitex.stats import bonferroni_correction
     
     p_values = np.array([0.01])
     result = bonferroni_correction(p_values)
@@ -35,7 +35,7 @@ from scitex.stats import bonferroni_correction
 
 def test_bonferroni_correction_alpha_parameter():
     """Test Bonferroni correction with different alpha values."""
-from scitex.stats import bonferroni_correction
+    from scitex.stats import bonferroni_correction
     
     p_values = np.array([0.01, 0.02, 0.03])
     
@@ -51,7 +51,7 @@ from scitex.stats import bonferroni_correction
 
 def test_fdr_correction_basic():
     """Test basic FDR correction functionality."""
-from scitex.stats import fdr_correction
+    from scitex.stats import fdr_correction
     
     # Sample p-values
     p_values = np.array([0.01, 0.02, 0.03, 0.04, 0.05])
@@ -63,7 +63,7 @@ from scitex.stats import fdr_correction
 
 def test_fdr_correction_methods():
     """Test FDR correction with different methods."""
-from scitex.stats import fdr_correction
+    from scitex.stats import fdr_correction
     
     p_values = np.array([0.01, 0.02, 0.03, 0.04, 0.05])
     
@@ -77,7 +77,7 @@ from scitex.stats import fdr_correction
 
 def test_bonferroni_vs_fdr():
     """Test difference between Bonferroni and FDR corrections."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     p_values = np.array([0.001, 0.01, 0.02, 0.03, 0.04])
     
@@ -90,7 +90,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 
 def test_multiple_corrections_edge_cases():
     """Test multiple corrections with edge cases."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     # All identical p-values
     p_values = np.array([0.05, 0.05, 0.05])
@@ -103,7 +103,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 
 def test_multiple_corrections_extreme_values():
     """Test multiple corrections with extreme p-values."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     # Very small and large p-values
     p_values = np.array([0.0001, 0.999, 0.5])
@@ -119,7 +119,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 @patch('scitex.stats._multiple_corrections._bonf_impl')
 def test_bonferroni_wrapper_calls_implementation(mock_bonf_impl):
     """Test that Bonferroni wrapper calls underlying implementation."""
-from scitex.stats import bonferroni_correction
+    from scitex.stats import bonferroni_correction
     
     # Mock the implementation
     mock_bonf_impl.return_value = (np.array([True, False]), np.array([0.02, 0.04]))
@@ -137,7 +137,7 @@ from scitex.stats import bonferroni_correction
 @patch('scitex.stats._multiple_corrections._fdr_impl')
 def test_fdr_wrapper_calls_implementation(mock_fdr_impl):
     """Test that FDR wrapper calls underlying implementation."""
-from scitex.stats import fdr_correction
+    from scitex.stats import fdr_correction
     
     # Mock the implementation
     mock_fdr_impl.return_value = (np.array([True, False]), np.array([0.015, 0.025]))
@@ -154,7 +154,7 @@ from scitex.stats import fdr_correction
 
 def test_corrections_with_empty_array():
     """Test corrections with empty p-value array."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     # Empty array
     p_values = np.array([])
@@ -170,7 +170,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 
 def test_corrections_return_types():
     """Test that corrections return correct types."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     p_values = np.array([0.01, 0.02, 0.03])
     
@@ -188,7 +188,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 
 def test_corrections_invalid_alpha():
     """Test corrections with invalid alpha values."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     p_values = np.array([0.01, 0.02, 0.03])
     
@@ -205,7 +205,7 @@ from scitex.stats import bonferroni_correction, fdr_correction
 
 def test_corrections_consistency():
     """Test that corrections are consistent."""
-from scitex.stats import bonferroni_correction, fdr_correction
+    from scitex.stats import bonferroni_correction, fdr_correction
     
     p_values = np.array([0.01, 0.02, 0.03])
     

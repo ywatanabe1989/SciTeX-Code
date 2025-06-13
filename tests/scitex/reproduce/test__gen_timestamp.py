@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 def test_gen_timestamp_basic():
     """Test basic timestamp generation."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     timestamp = gen_timestamp()
     
@@ -31,7 +31,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_format():
     """Test timestamp format details."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     timestamp = gen_timestamp()
     
@@ -59,7 +59,7 @@ from scitex.str import gen_timestamp
 @patch('scitex.str._gen_timestamp._datetime')
 def test_gen_timestamp_specific_time(mock_datetime):
     """Test with specific mocked datetime."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     # Mock specific datetime: June 2, 2025, 15:30:45
     mock_time = datetime(2025, 6, 2, 15, 30, 45)
@@ -75,7 +75,7 @@ from scitex.str import gen_timestamp
 @patch('scitex.str._gen_timestamp._datetime')
 def test_gen_timestamp_edge_cases(mock_datetime):
     """Test edge cases for timestamp generation."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     test_cases = [
         # (year, month, day, hour, minute, expected)
@@ -95,7 +95,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_uniqueness_over_time():
     """Test that timestamps change over time."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     import time
     
     timestamp1 = gen_timestamp()
@@ -112,7 +112,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_current_time():
     """Test that timestamp reflects current time."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     # Get timestamp and current time
     timestamp = gen_timestamp()
@@ -137,7 +137,7 @@ from scitex.str import gen_timestamp
 
 def test_timestamp_alias():
     """Test timestamp alias."""
-from scitex.str import timestamp, gen_timestamp
+    from scitex.str import timestamp, gen_timestamp
     
     # Should be the same function
     assert timestamp is gen_timestamp
@@ -154,7 +154,7 @@ from scitex.str import timestamp, gen_timestamp
 
 def test_gen_timestamp_month_padding():
     """Test proper zero-padding for months."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     from unittest.mock import patch
     
     # Test months 1-9 (should be zero-padded)
@@ -170,7 +170,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_day_padding():
     """Test proper zero-padding for days."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     from unittest.mock import patch
     
     # Test days 1-9 (should be zero-padded)
@@ -186,7 +186,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_hour_minute_padding():
     """Test proper zero-padding for hours and minutes."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     from unittest.mock import patch
     
     # Test hours and minutes 0-9 (should be zero-padded)
@@ -210,7 +210,7 @@ from scitex.str import gen_timestamp
 
 def test_gen_timestamp_filename_usage():
     """Test typical usage for filename generation."""
-from scitex.str import gen_timestamp
+    from scitex.str import gen_timestamp
     
     timestamp = gen_timestamp()
     

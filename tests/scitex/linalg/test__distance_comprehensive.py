@@ -32,7 +32,7 @@ class TestEuclideanDistance:
     
     def test_euclidean_distance_1d(self):
         """Test Euclidean distance for 1D arrays."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([0, 0])
         v = np.array([3, 4])
@@ -43,7 +43,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_2d_axis0(self):
         """Test Euclidean distance for 2D arrays along axis 0."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([[1, 2, 3],
                       [4, 5, 6]])
@@ -58,7 +58,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_2d_axis1(self):
         """Test Euclidean distance for 2D arrays along axis 1."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([[1, 2, 3],
                       [4, 5, 6]])
@@ -73,7 +73,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_broadcasting(self):
         """Test broadcasting behavior."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # Test with different shapes that should broadcast
         u = np.array([[1, 2, 3]])  # Shape (1, 3)
@@ -87,7 +87,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_3d(self):
         """Test with 3D arrays."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.random.randn(2, 3, 4)
         v = np.random.randn(2, 3, 4)
@@ -106,7 +106,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_scalar_promotion(self):
         """Test that scalars are promoted to 1D arrays."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = 3
         v = 4
@@ -116,7 +116,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_with_lists(self):
         """Test with list inputs (numpy_fn decorator)."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = [1, 2, 3]
         v = [4, 5, 6]
@@ -127,7 +127,7 @@ from scitex.linalg import euclidean_distance
     
     def test_euclidean_distance_with_torch(self):
         """Test with PyTorch tensors (numpy_fn decorator)."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = torch.tensor([1.0, 2.0, 3.0])
         v = torch.tensor([4.0, 5.0, 6.0])
@@ -145,7 +145,7 @@ class TestEdgeCases:
     
     def test_mismatched_shapes(self):
         """Test error when shapes don't match along specified axis."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1, 2, 3])
         v = np.array([4, 5])
@@ -155,7 +155,7 @@ from scitex.linalg import euclidean_distance
     
     def test_empty_arrays(self):
         """Test with empty arrays."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([])
         v = np.array([])
@@ -165,7 +165,7 @@ from scitex.linalg import euclidean_distance
     
     def test_nan_handling(self):
         """Test behavior with NaN values."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1, 2, np.nan])
         v = np.array([4, 5, 6])
@@ -175,7 +175,7 @@ from scitex.linalg import euclidean_distance
     
     def test_inf_handling(self):
         """Test behavior with infinite values."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1, 2, np.inf])
         v = np.array([4, 5, 6])
@@ -185,7 +185,7 @@ from scitex.linalg import euclidean_distance
     
     def test_zero_distance(self):
         """Test when arrays are identical."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1, 2, 3])
         v = np.array([1, 2, 3])
@@ -195,7 +195,7 @@ from scitex.linalg import euclidean_distance
     
     def test_negative_axis(self):
         """Test with negative axis values."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([[1, 2], [3, 4]])
         v = np.array([[5, 6], [7, 8]])
@@ -212,7 +212,7 @@ class TestCdist:
     
     def test_cdist_basic(self):
         """Test basic cdist functionality."""
-from scitex.linalg import cdist
+        from scitex.linalg import cdist
         
         X = np.array([[0, 0], [1, 0], [0, 1]])
         Y = np.array([[1, 1], [2, 2]])
@@ -224,7 +224,7 @@ from scitex.linalg import cdist
     
     def test_cdist_with_metric(self):
         """Test cdist with different metrics."""
-from scitex.linalg import cdist
+        from scitex.linalg import cdist
         
         X = np.random.randn(5, 3)
         Y = np.random.randn(4, 3)
@@ -237,7 +237,7 @@ from scitex.linalg import cdist
     
     def test_cdist_with_kwargs(self):
         """Test cdist with additional keyword arguments."""
-from scitex.linalg import cdist
+        from scitex.linalg import cdist
         
         X = np.random.randn(5, 3)
         Y = np.random.randn(4, 3)
@@ -250,7 +250,7 @@ from scitex.linalg import cdist
     
     def test_cdist_docstring(self):
         """Test that cdist has scipy's docstring."""
-from scitex.linalg import cdist
+        from scitex.linalg import cdist
         
         assert cdist.__doc__ is not None
         assert cdist.__doc__ == scipy_distance.cdist.__doc__
@@ -261,7 +261,7 @@ class TestAliases:
     
     def test_edist_alias(self):
         """Test that edist is an alias for euclidean_distance."""
-from scitex.linalg import edist, euclidean_distance
+        from scitex.linalg import edist, euclidean_distance
         
         assert edist is euclidean_distance
         
@@ -280,7 +280,7 @@ class TestNumericalAccuracy:
     
     def test_small_distances(self):
         """Test accuracy for very small distances."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1e-10, 2e-10])
         v = np.array([1.5e-10, 2.5e-10])
@@ -292,7 +292,7 @@ from scitex.linalg import euclidean_distance
     
     def test_large_distances(self):
         """Test accuracy for very large distances."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         u = np.array([1e10, 2e10])
         v = np.array([1.5e10, 2.5e10])
@@ -304,7 +304,7 @@ from scitex.linalg import euclidean_distance
     
     def test_known_distances(self):
         """Test with known distance values."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # 3-4-5 right triangle
         u = np.array([0, 0])
@@ -327,7 +327,7 @@ class TestComplexScenarios:
     
     def test_pairwise_distances(self):
         """Test computing pairwise distances."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # Set of points
         points = np.array([[0, 0],
@@ -354,7 +354,7 @@ from scitex.linalg import euclidean_distance
     
     def test_batch_distance_computation(self):
         """Test batch distance computation."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # Batch of vectors
         batch_u = np.random.randn(10, 3, 4)  # 10 matrices of 3x4
@@ -372,7 +372,7 @@ from scitex.linalg import euclidean_distance
     
     def test_distance_matrix_consistency(self):
         """Test consistency with scipy cdist."""
-from scitex.linalg import euclidean_distance, cdist
+        from scitex.linalg import euclidean_distance, cdist
         
         # Create random points
         points = np.random.randn(5, 3)
@@ -398,7 +398,7 @@ class TestPerformance:
     
     def test_large_array_handling(self):
         """Test handling of large arrays."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # Create large arrays
         u = np.random.randn(1000, 100)
@@ -413,7 +413,7 @@ from scitex.linalg import euclidean_distance
     
     def test_memory_efficiency(self):
         """Test that function doesn't create unnecessary copies."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         # Test with views
         arr = np.random.randn(100, 50)
@@ -430,7 +430,7 @@ class TestDocumentation:
     
     def test_euclidean_distance_docstring(self):
         """Test euclidean_distance has proper docstring."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         assert euclidean_distance.__doc__ is not None
         assert "Euclidean distance" in euclidean_distance.__doc__
@@ -439,7 +439,7 @@ from scitex.linalg import euclidean_distance
     
     def test_parameter_descriptions(self):
         """Test that parameters are documented."""
-from scitex.linalg import euclidean_distance
+        from scitex.linalg import euclidean_distance
         
         doc = euclidean_distance.__doc__
         assert "uu :" in doc

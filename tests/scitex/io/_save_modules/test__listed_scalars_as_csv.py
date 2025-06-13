@@ -20,7 +20,7 @@ class TestSaveListedScalarsBasic:
 
     def test_save_simple_scalars(self, tmp_path):
         """Test saving a simple list of scalars."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.234, 2.345, 3.456, 4.567]
         output_file = tmp_path / "scalars.csv"
@@ -41,7 +41,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_custom_column_name(self, tmp_path):
         """Test saving with custom column name."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [10, 20, 30]
         output_file = tmp_path / "custom_col.csv"
@@ -55,7 +55,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_custom_index(self, tmp_path):
         """Test saving with custom index."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.1, 2.2, 3.3]
         indices = ["exp1", "exp2", "exp3"]
@@ -72,7 +72,7 @@ class TestSaveListedScalarsRounding:
 
     def test_default_rounding(self, tmp_path):
         """Test default rounding to 3 decimal places."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.23456789, 2.34567890, 3.45678901]
         output_file = tmp_path / "rounding_default.csv"
@@ -87,7 +87,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_custom_rounding(self, tmp_path):
         """Test custom rounding."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.23456789, 2.34567890]
 
@@ -109,7 +109,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_no_rounding_integers(self, tmp_path):
         """Test that integers are preserved."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1, 2, 3, 4, 5]
         output_file = tmp_path / "integers.csv"
@@ -126,7 +126,7 @@ class TestSaveListedScalarsOptions:
 
     def test_overwrite_true(self, tmp_path):
         """Test overwrite=True moves existing file."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         output_file = tmp_path / "overwrite.csv"
         output_file.write_text("existing data")
@@ -140,7 +140,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_verbose_output(self, tmp_path, capsys):
         """Test verbose output."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.1, 2.2]
         output_file = tmp_path / "verbose.csv"
@@ -152,7 +152,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_append_behavior(self, tmp_path):
         """Test behavior when file exists and overwrite=False."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         output_file = tmp_path / "append.csv"
 
@@ -175,7 +175,7 @@ class TestSaveListedScalarsDataTypes:
 
     def test_mixed_numeric_types(self, tmp_path):
         """Test mixed numeric types."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [
             1,  # int
@@ -194,7 +194,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_numpy_array_input(self, tmp_path):
         """Test with numpy array input."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = np.array([1.1, 2.2, 3.3, 4.4])
         output_file = tmp_path / "numpy_input.csv"
@@ -207,7 +207,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_negative_values(self, tmp_path):
         """Test with negative values."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [-1.234, -2.345, 0, 1.234, 2.345]
         output_file = tmp_path / "negative.csv"
@@ -221,7 +221,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_very_large_values(self, tmp_path):
         """Test with very large values."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1e10, 1e-10, 1e20, 1e-20]
         output_file = tmp_path / "large_values.csv"
@@ -238,7 +238,7 @@ class TestSaveListedScalarsEdgeCases:
 
     def test_empty_list(self, tmp_path):
         """Test saving empty list."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = []
         output_file = tmp_path / "empty.csv"
@@ -251,7 +251,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_single_scalar(self, tmp_path):
         """Test saving single scalar."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [42.123456]
         output_file = tmp_path / "single.csv"
@@ -264,7 +264,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_nan_values(self, tmp_path):
         """Test with NaN values."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.0, np.nan, 3.0, np.nan, 5.0]
         output_file = tmp_path / "nan_values.csv"
@@ -279,7 +279,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_inf_values(self, tmp_path):
         """Test with infinity values."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.0, np.inf, -np.inf, 2.0]
         output_file = tmp_path / "inf_values.csv"
@@ -298,7 +298,7 @@ class TestSaveListedScalarsErrorHandling:
 
     def test_mismatched_index_length(self, tmp_path):
         """Test when index length doesn't match scalars length."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1, 2, 3]
         indices = ["a", "b"]  # Too short
@@ -310,7 +310,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_non_numeric_values(self, tmp_path):
         """Test behavior with non-numeric values."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1, 2, "three", 4]  # String in numeric list
         output_file = tmp_path / "non_numeric.csv"
@@ -321,7 +321,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_permission_error(self):
         """Test handling permission errors."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1, 2, 3]
         output_file = "/root/protected.csv"
@@ -335,7 +335,7 @@ class TestSaveListedScalarsIntegration:
 
     def test_large_dataset(self, tmp_path):
         """Test with large number of scalars."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         # Create 10000 random scalars
         np.random.seed(42)
@@ -352,7 +352,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_scientific_data_workflow(self, tmp_path):
         """Test typical scientific data workflow."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         # Simulate experimental measurements
         measurements = [
@@ -384,7 +384,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_round_trip_preservation(self, tmp_path):
         """Test that data can be recovered accurately."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         # Original data with specific precision
         original = [1.234, 2.345, 3.456, 4.567, 5.678]
@@ -403,7 +403,7 @@ from scitex.io import _save_listed_scalars_as_csv
 
     def test_unicode_column_name(self, tmp_path):
         """Test with Unicode column name."""
-from scitex.io import _save_listed_scalars_as_csv
+        from scitex.io import _save_listed_scalars_as_csv
 
         scalars = [1.1, 2.2, 3.3]
         output_file = tmp_path / "unicode.csv"

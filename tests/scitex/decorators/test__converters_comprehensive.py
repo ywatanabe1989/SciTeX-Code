@@ -21,12 +21,12 @@ class TestConversionWarning:
     
     def test_import(self):
         """Test that ConversionWarning can be imported."""
-from scitex.decorators import ConversionWarning
+        from scitex.decorators import ConversionWarning
         assert issubclass(ConversionWarning, UserWarning)
     
     def test_warning_raised(self):
         """Test that ConversionWarning can be raised."""
-from scitex.decorators import ConversionWarning
+        from scitex.decorators import ConversionWarning
         
         with pytest.warns(ConversionWarning):
             warnings.warn("Test warning", ConversionWarning)
@@ -37,14 +37,14 @@ class TestCachedWarning:
     
     def test_cached_warning_basic(self):
         """Test basic cached warning functionality."""
-from scitex.decorators import _cached_warning
+        from scitex.decorators import _cached_warning
         
         with pytest.warns(UserWarning):
             _cached_warning("Test message")
     
     def test_cached_warning_caching(self):
         """Test that warnings are cached."""
-from scitex.decorators import _cached_warning
+        from scitex.decorators import _cached_warning
         
         # Clear cache
         _cached_warning.cache_clear()
@@ -64,7 +64,7 @@ class TestConversionWarningFunction:
     
     def test_conversion_warning_numpy_to_torch(self):
         """Test conversion warning from numpy to torch."""
-from scitex.decorators import _conversion_warning
+        from scitex.decorators import _conversion_warning
         
         old = np.array([1, 2, 3])
         new = torch.tensor([1, 2, 3])
@@ -78,7 +78,7 @@ from scitex.decorators import _conversion_warning
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_conversion_warning_cuda(self):
         """Test conversion warning with CUDA tensor."""
-from scitex.decorators import _conversion_warning
+        from scitex.decorators import _conversion_warning
         
         old = np.array([1, 2, 3])
         new = torch.tensor([1, 2, 3]).cuda()
@@ -94,7 +94,7 @@ class TestTryDevice:
     
     def test_try_device_cpu_to_cpu(self):
         """Test moving CPU tensor to CPU (no-op)."""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
         
         tensor = torch.tensor([1, 2, 3])
         result = _try_device(tensor, "cpu")
@@ -105,7 +105,7 @@ from scitex.decorators import _try_device
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_try_device_cpu_to_cuda(self):
         """Test moving CPU tensor to CUDA."""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
         
         tensor = torch.tensor([1, 2, 3])
         result = _try_device(tensor, "cuda")
@@ -116,7 +116,7 @@ from scitex.decorators import _try_device
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_try_device_cuda_to_cuda(self):
         """Test moving CUDA tensor to CUDA (no-op)."""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
         
         tensor = torch.tensor([1, 2, 3]).cuda()
         result = _try_device(tensor, "cuda")
@@ -126,7 +126,7 @@ from scitex.decorators import _try_device
     
     def test_try_device_non_tensor(self):
         """Test _try_device with non-tensor input."""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
         
         data = [1, 2, 3]
         result = _try_device(data, "cuda")
@@ -136,7 +136,7 @@ from scitex.decorators import _try_device
     @patch('torch.Tensor.to')
     def test_try_device_cuda_oom(self, mock_to):
         """Test handling of CUDA out of memory error."""
-from scitex.decorators import _try_device
+        from scitex.decorators import _try_device
         
         # Mock CUDA OOM error
         mock_to.side_effect = RuntimeError("CUDA out of memory")
@@ -154,21 +154,21 @@ class TestIsTorch:
     
     def test_is_torch_with_tensor(self):
         """Test is_torch with torch tensor."""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
         
         tensor = torch.tensor([1, 2, 3])
         assert is_torch(tensor) is True
     
     def test_is_torch_with_numpy(self):
         """Test is_torch with numpy array."""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
         
         array = np.array([1, 2, 3])
         assert is_torch(array) is False
     
     def test_is_torch_with_mixed_args(self):
         """Test is_torch with mixed arguments."""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
         
         tensor = torch.tensor([1, 2, 3])
         array = np.array([4, 5, 6])
@@ -178,7 +178,7 @@ from scitex.decorators import is_torch
     
     def test_is_torch_with_kwargs(self):
         """Test is_torch with keyword arguments."""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
         
         tensor = torch.tensor([1, 2, 3])
         array = np.array([4, 5, 6])
@@ -189,7 +189,7 @@ from scitex.decorators import is_torch
     
     def test_is_torch_empty(self):
         """Test is_torch with no arguments."""
-from scitex.decorators import is_torch
+        from scitex.decorators import is_torch
         
         assert is_torch() is False
 
@@ -200,21 +200,21 @@ class TestIsCuda:
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_is_cuda_with_cuda_tensor(self):
         """Test is_cuda with CUDA tensor."""
-from scitex.decorators import is_cuda
+        from scitex.decorators import is_cuda
         
         tensor = torch.tensor([1, 2, 3]).cuda()
         assert is_cuda(tensor) is True
     
     def test_is_cuda_with_cpu_tensor(self):
         """Test is_cuda with CPU tensor."""
-from scitex.decorators import is_cuda
+        from scitex.decorators import is_cuda
         
         tensor = torch.tensor([1, 2, 3])
         assert is_cuda(tensor) is False
     
     def test_is_cuda_with_non_tensor(self):
         """Test is_cuda with non-tensor."""
-from scitex.decorators import is_cuda
+        from scitex.decorators import is_cuda
         
         array = np.array([1, 2, 3])
         assert is_cuda(array) is False
@@ -222,7 +222,7 @@ from scitex.decorators import is_cuda
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_is_cuda_with_kwargs(self):
         """Test is_cuda with keyword arguments."""
-from scitex.decorators import is_cuda
+        from scitex.decorators import is_cuda
         
         cuda_tensor = torch.tensor([1, 2, 3]).cuda()
         cpu_tensor = torch.tensor([4, 5, 6])
@@ -237,7 +237,7 @@ class TestReturnFunctions:
     
     def test_return_always(self):
         """Test _return_always function."""
-from scitex.decorators import _return_always
+        from scitex.decorators import _return_always
         
         args = (1, 2, 3)
         kwargs = {"a": 4, "b": 5}
@@ -251,7 +251,7 @@ from scitex.decorators import _return_always
     
     def test_return_if_both(self):
         """Test _return_if with both args and kwargs."""
-from scitex.decorators import _return_if
+        from scitex.decorators import _return_if
         
         args = (1, 2, 3)
         kwargs = {"a": 4, "b": 5}
@@ -261,7 +261,7 @@ from scitex.decorators import _return_if
     
     def test_return_if_args_only(self):
         """Test _return_if with args only."""
-from scitex.decorators import _return_if
+        from scitex.decorators import _return_if
         
         args = (1, 2, 3)
         
@@ -270,7 +270,7 @@ from scitex.decorators import _return_if
     
     def test_return_if_kwargs_only(self):
         """Test _return_if with kwargs only."""
-from scitex.decorators import _return_if
+        from scitex.decorators import _return_if
         
         kwargs = {"a": 4, "b": 5}
         
@@ -279,7 +279,7 @@ from scitex.decorators import _return_if
     
     def test_return_if_empty(self):
         """Test _return_if with no inputs."""
-from scitex.decorators import _return_if
+        from scitex.decorators import _return_if
         
         result = _return_if()
         assert result is None
@@ -290,7 +290,7 @@ class TestToTorch:
     
     def test_to_torch_numpy_array(self):
         """Test converting numpy array to torch tensor."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         array = np.array([1, 2, 3])
         result = to_torch(array)
@@ -300,7 +300,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_list(self):
         """Test converting list to torch tensor."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         data = [1, 2, 3]
         result = to_torch(data)
@@ -310,7 +310,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_pandas_series(self):
         """Test converting pandas Series to torch tensor."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         series = pd.Series([1, 2, 3])
         
@@ -323,7 +323,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_pandas_dataframe(self):
         """Test converting pandas DataFrame to torch tensor."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
         
@@ -336,7 +336,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_xarray(self):
         """Test converting xarray DataArray to torch tensor."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         data = xr.DataArray(np.array([1, 2, 3]))
         
@@ -348,7 +348,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_nested_list(self):
         """Test converting nested structures."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         data = ([1, 2], [3, 4])
         result = to_torch(data)
@@ -358,7 +358,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_none_handling(self):
         """Test handling of None values."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         result = to_torch(None, [1, 2, 3], None)
         
@@ -369,7 +369,7 @@ from scitex.decorators import to_torch
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_to_torch_cuda_device(self):
         """Test conversion with CUDA device."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         array = np.array([1, 2, 3])
         
@@ -381,7 +381,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_axis_to_dim(self):
         """Test axis parameter conversion to dim."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         array = np.array([[1, 2], [3, 4]])
         _, kwargs = to_torch(array, axis=1)
@@ -392,7 +392,7 @@ from scitex.decorators import to_torch
     
     def test_to_torch_with_return_always(self):
         """Test to_torch with _return_always function."""
-from scitex.decorators import to_torch, _return_always
+        from scitex.decorators import to_torch, _return_always
         
         array = np.array([1, 2, 3])
         args, kwargs = to_torch(array, return_fn=_return_always, test_kwarg=123)
@@ -407,7 +407,7 @@ class TestToNumpy:
     
     def test_to_numpy_torch_tensor(self):
         """Test converting torch tensor to numpy array."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         tensor = torch.tensor([1, 2, 3])
         result = to_numpy(tensor)
@@ -417,7 +417,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_pandas_series(self):
         """Test converting pandas Series to numpy array."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         series = pd.Series([1, 2, 3])
         result = to_numpy(series)
@@ -427,7 +427,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_pandas_dataframe(self):
         """Test converting pandas DataFrame to numpy array."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         df = pd.DataFrame({"a": [1, 2, 3]})
         result = to_numpy(df)
@@ -437,7 +437,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_list(self):
         """Test converting list to numpy array."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         data = [1, 2, 3]
         result = to_numpy(data)
@@ -446,7 +446,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_tuple_recursive(self):
         """Test recursive conversion of tuples."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         data = (torch.tensor([1, 2]), torch.tensor([3, 4]))
         result = to_numpy(data)
@@ -457,7 +457,7 @@ from scitex.decorators import to_numpy
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_to_numpy_cuda_tensor(self):
         """Test converting CUDA tensor to numpy."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         tensor = torch.tensor([1, 2, 3]).cuda()
         result = to_numpy(tensor)
@@ -467,7 +467,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_dim_to_axis(self):
         """Test dim parameter conversion to axis."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         tensor = torch.tensor([[1, 2], [3, 4]])
         _, kwargs = to_numpy(tensor, dim=1)
@@ -478,7 +478,7 @@ from scitex.decorators import to_numpy
     
     def test_to_numpy_none_filtering(self):
         """Test filtering of None values."""
-from scitex.decorators import to_numpy
+        from scitex.decorators import to_numpy
         
         result = to_numpy(None, [1, 2, 3], None)
         
@@ -491,7 +491,7 @@ class TestIsNestedDecorator:
     
     def test_is_nested_decorator_basic(self):
         """Test basic is_nested_decorator functionality."""
-from scitex.decorators import is_nested_decorator
+        from scitex.decorators import is_nested_decorator
         
         # Outside decorator context
         assert is_nested_decorator() is False
@@ -499,7 +499,7 @@ from scitex.decorators import is_nested_decorator
     @patch('inspect.currentframe')
     def test_is_nested_decorator_mocked(self, mock_frame):
         """Test is_nested_decorator with mocked frames."""
-from scitex.decorators import is_nested_decorator
+        from scitex.decorators import is_nested_decorator
         
         # Create mock frame chain
         frame1 = MagicMock()
@@ -523,7 +523,7 @@ class TestEdgeCasesAndIntegration:
     
     def test_to_torch_to_numpy_roundtrip(self):
         """Test roundtrip conversion."""
-from scitex.decorators import to_torch, to_numpy
+        from scitex.decorators import to_torch, to_numpy
         
         original = np.array([1.5, 2.5, 3.5])
         
@@ -535,7 +535,7 @@ from scitex.decorators import to_torch, to_numpy
     
     def test_mixed_type_conversion(self):
         """Test conversion with mixed types."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         # Mix of convertible and non-convertible types
         result = to_torch([1, 2, 3], "string", {"key": "value"})
@@ -547,7 +547,7 @@ from scitex.decorators import to_torch
     
     def test_empty_container_conversion(self):
         """Test conversion of empty containers."""
-from scitex.decorators import to_torch, to_numpy
+        from scitex.decorators import to_torch, to_numpy
         
         # Empty list
         torch_result = to_torch([])
@@ -561,7 +561,7 @@ from scitex.decorators import to_torch, to_numpy
     
     def test_large_data_conversion(self):
         """Test conversion with large data."""
-from scitex.decorators import to_torch, to_numpy
+        from scitex.decorators import to_torch, to_numpy
         
         # Large array
         large_array = np.random.randn(1000, 1000)
@@ -574,7 +574,7 @@ from scitex.decorators import to_torch, to_numpy
     
     def test_dtype_preservation(self):
         """Test data type preservation during conversion."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         # Integer array
         int_array = np.array([1, 2, 3], dtype=np.int32)
@@ -585,7 +585,7 @@ from scitex.decorators import to_torch
     
     def test_warning_suppression(self):
         """Test warning behavior."""
-from scitex.decorators import to_torch, ConversionWarning
+        from scitex.decorators import to_torch, ConversionWarning
         
         array = np.array([1, 2, 3])
         
@@ -599,7 +599,7 @@ class TestPerformance:
     
     def test_conversion_caching(self):
         """Test that conversion doesn't create unnecessary copies."""
-from scitex.decorators import to_torch
+        from scitex.decorators import to_torch
         
         # Already a tensor
         tensor = torch.tensor([1, 2, 3])

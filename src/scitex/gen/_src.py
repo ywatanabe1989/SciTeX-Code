@@ -1,20 +1,19 @@
-#!./env/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: "2024-04-22 18:58:59"
-# Author: Yusuke Watanabe (ywata1989@gmail.com)
+# Timestamp: "2025-06-13 22:44:28 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_src.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/gen/_src.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
-"""
-This script does XYZ.
-"""
+#!./env/bin/python3
 
-# Functions
-# Imports
 import inspect
 import subprocess
-
-
-# # Config
-# CONFIG = scitex.gen.load_configs()
 
 
 def src(obj):
@@ -39,7 +38,9 @@ def src(obj):
         # scitex.gen.less(source_code)
 
         # Open a subprocess to use `less` for displaying the source code
-        process = subprocess.Popen(["less"], stdin=subprocess.PIPE, encoding="utf8")
+        process = subprocess.Popen(
+            ["less"], stdin=subprocess.PIPE, encoding="utf8"
+        )
         process.communicate(input=source_code)
         if process.returncode != 0:
             print(f"Process exited with return code {process.returncode}")
@@ -86,20 +87,25 @@ def src(obj):
 #         # Handle any other unexpected errors
 #         print(f"Error: {e}")
 
-
 # (YOUR AWESOME CODE)
 
 if __name__ == "__main__":
+    import sys
+
+    import matplotlib.pyplot as plt
+
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+        sys, plt, verbose=False
+    )
+    import sys
 
     # (YOUR AWESOME CODE)
-
     # Close
     scitex.gen.close(CONFIG, verbose=False, notify=False)
-
-# EOF
 
 """
 /ssh:ywatanabe@444:/home/ywatanabe/proj/entrance/scitex/gen/_def.py
 """
+
+# EOF

@@ -18,7 +18,7 @@ class TestJson2MdBasic:
 
     def test_simple_dict_conversion(self):
         """Test converting simple dictionary to markdown."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {"title": "Test Document", "author": "John Doe"}
         result = json2md(data)
@@ -28,7 +28,7 @@ from scitex.io import json2md
 
     def test_nested_dict_conversion(self):
         """Test converting nested dictionary to markdown."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "chapter": "Introduction",
@@ -47,7 +47,7 @@ from scitex.io import json2md
 
     def test_simple_list_conversion(self):
         """Test converting simple list to markdown."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = ["item1", "item2", "item3"]
         result = json2md(data)
@@ -57,7 +57,7 @@ from scitex.io import json2md
 
     def test_mixed_types_conversion(self):
         """Test converting mixed types to markdown."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "string": "text value",
@@ -80,7 +80,7 @@ class TestJson2MdNested:
 
     def test_dict_with_list(self):
         """Test dictionary containing lists."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {"title": "Shopping List", "items": ["apples", "bananas", "oranges"]}
         result = json2md(data)
@@ -93,7 +93,7 @@ from scitex.io import json2md
 
     def test_list_of_dicts(self):
         """Test list containing dictionaries."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]
         result = json2md(data)
@@ -107,7 +107,7 @@ from scitex.io import json2md
 
     def test_deeply_nested_structure(self):
         """Test deeply nested structure conversion."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {"level1": {"level2": {"level3": {"value": "deeply nested"}}}}
         result = json2md(data)
@@ -120,7 +120,7 @@ from scitex.io import json2md
 
     def test_complex_nested_structure(self):
         """Test complex nested structure with mixed types."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "project": {
@@ -145,7 +145,7 @@ class TestJson2MdFormatting:
 
     def test_header_levels(self):
         """Test correct header level generation."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         # Test up to 6 levels (markdown limit)
         data = {"l1": {"l2": {"l3": {"l4": {"l5": {"l6": "value"}}}}}}
@@ -160,7 +160,7 @@ from scitex.io import json2md
 
     def test_spacing_between_sections(self):
         """Test proper spacing between sections."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {"section1": "content1", "section2": "content2", "section3": "content3"}
         result = json2md(data)
@@ -172,7 +172,7 @@ from scitex.io import json2md
 
     def test_list_formatting(self):
         """Test proper list formatting."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "groceries": ["milk", "bread", "eggs"],
@@ -191,7 +191,7 @@ class TestJson2MdEdgeCases:
 
     def test_empty_dict(self):
         """Test converting empty dictionary."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {}
         result = json2md(data)
@@ -200,7 +200,7 @@ from scitex.io import json2md
 
     def test_empty_list(self):
         """Test converting empty list."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = []
         result = json2md(data)
@@ -209,7 +209,7 @@ from scitex.io import json2md
 
     def test_single_value_types(self):
         """Test converting single value types."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         # These are edge cases - normally json2md expects dict or list
         assert json2md("string") == ""  # Non-dict/list returns empty
@@ -219,7 +219,7 @@ from scitex.io import json2md
 
     def test_special_characters_in_keys(self):
         """Test keys with special characters."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "key with spaces": "value1",
@@ -236,7 +236,7 @@ from scitex.io import json2md
 
     def test_unicode_content(self):
         """Test Unicode content handling."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         data = {
             "greeting": "你好",
@@ -256,7 +256,7 @@ class TestJson2MdMain:
 
     def test_main_with_valid_json_file(self, tmp_path):
         """Test main function with valid JSON file."""
-from scitex.io import main
+        from scitex.io import main
         import sys
 
         # Create test JSON file
@@ -286,7 +286,7 @@ from scitex.io import main
 
     def test_main_with_output_file(self, tmp_path):
         """Test main function with output file option."""
-from scitex.io import main
+        from scitex.io import main
         import sys
 
         # Create test JSON file
@@ -312,7 +312,7 @@ from scitex.io import main
 
     def test_main_with_nonexistent_file(self, tmp_path):
         """Test main function with nonexistent file."""
-from scitex.io import main
+        from scitex.io import main
         import sys
 
         nonexistent = tmp_path / "does_not_exist.json"
@@ -336,7 +336,7 @@ class TestJson2MdIntegration:
 
     def test_round_trip_json_to_md(self):
         """Test converting various JSON structures to markdown."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         test_cases = [
             # Simple dict
@@ -366,7 +366,7 @@ from scitex.io import json2md
 
     def test_large_json_conversion(self):
         """Test converting large JSON structure."""
-from scitex.io import json2md
+        from scitex.io import json2md
 
         # Create a large nested structure
         large_data = {

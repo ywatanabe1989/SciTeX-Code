@@ -117,7 +117,7 @@ class TestPlotUtilsInit:
     def test_import_isolation_calc_bacc(self):
         """Test that calc_bacc_from_conf_mat import is isolated correctly."""
         # Test that the function can be imported independently
-from scitex.plt.utils import calc_bacc_from_conf_mat
+        from scitex.plt.utils import calc_bacc_from_conf_mat
         assert callable(calc_bacc_from_conf_mat)
         
         # Verify it's also available from the main module
@@ -128,7 +128,7 @@ from scitex.plt.utils import calc_bacc_from_conf_mat
     def test_import_isolation_calc_nice_ticks(self):
         """Test that calc_nice_ticks import is isolated correctly."""
         # Test that the function can be imported independently  
-from scitex.plt.utils import calc_nice_ticks
+        from scitex.plt.utils import calc_nice_ticks
         assert callable(calc_nice_ticks)
         
         # Verify it's also available from the main module

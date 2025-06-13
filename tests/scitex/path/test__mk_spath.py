@@ -12,7 +12,7 @@ import shutil
 
 def test_mk_spath_default():
     """Test mk_spath with default arguments."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -31,7 +31,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_with_subdirectory():
     """Test mk_spath with subdirectory in filename."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -46,7 +46,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_makedirs_false():
     """Test mk_spath without creating directories."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -63,7 +63,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_makedirs_true():
     """Test mk_spath with directory creation."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = os.path.join(tmpdir, 'test_module.py')
@@ -95,7 +95,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_ipython_environment():
     """Test mk_spath in iPython environment."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -113,7 +113,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_empty_filename():
     """Test mk_spath with empty filename."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -128,7 +128,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_multiple_levels():
     """Test mk_spath with multiple directory levels."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -143,7 +143,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_with_extension():
     """Test mk_spath with various file extensions."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -159,7 +159,7 @@ from scitex.path import mk_spath
 
 def test_mk_spath_absolute_path():
     """Test mk_spath behavior with absolute path input."""
-from scitex.path import mk_spath
+    from scitex.path import mk_spath
     
     with patch('scitex.path._mk_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:

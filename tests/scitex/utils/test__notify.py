@@ -14,7 +14,7 @@ import tempfile
 
 def test_get_username():
     """Test username retrieval."""
-from scitex.utils import get_username
+    from scitex.utils import get_username
     
     username = get_username()
     assert isinstance(username, str)
@@ -24,7 +24,7 @@ from scitex.utils import get_username
 
 def test_get_username_fallback():
     """Test username fallback when pwd fails."""
-from scitex.utils import get_username
+    from scitex.utils import get_username
     
     with patch('pwd.getpwuid', side_effect=Exception("No user")):
         with patch.dict(os.environ, {'USER': 'testuser'}, clear=True):
@@ -34,7 +34,7 @@ from scitex.utils import get_username
 
 def test_get_username_logname_fallback():
     """Test username fallback to LOGNAME."""
-from scitex.utils import get_username
+    from scitex.utils import get_username
     
     with patch('pwd.getpwuid', side_effect=Exception("No user")):
         with patch.dict(os.environ, {'LOGNAME': 'loguser'}, clear=False):
@@ -46,7 +46,7 @@ from scitex.utils import get_username
 
 def test_get_username_unknown_fallback():
     """Test username fallback to unknown."""
-from scitex.utils import get_username
+    from scitex.utils import get_username
     
     with patch('pwd.getpwuid', side_effect=Exception("No user")):
         with patch.dict(os.environ, {}, clear=True):
@@ -56,7 +56,7 @@ from scitex.utils import get_username
 
 def test_get_hostname():
     """Test hostname retrieval."""
-from scitex.utils import get_hostname
+    from scitex.utils import get_hostname
     
     hostname = get_hostname()
     assert isinstance(hostname, str)
@@ -65,7 +65,7 @@ from scitex.utils import get_hostname
 
 def test_get_git_branch_success():
     """Test successful git branch retrieval."""
-from scitex.utils import get_git_branch
+    from scitex.utils import get_git_branch
     
     mock_scitex = MagicMock()
     mock_scitex.__path__ = ['/fake/path']
@@ -77,7 +77,7 @@ from scitex.utils import get_git_branch
 
 def test_get_git_branch_failure():
     """Test git branch retrieval failure fallback."""
-from scitex.utils import get_git_branch
+    from scitex.utils import get_git_branch
     
     mock_scitex = MagicMock()
     mock_scitex.__path__ = ['/fake/path']
@@ -90,7 +90,7 @@ from scitex.utils import get_git_branch
 
 def test_gen_footer():
     """Test footer generation."""
-from scitex.utils import gen_footer
+    from scitex.utils import gen_footer
     
     mock_scitex = MagicMock()
     mock_scitex.__version__ = "1.0.0"
@@ -107,7 +107,7 @@ from scitex.utils import gen_footer
 
 def test_notify_missing_credentials():
     """Test notify with missing credentials."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     with patch.dict(os.environ, {}, clear=True):
         with patch('builtins.print') as mock_print:
@@ -124,7 +124,7 @@ from scitex.utils import notify
 
 def test_notify_with_credentials():
     """Test notify with proper credentials."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -152,7 +152,7 @@ from scitex.utils import notify
 
 def test_notify_script_name_detection():
     """Test script name detection."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -175,7 +175,7 @@ from scitex.utils import notify
 
 def test_notify_with_file_parameter():
     """Test notify with explicit file parameter."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -196,7 +196,7 @@ from scitex.utils import notify
 
 def test_notify_command_line_detection():
     """Test notify with command line script detection."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -218,7 +218,7 @@ from scitex.utils import notify
 
 def test_notify_message_conversion():
     """Test message conversion to string."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -240,7 +240,7 @@ from scitex.utils import notify
 
 def test_notify_additional_parameters():
     """Test notify with additional parameters."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -273,7 +273,7 @@ from scitex.utils import notify
 
 def test_notify_subject_formatting():
     """Test subject formatting logic."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -299,7 +299,7 @@ from scitex.utils import notify
 
 def test_notify_empty_subject():
     """Test notify with empty subject."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     env_vars = {
         'SciTeX_SENDER_GMAIL': 'sender@gmail.com',
@@ -322,7 +322,7 @@ from scitex.utils import notify
 
 def test_message_conversion_exception():
     """Test message conversion with exception handling."""
-from scitex.utils import notify
+    from scitex.utils import notify
     
     # Create an object that raises exception when converted to string
     class BadObject:

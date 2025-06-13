@@ -154,10 +154,10 @@ class TestDataTypes:
 
         result = merge_columns(df, "A", "B", sep="-")
 
-        # None becomes 'None' when converted to string
-        assert result["A_B"].iloc[0] == "1-x"
-        assert result["A_B"].iloc[1] == "None-y"
-        assert result["A_B"].iloc[2] == "3-None"
+        # When numeric columns contain None, they become float before string conversion
+        assert result["A_B"].iloc[0] == "1.0-x"
+        assert result["A_B"].iloc[1] == "nan-y"  # None becomes NaN in numeric column
+        assert result["A_B"].iloc[2] == "3.0-None"  # None stays as 'None' in string column
 
 
 class TestEdgeCases:

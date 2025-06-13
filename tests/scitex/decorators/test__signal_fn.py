@@ -13,7 +13,7 @@ from unittest.mock import patch, Mock
 
 def test_signal_fn_decorator_basic_functionality():
     """Test basic functionality of signal_fn decorator."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def dummy_signal_function(signal, param=1.0):
@@ -30,7 +30,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_with_different_input_types():
     """Test signal_fn decorator with different input types."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def identity_function(signal):
@@ -66,7 +66,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_with_xarray():
     """Test signal_fn decorator with xarray DataArray."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def identity_function(signal):
@@ -83,7 +83,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_preserves_additional_arguments():
     """Test that signal_fn only converts first argument, preserves others."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def signal_with_params(signal, fs, window_size):
@@ -106,7 +106,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_tuple_return():
     """Test signal_fn decorator with tuple return values."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def function_returning_tuple(signal):
@@ -129,7 +129,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_with_empty_args():
     """Test signal_fn decorator with empty arguments."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def function_no_args():
@@ -143,7 +143,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_nested_decorator_detection():
     """Test signal_fn decorator nested decorator detection."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     # Mock nested decorator context
     with patch('scitex.decorators._signal_fn.is_nested_decorator', return_value=True):
@@ -160,7 +160,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_decorator_attributes():
     """Test that signal_fn decorator sets proper attributes."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def test_function(signal):
@@ -175,7 +175,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_with_kwargs():
     """Test signal_fn decorator with keyword arguments."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def signal_with_kwargs(signal, scale=1.0, offset=0.0):
@@ -192,7 +192,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_torch_tensor_input():
     """Test signal_fn decorator with torch tensor input."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def torch_identity(signal):
@@ -209,7 +209,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_complex_processing():
     """Test signal_fn decorator with more complex signal processing."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def complex_processing(signal, multiplier, add_noise=False):
@@ -230,7 +230,7 @@ from scitex.decorators import signal_fn
 
 def test_signal_fn_error_handling():
     """Test signal_fn decorator error handling."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     @signal_fn
     def function_with_error(signal):
@@ -247,7 +247,7 @@ from scitex.decorators import signal_fn
 @patch('scitex.decorators._signal_fn.to_torch')
 def test_signal_fn_conversion_mocking(mock_to_torch):
     """Test signal_fn decorator with mocked conversion functions."""
-from scitex.decorators import signal_fn
+    from scitex.decorators import signal_fn
     
     # Mock the to_torch conversion
     mock_tensor = torch.tensor([1.0, 2.0, 3.0])

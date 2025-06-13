@@ -218,7 +218,7 @@ def test_mk_colorbar_no_ticks():
 def test_mk_colorbar_rgb_normalization():
     """Test that RGB values are properly normalized in the colormap."""
     from scitex.plt.utils import mk_colorbar
-from scitex.plt.color import RGB
+    from scitex.plt.color import RGB
     
     # Test with colors that have known RGB values
     fig = mk_colorbar(start="red", end="blue")

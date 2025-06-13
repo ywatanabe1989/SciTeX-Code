@@ -11,7 +11,7 @@ from pathlib import Path
 
 def test_find_latest_no_files():
     """Test find_latest when no versioned files exist."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         result = find_latest(tmpdir, 'test_file', '.txt')
@@ -20,7 +20,7 @@ from scitex.path import find_latest
 
 def test_find_latest_single_file():
     """Test find_latest with one versioned file."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a versioned file
@@ -33,7 +33,7 @@ from scitex.path import find_latest
 
 def test_find_latest_multiple_files():
     """Test find_latest with multiple versioned files."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create multiple versioned files
@@ -52,7 +52,7 @@ from scitex.path import find_latest
 
 def test_find_latest_custom_prefix():
     """Test find_latest with custom version prefix."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with custom prefix
@@ -70,7 +70,7 @@ from scitex.path import find_latest
 
 def test_find_latest_mixed_extensions():
     """Test find_latest filters by extension correctly."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with different extensions
@@ -92,7 +92,7 @@ from scitex.path import find_latest
 
 def test_find_latest_invalid_versions():
     """Test find_latest ignores files with invalid version numbers."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create mix of valid and invalid files
@@ -109,7 +109,7 @@ from scitex.path import find_latest
 
 def test_find_latest_large_version_numbers():
     """Test find_latest with large version numbers."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with large version numbers
@@ -126,7 +126,7 @@ from scitex.path import find_latest
 
 def test_find_latest_similar_filenames():
     """Test find_latest doesn't confuse similar filenames."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with similar names
@@ -144,7 +144,7 @@ from scitex.path import find_latest
 
 def test_find_latest_empty_directory():
     """Test find_latest with empty directory string."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     # Should handle empty dirname
     result = find_latest('', 'test_file', '.txt')
@@ -154,7 +154,7 @@ from scitex.path import find_latest
 
 def test_find_latest_nested_directory():
     """Test find_latest in nested directory."""
-from scitex.path import find_latest
+    from scitex.path import find_latest
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create nested directory
@@ -173,8 +173,8 @@ from scitex.path import find_latest
 
 def test_increment_version_duplicate_function():
     """Test that increment_version in _version.py works the same as in _increment_version.py."""
-from scitex.path import increment_version
-from scitex.path import increment_version as increment_version_main
+    from scitex.path import increment_version
+    from scitex.path import increment_version as increment_version_main
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a test file

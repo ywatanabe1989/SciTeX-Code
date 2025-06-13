@@ -39,6 +39,8 @@ def _format_plot_image(id, tracked_dict, kwargs):
             if id is not None:
                 image_df = image_df.copy()
                 id_str = str(id)
+                # Convert columns to strings first to handle integer column names
+                image_df.columns = [str(col) for col in image_df.columns]
                 image_df.columns = [f"{id_str}_{col}" if not col.startswith(f"{id_str}_") else col for col in image_df.columns]
             return image_df
     

@@ -12,7 +12,7 @@ import shutil
 
 def test_get_spath_default():
     """Test get_spath with default arguments."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -31,7 +31,7 @@ from scitex.path import get_spath
 
 def test_get_spath_with_filename():
     """Test get_spath with specific filename."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -46,7 +46,7 @@ from scitex.path import get_spath
 
 def test_get_spath_makedirs_false():
     """Test get_spath without creating directories."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -63,7 +63,7 @@ from scitex.path import get_spath
 
 def test_get_spath_makedirs_true():
     """Test get_spath with directory creation."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = os.path.join(tmpdir, 'test_module.py')
@@ -95,7 +95,7 @@ from scitex.path import get_spath
 
 def test_get_spath_ipython_environment():
     """Test get_spath in iPython environment."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -113,7 +113,7 @@ from scitex.path import get_spath
 
 def test_get_spath_nested_directory():
     """Test get_spath with nested directory in filename."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -128,7 +128,7 @@ from scitex.path import get_spath
 
 def test_get_spath_absolute_path_input():
     """Test get_spath with absolute path as input."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -144,7 +144,7 @@ from scitex.path import get_spath
 
 def test_get_spath_empty_filename():
     """Test get_spath with empty filename."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -159,7 +159,7 @@ from scitex.path import get_spath
 
 def test_get_spath_with_dot_directories():
     """Test get_spath with dot directories in path."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:
@@ -174,7 +174,7 @@ from scitex.path import get_spath
 
 def test_get_spath_with_parent_directory():
     """Test get_spath with parent directory notation."""
-from scitex.path import get_spath
+    from scitex.path import get_spath
     
     with patch('scitex.path._get_spath.split') as mock_split:
         with patch('inspect.stack') as mock_stack:

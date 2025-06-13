@@ -24,7 +24,7 @@ from io import StringIO
 import sys
 
 try:
-from scitex.gists import sigmacro_to_blue, SigMacro_toBlue
+    from scitex.gists import sigmacro_to_blue, SigMacro_toBlue
 except ImportError:
     pytest.skip("scitex.gists._SigMacro_toBlue module not available", allow_module_level=True)
 

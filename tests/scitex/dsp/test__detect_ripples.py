@@ -318,7 +318,7 @@ class TestPreprocessing:
     def test_preprocess_filtering(self):
         """Test filtering in preprocessing."""
         # Use demo signal which is known to work
-from scitex.dsp import demo_sig
+        from scitex.dsp import demo_sig
 
         # Get a ripple demo signal
         signal, t, fs = demo_sig(sig_type="ripple", n_chs=4)

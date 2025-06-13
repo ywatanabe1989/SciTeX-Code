@@ -16,7 +16,7 @@ class TestClassifiersBasic:
     
     def test_classifiers_init_default(self):
         """Test Classifiers initialization with default parameters."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         
@@ -27,7 +27,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_init_custom_params(self):
         """Test Classifiers initialization with custom parameters."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         class_weight = {0: 1.0, 1: 2.0}
         random_state = 123
@@ -39,7 +39,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_available_classifiers(self):
         """Test that all expected classifiers are available."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         expected_classifiers = [
@@ -68,7 +68,7 @@ class TestClassifiersList:
     
     def test_classifiers_list_property(self):
         """Test the list property returns all classifier names."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         clf_list = clf_factory.list
@@ -81,7 +81,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_list_consistency(self):
         """Test that list property matches clf_candi keys."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         clf_list = clf_factory.list
@@ -95,7 +95,7 @@ class TestClassifiersCall:
     
     def test_classifiers_call_without_scaler(self):
         """Test calling classifier factory without scaler."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         clf = clf_factory("SVC")
@@ -108,7 +108,7 @@ from scitex.ai import Classifiers
     @patch('scitex.ai.__Classifiers.make_pipeline')
     def test_classifiers_call_with_scaler(self, mock_make_pipeline):
         """Test calling classifier factory with scaler."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         from sklearn.preprocessing import StandardScaler
         
         mock_pipeline = MagicMock()
@@ -124,7 +124,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_call_invalid_classifier(self):
         """Test calling with invalid classifier name."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         
@@ -133,7 +133,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_call_all_classifiers(self):
         """Test that all classifiers can be instantiated."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         
@@ -153,7 +153,7 @@ class TestClassifiersWithParameters:
     
     def test_classifiers_with_class_weights(self):
         """Test classifiers with class weights."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         class_weight = {0: 1.0, 1: 3.0}
         clf_factory = Classifiers(class_weight=class_weight)
@@ -172,7 +172,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_with_random_state(self):
         """Test classifiers with custom random state."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         random_state = 12345
         clf_factory = Classifiers(random_state=random_state)
@@ -190,7 +190,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_consistency_across_calls(self):
         """Test that multiple calls return consistent classifiers."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers(random_state=42)
         
@@ -214,7 +214,7 @@ class TestClassifiersIntegration:
     @patch('scitex.ai.__Classifiers.make_pipeline')
     def test_classifiers_pipeline_creation(self, mock_make_pipeline, mock_scaler):
         """Test pipeline creation with scaler."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         mock_scaler_instance = MagicMock()
         mock_scaler.return_value = mock_scaler_instance
@@ -232,7 +232,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_pipeline_functionality(self):
         """Test that pipeline actually works for fitting and prediction."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         from sklearn.preprocessing import StandardScaler
         from sklearn.datasets import make_classification
         
@@ -266,7 +266,7 @@ class TestClassifiersErrorHandling:
     
     def test_classifiers_invalid_scaler_type(self):
         """Test behavior with invalid scaler type."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         
@@ -279,7 +279,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_none_values(self):
         """Test classifiers with None values."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers(class_weight=None, random_state=None)
         
@@ -293,7 +293,7 @@ class TestClassifiersSpecificClassifiers:
     
     def test_catboost_classifier_config(self):
         """Test CatBoost classifier specific configuration."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         class_weight = {0: 1.0, 1: 2.0}
         clf_factory = Classifiers(class_weight=class_weight)
@@ -311,7 +311,7 @@ from scitex.ai import Classifiers
     
     def test_quadratic_discriminant_analysis_config(self):
         """Test QDA classifier (no class_weight or random_state)."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers(class_weight={0: 1, 1: 2}, random_state=42)
         
@@ -324,7 +324,7 @@ from scitex.ai import Classifiers
     
     def test_kneighbors_classifier_config(self):
         """Test KNeighbors classifier (no class_weight or random_state by default)."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         
@@ -340,7 +340,7 @@ class TestClassifiersMemoryManagement:
     
     def test_classifiers_multiple_instances(self):
         """Test creating multiple classifier factory instances."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         # Create multiple instances
         factories = [Classifiers(random_state=i) for i in range(5)]
@@ -352,7 +352,7 @@ from scitex.ai import Classifiers
     
     def test_classifiers_large_number_calls(self):
         """Test creating many classifiers."""
-from scitex.ai import Classifiers
+        from scitex.ai import Classifiers
         
         clf_factory = Classifiers()
         

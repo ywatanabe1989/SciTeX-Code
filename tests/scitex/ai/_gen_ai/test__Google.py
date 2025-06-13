@@ -72,7 +72,7 @@ class TestGoogle:
     @pytest.fixture
     def google_instance(self, mock_env_api_key, mock_genai):
         """Create Google instance with mocked dependencies."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         return Google(
             model="gemini-1.5-pro-latest",
             api_key="test-api-key",
@@ -83,7 +83,7 @@ from scitex.ai._gen_ai import Google
         
     def test_initialization(self, mock_env_api_key, mock_genai):
         """Test Google initialization."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         google_ai = Google(model="gemini-1.5-pro-latest", api_key="test-key")
         
@@ -95,14 +95,14 @@ from scitex.ai._gen_ai import Google
         
     def test_initialization_with_env_key(self, mock_env_api_key, mock_genai):
         """Test initialization with environment API key."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         google_ai = Google(model="gemini-1.5-pro-latest")
         assert google_ai.api_key == "test-api-key"
         
     def test_initialization_no_api_key(self):
         """Test initialization fails without API key."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         with pytest.raises(ValueError, match="GOOGLE_API_KEY.*not set"):
             Google(model="gemini-1.5-pro-latest")
@@ -182,7 +182,7 @@ from scitex.ai._gen_ai import Google
         
     def test_model_switching(self, mock_env_api_key, mock_genai):
         """Test switching between different Gemini models."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         # Test with different models
         models = [
@@ -233,7 +233,7 @@ from scitex.ai._gen_ai import Google
         
     def test_streaming_mode(self, mock_env_api_key, mock_genai):
         """Test initialization with streaming mode."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         google_ai = Google(
             model="gemini-1.5-pro-latest",
@@ -245,7 +245,7 @@ from scitex.ai._gen_ai import Google
         
     def test_system_setting(self, mock_env_api_key, mock_genai):
         """Test initialization with system setting."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         system_msg = "You are a helpful assistant"
         google_ai = Google(
@@ -258,7 +258,7 @@ from scitex.ai._gen_ai import Google
         
     def test_n_keep_parameter(self, mock_env_api_key, mock_genai):
         """Test n_keep parameter for history management."""
-from scitex.ai._gen_ai import Google
+        from scitex.ai._gen_ai import Google
         
         google_ai = Google(
             model="gemini-1.5-pro-latest",
@@ -280,8 +280,8 @@ def test_module_structure():
 
 def test_integration_with_base_class():
     """Test that Google properly inherits from BaseGenAI."""
-from scitex.ai._gen_ai import Google
-from scitex.ai._gen_ai import BaseGenAI
+    from scitex.ai._gen_ai import Google
+    from scitex.ai._gen_ai import BaseGenAI
     
     assert issubclass(Google, BaseGenAI)
     

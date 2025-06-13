@@ -92,8 +92,8 @@ class TestLayerModuleInit:
         """Test that there are no circular import issues."""
         # This would fail if there were circular imports
         from scitex.ai.layer import Pass, switch
-from scitex.ai.layer import Pass as PassDirect
-from scitex.ai.layer import switch as switchDirect
+        from scitex.ai.layer import Pass as PassDirect
+        from scitex.ai.layer import switch as switchDirect
         assert Pass is PassDirect
         assert switch is switchDirect
     

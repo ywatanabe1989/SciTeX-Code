@@ -15,8 +15,8 @@ from unittest.mock import patch, MagicMock
 # Add src to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../src"))
 
-from scitex.db import (
-    delete_duplicates,
+from scitex.db import delete_duplicates
+from scitex.db._delete_duplicates import (
     _sort_db,
     _determine_columns,
     _fetch_as_df,

@@ -42,10 +42,10 @@ class TestSaveModulesIntegration:
     def test_import_save_modules(self):
         """Test that all save modules can be imported"""
         # Test importing from main save module
-from scitex.io import save
+        from scitex.io import save
         
         # Test importing from save_modules package
-from scitex.io import (
+        from scitex.io import (
             save_csv,
             save_excel,
             save_npy,
@@ -232,7 +232,7 @@ from scitex.io import (
     def test_mv_to_tmp_import(self):
         """Test that _mv_to_tmp can be imported correctly from save modules"""
         # This specifically tests the import that was causing issues
-from scitex.io._save_modules import _save_listed_dfs_as_csv
+        from scitex.io._save_modules import _save_listed_dfs_as_csv
 from scitex.io._save_modules import _save_listed_scalars_as_csv
         
         # Verify the functions have access to _mv_to_tmp

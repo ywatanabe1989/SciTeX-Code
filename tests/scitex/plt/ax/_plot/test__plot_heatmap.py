@@ -17,7 +17,7 @@ import shutil
 
 
 def test_plot__heatmap_basic():
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     cm_arr = np.array([[0.8, 0.2], [0.3, 0.7]])
@@ -42,7 +42,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_minimal():
     """Test plot_heatmap with minimal arguments."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.random.rand(3, 3)
@@ -58,7 +58,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_without_annotations():
     """Test plot_heatmap without annotations."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -75,7 +75,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_custom_labels():
     """Test plot_heatmap with custom axis labels."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.random.rand(4, 3)
@@ -93,7 +93,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_different_colormaps():
     """Test plot_heatmap with different colormaps."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     colormaps = ["viridis", "plasma", "coolwarm", "RdBu", "YlOrRd"]
     
@@ -111,7 +111,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_annotation_format():
     """Test plot_heatmap with custom annotation format."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.array([[0.123, 0.456], [0.789, 0.012]])
@@ -129,7 +129,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_colorbar_label():
     """Test plot_heatmap with custom colorbar label."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.random.rand(3, 3)
@@ -145,7 +145,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_large_data():
     """Test plot_heatmap with larger data arrays."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots(figsize=(10, 10))
     data = np.random.rand(20, 20)
@@ -159,7 +159,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_non_square():
     """Test plot_heatmap with non-square data."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.random.rand(5, 3)  # 5 rows, 3 columns
@@ -173,7 +173,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_extreme_values():
     """Test plot_heatmap with extreme values."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     # Data with large range
@@ -189,7 +189,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_single_value():
     """Test plot_heatmap with single value array."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.array([[5.0]])
@@ -203,7 +203,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_annotation_colors():
     """Test plot_heatmap annotation color switching."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     # Data with clear light and dark regions
@@ -226,7 +226,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_kwargs_passthrough():
     """Test that kwargs are passed to imshow."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.random.rand(3, 3)
@@ -248,7 +248,7 @@ from scitex.plt.ax._plot import plot_heatmap
 
 def test_plot_heatmap_negative_values():
     """Test plot_heatmap with negative values."""
-from scitex.plt.ax._plot import plot_heatmap
+    from scitex.plt.ax._plot import plot_heatmap
     
     fig, ax = plt.subplots()
     data = np.array([[-1, -0.5, 0], [0.5, 1, 1.5]])

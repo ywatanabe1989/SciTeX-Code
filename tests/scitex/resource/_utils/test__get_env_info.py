@@ -806,7 +806,7 @@ class TestMainFunctions:
     @patch('builtins.print')
     def test_main_function(self, mock_print, mock_get_pretty):
         """Test main function execution."""
-from scitex.resource._utils import main
+        from scitex.resource._utils import main
         
         mock_get_pretty.return_value = 'PyTorch version: 1.9.0\nOS: Ubuntu 20.04'
         
