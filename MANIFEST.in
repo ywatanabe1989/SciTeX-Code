@@ -1,0 +1,4 @@
+include LICENSE
+include *.md
+exclude *__pycache__*
+exclude *old*
