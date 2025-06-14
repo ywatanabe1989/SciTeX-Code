@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Timestamp: "2025-06-14 16:00:50 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/io/__init__.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/io/__init__.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Scitex IO module with lazy imports to avoid circular dependencies."""
 
 # Import commonly used functions directly
@@ -9,7 +19,7 @@ from ._glob import glob, parse_glob
 from ._reload import reload
 from ._flush import flush
 from ._cache import cache
-from ._H5Explorer import H5Explorer, explore_h5
+from ._H5Explorer import H5Explorer, explore_h5, has_h5_key
 
 # Import save module functions
 try:
@@ -24,7 +34,7 @@ try:
 except ImportError as e:
     # Fallback for missing functions
     save_image = None
-    save_text = None  
+    save_text = None
     save_mp4 = None
     save_listed_dfs_as_csv = None
     save_listed_scalars_as_csv = None
@@ -48,7 +58,7 @@ except ImportError:
 
 __all__ = [
     "save",
-    "load", 
+    "load",
     "load_configs",
     "glob",
     "parse_glob",
@@ -57,6 +67,7 @@ __all__ = [
     "cache",
     "H5Explorer",
     "explore_h5",
+    "has_h5_key",
     "path",
     "mv_to_tmp",
     "json2md",
@@ -67,3 +78,5 @@ __all__ = [
     "save_listed_scalars_as_csv",
     "save_optuna_study_as_csv_and_pngs",
 ]
+
+# EOF

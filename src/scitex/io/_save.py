@@ -290,8 +290,14 @@ def save(
 
         # Removes spath and spath_cwd to prevent potential circular links
         # Skip deletion for CSV files to allow caching to work
-        for path in [spath_final, spath_cwd]:
-            if not path.endswith('.csv'):
+        # Also skip deletion for HDF5 files when a key is specified
+        should_skip_deletion = (
+            spath_final.endswith('.csv') or 
+            ((spath_final.endswith('.hdf5') or spath_final.endswith('.h5')) and 'key' in kwargs)
+        )
+        
+        if not should_skip_deletion:
+            for path in [spath_final, spath_cwd]:
                 sh(f"rm -f {path}", verbose=False)
 
         if dry_run:
@@ -351,6 +357,9 @@ def _save(
         # Check if handler needs special parameters
         if ext in ['.png', '.jpg', '.jpeg', '.gif', '.tiff', '.tif', '.svc']:
             _FILE_HANDLERS[ext](obj, spath, no_csv=no_csv, symlink_from_cwd=symlink_from_cwd, dry_run=dry_run, **kwargs)
+        elif ext in ['.hdf5', '.h5']:
+            # HDF5 files may need special 'key' parameter
+            _FILE_HANDLERS[ext](obj, spath, **kwargs)
         else:
             _FILE_HANDLERS[ext](obj, spath, **kwargs)
     # csv - special case as it doesn't have a dot prefix in dispatch

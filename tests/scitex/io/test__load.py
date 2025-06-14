@@ -369,3 +369,60 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------------
 # End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/io/_load.py
 # --------------------------------------------------------------------------------
+
+
+def test_load_hdf5_with_h5explorer():
+    """Test loading HDF5 files using H5Explorer integration."""
+    try:
+        import h5py
+    except ImportError:
+        pytest.skip("h5py not installed")
+    
+    from scitex.io import save, load
+    from scitex.io._H5Explorer import H5Explorer
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        h5_path = os.path.join(tmpdir, "test_load.h5")
+        
+        # Create test data with nested structure
+        test_data = {
+            'arrays': {
+                'data1': np.random.rand(10, 10),
+                'data2': np.arange(50).reshape(5, 10)
+            },
+            'metadata': {
+                'experiment': 'test',
+                'date': '2025-01-01',
+                'params': {'learning_rate': 0.01, 'epochs': 100}
+            }
+        }
+        
+        # Save using the new key parameter
+        save(test_data['arrays'], h5_path, key='arrays', verbose=False)
+        save(test_data['metadata'], h5_path, key='metadata', verbose=False)
+        
+        # Test 1: Load entire HDF5 file
+        loaded_all = load(h5_path)
+        assert isinstance(loaded_all, dict) or hasattr(loaded_all, 'file')
+        
+        # Test 2: Use H5Explorer to load specific keys
+        with H5Explorer(h5_path) as explorer:
+            # Load arrays group
+            arrays = explorer.load('/arrays')
+            np.testing.assert_array_equal(arrays['data1'], test_data['arrays']['data1'])
+            np.testing.assert_array_equal(arrays['data2'], test_data['arrays']['data2'])
+            
+            # Load metadata group
+            metadata = explorer.load('/metadata')
+            assert metadata['experiment'] == test_data['metadata']['experiment']
+            assert metadata['date'] == test_data['metadata']['date']
+        
+        # Test 3: Save and load single array (not dict)
+        single_array = np.random.rand(20, 20)
+        h5_path2 = os.path.join(tmpdir, "single_array.h5")
+        save(single_array, h5_path2, verbose=False)
+        
+        # When loading single array saved to HDF5, it should be in 'data' key
+        with H5Explorer(h5_path2) as explorer:
+            loaded_single = explorer.load('/data')
+            np.testing.assert_array_equal(loaded_single, single_array)

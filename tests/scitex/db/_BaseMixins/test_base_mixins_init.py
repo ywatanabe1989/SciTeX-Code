@@ -97,7 +97,7 @@ def test_base_mixin_classes_functionality():
 def test_mixin_inheritance_structure():
     """Test that mixin classes follow proper inheritance structure."""
     from scitex.db._BaseMixins import _BaseConnectionMixin
-from scitex.db._BaseMixins import _BaseQueryMixin
+    from scitex.db._BaseMixins import _BaseQueryMixin
     
     # Check that mixins are designed for multiple inheritance
     # They should have minimal method resolution order conflicts

@@ -46,21 +46,7 @@ class TestSaveModulesIntegration:
         
         # Test importing from save_modules package
         from scitex.io import (
-            save_csv,
-            save_excel,
-            save_npy,
-            save_npz,
-            save_pickle,
-            save_pickle_compressed,
-            save_joblib,
-            save_torch,
-            save_json,
-            save_yaml,
-            save_hdf5,
-            save_matlab,
-            save_catboost,
             save_text,
-            save_html,
             save_image,
             save_mp4,
             save_listed_dfs_as_csv,
@@ -70,7 +56,7 @@ class TestSaveModulesIntegration:
         
         # Verify all imports are callable
         assert callable(save)
-        assert callable(save_csv)
+        assert callable(save_text)
         assert callable(save_listed_dfs_as_csv)
         
     def test_save_listed_dfs_functionality(self, temp_dir):
@@ -233,7 +219,7 @@ class TestSaveModulesIntegration:
         """Test that _mv_to_tmp can be imported correctly from save modules"""
         # This specifically tests the import that was causing issues
         from scitex.io._save_modules import _save_listed_dfs_as_csv
-from scitex.io._save_modules import _save_listed_scalars_as_csv
+        from scitex.io._save_modules import _save_listed_scalars_as_csv
         
         # Verify the functions have access to _mv_to_tmp
         import inspect

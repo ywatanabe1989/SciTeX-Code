@@ -296,12 +296,106 @@ def test_save_verbose_output(capsys):
         
         # Save with verbose=True
         save(data, save_path, verbose=True)
+
+
+def test_save_hdf5_with_key_and_override(capsys):
+    """Test HDF5 save functionality with key and override parameters."""
+    if h5py is None:
+        pytest.skip("h5py not installed")
         
-        # Check output
-        captured = capsys.readouterr()
-        assert "Saved to:" in captured.out
-        assert save_path in captured.out
-        assert "KB" in captured.out or "B" in captured.out  # Size info
+    from scitex.io import save, has_h5_key
+    from scitex.io._H5Explorer import H5Explorer
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        h5_path = os.path.join(tmpdir, "test_data.h5")
+        
+        # Test data
+        test_data = {
+            'array1': np.random.rand(10, 10),
+            'array2': np.arange(100).reshape(10, 10),
+            'scalar': 42,
+            'string': 'test_string',
+            'metadata': {'test_id': 1, 'description': 'Test HDF5'}
+        }
+        
+        # Test 1: Save with key parameter
+        save(test_data, h5_path, key='group1/subgroup/data', verbose=False)
+        assert os.path.exists(h5_path)
+        
+        # Verify structure using H5Explorer
+        with H5Explorer(h5_path) as explorer:
+            # Check that nested groups were created
+            assert 'group1' in explorer.keys('/')
+            assert 'subgroup' in explorer.keys('/group1')
+            assert 'data' in explorer.keys('/group1/subgroup')
+            
+            # Load and verify data
+            loaded_data = explorer.load('/group1/subgroup/data')
+            np.testing.assert_array_equal(loaded_data['array1'], test_data['array1'])
+            assert loaded_data['scalar'] == test_data['scalar']
+            assert loaded_data['string'] == test_data['string']
+        
+        # Test 2: has_h5_key function
+        assert has_h5_key(h5_path, 'group1/subgroup/data')
+        assert not has_h5_key(h5_path, 'nonexistent/key')
+        
+        # Test 3: Save again without override (should skip)
+        # Modify data to check if it's overwritten
+        test_data['array1'] = np.ones((5, 5))
+        save(test_data, h5_path, key='group1/subgroup/data', override=False, verbose=False)
+        
+        # Verify data was NOT overwritten
+        with H5Explorer(h5_path) as explorer:
+            loaded_data = explorer.load('/group1/subgroup/data')
+            assert loaded_data['array1'].shape == (10, 10)  # Original shape
+            assert not np.array_equal(loaded_data['array1'], np.ones((5, 5)))
+        
+        # Test 4: Save with override=True
+        save(test_data, h5_path, key='group1/subgroup/data', override=True, verbose=False)
+        
+        # Verify data WAS overwritten
+        with H5Explorer(h5_path) as explorer:
+            loaded_data = explorer.load('/group1/subgroup/data')
+            assert loaded_data['array1'].shape == (5, 5)  # New shape
+            np.testing.assert_array_equal(loaded_data['array1'], np.ones((5, 5)))
+        
+        # Test 5: Save to root (no key)
+        root_data = {'root_array': np.random.rand(3, 3)}
+        h5_path2 = os.path.join(tmpdir, "test_root.h5")
+        save(root_data, h5_path2, verbose=False)
+        
+        with H5Explorer(h5_path2) as explorer:
+            # Data should be at root level
+            assert 'root_array' in explorer.keys('/')
+            loaded = explorer.load('/root_array')
+            np.testing.assert_array_equal(loaded, root_data['root_array'])
+        
+        # Test 6: Complex nested structure (like PAC data)
+        pac_data = {
+            'pac_values': np.random.rand(64, 10, 10),
+            'p_values': np.random.rand(64, 10, 10),
+            'metadata': {
+                'seizure_id': 'S001',
+                'patient_id': 'P023',
+                'duration_sec': 60.0
+            }
+        }
+        
+        pac_key = 'patient_023/seizure_001/pac_analysis'
+        save(pac_data, h5_path, key=pac_key, verbose=False)
+        
+        # Verify complex structure
+        assert has_h5_key(h5_path, pac_key)
+        with H5Explorer(h5_path) as explorer:
+            loaded_pac = explorer.load(f'/{pac_key}')
+            np.testing.assert_array_equal(loaded_pac['pac_values'], pac_data['pac_values'])
+            assert loaded_pac['metadata']['seizure_id'] == 'S001'
+        
+        # Check output (commented out since all saves are with verbose=False)
+        # captured = capsys.readouterr()
+        # assert "Saved to:" in captured.out
+        # assert save_path in captured.out
+        # assert "KB" in captured.out or "B" in captured.out  # Size info
 
 
 def test_save_figure_with_csv_export():

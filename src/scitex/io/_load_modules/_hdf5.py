@@ -29,7 +29,12 @@ def _load_hdf5(lpath: str, group_path: str = None, **kwargs) -> Any:
 
         obj = {}
         for key in target.keys():
-            obj[key] = target[key][:]
+            data = target[key][:]
+            # Decode bytes to string if needed
+            if isinstance(data, bytes):
+                obj[key] = data.decode("utf-8")
+            else:
+                obj[key] = data
         for key in target.attrs.keys():
             obj[key] = target.attrs[key]
         return obj
