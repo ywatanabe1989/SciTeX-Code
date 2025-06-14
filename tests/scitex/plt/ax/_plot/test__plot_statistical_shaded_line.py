@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 def test_plot_line_savefig():
     import matplotlib.pyplot as plt
     import numpy as np
-from scitex.plt.ax._plot import plot_line
+    from scitex.plt.ax._plot import plot_line
 
     fig, ax = plt.subplots()
     data = np.sin(np.linspace(0, 10, 100))
@@ -34,7 +34,7 @@ from scitex.plt.ax._plot import plot_line
 def test_plot_mean_std_savefig():
     import matplotlib.pyplot as plt
     import numpy as np
-from scitex.plt.ax._plot import plot_mean_std
+    from scitex.plt.ax._plot import plot_mean_std
 
     fig, ax = plt.subplots()
     data = np.random.normal(0, 1, (10, 100))
@@ -55,7 +55,7 @@ from scitex.plt.ax._plot import plot_mean_std
 def test_plot_mean_ci_savefig():
     import matplotlib.pyplot as plt
     import numpy as np
-from scitex.plt.ax._plot import plot_mean_ci
+    from scitex.plt.ax._plot import plot_mean_ci
 
     fig, ax = plt.subplots()
     data = np.random.normal(0, 1, (10, 100))
@@ -76,7 +76,7 @@ from scitex.plt.ax._plot import plot_mean_ci
 def test_plot_median_iqr_savefig():
     import matplotlib.pyplot as plt
     import numpy as np
-from scitex.plt.ax._plot import plot_median_iqr
+    from scitex.plt.ax._plot import plot_median_iqr
 
     fig, ax = plt.subplots()
     data = np.random.normal(0, 1, (10, 100))

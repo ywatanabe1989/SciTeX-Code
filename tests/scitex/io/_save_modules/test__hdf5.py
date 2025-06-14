@@ -26,7 +26,7 @@ try:
 except ImportError:
     HDF5_AVAILABLE = False
 
-from scitex.io._save_modules import save_hdf5, _save_hdf5_group
+    from scitex.io._save_modules import save_hdf5, _save_hdf5_group
 
 
 @pytest.mark.skipif(not HDF5_AVAILABLE, reason="h5py not installed")

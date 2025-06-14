@@ -29,7 +29,7 @@ class TestSigmacroToBlue:
     
     def test_sigmacro_to_blue_prints_output(self, capsys):
         """Test that function prints VBA macro."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -39,7 +39,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_sigmacro_to_blue_contains_vba_code(self, capsys):
         """Test that output contains expected VBA code sections."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -58,7 +58,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_sigmacro_to_blue_color_definitions(self, capsys):
         """Test that all color definitions are present."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -78,7 +78,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_sigmacro_to_blue_object_types(self, capsys):
         """Test that all object types are handled."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -99,7 +99,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_sigmacro_to_blue_error_handling(self, capsys):
         """Test that error handling is included."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -114,7 +114,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_sigmacro_to_blue_complete_structure(self, capsys):
         """Test that VBA macro has complete structure."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -139,13 +139,13 @@ class TestBackwardCompatibility:
     
     def test_deprecated_function_exists(self):
         """Test that deprecated function still exists."""
-from scitex.gists import SigMacro_toBlue
+        from scitex.gists import SigMacro_toBlue
         
         assert callable(SigMacro_toBlue)
     
     def test_deprecated_function_warns(self):
         """Test that deprecated function issues warning."""
-from scitex.gists import SigMacro_toBlue
+        from scitex.gists import SigMacro_toBlue
         
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -158,7 +158,7 @@ from scitex.gists import SigMacro_toBlue
     
     def test_deprecated_function_same_output(self, capsys):
         """Test that deprecated function produces same output."""
-from scitex.gists import sigmacro_to_blue, SigMacro_toBlue
+        from scitex.gists import sigmacro_to_blue, SigMacro_toBlue
         
         # Get output from new function
         sigmacro_to_blue()
@@ -174,7 +174,7 @@ from scitex.gists import sigmacro_to_blue, SigMacro_toBlue
     
     def test_deprecated_function_stacklevel(self):
         """Test that warning has correct stacklevel."""
-from scitex.gists import SigMacro_toBlue
+        from scitex.gists import SigMacro_toBlue
         
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -191,7 +191,7 @@ class TestOutputValidation:
     
     def test_output_is_valid_vba_syntax(self, capsys):
         """Test that output follows VBA syntax rules."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -209,7 +209,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_output_rgb_values(self, capsys):
         """Test that RGB values are valid."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -231,7 +231,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_output_hex_values(self, capsys):
         """Test that hex values are present and valid."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -252,7 +252,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_output_comments(self, capsys):
         """Test that helpful comments are included."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         
@@ -271,7 +271,7 @@ class TestEdgeCases:
     
     def test_multiple_calls(self, capsys):
         """Test that function can be called multiple times."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         # First call
         sigmacro_to_blue()
@@ -286,7 +286,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_no_side_effects(self):
         """Test that function has no side effects."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         # Capture initial state
         import sys
@@ -304,7 +304,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_output_to_file(self):
         """Test redirecting output to file."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         output_buffer = io.StringIO()
         
@@ -326,7 +326,7 @@ class TestDocumentation:
     
     def test_function_has_docstring(self):
         """Test that function has proper docstring."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         assert sigmacro_to_blue.__doc__ is not None
         assert "SigmaPlot" in sigmacro_to_blue.__doc__
@@ -334,7 +334,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_deprecated_function_docstring(self):
         """Test that deprecated function has docstring."""
-from scitex.gists import SigMacro_toBlue
+        from scitex.gists import SigMacro_toBlue
         
         assert SigMacro_toBlue.__doc__ is not None
         assert "deprecated" in SigMacro_toBlue.__doc__.lower()
@@ -345,7 +345,7 @@ class TestIntegration:
     
     def test_capture_for_processing(self, capsys):
         """Test capturing output for further processing."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()
@@ -362,7 +362,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_extract_color_mapping(self, capsys):
         """Test extracting color mappings from output."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()
@@ -382,7 +382,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_macro_completeness(self, capsys):
         """Test that macro is complete and self-contained."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()
@@ -406,7 +406,7 @@ class TestUsageScenarios:
     
     def test_save_macro_to_file(self, tmp_path, capsys):
         """Test saving macro to a VBA file."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()
@@ -423,7 +423,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_modify_for_different_color(self, capsys):
         """Test modifying output for different default color."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()
@@ -436,7 +436,7 @@ from scitex.gists import sigmacro_to_blue
     
     def test_extract_for_documentation(self, capsys):
         """Test extracting parts for documentation."""
-from scitex.gists import sigmacro_to_blue
+        from scitex.gists import sigmacro_to_blue
         
         sigmacro_to_blue()
         captured = capsys.readouterr()

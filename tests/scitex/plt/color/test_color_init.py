@@ -379,8 +379,8 @@ class TestCircularImports:
         
         # Try importing in different orders
         try:
-from scitex.plt.color import str2rgb
-from scitex.plt.color import interpolate
+            from scitex.plt.color import str2rgb
+            from scitex.plt.color import interpolate
             import scitex.plt.color
         except ImportError as e:
             pytest.fail(f"Circular import detected: {e}")

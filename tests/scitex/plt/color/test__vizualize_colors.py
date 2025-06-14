@@ -18,7 +18,7 @@ matplotlib.use("Agg")  # Use non-interactive backend for testing
 
 
 def test_vizualize_colors():
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
 
     test_colors = {"blue": [0, 0.5, 0.75, 0.9], "red": [1, 0.27, 0.2, 0.9]}
 
@@ -38,7 +38,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_return_types():
     """Test that vizualize_colors returns correct types."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {"green": [0, 1, 0, 1], "yellow": [1, 1, 0, 1]}
     fig, ax = vizualize_colors(test_colors)
@@ -52,7 +52,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_empty_dict():
     """Test vizualize_colors with empty dictionary."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     fig, ax = vizualize_colors({})
     
@@ -70,7 +70,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_single_color():
     """Test vizualize_colors with single color."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {"purple": [0.5, 0, 0.5, 1]}
     fig, ax = vizualize_colors(test_colors)
@@ -86,7 +86,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_many_colors():
     """Test vizualize_colors with many colors."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     # Create 10 colors
     test_colors = {}
@@ -110,7 +110,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_rgb_values():
     """Test vizualize_colors with RGB values (no alpha)."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {
         "rgb_red": [1, 0, 0],  # 3 values
@@ -126,7 +126,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_different_alpha():
     """Test vizualize_colors with different alpha values."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {
         "opaque": [1, 0, 0, 1.0],
@@ -146,7 +146,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_grayscale():
     """Test vizualize_colors with grayscale colors."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {
         "black": [0, 0, 0, 1],
@@ -168,7 +168,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_special_names():
     """Test vizualize_colors with special characters in color names."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {
         "color-with-dashes": [1, 0, 0, 1],
@@ -198,7 +198,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_plot_properties():
     """Test that plot properties are set correctly."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {
         "test_red": [1, 0, 0, 1],
@@ -221,7 +221,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_invalid_rgba_values():
     """Test vizualize_colors with invalid RGBA values."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     # Test with values outside [0, 1] range
     test_colors = {
@@ -238,7 +238,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_reproducibility():
     """Test that vizualize_colors produces consistent results with same seed."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {"color1": [1, 0, 0, 1], "color2": [0, 1, 0, 1]}
     
@@ -260,7 +260,7 @@ from scitex.plt.color import vizualize_colors
 
 def test_vizualize_colors_figure_size():
     """Test that figure has reasonable size."""
-from scitex.plt.color import vizualize_colors
+    from scitex.plt.color import vizualize_colors
     
     test_colors = {"test": [0.5, 0.5, 0.5, 1]}
     fig, ax = vizualize_colors(test_colors)

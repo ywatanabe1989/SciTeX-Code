@@ -20,7 +20,7 @@ class TestPreview:
     
     def test_preview_single_tex_string(self):
         """Test preview with single LaTeX string"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -45,7 +45,7 @@ from scitex.tex import preview
     
     def test_preview_multiple_tex_strings(self):
         """Test preview with multiple LaTeX strings"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -76,7 +76,7 @@ from scitex.tex import preview
     
     def test_preview_empty_list(self):
         """Test preview with empty list"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -94,7 +94,7 @@ from scitex.tex import preview
     
     def test_preview_complex_latex(self):
         """Test preview with complex LaTeX expressions"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -116,7 +116,7 @@ from scitex.tex import preview
     
     def test_preview_special_characters(self):
         """Test preview with special LaTeX characters"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -138,7 +138,7 @@ from scitex.tex import preview
     
     def test_preview_unicode_strings(self):
         """Test preview with Unicode strings"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -160,7 +160,7 @@ from scitex.tex import preview
     
     def test_preview_with_numpy_array_axes(self):
         """Test preview handles numpy array of axes correctly"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock with numpy array
@@ -181,7 +181,7 @@ from scitex.tex import preview
     
     def test_preview_text_positioning(self):
         """Test that text is positioned correctly"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -207,7 +207,7 @@ from scitex.tex import preview
     
     def test_preview_figure_size_scaling(self):
         """Test that figure size scales with number of strings"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -228,7 +228,7 @@ from scitex.tex import preview
     
     def test_preview_escaping_edge_cases(self):
         """Test preview with edge case LaTeX strings"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -250,7 +250,7 @@ from scitex.tex import preview
     
     def test_preview_matrix_latex(self):
         """Test preview with matrix LaTeX notation"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -272,7 +272,7 @@ from scitex.tex import preview
     
     def test_preview_type_validation(self):
         """Test preview with invalid input types"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         # Test with string instead of list - raises ValueError from numpy
         with pytest.raises(ValueError):
@@ -288,7 +288,7 @@ from scitex.tex import preview
     
     def test_preview_with_actual_matplotlib(self):
         """Integration test with actual matplotlib"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         # Skip this test as scitex.plt.subplots returns wrapped objects
         # that don't directly expose matplotlib Figure interface
@@ -296,7 +296,7 @@ from scitex.tex import preview
     
     def test_preview_long_list_performance(self):
         """Test preview performance with many LaTeX strings"""
-from scitex.tex import preview
+        from scitex.tex import preview
         import time
         
         with patch('scitex.plt.subplots') as mock_subplots:
@@ -322,7 +322,7 @@ from scitex.tex import preview
     
     def test_preview_mixed_content(self):
         """Test preview with mixed LaTeX and plain text"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock
@@ -350,7 +350,7 @@ from scitex.tex import preview
     
     def test_preview_error_recovery(self):
         """Test preview handles errors gracefully"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock that raises on tight_layout
@@ -367,7 +367,7 @@ from scitex.tex import preview
     
     def test_preview_docstring_example(self):
         """Test the example from the docstring works"""
-from scitex.tex import preview
+        from scitex.tex import preview
         
         with patch('scitex.plt.subplots') as mock_subplots:
             # Setup mock

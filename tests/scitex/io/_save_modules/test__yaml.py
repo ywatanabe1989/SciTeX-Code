@@ -27,7 +27,7 @@ try:
 except ImportError:
     YAML_AVAILABLE = False
 
-from scitex.io._save_modules import save_yaml
+    from scitex.io._save_modules import save_yaml
 
 
 @pytest.mark.skipif(not YAML_AVAILABLE, reason="PyYAML not installed")

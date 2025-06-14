@@ -23,7 +23,7 @@ julius_mock.bands = MagicMock()
 julius_mock.bands.split_bands = MagicMock()
 
 with patch.dict('sys.modules', {'julius': julius_mock}):
-from scitex.nn import FreqGainChanger
+    from scitex.nn import FreqGainChanger
 
 
 class TestFreqGainChanger:

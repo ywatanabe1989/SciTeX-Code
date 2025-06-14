@@ -26,7 +26,7 @@ try:
 except ImportError:
     TORCH_AVAILABLE = False
 
-from scitex.io._save_modules import save_torch
+    from scitex.io._save_modules import save_torch
 
 
 @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not installed")

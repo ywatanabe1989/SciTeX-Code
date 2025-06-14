@@ -9,7 +9,8 @@ import pytest
 import numpy as np
 import pandas as pd
 import torch
-from scitex.ai.utils import format_samples_for_sktime, _format_a_sample_for_sktime
+from scitex.ai.utils import format_samples_for_sktime
+from scitex.ai.utils._format_samples_for_sktime import _format_a_sample_for_sktime
 
 
 class TestFormatSamplesForSktime:

@@ -35,7 +35,7 @@ try:
 except ImportError:
     HAS_XARRAY = False
 
-from scitex.ai.utils import sliding_window_data_augmentation
+    from scitex.ai.utils import sliding_window_data_augmentation
 
 
 class TestSlidingWindowDataAugmentationBasic:

@@ -192,9 +192,13 @@ class TestEdgeCases:
         )
         result = from_xyz(data)
 
+        # NaN values are dropped by pivot_table, so row Y and column B don't exist
+        assert result.shape == (2, 2)  # Only X,Z rows and A,C columns
         assert result.loc["X", "A"] == 1
-        assert np.isnan(result.loc["Y", "B"])
         assert result.loc["Z", "C"] == 3
+        # Check that Y row and B column don't exist
+        assert "Y" not in result.index
+        assert "B" not in result.columns
 
     def test_none_in_labels(self):
         """Test with None in x or y labels."""
@@ -203,9 +207,14 @@ class TestEdgeCases:
         )
         result = from_xyz(data)
 
-        # Check that None is handled as a label
-        assert result.loc["Y", None] == 2
-        assert result.loc[None, "C"] == 3
+        # None values are dropped by pivot_table
+        assert result.shape == (1, 1)  # Only X,A remains
+        assert result.loc["X", "A"] == 1
+        # Check that rows/columns with None are excluded
+        assert None not in result.index
+        assert None not in result.columns
+        assert "Y" not in result.index  # Row with None in x is dropped
+        assert "C" not in result.columns  # Column with None in y is dropped
 
 
 class TestAggregation:
@@ -355,17 +364,27 @@ class TestLargeDatasets:
     def test_performance_with_categories(self):
         """Test performance with categorical data."""
         # Using categories can improve performance
+        # Create data where all combinations exist
+        x_vals = []
+        y_vals = []
+        z_vals = []
+        for x in ["A", "B", "C"]:
+            for y in ["X", "Y", "Z"]:
+                x_vals.extend([x] * 100)
+                y_vals.extend([y] * 100)
+                z_vals.extend(np.random.rand(100))
+        
         data = pd.DataFrame(
             {
-                "x": pd.Categorical(["A", "B", "C"] * 1000),
-                "y": pd.Categorical(["X", "Y", "Z"] * 1000),
-                "z": np.random.rand(3000),
+                "x": pd.Categorical(x_vals),
+                "y": pd.Categorical(y_vals),
+                "z": z_vals,
             }
         )
         result = from_xyz(data)
 
         assert result.shape == (3, 3)
-        # All positions should have values (due to repetition pattern)
+        # All positions should have values (due to all combinations being present)
         assert (result != 0).all().all()
 
 

@@ -184,7 +184,7 @@ class TestLearningCurve:
                 
     def test_process_i_global(self):
         """Test process_i_global function"""
-from scitex.ai.plt import process_i_global
+        from scitex.ai.plt import process_i_global
         
         # Test with i_global column
         df = pd.DataFrame({'i_global': [0, 1, 2], 'loss': [0.5, 0.4, 0.3]})
@@ -201,7 +201,7 @@ from scitex.ai.plt import process_i_global
         
     def test_set_yaxis_for_acc(self):
         """Test set_yaxis_for_acc function"""
-from scitex.ai.plt import set_yaxis_for_acc
+        from scitex.ai.plt import set_yaxis_for_acc
         
         mock_ax = MagicMock()
         
@@ -217,7 +217,7 @@ from scitex.ai.plt import set_yaxis_for_acc
         
     def test_plot_tra(self, sample_metrics_df):
         """Test plot_tra function for training data"""
-from scitex.ai.plt import plot_tra
+        from scitex.ai.plt import plot_tra
         
         mock_ax = MagicMock()
         result = plot_tra(mock_ax, sample_metrics_df, 'loss', lw=2, color='blue')
@@ -229,7 +229,7 @@ from scitex.ai.plt import plot_tra
         
     def test_scatter_val(self, sample_metrics_df):
         """Test scatter_val function for validation data"""
-from scitex.ai.plt import scatter_val
+        from scitex.ai.plt import scatter_val
         
         mock_ax = MagicMock()
         result = scatter_val(mock_ax, sample_metrics_df, 'loss', s=5, color='green')
@@ -241,7 +241,7 @@ from scitex.ai.plt import scatter_val
         
     def test_scatter_tes(self, sample_metrics_df):
         """Test scatter_tes function for test data"""
-from scitex.ai.plt import scatter_tes
+        from scitex.ai.plt import scatter_tes
         
         mock_ax = MagicMock()
         result = scatter_tes(mock_ax, sample_metrics_df, 'loss', s=5, color='red')
@@ -253,7 +253,7 @@ from scitex.ai.plt import scatter_tes
         
     def test_vline_at_epochs(self, sample_metrics_df):
         """Test vline_at_epochs function"""
-from scitex.ai.plt import vline_at_epochs
+        from scitex.ai.plt import vline_at_epochs
         
         mock_ax = MagicMock()
         result = vline_at_epochs(mock_ax, sample_metrics_df, color='grey')
@@ -263,7 +263,7 @@ from scitex.ai.plt import vline_at_epochs
         
     def test_select_ticks(self, sample_metrics_df):
         """Test select_ticks function"""
-from scitex.ai.plt import select_ticks
+        from scitex.ai.plt import select_ticks
         
         selected_ticks, selected_labels = select_ticks(sample_metrics_df, max_n_ticks=4)
         

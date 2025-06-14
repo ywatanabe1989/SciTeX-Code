@@ -182,13 +182,15 @@ class TestAUCsModuleInit:
     
     def test_module_all_attribute(self):
         """Test __all__ attribute if defined in modules."""
-        # This ensures that star imports work as expected
-        try:
-            from scitex.ai.plt.aucs.roc_auc import *
-            from scitex.ai.plt.aucs.pre_rec_auc import *
-        except Exception as e:
-            # Star imports might not be supported, which is fine
-            pass
+        # Test that modules have __all__ defined
+        import scitex.ai.plt.aucs.roc_auc as roc_module
+        import scitex.ai.plt.aucs.pre_rec_auc as pre_rec_module
+        
+        # Check if __all__ is defined (it's optional)
+        if hasattr(roc_module, '__all__'):
+            assert isinstance(roc_module.__all__, list)
+        if hasattr(pre_rec_module, '__all__'):
+            assert isinstance(pre_rec_module.__all__, list)
 
 
 # --------------------------------------------------------------------------------

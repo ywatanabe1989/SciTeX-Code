@@ -20,7 +20,7 @@ from scipy import stats
 import pandas as pd
 import xarray as xr
 import torch
-from ...types import (
+from typing import (
     List,
     Tuple,
     Dict,
@@ -29,8 +29,8 @@ from ...types import (
     Sequence,
     Literal,
     Iterable,
-    ArrayLike,
 )
+from ...types import ArrayLike
 from ...decorators import numpy_fn
 
 

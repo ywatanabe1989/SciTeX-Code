@@ -21,12 +21,12 @@ class TestDeprecated:
 
     def test_deprecated_import(self):
         """Test that deprecated decorator can be imported successfully."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         assert callable(deprecated)
 
     def test_deprecated_basic_functionality(self):
         """Test basic deprecated decorator functionality."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("This function is old")
         def old_function(x):
@@ -43,7 +43,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_without_reason(self):
         """Test deprecated decorator without providing a reason."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated()
         def no_reason_function():
@@ -60,7 +60,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_with_none_reason(self):
         """Test deprecated decorator with explicit None reason."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated(None)
         def none_reason_function():
@@ -76,7 +76,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_with_complex_reason(self):
         """Test deprecated decorator with complex reason string."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         complex_reason = "Use new_function() instead. This will be removed in v2.0. See documentation at example.com"
         
@@ -93,7 +93,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_function_arguments(self):
         """Test deprecated decorator with functions that have arguments."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Use new_math_function")
         def old_math_function(a, b, c=10):
@@ -109,7 +109,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_function_kwargs(self):
         """Test deprecated decorator with functions using *args and **kwargs."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Flexible argument function deprecated")
         def flexible_function(*args, **kwargs):
@@ -125,7 +125,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_function_with_exceptions(self):
         """Test deprecated decorator when decorated function raises exceptions."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("This error function is deprecated")
         def error_function(should_raise=True):
@@ -154,7 +154,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_multiple_calls(self):
         """Test that each call to deprecated function emits a warning."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Multi-call test")
         def multi_call_function():
@@ -175,7 +175,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_function_attributes_preserved(self):
         """Test that decorated function preserves original attributes."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Function with docs")
         def documented_function(x, y=5):
@@ -197,7 +197,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_with_class_methods(self):
         """Test deprecated decorator with class methods."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         class TestClass:
             @deprecated("Method is deprecated")
@@ -242,7 +242,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_warning_stacklevel(self):
         """Test that deprecated warnings have correct stack level."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Stack level test")
         def stacklevel_function():
@@ -262,7 +262,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_with_return_values(self):
         """Test deprecated decorator preserves all return value types."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Returns list")
         def return_list():
@@ -290,7 +290,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_unicode_reason(self):
         """Test deprecated decorator with unicode characters in reason."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         unicode_reason = "Função obsoleta. Use função_nova() em vez disso. 废弃的函数"
         
@@ -308,7 +308,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_very_long_reason(self):
         """Test deprecated decorator with very long reason string."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         long_reason = "This is a very long deprecation reason that explains in great detail why this function is deprecated and what alternatives should be used instead. " * 10
         
@@ -326,7 +326,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_special_characters_in_reason(self):
         """Test deprecated decorator with special characters in reason."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         special_reason = "Function deprecated! Use new_func() -> str | None instead. Cost: $0.00"
         
@@ -344,7 +344,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_with_generators(self):
         """Test deprecated decorator with generator functions."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Generator function deprecated")
         def deprecated_generator(n):
@@ -362,7 +362,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_multiple_decorators(self):
         """Test deprecated decorator when combined with other decorators."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         def double_result(func):
             @functools.wraps(func)
@@ -386,7 +386,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_warning_category(self):
         """Test that deprecated decorator emits DeprecationWarning specifically."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Category test")
         def category_test_function():
@@ -401,7 +401,7 @@ from scitex.decorators import deprecated
 
     def test_deprecated_function_name_with_special_chars(self):
         """Test deprecated decorator with function names containing special characters."""
-from scitex.decorators import deprecated
+        from scitex.decorators import deprecated
         
         @deprecated("Special name test")
         def _private_function():

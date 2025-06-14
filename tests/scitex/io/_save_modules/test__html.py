@@ -25,7 +25,7 @@ try:
 except ImportError:
     PLOTLY_AVAILABLE = False
 
-from scitex.io._save_modules import save_html
+    from scitex.io._save_modules import save_html
 
 
 @pytest.mark.skipif(not PLOTLY_AVAILABLE, reason="Plotly not installed")

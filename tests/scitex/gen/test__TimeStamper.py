@@ -76,10 +76,12 @@ class TestTimeStamper:
         ts("One second")
 
         # Check elapsed times
-        assert ts._df_record.loc[0, "elapsed_since_start"] == 1.0
-        assert ts._df_record.loc[0, "elapsed_since_prev"] == 1.0
-        assert ts._df_record.loc[1, "elapsed_since_start"] == 3.0
-        assert ts._df_record.loc[1, "elapsed_since_prev"] == 2.0
+        # First call has 0 elapsed time
+        assert ts._df_record.loc[0, "elapsed_since_start"] == 0.0
+        assert ts._df_record.loc[0, "elapsed_since_prev"] == 0.0
+        # Second call has 1s from start and 1s from prev
+        assert ts._df_record.loc[1, "elapsed_since_start"] == 1.0
+        assert ts._df_record.loc[1, "elapsed_since_prev"] == 1.0
 
     def test_formatted_output_simple(self):
         """Test simple formatted output."""
@@ -143,17 +145,17 @@ class TestTimeStamper:
             mock_time.side_effect = [0.0, 0.0, 1.0, 3.0, 6.0]
 
             ts = TimeStamper()
-            ts("T0")  # time=1.0
-            ts("T1")  # time=3.0
-            ts("T2")  # time=6.0
+            ts("T0")  # time=0.0
+            ts("T1")  # time=1.0
+            ts("T2")  # time=3.0
 
             # Delta between T1 and T0
             delta = ts.delta(1, 0)
-            assert delta == 2.0  # 3.0 - 1.0
+            assert delta == 1.0  # 1.0 - 0.0
 
             # Delta between T2 and T1
             delta = ts.delta(2, 1)
-            assert delta == 3.0  # 6.0 - 3.0
+            assert delta == 2.0  # 3.0 - 1.0
 
     def test_delta_negative_indices(self):
         """Test delta with negative indices."""
@@ -186,11 +188,9 @@ class TestTimeStamper:
     def test_time_formatting(self, mock_gmtime):
         """Test time formatting."""
         # Mock gmtime to return predictable result
-        mock_struct = MagicMock()
-        mock_struct.tm_hour = 1
-        mock_struct.tm_min = 23
-        mock_struct.tm_sec = 45
-        mock_gmtime.return_value = mock_struct
+        # Use a proper struct_time object
+        import time as time_module
+        mock_gmtime.return_value = time_module.struct_time((1970, 1, 1, 1, 23, 45, 3, 1, 0))
 
         ts = TimeStamper()
         result = ts("Test")

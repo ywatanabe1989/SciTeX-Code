@@ -183,8 +183,8 @@ class TestGetSet:
 
     def test_function_imports_from_module(self):
         """Test that functions can be imported directly from _get_set."""
-from scitex.ai.optim import get as get_func
-from scitex.ai.optim import set as set_func
+        from scitex.ai.optim import get as get_func
+        from scitex.ai.optim import set as set_func
         
         assert callable(get_func)
         assert callable(set_func)

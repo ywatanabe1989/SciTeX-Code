@@ -17,7 +17,7 @@ import pytest
 
 def test_load_txt_basic():
     """Test loading a basic text file."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     content = "Hello World\nThis is a test\nThird line"
     
@@ -43,7 +43,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_empty_lines():
     """Test handling of empty lines."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     content = "Line 1\n\n\nLine 2\n   \nLine 3\n"
     
@@ -65,7 +65,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_different_extensions():
     """Test loading files with different extensions."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     content = "Test content"
     extensions = ['.txt', '.log', '.event', '.py', '.sh']
@@ -84,7 +84,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_unexpected_extension_warning():
     """Test warning for unexpected file extensions."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     content = "Test content"
     
@@ -109,7 +109,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_unicode_content():
     """Test loading files with Unicode content."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     unicode_content = "Hello 世界\n日本語テスト\n🎉 Emoji test"
     
@@ -130,7 +130,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_different_encodings():
     """Test loading files with different encodings."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     # Test Latin-1 encoded content
     latin1_content = "Café résumé naïve"
@@ -149,7 +149,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_with_strip():
     """Test strip functionality."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     content_with_whitespace = "  \n  Hello World  \n  \n"
     
@@ -175,7 +175,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     # The current implementation raises FileNotFoundError directly
     with pytest.raises(FileNotFoundError):
@@ -184,7 +184,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_empty_file():
     """Test loading an empty file."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
         temp_path = f.name
@@ -203,7 +203,7 @@ from scitex.io._load_modules import _load_txt
 
 def test_load_txt_large_file():
     """Test loading a large text file."""
-from scitex.io._load_modules import _load_txt
+    from scitex.io._load_modules import _load_txt
     
     # Create a file with many lines
     lines = [f"Line {i}: " + "x" * 100 for i in range(1000)]

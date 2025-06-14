@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-06-13 22:51:08 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/_sh.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/_sh.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 # Time-stamp: "2024-11-03 02:23:16 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/_sh.py
 
 import subprocess
+
 import scitex
 
 
@@ -18,7 +27,7 @@ def sh(command_str, verbose=True):
     - output (str): The standard output from the executed command.
     """
     if verbose:
-        print(scitex.gen.color_text(f"{command_str}", "yellow"))
+        print(scitex.str.color_text(f"{command_str}", "yellow"))
 
     process = subprocess.Popen(
         command_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -41,9 +50,10 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+        sys, plt, verbose=False
+    )
     sh("ls")
     scitex.gen.close(CONFIG, verbose=False, notify=False)
-
 
 # EOF

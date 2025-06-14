@@ -17,7 +17,7 @@ import numpy as np
 
 def test_load_npy_basic():
     """Test loading a basic NPY file."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     # Create test data
     test_array = np.array([1, 2, 3, 4, 5])
@@ -35,7 +35,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npy_multidimensional():
     """Test loading multidimensional arrays."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     # Test 2D array
     test_array_2d = np.random.rand(10, 20)
@@ -68,7 +68,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npz_single_array():
     """Test loading NPZ file with single array (backward compatibility)."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     test_array = np.array([[1, 2, 3], [4, 5, 6]])
     
@@ -87,7 +87,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npz_multiple_arrays():
     """Test loading NPZ file with multiple arrays."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     array1 = np.array([1, 2, 3])
     array2 = np.array([[4, 5], [6, 7]])
@@ -114,7 +114,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npy_with_objects():
     """Test loading NPY file with Python objects (using pickle)."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     # Create array with Python objects
     test_data = np.array([{'key': 'value'}, [1, 2, 3], 'string'], dtype=object)
@@ -134,7 +134,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npy_invalid_extension():
     """Test that loading non-numpy file raises ValueError."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     with pytest.raises(ValueError, match="File must have .npy or .npz extension"):
         _load_npy("test.txt")
@@ -145,7 +145,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npy_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     with pytest.raises(FileNotFoundError):
         _load_npy("/nonexistent/path/file.npy")
@@ -153,7 +153,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npy_structured_array():
     """Test loading structured arrays."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     # Create structured array
     dt = np.dtype([('name', 'U10'), ('age', 'i4'), ('weight', 'f4')])
@@ -177,7 +177,7 @@ from scitex.io._load_modules import _load_npy
 
 def test_load_npz_compressed():
     """Test loading compressed NPZ files."""
-from scitex.io._load_modules import _load_npy
+    from scitex.io._load_modules import _load_npy
     
     # Create large array for compression benefit
     large_array = np.random.rand(1000, 1000)

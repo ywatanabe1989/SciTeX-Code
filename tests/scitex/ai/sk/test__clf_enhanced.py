@@ -628,7 +628,7 @@ class TestPipelineWithMocks:
                       return_value=mock_components['gradient_boosting']):
                 
                 # Need to recreate the pipeline with mocked components
-from scitex.ai.sk import make_pipeline
+                from scitex.ai.sk import make_pipeline
                 mocked_pipeline = make_pipeline(
                     mock_components['tabularizer'],
                     mock_components['gradient_boosting']

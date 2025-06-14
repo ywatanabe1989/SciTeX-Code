@@ -26,12 +26,12 @@ class TestNotImplemented:
 
     def test_not_implemented_import(self):
         """Test that not_implemented decorator can be imported successfully."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         assert callable(not_implemented)
 
     def test_not_implemented_basic_functionality(self):
         """Test basic not_implemented decorator functionality."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def unimplemented_function():
@@ -50,7 +50,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_warning_message(self):
         """Test that warning message contains expected content."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def test_method():
@@ -66,7 +66,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_arguments(self):
         """Test not_implemented decorator with functions that take arguments."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def function_with_args(a, b, c=None):
@@ -83,7 +83,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_kwargs(self):
         """Test not_implemented decorator with functions using *args and **kwargs."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def flexible_function(*args, **kwargs):
@@ -99,7 +99,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_multiple_calls(self):
         """Test that each call to not_implemented function emits a warning."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def multi_call_function():
@@ -120,7 +120,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_warning_category(self):
         """Test that not_implemented decorator emits FutureWarning specifically."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def category_test_function():
@@ -135,7 +135,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_warning_stacklevel(self):
         """Test that not_implemented warnings have correct stack level."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def stacklevel_function():
@@ -155,7 +155,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_function_name_preservation(self):
         """Test that decorated function name appears in warning message."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def very_specific_function_name():
@@ -170,7 +170,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_class_methods(self):
         """Test not_implemented decorator with class methods."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         class TestClass:
             @not_implemented
@@ -215,7 +215,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_prevents_execution(self):
         """Test that not_implemented prevents original function execution."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         execution_flag = {"executed": False}
         
@@ -234,7 +234,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_complex_function(self):
         """Test not_implemented with complex function having multiple features."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def complex_function(a, b=10, *args, **kwargs):
@@ -252,7 +252,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_function_with_side_effects(self):
         """Test that not_implemented prevents functions with side effects."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         side_effect_list = []
         
@@ -271,7 +271,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_generators(self):
         """Test not_implemented decorator with generator functions."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def not_implemented_generator(n):
@@ -289,7 +289,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_return_value_consistency(self):
         """Test that not_implemented always returns None."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def return_string():
@@ -317,7 +317,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_special_function_names(self):
         """Test not_implemented decorator with special function names."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def _private_function():
@@ -345,7 +345,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_multiple_decorators(self):
         """Test not_implemented decorator when combined with other decorators."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         def logging_decorator(func):
             @functools.wraps(func)
@@ -369,7 +369,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_unicode_function_names(self):
         """Test not_implemented decorator with unicode function names."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         # Create function with unicode name using exec
         unicode_code = '''
@@ -392,7 +392,7 @@ def función_unicode():
 
     def test_not_implemented_preserves_wrapper_behavior(self):
         """Test that not_implemented creates proper wrapper function."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def original_function(a, b):
@@ -413,7 +413,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_warning_message_format(self):
         """Test the exact format of the warning message."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def test_function():
@@ -432,7 +432,7 @@ class TestNotImplementedEdgeCases:
 
     def test_not_implemented_empty_function_name(self):
         """Test not_implemented with dynamically created function with empty name."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         # Create a function dynamically (though it will still have a name)
         dynamic_func = lambda: "test"
@@ -450,7 +450,7 @@ from scitex.decorators import not_implemented
 
     def test_not_implemented_with_exception_in_original(self):
         """Test that not_implemented prevents exceptions in original function."""
-from scitex.decorators import not_implemented
+        from scitex.decorators import not_implemented
         
         @not_implemented
         def function_that_would_raise():

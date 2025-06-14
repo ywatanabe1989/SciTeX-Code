@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-06-14 19:09:38 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/str/_printc.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/str/_printc.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 # Time-stamp: "2024-11-24 17:01:23 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/str/_printc.py
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/str/_printc.py"
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-03 03:47:51 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/str/_printc.py
 
 from ._color_text import color_text
-from pprint import pprint as _pprint
 
 
 def printc(message, c="blue", char="-", n=40):
@@ -45,12 +49,14 @@ def printc(message, c="blue", char="-", n=40):
 
     Note: The actual output will be in green color.
     """
-    border = char * n
-    text = f"\n{border}\n{message}\n{border}\n"
+    if char is not None:
+        border = char * n
+        text = f"\n{border}\n{message}\n{border}\n"
+    else:
+        text = f"\n{message}\n"
     if c is not None:
         text = color_text(text, c)
 
     print(text)
-
 
 # EOF

@@ -64,7 +64,7 @@ class TestMainFunctionality:
         ax.plot([1, 2, 3], [1, 2, 3])
 
         # Main test functionality
-from scitex.plt.ax._style import set_supxyt
+        from scitex.plt.ax._style import set_supxyt
 
         set_supxyt(
             ax,

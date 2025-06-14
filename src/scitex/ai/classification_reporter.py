@@ -130,7 +130,7 @@ class ClassificationReporter(object):
     def __init__(self, sdir):
         self.sdir = sdir
         self.folds_dict = _defaultdict(list)
-        _fix_seeds(os=_os, random=_random, np=_np, torch=_torch, show=False)
+        _fix_seeds(os=_os, random=_random, np=_np, torch=_torch, verbose=False)
 
     def add(
         self,

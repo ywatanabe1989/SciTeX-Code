@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 def test_getsize_existing_file():
     """Test getsize with existing file."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     # Create temporary file with known content
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
@@ -36,7 +36,7 @@ from scitex.path import getsize
 
 def test_getsize_empty_file():
     """Test getsize with empty file."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.NamedTemporaryFile(delete=False) as f:
         temp_path = f.name
@@ -50,7 +50,7 @@ from scitex.path import getsize
 
 def test_getsize_large_file():
     """Test getsize with larger file."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
         # Write 1MB of data
@@ -67,7 +67,7 @@ from scitex.path import getsize
 
 def test_getsize_nonexistent_file():
     """Test getsize with non-existent file."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     nonexistent_path = "/path/that/does/not/exist/file.txt"
     size = getsize(nonexistent_path)
@@ -76,7 +76,7 @@ from scitex.path import getsize
 
 def test_getsize_directory():
     """Test getsize with directory."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.TemporaryDirectory() as temp_dir:
         size = getsize(temp_dir)
@@ -87,7 +87,7 @@ from scitex.path import getsize
 
 def test_getsize_symlink():
     """Test getsize with symlink."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
         f.write("Symlink target content")
@@ -109,7 +109,7 @@ from scitex.path import getsize
 
 def test_getsize_pathlib_path():
     """Test getsize with pathlib.Path object."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
         f.write("Pathlib test")
@@ -124,7 +124,7 @@ from scitex.path import getsize
 
 def test_getsize_binary_file():
     """Test getsize with binary file."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
         binary_data = bytes(range(256))
@@ -140,7 +140,7 @@ from scitex.path import getsize
 
 def test_getsize_unicode_filename():
     """Test getsize with unicode filename."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.TemporaryDirectory() as temp_dir:
         unicode_path = os.path.join(temp_dir, "文件名.txt")
@@ -154,7 +154,7 @@ from scitex.path import getsize
 
 def test_getsize_permission_error():
     """Test getsize with permission error."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with patch('os.path.exists', return_value=True):
         with patch('os.path.getsize', side_effect=PermissionError("Access denied")):
@@ -164,7 +164,7 @@ from scitex.path import getsize
 
 def test_getsize_special_files():
     """Test getsize with special files like /dev/null."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     if os.path.exists("/dev/null"):
         size = getsize("/dev/null")
@@ -173,7 +173,7 @@ from scitex.path import getsize
 
 def test_getsize_relative_path():
     """Test getsize with relative path."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     current_dir = os.getcwd()
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -192,7 +192,7 @@ from scitex.path import getsize
 
 def test_getsize_spaces_in_path():
     """Test getsize with spaces in path."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with tempfile.TemporaryDirectory() as temp_dir:
         path_with_spaces = os.path.join(temp_dir, "file with spaces.txt")
@@ -206,7 +206,7 @@ from scitex.path import getsize
 
 def test_getsize_empty_string():
     """Test getsize with empty string path."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     size = getsize("")
     assert np.isnan(size)
@@ -214,7 +214,7 @@ from scitex.path import getsize
 
 def test_getsize_none_path():
     """Test getsize with None path."""
-from scitex.path import getsize
+    from scitex.path import getsize
     
     with pytest.raises(TypeError):
         getsize(None)

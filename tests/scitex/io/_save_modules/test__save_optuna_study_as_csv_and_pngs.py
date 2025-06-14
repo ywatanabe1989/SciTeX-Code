@@ -25,7 +25,7 @@ try:
 except ImportError:
     OPTUNA_AVAILABLE = False
 
-from scitex.io._save_modules import save_optuna_study_as_csv_and_pngs
+    from scitex.io._save_modules import save_optuna_study_as_csv_and_pngs
 
 
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")

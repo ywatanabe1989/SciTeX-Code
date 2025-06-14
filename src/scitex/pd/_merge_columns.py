@@ -73,6 +73,17 @@ def merge_columns(
         missing = [col for col in columns if col not in _df.columns]
         raise KeyError(f"Columns not found in DataFrame: {missing}")
 
+    # Handle empty DataFrame case
+    if len(_df) == 0:
+        # Determine column name
+        if name == "merged" and sep is not None:
+            new_col_name = "_".join(columns)
+        else:
+            new_col_name = name
+        # Create empty Series with the correct name
+        _df[new_col_name] = pd.Series(dtype=str)
+        return _df
+
     if sep is not None:
         # Simple value concatenation
         merged_col = (

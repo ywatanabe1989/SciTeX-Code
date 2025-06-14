@@ -17,7 +17,7 @@ class TestFindIndiBasic:
 
     def test_single_condition_string(self):
         """Test finding indices with single string condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": ["x", "y", "x", "z"], "B": [1, 2, 3, 4]})
         conditions = {"A": "x"}
@@ -28,7 +28,7 @@ from scitex.pd import find_indi
 
     def test_single_condition_number(self):
         """Test finding indices with single numeric condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3, 2], "B": ["a", "b", "c", "d"]})
         conditions = {"A": 2}
@@ -38,7 +38,7 @@ from scitex.pd import find_indi
 
     def test_multiple_conditions(self):
         """Test finding indices with multiple conditions."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame(
             {"A": [1, 2, 1, 2], "B": ["x", "x", "y", "y"], "C": [10, 20, 30, 40]}
@@ -50,7 +50,7 @@ from scitex.pd import find_indi
 
     def test_list_condition(self):
         """Test finding indices with list condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3, 4, 5], "B": ["a", "b", "c", "d", "e"]})
         conditions = {"A": [1, 3, 5]}
@@ -60,7 +60,7 @@ from scitex.pd import find_indi
 
     def test_mixed_conditions(self):
         """Test finding indices with mixed single and list conditions."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame(
             {
@@ -80,7 +80,7 @@ class TestFindIndiNaNHandling:
 
     def test_nan_in_dataframe(self):
         """Test handling NaN values in DataFrame."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, np.nan, 4], "B": ["x", "y", "z", "w"]})
         conditions = {"A": 2}
@@ -90,7 +90,7 @@ from scitex.pd import find_indi
 
     def test_nan_in_condition_single(self):
         """Test finding NaN values with single condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, np.nan, 3, np.nan], "B": ["a", "b", "c", "d"]})
         conditions = {"A": np.nan}
@@ -100,7 +100,7 @@ from scitex.pd import find_indi
 
     def test_nan_in_condition_list(self):
         """Test finding NaN values in list condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, np.nan, 3, 4, np.nan]})
         conditions = {"A": [1, np.nan]}
@@ -110,7 +110,7 @@ from scitex.pd import find_indi
 
     def test_none_in_condition(self):
         """Test finding None values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, None, 3, None], "B": ["a", "b", "c", "d"]})
         conditions = {"A": None}
@@ -120,7 +120,7 @@ from scitex.pd import find_indi
 
     def test_pd_na_in_condition(self):
         """Test finding pd.NA values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, pd.NA, 3, pd.NA]}, dtype="Int64")
         conditions = {"A": pd.NA}
@@ -134,7 +134,7 @@ class TestFindIndiEdgeCases:
 
     def test_empty_dataframe(self):
         """Test with empty DataFrame."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame()
         conditions = {}
@@ -144,7 +144,7 @@ from scitex.pd import find_indi
 
     def test_empty_conditions(self):
         """Test with empty conditions."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["x", "y", "z"]})
         conditions = {}
@@ -154,7 +154,7 @@ from scitex.pd import find_indi
 
     def test_no_matches(self):
         """Test when no rows match conditions."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["x", "y", "z"]})
         conditions = {"A": 999}
@@ -164,7 +164,7 @@ from scitex.pd import find_indi
 
     def test_all_matches(self):
         """Test when all rows match conditions."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 1, 1], "B": ["x", "x", "x"]})
         conditions = {"A": 1, "B": "x"}
@@ -174,7 +174,7 @@ from scitex.pd import find_indi
 
     def test_custom_index(self):
         """Test with custom DataFrame index."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["x", "y", "z"]}, index=[10, 20, 30])
         conditions = {"A": 2}
@@ -188,7 +188,7 @@ class TestFindIndiErrorHandling:
 
     def test_column_not_found(self):
         """Test KeyError when column not in DataFrame."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["x", "y", "z"]})
         conditions = {"C": 1}
@@ -198,7 +198,7 @@ from scitex.pd import find_indi
 
     def test_multiple_columns_not_found(self):
         """Test KeyError with multiple missing columns."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3]})
         conditions = {"B": 1, "C": 2}
@@ -212,7 +212,7 @@ class TestFindIndiDataTypes:
 
     def test_float_values(self):
         """Test with float values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1.1, 2.2, 3.3, 2.2]})
         conditions = {"A": 2.2}
@@ -222,7 +222,7 @@ from scitex.pd import find_indi
 
     def test_boolean_values(self):
         """Test with boolean values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [True, False, True, False]})
         conditions = {"A": True}
@@ -232,7 +232,7 @@ from scitex.pd import find_indi
 
     def test_datetime_values(self):
         """Test with datetime values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         dates = pd.to_datetime(["2021-01-01", "2021-01-02", "2021-01-01"])
         df = pd.DataFrame({"date": dates})
@@ -243,7 +243,7 @@ from scitex.pd import find_indi
 
     def test_categorical_values(self):
         """Test with categorical values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": pd.Categorical(["cat", "dog", "cat", "bird"])})
         conditions = {"A": "cat"}
@@ -257,7 +257,7 @@ class TestFindIndiComplexScenarios:
 
     def test_multiple_columns_multiple_values(self):
         """Test with multiple columns and multiple values."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame(
             {
@@ -273,7 +273,7 @@ from scitex.pd import find_indi
 
     def test_large_dataframe(self):
         """Test with large DataFrame."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         n = 10000
         df = pd.DataFrame(
@@ -292,7 +292,7 @@ from scitex.pd import find_indi
 
     def test_tuple_condition(self):
         """Test with tuple condition (should work like list)."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3, 4, 5]})
         conditions = {"A": (2, 4)}
@@ -302,7 +302,7 @@ from scitex.pd import find_indi
 
     def test_mixed_types_in_list(self):
         """Test with mixed types in list condition."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, "2", 3, "4", 5]})
         conditions = {"A": [1, "2", 3]}
@@ -316,7 +316,7 @@ class TestFindIndiDocumentationExamples:
 
     def test_docstring_example(self):
         """Test the example from the docstring."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, None], "B": ["x", "y", "x"]})
         conditions = {"A": [1, None], "B": "x"}
@@ -327,7 +327,7 @@ from scitex.pd import find_indi
 
     def test_original_commented_example(self):
         """Test example from commented code."""
-from scitex.pd import find_indi
+        from scitex.pd import find_indi
 
         df = pd.DataFrame({"A": [1, 2, 3], "B": ["x", "y", "x"]})
         conditions = {"A": [1, 2], "B": "x"}

@@ -26,7 +26,7 @@ try:
 except ImportError:
     JOBLIB_AVAILABLE = False
 
-from scitex.io._save_modules import save_joblib
+    from scitex.io._save_modules import save_joblib
 
 
 @pytest.mark.skipif(not JOBLIB_AVAILABLE, reason="joblib not installed")

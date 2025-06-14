@@ -16,7 +16,7 @@ class TestLoadPdf:
     
     def test_valid_extension_check(self):
         """Test that function validates .pdf extension"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Test invalid extensions
         invalid_files = ["file.txt", "document.doc", "text.docx", "data.xlsx"]
@@ -28,7 +28,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_pypdf2_reader_creation(self, mock_pypdf2):
         """Test that PyPDF2.PdfReader is created correctly"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create mock reader and pages
         mock_page = MagicMock()
@@ -51,7 +51,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_multi_page_pdf_processing(self, mock_pypdf2):
         """Test processing of multi-page PDFs"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create mock pages
         mock_page1 = MagicMock()
@@ -79,7 +79,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_empty_pdf_handling(self, mock_pypdf2):
         """Test handling of empty PDFs"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create mock reader with no pages
         mock_reader = MagicMock()
@@ -94,7 +94,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_pages_with_empty_text(self, mock_pypdf2):
         """Test handling of pages with empty or whitespace text"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create mock pages with various empty content
         mock_page1 = MagicMock()
@@ -118,7 +118,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_unicode_text_handling(self, mock_pypdf2):
         """Test handling of Unicode characters in PDF text"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create mock pages with Unicode content
         mock_page1 = MagicMock()
@@ -141,7 +141,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_pypdf2_exceptions_handling(self, mock_pypdf2):
         """Test handling of PyPDF2 specific exceptions"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         import PyPDF2
         
         # Test PdfReadError
@@ -160,7 +160,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_large_pdf_handling(self, mock_pypdf2):
         """Test handling of PDFs with many pages"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Create 100 mock pages
         mock_pages = []
@@ -186,7 +186,7 @@ from scitex.io._load_modules import _load_pdf
     
     def test_function_signature(self):
         """Test function signature and parameters"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         import inspect
         
         sig = inspect.signature(_load_pdf)
@@ -201,7 +201,7 @@ from scitex.io._load_modules import _load_pdf
     
     def test_function_docstring(self):
         """Test that function has proper docstring"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         assert hasattr(_load_pdf, '__doc__')
         assert _load_pdf.__doc__ is not None
@@ -214,7 +214,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_kwargs_handling(self, mock_pypdf2):
         """Test that kwargs are accepted but not used"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         mock_page = MagicMock()
         mock_page.extract_text.return_value = "Test content"
@@ -231,7 +231,7 @@ from scitex.io._load_modules import _load_pdf
     
     def test_case_sensitive_extension_check(self):
         """Test case sensitivity of .pdf extension"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Test case variations that should fail
         case_variations = ["file.PDF", "file.Pdf", "file.pDf"]
@@ -243,7 +243,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_path_variations(self, mock_pypdf2):
         """Test various path formats"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         mock_page = MagicMock()
         mock_page.extract_text.return_value = "Test content"
@@ -270,7 +270,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_text_extraction_edge_cases(self, mock_pypdf2):
         """Test edge cases in text extraction"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Test pages with special characters and formatting
         mock_page1 = MagicMock()
@@ -293,7 +293,7 @@ from scitex.io._load_modules import _load_pdf
         """Test behavior when PyPDF2 is not available"""
         # This test verifies the source code would handle missing PyPDF2
         # The actual import error would happen at runtime
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # We can't easily test the import error without modifying the source,
         # but we can verify the function exists
@@ -302,7 +302,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_error_message_format(self, mock_pypdf2):
         """Test that error messages include file path and original error"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         import PyPDF2
         
         # Test with specific error message
@@ -322,7 +322,7 @@ from scitex.io._load_modules import _load_pdf
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_scientific_document_scenario(self, mock_pypdf2):
         """Test realistic scientific document processing scenario"""
-from scitex.io._load_modules import _load_pdf
+        from scitex.io._load_modules import _load_pdf
         
         # Simulate a scientific paper with typical content
         mock_page1 = MagicMock()

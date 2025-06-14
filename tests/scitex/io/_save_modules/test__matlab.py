@@ -26,7 +26,7 @@ try:
 except ImportError:
     SCIPY_AVAILABLE = False
 
-from scitex.io._save_modules import save_matlab
+    from scitex.io._save_modules import save_matlab
 
 
 @pytest.mark.skipif(not SCIPY_AVAILABLE, reason="scipy not installed")

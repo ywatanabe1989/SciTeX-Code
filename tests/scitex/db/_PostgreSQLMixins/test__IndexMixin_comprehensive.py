@@ -31,7 +31,7 @@ class TestIndexMixin:
     @pytest.fixture
     def mock_db_connection(self):
         """Create a mock database connection with IndexMixin."""
-from scitex.db._PostgreSQLMixins import _IndexMixin
+        from scitex.db._PostgreSQLMixins import _IndexMixin
         
         class MockDB(_IndexMixin):
             def __init__(self):

@@ -10,7 +10,7 @@ import pandas as pd
 
 def test_corr_test_multi_with_dataframe():
     """Test corr_test_multi function with DataFrame input."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Create sample data
     np.random.seed(42)
@@ -36,7 +36,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_with_numpy_array():
     """Test corr_test_multi function with numpy array input."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Create sample data
     np.random.seed(42)
@@ -55,7 +55,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_perfect_correlation():
     """Test corr_test_multi with perfectly correlated data."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Create perfectly correlated data
     x = np.linspace(0, 10, 20)
@@ -74,7 +74,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_single_variable():
     """Test corr_test_multi with single variable."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Single variable data
     data = pd.DataFrame({'var1': np.random.randn(20)})
@@ -88,7 +88,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_with_constant_variable():
     """Test corr_test_multi with a constant variable."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Data with one constant variable
     data = pd.DataFrame({
@@ -109,7 +109,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_empty_data():
     """Test corr_test_multi with empty data."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Empty DataFrame
     empty_df = pd.DataFrame()
@@ -123,7 +123,7 @@ from scitex.stats import corr_test_multi
 
 def test_corr_test_multi_with_missing_values():
     """Test corr_test_multi with missing values."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     
     # Data with NaN values
     data = pd.DataFrame({
@@ -141,7 +141,7 @@ from scitex.stats import corr_test_multi
 
 def test_nocorrelation_test_basic():
     """Test nocorrelation_test function basic functionality."""
-from scitex.stats import nocorrelation_test
+    from scitex.stats import nocorrelation_test
     
     # Create correlated data
     np.random.seed(42)
@@ -165,7 +165,7 @@ from scitex.stats import nocorrelation_test
 
 def test_nocorrelation_test_no_correlation():
     """Test nocorrelation_test with uncorrelated data."""
-from scitex.stats import nocorrelation_test
+    from scitex.stats import nocorrelation_test
     
     # Create uncorrelated data
     np.random.seed(42)
@@ -181,7 +181,7 @@ from scitex.stats import nocorrelation_test
 
 def test_nocorrelation_test_perfect_correlation():
     """Test nocorrelation_test with perfect correlation."""
-from scitex.stats import nocorrelation_test
+    from scitex.stats import nocorrelation_test
     
     x = np.array([1, 2, 3, 4, 5])
     y = 2 * x + 3
@@ -196,7 +196,7 @@ from scitex.stats import nocorrelation_test
 
 def test_nocorrelation_test_with_nan():
     """Test nocorrelation_test with NaN values."""
-from scitex.stats import nocorrelation_test
+    from scitex.stats import nocorrelation_test
     
     x = np.array([1, 2, np.nan, 4, 5])
     y = np.array([2, 4, 6, 8, 10])
@@ -210,7 +210,7 @@ from scitex.stats import nocorrelation_test
 
 def test_nocorrelation_test_t_statistic():
     """Test that t-statistic is calculated correctly."""
-from scitex.stats import nocorrelation_test
+    from scitex.stats import nocorrelation_test
     
     np.random.seed(42)
     x = np.random.randn(50)
@@ -228,7 +228,7 @@ from scitex.stats import nocorrelation_test
 
 def test_corr_test_multi_correlation_values():
     """Test that correlation values are correct."""
-from scitex.stats import corr_test_multi
+    from scitex.stats import corr_test_multi
     from scipy import stats
     
     # Create test data with known correlations

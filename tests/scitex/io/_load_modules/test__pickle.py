@@ -18,7 +18,7 @@ import pytest
 
 def test_load_pickle_basic():
     """Test loading a basic pickle file."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     # Test various data types
     test_data = {
@@ -49,7 +49,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_with_pickle_extension():
     """Test loading a file with .pickle extension."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     test_data = ['item1', 'item2', 'item3']
     
@@ -66,7 +66,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_compressed():
     """Test loading gzip-compressed pickle files."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     # Create a large data structure to benefit from compression
     large_data = {
@@ -89,7 +89,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_complex_objects():
     """Test loading pickle with complex Python objects."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     # Define a custom class
     class CustomClass:
@@ -131,7 +131,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_invalid_extension():
     """Test that loading non-pickle file raises ValueError."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     with pytest.raises(ValueError, match="File must have .pkl, .pickle, or .pkl.gz extension"):
         _load_pickle("test.txt")
@@ -142,7 +142,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_corrupted_file():
     """Test handling of corrupted pickle files."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     # Create a file with invalid pickle data
     with tempfile.NamedTemporaryFile(suffix='.pkl', delete=False) as f:
@@ -158,7 +158,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     with pytest.raises(FileNotFoundError):
         _load_pickle("/nonexistent/path/file.pkl")
@@ -166,7 +166,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_numpy_arrays():
     """Test loading pickle containing numpy arrays."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     import numpy as np
     
     # Create data with numpy arrays
@@ -193,7 +193,7 @@ from scitex.io._load_modules import _load_pickle
 
 def test_load_pickle_protocol_versions():
     """Test loading pickles saved with different protocol versions."""
-from scitex.io._load_modules import _load_pickle
+    from scitex.io._load_modules import _load_pickle
     
     test_data = {'protocol_test': True, 'data': [1, 2, 3]}
     

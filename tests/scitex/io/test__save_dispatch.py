@@ -25,7 +25,7 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../src"))
 
 import scitex
-from scitex.io import _FILE_HANDLERS
+from scitex.io._save import _FILE_HANDLERS
 
 
 class TestSaveDispatchDictionary:

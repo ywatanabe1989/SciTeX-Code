@@ -33,7 +33,7 @@ for filename in __os.listdir(current_dir):
         except ImportError as e:
             # Warn about modules that couldn't be imported due to missing dependencies
             __warnings.warn(
-                f"Could not import {module_name} from mngs.ai.feature_extraction: {str(e)}. "
+                f"Could not import {module_name} from scitex.ai.feature_extraction: {str(e)}. "
                 f"Some functionality may be unavailable. "
                 f"Consider installing missing dependencies if you need this module.",
                 ImportWarning,

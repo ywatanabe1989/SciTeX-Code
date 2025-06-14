@@ -15,6 +15,7 @@ bitsandbytes
 black
 bs4
 bs4
+catboost
 chardet
 docutils
 docutils<0.18
@@ -124,3 +125,4 @@ wheel
 xarray # Please ignore this package due to incompatibility with recent versions of numpy*
 xlrd
 xmltodict
+streamlit

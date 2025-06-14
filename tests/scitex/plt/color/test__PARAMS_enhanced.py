@@ -15,7 +15,7 @@ import re
 
 def test_params_rgb_keys():
     """Test that RGB dictionary has expected keys."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
 
     RGB = PARAMS["RGB"]
 
@@ -41,7 +41,7 @@ from scitex.plt.color import PARAMS
 
 def test_params_rgb_values():
     """Test that RGB values are valid."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
 
     RGB = PARAMS["RGB"]
 
@@ -55,7 +55,7 @@ from scitex.plt.color import PARAMS
 
 def test_params_rgba_norm():
     """Test that RGBA_NORM values are normalized correctly."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
 
     RGB = PARAMS["RGB"]
     RGBA_NORM = PARAMS["RGBA_NORM"]
@@ -75,7 +75,7 @@ from scitex.plt.color import PARAMS
 
 def test_def_alpha_constant():
     """Test DEF_ALPHA constant value."""
-from scitex.plt.color import DEF_ALPHA
+    from scitex.plt.color import DEF_ALPHA
     
     assert isinstance(DEF_ALPHA, (int, float))
     assert 0 <= DEF_ALPHA <= 1
@@ -84,7 +84,7 @@ from scitex.plt.color import DEF_ALPHA
 
 def test_rgba_dictionary():
     """Test RGBA dictionary structure and values."""
-from scitex.plt.color import PARAMS, DEF_ALPHA
+    from scitex.plt.color import PARAMS, DEF_ALPHA
     
     RGB = PARAMS["RGB"]
     RGBA = PARAMS["RGBA"]
@@ -109,7 +109,7 @@ from scitex.plt.color import PARAMS, DEF_ALPHA
 
 def test_rgb_norm_dictionary():
     """Test RGB_NORM dictionary values are properly normalized."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     RGB = PARAMS["RGB"]
     RGB_NORM = PARAMS.get("RGB_NORM")
@@ -135,7 +135,7 @@ from scitex.plt.color import PARAMS
 
 def test_rgba_norm_for_cycle():
     """Test RGBA_NORM_FOR_CYCLE excludes certain colors."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     RGBA_NORM = PARAMS["RGBA_NORM"]
     RGBA_NORM_FOR_CYCLE = PARAMS["RGBA_NORM_FOR_CYCLE"]
@@ -155,7 +155,7 @@ from scitex.plt.color import PARAMS
 
 def test_hex_dictionary():
     """Test HEX color dictionary."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     RGB = PARAMS["RGB"]
     HEX = PARAMS["HEX"]
@@ -173,7 +173,7 @@ from scitex.plt.color import PARAMS
 
 def test_hex_rgb_correspondence():
     """Test that HEX values correspond to RGB values."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     RGB = PARAMS["RGB"]
     HEX = PARAMS["HEX"]
@@ -199,7 +199,7 @@ from scitex.plt.color import PARAMS
 
 def test_params_dictionary_structure():
     """Test overall PARAMS dictionary structure."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     expected_keys = {"RGB", "RGBA", "RGBA_NORM", "RGBA_NORM_FOR_CYCLE", "HEX"}
     
@@ -212,7 +212,7 @@ from scitex.plt.color import PARAMS
 
 def test_color_consistency_across_formats():
     """Test that same colors exist across different formats."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     RGB = PARAMS["RGB"]
     RGBA = PARAMS["RGBA"]
@@ -224,7 +224,7 @@ from scitex.plt.color import PARAMS
 
 def test_grey_gray_equivalence():
     """Test that 'grey' and 'gray' have identical values."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     for format_name in ["RGB", "RGBA", "RGBA_NORM", "HEX"]:
         format_dict = PARAMS.get(format_name, {})
@@ -234,7 +234,7 @@ from scitex.plt.color import PARAMS
 
 def test_alpha_values_in_rgba():
     """Test all alpha values in RGBA dictionaries."""
-from scitex.plt.color import PARAMS, DEF_ALPHA
+    from scitex.plt.color import PARAMS, DEF_ALPHA
     
     RGBA = PARAMS["RGBA"]
     RGBA_NORM = PARAMS["RGBA_NORM"]
@@ -247,7 +247,7 @@ from scitex.plt.color import PARAMS, DEF_ALPHA
 
 def test_color_value_ranges():
     """Test that all color values are in valid ranges."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     # Test RGB values
     RGB = PARAMS["RGB"]
@@ -267,14 +267,14 @@ from scitex.plt.color import PARAMS
 
 def test_params_immutability():
     """Test that PARAMS values are not accidentally modified."""
-from scitex.plt.color import PARAMS
+    from scitex.plt.color import PARAMS
     
     # Try to modify a value (shouldn't affect original)
     rgb_blue_original = PARAMS["RGB"]["blue"].copy()
     PARAMS["RGB"]["blue"][0] = 999
     
     # Re-import and check value is unchanged
-from scitex.plt.color import PARAMS as PARAMS_NEW
+    from scitex.plt.color import PARAMS as PARAMS_NEW
     
     assert PARAMS_NEW["RGB"]["blue"] == rgb_blue_original, "PARAMS should not be mutable"
 

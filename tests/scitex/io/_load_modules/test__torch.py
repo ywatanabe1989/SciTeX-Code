@@ -18,7 +18,7 @@ import torch.nn as nn
 
 def test_load_torch_tensor():
     """Test loading a PyTorch tensor."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     # Create various tensors
     tensor_1d = torch.tensor([1, 2, 3, 4, 5])
@@ -39,7 +39,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_state_dict():
     """Test loading a model state dict."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     # Create a simple model
     class SimpleModel(nn.Module):
@@ -75,7 +75,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_checkpoint():
     """Test loading a training checkpoint."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     # Create a typical checkpoint dictionary
     checkpoint = {
@@ -112,7 +112,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_with_pt_extension():
     """Test loading with .pt extension."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     data = {'test': torch.tensor([1, 2, 3])}
     
@@ -129,7 +129,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_invalid_extension():
     """Test that loading non-torch file raises ValueError."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     with pytest.raises(ValueError, match="File must have .pth or .pt extension"):
         _load_torch("model.pkl")
@@ -140,7 +140,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_map_location():
     """Test loading with map_location parameter."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     # Create tensor on CPU
     tensor = torch.randn(5, 5)
@@ -164,7 +164,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     with pytest.raises(FileNotFoundError):
         _load_torch("/nonexistent/path/model.pth")
@@ -172,7 +172,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_multiple_objects():
     """Test loading multiple objects saved together."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     # Save multiple objects
     objects = {
@@ -208,7 +208,7 @@ from scitex.io._load_modules import _load_torch
 
 def test_load_torch_cuda_tensor_to_cpu():
     """Test loading CUDA tensor to CPU (if CUDA available)."""
-from scitex.io._load_modules import _load_torch
+    from scitex.io._load_modules import _load_torch
     
     if not torch.cuda.is_available():
         pytest.skip("CUDA not available")

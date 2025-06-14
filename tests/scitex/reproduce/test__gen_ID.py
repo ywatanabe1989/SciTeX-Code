@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 def test_gen_id_basic():
     """Test basic ID generation."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     id_str = gen_id()
     
@@ -34,7 +34,7 @@ from scitex.str import gen_id
 
 def test_gen_id_default_format():
     """Test default timestamp format."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     id_str = gen_id()
     timestamp_part = id_str.split("_")[0]
@@ -46,7 +46,7 @@ from scitex.str import gen_id
 
 def test_gen_id_custom_time_format():
     """Test custom timestamp format."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     # Test simple format
     id_str = gen_id(time_format="%Y%m%d")
@@ -67,7 +67,7 @@ from scitex.str import gen_id
 
 def test_gen_id_custom_random_length():
     """Test custom random string length."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     # Test different lengths
     for n in [1, 4, 16, 32]:
@@ -79,7 +79,7 @@ from scitex.str import gen_id
 
 def test_gen_id_zero_random_length():
     """Test with zero random characters."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     id_str = gen_id(N=0)
     
@@ -92,7 +92,7 @@ from scitex.str import gen_id
 
 def test_gen_id_uniqueness():
     """Test that generated IDs are unique."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     ids = [gen_id() for _ in range(100)]
     
@@ -102,7 +102,7 @@ from scitex.str import gen_id
 
 def test_gen_id_random_characters():
     """Test random character composition."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     import string
     
     # Generate many IDs to test character set
@@ -121,7 +121,7 @@ from scitex.str import gen_id
 @patch('scitex.str._gen_ID._datetime')
 def test_gen_id_deterministic_timestamp(mock_datetime):
     """Test with mocked datetime for deterministic testing."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     # Mock a specific datetime
     mock_time = datetime(2025, 6, 2, 15, 30, 45)
@@ -142,7 +142,7 @@ from scitex.str import gen_id
 
 def test_gen_id_backward_compatibility():
     """Test backward compatibility alias."""
-from scitex.str import gen_ID, gen_id
+    from scitex.str import gen_ID, gen_id
     
     # gen_ID should be the same function
     assert gen_ID is gen_id
@@ -160,7 +160,7 @@ from scitex.str import gen_ID, gen_id
 
 def test_gen_id_time_precision():
     """Test that IDs are unique even with rapid generation."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     import time
     
     # Generate multiple IDs rapidly
@@ -182,7 +182,7 @@ from scitex.str import gen_id
 
 def test_gen_id_empty_time_format():
     """Test with empty time format."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     id_str = gen_id(time_format="")
     
@@ -195,7 +195,7 @@ from scitex.str import gen_id
 
 def test_gen_id_special_time_format():
     """Test with special characters in time format."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     # Test format with special characters
     id_str = gen_id(time_format="exp-%Y-%m-%d")
@@ -207,7 +207,7 @@ from scitex.str import gen_id
 
 def test_gen_id_large_random_length():
     """Test with large random string length."""
-from scitex.str import gen_id
+    from scitex.str import gen_id
     
     id_str = gen_id(N=1000)
     random_part = id_str.split("_")[1]

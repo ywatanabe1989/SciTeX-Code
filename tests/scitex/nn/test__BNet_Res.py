@@ -46,7 +46,7 @@ class TestBNetRes:
     def test_bnet_res_instantiation_basic(self, base_config, mock_mnet_config):
         """Test basic BNet_Res instantiation."""
         # Note: Using the class name from source which is still 'BNet'
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         assert isinstance(model, nn.Module)
@@ -56,7 +56,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_residual_blocks_structure(self, base_config, mock_mnet_config):
         """Test residual blocks are properly configured."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         with patch('scitex.nn.ResNetBasicBlock') as mock_resnet_block:
             mock_resnet_block.return_value = Mock(spec=nn.Module)
@@ -69,7 +69,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_channel_reduction_progression(self, base_config, mock_mnet_config):
         """Test channel reduction through network depth."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         with patch('scitex.nn.ResNetBasicBlock') as mock_resnet_block:
             # Track how ResNetBasicBlock was called
@@ -95,7 +95,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_forward_with_pooling(self, base_config, mock_mnet_config):
         """Test forward pass includes proper pooling operations."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         batch_size = 4
         seq_len = 1024  # Must be power of 2 for multiple pooling operations
@@ -139,7 +139,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_multi_modal_heads(self, base_config, mock_mnet_config):
         """Test multi-modal head configuration."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -148,7 +148,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_virtual_channels_configuration(self, base_config):
         """Test virtual channels are properly configured."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         # Test with different virtual channel counts
         for n_virtual in [8, 16, 32, 64]:
@@ -163,7 +163,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_znorm_static_method(self):
         """Test z-normalization functionality."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         x = torch.randn(8, 32, 512)
         x_norm = BNet._znorm_along_the_last_dim(x)
@@ -174,7 +174,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_pooling_dimensions(self, base_config, mock_mnet_config):
         """Test pooling operations maintain correct dimensions."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         # Test pooling operations independently
         x = torch.randn(4, 16, 1024)
@@ -189,7 +189,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_deep_gradient_flow(self, base_config, mock_mnet_config):
         """Test gradient flow through deep residual architecture."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         # Create simplified model for gradient testing
         model = BNet(base_config, mock_mnet_config)
@@ -226,7 +226,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_different_sampling_rates(self, mock_mnet_config):
         """Test BNet_Res with different sampling rates."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         sampling_rates = [100, 250, 500, 1000, 2000]
         
@@ -248,7 +248,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_dropout_configuration(self, base_config, mock_mnet_config):
         """Test dropout is properly configured."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -258,7 +258,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_frequency_bands_configuration(self, mock_mnet_config):
         """Test different frequency band configurations."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         for n_bands in [2, 4, 6, 8, 10]:
             config = {
@@ -278,7 +278,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_invalid_configuration(self, mock_mnet_config):
         """Test BNet_Res with invalid configurations."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         # Test mismatched modalities and classes
         config = {
@@ -300,7 +300,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_bhead_integration(self, base_config, mock_mnet_config):
         """Test BHead integration in residual architecture."""
-from scitex.nn import BNet, BHead
+        from scitex.nn import BNet, BHead
         
         # Test BHead separately
         head = BHead(32, 16)
@@ -313,7 +313,7 @@ from scitex.nn import BNet, BHead
     
     def test_bnet_res_memory_efficiency(self, base_config, mock_mnet_config):
         """Test memory efficiency with pooling operations."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -330,7 +330,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_swap_channels_component(self, base_config, mock_mnet_config):
         """Test swap channels component (currently commented out)."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -340,7 +340,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_parameter_shapes(self, base_config, mock_mnet_config):
         """Test parameter shapes throughout the network."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -350,7 +350,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_eval_mode_behavior(self, base_config, mock_mnet_config):
         """Test behavior differences between train and eval modes."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -367,7 +367,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_device_movement(self, base_config, mock_mnet_config):
         """Test moving model between devices."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         
@@ -384,7 +384,7 @@ from scitex.nn import BNet
     
     def test_bnet_res_multiple_forward_passes(self, base_config, mock_mnet_config):
         """Test multiple forward passes maintain consistency."""
-from scitex.nn import BNet
+        from scitex.nn import BNet
         
         model = BNet(base_config, mock_mnet_config)
         model.eval()  # Disable dropout for consistency

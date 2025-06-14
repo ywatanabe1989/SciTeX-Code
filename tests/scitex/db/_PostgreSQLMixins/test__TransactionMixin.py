@@ -207,7 +207,7 @@ class TestTransactionMixin:
 
     def test_inheritance_from_base_mixin(self):
         """Test that TransactionMixin properly inherits from BaseTransactionMixin."""
-from scitex.db._BaseMixins import _BaseTransactionMixin
+        from scitex.db._BaseMixins import _BaseTransactionMixin
         assert issubclass(_TransactionMixin, _BaseTransactionMixin)
 
     def test_error_handling_consistency(self, mixin):

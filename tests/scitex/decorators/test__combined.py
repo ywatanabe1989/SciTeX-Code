@@ -11,7 +11,7 @@ import unittest.mock as mock
 
 def test_combined_torch_batch_fn_exists():
     """Test that torch_batch_fn decorator exists and is callable."""
-from scitex.decorators import torch_batch_fn
+    from scitex.decorators import torch_batch_fn
     
     assert torch_batch_fn is not None
     assert callable(torch_batch_fn)
@@ -19,7 +19,7 @@ from scitex.decorators import torch_batch_fn
 
 def test_combined_numpy_batch_fn_exists():
     """Test that numpy_batch_fn decorator exists and is callable."""
-from scitex.decorators import numpy_batch_fn
+    from scitex.decorators import numpy_batch_fn
     
     assert numpy_batch_fn is not None
     assert callable(numpy_batch_fn)
@@ -27,7 +27,7 @@ from scitex.decorators import numpy_batch_fn
 
 def test_combined_pandas_batch_fn_exists():
     """Test that pandas_batch_fn decorator exists and is callable."""
-from scitex.decorators import pandas_batch_fn
+    from scitex.decorators import pandas_batch_fn
     
     assert pandas_batch_fn is not None
     assert callable(pandas_batch_fn)
@@ -37,7 +37,7 @@ from scitex.decorators import pandas_batch_fn
 @mock.patch('scitex.decorators._combined.batch_fn')
 def test_combined_torch_batch_fn_decorator_application(mock_batch_fn, mock_torch_fn):
     """Test that torch_batch_fn applies decorators in correct order."""
-from scitex.decorators import torch_batch_fn
+    from scitex.decorators import torch_batch_fn
     
     # Mock the decorators to return identity functions
     mock_torch_fn.return_value = lambda x: x
@@ -56,7 +56,7 @@ from scitex.decorators import torch_batch_fn
 @mock.patch('scitex.decorators._combined.batch_fn')
 def test_combined_numpy_batch_fn_decorator_application(mock_batch_fn, mock_numpy_fn):
     """Test that numpy_batch_fn applies decorators in correct order."""
-from scitex.decorators import numpy_batch_fn
+    from scitex.decorators import numpy_batch_fn
     
     # Mock the decorators to return identity functions
     mock_numpy_fn.return_value = lambda x: x
@@ -75,7 +75,7 @@ from scitex.decorators import numpy_batch_fn
 @mock.patch('scitex.decorators._combined.batch_fn')
 def test_combined_pandas_batch_fn_decorator_application(mock_batch_fn, mock_pandas_fn):
     """Test that pandas_batch_fn applies decorators in correct order."""
-from scitex.decorators import pandas_batch_fn
+    from scitex.decorators import pandas_batch_fn
     
     # Mock the decorators to return identity functions
     mock_pandas_fn.return_value = lambda x: x
@@ -92,7 +92,7 @@ from scitex.decorators import pandas_batch_fn
 
 def test_combined_aliases_exist():
     """Test that decorator aliases exist and reference correct functions."""
-from scitex.decorators import (
+    from scitex.decorators import (
         torch_batch_fn, numpy_batch_fn, pandas_batch_fn,
         batch_torch_fn, batch_numpy_fn, batch_pandas_fn
     )
@@ -105,7 +105,7 @@ from scitex.decorators import (
 
 def test_combined_function_metadata_preservation():
     """Test that decorators preserve function metadata."""
-from scitex.decorators import torch_batch_fn
+    from scitex.decorators import torch_batch_fn
     
     @torch_batch_fn
     def test_function(x, y=1):
@@ -119,7 +119,7 @@ from scitex.decorators import torch_batch_fn
 
 def test_combined_all_exports():
     """Test that __all__ contains expected exports."""
-from scitex.decorators import __all__
+    from scitex.decorators import __all__
     
     expected_exports = [
         'torch_batch_fn',
@@ -137,12 +137,12 @@ from scitex.decorators import __all__
 def test_combined_imports_work():
     """Test that all imports from the module work correctly."""
     # Test individual imports
-from scitex.decorators import torch_batch_fn
-from scitex.decorators import numpy_batch_fn
-from scitex.decorators import pandas_batch_fn
-from scitex.decorators import batch_torch_fn
-from scitex.decorators import batch_numpy_fn
-from scitex.decorators import batch_pandas_fn
+    from scitex.decorators import torch_batch_fn
+    from scitex.decorators import numpy_batch_fn
+    from scitex.decorators import pandas_batch_fn
+    from scitex.decorators import batch_torch_fn
+    from scitex.decorators import batch_numpy_fn
+    from scitex.decorators import batch_pandas_fn
     
     # Test that they are all callable
     decorators = [
@@ -158,7 +158,7 @@ from scitex.decorators import batch_pandas_fn
 @mock.patch('scitex.decorators._combined.batch_fn', side_effect=lambda x: x)
 def test_combined_torch_batch_fn_functionality(mock_batch_fn, mock_torch_fn):
     """Test basic functionality of torch_batch_fn decorated function."""
-from scitex.decorators import torch_batch_fn
+    from scitex.decorators import torch_batch_fn
     
     @torch_batch_fn
     def simple_function(x):
@@ -173,7 +173,7 @@ from scitex.decorators import torch_batch_fn
 @mock.patch('scitex.decorators._combined.batch_fn', side_effect=lambda x: x)
 def test_combined_numpy_batch_fn_functionality(mock_batch_fn, mock_numpy_fn):
     """Test basic functionality of numpy_batch_fn decorated function."""
-from scitex.decorators import numpy_batch_fn
+    from scitex.decorators import numpy_batch_fn
     
     @numpy_batch_fn
     def simple_function(x):
@@ -188,7 +188,7 @@ from scitex.decorators import numpy_batch_fn
 @mock.patch('scitex.decorators._combined.batch_fn', side_effect=lambda x: x)
 def test_combined_pandas_batch_fn_functionality(mock_batch_fn, mock_pandas_fn):
     """Test basic functionality of pandas_batch_fn decorated function."""
-from scitex.decorators import pandas_batch_fn
+    from scitex.decorators import pandas_batch_fn
     
     @pandas_batch_fn
     def simple_function(x):
@@ -202,10 +202,10 @@ from scitex.decorators import pandas_batch_fn
 def test_combined_decorator_dependencies():
     """Test that required decorator dependencies can be imported."""
     # Test that individual decorators can be imported
-from scitex.decorators import batch_fn
-from scitex.decorators import torch_fn
-from scitex.decorators import numpy_fn
-from scitex.decorators import pandas_fn
+    from scitex.decorators import batch_fn
+    from scitex.decorators import torch_fn
+    from scitex.decorators import numpy_fn
+    from scitex.decorators import pandas_fn
     
     # Test that they are callable
     assert callable(batch_fn)

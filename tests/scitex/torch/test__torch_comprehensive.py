@@ -94,7 +94,7 @@ class TestNanFunctionsComprehensive:
     def setup_method(self):
         """Setup test fixtures."""
         pytest.importorskip("torch")
-from scitex.torch import (
+        from scitex.torch import (
             nanmax, nanmin, nanvar, nanstd, nanprod, 
             nancumprod, nancumsum, nanargmin, nanargmax
         )

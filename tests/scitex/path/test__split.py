@@ -10,7 +10,7 @@ from pathlib import Path
 
 def test_split_basic():
     """Test split with basic file path."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/file.txt')
     
@@ -21,7 +21,7 @@ from scitex.path import split
 
 def test_split_relative_path():
     """Test split with relative path."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('../data/01/day1/split_octave/2kHz_mat/tt8-2.mat')
     
@@ -32,7 +32,7 @@ from scitex.path import split
 
 def test_split_no_extension():
     """Test split with file without extension."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/README')
     
@@ -43,7 +43,7 @@ from scitex.path import split
 
 def test_split_multiple_dots():
     """Test split with filename containing multiple dots."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/file.backup.tar.gz')
     
@@ -54,7 +54,7 @@ from scitex.path import split
 
 def test_split_hidden_file():
     """Test split with hidden file (starting with dot)."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/home/user/.bashrc')
     
@@ -65,7 +65,7 @@ from scitex.path import split
 
 def test_split_hidden_file_with_extension():
     """Test split with hidden file that has extension."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/home/user/.config.yaml')
     
@@ -76,7 +76,7 @@ from scitex.path import split
 
 def test_split_root_directory():
     """Test split with file in root directory."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/file.txt')
     
@@ -87,7 +87,7 @@ from scitex.path import split
 
 def test_split_current_directory():
     """Test split with file in current directory."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('file.txt')
     
@@ -98,7 +98,7 @@ from scitex.path import split
 
 def test_split_trailing_slash():
     """Test split with path ending in slash (directory)."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/directory/')
     
@@ -109,7 +109,7 @@ from scitex.path import split
 
 def test_split_windows_path():
     """Test split with Windows-style path."""
-from scitex.path import split
+    from scitex.path import split
     
     # Note: os.path handles this based on the OS
     if os.name == 'nt':
@@ -125,7 +125,7 @@ from scitex.path import split
 
 def test_split_empty_path():
     """Test split with empty path."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('')
     
@@ -136,7 +136,7 @@ from scitex.path import split
 
 def test_split_special_characters():
     """Test split with special characters in filename."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/file[with]special(chars).txt')
     
@@ -147,7 +147,7 @@ from scitex.path import split
 
 def test_split_unicode_characters():
     """Test split with unicode characters."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path/to/ファイル.txt')
     
@@ -158,7 +158,7 @@ from scitex.path import split
 
 def test_split_spaces_in_path():
     """Test split with spaces in path and filename."""
-from scitex.path import split
+    from scitex.path import split
     
     dirname, fname, ext = split('/path with spaces/file name.txt')
     
@@ -169,7 +169,7 @@ from scitex.path import split
 
 def test_split_double_extension():
     """Test split behavior with double extensions."""
-from scitex.path import split
+    from scitex.path import split
     
     # Only the last extension is considered
     dirname, fname, ext = split('/path/to/archive.tar.gz')

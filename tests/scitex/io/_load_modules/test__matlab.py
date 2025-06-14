@@ -31,7 +31,7 @@ class TestLoadMatlab:
 
     def test_basic_matlab_loading(self):
         """Test loading basic MATLAB .mat file with scipy.io."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create test data with various types
         data = {
@@ -71,7 +71,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_extension_validation(self):
         """Test that function validates .mat extension."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         invalid_extensions = [
             "file.txt",
@@ -89,7 +89,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_scipy_loadmat_functionality(self):
         """Test scipy.io.loadmat functionality with different options."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create test data with metadata
         data = {
@@ -116,7 +116,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_struct_array_handling(self):
         """Test loading MATLAB struct arrays."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create nested structure data
         nested_data = {
@@ -156,7 +156,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_large_file_handling(self):
         """Test loading large MATLAB files."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create large data for performance testing
         large_data = {
@@ -189,7 +189,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_different_matlab_versions(self):
         """Test loading different MATLAB file format versions."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         test_data = {
             'version_test': np.array([1, 2, 3, 4, 5]),
@@ -220,7 +220,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_pymatreader_fallback(self):
         """Test fallback to pymatreader when scipy fails."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Mock pymatreader
         mock_pymat_data = {
@@ -241,7 +241,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_both_loaders_fail(self):
         """Test when both scipy and pymatreader fail."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Make both loaders fail
         scipy_error = Exception("scipy error")
@@ -260,7 +260,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_kwargs_forwarding_to_scipy(self):
         """Test that kwargs are forwarded to scipy.io.loadmat."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         test_data = {'simple_array': np.array([1, 2, 3])}
         
@@ -284,7 +284,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_kwargs_forwarding_to_pymatreader(self):
         """Test that kwargs are forwarded to pymatreader when used as fallback."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         mock_pymat_data = {'pymat_data': np.array([4, 5, 6])}
         
@@ -300,7 +300,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_error_handling_file_not_found(self):
         """Test error handling for non-existent files."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Both scipy and pymatreader should fail for non-existent file
         with pytest.raises(ValueError) as exc_info:
@@ -311,7 +311,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_corrupted_file_handling(self):
         """Test handling of corrupted MATLAB files."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create a file that's not a valid MATLAB file
         with tempfile.NamedTemporaryFile(suffix='.mat', delete=False) as f:
@@ -331,7 +331,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_scientific_computing_scenarios(self):
         """Test real-world scientific computing scenarios."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Simulate typical scientific data
         scientific_data = {
@@ -378,7 +378,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_edge_cases(self):
         """Test edge cases and corner case scenarios."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Test with various edge case data
         edge_case_data = {
@@ -454,7 +454,7 @@ from scitex.io._load_modules import _load_matlab
 
     def test_memory_efficiency(self):
         """Test memory efficiency with repeated loading."""
-from scitex.io._load_modules import _load_matlab
+        from scitex.io._load_modules import _load_matlab
         
         # Create moderately large data
         data = {

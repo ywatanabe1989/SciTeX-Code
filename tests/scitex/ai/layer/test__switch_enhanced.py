@@ -22,7 +22,7 @@ try:
 except ImportError:
     HAS_HYPOTHESIS = False
 
-from scitex.ai.layer import switch, Pass
+    from scitex.ai.layer import switch, Pass
 
 __FILE__ = "./tests/scitex/ai/layer/test__switch_enhanced.py"
 __DIR__ = os.path.dirname(__FILE__)

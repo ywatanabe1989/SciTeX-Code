@@ -48,7 +48,7 @@ class TestLlama:
 
     def test_init_with_default_paths(self, mock_env_setup):
         """Test initialization with default paths."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -61,7 +61,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_init_with_custom_paths(self, mock_env_setup):
         """Test initialization with custom paths."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -75,7 +75,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_environment_setup(self, mock_env_setup):
         """Test environment variables are set correctly."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -89,7 +89,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_init_client(self, mock_env_setup, mock_llama_module, mock_llama_builder):
         """Test client initialization."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         mock_dialog, mock_llama_class = mock_llama_module
         mock_llama_class.build.return_value = mock_llama_builder
@@ -107,7 +107,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_api_call_static(self, mock_env_setup, mock_llama_module, mock_llama_builder):
         """Test static API call."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         mock_dialog, mock_llama_class = mock_llama_module
         mock_llama_class.build.return_value = mock_llama_builder
@@ -127,7 +127,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_api_call_stream(self, mock_env_setup, mock_llama_module, mock_llama_builder):
         """Test streaming API call (simulated)."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         mock_dialog, mock_llama_class = mock_llama_module
         mock_llama_class.build.return_value = mock_llama_builder
@@ -144,7 +144,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_max_gen_len_parameter(self, mock_env_setup, mock_llama_module, mock_llama_builder):
         """Test max_gen_len parameter."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         mock_dialog, mock_llama_class = mock_llama_module
         mock_llama_class.build.return_value = mock_llama_builder
@@ -160,7 +160,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_temperature_setting(self, mock_env_setup, mock_llama_module, mock_llama_builder):
         """Test temperature parameter is passed correctly."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         mock_dialog, mock_llama_class = mock_llama_module
         mock_llama_class.build.return_value = mock_llama_builder
@@ -179,7 +179,7 @@ from scitex.ai._gen_ai import Llama
     @pytest.mark.parametrize("stream", [True, False])
     def test_stream_parameter(self, mock_env_setup, stream):
         """Test stream parameter handling."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -191,7 +191,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_n_keep_parameter(self, mock_env_setup):
         """Test n_keep parameter for history management."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -203,7 +203,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_seed_parameter(self, mock_env_setup):
         """Test seed parameter initialization."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -215,7 +215,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_system_setting(self, mock_env_setup):
         """Test system setting initialization."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -228,7 +228,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_str_method(self, mock_env_setup):
         """Test __str__ method returns 'Llama'."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -237,7 +237,7 @@ from scitex.ai._gen_ai import Llama
 
     def test_verify_model(self, mock_env_setup):
         """Test verify_model method (should pass for Llama)."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):
@@ -252,7 +252,7 @@ from scitex.ai._gen_ai import Llama
     ])
     def test_different_models(self, mock_env_setup, model, expected_ckpt):
         """Test initialization with different Llama models."""
-from scitex.ai._gen_ai import Llama
+        from scitex.ai._gen_ai import Llama
         
         with patch('scitex.ai._gen_ai._Llama.MODELS', MagicMock()):
             with patch.object(Llama, '_init_client', return_value=Mock()):

@@ -228,8 +228,8 @@ class TestClusteringIntegration:
         from scitex.ai.clustering import pca as clustering_pca
         from scitex.ai.clustering import umap as clustering_umap
         
-from scitex.ai.clustering import pca as direct_pca
-from scitex.ai.clustering import umap as direct_umap
+        from scitex.ai.clustering import pca as direct_pca
+        from scitex.ai.clustering import umap as direct_umap
         
         # Should be the same functions
         assert clustering_pca is direct_pca

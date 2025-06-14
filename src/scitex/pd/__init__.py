@@ -2,7 +2,7 @@
 """Scitex pd module."""
 
 from ._find_indi import find_indi
-from ._find_pval import find_pval
+from ._find_pval import find_pval, _find_pval_col
 from ._force_df import force_df
 from ._from_xyz import from_xyz
 from ._ignore_SettingWithCopyWarning import ignore_SettingWithCopyWarning, ignore_setting_with_copy_warning
@@ -20,6 +20,7 @@ from ._to_xyz import to_xyz
 __all__ = [
     "find_indi",
     "find_pval",
+    "_find_pval_col",
     "force_df",
     "from_xyz",
     "ignore_SettingWithCopyWarning",

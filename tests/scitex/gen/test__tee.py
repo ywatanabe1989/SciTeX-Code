@@ -298,7 +298,7 @@ class TestMainAlias:
 
     def test_main_is_tee(self):
         """Test that main is an alias for tee."""
-from scitex.gen import main, tee
+        from scitex.gen import main, tee
 
         assert main is tee
 

@@ -26,12 +26,12 @@ class TestGeometricMedianBasic:
         
     def test_import(self):
         """Test that geometric_median can be imported."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         assert callable(geometric_median)
         
     def test_basic_1d(self):
         """Test geometric median with 1D tensor."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # Simple 1D case
         x = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0])
@@ -50,7 +50,7 @@ from scitex.linalg import geometric_median
             
     def test_basic_2d(self):
         """Test geometric median with 2D tensor."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # 2D tensor
         x = torch.tensor([[1.0, 2.0, 3.0],
@@ -71,7 +71,7 @@ from scitex.linalg import geometric_median
             
     def test_basic_3d(self):
         """Test geometric median with 3D tensor."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # 3D tensor (batch x features x time)
         x = torch.randn(2, 4, 5)
@@ -93,7 +93,7 @@ class TestGeometricMedianDimensions:
     
     def test_positive_dim(self):
         """Test with positive dimension indices."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(3, 4, 5)
         
@@ -114,7 +114,7 @@ from scitex.linalg import geometric_median
                 
     def test_negative_dim(self):
         """Test with negative dimension indices."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(3, 4, 5)
         
@@ -136,7 +136,7 @@ from scitex.linalg import geometric_median
                 
     def test_dim_out_of_range(self):
         """Test with dimension index out of range."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(3, 4, 5)
         
@@ -154,7 +154,7 @@ class TestGeometricMedianDataTypes:
     
     def test_float32(self):
         """Test with float32 tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(10, 5, dtype=torch.float32)
         
@@ -171,7 +171,7 @@ from scitex.linalg import geometric_median
             
     def test_float64(self):
         """Test with float64 tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(10, 5, dtype=torch.float64)
         
@@ -188,7 +188,7 @@ from scitex.linalg import geometric_median
             
     def test_gpu_tensor(self):
         """Test with GPU tensors if available."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         if not torch.cuda.is_available():
             pytest.skip("CUDA not available")
@@ -208,7 +208,7 @@ from scitex.linalg import geometric_median
             
     def test_requires_grad(self):
         """Test with tensors that require gradients."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(10, 5, requires_grad=True)
         
@@ -229,7 +229,7 @@ class TestGeometricMedianDecorator:
     
     def test_numpy_input(self):
         """Test that numpy arrays are converted to tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = np.random.randn(10, 5)
         
@@ -247,7 +247,7 @@ from scitex.linalg import geometric_median
             
     def test_list_input(self):
         """Test that lists are converted to tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
         
@@ -265,7 +265,7 @@ from scitex.linalg import geometric_median
             
     def test_mixed_device_handling(self):
         """Test handling of tensors on different devices."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         if not torch.cuda.is_available():
             pytest.skip("CUDA not available")
@@ -292,7 +292,7 @@ class TestGeometricMedianEdgeCases:
     
     def test_single_point(self):
         """Test with single point (no median to compute)."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.tensor([[1.0], [2.0], [3.0]])  # 3x1 tensor
         
@@ -309,7 +309,7 @@ from scitex.linalg import geometric_median
             
     def test_empty_tensor(self):
         """Test with empty tensor."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.tensor([])
         
@@ -320,7 +320,7 @@ from scitex.linalg import geometric_median
                 
     def test_nan_values(self):
         """Test with NaN values."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.tensor([[1.0, 2.0, float('nan')],
                          [4.0, 5.0, 6.0]])
@@ -339,7 +339,7 @@ from scitex.linalg import geometric_median
             
     def test_inf_values(self):
         """Test with infinite values."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.tensor([[1.0, 2.0, float('inf')],
                          [4.0, 5.0, 6.0]])
@@ -362,7 +362,7 @@ class TestGeometricMedianLargeScale:
     
     def test_large_tensor(self):
         """Test with large tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # Large tensor
         x = torch.randn(100, 1000)
@@ -380,7 +380,7 @@ from scitex.linalg import geometric_median
             
     def test_high_dimensional(self):
         """Test with high-dimensional tensors."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # 5D tensor
         x = torch.randn(2, 3, 4, 5, 6)
@@ -405,7 +405,7 @@ class TestGeometricMedianIntegration:
         """Test with actual geom_median library if available."""
         try:
             from geom_median.torch import compute_geometric_median as real_compute
-from scitex.linalg import geometric_median
+            from scitex.linalg import geometric_median
         except ImportError:
             pytest.skip("geom_median not available")
             
@@ -420,7 +420,7 @@ from scitex.linalg import geometric_median
         
     def test_convergence_properties(self):
         """Test convergence properties of geometric median."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # Create points where geometric median should be at origin
         angles = torch.linspace(0, 2 * np.pi, 8, dtype=torch.float32)[:-1]
@@ -443,14 +443,14 @@ class TestGeometricMedianDocstring:
     
     def test_has_docstring(self):
         """Test that function has a docstring."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # Currently the source shows "This script does XYZ" which needs improvement
         assert geometric_median.__doc__ is not None
         
     def test_function_signature(self):
         """Test function signature."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         import inspect
         
         sig = inspect.signature(geometric_median)
@@ -464,7 +464,7 @@ from scitex.linalg import geometric_median
         
     def test_torch_fn_decorator_applied(self):
         """Test that torch_fn decorator is properly applied."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         # Should have decorator attributes or wrapped function
         # The exact attributes depend on decorator implementation
@@ -476,7 +476,7 @@ class TestGeometricMedianPerformance:
     
     def test_memory_efficiency(self):
         """Test memory usage patterns."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(100, 100)
         
@@ -495,7 +495,7 @@ from scitex.linalg import geometric_median
             
     def test_no_unnecessary_copies(self):
         """Test that function doesn't make unnecessary copies."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(10, 5)
         x_ptr = x.data_ptr()
@@ -520,7 +520,7 @@ class TestGeometricMedianErrorHandling:
     
     def test_dimension_mismatch_handling(self):
         """Test handling of dimension mismatches."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(3, 4, 5)
         
@@ -539,7 +539,7 @@ from scitex.linalg import geometric_median
             
     def test_compute_geometric_median_failure(self):
         """Test handling when compute_geometric_median fails."""
-from scitex.linalg import geometric_median
+        from scitex.linalg import geometric_median
         
         x = torch.randn(10, 5)
         

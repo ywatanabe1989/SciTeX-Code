@@ -15,7 +15,7 @@ class TestListedDictEnhanced:
 
     def test_basic_creation_no_keys(self):
         """Test creating listed_dict without predefined keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict()
         
@@ -28,7 +28,7 @@ from scitex.dict import listed_dict
 
     def test_basic_creation_with_keys(self):
         """Test creating listed_dict with predefined keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         keys = ['a', 'b', 'c']
         d = listed_dict(keys)
@@ -46,7 +46,7 @@ from scitex.dict import listed_dict
 
     def test_dynamic_key_addition(self):
         """Test that new keys can be added dynamically."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict()
         
@@ -58,7 +58,7 @@ from scitex.dict import listed_dict
 
     def test_list_operations(self):
         """Test various list operations on dictionary values."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(['data'])
         
@@ -81,7 +81,7 @@ from scitex.dict import listed_dict
 
     def test_empty_keys_list(self):
         """Test behavior with empty keys list."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict([])
         
@@ -94,7 +94,7 @@ from scitex.dict import listed_dict
 
     def test_none_keys_parameter(self):
         """Test explicit None parameter."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(keys=None)
         
@@ -104,7 +104,7 @@ from scitex.dict import listed_dict
 
     def test_duplicate_keys(self):
         """Test behavior with duplicate keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         keys = ['a', 'b', 'a', 'c']
         d = listed_dict(keys)
@@ -115,7 +115,7 @@ from scitex.dict import listed_dict
 
     def test_different_key_types(self):
         """Test with different types of keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         keys = [1, 'string', (1, 2), frozenset([3, 4])]
         d = listed_dict(keys)
@@ -127,7 +127,7 @@ from scitex.dict import listed_dict
 
     def test_example1_reproduction(self):
         """Test reproduction of example 1 from docstring."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         random.seed(42)
         d = listed_dict()
@@ -141,7 +141,7 @@ from scitex.dict import listed_dict
 
     def test_example2_reproduction(self):
         """Test reproduction of example 2 from docstring."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         random.seed(42)
         keys = ['a', 'b', 'c']
@@ -163,7 +163,7 @@ from scitex.dict import listed_dict
 
     def test_multiple_access_same_key(self):
         """Test multiple accesses to the same key."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict()
         
@@ -179,7 +179,7 @@ from scitex.dict import listed_dict
 
     def test_key_initialization_overwrites_existing(self):
         """Test that key initialization overwrites existing values."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict()
         
@@ -200,7 +200,7 @@ from scitex.dict import listed_dict
 
     def test_performance_with_many_keys(self):
         """Test performance with many keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         many_keys = [f'key_{i}' for i in range(1000)]
         d = listed_dict(many_keys)
@@ -214,7 +214,7 @@ from scitex.dict import listed_dict
 
     def test_nested_list_behavior(self):
         """Test behavior with nested lists."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(['nested'])
         
@@ -230,7 +230,7 @@ from scitex.dict import listed_dict
 
     def test_serialization_compatibility(self):
         """Test that the dictionary can be serialized."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         import pickle
         
         d = listed_dict(['a', 'b'])
@@ -246,7 +246,7 @@ from scitex.dict import listed_dict
 
     def test_dict_methods_work(self):
         """Test that standard dict methods work."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(['a', 'b', 'c'])
         d['a'].append(1)
@@ -269,7 +269,7 @@ from scitex.dict import listed_dict
 
     def test_clear_and_update(self):
         """Test clear and update operations."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(['a', 'b'])
         d['a'].extend([1, 2])
@@ -289,7 +289,7 @@ from scitex.dict import listed_dict
 
     def test_copy_behavior(self):
         """Test copying behavior."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         import copy
         
         d = listed_dict(['a'])
@@ -310,7 +310,7 @@ from scitex.dict import listed_dict
 
     def test_special_characters_in_keys(self):
         """Test with special characters in keys."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         special_keys = ['key with spaces', 'key-with-dashes', 'key.with.dots', 'key_with_underscores']
         d = listed_dict(special_keys)
@@ -322,7 +322,7 @@ from scitex.dict import listed_dict
 
     def test_memory_efficiency(self):
         """Test that empty lists are not unnecessarily duplicated."""
-from scitex.dict import listed_dict
+        from scitex.dict import listed_dict
         
         d = listed_dict(['a', 'b', 'c'])
         

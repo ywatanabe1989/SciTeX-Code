@@ -28,7 +28,7 @@ try:
 except ImportError:
     HAS_TORCH = False
 
-from scitex.gen import ci
+    from scitex.gen import ci
 
 
 class TestConfidenceIntervalBasic:

@@ -19,7 +19,7 @@ class TestLoadImage:
     
     def test_basic_rgb_image_loading(self):
         """Test loading basic RGB image files in various formats."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create a simple RGB image with distinct colors
         img_array = np.zeros((100, 100, 3), dtype=np.uint8)
@@ -56,7 +56,7 @@ from scitex.io._load_modules import _load_image
     
     def test_grayscale_image_loading(self):
         """Test loading grayscale images."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create grayscale image with gradient
         gray_array = np.linspace(0, 255, 10000, dtype=np.uint8).reshape(100, 100)
@@ -81,7 +81,7 @@ from scitex.io._load_modules import _load_image
     
     def test_rgba_image_with_transparency(self):
         """Test loading RGBA images with transparency."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create RGBA image with transparency
         rgba_array = np.zeros((100, 100, 4), dtype=np.uint8)
@@ -110,7 +110,7 @@ from scitex.io._load_modules import _load_image
     
     def test_tiff_format_support(self):
         """Test loading TIFF format images (both .tiff and .tif extensions)."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create high-resolution image for TIFF
         img_array = np.random.randint(0, 255, (200, 300, 3), dtype=np.uint8)
@@ -136,7 +136,7 @@ from scitex.io._load_modules import _load_image
     
     def test_large_image_loading(self):
         """Test loading large images to verify memory handling."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create a large image (4K-like resolution)
         large_array = np.random.randint(0, 255, (2160, 3840, 3), dtype=np.uint8)
@@ -162,7 +162,7 @@ from scitex.io._load_modules import _load_image
     
     def test_scientific_image_formats(self):
         """Test loading images commonly used in scientific applications."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # 16-bit grayscale (common in microscopy)
         img_16bit = Image.new('I;16', (256, 256))
@@ -187,7 +187,7 @@ from scitex.io._load_modules import _load_image
     
     def test_multipage_tiff_loading(self):
         """Test loading multi-page TIFF (loads first page)."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create multi-page TIFF
         pages = []
@@ -214,7 +214,7 @@ from scitex.io._load_modules import _load_image
     
     def test_kwargs_parameter_passing(self):
         """Test that kwargs are properly passed to PIL Image.open."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create test image
         img_array = np.random.randint(0, 255, (50, 50, 3), dtype=np.uint8)
@@ -235,7 +235,7 @@ from scitex.io._load_modules import _load_image
     
     def test_unsupported_extensions(self):
         """Test that unsupported file extensions raise ValueError."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         unsupported_extensions = [
             'file.txt', 'image.gif', 'data.csv', 'document.pdf',
@@ -248,7 +248,7 @@ from scitex.io._load_modules import _load_image
     
     def test_supported_extensions_validation(self):
         """Test that all documented supported extensions are recognized."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # These should not raise ValueError (will raise FileNotFoundError instead)
         supported_extensions = [
@@ -266,7 +266,7 @@ from scitex.io._load_modules import _load_image
     
     def test_nonexistent_file_error(self):
         """Test that loading non-existent files raises appropriate errors."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         nonexistent_files = [
             "/nonexistent/image.png",
@@ -280,7 +280,7 @@ from scitex.io._load_modules import _load_image
     
     def test_corrupted_image_file(self):
         """Test handling of corrupted image files."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create a file with image extension but invalid content
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as f:
@@ -296,7 +296,7 @@ from scitex.io._load_modules import _load_image
     
     def test_empty_image_file(self):
         """Test handling of empty image files."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create empty file with image extension
         with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as f:
@@ -310,7 +310,7 @@ from scitex.io._load_modules import _load_image
     
     def test_case_insensitive_extensions(self):
         """Test that file extension matching is case-insensitive."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Create test image
         img_array = np.random.randint(0, 255, (50, 50, 3), dtype=np.uint8)
@@ -341,7 +341,7 @@ from scitex.io._load_modules import _load_image
     @patch('PIL.Image.open')
     def test_pil_integration_mocking(self, mock_open):
         """Test integration with PIL using mocking."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Setup mock
         mock_image = Mock(spec=Image.Image)
@@ -359,7 +359,7 @@ from scitex.io._load_modules import _load_image
     @patch('PIL.Image.open')
     def test_kwargs_forwarding_to_pil(self, mock_open):
         """Test that kwargs are properly forwarded to PIL.Image.open."""
-from scitex.io._load_modules import _load_image
+        from scitex.io._load_modules import _load_image
         
         # Setup mock
         mock_image = Mock(spec=Image.Image)

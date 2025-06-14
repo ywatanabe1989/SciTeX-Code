@@ -13,7 +13,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from scitex.plt.ax._style import set_ticks, set_x_ticks, set_y_ticks
+from scitex.plt.ax._style import set_ticks
 
 matplotlib.use("Agg")
 

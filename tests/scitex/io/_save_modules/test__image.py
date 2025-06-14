@@ -31,7 +31,7 @@ try:
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
 
-from scitex.io._save_modules import save_image
+    from scitex.io._save_modules import save_image
 
 
 class TestSaveImage:

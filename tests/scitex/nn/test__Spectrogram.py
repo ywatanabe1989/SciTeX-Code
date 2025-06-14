@@ -23,7 +23,7 @@ scitex_mock.dsp = MagicMock()
 scitex_mock.dsp.ensure_3d = lambda x: x.view(-1, x.shape[-2], x.shape[-1]) if x.dim() == 2 else x
 
 with patch.dict('sys.modules', {'scitex': scitex_mock, 'scitex.dsp': scitex_mock.dsp}):
-from scitex.nn import Spectrogram
+    from scitex.nn import Spectrogram
 
 
 class TestSpectrogram:

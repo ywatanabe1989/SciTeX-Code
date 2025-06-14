@@ -19,7 +19,7 @@ import warnings
 
 def test_plot_joyplot_basic():
     """Test basic joyplot functionality."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame(
@@ -47,7 +47,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_vertical_orientation():
     """Test plot_joyplot with vertical orientation."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -73,7 +73,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_horizontal_orientation():
     """Test plot_joyplot with horizontal orientation."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -103,7 +103,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_invalid_orientation():
     """Test plot_joyplot with invalid orientation."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({"A": [1, 2, 3]})
@@ -116,7 +116,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_with_kwargs():
     """Test plot_joyplot with additional keyword arguments."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -149,7 +149,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_empty_dataframe():
     """Test plot_joyplot with empty DataFrame."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame()
@@ -169,7 +169,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_single_column():
     """Test plot_joyplot with single column DataFrame."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({"Single": np.random.normal(0, 1, 100)})
@@ -190,7 +190,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_with_nan_values():
     """Test plot_joyplot with NaN values in data."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -214,7 +214,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_mixed_data_types():
     """Test plot_joyplot with mixed numeric data types."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -238,7 +238,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_large_dataset():
     """Test plot_joyplot with larger dataset."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     # Create a larger dataset with multiple groups
@@ -263,7 +263,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_custom_kind_parameter():
     """Test plot_joyplot with custom kind parameter."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({
@@ -288,7 +288,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_return_type():
     """Test that plot_joyplot returns the correct axes object."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({"A": [1, 2, 3]})
@@ -309,7 +309,7 @@ from scitex.plt.ax._plot import plot_joyplot
 
 def test_plot_joyplot_integration():
     """Test actual integration if joypy is available."""
-from scitex.plt.ax._plot import plot_joyplot
+    from scitex.plt.ax._plot import plot_joyplot
     
     fig, ax = plt.subplots()
     data = pd.DataFrame({

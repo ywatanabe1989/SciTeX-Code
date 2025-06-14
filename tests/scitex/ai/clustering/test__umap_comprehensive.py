@@ -35,7 +35,7 @@ class TestUmapFunction:
     
     def test_umap_basic(self):
         """Test basic UMAP functionality with iris dataset."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         # Load data
         iris = load_iris()
@@ -56,7 +56,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_supervised(self):
         """Test supervised UMAP."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -76,7 +76,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_multiple_datasets(self):
         """Test UMAP with multiple datasets."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X1, X2, y1, y2 = train_test_split(
@@ -98,7 +98,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_with_hues(self):
         """Test UMAP with custom hues."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -119,7 +119,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_with_colors(self):
         """Test UMAP with custom colors."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -141,7 +141,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_with_existing_axes(self):
         """Test UMAP with pre-existing axes."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -162,7 +162,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_with_pretrained_model(self):
         """Test UMAP with pre-fitted model."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         import umap.umap_ as umap_orig
         
         iris = load_iris()
@@ -185,7 +185,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_superimposed(self):
         """Test UMAP with superimposed plot."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X1, X2, y1, y2 = train_test_split(
@@ -206,7 +206,7 @@ from scitex.ai.clustering import umap
     
     def test_umap_independent_legend(self):
         """Test UMAP with independent legend figures."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -234,7 +234,7 @@ class TestPlotFunction:
     
     def test_plot_single_dataset(self):
         """Test plotting with single dataset."""
-from scitex.ai.clustering import _plot
+        from scitex.ai.clustering import _plot
         import umap.umap_ as umap_orig
         
         # Setup
@@ -271,7 +271,7 @@ from scitex.ai.clustering import _plot
     
     def test_plot_with_custom_parameters(self):
         """Test plotting with custom visual parameters."""
-from scitex.ai.clustering import _plot
+        from scitex.ai.clustering import _plot
         import umap.umap_ as umap_orig
         
         iris = load_iris()
@@ -310,7 +310,7 @@ class TestRunUmap:
     
     def test_run_umap_new_model(self):
         """Test running UMAP with new model."""
-from scitex.ai.clustering import _run_umap
+        from scitex.ai.clustering import _run_umap
         
         iris = load_iris()
         X = iris.data
@@ -329,7 +329,7 @@ from scitex.ai.clustering import _run_umap
     
     def test_run_umap_supervised(self):
         """Test running supervised UMAP."""
-from scitex.ai.clustering import _run_umap
+        from scitex.ai.clustering import _run_umap
         
         iris = load_iris()
         X = iris.data
@@ -347,7 +347,7 @@ from scitex.ai.clustering import _run_umap
     
     def test_run_umap_existing_model(self):
         """Test running UMAP with existing model."""
-from scitex.ai.clustering import _run_umap
+        from scitex.ai.clustering import _run_umap
         import umap.umap_ as umap_orig
         
         # Create pre-fitted model
@@ -371,7 +371,7 @@ class TestCheckInputVars:
     
     def test_check_input_vars_basic(self):
         """Test basic input validation."""
-from scitex.ai.clustering import _check_input_vars
+        from scitex.ai.clustering import _check_input_vars
         
         data = [np.random.rand(100, 4)]
         labels = [np.random.randint(0, 3, 100)]
@@ -386,7 +386,7 @@ from scitex.ai.clustering import _check_input_vars
     
     def test_check_input_vars_with_hues(self):
         """Test input validation with hues."""
-from scitex.ai.clustering import _check_input_vars
+        from scitex.ai.clustering import _check_input_vars
         
         data = [np.random.rand(100, 4), np.random.rand(50, 4)]
         labels = [np.random.randint(0, 3, 100), np.random.randint(0, 3, 50)]
@@ -404,7 +404,7 @@ from scitex.ai.clustering import _check_input_vars
     
     def test_check_input_vars_mismatch(self):
         """Test input validation with mismatched lengths."""
-from scitex.ai.clustering import _check_input_vars
+        from scitex.ai.clustering import _check_input_vars
         
         data = [np.random.rand(100, 4)]
         labels = [np.random.randint(0, 3, 100), np.random.randint(0, 3, 50)]
@@ -414,7 +414,7 @@ from scitex.ai.clustering import _check_input_vars
     
     def test_check_input_vars_not_list(self):
         """Test input validation with non-list inputs."""
-from scitex.ai.clustering import _check_input_vars
+        from scitex.ai.clustering import _check_input_vars
         
         data = np.random.rand(100, 4)  # Not a list
         labels = [np.random.randint(0, 3, 100)]
@@ -428,7 +428,7 @@ class TestMainAlias:
     
     def test_main_is_umap(self):
         """Test that main is an alias for umap."""
-from scitex.ai.clustering import main, umap
+        from scitex.ai.clustering import main, umap
         
         assert main is umap
 
@@ -439,7 +439,7 @@ class TestIntegration:
     @patch('scitex.io.save')
     def test_test_function_iris(self, mock_save):
         """Test _test function with iris dataset."""
-from scitex.ai.clustering import _test
+        from scitex.ai.clustering import _test
         
         # Mock scitex.gen.start to avoid display issues
         with patch('scitex.gen.start') as mock_start:
@@ -453,7 +453,7 @@ from scitex.ai.clustering import _test
     
     def test_full_pipeline(self):
         """Test complete UMAP pipeline."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         # Generate synthetic data
         np.random.seed(42)
@@ -504,7 +504,7 @@ class TestEdgeCases:
     
     def test_empty_data(self):
         """Test with empty data."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         with pytest.raises(Exception):
             umap(
@@ -515,7 +515,7 @@ from scitex.ai.clustering import umap
     
     def test_single_sample(self):
         """Test with single sample."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         X = np.array([[1, 2, 3, 4]])
         y = np.array([0])
@@ -530,7 +530,7 @@ from scitex.ai.clustering import umap
     
     def test_mismatched_dimensions(self):
         """Test with mismatched data dimensions."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         X1 = np.random.rand(100, 4)
         X2 = np.random.rand(100, 5)  # Different number of features
@@ -550,7 +550,7 @@ class TestVisualization:
     
     def test_scatter_plot_properties(self):
         """Test scatter plot properties."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -578,7 +578,7 @@ from scitex.ai.clustering import umap
     
     def test_axis_labels(self):
         """Test axis labels."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -599,7 +599,7 @@ from scitex.ai.clustering import umap
     
     def test_legend_handling(self):
         """Test legend generation and handling."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         iris = load_iris()
         X = iris.data
@@ -637,7 +637,7 @@ class TestLabelEncoding:
     
     def test_label_encoding_numeric(self):
         """Test label encoding with numeric labels."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         X = np.random.rand(150, 4)
         y = np.array([0, 1, 2] * 50)
@@ -652,7 +652,7 @@ from scitex.ai.clustering import umap
     
     def test_label_encoding_string(self):
         """Test label encoding with string labels."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         X = np.random.rand(150, 4)
         y = np.array(['setosa', 'versicolor', 'virginica'] * 50)
@@ -667,7 +667,7 @@ from scitex.ai.clustering import umap
     
     def test_label_encoding_mixed(self):
         """Test label encoding with mixed types."""
-from scitex.ai.clustering import umap
+        from scitex.ai.clustering import umap
         
         X = np.random.rand(100, 4)
         # Mix of strings and numbers

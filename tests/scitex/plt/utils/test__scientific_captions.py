@@ -381,7 +381,7 @@ class TestCaptionFormatting:
         backslash replacement happens first, which affects all other
         escape sequences containing backslashes.
         """
-from scitex.plt.utils import _escape_latex
+        from scitex.plt.utils import _escape_latex
         
         # Test text with special characters
         test_text = "Test & text with % special $ characters # and _ more"
@@ -408,7 +408,7 @@ from scitex.plt.utils import _escape_latex
     
     def test_caption_format_functions(self):
         """Test individual format functions."""
-from scitex.plt.utils import (
+        from scitex.plt.utils import (
             _format_caption_for_txt,
             _format_caption_for_tex,
             _format_caption_for_md
@@ -438,7 +438,7 @@ class TestIntegration:
     @patch('scitex.io.save')
     def test_enhanced_save_integration(self, mock_save):
         """Test integration with scitex.io.save enhancement."""
-from scitex.plt.utils import enhance_scitex_save_with_captions
+        from scitex.plt.utils import enhance_scitex_save_with_captions
         
         # This would normally monkey-patch scitex.io.save
         # For testing, we just verify the function exists and can be called

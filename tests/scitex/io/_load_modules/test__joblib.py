@@ -51,7 +51,7 @@ class TestLoadJoblibBasic:
     
     def test_load_simple_dict(self):
         """Test loading a simple dictionary."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'key1': 'value1', 'key2': 42, 'key3': 3.14}
         
@@ -69,7 +69,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_numpy_arrays(self):
         """Test loading various numpy arrays."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         arrays = {
             '1d': np.array([1, 2, 3, 4, 5]),
@@ -95,7 +95,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_pandas_objects(self):
         """Test loading pandas DataFrames and Series."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         df = pd.DataFrame({
             'A': [1, 2, 3, 4, 5],
@@ -121,7 +121,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_nested_structures(self):
         """Test loading deeply nested data structures."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         nested_data = {
             'level1': {
@@ -159,7 +159,7 @@ class TestLoadJoblibCompression:
     
     def test_load_all_compression_levels(self):
         """Test loading files with different compression levels."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = np.random.rand(100, 100)
         
@@ -176,7 +176,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_different_compression_methods(self):
         """Test loading files with different compression methods."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'array': np.random.rand(50, 50), 'value': 42}
         
@@ -208,7 +208,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_large_compressed_data(self):
         """Test loading large compressed data."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         # Create large dataset
         large_data = {
@@ -240,7 +240,7 @@ class TestLoadJoblibCustomObjects:
     
     def test_load_custom_class(self):
         """Test loading custom class instances."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         obj = CustomObject(x=42, y="test")
         
@@ -259,7 +259,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_dataclass(self):
         """Test loading dataclass instances."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = TestData(
             name="test_data",
@@ -282,7 +282,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_lambda_functions(self):
         """Test loading lambda functions (if supported)."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         # Note: Lambda functions might not be serializable depending on joblib version
         data = {
@@ -313,7 +313,7 @@ class TestLoadJoblibEdgeCases:
     
     def test_load_empty_file(self):
         """Test loading an empty joblib file."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         with tempfile.NamedTemporaryFile(suffix='.joblib', delete=False) as f:
             temp_path = f.name
@@ -326,7 +326,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_corrupted_file(self):
         """Test loading a corrupted joblib file."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         with tempfile.NamedTemporaryFile(suffix='.joblib', delete=False) as f:
             f.write(b"This is not a valid joblib file content")
@@ -340,7 +340,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_wrong_file_extension(self):
         """Test various wrong file extensions."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         wrong_extensions = [
             "file.pkl",
@@ -361,14 +361,14 @@ from scitex.io._load_modules import _load_joblib
     
     def test_nonexistent_file(self):
         """Test loading a non-existent file."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         with pytest.raises(FileNotFoundError):
             _load_joblib("/tmp/nonexistent_file_12345.joblib")
     
     def test_load_none_values(self):
         """Test loading None values and empty containers."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {
             'none': None,
@@ -402,7 +402,7 @@ class TestLoadJoblibWithKwargs:
     
     def test_load_with_mmap_mode(self):
         """Test loading with memory mapping."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         # Large array that benefits from memory mapping
         large_array = np.random.rand(1000, 1000)
@@ -430,7 +430,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_with_custom_kwargs(self):
         """Test passing custom kwargs to joblib.load."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'test': 'data', 'array': np.array([1, 2, 3])}
         
@@ -451,7 +451,7 @@ class TestLoadJoblibPathHandling:
     
     def test_load_with_pathlib_path(self):
         """Test loading with pathlib.Path object."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'pathlib': 'test'}
         
@@ -468,7 +468,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_with_relative_path(self):
         """Test loading with relative paths."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'relative': 'path'}
         
@@ -485,7 +485,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_with_special_characters_in_path(self):
         """Test loading files with special characters in path."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'special': 'chars'}
         
@@ -517,7 +517,7 @@ class TestLoadJoblibConcurrency:
     
     def test_load_same_file_multiple_times(self):
         """Test loading the same file multiple times."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         data = {'concurrent': np.random.rand(100, 100)}
         
@@ -547,7 +547,7 @@ class TestLoadJoblibIntegration:
     
     def test_load_machine_learning_model(self):
         """Test loading a mock ML model structure."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         # Mock ML model data
         model_data = {
@@ -585,7 +585,7 @@ from scitex.io._load_modules import _load_joblib
     
     def test_load_scientific_data(self):
         """Test loading scientific computation results."""
-from scitex.io._load_modules import _load_joblib
+        from scitex.io._load_modules import _load_joblib
         
         # Mock scientific data
         sci_data = {
@@ -624,7 +624,7 @@ from scitex.io._load_modules import _load_joblib
 
 def test_backwards_compatibility():
     """Test loading joblib files created with pickle protocol."""
-from scitex.io._load_modules import _load_joblib
+    from scitex.io._load_modules import _load_joblib
     
     # Create data and save with different protocols
     data = {'test': 'backwards', 'array': np.array([1, 2, 3])}

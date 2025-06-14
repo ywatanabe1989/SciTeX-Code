@@ -47,7 +47,7 @@ class TestCorrTest:
 
     def test_corr_test_spearman(self, sample_data):
         """Test Spearman correlation test"""
-from scitex.stats.tests import corr_test_spearman
+        from scitex.stats.tests import corr_test_spearman
 
         # Test positive correlation
         result = corr_test_spearman(sample_data["x"], sample_data["y_pos"], n_perm=100)
@@ -61,7 +61,7 @@ from scitex.stats.tests import corr_test_spearman
 
     def test_corr_test_pearson(self, sample_data):
         """Test Pearson correlation test"""
-from scitex.stats.tests import corr_test_pearson
+        from scitex.stats.tests import corr_test_pearson
 
         # Test negative correlation
         result = corr_test_pearson(sample_data["x"], sample_data["y_neg"], n_perm=100)
@@ -75,7 +75,7 @@ from scitex.stats.tests import corr_test_pearson
 
     def test_corr_test_with_nan(self, sample_data):
         """Test correlation with NaN values"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         # Test with NaN values
         result = corr_test(
@@ -87,7 +87,7 @@ from scitex.stats.tests import corr_test
 
     def test_corr_test_no_correlation(self, sample_data):
         """Test with uncorrelated data"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         result = corr_test(
             sample_data["x"], sample_data["y_uncorr"], method="spearman", n_perm=100
@@ -99,7 +99,7 @@ from scitex.stats.tests import corr_test
 
     def test_corr_test_only_significant(self, sample_data):
         """Test only_significant parameter"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         # Test with uncorrelated data and only_significant=True
         result = corr_test(
@@ -115,7 +115,7 @@ from scitex.stats.tests import corr_test
 
     def test_compute_surrogate(self):
         """Test surrogate computation function"""
-from scitex.stats.tests import _compute_surrogate
+        from scitex.stats.tests import _compute_surrogate
 
         data1 = np.random.randn(100)
         data2 = np.random.randn(100)
@@ -129,7 +129,7 @@ from scitex.stats.tests import _compute_surrogate
 
     def test_corr_test_methods(self, sample_data):
         """Test different correlation methods"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         methods = ["pearson", "spearman"]
 
@@ -146,7 +146,7 @@ from scitex.stats.tests import corr_test
 
     def test_corr_test_confidence_interval(self, sample_data):
         """Test confidence interval computation"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         result = corr_test(
             sample_data["x"],
@@ -162,7 +162,7 @@ from scitex.stats.tests import corr_test
     @pytest.mark.parametrize("n_jobs", [1, 2, -1])
     def test_corr_test_parallel(self, sample_data, n_jobs):
         """Test parallel processing with different n_jobs"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         result = corr_test(
             sample_data["x"],
@@ -177,7 +177,7 @@ from scitex.stats.tests import corr_test
 
     def test_corr_test_reproducibility(self, sample_data):
         """Test reproducibility with same seed"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         # Run twice with same seed
         result1 = corr_test(
@@ -202,7 +202,7 @@ from scitex.stats.tests import corr_test
 
     def test_corr_test_input_validation(self):
         """Test input validation"""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
 
         # Test with mismatched lengths
         data1 = np.random.randn(100)

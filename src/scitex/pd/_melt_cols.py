@@ -60,14 +60,22 @@ def melt_cols(
     if missing_melt:
         raise ValueError(f"Columns not found in DataFrame: {missing_melt}")
 
-    id_columns = id_columns or [col for col in df.columns if col not in cols]
+    if id_columns is None:
+        id_columns = [col for col in df.columns if col not in cols]
 
     df_copy = df.reset_index(drop=True)
     df_copy["global_index"] = df_copy.index
 
-    melted_df = df_copy[cols + ["global_index"]].melt(id_vars=["global_index"])
-    formatted_df = melted_df.merge(
-        df_copy[id_columns + ["global_index"]], on="global_index"
+    # Use a different value_name if "value" is one of the columns being melted
+    value_name = "value" if "value" not in cols else "melted_value"
+    melted_df = df_copy[cols + ["global_index"]].melt(
+        id_vars=["global_index"], value_name=value_name
     )
-
-    return formatted_df.drop("global_index", axis=1)
+    if id_columns:
+        formatted_df = melted_df.merge(
+            df_copy[id_columns + ["global_index"]], on="global_index"
+        )
+        return formatted_df.drop("global_index", axis=1)
+    else:
+        # No id columns to merge, just return melted data without global_index
+        return melted_df.drop("global_index", axis=1)

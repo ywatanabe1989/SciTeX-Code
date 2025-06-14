@@ -11,7 +11,8 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import matplotlib.pyplot as plt
 import pytest
-from scitex.plt.utils import _convert_font_size, configure_mpl
+from scitex.plt.utils import configure_mpl
+from scitex.plt.utils._configure_mpl import _convert_font_size
 
 
 def test_convert_font_size_string():

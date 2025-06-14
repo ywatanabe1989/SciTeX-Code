@@ -33,7 +33,7 @@ class TestComputeSurrogate:
     
     def test_compute_surrogate_pearson(self):
         """Test surrogate computation for Pearson correlation."""
-from scitex.stats.tests import _compute_surrogate
+        from scitex.stats.tests import _compute_surrogate
         
         data1 = np.array([1, 2, 3, 4, 5])
         data2 = np.array([2, 4, 6, 8, 10])
@@ -48,7 +48,7 @@ from scitex.stats.tests import _compute_surrogate
     
     def test_compute_surrogate_spearman(self):
         """Test surrogate computation for Spearman correlation."""
-from scitex.stats.tests import _compute_surrogate
+        from scitex.stats.tests import _compute_surrogate
         
         data1 = np.array([1, 2, 3, 4, 5])
         data2 = np.array([1, 3, 2, 5, 4])
@@ -62,7 +62,7 @@ from scitex.stats.tests import _compute_surrogate
     
     def test_compute_surrogate_with_nan(self):
         """Test surrogate computation with NaN values."""
-from scitex.stats.tests import _compute_surrogate
+        from scitex.stats.tests import _compute_surrogate
         
         data1 = np.array([1, 2, np.nan, 4, 5])
         data2 = np.array([2, 4, 6, np.nan, 10])
@@ -76,7 +76,7 @@ from scitex.stats.tests import _compute_surrogate
     
     def test_compute_surrogate_reproducibility(self):
         """Test that same seed produces same result."""
-from scitex.stats.tests import _compute_surrogate
+        from scitex.stats.tests import _compute_surrogate
         
         data1 = np.array([1, 2, 3, 4, 5])
         data2 = np.array([5, 4, 3, 2, 1])
@@ -94,7 +94,7 @@ class TestCorrTestBase:
     
     def test_corr_test_base_pearson(self):
         """Test base correlation test with Pearson."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         # Create correlated data
         np.random.seed(42)
@@ -131,7 +131,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_corr_test_base_spearman(self):
         """Test base correlation test with Spearman."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         # Create monotonic data
         data1 = np.arange(50)
@@ -153,7 +153,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_corr_test_base_parallel(self):
         """Test parallel processing."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         data1 = np.random.randn(100)
         data2 = np.random.randn(100)
@@ -173,7 +173,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_corr_test_base_insufficient_data(self):
         """Test with insufficient data points."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         data1 = np.array([1])
         data2 = np.array([2])
@@ -190,7 +190,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_corr_test_base_only_significant(self, capsys):
         """Test only_significant parameter."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         # Create uncorrelated data
         np.random.seed(42)
@@ -213,7 +213,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_corr_test_base_normality_warning(self, capsys):
         """Test normality warning for surrogate distribution."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         # Create data that might produce non-normal surrogates
         data1 = np.array([1, 2, 3, 4, 5])
@@ -238,7 +238,7 @@ class TestCorrTestFunctions:
     
     def test_corr_test_pearson(self):
         """Test Pearson correlation test."""
-from scitex.stats.tests import corr_test_pearson
+        from scitex.stats.tests import corr_test_pearson
         
         # Create correlated data
         x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -251,7 +251,7 @@ from scitex.stats.tests import corr_test_pearson
     
     def test_corr_test_spearman(self):
         """Test Spearman correlation test."""
-from scitex.stats.tests import corr_test_spearman
+        from scitex.stats.tests import corr_test_spearman
         
         # Create monotonic but non-linear relationship
         x = np.array([1, 2, 3, 4, 5])
@@ -264,7 +264,7 @@ from scitex.stats.tests import corr_test_spearman
     
     def test_corr_test_main_function(self):
         """Test main corr_test function."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([3, 4, 4, 5, 7, 8, 10, 12, 13, 15])
         y = np.array([2, 4, 4, 5, 4, 7, 8, 19, 14, 10])
@@ -281,7 +281,7 @@ from scitex.stats.tests import corr_test
     
     def test_corr_test_invalid_test_type(self):
         """Test invalid test type."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, 2, 3])
         y = np.array([4, 5, 6])
@@ -291,7 +291,7 @@ from scitex.stats.tests import corr_test
     
     def test_corr_test_with_lists(self):
         """Test correlation with list inputs (numpy_fn decorator)."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         # Should work with lists due to numpy_fn decorator
         x = [1, 2, 3, 4, 5]
@@ -302,7 +302,7 @@ from scitex.stats.tests import corr_test
     
     def test_corr_test_with_pandas_series(self):
         """Test correlation with pandas Series."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = pd.Series([1, 2, 3, 4, 5])
         y = pd.Series([5, 4, 3, 2, 1])
@@ -316,7 +316,7 @@ class TestEdgeCases:
     
     def test_all_nan_data(self):
         """Test with all NaN data."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([np.nan, np.nan, np.nan])
         y = np.array([np.nan, np.nan, np.nan])
@@ -326,7 +326,7 @@ from scitex.stats.tests import corr_test
     
     def test_constant_data(self):
         """Test with constant data."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, 1, 1, 1, 1])
         y = np.array([2, 2, 2, 2, 2])
@@ -337,7 +337,7 @@ from scitex.stats.tests import corr_test
     
     def test_single_valid_pair(self):
         """Test with only one valid data pair."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, np.nan, np.nan])
         y = np.array([2, np.nan, np.nan])
@@ -347,7 +347,7 @@ from scitex.stats.tests import corr_test
     
     def test_empty_arrays(self):
         """Test with empty arrays."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([])
         y = np.array([])
@@ -357,7 +357,7 @@ from scitex.stats.tests import corr_test
     
     def test_mismatched_lengths(self):
         """Test with mismatched array lengths."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, 2, 3])
         y = np.array([1, 2, 3, 4, 5])
@@ -372,7 +372,7 @@ class TestNumericalAccuracy:
     
     def test_perfect_positive_correlation(self):
         """Test perfect positive correlation."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.arange(100)
         y = x.copy()
@@ -383,7 +383,7 @@ from scitex.stats.tests import corr_test
     
     def test_perfect_negative_correlation(self):
         """Test perfect negative correlation."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.arange(100)
         y = -x
@@ -394,7 +394,7 @@ from scitex.stats.tests import corr_test
     
     def test_zero_correlation(self):
         """Test zero correlation."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         np.random.seed(42)
         x = np.random.randn(100)
@@ -405,7 +405,7 @@ from scitex.stats.tests import corr_test
     
     def test_known_correlation(self):
         """Test with known correlation value."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         # Create data with known correlation ~0.8
         np.random.seed(42)
@@ -421,7 +421,7 @@ class TestMultiprocessing:
     
     def test_multiprocessing_consistency(self):
         """Test that multiprocessing gives consistent results."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         np.random.seed(42)
         data1 = np.random.randn(50)
@@ -454,7 +454,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_multiprocessing_speedup(self):
         """Test that multiprocessing provides speedup for large permutations."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         import time
         
         data1 = np.random.randn(100)
@@ -495,7 +495,7 @@ class TestIntegration:
     
     def test_integration_with_p2stars(self):
         """Test integration with p2stars function."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, 2, 3, 4, 5])
         y = np.array([2, 4, 6, 8, 10])
@@ -510,7 +510,7 @@ from scitex.stats.tests import corr_test
     
     def test_output_format(self, capsys):
         """Test output format when printing results."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         x = np.array([1, 2, 3, 4, 5])
         y = np.array([2, 4, 6, 8, 10])
@@ -530,7 +530,7 @@ class TestStatisticalProperties:
     
     def test_permutation_distribution(self):
         """Test that permutation creates proper null distribution."""
-from scitex.stats.tests import _corr_test_base
+        from scitex.stats.tests import _corr_test_base
         
         # Create uncorrelated data
         np.random.seed(42)
@@ -555,7 +555,7 @@ from scitex.stats.tests import _corr_test_base
     
     def test_p_value_calculation(self):
         """Test p-value calculation accuracy."""
-from scitex.stats.tests import corr_test
+        from scitex.stats.tests import corr_test
         
         # Create data with known correlation
         np.random.seed(42)

@@ -13,10 +13,10 @@ from unittest.mock import MagicMock, Mock, patch
 import pandas as pd
 import pytest
 
-from scitex.resource import (
+from scitex.resource import get_processor_usages
+from scitex.resource._get_processor_usages import (
     _get_cpu_usage,
     _get_gpu_usage,
-    get_processor_usages,
 )
 
 

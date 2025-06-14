@@ -19,12 +19,12 @@ class TestCosineFunction:
     
     def test_import(self):
         """Test that cosine function can be imported."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         assert callable(cosine)
     
     def test_orthogonal_vectors(self):
         """Test cosine of orthogonal vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 0, 0])
         v2 = np.array([0, 1, 0])
@@ -34,7 +34,7 @@ from scitex.linalg import cosine
     
     def test_parallel_vectors(self):
         """Test cosine of parallel vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 2, 3])
         v2 = np.array([2, 4, 6])  # Same direction, different magnitude
@@ -44,7 +44,7 @@ from scitex.linalg import cosine
     
     def test_opposite_vectors(self):
         """Test cosine of opposite vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 2, 3])
         v2 = np.array([-1, -2, -3])
@@ -54,7 +54,7 @@ from scitex.linalg import cosine
     
     def test_arbitrary_angle(self):
         """Test cosine of vectors at 45 degrees."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 0])
         v2 = np.array([1, 1])  # 45 degrees from v1
@@ -65,7 +65,7 @@ from scitex.linalg import cosine
     
     def test_nan_handling_first_vector(self):
         """Test NaN handling in first vector."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, np.nan, 3])
         v2 = np.array([4, 5, 6])
@@ -75,7 +75,7 @@ from scitex.linalg import cosine
     
     def test_nan_handling_second_vector(self):
         """Test NaN handling in second vector."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 2, 3])
         v2 = np.array([4, np.nan, 6])
@@ -85,7 +85,7 @@ from scitex.linalg import cosine
     
     def test_nan_handling_both_vectors(self):
         """Test NaN handling in both vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([np.nan, 2, 3])
         v2 = np.array([4, np.nan, 6])
@@ -95,7 +95,7 @@ from scitex.linalg import cosine
     
     def test_zero_vector(self):
         """Test cosine with zero vector."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([0, 0, 0])
         v2 = np.array([1, 2, 3])
@@ -107,7 +107,7 @@ from scitex.linalg import cosine
     
     def test_unit_vectors(self):
         """Test cosine with unit vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         v1 = np.array([1, 0, 0])
         v2 = np.array([0.6, 0.8, 0])  # 3-4-5 triangle
@@ -117,7 +117,7 @@ from scitex.linalg import cosine
     
     def test_high_dimensional_vectors(self):
         """Test cosine with high-dimensional vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         np.random.seed(42)
         v1 = np.random.randn(100)
@@ -132,12 +132,12 @@ class TestNannormFunction:
     
     def test_import(self):
         """Test that nannorm function can be imported."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         assert callable(nannorm)
     
     def test_basic_norm(self):
         """Test basic norm calculation without NaN."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([3, 4])
         result = nannorm(v)
@@ -145,7 +145,7 @@ from scitex.linalg import nannorm
     
     def test_with_nan(self):
         """Test norm calculation with NaN values."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([3, np.nan, 4])
         result = nannorm(v)
@@ -153,7 +153,7 @@ from scitex.linalg import nannorm
     
     def test_zero_vector(self):
         """Test norm of zero vector."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([0, 0, 0])
         result = nannorm(v)
@@ -161,7 +161,7 @@ from scitex.linalg import nannorm
     
     def test_unit_vector(self):
         """Test norm of unit vector."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([1, 0, 0])
         result = nannorm(v)
@@ -169,7 +169,7 @@ from scitex.linalg import nannorm
     
     def test_negative_values(self):
         """Test norm with negative values."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([-3, -4])
         result = nannorm(v)
@@ -177,7 +177,7 @@ from scitex.linalg import nannorm
     
     def test_axis_parameter(self):
         """Test norm calculation along different axes."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         # 2D array
         v = np.array([[3, 4], [5, 12], [8, 15]])
@@ -194,7 +194,7 @@ from scitex.linalg import nannorm
     
     def test_multidimensional_array(self):
         """Test norm with multidimensional arrays."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.random.randn(3, 4, 5)
         
@@ -207,7 +207,7 @@ from scitex.linalg import nannorm
     
     def test_partial_nan_array(self):
         """Test with array containing some NaN values."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         v = np.array([[1, 2], [np.nan, 4], [5, 6]])
         
@@ -223,12 +223,12 @@ class TestRebaseAVecFunction:
     
     def test_import(self):
         """Test that rebase_a_vec function can be imported."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         assert callable(rebase_a_vec)
     
     def test_projection_onto_x_axis(self):
         """Test projection onto x-axis."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([3, 4])
         v_base = np.array([1, 0])  # x-axis
@@ -238,7 +238,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_projection_onto_y_axis(self):
         """Test projection onto y-axis."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([3, 4])
         v_base = np.array([0, 1])  # y-axis
@@ -248,7 +248,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_projection_onto_diagonal(self):
         """Test projection onto diagonal vector."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([2, 2])
         v_base = np.array([1, 1])
@@ -260,7 +260,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_opposite_direction_projection(self):
         """Test projection in opposite direction."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([1, 1])
         v_base = np.array([-1, -1])
@@ -270,7 +270,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_orthogonal_vectors_projection(self):
         """Test projection of orthogonal vectors."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([1, 0])
         v_base = np.array([0, 1])
@@ -280,7 +280,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_nan_in_vector(self):
         """Test with NaN in vector."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([np.nan, 2])
         v_base = np.array([1, 0])
@@ -290,7 +290,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_nan_in_base(self):
         """Test with NaN in base vector."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([1, 2])
         v_base = np.array([np.nan, 0])
@@ -300,7 +300,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_zero_base_vector(self):
         """Test with zero base vector."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([1, 2])
         v_base = np.array([0, 0])
@@ -311,7 +311,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_3d_vectors(self):
         """Test with 3D vectors."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         v = np.array([1, 2, 3])
         v_base = np.array([1, 0, 0])
@@ -325,12 +325,12 @@ class TestThreeLineLengthsToCoords:
     
     def test_import(self):
         """Test that function can be imported."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         assert callable(three_line_lengths_to_coords)
     
     def test_right_triangle(self):
         """Test with right triangle (3-4-5)."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(3, 4, 5)
         
@@ -349,7 +349,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_equilateral_triangle(self):
         """Test with equilateral triangle."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(1, 1, 1)
         
@@ -363,7 +363,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_isosceles_triangle(self):
         """Test with isosceles triangle."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(2, 2, 2)
         
@@ -375,7 +375,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_degenerate_triangle(self):
         """Test with degenerate triangle (straight line)."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         # Triangle inequality violated
         with pytest.raises((ValueError, ZeroDivisionError)):
@@ -383,7 +383,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_example_from_docstring(self):
         """Test the example from function docstring."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(2, np.sqrt(3), 1)
         
@@ -401,7 +401,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_all_points_in_xy_plane(self):
         """Test that all points are in xy-plane (z=0)."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(5, 6, 7)
         
@@ -411,7 +411,7 @@ from scitex.linalg import three_line_lengths_to_coords
     
     def test_scalene_triangle(self):
         """Test with scalene triangle."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         O, A, B = three_line_lengths_to_coords(3, 5, 7)
         
@@ -430,7 +430,7 @@ class TestEdgeCasesAndIntegration:
     
     def test_cosine_with_rebase(self):
         """Test using cosine in rebase_a_vec calculation."""
-from scitex.linalg import cosine, rebase_a_vec
+        from scitex.linalg import cosine, rebase_a_vec
         
         v = np.array([3, 4])
         v_base = np.array([1, 0])
@@ -444,7 +444,7 @@ from scitex.linalg import cosine, rebase_a_vec
     
     def test_nannorm_edge_cases(self):
         """Test nannorm with various edge cases."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         # Empty array
         with pytest.raises(ValueError):
@@ -460,7 +460,7 @@ from scitex.linalg import nannorm
     
     def test_vector_operations_consistency(self):
         """Test consistency between vector operations."""
-from scitex.linalg import cosine, nannorm, rebase_a_vec
+        from scitex.linalg import cosine, nannorm, rebase_a_vec
         
         # Create test vectors
         v1 = np.array([1, 0, 0])
@@ -480,7 +480,7 @@ from scitex.linalg import cosine, nannorm, rebase_a_vec
     
     def test_numerical_stability(self):
         """Test numerical stability with extreme values."""
-from scitex.linalg import cosine, nannorm
+        from scitex.linalg import cosine, nannorm
         
         # Very small values
         v_small = np.array([1e-10, 1e-10])
@@ -504,7 +504,7 @@ class TestPerformance:
     
     def test_large_vector_cosine(self):
         """Test cosine with large vectors."""
-from scitex.linalg import cosine
+        from scitex.linalg import cosine
         
         np.random.seed(42)
         v1 = np.random.randn(10000)
@@ -515,7 +515,7 @@ from scitex.linalg import cosine
     
     def test_batch_nannorm(self):
         """Test nannorm with batch processing."""
-from scitex.linalg import nannorm
+        from scitex.linalg import nannorm
         
         # Large batch of vectors
         vectors = np.random.randn(1000, 100)
@@ -527,7 +527,7 @@ from scitex.linalg import nannorm
     
     def test_repeated_calculations(self):
         """Test repeated calculations for consistency."""
-from scitex.linalg import three_line_lengths_to_coords
+        from scitex.linalg import three_line_lengths_to_coords
         
         # Same input should give same output
         results = []
@@ -545,7 +545,7 @@ class TestDocumentation:
     
     def test_production_vector_example(self):
         """Test the production_vector example from comments."""
-from scitex.linalg import rebase_a_vec
+        from scitex.linalg import rebase_a_vec
         
         # From the comment: production_vector(np.array([3,4]), np.array([10,0])) # np.array([3, 0])
         v = np.array([3, 4])
@@ -557,7 +557,7 @@ from scitex.linalg import rebase_a_vec
     
     def test_function_signatures(self):
         """Test that functions have expected signatures."""
-from scitex.linalg import cosine, nannorm, rebase_a_vec, three_line_lengths_to_coords
+        from scitex.linalg import cosine, nannorm, rebase_a_vec, three_line_lengths_to_coords
         import inspect
         
         # Check cosine

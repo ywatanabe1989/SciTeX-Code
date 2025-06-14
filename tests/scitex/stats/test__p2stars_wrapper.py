@@ -9,7 +9,7 @@ import numpy as np
 
 def test_p2stars_wrapper_single_value():
     """Test p2stars wrapper with single p-value."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Highly significant
     result = p2stars(0.0001)
@@ -31,7 +31,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_array_input():
     """Test p2stars wrapper with array input."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Array of p-values
     p_values = np.array([0.0001, 0.005, 0.03, 0.1])
@@ -44,7 +44,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_list_input():
     """Test p2stars wrapper with list input."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # List of p-values
     p_values = [0.0005, 0.01, 0.04, 0.15]
@@ -57,7 +57,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_custom_thresholds():
     """Test p2stars wrapper with custom thresholds."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Custom thresholds
     custom_thresholds = [0.01, 0.05]
@@ -69,7 +69,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_custom_symbols():
     """Test p2stars wrapper with custom symbols."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Custom symbols
     custom_symbols = ["+++", "++", "+"]
@@ -81,7 +81,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_custom_thresholds_and_symbols():
     """Test p2stars wrapper with both custom thresholds and symbols."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Custom thresholds and symbols
     custom_thresholds = [0.01, 0.05]
@@ -99,7 +99,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_edge_cases():
     """Test p2stars wrapper with edge cases."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Exactly on threshold
     result = p2stars(0.05)
@@ -120,7 +120,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_invalid_pvalues():
     """Test p2stars wrapper with invalid p-values."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # P-values outside [0, 1] range should be handled gracefully
     with pytest.raises((ValueError, AssertionError)):
@@ -132,7 +132,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_empty_input():
     """Test p2stars wrapper with empty input."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Empty list
     result = p2stars([])
@@ -147,7 +147,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_mixed_significance():
     """Test p2stars wrapper with mixed significance levels."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Mixed significance levels
     p_values = [0.0001, 0.006, 0.02, 0.06, 0.15]
@@ -159,7 +159,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_return_types():
     """Test that p2stars wrapper returns correct types."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Single value should return string
     result = p2stars(0.01)
@@ -173,7 +173,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_nan_handling():
     """Test p2stars wrapper with NaN values."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Single NaN
     result = p2stars(np.nan)
@@ -183,7 +183,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_large_arrays():
     """Test p2stars wrapper with large arrays."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Large array of random p-values
     np.random.seed(42)
@@ -198,7 +198,7 @@ from scitex.stats import p2stars
 
 def test_p2stars_wrapper_consistency():
     """Test that p2stars wrapper is consistent."""
-from scitex.stats import p2stars
+    from scitex.stats import p2stars
     
     # Same input should give same output
     p_value = 0.02

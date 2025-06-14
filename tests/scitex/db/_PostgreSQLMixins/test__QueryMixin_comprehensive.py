@@ -33,7 +33,7 @@ class TestQueryMixin:
     @pytest.fixture
     def mock_db_connection(self):
         """Create a mock database connection with QueryMixin."""
-from scitex.db._PostgreSQLMixins import _QueryMixin
+        from scitex.db._PostgreSQLMixins import _QueryMixin
         
         class MockDB(_QueryMixin):
             def __init__(self):

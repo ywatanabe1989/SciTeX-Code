@@ -16,7 +16,7 @@ class TestMkPatchesEnhanced:
 
     def test_basic_patches_creation(self):
         """Test basic patch creation with colors and labels."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue", "green"]
         labels = ["Label A", "Label B", "Label C"]
@@ -33,7 +33,7 @@ from scitex.plt.utils import mk_patches
 
     def test_hex_color_codes(self):
         """Test with hexadecimal color codes."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["#FF0000", "#00FF00", "#0000FF"]
         labels = ["Red", "Green", "Blue"]
@@ -47,7 +47,7 @@ from scitex.plt.utils import mk_patches
 
     def test_rgb_tuple_colors(self):
         """Test with RGB tuple colors."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)]
         labels = ["Red", "Green", "Blue"]
@@ -62,7 +62,7 @@ from scitex.plt.utils import mk_patches
 
     def test_rgba_tuple_colors(self):
         """Test with RGBA tuple colors including alpha."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = [(1.0, 0.0, 0.0, 0.5), (0.0, 1.0, 0.0, 0.7), (0.0, 0.0, 1.0, 0.9)]
         labels = ["Semi Red", "Green 70%", "Blue 90%"]
@@ -76,7 +76,7 @@ from scitex.plt.utils import mk_patches
 
     def test_matplotlib_color_names(self):
         """Test with matplotlib named colors."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["crimson", "forestgreen", "royalblue", "orange"]
         labels = ["Crimson", "Forest Green", "Royal Blue", "Orange"]
@@ -88,7 +88,7 @@ from scitex.plt.utils import mk_patches
 
     def test_single_color_label_pair(self):
         """Test with single color and label."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["purple"]
         labels = ["Single Label"]
@@ -100,7 +100,7 @@ from scitex.plt.utils import mk_patches
 
     def test_empty_lists(self):
         """Test with empty color and label lists."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = []
         labels = []
@@ -111,7 +111,7 @@ from scitex.plt.utils import mk_patches
 
     def test_mixed_color_formats(self):
         """Test with mixed color format types."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "#00FF00", (0.0, 0.0, 1.0), (1.0, 1.0, 0.0, 0.8)]
         labels = ["Named", "Hex", "RGB", "RGBA"]
@@ -124,7 +124,7 @@ from scitex.plt.utils import mk_patches
 
     def test_special_characters_in_labels(self):
         """Test with special characters in labels."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue", "green"]
         labels = ["Label with spaces", "Label-with-dashes", "Label_with_underscores"]
@@ -136,7 +136,7 @@ from scitex.plt.utils import mk_patches
 
     def test_unicode_labels(self):
         """Test with unicode characters in labels."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue"]
         labels = ["レッド", "ブルー"]  # Japanese
@@ -148,7 +148,7 @@ from scitex.plt.utils import mk_patches
 
     def test_numeric_labels(self):
         """Test with numeric labels (should be converted to strings)."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue", "green"]
         labels = [1, 2.5, 3]
@@ -161,7 +161,7 @@ from scitex.plt.utils import mk_patches
 
     def test_long_labels(self):
         """Test with very long labels."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue"]
         labels = [
@@ -176,7 +176,7 @@ from scitex.plt.utils import mk_patches
 
     def test_patch_properties(self):
         """Test that patches have correct matplotlib properties."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue"]
         labels = ["Red Patch", "Blue Patch"]
@@ -192,7 +192,7 @@ from scitex.plt.utils import mk_patches
 
     def test_mismatched_lengths_fewer_colors(self):
         """Test when colors list is shorter than labels list."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue"]
         labels = ["Label 1", "Label 2", "Label 3"]
@@ -203,7 +203,7 @@ from scitex.plt.utils import mk_patches
 
     def test_mismatched_lengths_fewer_labels(self):
         """Test when labels list is shorter than colors list."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue", "green"]
         labels = ["Label 1", "Label 2"]
@@ -214,7 +214,7 @@ from scitex.plt.utils import mk_patches
 
     def test_legend_integration_compatibility(self):
         """Test that patches work correctly with matplotlib legend."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         import matplotlib.pyplot as plt
         
         colors = ["red", "blue", "green"]
@@ -234,7 +234,7 @@ from scitex.plt.utils import mk_patches
 
     def test_list_comprehension_equivalence(self):
         """Test that result matches manual list comprehension."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         colors = ["red", "blue", "green"]
         labels = ["A", "B", "C"]
@@ -253,7 +253,7 @@ from scitex.plt.utils import mk_patches
 
     def test_color_validation_with_invalid_colors(self):
         """Test behavior with invalid color specifications."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         # These might raise errors or be handled gracefully
         colors = ["not_a_color", "also_invalid"]
@@ -269,7 +269,7 @@ from scitex.plt.utils import mk_patches
 
     def test_memory_efficiency(self):
         """Test memory efficiency with large numbers of patches."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         
         # Create many patches
         n = 1000
@@ -283,7 +283,7 @@ from scitex.plt.utils import mk_patches
 
     def test_color_cycle_compatibility(self):
         """Test compatibility with matplotlib color cycle."""
-from scitex.plt.utils import mk_patches
+        from scitex.plt.utils import mk_patches
         import matplotlib.pyplot as plt
         
         # Use matplotlib's default color cycle

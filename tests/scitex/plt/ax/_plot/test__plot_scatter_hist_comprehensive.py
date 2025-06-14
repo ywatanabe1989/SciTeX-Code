@@ -31,12 +31,12 @@ class TestPlotScatterHistBasic:
     
     def test_import(self):
         """Test that plot_scatter_hist can be imported."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         assert callable(plot_scatter_hist)
     
     def test_basic_plot(self):
         """Test basic scatter histogram plot."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         result = plot_scatter_hist(self.ax, self.x, self.y)
         
@@ -50,7 +50,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_histogram_data_structure(self):
         """Test the returned histogram data structure."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         _, _, _, hist_data = plot_scatter_hist(self.ax, self.x, self.y)
         
@@ -66,7 +66,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_axes_creation(self):
         """Test that histogram axes are created correctly."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         initial_axes_count = len(self.fig.axes)
         
@@ -93,7 +93,7 @@ class TestPlotScatterHistParameters:
     
     def test_hist_bins_parameter(self):
         """Test histogram bins parameter."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         bins = 10
         _, _, _, hist_data = plot_scatter_hist(self.ax, self.x, self.y, hist_bins=bins)
@@ -106,7 +106,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_scatter_parameters(self):
         """Test scatter plot parameters."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         scatter_alpha = 0.3
         scatter_size = 50
@@ -130,7 +130,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_histogram_colors(self):
         """Test histogram color parameters."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         hist_color_x = 'green'
         hist_color_y = 'orange'
@@ -147,7 +147,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_scatter_ratio(self):
         """Test scatter ratio parameter affects layout."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         # Test with different scatter ratios
         for ratio in [0.5, 0.7, 0.9]:
@@ -166,7 +166,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_histogram_alpha(self):
         """Test histogram alpha parameter."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         hist_alpha = 0.7
         
@@ -195,7 +195,7 @@ class TestPlotScatterHistDataTypes:
     
     def test_list_input(self):
         """Test with list input instead of numpy arrays."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = [1, 2, 3, 4, 5]
         y = [2, 4, 6, 8, 10]
@@ -205,7 +205,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_integer_data(self):
         """Test with integer data."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1, 2, 3, 4, 5])
         y = np.array([5, 4, 3, 2, 1])
@@ -217,7 +217,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_large_dataset(self):
         """Test with large dataset."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.random.randn(10000)
         y = np.random.randn(10000)
@@ -230,7 +230,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_single_point(self):
         """Test with single data point."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1])
         y = np.array([1])
@@ -240,7 +240,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_empty_data(self):
         """Test with empty data."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([])
         y = np.array([])
@@ -263,7 +263,7 @@ class TestPlotScatterHistEdgeCases:
     
     def test_mismatched_lengths(self):
         """Test with mismatched x and y lengths."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1, 2, 3])
         y = np.array([1, 2])  # Different length
@@ -274,7 +274,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_nan_values(self):
         """Test with NaN values in data."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1, 2, np.nan, 4, 5])
         y = np.array([5, 4, 3, np.nan, 1])
@@ -285,7 +285,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_inf_values(self):
         """Test with infinite values."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1, 2, np.inf, 4, 5])
         y = np.array([5, 4, 3, -np.inf, 1])
@@ -296,7 +296,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_all_same_values(self):
         """Test when all values are the same."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.ones(10)
         y = np.ones(10) * 2
@@ -310,7 +310,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_extreme_values(self):
         """Test with extreme value ranges."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         x = np.array([1e-10, 1e10])
         y = np.array([-1e10, 1e-10])
@@ -328,7 +328,7 @@ class TestPlotScatterHistFigureHandling:
     
     def test_with_explicit_figure(self):
         """Test with explicitly provided figure."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         x = np.random.randn(50)
@@ -344,7 +344,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_without_figure_parameter(self):
         """Test without figure parameter (uses ax.figure)."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         x = np.random.randn(50)
@@ -358,7 +358,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_multiple_subplots(self):
         """Test with multiple subplots in figure."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, axes = plt.subplots(2, 2)
         x = np.random.randn(50)
@@ -388,7 +388,7 @@ class TestPlotScatterHistAxesProperties:
     
     def test_histogram_axes_labels(self):
         """Test that histogram axes have correct label settings."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         _, ax_histx, ax_histy, _ = plot_scatter_hist(self.ax, self.x, self.y)
         
@@ -400,7 +400,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_histogram_orientation(self):
         """Test histogram orientations."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         _, ax_histx, ax_histy, _ = plot_scatter_hist(self.ax, self.x, self.y)
         
@@ -412,7 +412,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_axes_positions(self):
         """Test that axes are positioned correctly."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         _, ax_histx, ax_histy, _ = plot_scatter_hist(self.ax, self.x, self.y)
         
@@ -438,7 +438,7 @@ class TestPlotScatterHistKwargs:
     
     def test_scatter_kwargs(self):
         """Test additional kwargs passed to scatter."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         # Additional scatter parameters
         kwargs = {
@@ -455,7 +455,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_mixed_parameters(self):
         """Test mixing explicit parameters with kwargs."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         result = plot_scatter_hist(
             self.ax, self.x, self.y,
@@ -477,7 +477,7 @@ class TestPlotScatterHistIntegration:
     
     def test_with_styled_axes(self):
         """Test with pre-styled axes."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         
@@ -498,7 +498,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_save_figure(self):
         """Test saving figure with scatter histogram."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         import tempfile
         
         fig, ax = plt.subplots()
@@ -515,7 +515,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_correlation_visualization(self):
         """Test visualizing correlated data."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         
@@ -538,7 +538,7 @@ class TestPlotScatterHistPerformance:
     
     def test_large_dataset_performance(self):
         """Test performance with large dataset."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         import time
         
         fig, ax = plt.subplots()
@@ -554,7 +554,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_many_bins_performance(self):
         """Test performance with many histogram bins."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         x = np.random.randn(1000)
@@ -572,7 +572,7 @@ class TestPlotScatterHistDocumentation:
     
     def test_function_has_docstring(self):
         """Test that function has comprehensive docstring."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         assert plot_scatter_hist.__doc__ is not None
         assert 'Parameters' in plot_scatter_hist.__doc__
@@ -580,7 +580,7 @@ from scitex.plt.ax._plot import plot_scatter_hist
     
     def test_return_value_documentation(self):
         """Test that return values match documentation."""
-from scitex.plt.ax._plot import plot_scatter_hist
+        from scitex.plt.ax._plot import plot_scatter_hist
         
         fig, ax = plt.subplots()
         x = np.random.randn(50)

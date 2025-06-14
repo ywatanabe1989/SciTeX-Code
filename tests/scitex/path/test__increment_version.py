@@ -12,7 +12,7 @@ from pathlib import Path
 
 def test_increment_version_no_existing_files():
     """Test increment_version when no versioned files exist."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         result = increment_version(tmpdir, 'test_file', '.txt')
@@ -23,7 +23,7 @@ from scitex.path import increment_version
 
 def test_increment_version_single_existing_file():
     """Test increment_version with one existing versioned file."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create an existing versioned file
@@ -38,7 +38,7 @@ from scitex.path import increment_version
 
 def test_increment_version_multiple_existing_files():
     """Test increment_version with multiple existing versioned files."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create multiple existing versioned files
@@ -53,7 +53,7 @@ from scitex.path import increment_version
 
 def test_increment_version_custom_prefix():
     """Test increment_version with custom version prefix."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with custom prefix
@@ -68,7 +68,7 @@ from scitex.path import increment_version
 
 def test_increment_version_different_extensions():
     """Test increment_version correctly handles different extensions."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with different extensions
@@ -93,7 +93,7 @@ def test_increment_version_special_characters_in_filename():
     The implementation uses re.escape() to handle special regex characters.
     However, glob patterns might not find files with certain special characters.
     """
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Test with filename containing dots (common case)
@@ -117,7 +117,7 @@ from scitex.path import increment_version
 
 def test_increment_version_large_version_numbers():
     """Test increment_version with large version numbers."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create file with large version number
@@ -131,7 +131,7 @@ from scitex.path import increment_version
 
 def test_increment_version_mixed_valid_invalid_files():
     """Test increment_version with mix of valid and invalid filenames."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create mix of files
@@ -149,7 +149,7 @@ from scitex.path import increment_version
 
 def test_increment_version_empty_directory_path():
     """Test increment_version with empty string as directory."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     # Should handle empty dirname gracefully
     result = increment_version('', 'test_file', '.txt')
@@ -158,7 +158,7 @@ from scitex.path import increment_version
 
 def test_increment_version_nested_directory():
     """Test increment_version in nested directory structure."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create nested directory
@@ -176,7 +176,7 @@ from scitex.path import increment_version
 
 def test_increment_version_compound_extension():
     """Test increment_version with compound extensions."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create file with compound extension
@@ -190,7 +190,7 @@ from scitex.path import increment_version
 
 def test_increment_version_similar_filenames():
     """Test increment_version doesn't confuse similar filenames."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with similar names
@@ -207,7 +207,7 @@ from scitex.path import increment_version
 
 def test_increment_version_zero_padded_versions():
     """Test increment_version maintains zero padding."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create files with different padding
@@ -223,7 +223,7 @@ from scitex.path import increment_version
 
 def test_increment_version_with_dots_in_filename():
     """Test increment_version with dots in the filename."""
-from scitex.path import increment_version
+    from scitex.path import increment_version
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Filename with dots

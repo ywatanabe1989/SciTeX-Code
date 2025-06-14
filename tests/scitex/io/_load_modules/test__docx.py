@@ -16,7 +16,7 @@ class TestLoadDocx:
     
     def test_valid_extension_check(self):
         """Test that function validates .docx extension"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Test invalid extensions
         invalid_files = ["file.txt", "document.doc", "text.pdf", "data.xlsx"]
@@ -28,7 +28,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_document_loading_and_text_extraction(self, mock_document_class):
         """Test that Document is loaded and text is extracted correctly"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock paragraphs
         mock_para1 = MagicMock()
@@ -57,7 +57,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_empty_document_handling(self, mock_document_class):
         """Test handling of empty DOCX documents"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock document with no paragraphs
         mock_doc = MagicMock()
@@ -72,7 +72,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_document_with_empty_paragraphs(self, mock_document_class):
         """Test handling of documents with empty paragraphs"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock paragraphs with some empty ones
         mock_para1 = MagicMock()
@@ -96,7 +96,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_unicode_text_handling(self, mock_document_class):
         """Test handling of Unicode characters in document text"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock paragraphs with Unicode characters
         mock_para1 = MagicMock()
@@ -119,7 +119,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_whitespace_and_special_characters(self, mock_document_class):
         """Test handling of whitespace and special characters"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock paragraphs with various whitespace scenarios
         mock_para1 = MagicMock()
@@ -143,7 +143,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_docx_exception_propagation(self, mock_document_class):
         """Test that python-docx exceptions are properly propagated"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Test FileNotFoundError
         mock_document_class.side_effect = FileNotFoundError("File not found")
@@ -161,7 +161,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_large_document_handling(self, mock_document_class):
         """Test handling of large documents"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create a large number of mock paragraphs
         mock_paragraphs = []
@@ -184,7 +184,7 @@ from scitex.io._load_modules import _load_docx
     
     def test_function_signature(self):
         """Test function signature and type annotations"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         import inspect
         
         sig = inspect.signature(_load_docx)
@@ -198,7 +198,7 @@ from scitex.io._load_modules import _load_docx
     
     def test_function_docstring(self):
         """Test that function has comprehensive docstring"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         assert hasattr(_load_docx, '__doc__')
         assert _load_docx.__doc__ is not None
@@ -214,7 +214,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_kwargs_ignored(self, mock_document_class):
         """Test that kwargs are ignored (not passed to Document)"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         mock_doc = MagicMock()
         mock_para = MagicMock()
@@ -231,7 +231,7 @@ from scitex.io._load_modules import _load_docx
     
     def test_case_sensitive_extension_check(self):
         """Test case sensitivity of .docx extension"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Test case variations that should fail
         case_variations = ["file.DOCX", "file.Docx", "file.dOcX"]
@@ -243,7 +243,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_document_with_only_whitespace(self, mock_document_class):
         """Test handling of document with only whitespace paragraphs"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Create mock paragraphs with only whitespace
         mock_para1 = MagicMock()
@@ -265,7 +265,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_absolute_and_relative_paths(self, mock_document_class):
         """Test handling of absolute and relative file paths"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         mock_doc = MagicMock()
         mock_para = MagicMock()
@@ -289,7 +289,7 @@ from scitex.io._load_modules import _load_docx
     @patch('scitex.io._load_modules._docx.Document')
     def test_complex_paragraph_text_scenarios(self, mock_document_class):
         """Test complex scenarios with paragraph text extraction"""
-from scitex.io._load_modules import _load_docx
+        from scitex.io._load_modules import _load_docx
         
         # Test paragraphs with complex formatting (text should still be extracted)
         mock_para1 = MagicMock()
@@ -311,7 +311,7 @@ from scitex.io._load_modules import _load_docx
     def test_import_error_handling(self):
         """Test that ImportError is handled when python-docx is not available"""
         with patch('builtins.__import__', side_effect=ImportError("No module named 'docx'")):
-from scitex.io._load_modules import _load_docx
+            from scitex.io._load_modules import _load_docx
             
             # The import error should occur when Document is imported inside the function
             with pytest.raises(ImportError):
@@ -325,7 +325,7 @@ from scitex.io._load_modules import _load_docx
         except ImportError:
             pytest.skip("python-docx not available")
         
-from scitex.io._load_modules import _load_docx
+            from scitex.io._load_modules import _load_docx
         
         # Create a real DOCX file
         doc = Document()

@@ -16,7 +16,7 @@ import pytest
 
 def test_add_hue_appends_dummy_row():
     import pandas as pd
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
 
     df = pd.DataFrame({"col1": [1, 2]})
     df2 = add_hue_col(df)
@@ -27,7 +27,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_basic():
     """Test basic functionality of add_hue_col."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     # Create simple dataframe
     df = pd.DataFrame({
@@ -52,7 +52,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_different_dtypes():
     """Test with different data types."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "int_col": [1, 2, 3],
@@ -75,7 +75,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_empty_dataframe():
     """Test with empty dataframe."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame()
     result = add_hue_col(df)
@@ -88,7 +88,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_single_row():
     """Test with single row dataframe."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({"x": [10], "y": [20]})
     result = add_hue_col(df)
@@ -100,7 +100,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_existing_hue_column():
     """Test behavior when dataframe already has hue column."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "col1": [1, 2, 3],
@@ -116,7 +116,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_nan_values():
     """Test with dataframe containing NaN values."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "a": [1, np.nan, 3],
@@ -138,7 +138,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_categorical_data():
     """Test with categorical data."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "cat_col": pd.Categorical(["A", "B", "A", "C"])
@@ -152,7 +152,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_datetime_data():
     """Test with datetime data."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "date_col": pd.date_range("2023-01-01", periods=3)
@@ -168,7 +168,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_mixed_types():
     """Test with mixed numeric and non-numeric types."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({
         "num": [1, 2, 3],
@@ -185,7 +185,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_large_dataframe():
     """Test with larger dataframe."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     n_rows = 1000
     df = pd.DataFrame({
@@ -203,7 +203,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_preserves_index():
     """Test that index handling works correctly."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     # Create dataframe with custom index
     df = pd.DataFrame({
@@ -221,7 +221,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_multiindex():
     """Test with MultiIndex dataframe."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     # Create MultiIndex dataframe
     index = pd.MultiIndex.from_tuples([
@@ -237,7 +237,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_wide_dataframe():
     """Test with many columns."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     # Create dataframe with many columns
     n_cols = 50
@@ -253,7 +253,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_original_unchanged():
     """Test that original dataframe is not modified."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     original_shape = df.shape
@@ -269,7 +269,7 @@ from scitex.plt.color import add_hue_col
 
 def test_add_hue_col_complex_dtypes():
     """Test with complex/unsupported dtypes."""
-from scitex.plt.color import add_hue_col
+    from scitex.plt.color import add_hue_col
     
     # Create dataframe with various complex types
     df = pd.DataFrame({

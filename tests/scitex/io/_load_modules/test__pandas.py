@@ -18,7 +18,7 @@ import numpy as np
 
 def test_load_csv_basic():
     """Test loading a basic CSV file."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     # Create sample DataFrame
     df = pd.DataFrame({
@@ -45,7 +45,7 @@ from scitex.io._load_modules import _load_csv
 
 def test_load_csv_unnamed_columns():
     """Test that unnamed columns are removed."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     # Create DataFrame with unnamed columns
     df = pd.DataFrame({
@@ -74,7 +74,7 @@ from scitex.io._load_modules import _load_csv
 
 def test_load_csv_with_options():
     """Test loading CSV with various pandas options."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     # Create CSV with various features
     data = """date,value,category
@@ -99,7 +99,7 @@ from scitex.io._load_modules import _load_csv
 
 def test_load_csv_invalid_extension():
     """Test that loading non-CSV file raises ValueError."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     with pytest.raises(ValueError, match="File must have .csv extension"):
         _load_csv("test.txt")
@@ -107,7 +107,7 @@ from scitex.io._load_modules import _load_csv
 
 def test_load_tsv_basic():
     """Test loading a TSV file."""
-from scitex.io._load_modules import _load_tsv
+    from scitex.io._load_modules import _load_tsv
     
     # Create sample data
     df = pd.DataFrame({
@@ -129,7 +129,7 @@ from scitex.io._load_modules import _load_tsv
 
 def test_load_tsv_invalid_extension():
     """Test that loading non-TSV file raises ValueError."""
-from scitex.io._load_modules import _load_tsv
+    from scitex.io._load_modules import _load_tsv
     
     with pytest.raises(ValueError, match="File must have .tsv extension"):
         _load_tsv("test.csv")
@@ -137,7 +137,7 @@ from scitex.io._load_modules import _load_tsv
 
 def test_load_excel_basic():
     """Test loading an Excel file."""
-from scitex.io._load_modules import _load_excel
+    from scitex.io._load_modules import _load_excel
     
     # Skip if openpyxl not available
     try:
@@ -165,7 +165,7 @@ from scitex.io._load_modules import _load_excel
 
 def test_load_excel_multiple_sheets():
     """Test loading Excel file with multiple sheets."""
-from scitex.io._load_modules import _load_excel
+    from scitex.io._load_modules import _load_excel
     
     # Skip if openpyxl not available
     try:
@@ -195,7 +195,7 @@ from scitex.io._load_modules import _load_excel
 
 def test_load_excel_invalid_extension():
     """Test that loading non-Excel file raises ValueError."""
-from scitex.io._load_modules import _load_excel
+    from scitex.io._load_modules import _load_excel
     
     with pytest.raises(ValueError, match="File must have Excel extension"):
         _load_excel("test.csv")
@@ -203,7 +203,7 @@ from scitex.io._load_modules import _load_excel
 
 def test_load_parquet_basic():
     """Test loading a Parquet file."""
-from scitex.io._load_modules import _load_parquet
+    from scitex.io._load_modules import _load_parquet
     
     # Skip if pyarrow not available
     try:
@@ -238,7 +238,7 @@ from scitex.io._load_modules import _load_parquet
 
 def test_load_parquet_invalid_extension():
     """Test that loading non-Parquet file raises ValueError."""
-from scitex.io._load_modules import _load_parquet
+    from scitex.io._load_modules import _load_parquet
     
     with pytest.raises(ValueError, match="File must have .parquet extension"):
         _load_parquet("test.csv")
@@ -246,7 +246,7 @@ from scitex.io._load_modules import _load_parquet
 
 def test_load_csv_nonexistent_file():
     """Test loading a nonexistent CSV file."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     with pytest.raises(FileNotFoundError):
         _load_csv("/nonexistent/path/file.csv")
@@ -254,7 +254,7 @@ from scitex.io._load_modules import _load_csv
 
 def test_load_csv_large_file():
     """Test loading a large CSV file."""
-from scitex.io._load_modules import _load_csv
+    from scitex.io._load_modules import _load_csv
     
     # Create a large DataFrame
     n_rows = 10000

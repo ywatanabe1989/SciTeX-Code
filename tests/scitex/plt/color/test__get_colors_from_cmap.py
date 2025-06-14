@@ -68,7 +68,7 @@ def test_get_colors_from_cmap():
 
 
 def test_get_categorical_colors_from_cmap():
-from scitex.plt.color import get_categorical_colors_from_cmap
+    from scitex.plt.color import get_categorical_colors_from_cmap
 
     # Test with list categories
     categories = ["cat", "dog", "bird"]
@@ -95,7 +95,7 @@ from scitex.plt.color import get_categorical_colors_from_cmap
 
 def test_get_color_from_cmap_edge_cases():
     """Test edge cases for get_color_from_cmap."""
-from scitex.plt.color import get_color_from_cmap
+    from scitex.plt.color import get_color_from_cmap
     
     # Test with value at exact boundaries
     color_0 = get_color_from_cmap("viridis", 0.0)
@@ -121,7 +121,7 @@ from scitex.plt.color import get_color_from_cmap
 
 def test_get_colors_from_cmap_edge_cases():
     """Test edge cases for get_colors_from_cmap."""
-from scitex.plt.color import get_colors_from_cmap
+    from scitex.plt.color import get_colors_from_cmap
     
     # Test with n_colors = 0
     colors_0 = get_colors_from_cmap("viridis", 0)
@@ -143,7 +143,7 @@ from scitex.plt.color import get_colors_from_cmap
 
 def test_get_categorical_colors_edge_cases():
     """Test edge cases for get_categorical_colors_from_cmap."""
-from scitex.plt.color import get_categorical_colors_from_cmap
+    from scitex.plt.color import get_categorical_colors_from_cmap
     
     # Test with empty list
     empty_colors = get_categorical_colors_from_cmap("viridis", [])
@@ -168,7 +168,7 @@ from scitex.plt.color import get_categorical_colors_from_cmap
 
 def test_colormap_variations():
     """Test with different types of colormaps."""
-from scitex.plt.color import get_colors_from_cmap
+    from scitex.plt.color import get_colors_from_cmap
     
     # Sequential colormaps
     sequential_cmaps = ["Blues", "Greens", "Oranges", "Purples"]
@@ -191,7 +191,7 @@ from scitex.plt.color import get_colors_from_cmap
 
 def test_alpha_values():
     """Test alpha channel handling."""
-from scitex.plt.color import (
+    from scitex.plt.color import (
         get_color_from_cmap,
         get_colors_from_cmap,
         get_categorical_colors_from_cmap
@@ -217,7 +217,7 @@ from scitex.plt.color import (
 
 def test_invalid_colormap():
     """Test behavior with invalid colormap names."""
-from scitex.plt.color import get_color_from_cmap
+    from scitex.plt.color import get_color_from_cmap
     
     # matplotlib should raise an error for invalid colormap
     with pytest.raises(ValueError):
@@ -226,7 +226,7 @@ from scitex.plt.color import get_color_from_cmap
 
 def test_color_consistency():
     """Test that colors are consistent across calls."""
-from scitex.plt.color import (
+    from scitex.plt.color import (
         get_color_from_cmap,
         get_colors_from_cmap
     )

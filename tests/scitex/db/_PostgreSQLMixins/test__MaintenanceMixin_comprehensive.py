@@ -19,7 +19,7 @@ class MockMaintenanceMixin:
     """Mock class that includes MaintenanceMixin for testing."""
     
     def __init__(self):
-from scitex.db._PostgreSQLMixins import _MaintenanceMixin
+        from scitex.db._PostgreSQLMixins import _MaintenanceMixin
         # Mock the required attributes
         self._maintenance_lock = threading.Lock()
         self.cursor = MagicMock()
@@ -38,7 +38,7 @@ class TestMaintenanceMixinBasic:
     
     def test_import(self):
         """Test that MaintenanceMixin can be imported."""
-from scitex.db._PostgreSQLMixins import _MaintenanceMixin
+        from scitex.db._PostgreSQLMixins import _MaintenanceMixin
         assert _MaintenanceMixin is not None
     
     def test_mixin_methods_exist(self):
@@ -544,7 +544,7 @@ class TestDocumentation:
     
     def test_method_docstrings(self):
         """Test that methods have docstrings."""
-from scitex.db._PostgreSQLMixins import _MaintenanceMixin
+        from scitex.db._PostgreSQLMixins import _MaintenanceMixin
         
         methods_to_check = ['vacuum', 'analyze', 'reindex', 
                            'get_table_size', 'get_database_size']

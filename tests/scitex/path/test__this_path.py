@@ -10,7 +10,7 @@ from unittest.mock import patch, MagicMock
 
 def test_this_path_normal():
     """Test this_path in normal Python environment."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         # Mock the calling file
@@ -28,7 +28,7 @@ from scitex.path import this_path
 
 def test_this_path_ipython():
     """Test this_path in iPython environment."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         mock_stack.return_value = [
@@ -46,7 +46,7 @@ from scitex.path import this_path
 
 def test_this_path_custom_ipython_path():
     """Test this_path with custom iPython fake path."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         mock_stack.return_value = [
@@ -63,7 +63,7 @@ from scitex.path import this_path
 
 def test_this_path_stack_levels():
     """Test this_path with different stack levels."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     def wrapper_function():
         return this_path()
@@ -84,7 +84,7 @@ from scitex.path import this_path
 
 def test_get_this_path_alias():
     """Test that get_this_path is an alias for this_path."""
-from scitex.path import this_path, get_this_path
+    from scitex.path import this_path, get_this_path
     
     # They should be the same function
     assert get_this_path is this_path
@@ -92,7 +92,7 @@ from scitex.path import this_path, get_this_path
 
 def test_this_path_no_arguments():
     """Test this_path requires no arguments."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         mock_stack.return_value = [None, MagicMock(filename='/test.py')]
@@ -105,7 +105,7 @@ from scitex.path import this_path
 
 def test_this_path_return_type():
     """Test this_path returns a string."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         mock_stack.return_value = [None, MagicMock(filename='/test.py')]
@@ -117,7 +117,7 @@ from scitex.path import this_path
 
 def test_this_path_absolute_path():
     """Test this_path returns absolute path."""
-from scitex.path import this_path
+    from scitex.path import this_path
     
     with patch('inspect.stack') as mock_stack:
         mock_stack.return_value = [None, MagicMock(filename='/test.py')]

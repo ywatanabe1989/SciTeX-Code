@@ -20,12 +20,12 @@ class TestCacheMem:
 
     def test_cache_mem_import(self):
         """Test that cache_mem can be imported successfully."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         assert callable(cache_mem)
 
     def test_cache_mem_basic_functionality(self):
         """Test basic caching functionality with simple function."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -52,7 +52,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_multiple_arguments(self):
         """Test caching with multiple arguments."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -84,7 +84,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_with_keyword_arguments(self):
         """Test caching behavior with keyword arguments."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -111,7 +111,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_return_types(self):
         """Test caching with different return types."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -156,7 +156,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_with_mutable_arguments(self):
         """Test caching behavior with mutable arguments."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -179,7 +179,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_performance_improvement(self):
         """Test that caching actually improves performance."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         @cache_mem
         def slow_function(n):
@@ -202,7 +202,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_cache_info(self):
         """Test cache_info functionality."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         @cache_mem
         def test_func(x):
@@ -230,7 +230,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_cache_clear(self):
         """Test cache clearing functionality."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -254,7 +254,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_unlimited_size(self):
         """Test that cache has unlimited size (maxsize=None)."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -278,7 +278,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_exception_handling(self):
         """Test caching behavior when function raises exceptions."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         
@@ -311,7 +311,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_with_class_methods(self):
         """Test caching with class methods."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         class TestClass:
             def __init__(self):
@@ -336,7 +336,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_function_attributes(self):
         """Test that decorated function preserves important attributes."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         @cache_mem
         def documented_func(x):
@@ -351,7 +351,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_is_lru_cache_wrapper(self):
         """Test that cache_mem is indeed a wrapper around lru_cache."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         from functools import lru_cache
         
         # cache_mem should be an lru_cache with maxsize=None
@@ -370,7 +370,7 @@ from scitex.decorators import cache_mem
 
     def test_cache_mem_concurrent_access(self):
         """Test caching behavior with concurrent-like access patterns."""
-from scitex.decorators import cache_mem
+        from scitex.decorators import cache_mem
         
         call_count = 0
         

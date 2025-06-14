@@ -20,7 +20,15 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from scitex.io._save_modules import save_numpy
+from scitex.io._save_modules import save_npy, save_npz
+
+# Create a unified save_numpy function for testing
+def save_numpy(obj, spath, **kwargs):
+    """Unified save function that dispatches to save_npy or save_npz based on extension."""
+    if spath.endswith('.npz'):
+        return save_npz(obj, spath)
+    else:
+        return save_npy(obj, spath)
 
 
 class TestSaveNumpy:

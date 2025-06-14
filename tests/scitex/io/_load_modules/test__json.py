@@ -18,7 +18,7 @@ import pytest
 
 def test_load_json_basic():
     """Test loading a basic JSON file."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create a temporary JSON file
     with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
@@ -42,7 +42,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_complex_structure():
     """Test loading JSON with nested structures."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create complex data
     complex_data = {
@@ -81,7 +81,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_invalid_extension():
     """Test that loading non-JSON file raises ValueError."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Try to load a file without .json extension
     with pytest.raises(ValueError, match="File must have .json extension"):
@@ -93,7 +93,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_invalid_json_content():
     """Test handling of invalid JSON content."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create a file with invalid JSON
     with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
@@ -109,7 +109,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_empty_file():
     """Test loading an empty JSON file."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create an empty file
     with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
@@ -124,7 +124,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_unicode_content():
     """Test loading JSON with Unicode characters."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create JSON with Unicode
     unicode_data = {
@@ -149,7 +149,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_nonexistent_file():
     """Test loading a nonexistent file."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     with pytest.raises(FileNotFoundError):
         _load_json("/nonexistent/path/file.json")
@@ -157,7 +157,7 @@ from scitex.io._load_modules import _load_json
 
 def test_load_json_large_file():
     """Test loading a large JSON file."""
-from scitex.io._load_modules import _load_json
+    from scitex.io._load_modules import _load_json
     
     # Create a large JSON structure
     large_data = {

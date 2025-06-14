@@ -17,7 +17,7 @@ import pytest
 @pytest.fixture
 def tracking_mixin_instance():
     """Fixture that creates a simple TrackingMixin instance for testing."""
-from scitex.plt._subplots._AxisWrapperMixins import TrackingMixin
+    from scitex.plt._subplots._AxisWrapperMixins import TrackingMixin
 
     class TestTrackingMixin(TrackingMixin):
         def __init__(self):

@@ -203,14 +203,14 @@ class TestContextInit:
 
     def test_quiet_alias(self):
         """Test that quiet is an alias for suppress_output."""
-from scitex.context import quiet, suppress_output
+        from scitex.context import quiet, suppress_output
         
         # Should be the same function
         assert quiet is suppress_output
 
     def test_suppress_output_import_via_quiet(self):
         """Test that quiet can be used as an alias."""
-from scitex.context import quiet
+        from scitex.context import quiet
         
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -291,7 +291,7 @@ from scitex.context import quiet
         assert hasattr(scitex.context, 'suppress_output')
         
         # Verify it's the same function as imported directly
-from scitex.context import suppress_output as direct_import
+        from scitex.context import suppress_output as direct_import
         assert scitex.context.suppress_output is direct_import
 
     def test_suppress_output_docstring_and_attributes(self):

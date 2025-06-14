@@ -48,9 +48,9 @@ def test_basemixins_directory_contains_expected_files():
 def test_basemixins_can_import_individual_mixins():
     """Test that individual mixin classes can be imported."""
     # Test importing specific mixins (these should be importable from their files)
-from scitex.db._BaseMixins import _BaseConnectionMixin
-from scitex.db._BaseMixins import _BaseQueryMixin
-from scitex.db._BaseMixins import _BaseTableMixin
+    from scitex.db._BaseMixins import _BaseConnectionMixin
+    from scitex.db._BaseMixins import _BaseQueryMixin
+    from scitex.db._BaseMixins import _BaseTableMixin
     
     # Check that classes are properly defined
     assert _BaseConnectionMixin is not None
@@ -77,8 +77,8 @@ def test_basemixins_init_is_empty():
 
 def test_base_mixin_classes_functionality():
     """Test basic functionality of base mixin classes."""
-from scitex.db._BaseMixins import _BaseConnectionMixin
-from scitex.db._BaseMixins import _BaseBatchMixin
+    from scitex.db._BaseMixins import _BaseConnectionMixin
+    from scitex.db._BaseMixins import _BaseBatchMixin
     
     # Test that mixins can be instantiated (basic smoke test)
     connection_mixin = _BaseConnectionMixin()
@@ -96,8 +96,8 @@ from scitex.db._BaseMixins import _BaseBatchMixin
 
 def test_mixin_inheritance_structure():
     """Test that mixin classes follow proper inheritance structure."""
-from scitex.db._BaseMixins import _BaseConnectionMixin
-from scitex.db._BaseMixins import _BaseQueryMixin
+    from scitex.db._BaseMixins import _BaseConnectionMixin
+    from scitex.db._BaseMixins import _BaseQueryMixin
     
     # Check that mixins are designed for multiple inheritance
     # They should have minimal method resolution order conflicts
@@ -114,7 +114,7 @@ from scitex.db._BaseMixins import _BaseQueryMixin
 
 def test_mixin_threading_safety():
     """Test that mixin classes include threading safety features."""
-from scitex.db._BaseMixins import _BaseConnectionMixin
+    from scitex.db._BaseMixins import _BaseConnectionMixin
     
     connection_mixin = _BaseConnectionMixin()
     
@@ -155,7 +155,7 @@ def test_all_mixins_importable():
 
 def test_mixin_module_file_attributes():
     """Test that mixin modules have proper file attributes."""
-from scitex.db import _BaseConnectionMixin
+    from scitex.db import _BaseConnectionMixin
     
     # Check that the imported module has __file__ attribute
     assert hasattr(_BaseConnectionMixin, '__file__')

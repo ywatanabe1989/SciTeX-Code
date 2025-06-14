@@ -291,7 +291,7 @@ class TestConfMat:
             
     def test_calc_bacc_from_cm(self):
         """Test balanced accuracy calculation from confusion matrix"""
-from scitex.ai.plt import calc_bACC_from_cm
+        from scitex.ai.plt import calc_bACC_from_cm
         
         # Perfect predictions
         cm = np.array([[10, 0], [0, 10]])
@@ -310,7 +310,7 @@ from scitex.ai.plt import calc_bACC_from_cm
         
     def test_calc_bacc_edge_cases(self):
         """Test balanced accuracy calculation edge cases"""
-from scitex.ai.plt import calc_bACC_from_cm
+        from scitex.ai.plt import calc_bACC_from_cm
         
         # Empty confusion matrix
         cm = np.array([[]])

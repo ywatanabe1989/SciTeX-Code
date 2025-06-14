@@ -15,7 +15,8 @@ from unittest.mock import patch, MagicMock
 # Add src to path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../src"))
 
-from scitex.db import inspect, Inspector
+from scitex.db import inspect
+from scitex.db._inspect import Inspector
 
 
 class TestInspect:

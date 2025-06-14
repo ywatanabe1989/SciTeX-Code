@@ -15,7 +15,7 @@ class TestSplitImport:
 
     def test_import_split(self):
         """Test that split function can be imported."""
-from scitex.path import split
+        from scitex.path import split
         assert callable(split)
 
 
@@ -24,7 +24,7 @@ class TestSplitBasicFunctionality:
 
     def test_split_basic_file(self):
         """Test splitting a basic file path."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/test.txt"
         dirname, fname, ext = split(fpath)
@@ -35,7 +35,7 @@ from scitex.path import split
 
     def test_split_nested_path(self):
         """Test splitting a deeply nested path."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "home/user/documents/projects/file.py"
         dirname, fname, ext = split(fpath)
@@ -46,7 +46,7 @@ from scitex.path import split
 
     def test_split_root_file(self):
         """Test splitting a file in root directory."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "file.txt"
         dirname, fname, ext = split(fpath)
@@ -57,7 +57,7 @@ from scitex.path import split
 
     def test_split_no_extension(self):
         """Test splitting a file without extension."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/filename"
         dirname, fname, ext = split(fpath)
@@ -68,7 +68,7 @@ from scitex.path import split
 
     def test_split_hidden_file(self):
         """Test splitting a hidden file (starting with dot)."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "home/user/.bashrc"
         dirname, fname, ext = split(fpath)
@@ -79,7 +79,7 @@ from scitex.path import split
 
     def test_split_multiple_extensions(self):
         """Test splitting file with multiple extensions."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/archive.tar.gz"
         dirname, fname, ext = split(fpath)
@@ -94,7 +94,7 @@ class TestSplitSpecialCases:
 
     def test_split_empty_string(self):
         """Test splitting empty string."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = ""
         dirname, fname, ext = split(fpath)
@@ -105,7 +105,7 @@ from scitex.path import split
 
     def test_split_only_directory(self):
         """Test splitting path that ends with directory separator."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/subdir/"
         dirname, fname, ext = split(fpath)
@@ -116,7 +116,7 @@ from scitex.path import split
 
     def test_split_only_extension(self):
         """Test splitting file that is only an extension."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/.txt"
         dirname, fname, ext = split(fpath)
@@ -127,7 +127,7 @@ from scitex.path import split
 
     def test_split_dot_in_filename(self):
         """Test splitting file with dots in filename."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/file.name.with.dots.txt"
         dirname, fname, ext = split(fpath)
@@ -138,7 +138,7 @@ from scitex.path import split
 
     def test_split_no_directory(self):
         """Test splitting just a filename."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "simple.txt"
         dirname, fname, ext = split(fpath)
@@ -153,7 +153,7 @@ class TestSplitAbsolutePaths:
 
     def test_split_absolute_unix_path(self):
         """Test splitting absolute Unix path."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "/home/user/documents/file.txt"
         dirname, fname, ext = split(fpath)
@@ -164,7 +164,7 @@ from scitex.path import split
 
     def test_split_absolute_root_file(self):
         """Test splitting file in absolute root."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "/file.txt"
         dirname, fname, ext = split(fpath)
@@ -179,7 +179,7 @@ class TestSplitRelativePaths:
 
     def test_split_current_directory(self):
         """Test splitting path in current directory."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "./file.txt"
         dirname, fname, ext = split(fpath)
@@ -190,7 +190,7 @@ from scitex.path import split
 
     def test_split_parent_directory(self):
         """Test splitting path in parent directory."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "../data/file.txt"
         dirname, fname, ext = split(fpath)
@@ -201,7 +201,7 @@ from scitex.path import split
 
     def test_split_nested_relative(self):
         """Test splitting nested relative path."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "../../parent/child/file.txt"
         dirname, fname, ext = split(fpath)
@@ -216,7 +216,7 @@ class TestSplitFileTypes:
 
     def test_split_image_files(self):
         """Test splitting image file paths."""
-from scitex.path import split
+        from scitex.path import split
         
         test_cases = [
             ("images/photo.jpg", "images/", "photo", ".jpg"),
@@ -233,7 +233,7 @@ from scitex.path import split
 
     def test_split_code_files(self):
         """Test splitting code file paths."""
-from scitex.path import split
+        from scitex.path import split
         
         test_cases = [
             ("src/main.py", "src/", "main", ".py"),
@@ -250,7 +250,7 @@ from scitex.path import split
 
     def test_split_document_files(self):
         """Test splitting document file paths."""
-from scitex.path import split
+        from scitex.path import split
         
         test_cases = [
             ("docs/readme.md", "docs/", "readme", ".md"),
@@ -271,7 +271,7 @@ class TestSplitSpecialCharacters:
 
     def test_split_spaces_in_path(self):
         """Test splitting paths with spaces."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "my documents/my file.txt"
         dirname, fname, ext = split(fpath)
@@ -282,7 +282,7 @@ from scitex.path import split
 
     def test_split_unicode_characters(self):
         """Test splitting paths with Unicode characters."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "données/fichier_тест.txt"
         dirname, fname, ext = split(fpath)
@@ -293,7 +293,7 @@ from scitex.path import split
 
     def test_split_special_symbols(self):
         """Test splitting paths with special symbols."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/file-name_v2.0.txt"
         dirname, fname, ext = split(fpath)
@@ -304,7 +304,7 @@ from scitex.path import split
 
     def test_split_parentheses_brackets(self):
         """Test splitting paths with parentheses and brackets."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/file(1)[copy].txt"
         dirname, fname, ext = split(fpath)
@@ -319,7 +319,7 @@ class TestSplitReturnTypes:
 
     def test_split_return_tuple(self):
         """Test that split returns a tuple."""
-from scitex.path import split
+        from scitex.path import split
         
         result = split("data/file.txt")
         
@@ -328,7 +328,7 @@ from scitex.path import split
 
     def test_split_return_strings(self):
         """Test that split returns strings."""
-from scitex.path import split
+        from scitex.path import split
         
         dirname, fname, ext = split("data/file.txt")
         
@@ -338,7 +338,7 @@ from scitex.path import split
 
     def test_split_unpacking(self):
         """Test that split can be unpacked correctly."""
-from scitex.path import split
+        from scitex.path import split
         
         # Test tuple unpacking
         result = split("data/file.txt")
@@ -354,7 +354,7 @@ class TestSplitConsistency:
 
     def test_split_idempotent(self):
         """Test that split is consistent for same input."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/test/file.txt"
         
@@ -365,7 +365,7 @@ from scitex.path import split
 
     def test_split_different_inputs(self):
         """Test split with various different inputs."""
-from scitex.path import split
+        from scitex.path import split
         
         test_cases = [
             "simple.txt",
@@ -394,7 +394,7 @@ class TestSplitDocumentedExample:
 
     def test_split_docstring_example(self):
         """Test the exact example from the function docstring."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = '../data/01/day1/split_octave/2kHz_mat/tt8-2.mat'
         dirname, fname, ext = split(fpath)
@@ -410,7 +410,7 @@ class TestSplitEdgeCases:
 
     def test_split_very_long_path(self):
         """Test splitting very long path."""
-from scitex.path import split
+        from scitex.path import split
         
         # Create a very long path
         long_dir = "/".join(["very_long_directory_name"] * 20)
@@ -424,7 +424,7 @@ from scitex.path import split
 
     def test_split_numeric_names(self):
         """Test splitting paths with numeric names."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/123.456"
         dirname, fname, ext = split(fpath)
@@ -435,7 +435,7 @@ from scitex.path import split
 
     def test_split_single_character(self):
         """Test splitting single character filename."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/a.b"
         dirname, fname, ext = split(fpath)
@@ -450,7 +450,7 @@ class TestSplitOSCompatibility:
 
     def test_split_forward_slashes(self):
         """Test splitting with forward slashes (Unix-style)."""
-from scitex.path import split
+        from scitex.path import split
         
         fpath = "data/subdir/file.txt"
         dirname, fname, ext = split(fpath)
@@ -461,7 +461,7 @@ from scitex.path import split
 
     def test_split_mixed_separators(self):
         """Test behavior with mixed path separators."""
-from scitex.path import split
+        from scitex.path import split
         
         # This tests current behavior - may vary by OS
         fpath = "data\\subdir/file.txt"
