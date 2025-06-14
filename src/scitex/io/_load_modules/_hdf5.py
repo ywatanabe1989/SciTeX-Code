@@ -15,6 +15,38 @@ __DIR__ = os.path.dirname(__FILE__)
 from typing import Any
 
 import h5py
+import numpy as np
+
+
+def _load_group(group):
+    """Recursively load an HDF5 group."""
+    obj = {}
+    for key in group.keys():
+        if isinstance(group[key], h5py.Group):
+            # Recursively load subgroups
+            obj[key] = _load_group(group[key])
+        else:
+            # Load dataset
+            dataset = group[key]
+            # Check if it's a scalar dataset
+            if dataset.shape == ():
+                data = dataset[()]
+            else:
+                data = dataset[:]
+            
+            # Decode bytes to string if needed
+            if isinstance(data, bytes):
+                obj[key] = data.decode("utf-8")
+            elif isinstance(data, np.void):
+                # Handle pickled data
+                import pickle
+                obj[key] = pickle.loads(data.tobytes())
+            else:
+                obj[key] = data
+    # Load attributes
+    for key in group.attrs.keys():
+        obj[key] = group.attrs[key]
+    return obj
 
 
 def _load_hdf5(lpath: str, group_path: str = None, **kwargs) -> Any:
@@ -29,12 +61,27 @@ def _load_hdf5(lpath: str, group_path: str = None, **kwargs) -> Any:
 
         obj = {}
         for key in target.keys():
-            data = target[key][:]
-            # Decode bytes to string if needed
-            if isinstance(data, bytes):
-                obj[key] = data.decode("utf-8")
+            if isinstance(target[key], h5py.Group):
+                # Recursively load groups
+                obj[key] = _load_group(target[key])
             else:
-                obj[key] = data
+                # Load dataset
+                dataset = target[key]
+                # Check if it's a scalar dataset
+                if dataset.shape == ():
+                    data = dataset[()]
+                else:
+                    data = dataset[:]
+                
+                # Decode bytes to string if needed
+                if isinstance(data, bytes):
+                    obj[key] = data.decode("utf-8")
+                elif isinstance(data, np.void):
+                    # Handle pickled data
+                    import pickle
+                    obj[key] = pickle.loads(data.tobytes())
+                else:
+                    obj[key] = data
         for key in target.attrs.keys():
             obj[key] = target.attrs[key]
         return obj
