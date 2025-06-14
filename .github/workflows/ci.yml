@@ -37,7 +37,7 @@ jobs:
     
     - name: Run unit tests
       run: |
-        python -m pytest tests/mngs -v --cov=src/mngs --cov-report=xml --cov-report=html
+        python -m pytest tests/scitex -v --cov=src/scitex --cov-report=xml --cov-report=html
     
     - name: Run integration tests
       run: |
@@ -70,21 +70,21 @@ jobs:
     - name: Run flake8
       run: |
         # Stop the build if there are Python syntax errors or undefined names
-        flake8 src/mngs --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/scitex --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings
-        flake8 src/mngs --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 src/scitex --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
     - name: Check code formatting with black
       run: |
-        black --check src/mngs
+        black --check src/scitex
     
     - name: Check import sorting with isort
       run: |
-        isort --check-only src/mngs
+        isort --check-only src/scitex
     
     - name: Type checking with mypy
       run: |
-        mypy src/mngs --ignore-missing-imports
+        mypy src/scitex --ignore-missing-imports
 
   docs:
     runs-on: ubuntu-latest

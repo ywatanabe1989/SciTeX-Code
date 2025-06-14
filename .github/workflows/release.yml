@@ -45,7 +45,7 @@ jobs:
           
           ## Installation
           ```bash
-          pip install mngs==${{ github.ref_name }}
+          pip install scitex==${{ github.ref_name }}
           ```
         draft: false
         prerelease: false

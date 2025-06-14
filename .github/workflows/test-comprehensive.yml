@@ -46,8 +46,8 @@ jobs:
     
     - name: Run ${{ matrix.module }} tests
       run: |
-        python -m pytest tests/mngs/${{ matrix.module }} -v \
-          --cov=src/mngs/${{ matrix.module }} \
+        python -m pytest tests/scitex/${{ matrix.module }} -v \
+          --cov=src/scitex/${{ matrix.module }} \
           --cov-report=xml:coverage-${{ matrix.module }}.xml \
           --timeout=300
     

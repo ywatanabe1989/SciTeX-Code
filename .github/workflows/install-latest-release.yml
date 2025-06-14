@@ -1,5 +1,5 @@
 # Timestamp: "2025-02-27 22:06:40 (ywatanabe)"
-# File: /home/ywatanabe/proj/mngs_dev/.github/workflows/install-latest-release.yml
+# File: .github/workflows/install-latest-release.yml
 
 name: install-latest-release
 
@@ -20,7 +20,7 @@ jobs:
     - name: latest_release
       run: |
           python -m pip install -U pip
-          python ./tests/custom/test_pip_install_latest.py ywatanabe1989/mngs
-          python ./tests/custom/test_mngs_run.py
+          python ./tests/custom/test_pip_install_latest.py ywatanabe1989/SciTeX-Code
+          python ./tests/custom/test_scitex_run.py
 
 # EOF

@@ -1,5 +1,5 @@
-# Timestamp: "2025-05-03 15:26:27 (ywatanabe)"
-# File: /home/ywatanabe/proj/mngs_repo/.github/workflows/install-develop-branch.yml
+# Timestamp: "2025-06-14 22:18:00 (ywatanabe)"
+# File: .github/workflows/install-develop-branch.yml
 
 name: install-develop-branch
 
@@ -20,7 +20,7 @@ jobs:
     - name: install-develop-branch
       run: |
           python -m pip install -U pip
-          pip install git+https://github.com/ywatanabe1989/mngs.git@develop
-          python ./tests/custom/test_mngs_run.py
+          pip install git+https://github.com/ywatanabe1989/SciTeX-Code.git@develop
+          python ./tests/custom/test_scitex_run.py
 
 # EOF
