@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-12 13:47:26 (ywatanabe)"
-# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/.claude-worktree/scitex_repo/src/scitex/io/_load_modules/_hdf5.py
+# Timestamp: "2025-06-16 17:40:55 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_load_modules/_hdf5.py
 # ----------------------------------------
 import os
 __FILE__ = (
@@ -10,35 +10,131 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-# Time-stamp: "2024-11-14 07:55:37 (ywatanabe)"
-
+import warnings
 from typing import Any
 
 import h5py
+import numpy as np
+
+# Time-stamp: "2024-11-14 07:55:37 (ywatanabe)"
 
 
-def _load_hdf5(lpath: str, group_path: str = None, **kwargs) -> Any:
-    """Load HDF5 file with automatic group/root switching."""
-    with h5py.File(lpath, "r") as hf:
-        if group_path:
-            if group_path not in hf:
-                return None
-            target = hf[group_path]
+
+
+def _load_group(group):
+    """Recursively load an HDF5 group."""
+    obj = {}
+    for key in group.keys():
+        if isinstance(group[key], h5py.Group):
+            # Recursively load subgroups
+            obj[key] = _load_group(group[key])
         else:
-            target = hf
+            # Load dataset
+            dataset = group[key]
+            # Check if it's a scalar dataset
+            if dataset.shape == ():
+                data = dataset[()]
+            else:
+                data = dataset[:]
 
-        obj = {}
-        for key in target.keys():
-            data = target[key][:]
             # Decode bytes to string if needed
             if isinstance(data, bytes):
                 obj[key] = data.decode("utf-8")
+            elif isinstance(data, np.void):
+                # Handle pickled data
+                import pickle
+
+                obj[key] = pickle.loads(data.tobytes())
             else:
                 obj[key] = data
-        for key in target.attrs.keys():
-            obj[key] = target.attrs[key]
-        return obj
+    # Load attributes
+    for key in group.attrs.keys():
+        obj[key] = group.attrs[key]
+    return obj
 
+
+def _load_hdf5(lpath: str, key: str = None, **kwargs) -> Any:
+    """Load HDF5 file with automatic group/root switching."""
+    try:
+        with h5py.File(lpath, "r") as hf:
+            if key:
+                if key not in hf:
+                    return None
+                target = hf[key]
+            else:
+                target = hf
+
+            obj = {}
+            for key_name in target.keys():
+                try:
+                    if isinstance(target[key_name], h5py.Group):
+                        obj[key_name] = _load_group(target[key_name])
+                    else:
+                        dataset = target[key_name]
+                        if dataset.shape == ():
+                            data = dataset[()]
+                        else:
+                            data = dataset[:]
+
+                        if isinstance(data, bytes):
+                            obj[key_name] = data.decode("utf-8")
+                        elif isinstance(data, np.void):
+                            import pickle
+
+                            obj[key_name] = pickle.loads(data.tobytes())
+                        else:
+                            obj[key_name] = data
+                except (RuntimeError, OSError) as e:
+                    print(f"Warning: Could not load key '{key_name}': {e}")
+                    continue
+
+            for attr_name in target.attrs.keys():
+                obj[attr_name] = target.attrs[attr_name]
+            return obj
+
+    except (RuntimeError, OSError) as e:
+        key_warning_str = f" with {key}" if key else ""
+        warnings.warn(f"Error loading {lpath}{key_warning_str}:\n{e}")
+        return None
+
+
+# def _load_hdf5(lpath: str, key: str = None, **kwargs) -> Any:
+#     """Load HDF5 file with automatic group/root switching."""
+#     with h5py.File(lpath, "r") as hf:
+#         if key:
+#             if key not in hf:
+#                 return None
+#             target = hf[key]
+#         else:
+#             target = hf
+
+#         obj = {}
+#         for key in target.keys():
+#             if isinstance(target[key], h5py.Group):
+#                 # Recursively load groups
+#                 obj[key] = _load_group(target[key])
+#             else:
+#                 # Load dataset
+#                 dataset = target[key]
+#                 # Check if it's a scalar dataset
+#                 if dataset.shape == ():
+#                     data = dataset[()]
+#                 else:
+#                     data = dataset[:]
+
+#                 # Decode bytes to string if needed
+#                 if isinstance(data, bytes):
+#                     obj[key] = data.decode("utf-8")
+#                 elif isinstance(data, np.void):
+#                     # Handle pickled data
+#                     import pickle
+
+#                     obj[key] = pickle.loads(data.tobytes())
+#                 else:
+#                     obj[key] = data
+#         for key in target.attrs.keys():
+#             obj[key] = target.attrs[key]
+#         return obj
 
 # def _load_hdf5(lpath: str, **kwargs) -> Any:
 #     """Load HDF5 file."""
@@ -79,14 +175,13 @@ def _load_hdf5(lpath: str, group_path: str = None, **kwargs) -> Any:
 #     with h5py.File(lpath, "r") as hf:
 #         return load_item(hf)
 
-
-# def _load_hdf5_group(lpath: str, group_path: str = None, **kwargs) -> Any:
+# def _load_hdf5_group(lpath: str, key: str = None, **kwargs) -> Any:
 #     """Load specific group from HDF5 file."""
 #     with h5py.File(lpath, "r") as hf:
-#         if group_path:
-#             if group_path not in hf:
+#         if key:
+#             if key not in hf:
 #                 return None
-#             group = hf[group_path]
+#             group = hf[key]
 #             result = {}
 #             for key in group.keys():
 #                 result[key] = group[key][:]

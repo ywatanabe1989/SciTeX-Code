@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to publish scitex and mngs redirect to PyPI
+# Script to publish scitex and scitex redirect to PyPI
 # Author: Claude
 # Date: 2025-06-12
 
@@ -38,7 +38,7 @@ pip install --upgrade build twine
 
 # Step 1: Build and publish scitex
 echo -e "\n${GREEN}Step 1: Building scitex package...${NC}"
-cd /data/gpfs/projects/punim2354/ywatanabe/.claude-worktree/mngs_repo
+cd /data/gpfs/projects/punim2354/ywatanabe/.claude-worktree/scitex_repo
 
 # Clean previous builds
 rm -rf dist/ build/ src/*.egg-info
@@ -55,9 +55,9 @@ echo "twine upload dist/scitex-2.0.0*"
 echo -e "${YELLOW}To upload to TestPyPI first (recommended), run:${NC}"
 echo "twine upload --repository testpypi dist/scitex-2.0.0*"
 
-# Step 3: Build mngs redirect package
-echo -e "\n${GREEN}Step 3: Building mngs redirect package...${NC}"
-cd mngs_redirect
+# Step 3: Build scitex redirect package
+echo -e "\n${GREEN}Step 3: Building scitex redirect package...${NC}"
+cd scitex_redirect
 
 # Clean previous builds
 rm -rf dist/ build/ *.egg-info
@@ -68,11 +68,11 @@ python -m build
 echo -e "${YELLOW}Files created:${NC}"
 ls -la dist/
 
-echo -e "\n${GREEN}Step 4: Upload mngs redirect to PyPI${NC}"
+echo -e "\n${GREEN}Step 4: Upload scitex redirect to PyPI${NC}"
 echo -e "${YELLOW}To upload to PyPI, run:${NC}"
-echo "cd mngs_redirect && twine upload dist/mngs-2.0.0*"
+echo "cd scitex_redirect && twine upload dist/scitex-2.0.0*"
 echo -e "${YELLOW}To upload to TestPyPI first (recommended), run:${NC}"
-echo "cd mngs_redirect && twine upload --repository testpypi dist/mngs-2.0.0*"
+echo "cd scitex_redirect && twine upload --repository testpypi dist/scitex-2.0.0*"
 
 # Final instructions
 echo -e "\n${GREEN}======================================"
@@ -85,11 +85,11 @@ echo "   - Test: pip install --index-url https://test.pypi.org/simple/ scitex"
 echo ""
 echo "2. Publish to PyPI:"
 echo "   - First publish scitex: twine upload dist/scitex-2.0.0*"
-echo "   - Then publish redirect: cd mngs_redirect && twine upload dist/mngs-2.0.0*"
+echo "   - Then publish redirect: cd scitex_redirect && twine upload dist/scitex-2.0.0*"
 echo ""
 echo "3. Update GitHub repository:"
-echo "   - Go to: https://github.com/ywatanabe1989/mngs/settings"
-echo "   - Rename repository from 'mngs' to 'scitex'"
+echo "   - Go to: https://github.com/ywatanabe1989/scitex/settings"
+echo "   - Rename repository from 'scitex' to 'scitex'"
 echo ""
 echo "4. Verify installation:"
 echo "   pip install scitex"

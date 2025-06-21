@@ -25,7 +25,7 @@ Submodules
 
 def create_api_doc(module_name, module_path, output_file):
     """Create an API documentation file for a module."""
-    title = f"mngs.{module_name}"
+    title = f"scitex.{module_name}"
     underline = "=" * len(title + " API Reference")
     
     content = API_TEMPLATE.format(
@@ -45,24 +45,24 @@ def main():
     
     # Define modules
     modules = [
-        ("gen", "mngs.gen"),
-        ("io", "mngs.io"),
-        ("plt", "mngs.plt"),
-        ("dsp", "mngs.dsp"),
-        ("stats", "mngs.stats"),
-        ("pd", "mngs.pd"),
-        ("ai", "mngs.ai"),
-        ("nn", "mngs.nn"),
-        ("db", "mngs.db"),
-        ("decorators", "mngs.decorators"),
-        ("path", "mngs.path"),
-        ("str", "mngs.str"),
-        ("dict", "mngs.dict"),
+        ("gen", "scitex.gen"),
+        ("io", "scitex.io"),
+        ("plt", "scitex.plt"),
+        ("dsp", "scitex.dsp"),
+        ("stats", "scitex.stats"),
+        ("pd", "scitex.pd"),
+        ("ai", "scitex.ai"),
+        ("nn", "scitex.nn"),
+        ("db", "scitex.db"),
+        ("decorators", "scitex.decorators"),
+        ("path", "scitex.path"),
+        ("str", "scitex.str"),
+        ("dict", "scitex.dict"),
     ]
     
     # Create API documentation files
     for module_name, module_path in modules:
-        output_file = api_dir / f"mngs.{module_name}.rst"
+        output_file = api_dir / f"scitex.{module_name}.rst"
         create_api_doc(module_name, module_path, output_file)
 
 if __name__ == "__main__":

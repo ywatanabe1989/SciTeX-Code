@@ -25,15 +25,15 @@ MNGS - Python Utilities for Scientific Computing
    :maxdepth: 2
    :caption: API Reference
 
-   api/mngs.gen
-   api/mngs.io
-   api/mngs.plt
-   api/mngs.dsp
-   api/mngs.stats
-   api/mngs.pd
-   api/mngs.ai
-   api/mngs.nn
-   api/mngs.db
+   api/scitex.gen
+   api/scitex.io
+   api/scitex.plt
+   api/scitex.dsp
+   api/scitex.stats
+   api/scitex.pd
+   api/scitex.ai
+   api/scitex.nn
+   api/scitex.db
 
 .. toctree::
    :maxdepth: 2
@@ -66,26 +66,26 @@ Quick Example
 
 .. code-block:: python
 
-    import mngs
+    import scitex
     
     # Start a managed session with automatic logging
-    CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
     
     # Load and process data
-    data = mngs.io.load("data.pkl")
+    data = scitex.io.load("data.pkl")
     
     # Create enhanced plots with automatic data export
-    fig, axes = mngs.plt.subplots(2, 2)
+    fig, axes = scitex.plt.subplots(2, 2)
     axes[0, 0].plot(data['time'], data['signal'])
     
     # Perform signal processing
-    filtered = mngs.dsp.filt.bandpass(data['signal'], fs=1000, low=1, high=50)
+    filtered = scitex.dsp.filt.bandpass(data['signal'], fs=1000, low=1, high=50)
     
     # Statistical analysis
-    results = mngs.stats.corr_test(data['x'], data['y'])
+    results = scitex.stats.corr_test(data['x'], data['y'])
     
     # Clean up and save logs
-    mngs.gen.close(CONFIG)
+    scitex.gen.close(CONFIG)
 
 Indices and tables
 ==================

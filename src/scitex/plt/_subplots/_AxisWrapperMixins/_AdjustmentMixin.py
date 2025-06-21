@@ -86,19 +86,37 @@ class AdjustmentMixin:
             # Store parameters for this axes
             # Include axis index or name for unique filenames
             axis_id = None
-            if hasattr(self._axis_mpl, 'get_subplotspec'):
-                # For subplot axes, get the subplot spec
-                spec = self._axis_mpl.get_subplotspec()
-                if hasattr(spec, 'get_geometry'):
-                    geom = spec.get_geometry()
-                    # geom returns (nrows, ncols, start, stop) - use start as index
-                    axis_id = f"ax_{geom[2]:02d}"
-                else:
-                    # Fallback to position-based ID
-                    pos = self._axis_mpl.get_position()
-                    axis_id = f"ax_{int(pos.x0*10):02d}_{int(pos.y0*10):02d}"
-            else:
-                # Default fallback
+            
+            # Try to find axis index in parent figure
+            try:
+                fig_axes = fig.get_axes()
+                for idx, ax in enumerate(fig_axes):
+                    if ax is self._axis_mpl:
+                        axis_id = f"ax_{idx:02d}"
+                        break
+            except:
+                pass
+            
+            # If not found, try subplot spec
+            if axis_id is None and hasattr(self._axis_mpl, 'get_subplotspec'):
+                try:
+                    spec = self._axis_mpl.get_subplotspec()
+                    if spec is not None:
+                        # Get grid shape and position
+                        gridspec = spec.get_gridspec()
+                        nrows, ncols = gridspec.get_geometry()
+                        rowspan = spec.rowspan
+                        colspan = spec.colspan
+                        # Calculate flat index from row/col position
+                        row_start = rowspan.start if hasattr(rowspan, 'start') else rowspan
+                        col_start = colspan.start if hasattr(colspan, 'start') else colspan
+                        flat_idx = row_start * ncols + col_start
+                        axis_id = f"ax_{flat_idx:02d}"
+                except:
+                    pass
+            
+            # Fallback to sequential numbering
+            if axis_id is None:
                 axis_id = f"ax_{len(fig._separate_legend_params):02d}"
                 
             fig._separate_legend_params.append({

@@ -42,10 +42,10 @@ def test_module_imports():
                 # Import the module
                 module = importlib.import_module(module_name)
             
-            # Check the module path to ensure it's from scitex, not mngs
+            # Check the module path to ensure it's from scitex, not scitex
             module_path = getattr(module, '__file__', 'No file path')
             
-            if 'mngs_repo' in str(module_path):
+            if 'scitex_repo' in str(module_path):
                 failures.append((module_name, f"Imported from wrong location: {module_path}"))
                 print(f"❌ {module_name:<30} - WRONG LOCATION: {module_path}")
             else:
@@ -75,20 +75,20 @@ def test_module_imports():
     
     return len(failures) == 0
 
-def test_no_mngs_in_path():
-    """Verify that mngs_repo is not in sys.path."""
-    print("\nChecking sys.path for mngs_repo...")
+def test_no_scitex_in_path():
+    """Verify that scitex_repo is not in sys.path."""
+    print("\nChecking sys.path for scitex_repo...")
     print("=" * 60)
     
-    mngs_paths = [p for p in sys.path if 'mngs_repo' in p]
+    scitex_paths = [p for p in sys.path if 'scitex_repo' in p]
     
-    if mngs_paths:
-        print("❌ Found mngs_repo in sys.path:")
-        for path in mngs_paths:
+    if scitex_paths:
+        print("❌ Found scitex_repo in sys.path:")
+        for path in scitex_paths:
             print(f"   {path}")
         return False
     else:
-        print("✅ No mngs_repo paths found in sys.path")
+        print("✅ No scitex_repo paths found in sys.path")
         return True
 
 def main():
@@ -97,7 +97,7 @@ def main():
     print("=" * 60)
     
     # Test 1: Check sys.path
-    path_test = test_no_mngs_in_path()
+    path_test = test_no_scitex_in_path()
     
     # Test 2: Import core modules
     import_test = test_module_imports()

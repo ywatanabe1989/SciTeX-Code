@@ -9,12 +9,12 @@
    - `/scripts/run_tests_summary.py` - Test suite summary runner
 
 2. **Fixed Module Imports**
-   - Updated `src/scitex/db/__init__.py` - Removed mngs imports
-   - Updated `src/scitex/general/__init__.py` - Removed mngs imports
-   - Updated `src/scitex/tex/__init__.py` - Removed mngs imports
+   - Updated `src/scitex/db/__init__.py` - Removed scitex imports
+   - Updated `src/scitex/general/__init__.py` - Removed scitex imports
+   - Updated `src/scitex/tex/__init__.py` - Removed scitex imports
    - Updated `src/scitex/linalg/__init__.py` - Fixed function imports
-   - Updated `src/scitex/web/__init__.py` - Removed mngs imports
-   - Updated `src/scitex/res/__init__.py` - Removed mngs imports
+   - Updated `src/scitex/web/__init__.py` - Removed scitex imports
+   - Updated `src/scitex/res/__init__.py` - Removed scitex imports
    - Fixed `src/scitex/ai/feature_extraction/__init__.py` - Updated error message
    - Fixed `src/scitex/stats/tests/_brunner_munzel_test.py` - Fixed typing imports
 
@@ -54,14 +54,14 @@ python scripts/run_tests_summary.py
 
 ### Important Notes
 
-1. **PYTHONPATH Conflicts**: The main issue was that `/data/gpfs/projects/punim2354/ywatanabe/mngs_repo/src` was in the Python path, causing imports to come from the old mngs repository instead of scitex.
+1. **PYTHONPATH Conflicts**: The main issue was that `/data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src` was in the Python path, causing imports to come from the old scitex repository instead of scitex.
 
 2. **Clean Environment**: The setup scripts ensure:
    - Only SciTeX source is in PYTHONPATH
    - No user site packages interfere (`PYTHONNOUSERSITE=1`)
    - Consistent test environment
 
-3. **Module Structure**: All modules now import from local scitex modules, not from mngs.
+3. **Module Structure**: All modules now import from local scitex modules, not from scitex.
 
 ### For Other Agents
 

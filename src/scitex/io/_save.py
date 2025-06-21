@@ -378,9 +378,75 @@ def _save(
             print(color_text(f"\nSaved to: {spath} ({file_size})", c="yellow"))
 
 
+def _save_separate_legends(obj, spath, symlink_from_cwd=False, dry_run=False, **kwargs):
+    """Save separate legend files if ax.legend('separate') was used."""
+    import matplotlib.pyplot as plt
+    import matplotlib.figure
+    
+    # Get the matplotlib figure object
+    fig = None
+    if isinstance(obj, matplotlib.figure.Figure):
+        fig = obj
+    elif hasattr(obj, '_fig_mpl'):
+        fig = obj._fig_mpl
+    elif hasattr(obj, 'figure'):
+        if isinstance(obj.figure, matplotlib.figure.Figure):
+            fig = obj.figure
+        elif hasattr(obj.figure, '_fig_mpl'):
+            fig = obj.figure._fig_mpl
+    
+    if fig is None:
+        return
+    
+    # Check if there are separate legend parameters stored
+    if not hasattr(fig, '_separate_legend_params'):
+        return
+    
+    # Save each legend as a separate file
+    base_path = _os.path.splitext(spath)[0]
+    ext = _os.path.splitext(spath)[1]
+    
+    for legend_params in fig._separate_legend_params:
+        # Create a new figure for the legend
+        legend_fig = plt.figure(figsize=legend_params['figsize'])
+        legend_ax = legend_fig.add_subplot(111)
+        
+        # Create the legend
+        legend = legend_ax.legend(
+            legend_params['handles'],
+            legend_params['labels'],
+            loc='center',
+            frameon=legend_params['frameon'],
+            fancybox=legend_params['fancybox'],
+            shadow=legend_params['shadow'],
+            **legend_params['kwargs']
+        )
+        
+        # Remove axes
+        legend_ax.axis('off')
+        
+        # Adjust layout to fit the legend
+        legend_fig.tight_layout()
+        
+        # Save the legend figure
+        legend_filename = f"{base_path}_{legend_params['axis_id']}_legend{ext}"
+        save_image(legend_fig, legend_filename, **kwargs)
+        
+        # Close the legend figure to free memory
+        plt.close(legend_fig)
+        
+        if not dry_run and _os.path.exists(legend_filename):
+            file_size = getsize(legend_filename)
+            file_size = readable_bytes(file_size)
+            print(color_text(f"\nSaved legend to: {legend_filename} ({file_size})", c="yellow"))
+
+
 def _handle_image_with_csv(obj, spath, no_csv=False, symlink_from_cwd=False, dry_run=False, **kwargs):
     """Handle image file saving with optional CSV export."""
     save_image(obj, spath, **kwargs)
+    
+    # Handle separate legend saving
+    _save_separate_legends(obj, spath, symlink_from_cwd=symlink_from_cwd, dry_run=dry_run, **kwargs)
     
     if not no_csv:
         ext = _os.path.splitext(spath)[1].lower()

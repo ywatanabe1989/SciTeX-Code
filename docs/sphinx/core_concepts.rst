@@ -29,13 +29,13 @@ All MNGS modules follow similar patterns:
 .. code-block:: python
 
     # Loading any file type
-    data = mngs.io.load("file.ext")  # Works for .pkl, .npy, .csv, .mat, etc.
+    data = scitex.io.load("file.ext")  # Works for .pkl, .npy, .csv, .mat, etc.
     
     # Saving any data
-    mngs.io.save(data, "output.ext")  # Format inferred from extension
+    scitex.io.save(data, "output.ext")  # Format inferred from extension
     
     # Creating directories
-    path = mngs.gen.mk_spath("./results")  # Always creates timestamped subdirs
+    path = scitex.gen.mk_spath("./results")  # Always creates timestamped subdirs
 
 3. Session Management
 ~~~~~~~~~~~~~~~~~~~~~
@@ -45,12 +45,12 @@ The session pattern ensures proper initialization and cleanup:
 .. code-block:: python
 
     # Start session
-    CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
     
     # Your work here
     
     # Clean up - ensures logs are saved
-    mngs.gen.close(CONFIG)
+    scitex.gen.close(CONFIG)
 
 This pattern:
 - Redirects stdout/stderr to log files
@@ -72,7 +72,7 @@ Example with plotting:
 
 .. code-block:: python
 
-    fig, ax = mngs.plt.subplots()
+    fig, ax = scitex.plt.subplots()
     ax.plot(x, y)
     plt.savefig("plot.png")
     # Automatically creates plot.csv with the data
@@ -85,22 +85,22 @@ MNGS is designed for typical scientific workflows:
 .. code-block:: python
 
     # 1. Load experimental data
-    raw_data = mngs.io.load("experiment_001.mat")
+    raw_data = scitex.io.load("experiment_001.mat")
     
     # 2. Process signals
-    filtered = mngs.dsp.filt.bandpass(raw_data['signal'], fs=1000, low=1, high=50)
+    filtered = scitex.dsp.filt.bandpass(raw_data['signal'], fs=1000, low=1, high=50)
     
     # 3. Statistical analysis
-    results = mngs.stats.corr_test(filtered, raw_data['behavior'])
+    results = scitex.stats.corr_test(filtered, raw_data['behavior'])
     
     # 4. Visualization
-    fig, axes = mngs.plt.subplots(2, 1)
+    fig, axes = scitex.plt.subplots(2, 1)
     axes[0].plot(raw_data['time'], filtered)
     axes[1].plot(results['correlation'])
     
     # 5. Save everything
-    spath = mngs.gen.mk_spath("./results")
-    mngs.io.save(results, spath + "analysis.pkl")
+    spath = scitex.gen.mk_spath("./results")
+    scitex.io.save(results, spath + "analysis.pkl")
     plt.savefig(spath + "figures.png")
 
 Architecture
@@ -133,13 +133,13 @@ MNGS uses defensive programming:
 .. code-block:: python
 
     # Automatic format detection with fallbacks
-    data = mngs.io.load("file.unknown")  # Tries multiple loaders
+    data = scitex.io.load("file.unknown")  # Tries multiple loaders
     
     # Graceful degradation
-    filtered = mngs.dsp.filt.bandpass(signal)  # Uses GPU if available, else CPU
+    filtered = scitex.dsp.filt.bandpass(signal)  # Uses GPU if available, else CPU
     
     # Robust statistics
-    result = mngs.stats.describe(data)  # Handles NaN, inf gracefully
+    result = scitex.stats.describe(data)  # Handles NaN, inf gracefully
 
 Best Practices
 --------------
@@ -162,29 +162,29 @@ Best Practices
    .. code-block:: python
 
        # Creates: ./results/20250530-141523-12345/
-       spath = mngs.gen.mk_spath("./results")
+       spath = scitex.gen.mk_spath("./results")
        
        # Organize by experiment
        for trial in trials:
-           trial_path = mngs.gen.mk_spath(f"{spath}/trial_{trial}/")
+           trial_path = scitex.gen.mk_spath(f"{spath}/trial_{trial}/")
 
 3. **Chain Operations**
 
    .. code-block:: python
 
        # Process pipeline
-       (mngs.io.load("raw.pkl")
-        |> lambda d: mngs.dsp.filt.bandpass(d['signal'], fs=1000)
-        |> lambda s: mngs.dsp.hilbert(s)
-        |> lambda h: mngs.stats.describe(np.abs(h))
-        |> lambda r: mngs.io.save(r, "results.pkl"))
+       (scitex.io.load("raw.pkl")
+        |> lambda d: scitex.dsp.filt.bandpass(d['signal'], fs=1000)
+        |> lambda s: scitex.dsp.hilbert(s)
+        |> lambda h: scitex.stats.describe(np.abs(h))
+        |> lambda r: scitex.io.save(r, "results.pkl"))
 
 4. **Use Context Managers**
 
    .. code-block:: python
 
        # Some modules provide context managers
-       with mngs.gen.timed("Processing"):
+       with scitex.gen.timed("Processing"):
            results = heavy_computation()
 
 Common Patterns
@@ -195,13 +195,13 @@ Experiment Template
 
 .. code-block:: python
 
-    import mngs
+    import scitex
     import sys
     import matplotlib.pyplot as plt
     
     def main():
         # Initialize
-        CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(
+        CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
             sys, plt, 
             CONFIG="./config/experiment.yaml",
             seed=42
@@ -209,23 +209,23 @@ Experiment Template
         
         try:
             # Setup
-            spath = mngs.gen.mk_spath(CONFIG['RESULTS_DIR'])
+            spath = scitex.gen.mk_spath(CONFIG['RESULTS_DIR'])
             
             # Load data
-            data = mngs.io.load(CONFIG['DATA_FILE'])
+            data = scitex.io.load(CONFIG['DATA_FILE'])
             
             # Process
             results = analyze(data, CONFIG['PARAMS'])
             
             # Save
-            mngs.io.save(results, spath + "results.pkl")
-            mngs.io.save(CONFIG, spath + "config.yaml")
+            scitex.io.save(results, spath + "results.pkl")
+            scitex.io.save(CONFIG, spath + "config.yaml")
             
             # Visualize
             plot_results(results, spath)
             
         finally:
-            mngs.gen.close(CONFIG)
+            scitex.gen.close(CONFIG)
     
     if __name__ == "__main__":
         main()
@@ -236,10 +236,10 @@ Batch Processing
 .. code-block:: python
 
     # Process multiple subjects
-    for subject_id in mngs.io.glob("./data/sub-*"):
-        with mngs.gen.timed(f"Processing {subject_id}"):
-            data = mngs.io.load(f"{subject_id}/data.pkl")
+    for subject_id in scitex.io.glob("./data/sub-*"):
+        with scitex.gen.timed(f"Processing {subject_id}"):
+            data = scitex.io.load(f"{subject_id}/data.pkl")
             results = process_subject(data)
             
-            spath = mngs.gen.mk_spath(f"./results/{subject_id}/")
-            mngs.io.save(results, spath + "processed.pkl")
+            spath = scitex.gen.mk_spath(f"./results/{subject_id}/")
+            scitex.io.save(results, spath + "processed.pkl")

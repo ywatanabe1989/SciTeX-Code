@@ -55,7 +55,7 @@ Fixed missing imports across all major modules:
 ### Collection Errors (51 remaining)
 Most in obsolete test files:
 - `tests/custom/old/` - References non-existent utilities
-- Old mngs import patterns
+- Old scitex import patterns
 - Outdated test structures
 
 ### Recommendations

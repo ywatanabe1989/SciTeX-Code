@@ -1,10 +1,10 @@
-mngs.gen - General Utilities Module
+scitex.gen - General Utilities Module
 ===================================
 
-The ``mngs.gen`` module provides core utilities for environment management, session handling, and general-purpose helper functions.
+The ``scitex.gen`` module provides core utilities for environment management, session handling, and general-purpose helper functions.
 
 For comprehensive documentation including examples and best practices, see:
-``docs/mngs_guidelines/modules/gen/README.md``
+``docs/scitex_guidelines/modules/gen/README.md``
 
 Quick Overview
 --------------
@@ -23,23 +23,23 @@ Example Usage
 
 .. code-block:: python
 
-    import mngs
+    import scitex
     import sys
     import matplotlib.pyplot as plt
     
     # Start managed session
-    CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
     
     # Your code here
     print("This is automatically logged")
     
     # Clean up
-    mngs.gen.close(CONFIG)
+    scitex.gen.close(CONFIG)
 
 API Reference
 -------------
 
-.. automodule:: mngs.gen
+.. automodule:: scitex.gen
    :members:
    :undoc-members:
    :show-inheritance:

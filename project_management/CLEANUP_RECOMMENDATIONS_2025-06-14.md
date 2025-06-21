@@ -9,7 +9,7 @@
 
 ### 2. Obsolete Test Files
 - `tests/custom/old/` directory contains 51 failing tests
-- These tests reference non-existent utilities and old mngs patterns
+- These tests reference non-existent utilities and old scitex patterns
 - Recommendation: Review and either update or remove
 
 ### 3. Temporary Files

@@ -26,7 +26,7 @@ def convert_md_to_rst(md_file, rst_file):
 def main():
     # Paths
     sphinx_dir = Path(__file__).parent
-    mngs_guidelines = sphinx_dir.parent / "mngs_guidelines" / "modules"
+    scitex_guidelines = sphinx_dir.parent / "scitex_guidelines" / "modules"
     
     # Create module documentation directory
     modules_dir = sphinx_dir / "modules"
@@ -44,7 +44,7 @@ def main():
     
     # Convert each module's documentation
     for module_name, md_path in modules.items():
-        md_file = mngs_guidelines / md_path
+        md_file = scitex_guidelines / md_path
         rst_file = modules_dir / f"{module_name}.rst"
         
         if md_file.exists():

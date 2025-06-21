@@ -55,7 +55,7 @@ Per CLAUDE.md: "Working with other agents using the bulletin board, ensure all t
 1. **Systematic Issues**: Mass indentation errors from automated changes
 2. **Design Flaws**: Private function dependencies in tests
 3. **Naming Conflicts**: Duplicate test names across modules
-4. **Migration Artifacts**: Incomplete mngs → scitex conversion
+4. **Migration Artifacts**: Incomplete scitex → scitex conversion
 
 ### Solutions Applied
 1. Automated scripts for bulk fixes

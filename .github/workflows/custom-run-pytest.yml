@@ -1,5 +1,5 @@
 # Timestamp: "2025-05-03 16:06:23 (ywatanabe)"
-# File: /home/ywatanabe/proj/mngs_repo/.github/workflows/custom-run-pytest.yml
+# File: .github/workflows/custom-run-pytest.yml
 
 name: custom-run-pytest
 on:

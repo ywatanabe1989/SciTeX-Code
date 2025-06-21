@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-06-15 20:25:22 (ywatanabe)"
+# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/utils/_notify.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/utils/_notify.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 # Time-stamp: "2024-11-24 17:54:38 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/utils/_notify.py
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/utils/_notify.py"
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-07 05:38:14 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/utils/_notify.py
 
 """This script does XYZ."""
 
 import inspect
-import os
 import pwd
 import socket
 import subprocess
@@ -85,9 +89,9 @@ def notify(
         warnings.warn(str(e))
 
     FAKE_PYTHON_SCRIPT_NAME = "$ python -c ..."
-    sender_gmail = os.getenv("SciTeX_SENDER_GMAIL")
-    sender_password = os.getenv("SciTeX_SENDER_GMAIL_PASSWORD")
-    recipient_email = recipient_email or os.getenv("SciTeX_RECIPIENT_GMAIL")
+    sender_gmail = os.getenv("SCITEX_SENDER_GMAIL")
+    sender_password = os.getenv("SCITEX_SENDER_GMAIL_PASSWORD")
+    recipient_email = recipient_email or os.getenv("SCITEX_RECIPIENT_GMAIL")
 
     if file is not None:
         script_name = str(file)
@@ -97,7 +101,9 @@ def notify(
         else:
             frames = inspect.stack()
             script_name = (
-                os.path.basename(frames[-1].filename) if frames else "(Not found)"
+                os.path.basename(frames[-1].filename)
+                if frames
+                else "(Not found)"
             )
         if (script_name == "-c") or (not script_name.endswith(".py")):
             script_name = FAKE_PYTHON_SCRIPT_NAME

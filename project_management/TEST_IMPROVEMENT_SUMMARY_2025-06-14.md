@@ -51,7 +51,7 @@ Fixed missing imports in multiple `__init__.py` files:
 
 ### Low Priority Items
 - 52 collection errors remain, mostly in `tests/custom/old/` directory
-- These are outdated test files with `mngs` references
+- These are outdated test files with `scitex` references
 - Recommendation: Consider deprecating or updating these old tests
 
 ### Test Suite Health
