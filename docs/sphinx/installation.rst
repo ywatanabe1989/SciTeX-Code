@@ -15,7 +15,7 @@ From PyPI (Recommended)
 
 .. code-block:: bash
 
-    pip install mngs
+    pip install scitex
 
 From Source
 ~~~~~~~~~~~
@@ -24,8 +24,8 @@ Clone the repository and install in development mode:
 
 .. code-block:: bash
 
-    git clone https://github.com/ywatanabe1989/mngs.git
-    cd mngs
+    git clone https://github.com/ywatanabe1989/scitex.git
+    cd scitex
     pip install -e .
 
 Dependencies
@@ -69,7 +69,7 @@ For all optional dependencies:
 
 .. code-block:: bash
 
-    pip install mngs[all]
+    pip install scitex[all]
 
 Verifying Installation
 ----------------------
@@ -78,13 +78,13 @@ To verify your installation:
 
 .. code-block:: python
 
-    import mngs
-    print(mngs.__version__)
+    import scitex
+    print(scitex.__version__)
     
     # Test basic functionality
-    CONFIG, sys, _, plt, _ = mngs.gen.start()
+    CONFIG, sys, _, plt, _ = scitex.gen.start()
     print("MNGS successfully initialized!")
-    mngs.gen.close(CONFIG)
+    scitex.gen.close(CONFIG)
 
 Troubleshooting
 ---------------
@@ -108,7 +108,7 @@ Common Issues
 
    .. code-block:: bash
 
-       pip install mngs[all]
+       pip install scitex[all]
 
 Getting Help
 ~~~~~~~~~~~~
@@ -116,5 +116,5 @@ Getting Help
 If you encounter issues:
 
 1. Check the :doc:`troubleshooting guide <troubleshooting>`
-2. Search existing `GitHub issues <https://github.com/ywatanabe1989/mngs/issues>`_
+2. Search existing `GitHub issues <https://github.com/ywatanabe1989/scitex/issues>`_
 3. Create a new issue with a minimal reproducible example

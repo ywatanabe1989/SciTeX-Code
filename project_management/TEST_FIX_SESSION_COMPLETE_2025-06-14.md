@@ -21,7 +21,7 @@ Successfully reduced test collection errors from **238 to 43** (82% improvement)
    - decorators/test__combined.py: Fixed multiple import indentations
 
 4. **Fixed file path issues**:
-   - tests/custom/old/test_export_as_csv_custom.py: Fixed relative imports and mngs->scitex
+   - tests/custom/old/test_export_as_csv_custom.py: Fixed relative imports and scitex->scitex
 
 ## Remaining Issues (43 errors)
 

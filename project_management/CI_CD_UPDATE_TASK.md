@@ -1,7 +1,7 @@
 # CI/CD Workflow Update Task
 
 ## Issue Discovered
-The GitHub Actions workflow files still contain references to the old `mngs` package name instead of `scitex`.
+The GitHub Actions workflow files still contain references to the old `scitex` package name instead of `scitex`.
 
 ## Files to Update
 1. `.github/workflows/install-develop-branch.yml`
@@ -13,11 +13,11 @@ The GitHub Actions workflow files still contain references to the old `mngs` pac
 7. `.github/workflows/release.yml`
 
 ## Required Changes
-- Replace `mngs` with `scitex` in all references
-- Update GitHub repository URLs from `ywatanabe1989/mngs` to correct repository
+- Replace `scitex` with `scitex` in all references
+- Update GitHub repository URLs from `ywatanabe1989/scitex` to correct repository
 - Update import statements and package names
-- Update file paths from `tests/mngs` to `tests/scitex`
-- Update coverage paths from `src/mngs` to `src/scitex`
+- Update file paths from `tests/scitex` to `tests/scitex`
+- Update coverage paths from `src/scitex` to `src/scitex`
 
 ## Started
 - Already updated `ci.yml` main workflow file

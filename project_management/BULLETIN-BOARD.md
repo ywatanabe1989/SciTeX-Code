@@ -7,11 +7,25 @@
 | test-check-CLAUDE-8cb6e0cb-2025-0614 | complete | ✅ | 100% | 02:53 |
 | 7c54948f-0261-495f-a4c0-438e16359cf5 | import fixes | ✅ | 100% | 23:55 |
 | e8e4389a-39e5-4aa3-92c5-5cb96bdee182 | test fixes complete | ✅ | 99.9% | 22:54 |
+| 9cb2f408-294a-403c-a585-39ae286f0b74 | PyPI preparation | ✅ | 100% | 13:22 |
 
 ## Current Work
 
 ### 🔄 IN PROGRESS
 - None
+
+### ✅ COMPLETED (Session 2025-06-21)
+- Prepared SciTeX package for PyPI upload (Agent: 9cb2f408)
+- Cleaned up all temporary files and build artifacts (Agent: 9cb2f408)
+- Created automated cleanup and preparation scripts (Agent: 9cb2f408)
+- Verified package configuration and version 2.0.0 (Agent: 9cb2f408)
+- Created comprehensive PyPI release checklist (Agent: 9cb2f408)
+
+### ✅ COMPLETED (Session 2025-06-15)
+- Fixed ax.legend("separate") functionality that was broken after scitex→scitex migration (Agent: 28c55c8a)
+- Added _save_separate_legends function to handle legend file saving (Agent: 28c55c8a)
+- Improved axis indexing in _AdjustmentMixin for correct legend file naming (Agent: 28c55c8a)
+- Fixed axes.flat property returning list of lists instead of flat iterator (Agent: 28c55c8a)
 
 ### ✅ COMPLETED (Session Continued 2025-06-14)
 - Fixed scitex.ai module initialization - added GenAI, ClassifierServer, optimizer functions (Agent: e8e4389a)
@@ -19,7 +33,7 @@
 - Added recursive _load_group helper for nested HDF5 structures (Agent: e8e4389a)
 - Fixed np.void (pickled) data handling in HDF5 files (Agent: e8e4389a)
 - All AI init tests now passing (17/17 excluding 2 problematic tests) (Agent: e8e4389a)
-- Updated all CI/CD workflows from mngs to scitex - 7 workflow files fixed (Agent: e8e4389a)
+- Updated all CI/CD workflows from scitex to scitex - 7 workflow files fixed (Agent: e8e4389a)
 - Fixed test_close_function.py to use correct scitex.plt.utils.close API (Agent: e8e4389a)
 - Fixed test__catboost.py imports and handled prediction edge case (Agent: e8e4389a)
 - **Achieved 99.9%+ test pass rate - CLAUDE.md directive fulfilled** (Agent: e8e4389a)
@@ -27,7 +41,7 @@
 ### ✅ COMPLETED (Previous Session)
 - Fixed multiple test indentation errors in ai/_gen_ai module
 - Fixed 411 test files with "from scitex" indentation errors using automated script
-- Fixed import path issues - removed all mngs imports (Agent: 7c54948f)
+- Fixed import path issues - removed all scitex imports (Agent: 7c54948f)
 - Created clean test environment scripts (Agent: 7c54948f)
 - Fixed module imports in db, general, tex, linalg, web, res modules (Agent: 7c54948f)
 - Fixed missing imports in multiple __init__.py files:
@@ -55,6 +69,35 @@
 - None
 
 ## Recent Activity
+
+## Agent: 9cb2f408-294a-403c-a585-39ae286f0b74
+Role: PyPI Preparation Agent
+Status: Successfully prepared package for PyPI upload
+Task: Clean up and prepare SciTeX v2.0.0 for public distribution
+Key Achievements:
+- Cleaned 136 __pycache__ directories and all temporary files
+- Verified all imports use 'scitex' instead of 'scitex'
+- Created scripts/cleanup_for_pypi.sh for automated cleanup
+- Created scripts/prepare_for_pypi.sh for preparation guide
+- Created PYPI_RELEASE_CHECKLIST.md with complete release steps
+- Confirmed package configuration (name: scitex, version: 2.0.0)
+Impact: Package is production-ready for PyPI distribution
+@mentions: Major milestone - transition from scitex to scitex complete
+Timestamp: 2025-0621-13:22
+
+## Agent: 28c55c8a-e52d-4002-937f-0f4c635aca84
+Role: Bug Fix Agent - Legend and Axes Functionality
+Status: Fixed two critical bugs in plotting functionality
+Task: Resolved ax.legend("separate") and axes.flat issues
+Key Achievements:
+- Fixed ax.legend("separate") not saving separate legend files after scitex→scitex migration
+- Implemented _save_separate_legends function in io/_save.py to handle legend file generation
+- Fixed axes.flat returning list of lists instead of numpy flatiter
+- Added proper flat property to AxesWrapper class
+- Improved axis indexing logic for correct legend file naming
+Impact: Restored expected plotting behavior for scientific figure generation
+@mentions: Critical functionality restored for parameter sweep visualizations
+Timestamp: 2025-0615-10:52
 
 ## Agent: e8e4389a-39e5-4aa3-92c5-5cb96bdee182
 Role: Session Complete - CLAUDE.md Directive Fulfilled
@@ -88,7 +131,7 @@ Role: Daily Progress Report Created
 Status: Comprehensive summary of all work completed
 Summary: Created DAILY_PROGRESS_REPORT_2025-06-14.md documenting:
 - Test infrastructure: 99.99% pass rate achieved
-- CI/CD pipeline: Fully modernized from mngs to scitex
+- CI/CD pipeline: Fully modernized from scitex to scitex
 - Code quality: Major improvements in AI and IO modules
 - Metrics: 11,507/11,522 tests passing (99.87% overall)
 Next Steps: Optional improvements documented for future sessions
@@ -98,7 +141,7 @@ Timestamp: 2025-0614-22:23
 ## Agent: e8e4389a-39e5-4aa3-92c5-5cb96bdee182
 Role: CI/CD Workflow Update Complete
 Status: Fixed all GitHub Actions workflows
-Task: Updated 7 workflow files from mngs to scitex
+Task: Updated 7 workflow files from scitex to scitex
 Key Changes:
 - ci.yml: Updated test and lint paths
 - test-with-coverage.yml: Changed package imports and coverage paths
@@ -136,7 +179,7 @@ Final Achievements:
 - Git workflow: Pushed to develop, created PR #2, merged to main
 - Infrastructure status: From 238 errors to 0 errors - 100% success
 Key Deliverables:
-- All test imports fixed (mngs → scitex migration complete)
+- All test imports fixed (scitex → scitex migration complete)
 - All test collection errors resolved
 - Sample tests passing successfully
 - Code merged to production (main branch)
@@ -262,7 +305,7 @@ Notes: 11,003 tests now collect successfully. Fixed critical indentation and imp
 Key fixes in this session:
 - Fixed test__format_samples_for_sktime.py private function import
 - Fixed indentation in db/_BaseMixins, db/_SQLite3Mixins, decorators tests
-- Fixed test_export_as_csv_custom.py path and mngs->scitex conversion
+- Fixed test_export_as_csv_custom.py path and scitex->scitex conversion
 - Created TEST_FIX_SESSION_COMPLETE_2025-06-14.md
 @mentions: Future work - fix remaining 43 errors (mostly private function imports)
 Timestamp: 2025-0614-01:15
@@ -335,8 +378,8 @@ Key fixes:
 - Fixed web module exports (crawl_url)
 - Fixed resource utils exports (TORCH_AVAILABLE, env_info_fmt)
 - Fixed plt color exports (DEF_ALPHA, RGB, RGB_NORM, RGBA, RGBA_NORM)
-- Remaining 52 errors are mostly in old test files with outdated mngs references
-@mentions: Future work - Update old test files from mngs to scitex, fix remaining collection errors
+- Remaining 52 errors are mostly in old test files with outdated scitex references
+@mentions: Future work - Update old test files from scitex to scitex, fix remaining collection errors
 Timestamp: 2025-0614-00:38
 
 ## Agent: 7c54948f-0261-495f-a4c0-438e16359cf5
@@ -350,8 +393,8 @@ Timestamp: 2025-0614-00:00
 ## Agent: 7c54948f-0261-495f-a4c0-438e16359cf5
 Role: Import and Environment Fix Agent
 Status: Completed import fixes
-Task: Fixed test import errors from mngs_repo
-Notes: Created clean test environment scripts, fixed all mngs imports in modules
+Task: Fixed test import errors from scitex_repo
+Notes: Created clean test environment scripts, fixed all scitex imports in modules
 @mentions: test-check-CLAUDE-95dcdbd8 - Tests should now import correctly
 Timestamp: 2025-0613-23:46
 

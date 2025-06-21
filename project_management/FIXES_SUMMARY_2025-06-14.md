@@ -5,7 +5,7 @@
 ### Issues Fixed
 
 1. **Import Path Conflicts (CRITICAL)**
-   - Problem: Tests importing from wrong project (mngs_repo)
+   - Problem: Tests importing from wrong project (scitex_repo)
    - Solution: Created clean environment scripts
    - Result: ✅ All core modules import correctly
 
@@ -29,8 +29,8 @@
 - `/tests/test_imports.py` - Basic import tests
 
 **Modified:**
-- `/src/scitex/db/__init__.py` - Removed mngs imports
-- `/src/scitex/general/__init__.py` - Removed mngs imports
+- `/src/scitex/db/__init__.py` - Removed scitex imports
+- `/src/scitex/general/__init__.py` - Removed scitex imports
 - `/src/scitex/tex/__init__.py` - Fixed imports
 - `/src/scitex/linalg/__init__.py` - Fixed function imports
 - `/src/scitex/web/__init__.py` - Fixed imports
@@ -94,7 +94,7 @@ Successfully reduced test collection errors from 238 to 52 (78% improvement). 10
   - env_info_fmt
 
 ### Remaining Issues (52 errors)
-- Old test files with outdated mngs references
+- Old test files with outdated scitex references
 - Custom tests in tests/custom/old/
 - Some database mixin tests
 - Various module-specific collection errors

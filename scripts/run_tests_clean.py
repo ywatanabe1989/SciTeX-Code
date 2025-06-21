@@ -15,7 +15,7 @@ def setup_clean_environment():
     # Remove any conflicting paths from sys.path
     paths_to_remove = []
     for path in sys.path[:]:
-        if "mngs_repo" in path or "gPAC" in path:
+        if "scitex_repo" in path or "gPAC" in path:
             paths_to_remove.append(path)
     
     for path in paths_to_remove:

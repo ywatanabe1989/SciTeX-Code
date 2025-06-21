@@ -140,6 +140,18 @@ class AxesWrapper:
     def shape(self):
         return self._axes_scitex.shape
 
+    @property
+    def flat(self):
+        """Return a flat iterator over all axes.
+        
+        This property provides direct access to the flattened axes array,
+        matching numpy array behavior.
+        
+        Returns:
+            Iterator over all axes in row-major (C-style) order
+        """
+        return self._axes_scitex.flat
+
     def flatten(self):
         """Return a flattened array of all axes in the AxesWrapper.
 

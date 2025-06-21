@@ -10,29 +10,29 @@ Basic Usage
 
    .. code-block:: python
 
-       import mngs
+       import scitex
        import sys
        import matplotlib.pyplot as plt
        
        # Start a managed session
-       CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(sys, plt)
+       CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
 
 2. **Load and Save Data**
 
    .. code-block:: python
 
        # Load data (auto-detects format)
-       data = mngs.io.load("data.pkl")
+       data = scitex.io.load("data.pkl")
        
        # Save data (auto-detects format from extension)
-       mngs.io.save(data, "results.npy")
+       scitex.io.save(data, "results.npy")
 
 3. **Create Enhanced Plots**
 
    .. code-block:: python
 
        # Create plots with automatic data export
-       fig, ax = mngs.plt.subplots()
+       fig, ax = scitex.plt.subplots()
        ax.plot([1, 2, 3], [1, 4, 9])
        ax.set_xlabel("X")
        ax.set_ylabel("Y²")
@@ -44,7 +44,7 @@ Basic Usage
    .. code-block:: python
 
        # Always close to save logs
-       mngs.gen.close(CONFIG)
+       scitex.gen.close(CONFIG)
 
 Complete Example
 ----------------
@@ -53,13 +53,13 @@ Here's a complete example of a typical MNGS workflow:
 
 .. code-block:: python
 
-    import mngs
+    import scitex
     import numpy as np
     import sys
     import matplotlib.pyplot as plt
     
     # Initialize MNGS
-    CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
     
     try:
         # Generate sample data
@@ -68,10 +68,10 @@ Here's a complete example of a typical MNGS workflow:
         
         # Save data
         data = {"x": x, "y": y}
-        mngs.io.save(data, "sample_data.pkl")
+        scitex.io.save(data, "sample_data.pkl")
         
         # Create visualization
-        fig, ax = mngs.plt.subplots(figsize=(8, 6))
+        fig, ax = scitex.plt.subplots(figsize=(8, 6))
         ax.plot(x, y, 'o', alpha=0.5, label='Noisy data')
         ax.plot(x, np.sin(x), 'r-', linewidth=2, label='True signal')
         ax.set_xlabel("Time (s)")
@@ -80,7 +80,7 @@ Here's a complete example of a typical MNGS workflow:
         ax.set_title("Sample Signal with Noise")
         
         # Signal processing
-        from mngs.dsp import filt
+        from scitex.dsp import filt
         filtered = filt.lowpass(y, fs=10, cutoff=1)
         ax.plot(x, filtered, 'g--', linewidth=2, label='Filtered')
         ax.legend()
@@ -89,12 +89,12 @@ Here's a complete example of a typical MNGS workflow:
         plt.savefig("signal_analysis.png")
         
         # Statistical analysis
-        correlation = mngs.stats.corr_test(x, y)
+        correlation = scitex.stats.corr_test(x, y)
         print(f"Correlation: {correlation}")
         
     finally:
         # Clean up - saves all logs
-        mngs.gen.close(CONFIG)
+        scitex.gen.close(CONFIG)
 
 Key Concepts
 ------------
@@ -119,12 +119,12 @@ Common Patterns
 
 .. code-block:: python
 
-    import mngs
+    import scitex
     from pathlib import Path
     
     # Load all CSV files in a directory
-    data_files = mngs.io.glob("./data/*.csv")
-    datasets = {f: mngs.io.load(f) for f in data_files}
+    data_files = scitex.io.glob("./data/*.csv")
+    datasets = {f: scitex.io.load(f) for f in data_files}
 
 **Batch Processing**
 
@@ -134,13 +134,13 @@ Common Patterns
     results = {}
     for name, data in datasets.items():
         # Create output directory
-        out_dir = mngs.gen.mk_spath(f"./results/{name}/")
+        out_dir = scitex.gen.mk_spath(f"./results/{name}/")
         
         # Process
         processed = process_data(data)
         
         # Save results
-        mngs.io.save(processed, out_dir + "processed.pkl")
+        scitex.io.save(processed, out_dir + "processed.pkl")
         results[name] = processed
 
 **Configuration Files**
@@ -148,16 +148,16 @@ Common Patterns
 .. code-block:: python
 
     # Load project configuration
-    config = mngs.io.load("./config/experiment.yaml")
+    config = scitex.io.load("./config/experiment.yaml")
     
     # Start with custom config
-    CONFIG, *_ = mngs.gen.start(CONFIG=config)
+    CONFIG, *_ = scitex.gen.start(CONFIG=config)
 
 Tips
 ----
 
-- Use ``mngs.io.load()`` for any file type - it auto-detects the format
-- Take advantage of ``mngs.plt`` for publication-ready figures
-- Use ``mngs.gen.mk_spath()`` to organize outputs with timestamps
-- Leverage GPU acceleration in ``mngs.dsp`` for signal processing
+- Use ``scitex.io.load()`` for any file type - it auto-detects the format
+- Take advantage of ``scitex.plt`` for publication-ready figures
+- Use ``scitex.gen.mk_spath()`` to organize outputs with timestamps
+- Leverage GPU acceleration in ``scitex.dsp`` for signal processing
 - Check logs in ``[script_name]_out/`` directory for debugging

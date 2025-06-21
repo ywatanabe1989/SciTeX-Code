@@ -15,7 +15,7 @@ Today marked a significant milestone in the SciTeX project development. The test
   - Added recursive group loading support
 
 ### 2. CI/CD Pipeline Modernization
-- **Issue**: GitHub Actions workflows still referenced old 'mngs' package
+- **Issue**: GitHub Actions workflows still referenced old 'scitex' package
 - **Solution**: Updated 7 workflow files to use 'scitex'
 - **Impact**: Automated testing and deployment now fully functional
 - **Files Updated**:
@@ -78,7 +78,7 @@ Today marked a significant milestone in the SciTeX project development. The test
 ### Short-term
 1. Performance profiling and optimization
 2. Add more comprehensive examples
-3. Update Sphinx documentation references from mngs to scitex
+3. Update Sphinx documentation references from scitex to scitex
 
 ### Long-term
 1. Implement additional features per user requests

@@ -43,34 +43,34 @@ Module Categories
 Data I/O and Management
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-- **mngs.io**: File I/O operations with automatic format detection
-- **mngs.path**: Advanced path manipulation utilities
-- **mngs.db**: Database operations (SQLite3, PostgreSQL)
+- **scitex.io**: File I/O operations with automatic format detection
+- **scitex.path**: Advanced path manipulation utilities
+- **scitex.db**: Database operations (SQLite3, PostgreSQL)
 
 Visualization
 ~~~~~~~~~~~~~
 
-- **mngs.plt**: Enhanced matplotlib wrapper with data tracking
-- **mngs.plt.color**: Color management and palettes
+- **scitex.plt**: Enhanced matplotlib wrapper with data tracking
+- **scitex.plt.color**: Color management and palettes
 
 Signal Processing
 ~~~~~~~~~~~~~~~~~
 
-- **mngs.dsp**: Digital signal processing tools
-- **mngs.dsp.filt**: Filtering operations
-- **mngs.nn**: Neural network layers for signal processing
+- **scitex.dsp**: Digital signal processing tools
+- **scitex.dsp.filt**: Filtering operations
+- **scitex.nn**: Neural network layers for signal processing
 
 Data Analysis
 ~~~~~~~~~~~~~
 
-- **mngs.stats**: Statistical analysis and tests
-- **mngs.pd**: Pandas DataFrame utilities
-- **mngs.ai**: Machine learning utilities
+- **scitex.stats**: Statistical analysis and tests
+- **scitex.pd**: Pandas DataFrame utilities
+- **scitex.ai**: Machine learning utilities
 
 System Utilities
 ~~~~~~~~~~~~~~~~
 
-- **mngs.gen**: General utilities and session management
-- **mngs.decorators**: Function decorators
-- **mngs.str**: String manipulation utilities
-- **mngs.dict**: Dictionary utilities
+- **scitex.gen**: General utilities and session management
+- **scitex.decorators**: Function decorators
+- **scitex.str**: String manipulation utilities
+- **scitex.dict**: Dictionary utilities

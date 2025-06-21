@@ -34,7 +34,7 @@ Successfully reduced test collection errors from **238 to 40** (83% improvement)
 - Multiple test files: Fixed import indentation issues
 
 ### 4. Migration Fixes
-- Updated tests/custom/old/test_export_as_csv_custom.py from mngs to scitex
+- Updated tests/custom/old/test_export_as_csv_custom.py from scitex to scitex
 - Fixed relative import paths for test utilities
 
 ## Remaining Issues (40 errors)

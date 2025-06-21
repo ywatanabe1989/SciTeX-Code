@@ -31,7 +31,7 @@ Successfully reduced test collection errors from 238 to 51 (79% improvement).
 ### Remaining Issues (51 errors)
 Most remaining errors are in obsolete test files under tests/custom/old/ that reference:
 - Non-existent test utilities (test_export_as_csv_utils)
-- Old mngs references
+- Old scitex references
 - Outdated import patterns
 
 ### Recommendation
@@ -44,7 +44,7 @@ The codebase is now in a state where:
 
 ### Next Steps for Future Work
 1. Review and update/remove tests in tests/custom/old/
-2. Fix any remaining import references to mngs
+2. Fix any remaining import references to scitex
 3. Run full test suite to identify actual test failures (not collection errors)
 4. Address test failures based on functionality requirements
 EOF < /dev/null

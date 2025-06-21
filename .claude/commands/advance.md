@@ -4,7 +4,7 @@
 !-- File: .claude/commands/advance.md
 !-- --- -->
 
-# Advance MNGS Project Development
+# Advance SciTeX Project Development
 
 Select a contribution area to work on:
 
