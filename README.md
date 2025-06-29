@@ -6,7 +6,7 @@
 
 
 # SciTeX
-A Python framework for standardized scientific projects.
+A Python framework for standardized scientific projects with AI-powered development tools.
 
 <!-- badges -->
 [![PyPI version](https://badge.fury.io/py/scitex.svg)](https://badge.fury.io/py/scitex)
@@ -17,6 +17,16 @@ A Python framework for standardized scientific projects.
 [![Documentation](https://readthedocs.org/projects/scitex/badge/?version=latest)](https://scitex.readthedocs.io/en/latest/?badge=latest)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
+## ✨ Key Features
+
+- **Standardized Project Structure**: Consistent organization for reproducible research
+- **Configuration Management**: YAML-based configuration with path management
+- **Enhanced I/O**: Unified interface for 30+ file formats with automatic tracking
+- **Smart Plotting**: Matplotlib wrapper with automatic data export
+- **Statistical Tools**: Enhanced stats with p-value formatting and reports
+- **AI Development Tools**: MCP servers for code translation and validation
+- **Comprehensive Validation**: Code quality checks and best practices enforcement
 
 ## 📦 Installation
 
@@ -79,6 +89,35 @@ scitex.io.save(fig, "signal_plot.png")
 # Close experiment
 scitex.gen.close(config, info)
 ```
+
+## 🆕 What's New in v2.0
+
+### 🤖 MCP Servers for AI-Assisted Development
+
+SciTeX now includes Model Context Protocol (MCP) servers that work with AI assistants like Claude:
+
+### Available MCP Servers
+- **scitex-io**: Bidirectional translation for 30+ file formats
+- **scitex-plt**: Matplotlib enhancement translations
+- **scitex-stats**: Statistical function translations with p-value formatting
+- **scitex-dsp**: Signal processing translations
+- **scitex-pd**: Pandas operation translations
+- **scitex-torch**: PyTorch deep learning translations
+- **scitex-analyzer**: Code analysis with comprehensive validation
+- **scitex-framework**: Template and project generation
+- **scitex-config**: Configuration management
+- **scitex-orchestrator**: Workflow coordination
+- **scitex-validator**: Compliance validation
+
+### Quick Setup
+```bash
+cd mcp_servers
+./install_all.sh
+# Configure your AI assistant with mcp_config_example.json
+./launch_all.sh
+```
+
+See [MCP Servers Documentation](./mcp_servers/README.md) for details.
 
 ## 📖 Documentation
 
