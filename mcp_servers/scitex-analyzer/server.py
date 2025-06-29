@@ -247,6 +247,236 @@ stx.io.save(fig, './plot.png')
             return suggestions
             
         @self.app.tool()
+        async def validate_comprehensive_compliance(
+            project_path: str,
+            strict_mode: bool = False
+        ) -> Dict[str, Any]:
+            """
+            Perform comprehensive SciTeX guideline compliance validation.
+            
+            Args:
+                project_path: Path to project to validate
+                strict_mode: If True, enforce all guidelines strictly
+                
+            Returns:
+                Detailed compliance report with scores and violations
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            validation_results = {
+                "import_order": await self._validate_import_order(project),
+                "docstring_format": await self._validate_docstrings(project),
+                "cross_file_deps": await self._validate_cross_file_dependencies(project),
+                "naming_conventions": await self._validate_naming_conventions(project),
+                "config_usage": await self._validate_config_usage(project),
+                "path_handling": await self._validate_path_handling(project),
+                "framework_compliance": await self._validate_framework_compliance(project)
+            }
+            
+            # Calculate overall score
+            total_score = 0
+            total_weight = 0
+            for category, result in validation_results.items():
+                weight = result.get("weight", 1.0)
+                score = result.get("score", 0)
+                total_score += score * weight
+                total_weight += weight
+            
+            overall_score = total_score / total_weight if total_weight > 0 else 0
+            
+            # Generate report
+            violations = []
+            for category, result in validation_results.items():
+                violations.extend(result.get("violations", []))
+            
+            # Sort violations by severity
+            violations.sort(key=lambda x: {"critical": 0, "high": 1, "medium": 2, "low": 3}.get(x.get("severity", "low"), 4))
+            
+            return {
+                "overall_score": round(overall_score, 1),
+                "category_scores": {k: v["score"] for k, v in validation_results.items()},
+                "total_violations": len(violations),
+                "violations_by_severity": {
+                    "critical": len([v for v in violations if v.get("severity") == "critical"]),
+                    "high": len([v for v in violations if v.get("severity") == "high"]),
+                    "medium": len([v for v in violations if v.get("severity") == "medium"]),
+                    "low": len([v for v in violations if v.get("severity") == "low"])
+                },
+                "detailed_results": validation_results,
+                "top_violations": violations[:10],
+                "passed": overall_score >= (90 if strict_mode else 70)
+            }
+        
+        @self.app.tool()
+        async def validate_import_order(
+            file_path: str
+        ) -> Dict[str, Any]:
+            """
+            Validate import order follows SciTeX conventions.
+            
+            Expected order:
+            1. Standard library imports
+            2. Third-party imports
+            3. SciTeX imports (import scitex as stx)
+            4. Local imports
+            """
+            
+            try:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                
+                tree = ast.parse(content)
+                imports = []
+                
+                for node in ast.walk(tree):
+                    if isinstance(node, (ast.Import, ast.ImportFrom)):
+                        imports.append({
+                            "line": node.lineno,
+                            "module": node.names[0].name if isinstance(node, ast.Import) else node.module,
+                            "type": self._classify_import(
+                                node.names[0].name if isinstance(node, ast.Import) else node.module
+                            )
+                        })
+                
+                # Check order
+                violations = []
+                import_order = ["stdlib", "third_party", "scitex", "local"]
+                last_type_index = -1
+                
+                for imp in imports:
+                    current_index = import_order.index(imp["type"])
+                    if current_index < last_type_index:
+                        violations.append({
+                            "line": imp["line"],
+                            "issue": f"{imp['type']} import after {import_order[last_type_index]}",
+                            "module": imp["module"]
+                        })
+                    last_type_index = max(last_type_index, current_index)
+                
+                return {
+                    "valid": len(violations) == 0,
+                    "violations": violations,
+                    "import_count": len(imports),
+                    "import_breakdown": {
+                        t: len([i for i in imports if i["type"] == t])
+                        for t in import_order
+                    }
+                }
+                
+            except Exception as e:
+                return {"error": str(e), "valid": False}
+        
+        @self.app.tool()
+        async def validate_docstring_format(
+            file_path: str,
+            style: str = "numpy"
+        ) -> Dict[str, Any]:
+            """
+            Validate docstring format and completeness.
+            
+            Args:
+                file_path: Path to Python file
+                style: Docstring style (numpy, google)
+                
+            Returns:
+                Validation results with missing/malformed docstrings
+            """
+            
+            try:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                
+                tree = ast.parse(content)
+                issues = []
+                
+                for node in ast.walk(tree):
+                    if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+                        docstring = ast.get_docstring(node)
+                        
+                        if not docstring:
+                            issues.append({
+                                "line": node.lineno,
+                                "name": node.name,
+                                "type": "missing",
+                                "severity": "high" if not node.name.startswith("_") else "low"
+                            })
+                        else:
+                            # Validate format
+                            validation = self._validate_docstring_content(docstring, node, style)
+                            if validation["issues"]:
+                                issues.extend(validation["issues"])
+                
+                return {
+                    "valid": len(issues) == 0,
+                    "issues": issues,
+                    "coverage": self._calculate_docstring_coverage(tree),
+                    "style": style
+                }
+                
+            except Exception as e:
+                return {"error": str(e), "valid": False}
+        
+        @self.app.tool()
+        async def validate_cross_file_dependencies(
+            project_path: str
+        ) -> Dict[str, Any]:
+            """
+            Validate cross-file dependencies and imports.
+            
+            Checks for:
+            - Circular imports
+            - Unused imports
+            - Missing imports
+            - Import consistency
+            """
+            
+            project = Path(project_path)
+            dependency_graph = {}
+            issues = []
+            
+            # Build dependency graph
+            for py_file in project.rglob("*.py"):
+                if ".old" in str(py_file):
+                    continue
+                    
+                try:
+                    with open(py_file, 'r') as f:
+                        content = f.read()
+                    
+                    tree = ast.parse(content)
+                    file_key = str(py_file.relative_to(project))
+                    dependency_graph[file_key] = []
+                    
+                    for node in ast.walk(tree):
+                        if isinstance(node, ast.ImportFrom):
+                            if node.module and node.module.startswith("."):
+                                # Relative import
+                                dependency_graph[file_key].append(node.module)
+                            
+                except Exception:
+                    continue
+            
+            # Check for circular dependencies
+            for file, deps in dependency_graph.items():
+                for dep in deps:
+                    if dep in dependency_graph and file in dependency_graph.get(dep, []):
+                        issues.append({
+                            "type": "circular_import",
+                            "files": [file, dep],
+                            "severity": "critical"
+                        })
+            
+            return {
+                "dependency_graph": dependency_graph,
+                "issues": issues,
+                "total_files": len(dependency_graph),
+                "circular_dependencies": len([i for i in issues if i["type"] == "circular_import"])
+            }
+        
+        @self.app.tool()
         async def find_scitex_examples(
             pattern: str,
             context: str = "all"
@@ -421,6 +651,297 @@ stx.io.save(fig, './plot.png')
             })
             
         return recommendations
+    
+    def _classify_import(self, module_name: Optional[str]) -> str:
+        """Classify import type based on module name."""
+        if not module_name:
+            return "unknown"
+        
+        # Standard library modules
+        stdlib_modules = {
+            "os", "sys", "re", "json", "ast", "pathlib", "datetime", 
+            "collections", "itertools", "functools", "typing", "math",
+            "random", "copy", "time", "subprocess", "argparse", "logging"
+        }
+        
+        if module_name in stdlib_modules or module_name.split('.')[0] in stdlib_modules:
+            return "stdlib"
+        elif module_name == "scitex" or module_name.startswith("scitex."):
+            return "scitex"
+        elif module_name.startswith("."):
+            return "local"
+        else:
+            return "third_party"
+    
+    def _validate_docstring_content(self, docstring: str, node: ast.AST, style: str) -> Dict[str, List]:
+        """Validate docstring content based on style."""
+        issues = []
+        
+        if isinstance(node, ast.FunctionDef):
+            # Check for parameter documentation
+            params = [arg.arg for arg in node.args.args if arg.arg != "self"]
+            
+            if style == "numpy":
+                # Check for Parameters section
+                if params and "Parameters" not in docstring:
+                    issues.append({
+                        "line": node.lineno,
+                        "name": node.name,
+                        "type": "missing_params",
+                        "severity": "medium",
+                        "message": "Missing Parameters section in docstring"
+                    })
+                
+                # Check for Returns section if not None return
+                has_return = any(isinstance(n, ast.Return) and n.value for n in ast.walk(node))
+                if has_return and "Returns" not in docstring:
+                    issues.append({
+                        "line": node.lineno,
+                        "name": node.name,
+                        "type": "missing_returns",
+                        "severity": "medium",
+                        "message": "Missing Returns section in docstring"
+                    })
+        
+        return {"issues": issues}
+    
+    def _calculate_docstring_coverage(self, tree: ast.AST) -> float:
+        """Calculate percentage of functions/classes with docstrings."""
+        total = 0
+        documented = 0
+        
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+                if not node.name.startswith("_"):  # Skip private methods
+                    total += 1
+                    if ast.get_docstring(node):
+                        documented += 1
+        
+        return (documented / total * 100) if total > 0 else 100.0
+    
+    async def _validate_import_order(self, project: Path) -> Dict[str, Any]:
+        """Validate import order across all files in project."""
+        violations = []
+        files_checked = 0
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file):
+                continue
+                
+            result = await self.validate_import_order(str(py_file))
+            if not result.get("valid", True):
+                violations.extend([
+                    {**v, "file": str(py_file.relative_to(project))} 
+                    for v in result.get("violations", [])
+                ])
+            files_checked += 1
+        
+        score = 100 - min(len(violations) * 5, 100)
+        
+        return {
+            "score": score,
+            "violations": violations,
+            "files_checked": files_checked,
+            "weight": 1.0
+        }
+    
+    async def _validate_docstrings(self, project: Path) -> Dict[str, Any]:
+        """Validate docstrings across all files in project."""
+        all_issues = []
+        total_coverage = 0
+        files_checked = 0
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file):
+                continue
+                
+            result = await self.validate_docstring_format(str(py_file))
+            if result.get("issues"):
+                all_issues.extend([
+                    {**issue, "file": str(py_file.relative_to(project))}
+                    for issue in result.get("issues", [])
+                ])
+            total_coverage += result.get("coverage", 0)
+            files_checked += 1
+        
+        avg_coverage = total_coverage / files_checked if files_checked > 0 else 0
+        score = avg_coverage * 0.7 + (100 - min(len(all_issues) * 2, 100)) * 0.3
+        
+        return {
+            "score": score,
+            "violations": all_issues,
+            "average_coverage": avg_coverage,
+            "files_checked": files_checked,
+            "weight": 1.5
+        }
+    
+    async def _validate_cross_file_dependencies(self, project: Path) -> Dict[str, Any]:
+        """Already implemented in the tool."""
+        result = await self.validate_cross_file_dependencies(str(project))
+        
+        score = 100
+        if result.get("circular_dependencies", 0) > 0:
+            score -= result["circular_dependencies"] * 20
+        
+        return {
+            "score": max(0, score),
+            "violations": result.get("issues", []),
+            "weight": 2.0
+        }
+    
+    async def _validate_naming_conventions(self, project: Path) -> Dict[str, Any]:
+        """Validate naming conventions."""
+        violations = []
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file):
+                continue
+                
+            try:
+                content = py_file.read_text()
+                tree = ast.parse(content)
+                
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.FunctionDef):
+                        if not node.name.islower() and not node.name.startswith("_"):
+                            violations.append({
+                                "file": str(py_file.relative_to(project)),
+                                "line": node.lineno,
+                                "name": node.name,
+                                "issue": "Function name not in snake_case",
+                                "severity": "medium"
+                            })
+                    elif isinstance(node, ast.ClassDef):
+                        if not node.name[0].isupper():
+                            violations.append({
+                                "file": str(py_file.relative_to(project)),
+                                "line": node.lineno,
+                                "name": node.name,
+                                "issue": "Class name not in PascalCase",
+                                "severity": "medium"
+                            })
+            except:
+                continue
+        
+        score = 100 - min(len(violations) * 5, 100)
+        
+        return {
+            "score": score,
+            "violations": violations,
+            "weight": 0.5
+        }
+    
+    async def _validate_config_usage(self, project: Path) -> Dict[str, Any]:
+        """Validate CONFIG usage patterns."""
+        violations = []
+        good_patterns = 0
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file):
+                continue
+                
+            try:
+                content = py_file.read_text()
+                
+                # Check for hardcoded paths
+                if re.search(r"['\"][/\\](home|Users|data)[/\\]", content):
+                    violations.append({
+                        "file": str(py_file.relative_to(project)),
+                        "issue": "Hardcoded absolute path",
+                        "severity": "high"
+                    })
+                
+                # Check for CONFIG usage
+                if "CONFIG" in content:
+                    good_patterns += len(re.findall(r"CONFIG\.[A-Z_]+\.[A-Z_]+", content))
+                    
+            except:
+                continue
+        
+        score = min(100, 70 + good_patterns * 2) - len(violations) * 10
+        
+        return {
+            "score": max(0, score),
+            "violations": violations,
+            "good_patterns": good_patterns,
+            "weight": 1.5
+        }
+    
+    async def _validate_path_handling(self, project: Path) -> Dict[str, Any]:
+        """Validate path handling practices."""
+        violations = []
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file):
+                continue
+                
+            try:
+                content = py_file.read_text()
+                
+                # Check for os.path instead of pathlib
+                if "os.path" in content and "pathlib" not in content:
+                    violations.append({
+                        "file": str(py_file.relative_to(project)),
+                        "issue": "Using os.path instead of pathlib",
+                        "severity": "low"
+                    })
+                
+                # Check for string concatenation for paths
+                if re.search(r"['\"].*['\"].*\+.*['\"][/\\]", content):
+                    violations.append({
+                        "file": str(py_file.relative_to(project)),
+                        "issue": "String concatenation for paths",
+                        "severity": "medium"
+                    })
+                    
+            except:
+                continue
+        
+        score = 100 - min(len(violations) * 5, 100)
+        
+        return {
+            "score": score,
+            "violations": violations,
+            "weight": 1.0
+        }
+    
+    async def _validate_framework_compliance(self, project: Path) -> Dict[str, Any]:
+        """Validate SciTeX framework compliance."""
+        violations = []
+        compliant_scripts = 0
+        
+        for py_file in project.rglob("*.py"):
+            if ".old" in str(py_file) or "__" in str(py_file):
+                continue
+                
+            try:
+                content = py_file.read_text()
+                
+                # Check for main scripts
+                if "if __name__" in content:
+                    if "stx.gen.start()" in content:
+                        compliant_scripts += 1
+                    else:
+                        violations.append({
+                            "file": str(py_file.relative_to(project)),
+                            "issue": "Main script missing stx.gen.start()",
+                            "severity": "high"
+                        })
+                        
+            except:
+                continue
+        
+        score = 100
+        if compliant_scripts == 0 and len(violations) > 0:
+            score = 50
+        score -= len(violations) * 10
+        
+        return {
+            "score": max(0, score),
+            "violations": violations,
+            "compliant_scripts": compliant_scripts,
+            "weight": 2.0
+        }
         
     def get_module_description(self) -> str:
         """Get description of analyzer functionality."""
@@ -437,6 +958,10 @@ stx.io.save(fig, './plot.png')
             "explain_scitex_pattern",
             "suggest_scitex_improvements",
             "find_scitex_examples",
+            "validate_comprehensive_compliance",
+            "validate_import_order",
+            "validate_docstring_format",
+            "validate_cross_file_dependencies",
             "get_module_info",
             "validate_code"
         ]

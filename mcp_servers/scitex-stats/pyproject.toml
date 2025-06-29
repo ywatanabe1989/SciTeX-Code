@@ -1,0 +1,19 @@
+[project]
+name = "scitex-stats"
+version = "0.1.0"
+description = "SciTeX MCP server for statistical analysis translations and tools"
+requires-python = ">=3.8"
+dependencies = [
+    "mcp>=0.1.0",
+    "scitex-base",
+]
+
+[project.scripts]
+scitex-stats = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true

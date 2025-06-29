@@ -17,11 +17,14 @@ SERVERS=(
     "scitex-plt"
     "scitex-analyzer"
     "scitex-framework"
+    "scitex-config"
+    "scitex-orchestrator"
+    "scitex-stats"
+    "scitex-pd"
+    "scitex-validator"
+    "scitex-dsp"
+    "scitex-torch"
     # Add more servers as they are implemented
-    # "scitex-dsp"
-    # "scitex-pd"
-    # "scitex-stats"
-    # "scitex-torch"
 )
 
 # Function to check if server directory exists

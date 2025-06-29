@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scitex-dsp"
+version = "0.1.0"
+description = "MCP server for SciTeX digital signal processing"
+requires-python = ">= 3.8"
+dependencies = [
+    "mcp>=0.9.0",
+    "scipy>=1.7.0",
+    "numpy>=1.21.0",
+]
+
+[project.scripts]
+scitex-dsp = "scitex_dsp.server:main"
