@@ -1,13 +1,14 @@
 <!-- ---
-!-- Timestamp: 2025-06-29 11:06:00
+!-- Timestamp: 2025-06-29 11:08:34
 !-- Author: ywatanabe
 !-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/mcp_servers/from_user.md
 !-- --- -->
 
-Clean the ./mcp_server directries
-Remove unnecessary files and directories
+- [ ] Implement README.md
+- [ ] Clean the ./mcp_server directries
+- [ ] Remove unnecessary files and directories
 
-how about other modules? did you cover all modules for mcp servers?
+- [ ] how about other modules? did you cover all modules for mcp servers?
   /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex:
   drwxr-sr-x 36 ywatanabe punim2354 4.0K Jun 29 09:36 .
   drwxr-sr-x  4 ywatanabe punim2354 4.0K Jun 21 13:39 ..

@@ -1,41 +1,36 @@
 # SciTeX MCP Servers
 
-Model Context Protocol (MCP) servers for SciTeX modules, enabling bidirectional translation between standard Python and SciTeX format.
+Model Context Protocol (MCP) servers for SciTeX modules.
 
-## Quick Start
+## Available Servers
 
-### Install All Servers
+| Server | Module | Description |
+|--------|--------|-------------|
+| scitex-base | - | Base framework for all servers |
+| scitex-io | io | File I/O operations |
+| scitex-plt | plt | Matplotlib enhancements |
+| scitex-stats | stats | Statistical operations |
+| scitex-pd | pd | Pandas operations |
+| scitex-dsp | dsp | Signal processing |
+| scitex-torch | torch | PyTorch utilities |
+| scitex-analyzer | - | Code analysis tools |
+| scitex-framework | gen | Template generation |
+| scitex-config | - | Configuration management |
+| scitex-orchestrator | - | Project coordination |
+| scitex-validator | - | Compliance validation |
+
+## Installation
+
 ```bash
 ./install_all.sh
 ```
 
-### Configure MCP
+## Usage
+
 See `mcp_config_example.json` for Claude Desktop configuration.
-
-### Launch All Servers
-```bash
-./launch_all.sh
-```
-
-## Available Servers
-
-| Server | Purpose | Status |
-|--------|---------|--------|
-| scitex-base | Base framework | ✅ Complete |
-| scitex-io | File I/O operations | ✅ Complete |
-| scitex-plt | Matplotlib enhancements | ✅ Complete |
-| scitex-analyzer | Code analysis | ✅ Complete |
-| scitex-framework | Template generation | ✅ Complete |
-| scitex-config | Configuration management | ✅ Complete |
-| scitex-orchestrator | Project coordination | ✅ Complete |
-| scitex-validator | Compliance validation | ✅ Complete |
-| scitex-stats | Statistical operations | ✅ Complete |
-| scitex-pd | Pandas operations | ✅ Complete |
-| scitex-dsp | Signal processing | ✅ Complete |
-| scitex-torch | PyTorch utilities | ✅ Complete |
 
 ## Documentation
 
-For detailed documentation, see `/docs/mcp_servers/`
+See the `docs/` directory for detailed documentation.
 
 # EOF
