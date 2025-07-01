@@ -809,3 +809,19 @@ SigMacro/
 # Archive and cleanup
 .archive/
 *.log-tmp
+
+# IDE integrations and temporary files
+.devcontainer/
+.gitpod.yml
+.gitpod.Dockerfile
+cloud-ide/
+ide-extensions/
+
+# Session and report files
+*SESSION_SUMMARY*.md
+*PROGRESS_REPORT*.md
+*PROJECT_STATUS*.md
+*PROJECT_TIMELINE*.md
+*READY_FOR_NEXT_SESSION*.md
+*PHASE3_*.md
+*IDE_INTEGRATION_COMPLETE*.md
