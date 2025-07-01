@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-13 23:00:56 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_Anthropic.py
+# Timestamp: "2025-06-24 19:20:24 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_Anthropic.py
 # ----------------------------------------
 import os
 __FILE__ = (

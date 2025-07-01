@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-05-13 18:50:00 (ywatanabe)"
+# Timestamp: "2025-06-24 19:12:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_PARAMS.py
 # ----------------------------------------
 import os
-
-__FILE__ = "./src/scitex/ai/_gen_ai/_PARAMS.py"
+__FILE__ = (
+    "./src/scitex/ai/_gen_ai/_PARAMS.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -201,6 +202,20 @@ OPENAI_MODELS = [
 # https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching#pricing
 # https://docs.anthropic.com/en/docs/about-claude/models#model-comparison-table
 ANTHROPIC_MODELS = [
+    {
+        "name": "claude-opus-4-20250514",
+        "input_cost": 15.00,
+        "output_cost": 75.00,
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "provider": "Anthropic",
+    },
+    {
+        "name": "claude-sonnet-4-20250514",
+        "input_cost": 3.00,
+        "output_cost": 15.00,
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "provider": "Anthropic",
+    },
     {
         "name": "claude-3-7-sonnet-20250219",
         "input_cost": 3.00,

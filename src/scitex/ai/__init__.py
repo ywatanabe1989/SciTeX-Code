@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Timestamp: "2025-06-24 19:06:38 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/ai/__init__.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Scitex AI module for machine learning and artificial intelligence utilities."""
 
 from ._LearningCurveLogger import LearningCurveLogger
@@ -6,7 +16,8 @@ from .__Classifiers import Classifiers
 from .classification_reporter import ClassificationReporter, MultiClassificationReporter
 from .early_stopping import EarlyStopping
 from .loss import MultiTaskLoss
-from .genai import GenAI
+# from .genai import GenAI
+from ._gen_ai import genai_factory as GenAI
 from .classification import ClassifierServer
 from .optim import get_optimizer, set_optimizer
 
@@ -53,3 +64,5 @@ __all__ = [
     "training",
     "utils",
 ]
+
+# EOF
