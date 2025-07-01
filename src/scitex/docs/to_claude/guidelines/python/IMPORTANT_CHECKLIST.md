@@ -21,7 +21,7 @@
     - [ ] `./docs`
     - [ ] `./examples`
       - [ ] Is the structure mirroring `./src`?
-      - [ ] Are all example scripts strictly following the scitex framework?
+      - [ ] Are all example scripts strictly following the mngs framework?
       - [ ] Are all example scripts produces outputs and logs?
       - [ ] Are all example scripts successfully run?
       - [ ] Is there problems stem from external packages?
@@ -30,8 +30,8 @@
       - [ ] Used `./run_examples.sh`
     - [ ] `./tests`
       - [ ] Is the structure mirroring `./src`?
-      - [ ] Are all example scripts strictly following the scitex framework?
-        - [ ] But to reduce dependency, non-scitex framework is acceptable for tests.
+      - [ ] Are all example scripts strictly following the mngs framework?
+        - [ ] But to reduce dependency, non-mngs framework is acceptable for tests.
       - [ ] Are all example scripts produces outputs and logs?
       - [ ] Are all example scripts successfully run?
       - [ ] Is there problems stem from external packages?

@@ -81,7 +81,7 @@ effect_size = (np.mean(group1) - np.mean(group2)) / np.sqrt((np.std(group1)**2 +
 
 results = {
     "p_value": pval,
-    "stars": scitex.stats.p2stars(pval),
+    "stars": mngs.stats.p2stars(pval),
     "n1": len(group1),
     "n2": len(group2),
     "dof": dof,
@@ -101,7 +101,7 @@ significant = [p < 0.05 for p in pvals]
 pvals = [stats.ttest_ind(group, control).pvalue 
          for group in treatment_groups]
 results_df = pd.DataFrame({"p_value": pvals})
-corrected_results = scitex.stats.fdr_correction(results_df)
+corrected_results = mngs.stats.fdr_correction(results_df)
 significant = corrected_results["p_value_fdr"] < 0.05
 ``` |
 

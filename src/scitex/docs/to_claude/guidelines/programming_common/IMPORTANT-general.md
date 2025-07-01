@@ -10,7 +10,7 @@
   - Do Not Repeat Yourself (DRY principle)
   - Use symbolic links wisely, especially for large data to keep clear organization and easy navigation
   - Prepare `./scripts/utils/<versatile_func.py>` for versatile and reusable code
-  - If versatile code is applicable beyond projects, implement in the `scitex` package
+  - If versatile code is applicable beyond projects, implement in the `mngs` package
   - Avoid unnecessary comments as they can be disruptive
   - Return only the updated code without comments
   - Code should be self-explanatory; variable, function, and class names are crucial

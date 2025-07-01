@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-06-10 07:13:06
+!-- Timestamp: 2025-05-20 15:31:51
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/project/timeline-gantt-chart.md
+!-- File: /home/ywatanabe/.claude/to_claude/guidelines/guidelines-Timeline-Gantt-Chart-Rules.md
 !-- --- -->
 
 Timeline Gantt charts are excellent tools for planning, directing, and communicating. Therefore, we encourage incorporating this technique into progress management.
