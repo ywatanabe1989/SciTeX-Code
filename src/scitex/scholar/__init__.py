@@ -58,13 +58,28 @@ try:
 except ImportError:
     MCPServer = None
 
+try:
+    from ._paper_enrichment import PaperEnrichmentService, generate_enriched_bibliography
+except ImportError:
+    PaperEnrichmentService = None
+    generate_enriched_bibliography = None
+
+try:
+    from ._impact_factor_integration import ImpactFactorService, EnhancedJournalMetrics
+except ImportError:
+    ImpactFactorService = None
+    EnhancedJournalMetrics = None
+
 __all__ = [
     "build_index",
     "enhance_bibliography_with_metrics",
+    "EnhancedJournalMetrics",
     "EnhancedVectorSearchEngine",
     "full_literature_review",
+    "generate_enriched_bibliography",
     "get_paper_info",
     "get_scholar_dir",
+    "ImpactFactorService",
     "JournalMetrics",
     "LiteratureReviewWorkflow",
     "LocalSearchEngine",
@@ -72,6 +87,7 @@ __all__ = [
     "MCPServer",
     "Paper",
     "PaperAcquisition",
+    "PaperEnrichmentService",
     "PaperMetadata",
     "PDFDownloader",
     "S2Paper",

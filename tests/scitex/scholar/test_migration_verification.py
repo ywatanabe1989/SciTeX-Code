@@ -52,20 +52,20 @@ def test_underscore_naming_convention():
 
 
 def test_no_pypi_files_in_module():
-    """Verify PyPI-related files were moved out of module."""
+    """Test that PyPI-related files are not in the module root since scholar is now part of scitex package."""
     import scitex.scholar
     scholar_path = os.path.dirname(scitex.scholar.__file__)
     
-    pypi_files = ['setup.py', 'pyproject.toml', 'MANIFEST.in', 
-                  'requirements.txt', 'build_for_pypi.sh']
+    # Check that no PyPI files exist in module root
+    pypi_files = ['setup.py', 'pyproject.toml', 'MANIFEST.in', 'build_for_pypi.sh', 'PYPI_README.md']
     
     for pypi_file in pypi_files:
         file_path = os.path.join(scholar_path, pypi_file)
-        assert not os.path.exists(file_path), f"PyPI file still in module: {pypi_file}"
+        assert not os.path.exists(file_path), f"{pypi_file} should not exist in module root - scholar is part of scitex package"
     
-    # Verify they were moved to pypi_files directory
+    # Also check that pypi_files directory has been removed/archived
     pypi_dir = os.path.join(scholar_path, 'pypi_files')
-    assert os.path.exists(pypi_dir), "pypi_files directory not found"
+    assert not os.path.exists(pypi_dir), "pypi_files directory should be removed - scholar is part of scitex package"
 
 
 def test_demo_files_moved_to_examples():

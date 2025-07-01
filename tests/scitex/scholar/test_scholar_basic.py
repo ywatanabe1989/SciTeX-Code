@@ -96,10 +96,10 @@ class TestScholarBasic:
         
         bibtex = paper.to_bibtex()
         assert "@misc{" in bibtex
-        assert 'title = "{Deep Learning for Science}"' in bibtex
-        assert 'author = "{John Doe and Jane Smith}"' in bibtex
-        assert 'year = "{2024}"' in bibtex
-        assert 'eprint = "{2401.12345}"' in bibtex
+        assert 'title = {{Deep Learning for Science}}' in bibtex
+        assert 'author = {John Doe and Jane Smith}' in bibtex
+        assert 'year = {2024}' in bibtex
+        assert 'eprint = {2401.12345}' in bibtex
     
     def test_paper_similarity(self):
         """Test paper similarity calculation."""

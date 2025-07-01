@@ -1,18 +1,18 @@
 <!-- ---
-!-- Timestamp: 2025-07-02 00:25:34
+!-- Timestamp: 2025-07-02 01:48:30
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
 
 
 ## Scholar Migration (Current Top-Most Priority)
-- [x] Migrate ./src/scitex/SciTeX-Scholar to ./src/scitex/scholar
-- [x] Backup has been already created as ./src/scitex/scholar_backup
-- [x] Naming convensions for scitex as in other modules ./src/scitex/* should be applied to newly migrated ./src/scitex/scholar module as well
-- [x] scitex_repo is just a symlink to SciTeX-Code:
-  - [x] /home/ywatanabe/proj/scitex_repo -> /home/ywatanabe/proj/SciTeX-Code
-- [x] Implement tests for the migrated scholar module as a scitex pip package
-- [x] Implement examples for the migrated scholar module as a scitex pip package
+- [ ] Naming convensions for scitex as in other modules ./src/scitex/* should be applied to newly migrated ./src/scitex/scholar module as well
+- [ ] scitex_repo is just a symlink to SciTeX-Code:
+  - [ ] /home/ywatanabe/proj/scitex_repo -> /home/ywatanabe/proj/SciTeX-Code
+- [ ] Implement tests for the migrated scholar module as a scitex pip package
+- [ ] Implement examples for the migrated scholar module as a scitex pip package
+  - [ ] Also implement examples in jupyter notebooks (although i am not sure about it, it may be useful when rendered in github)
+- [ ] NEVER USE DEMO OR FAKE DATA FOR ENSURING CREDIBILITY
 
 ## Multi Agent System
 Work with other agents using the bulletin board: ./project_management/BULLETIN-BOARD.md

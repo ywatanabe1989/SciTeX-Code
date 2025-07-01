@@ -1,4 +1,4 @@
-# SciTeX-Scholar
+# SciTeX-Scholar v0.2.0
 
 Scientific literature search and analysis system with Semantic Scholar integration for comprehensive research intelligence.
 
@@ -7,7 +7,10 @@ Scientific literature search and analysis system with Semantic Scholar integrati
 - **🔓 Open Access Discovery**: Automatic discovery of 50M+ free PDFs
 - **🕸️ Citation Networks**: Analyze citation relationships and research impact
 - **📈 Research Trends**: Quantitative analysis of field evolution over time
-- **🤖 LLM Analysis**: Automated gap detection and comparison tables
+- **🤖 AI-Powered Analysis**: Multi-provider support (Anthropic, OpenAI, Google, Perplexity)
+- **📊 Journal Metrics**: Automatic impact factor and ranking integration
+- **🔍 Research Gap Detection**: AI-powered identification of research opportunities
+- **📝 Enhanced Bibliography**: Generate citations with journal metrics
 
 ---
 

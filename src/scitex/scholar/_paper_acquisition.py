@@ -657,6 +657,54 @@ Return as a numbered list of specific, actionable research gaps."""
             logger.error(f"Gap analysis failed: {e}")
             return [f"Gap analysis failed: {str(e)}"]
     
+    async def download_papers_pdfs(self, papers: List[PaperMetadata], force: bool = False) -> Dict[str, Path]:
+        """
+        Download PDFs for papers that have available PDF URLs.
+        
+        Args:
+            papers: List of papers to download
+            force: Force re-download even if file exists
+            
+        Returns:
+            Dictionary mapping paper titles to downloaded PDF paths
+        """
+        from ._pdf_downloader import PDFDownloader
+        from ._paper import Paper
+        
+        downloader = PDFDownloader(download_dir=self.download_dir)
+        downloaded = {}
+        
+        # Convert PaperMetadata to Paper objects and download
+        paper_objects = []
+        for p in papers:
+            paper = Paper(
+                title=p.title,
+                authors=p.authors,
+                abstract=p.abstract,
+                source=p.source,
+                year=p.year,
+                doi=p.doi,
+                pmid=p.pmid,
+                arxiv_id=p.arxiv_id,
+                journal=p.journal,
+                keywords=p.keywords,
+                metadata={'pdf_url': p.pdf_url} if p.pdf_url else {}
+            )
+            paper_objects.append(paper)
+        
+        # Download PDFs
+        logger.info(f"Attempting to download PDFs for {len(paper_objects)} papers...")
+        results = await downloader.download_papers(paper_objects, force=force)
+        
+        # Map results back to paper titles
+        for paper in paper_objects:
+            if paper.get_identifier() in results:
+                downloaded[paper.title] = results[paper.get_identifier()]
+                logger.info(f"Downloaded PDF for: {paper.title[:60]}...")
+        
+        logger.info(f"Successfully downloaded {len(downloaded)} PDFs out of {len(papers)} papers")
+        return downloaded
+    
     # Enhanced bibliography generation with AI integration
     def generate_enhanced_bibliography(self, 
                                      papers: List[PaperMetadata],
@@ -694,12 +742,18 @@ async def search_papers_with_ai(query: str, ai_provider: str = 'anthropic', **kw
 
 async def full_literature_review(topic: str, 
                                 ai_provider: str = 'anthropic',
-                                max_papers: int = 50) -> Dict[str, Any]:
-    """Complete AI-enhanced literature review."""
+                                max_papers: int = 50,
+                                download_pdfs: bool = True) -> Dict[str, Any]:
+    """Complete AI-enhanced literature review with PDF downloads."""
     acquisition = PaperAcquisition(ai_provider=ai_provider)
     
     # Search papers
     papers = await acquisition.search(topic, max_results=max_papers)
+    
+    # Download PDFs if requested
+    downloaded_pdfs = {}
+    if download_pdfs:
+        downloaded_pdfs = await acquisition.download_papers_pdfs(papers)
     
     # Generate AI analysis
     summary = await acquisition.generate_research_summary(papers, topic)
@@ -712,6 +766,7 @@ async def full_literature_review(topic: str,
         'topic': topic,
         'papers_found': len(papers),
         'papers': papers,
+        'downloaded_pdfs': downloaded_pdfs,
         'ai_summary': summary,
         'research_gaps': gaps,
         'bibliography': bibliography,

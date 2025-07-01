@@ -32,6 +32,13 @@ class Paper:
         pdf_path: Optional[Path] = None,
         embedding: Optional[Any] = None,  # numpy array or tensor
         metadata: Optional[Dict[str, Any]] = None,
+        # Enhanced metadata fields
+        citation_count: Optional[int] = None,
+        impact_factor: Optional[float] = None,
+        journal_quartile: Optional[str] = None,
+        url: Optional[str] = None,
+        pdf_url: Optional[str] = None,
+        open_access: Optional[bool] = None,
     ):
         """Initialize a Paper object.
         
@@ -78,6 +85,13 @@ class Paper:
         self.embedding = embedding
         self.metadata = metadata or {}
         self.retrieved_at = datetime.now()
+        # Enhanced metadata
+        self.citation_count = citation_count
+        self.impact_factor = impact_factor
+        self.journal_quartile = journal_quartile
+        self.url = url
+        self.pdf_url = pdf_url
+        self.open_access = open_access
     
     def __repr__(self) -> str:
         """String representation of the paper."""
@@ -124,6 +138,13 @@ class Paper:
             "has_embedding": self.embedding is not None,
             "metadata": self.metadata,
             "retrieved_at": self.retrieved_at.isoformat(),
+            # Enhanced metadata
+            "citation_count": self.citation_count,
+            "impact_factor": self.impact_factor,
+            "journal_quartile": self.journal_quartile,
+            "url": self.url,
+            "pdf_url": self.pdf_url,
+            "open_access": self.open_access,
         }
     
     @classmethod
@@ -140,13 +161,32 @@ class Paper:
         
         return cls(**data)
     
-    def to_bibtex(self) -> str:
-        """Generate BibTeX entry for the paper."""
-        # Generate citation key
-        first_author = self.authors[0].split()[-1] if self.authors else "Unknown"
+    def to_bibtex(self, include_enriched: bool = True) -> str:
+        """Generate BibTeX entry for the paper with enhanced metadata.
+        
+        Args:
+            include_enriched: Whether to include citation count, impact factor, etc.
+        
+        Returns:
+            BibTeX string with enhanced metadata
+        """
+        # Generate citation key (standard format without suffix)
+        if self.authors:
+            # Handle "Last, First" or "First Last" formats
+            author_parts = self.authors[0].split(',')
+            if len(author_parts) > 1:
+                # "Last, First" format - take first part
+                first_author = author_parts[0].strip().lower()
+            else:
+                # "First Last" format - take last word
+                first_author = self.authors[0].split()[-1].lower()
+        else:
+            first_author = "unknown"
+        
+        # Remove special characters
+        first_author = ''.join(c for c in first_author if c.isalnum())
         year = self.year or "0000"
-        title_word = self.title.split()[0].lower() if self.title else "paper"
-        cite_key = f"{first_author}{year}{title_word}"
+        cite_key = f"{first_author}{year}"
         
         # Determine entry type
         if self.arxiv_id:
@@ -156,25 +196,58 @@ class Paper:
         
         # Build BibTeX entry
         lines = [f"{entry_type}{{{cite_key},"]
-        lines.append(f'  title = "{{{self.title}}}",')
+        lines.append(f'  title = {{{{{self.title}}}}},')
         
         if self.authors:
             authors_str = " and ".join(self.authors)
-            lines.append(f'  author = "{{{authors_str}}}",')
+            lines.append(f'  author = {{{authors_str}}},')
         
         if self.year:
-            lines.append(f'  year = "{{{self.year}}}",')
+            lines.append(f'  year = {{{self.year}}},')
         
         if self.journal:
-            lines.append(f'  journal = "{{{self.journal}}}",')
+            lines.append(f'  journal = {{{{{self.journal}}}}},')
         
+        # Add DOI and URL
         if self.doi:
-            lines.append(f'  doi = "{{{self.doi}}}",')
+            lines.append(f'  doi = {{{self.doi}}},')
+            lines.append(f'  url = {{https://doi.org/{self.doi}}},')
+        elif self.url:
+            lines.append(f'  url = {{{self.url}}},')
+        elif self.pmid:
+            lines.append(f'  url = {{https://pubmed.ncbi.nlm.nih.gov/{self.pmid}/}},')
+        elif self.arxiv_id:
+            lines.append(f'  url = {{https://arxiv.org/abs/{self.arxiv_id}}},')
         
         if self.arxiv_id:
-            lines.append(f'  eprint = "{{{self.arxiv_id}}}",')
-            lines.append('  archivePrefix = "{arXiv}",')
+            lines.append(f'  eprint = {{{self.arxiv_id}}},')
+            lines.append('  archivePrefix = {arXiv},')
         
+        # Add enriched metadata if requested
+        if include_enriched:
+            notes = []
+            
+            if self.citation_count is not None:
+                notes.append(f"Citations: {self.citation_count}")
+            
+            if self.impact_factor is not None:
+                try:
+                    notes.append(f"Impact Factor (2024): {float(self.impact_factor):.3f}")
+                except (ValueError, TypeError):
+                    notes.append(f"Impact Factor (2024): {self.impact_factor}")
+            
+            if self.journal_quartile:
+                notes.append(f"Journal Quartile: {self.journal_quartile}")
+            
+            if self.open_access is not None:
+                notes.append(f"Open Access: {'Yes' if self.open_access else 'No'}")
+            
+            if notes:
+                note_str = "; ".join(notes)
+                lines.append(f'  note = {{{note_str}}},')
+        
+        # Remove trailing comma from last line
+        lines[-1] = lines[-1].rstrip(',')
         lines.append("}")
         
         return "\n".join(lines)
