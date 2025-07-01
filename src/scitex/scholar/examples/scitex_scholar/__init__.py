@@ -1,0 +1,1 @@
+"""SciTeX-Scholar examples package."""

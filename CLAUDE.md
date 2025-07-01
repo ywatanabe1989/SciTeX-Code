@@ -1,18 +1,26 @@
 <!-- ---
-!-- Timestamp: 2025-06-14 00:04:38
+!-- Timestamp: 2025-07-02 00:25:34
 !-- Author: ywatanabe
-!-- File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/CLAUDE.md
+!-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
 
-Working with other agents using the bulletin board, ensure all tests passed.
 
-If errors found, determine the root cause and fix it.
+## Scholar Migration (Current Top-Most Priority)
+- [x] Migrate ./src/scitex/SciTeX-Scholar to ./src/scitex/scholar
+- [x] Backup has been already created as ./src/scitex/scholar_backup
+- [x] Naming convensions for scitex as in other modules ./src/scitex/* should be applied to newly migrated ./src/scitex/scholar module as well
+- [x] scitex_repo is just a symlink to SciTeX-Code:
+  - [x] /home/ywatanabe/proj/scitex_repo -> /home/ywatanabe/proj/SciTeX-Code
+- [x] Implement tests for the migrated scholar module as a scitex pip package
+- [x] Implement examples for the migrated scholar module as a scitex pip package
 
-We have moved from mngs to scitex. Use scitex all the time.
+## Multi Agent System
+Work with other agents using the bulletin board: ./project_management/BULLETIN-BOARD.md
 
-scitex is `~/proj/SciTeX-Code/src/scitex`
-Old scitex repositories would be `~/proj/scitex_repo/src/scitex` or `~/proj/.claude-worktree/scitex_repo/src/scitex` but do never use them. Just use `~/proj/SciTeX-Code/src/scitex`
+## MNGS is obsolete
+We have renamed mngs to scitex. Use scitex all the time.
 
+## No try-error as much as possible
 Please do not use try-error as much as possible as it is difficult for me to find problems. At least, warn error messages.
 
 <!-- EOF -->

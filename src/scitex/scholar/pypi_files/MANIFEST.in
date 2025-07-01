@@ -1,0 +1,11 @@
+include README.md
+include LICENSE
+include requirements.txt
+include CHANGELOG.md
+recursive-include src/scitex_scholar *.py
+recursive-include docs *.md
+recursive-exclude * __pycache__
+recursive-exclude * *.pyc
+recursive-exclude * *.pyo
+recursive-exclude * *.swp
+recursive-exclude * .DS_Store

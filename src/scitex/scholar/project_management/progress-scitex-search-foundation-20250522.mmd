@@ -1,0 +1,98 @@
+graph TD
+    subgraph Legend
+        Z1[Todo]:::todo
+        Z2[In Progress]:::inProgress
+        Z3[Done]:::done
+        Z4[Directory]:::directory
+    end
+    
+    subgraph Project[SciTeX-Search Project Foundation]
+        PROJ[SciTeX-Search Package]:::done
+        
+        subgraph CORE[Core Development Goals]
+            G1[Package Foundation]:::done
+            G2[Text Processing]:::done
+            G3[Search Engine]:::done
+            G4[Testing Framework]:::done
+            G5[Clean Environment]:::done
+            G6[Version Control]:::done
+        end
+        
+        subgraph STRUCT[Project Structure]
+            SRC[src/scitex_search/]:::directory
+            TESTS[tests/]:::directory
+            DOCS[docs/to_claude/]:::directory
+            PM[project_management/]:::directory
+            PKG[pyproject.toml]:::done
+            GIT[.gitignore]:::done
+        end
+        
+        subgraph MODULES[Core Modules]
+            TP[TextProcessor]:::done
+            SE[SearchEngine]:::done
+            INIT[Package Init]:::done
+        end
+        
+        subgraph TESTING[Testing Framework]
+            TDD[TDD Methodology]:::done
+            BASIC[Basic Tests 3/3]:::done
+            COMP[Comprehensive Tests 16/16]:::done
+            INTEG[Integration Tests]:::done
+        end
+        
+        subgraph FEATURES[Implemented Features]
+            CLEAN[Text Cleaning]:::done
+            KEYWORDS[Keyword Extraction]:::done
+            SECTIONS[Section Detection]:::done
+            INDEX[Document Indexing]:::done
+            SEARCH[Multi-type Search]:::done
+            RANK[Result Ranking]:::done
+        end
+        
+        subgraph FUTURE[Next Priorities]
+            LATEX[LaTeX Parser]:::todo
+            CITE[Citation Extraction]:::todo
+            FORMULA[Formula Processing]:::todo
+            META[Enhanced Metadata]:::todo
+        end
+    end
+    
+    subgraph WORKFLOW[Development Workflow]
+        START[Project Start]:::starttag
+        SETUP[Package Setup]:::done
+        TDDEV[TDD Development]:::done
+        CLEANUP[Code Cleanup]:::done
+        MGMT[Progress Management]:::inProgress
+        NEXT[Feature Development]:::todo
+        END[Production Ready]:::endtag
+    end
+    
+    START --> SETUP
+    SETUP --> G1
+    G1 --> TDDEV
+    TDDEV --> G2
+    TDDEV --> G3
+    G2 --> TP
+    G3 --> SE
+    TP --> G4
+    SE --> G4
+    G4 --> TESTING
+    TESTING --> CLEANUP
+    CLEANUP --> G5
+    G5 --> G6
+    G6 --> MGMT
+    MGMT --> FUTURE
+    FUTURE --> NEXT
+    NEXT --> END
+    
+    PROJ --> CORE
+    CORE --> STRUCT
+    STRUCT --> MODULES
+    MODULES --> FEATURES
+    
+    classDef starttag fill:#cce5ff,stroke:#333,stroke-width:2px;
+    classDef done fill:#9f9,stroke:#333,stroke-width:2px;
+    classDef inProgress fill:#ff9,stroke:#333,stroke-width:2px;
+    classDef todo fill:#fff,stroke:#333,stroke-width:2px;
+    classDef directory fill:#efe,stroke:#333,stroke-width:1px;
+    classDef endtag fill:#fcc,stroke:#333,stroke-width:2px;
