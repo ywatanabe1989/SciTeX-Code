@@ -1,17 +1,12 @@
 <!-- ---
-!-- Timestamp: 2025-07-02 02:37:00
+!-- Timestamp: 2025-07-02 02:58:02
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
 
-## Scholar Migration ✅ COMPLETED (2025-07-02)
-- [x] Naming convensions for scitex as in other modules ./src/scitex/* should be applied to newly migrated ./src/scitex/scholar module as well
-- [x] scitex_repo is just a symlink to SciTeX-Code:
-  - [x] /home/ywatanabe/proj/scitex_repo -> /home/ywatanabe/proj/SciTeX-Code
-- [x] Implement tests for the migrated scholar module as a scitex pip package
-- [x] Implement examples for the migrated scholar module as a scitex pip package
-  - [x] Also implement examples in jupyter notebooks (although i am not sure about it, it may be useful when rendered in github)
-- [x] NEVER USE DEMO OR FAKE DATA FOR ENSURING CREDIBILITY
+
+## ipynb as examples
+- [ ] Add ipynb for examples for various modules
 
 ## Current Priority: MCP Translation Servers
 Current top-most priority lies in MCP translation/reverse-translation servers construction.
