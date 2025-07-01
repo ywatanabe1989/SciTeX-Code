@@ -1,0 +1,19 @@
+[project]
+name = "scitex-torch"
+version = "0.1.0"
+description = "SciTeX MCP server for PyTorch deep learning translations and tools"
+requires-python = ">=3.8"
+dependencies = [
+    "mcp>=0.1.0",
+    "scitex-base",
+]
+
+[project.scripts]
+scitex-torch = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true

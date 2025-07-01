@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scitex-framework-mcp"
+version = "0.1.0"
+description = "MCP server for SciTeX framework template generation and project scaffolding"
+requires-python = ">= 3.8"
+dependencies = [
+    "mcp",
+    "scitex",
+    "pyyaml",
+]
+
+[project.scripts]
+scitex-framework = "scitex_framework.server:main"
