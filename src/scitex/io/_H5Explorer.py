@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-24 20:04:02 (ywatanabe)"
+# Timestamp: "2025-07-01 19:22:27 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_H5Explorer.py
 # ----------------------------------------
 import os
@@ -9,6 +9,8 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+import random
+import time
 
 import shutil
 import warnings
@@ -271,9 +273,86 @@ def explore_h5(filepath: str) -> None:
         warnings.warn(f"Warning: File does not exist: {filepath}")
 
 
+# def has_h5_key(h5_path, key, max_retries=3):
+#     """
+#     Robust version of has_h5_key that handles corrupted files.
+
+#     Parameters:
+#     -----------
+#     h5_path : str
+#         Path to HDF5 file
+#     key : str
+#         Key to check for existence
+#     max_retries : int
+#         Maximum number of attempts to read the file
+
+#     Returns:
+#     --------
+#     bool
+#         True if key exists, False if key doesn't exist or file is corrupted
+#     """
+#     h5_path = os.path.realpath(h5_path)
+
+#     if not os.path.exists(h5_path):
+#         return False
+
+#     for attempt in range(max_retries):
+#         try:
+#             with h5py.File(h5_path, "r") as h5_file:
+#                 parts = [p for p in key.split("/") if p]  # Remove empty parts
+#                 current = h5_file
+
+#                 for part in parts:
+#                     if part in current:
+#                         current = current[part]
+#                     else:
+#                         return False
+#                 return True
+
+#         except (KeyError, FileNotFoundError):
+#             return False
+
+#         except (OSError, RuntimeError, ValueError) as e:
+#             error_msg = str(e).lower()
+#             corruption_indicators = [
+#                 "unable to synchronously",
+#                 "bad symbol table",
+#                 "free block size is zero",
+#                 "truncated file",
+#                 "unable to read signature",
+#                 "corrupted",
+#                 "invalid file signature",
+#                 "unable to check link existence",
+#             ]
+
+#             if any(
+#                 indicator in error_msg for indicator in corruption_indicators
+#             ):
+#                 print(
+#                     f"HDF5 file corruption detected on attempt {attempt + 1}: {e}"
+#                 )
+
+#                 if attempt < max_retries - 1:
+#                     # Try to repair or recreate the file
+#                     if _attempt_h5_repair(h5_path):
+#                         print(f"File repair attempted, retrying...")
+#                         continue
+#                     else:
+#                         print(f"File repair failed, treating as missing key")
+#                         return False
+#                 else:
+#                     # Final attempt failed, treat as file doesn't contain the key
+#                     print(f"Final attempt failed, treating key as missing")
+#                     return False
+#             else:
+#                 # Non-corruption error, re-raise
+#                 raise e
+
+
+#     return False
 def has_h5_key(h5_path, key, max_retries=3):
     """
-    Robust version of has_h5_key that handles corrupted files.
+    Robust version of has_h5_key that handles corrupted files and lock conflicts.
 
     Parameters:
     -----------
@@ -296,6 +375,7 @@ def has_h5_key(h5_path, key, max_retries=3):
 
     for attempt in range(max_retries):
         try:
+            # Use a shorter timeout for read operations
             with h5py.File(h5_path, "r") as h5_file:
                 parts = [p for p in key.split("/") if p]  # Remove empty parts
                 current = h5_file
@@ -312,6 +392,16 @@ def has_h5_key(h5_path, key, max_retries=3):
 
         except (OSError, RuntimeError, ValueError) as e:
             error_msg = str(e).lower()
+
+            # Check for lock-related errors
+            lock_indicators = [
+                "resource temporarily unavailable",
+                "file is already open",
+                "unable to lock file",
+                "file locking failed",
+            ]
+
+            # Check for corruption indicators
             corruption_indicators = [
                 "unable to synchronously",
                 "bad symbol table",
@@ -323,7 +413,25 @@ def has_h5_key(h5_path, key, max_retries=3):
                 "unable to check link existence",
             ]
 
-            if any(
+            if any(indicator in error_msg for indicator in lock_indicators):
+                print(f"HDF5 file lock conflict on attempt {attempt + 1}: {e}")
+
+                if attempt < max_retries - 1:
+                    # Start with small wait time, increase gradually
+                    base_wait = 0.1 * (2**attempt)  # 0.1, 0.2, 0.4 seconds
+                    jitter = random.uniform(0, base_wait * 0.5)
+                    wait_time = base_wait + jitter
+
+                    print(f"Waiting {wait_time:.2f}s before retry...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    print(
+                        f"Could not access file due to locking after {max_retries} attempts"
+                    )
+                    return False
+
+            elif any(
                 indicator in error_msg for indicator in corruption_indicators
             ):
                 print(
@@ -343,7 +451,7 @@ def has_h5_key(h5_path, key, max_retries=3):
                     print(f"Final attempt failed, treating key as missing")
                     return False
             else:
-                # Non-corruption error, re-raise
+                # Non-corruption, non-lock error, re-raise
                 raise e
 
     return False
