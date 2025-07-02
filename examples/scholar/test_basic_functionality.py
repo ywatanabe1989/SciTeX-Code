@@ -60,24 +60,25 @@ def test_local_search():
         txt1 = temp_path / "notes.txt"
         txt1.write_text("Research notes on PAC analysis")
         
-        # Create search engine
-        engine = LocalSearchEngine(temp_path)
+        # Create search engine with proper index file
+        index_file = temp_path / "search_index.json"
+        engine = LocalSearchEngine(index_file)
         
         # Build index
         print(f"Indexing directory: {temp_path}")
-        indexed = engine.index_directory()
-        print(f"Indexed {len(indexed)} files")
+        indexed = engine.build_index([temp_path])
+        print(f"Indexed {indexed} files")
         
         # Search
         print("\nSearching for 'coupling':")
-        results = engine.search_papers("coupling")
-        for paper in results:
-            print(f"  - {paper.title}")
+        results = engine.search("coupling", [temp_path])
+        for paper, score in results:
+            print(f"  - {paper.title} (score: {score:.2f})")
         
         print("\nSearching for 'deep learning':")
-        results = engine.search_papers("deep learning")
-        for paper in results:
-            print(f"  - {paper.title}")
+        results = engine.search("deep learning", [temp_path])
+        for paper, score in results:
+            print(f"  - {paper.title} (score: {score:.2f})")
 
 
 def test_pdf_downloader():

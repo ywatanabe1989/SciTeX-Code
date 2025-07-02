@@ -39,7 +39,7 @@ We have implemented MCP servers for the **core scientific computing modules**, a
 
 ### Low Priority Missing Modules
 - **context**, **decorators**, **dev**, **etc**, **gists**
-- **os**, **reproduce**, **resource**, **scholar**
+- **os**, **repro**, **resource**, **scholar**
 - **tex**, **types**, **utils**, **web**
 
 ## Why This Coverage is Sufficient

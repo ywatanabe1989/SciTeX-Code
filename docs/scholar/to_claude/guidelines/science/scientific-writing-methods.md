@@ -47,7 +47,7 @@ The purpose of the methods section in a scientific paper is to provide a detaile
 
 - Methods should be written with a focus on reproducible procedures. 
 - Unnecessary expressions should be avoided. 
-- Passive sentences should be used to indicate that the study can be reproduced by anyone.
+- Passive sentences should be used to indicate that the study can be reprod by anyone.
 - Use LaTeX format
 - When adding references (to literature, tables, or figures) will enhance the quality of the paper, please insert a placeholder using this LaTeX command `\hlref{XXX}`. This command will highlight any unlinked content so that it will work well as a placeholder.
 

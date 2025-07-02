@@ -1,0 +1,23 @@
+[project]
+name = "scitex-gen"
+version = "0.1.0"
+description = "MCP server for SciTeX gen (general utilities) module"
+authors = [{name = "SciTeX Team"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "mcp>=0.1.0",
+    "scitex>=0.1.0",
+]
+
+[project.scripts]
+scitex-gen = "scitex_gen.server:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["scitex_gen"]

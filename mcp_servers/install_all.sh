@@ -24,7 +24,9 @@ SERVERS=(
     "scitex-validator"
     "scitex-dsp"
     "scitex-torch"
-    # Add more servers as they are implemented
+    "scitex-gen"
+    "scitex_io_translator"
+    "scitex-base"
 )
 
 # Function to check if server directory exists

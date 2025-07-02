@@ -11,22 +11,33 @@ echo "Testing all SciTeX MCP servers..."
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-# Array of available servers
+# Array of available servers with test files
 SERVERS=(
     "scitex-io"
     "scitex-plt"
-    "scitex-analyzer"
+    "scitex-stats"
+    "scitex-pd"
+    "scitex-dsp"
+    "scitex-gen"
+    "scitex_io_translator"
 )
 
 # Test each server
 for server in "${SERVERS[@]}"; do
-    if [ -f "$SCRIPT_DIR/$server/test_server.py" ]; then
+    # Special case for scitex_io_translator
+    if [ "$server" = "scitex_io_translator" ]; then
+        test_file="test_translator.py"
+    else
+        test_file="test_server.py"
+    fi
+    
+    if [ -f "$SCRIPT_DIR/$server/$test_file" ]; then
         echo ""
         echo "========================================="
         echo "Testing $server..."
         echo "========================================="
         cd "$SCRIPT_DIR/$server"
-        python test_server.py
+        python "$test_file"
         if [ $? -eq 0 ]; then
             echo "✅ $server tests passed"
         else
@@ -38,6 +49,22 @@ for server in "${SERVERS[@]}"; do
 done
 
 echo ""
-echo "All tests completed\!"
+echo "========================================="
+echo "Running integration tests..."
+echo "========================================="
+cd "$SCRIPT_DIR"
+if [ -f "test_integration.py" ]; then
+    python test_integration.py
+    if [ $? -eq 0 ]; then
+        echo "✅ Integration tests passed"
+    else
+        echo "❌ Integration tests failed"
+    fi
+else
+    echo "⚠️  No integration tests found"
+fi
+
+echo ""
+echo "All tests completed!"
 
 # EOF

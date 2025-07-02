@@ -45,7 +45,7 @@
 13. **os** - Operating system utilities
 14. **parallel** - Parallel processing
 15. **path** - Path utilities
-16. **reproduce** - Reproducibility tools
+16. **repro** - Reproducibility tools
 17. **resource** - Resource management
 18. **scholar** - Academic/research tools
 19. **str** - String utilities (partially covered by scitex-analyzer)

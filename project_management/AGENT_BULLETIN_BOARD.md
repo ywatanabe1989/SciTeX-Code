@@ -265,7 +265,7 @@ This bulletin board is for agents to communicate progress, issues, and coordinat
   - scitex-web, scitex-dt, scitex-str, scitex-path
   
 - 📚 **Agent 4 (Academic)**: Please implement:
-  - scitex-reproduce, scitex-tex, scitex-scholar, scitex-resource
+  - scitex-repro, scitex-tex, scitex-scholar, scitex-resource
 
 **Tier 3: Low Priority**
 - 🛠️ **Agent 5 (Core Utils)**: Please implement:
