@@ -21,7 +21,7 @@ class TestGenTimestampBasic:
     
     def test_basic_generation(self):
         """Test basic timestamp generation."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -31,7 +31,7 @@ class TestGenTimestampBasic:
     
     def test_format_pattern(self):
         """Test timestamp follows expected pattern."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -52,7 +52,7 @@ class TestGenTimestampBasic:
     
     def test_timestamp_alias(self):
         """Test timestamp function alias."""
-        from scitex.reproduce import gen_timestamp, timestamp
+        from scitex.repro import gen_timestamp, timestamp
         
         # Should be same function
         assert timestamp is gen_timestamp
@@ -66,7 +66,7 @@ class TestGenTimestampBasic:
     
     def test_multiple_calls(self):
         """Test multiple calls produce valid timestamps."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamps = [gen_timestamp() for _ in range(10)]
         
@@ -82,10 +82,10 @@ class TestGenTimestampBasic:
 class TestGenTimestampComponents:
     """Test individual timestamp components."""
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_year_component(self, mock_datetime):
         """Test year component formatting."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Test various years
         years = [2000, 2020, 2025, 2099, 2100]
@@ -95,10 +95,10 @@ class TestGenTimestampComponents:
             timestamp = gen_timestamp()
             assert timestamp.startswith(str(year))
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_month_component(self, mock_datetime):
         """Test month component with proper padding."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Test all months
         for month in range(1, 13):
@@ -109,10 +109,10 @@ class TestGenTimestampComponents:
             assert month_str == f"{month:02d}"
             assert len(month_str) == 2
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_day_component(self, mock_datetime):
         """Test day component with proper padding."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Test various days
         days = [1, 9, 10, 15, 28, 29, 30, 31]
@@ -125,10 +125,10 @@ class TestGenTimestampComponents:
             assert day_str == f"{day:02d}"
             assert len(day_str) == 2
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_hour_component(self, mock_datetime):
         """Test hour component (0-23) with proper padding."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Test all hours
         for hour in range(24):
@@ -139,10 +139,10 @@ class TestGenTimestampComponents:
             assert hour_str == f"{hour:02d}"
             assert len(hour_str) == 2
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_minute_component(self, mock_datetime):
         """Test minute component with proper padding."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Test various minutes
         minutes = [0, 1, 9, 10, 30, 59]
@@ -159,30 +159,30 @@ class TestGenTimestampComponents:
 class TestGenTimestampEdgeCases:
     """Test edge cases and special dates."""
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_midnight(self, mock_datetime):
         """Test midnight timestamp."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         mock_datetime.now.return_value = datetime(2025, 6, 15, 0, 0, 0)
         timestamp = gen_timestamp()
         
         assert timestamp == "2025-0615-0000"
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_last_minute_of_day(self, mock_datetime):
         """Test 23:59 timestamp."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         mock_datetime.now.return_value = datetime(2025, 6, 15, 23, 59, 59)
         timestamp = gen_timestamp()
         
         assert timestamp == "2025-0615-2359"
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_new_year(self, mock_datetime):
         """Test New Year timestamp."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # New Year midnight
         mock_datetime.now.return_value = datetime(2025, 1, 1, 0, 0, 0)
@@ -194,20 +194,20 @@ class TestGenTimestampEdgeCases:
         timestamp = gen_timestamp()
         assert timestamp == "2024-1231-2359"
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_leap_year_date(self, mock_datetime):
         """Test leap year date (Feb 29)."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # 2024 is a leap year
         mock_datetime.now.return_value = datetime(2024, 2, 29, 12, 30, 0)
         timestamp = gen_timestamp()
         assert timestamp == "2024-0229-1230"
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_month_boundaries(self, mock_datetime):
         """Test first and last days of months."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         test_dates = [
             (2025, 1, 31, "2025-0131"),  # January 31
@@ -230,7 +230,7 @@ class TestGenTimestampUniqueness:
     
     def test_timestamps_within_same_minute(self):
         """Test multiple timestamps within same minute."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Generate multiple timestamps quickly
         timestamps = []
@@ -244,10 +244,10 @@ class TestGenTimestampUniqueness:
             first = timestamps[0]
             assert all(ts == first for ts in timestamps)
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_chronological_ordering(self, mock_datetime):
         """Test timestamps maintain chronological order."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         times = [
             datetime(2025, 1, 1, 0, 0),
@@ -268,7 +268,7 @@ class TestGenTimestampUniqueness:
     
     def test_timestamp_precision_loss(self):
         """Test that seconds are not included (precision loss)."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Generate timestamp
         ts1 = gen_timestamp()
@@ -288,7 +288,7 @@ class TestGenTimestampConcurrency:
     
     def test_thread_safety(self):
         """Test thread-safe timestamp generation."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         results = []
         lock = threading.Lock()
@@ -316,7 +316,7 @@ class TestGenTimestampConcurrency:
     
     def test_multiprocess_generation(self):
         """Test timestamp generation across processes."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         def generate_in_process():
             return gen_timestamp()
@@ -337,7 +337,7 @@ class TestGenTimestampUsagePatterns:
     
     def test_filename_generation(self):
         """Test using timestamp in filenames."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -359,7 +359,7 @@ class TestGenTimestampUsagePatterns:
     
     def test_directory_naming(self):
         """Test using timestamp for directory names."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -379,7 +379,7 @@ class TestGenTimestampUsagePatterns:
     
     def test_sorting_compatibility(self):
         """Test that timestamps sort correctly."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Mock different times
         with patch('scitex.str._gen_timestamp._datetime') as mock_dt:
@@ -403,7 +403,7 @@ class TestGenTimestampUsagePatterns:
     
     def test_database_compatibility(self):
         """Test timestamp format for database storage."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -422,7 +422,7 @@ class TestGenTimestampPerformance:
     
     def test_generation_speed(self):
         """Test timestamp generation is fast."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         import time
         
         start = time.time()
@@ -435,7 +435,7 @@ class TestGenTimestampPerformance:
     
     def test_memory_efficiency(self):
         """Test memory usage is reasonable."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         import sys
         
         # Generate many timestamps
@@ -453,10 +453,10 @@ class TestGenTimestampPerformance:
 class TestGenTimestampInternational:
     """Test international datetime handling."""
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_timezone_agnostic(self, mock_datetime):
         """Test that timestamp generation is timezone agnostic."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Same time in different timezones would give same timestamp
         # (since we use datetime.now() which is local time)
@@ -468,7 +468,7 @@ class TestGenTimestampInternational:
     
     def test_locale_independence(self):
         """Test that timestamp format is locale-independent."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Timestamp should always use same format regardless of locale
         timestamp = gen_timestamp()
@@ -481,10 +481,10 @@ class TestGenTimestampInternational:
 class TestGenTimestampComparison:
     """Test timestamp comparison operations."""
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_timestamp_comparison(self, mock_datetime):
         """Test comparing timestamps."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Earlier time
         mock_datetime.now.return_value = datetime(2025, 6, 15, 10, 30)
@@ -499,10 +499,10 @@ class TestGenTimestampComparison:
         assert ts2 > ts1
         assert ts1 != ts2
     
-    @patch('scitex.reproduce._gen_timestamp._datetime')
+    @patch('scitex.repro._gen_timestamp._datetime')
     def test_timestamp_equality(self, mock_datetime):
         """Test timestamp equality."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Same time
         mock_datetime.now.return_value = datetime(2025, 6, 15, 10, 30)
@@ -519,7 +519,7 @@ class TestGenTimestampDocumentation:
     
     def test_format_as_documented(self):
         """Test format matches documentation."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         timestamp = gen_timestamp()
         
@@ -537,7 +537,7 @@ class TestGenTimestampDocumentation:
     
     def test_example_usage(self):
         """Test documented example usage."""
-        from scitex.reproduce import gen_timestamp
+        from scitex.repro import gen_timestamp
         
         # Example: Creating timestamped filename
         timestamp = gen_timestamp()

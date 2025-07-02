@@ -25,7 +25,7 @@ from sklearn.metrics import (
     matthews_corrcoef as _matthews_corrcoef,
 )
 
-from ..reproduce import fix_seeds as _fix_seeds
+from ..repro import fix_seeds as _fix_seeds
 
 
 class MultiClassificationReporter(object):
@@ -86,13 +86,13 @@ class MultiClassificationReporter(object):
 
     def save(
         self,
-        files_to_reproduce=None,
+        files_to_repro=None,
         meta_dict=None,
         tgt=None,
     ):
         i_tgt = self.tgt2id[tgt]
         self.reporters[i_tgt].save(
-            files_to_reproduce=files_to_reproduce,
+            files_to_repro=files_to_repro,
             meta_dict=meta_dict,
         )
 
@@ -408,7 +408,7 @@ class ClassificationReporter(object):
 #     matthews_corrcoef,
 # )
 
-# from ..reproduce import fix_seeds
+# from ..repro import fix_seeds
 
 
 # class MultiClassificationReporter(object):
@@ -469,13 +469,13 @@ class ClassificationReporter(object):
 
 #     def save(
 #         self,
-#         files_to_reproduce=None,
+#         files_to_repro=None,
 #         meta_dict=None,
 #         tgt=None,
 #     ):
 #         i_tgt = self.tgt2id[tgt]
 #         self.reporters[i_tgt].save(
-#             files_to_reproduce=files_to_reproduce,
+#             files_to_repro=files_to_repro,
 #             meta_dict=meta_dict,
 #         )
 
@@ -857,7 +857,7 @@ class ClassificationReporter(object):
 
 #     def save(
 #         self,
-#         files_to_reproduce=None,
+#         files_to_repro=None,
 #         meta_dict=None,
 #     ):
 #         """
@@ -908,10 +908,10 @@ class ClassificationReporter(object):
 #                 print(f"{k} was not saved")
 #                 print(type(self.folds_dict[k]))
 
-#         if files_to_reproduce is not None:
-#             if isinstance(files_to_reproduce, list):
-#                 files_to_reproduce = [files_to_reproduce]
-#             for f in files_to_reproduce:
+#         if files_to_repro is not None:
+#             if isinstance(files_to_repro, list):
+#                 files_to_repro = [files_to_repro]
+#             for f in files_to_repro:
 #                 scitex.io.save(f, self.sdir)
 
 #     def plot_and_save_conf_mats(
@@ -1107,13 +1107,13 @@ class ClassificationReporter(object):
 #     for ff in fake_fpaths:
 #         scitex.io.touch(ff)
 
-#     files_to_reproduce = [
+#     files_to_repro = [
 #         scitex.gen.get_this_fpath(when_ipython="/dev/null"),
 #         *fake_fpaths,
 #     ]
-#     # reporter.save(files_to_reproduce=files_to_reproduce)
-#     mreporter.save(files_to_reproduce=files_to_reproduce, tgt="Test1")
-#     mreporter.save(files_to_reproduce=files_to_reproduce, tgt="Test2")
+#     # reporter.save(files_to_repro=files_to_repro)
+#     mreporter.save(files_to_repro=files_to_repro, tgt="Test1")
+#     mreporter.save(files_to_repro=files_to_repro, tgt="Test2")
 
 #     confmat_plt_config = dict(
 #         figsize=(8, 8),

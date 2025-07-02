@@ -50,7 +50,7 @@ These modules are more specialized and may benefit from MCP servers:
 10. **linalg** - Linear algebra operations
 11. **os** - OS operations
 12. **parallel** - Parallel processing
-13. **reproduce** - Reproducibility tools
+13. **repro** - Reproducibility tools
 14. **resource** - Resource management
 15. **scholar** - Academic/research tools
 16. **tex** - LaTeX operations

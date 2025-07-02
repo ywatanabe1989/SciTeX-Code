@@ -35,7 +35,7 @@
   drwxr-sr-x  2 ywatanabe punim2354 4.0K Jun 21 13:16 pd
   drwxr-sr-x  7 ywatanabe punim2354 4.0K Jun 21 14:04 plt
   drwxr-sr-x  2 ywatanabe punim2354 4.0K Jun 21 14:04 __pycache__
-  drwxr-sr-x  3 ywatanabe punim2354 4.0K Jun 21 14:04 reproduce
+  drwxr-sr-x  3 ywatanabe punim2354 4.0K Jun 21 14:04 repro
   drwxr-sr-x  4 ywatanabe punim2354 4.0K Jun 21 13:16 resource
   drwxr-sr-x  2 ywatanabe punim2354 4.0K Jun 21 13:16 scholar
   -rwxr-xr-x  1 ywatanabe punim2354 1.4K Jun 13 22:51 _sh.py

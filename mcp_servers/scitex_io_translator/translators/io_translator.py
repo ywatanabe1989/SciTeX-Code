@@ -25,36 +25,39 @@ class IOTranslator:
         self.to_scitex_patterns = [
             # pandas operations
             (r'pd\.read_csv\((.*?)\)', r'stx.io.load(\1)'),
-            (r'\.to_csv\((.*?)\)', r'stx.io.save(self, \1, symlink_from_cwd=True)'),
+            (r'pd\.read_excel\((.*?)\)', r'stx.io.load(\1)'),
+            (r'pd\.read_json\((.*?)\)', r'stx.io.load(\1)'),
+            (r'(\w+)\.to_csv\((.*?)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
+            (r'(\w+)\.to_excel\((.*?)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
+            (r'(\w+)\.to_json\((.*?)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
             
-            # numpy operations
-            (r'np\.save\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1)'),
+            # numpy operations - add symlink_from_cwd=True
+            (r'np\.save\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1, symlink_from_cwd=True)'),
             (r'np\.load\((.*?)\)', r'stx.io.load(\1)'),
-            (r'np\.savez\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1)'),
-            (r'np\.savetxt\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1)'),
+            (r'np\.savez\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1, symlink_from_cwd=True)'),
+            (r'np\.savetxt\((.*?),\s*(.*?)\)', r'stx.io.save(\2, \1, symlink_from_cwd=True)'),
             (r'np\.loadtxt\((.*?)\)', r'stx.io.load(\1)'),
             
-            # matplotlib operations
+            # matplotlib operations - convert to stx.plt and add proper save
+            (r'plt\.subplots\((.*?)\)', r'stx.plt.subplots(\1)'),
             (r'plt\.savefig\((.*?)\)', r'stx.io.save(fig, \1, symlink_from_cwd=True)'),
             (r'fig\.savefig\((.*?)\)', r'stx.io.save(fig, \1, symlink_from_cwd=True)'),
             
-            # pickle operations
-            (r'pickle\.dump\((.*?),\s*open\((.*?),\s*["\']wb["\']\)\)', r'stx.io.save(\1, \2)'),
+            # pickle operations - add symlink_from_cwd=True
+            (r'pickle\.dump\((.*?),\s*open\((.*?),\s*["\']wb["\']\)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
             (r'pickle\.load\(open\((.*?),\s*["\']rb["\']\)\)', r'stx.io.load(\1)'),
             
-            # json operations
-            (r'json\.dump\((.*?),\s*open\((.*?),\s*["\']w["\']\)\)', r'stx.io.save(\1, \2)'),
+            # json operations - add symlink_from_cwd=True
+            (r'json\.dump\((.*?),\s*open\((.*?),\s*["\']w["\']\)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
             (r'json\.load\(open\((.*?)\)\)', r'stx.io.load(\1)'),
             
-            # joblib operations
-            (r'joblib\.dump\((.*?),\s*(.*?)\)', r'stx.io.save(\1, \2)'),
+            # joblib operations - add symlink_from_cwd=True
+            (r'joblib\.dump\((.*?),\s*(.*?)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
             (r'joblib\.load\((.*?)\)', r'stx.io.load(\1)'),
             
-            # imports
-            (r'import pandas as pd', r'import scitex as stx'),
-            (r'import numpy as np', r'import scitex as stx'),
-            (r'import matplotlib\.pyplot as plt', r'import scitex as stx'),
-            (r'from pathlib import Path', r'import scitex as stx'),
+            # YAML operations
+            (r'yaml\.safe_load\(open\((.*?)\)\)', r'stx.io.load(\1)'),
+            (r'yaml\.dump\((.*?),\s*open\((.*?),\s*["\']w["\']\)\)', r'stx.io.save(\1, \2, symlink_from_cwd=True)'),
         ]
         
         self.from_scitex_patterns = [
@@ -91,7 +94,9 @@ class IOTranslator:
         
         # Handle special cases
         result = self._handle_context_managers(result)
+        result = self._handle_matplotlib_patterns(result)
         result = self._consolidate_imports(result)
+        result = self._organize_output_paths(result)
         
         return result
     
@@ -136,13 +141,103 @@ class IOTranslator:
         
         return re.sub(context_pattern, replace_context, code, flags=re.MULTILINE)
     
+    def _handle_matplotlib_patterns(self, code: str) -> str:
+        """Handle matplotlib-specific patterns for SciTeX."""
+        result = code
+        
+        # Convert individual set_xlabel, set_ylabel, set_title to set_xyt
+        xlabel_pattern = r'(\w+)\.set_xlabel\((.*?)\)'
+        ylabel_pattern = r'(\w+)\.set_ylabel\((.*?)\)'
+        title_pattern = r'(\w+)\.set_title\((.*?)\)'
+        
+        # Track axes and their labels
+        axes_labels = {}
+        
+        # Find xlabel calls
+        for match in re.finditer(xlabel_pattern, result):
+            ax_name, xlabel = match.groups()
+            if ax_name not in axes_labels:
+                axes_labels[ax_name] = {'xlabel': None, 'ylabel': None, 'title': None}
+            axes_labels[ax_name]['xlabel'] = xlabel
+        
+        # Find ylabel calls  
+        for match in re.finditer(ylabel_pattern, result):
+            ax_name, ylabel = match.groups()
+            if ax_name not in axes_labels:
+                axes_labels[ax_name] = {'xlabel': None, 'ylabel': None, 'title': None}
+            axes_labels[ax_name]['ylabel'] = ylabel
+        
+        # Find title calls
+        for match in re.finditer(title_pattern, result):
+            ax_name, title = match.groups()
+            if ax_name not in axes_labels:
+                axes_labels[ax_name] = {'xlabel': None, 'ylabel': None, 'title': None}
+            axes_labels[ax_name]['title'] = title
+        
+        # Replace with set_xyt where possible
+        for ax_name, labels in axes_labels.items():
+            if labels['xlabel'] and labels['ylabel'] and labels['title']:
+                # Replace all three with one set_xyt call
+                set_xyt = f"{ax_name}.set_xyt({labels['xlabel']}, {labels['ylabel']}, {labels['title']})"
+                
+                # Remove individual calls
+                result = re.sub(rf'{ax_name}\.set_xlabel\({re.escape(labels["xlabel"])}\)', '', result)
+                result = re.sub(rf'{ax_name}\.set_ylabel\({re.escape(labels["ylabel"])}\)', '', result)
+                result = re.sub(rf'{ax_name}\.set_title\({re.escape(labels["title"])}\)', set_xyt, result)
+        
+        return result
+    
+    def _organize_output_paths(self, code: str) -> str:
+        """Organize output paths by file type according to SciTeX conventions."""
+        # Map of extensions to preferred directories based on SciTeX guidelines
+        extension_dirs = [
+            (r'(\.png|\.jpg|\.jpeg|\.pdf|\.svg)', 'figures'),
+            (r'(\.csv|\.txt|\.tsv)', 'data'), 
+            (r'(\.pkl|\.pickle|\.joblib)', 'cache'),
+            (r'(\.npy|\.npz)', 'data'),
+            (r'(\.json|\.yaml|\.yml)', 'config'),
+            (r'(\.h5|\.hdf5)', 'data'),
+            (r'(\.mat)', 'data'),
+        ]
+        
+        result = code
+        
+        for ext_pattern, preferred_dir in extension_dirs:
+            # Find save operations with these extensions
+            pattern = rf'(stx\.io\.save\([^,]+,\s*["\'])(?!\.\/)([^"\']*{ext_pattern}["\'])'
+            replacement = rf'\1./{preferred_dir}/\2'
+            result = re.sub(pattern, replacement, result)
+        
+        return result
+    
     def _consolidate_imports(self, code: str) -> str:
-        """Consolidate multiple stx imports into one."""
+        """Consolidate imports and add single scitex import."""
         lines = code.split('\n')
         new_lines = []
         has_stx_import = False
+        removed_imports = set()
+        
+        # Track which imports to remove
+        imports_to_remove = [
+            'import pandas as pd',
+            'import numpy as np', 
+            'import matplotlib.pyplot as plt',
+            'from pathlib import Path',
+            'import pickle',
+            'import json',
+            'import yaml',
+            'import joblib'
+        ]
         
         for line in lines:
+            stripped = line.strip()
+            
+            # Remove old imports
+            if any(imp in stripped for imp in imports_to_remove):
+                removed_imports.add(stripped)
+                continue
+            
+            # Add scitex import once
             if 'import scitex as stx' in line and not has_stx_import:
                 new_lines.append(line)
                 has_stx_import = True
@@ -151,6 +246,16 @@ class IOTranslator:
                 continue
             else:
                 new_lines.append(line)
+        
+        # If we removed imports but don't have stx import, add it
+        if removed_imports and not has_stx_import:
+            # Find where to insert the import
+            insert_pos = 0
+            for i, line in enumerate(new_lines):
+                if line.strip() and not line.strip().startswith('#'):
+                    insert_pos = i
+                    break
+            new_lines.insert(insert_pos, 'import scitex as stx')
         
         return '\n'.join(new_lines)
     

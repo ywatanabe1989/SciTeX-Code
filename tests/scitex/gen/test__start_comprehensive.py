@@ -298,7 +298,7 @@ class TestUtilityFunctions:
 
     def test_gen_ID(self):
         """Test ID generation."""
-        from scitex.reproduce import gen_ID
+        from scitex.repro import gen_ID
 
         # Test default format (timestamp + N random chars)
         id1 = gen_ID(N=4)

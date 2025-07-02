@@ -317,7 +317,7 @@ class TestClassificationReporterModule(unittest.TestCase):
         # Check for model saving support
         save_patterns = [
             'scitex.io.save(',
-            'files_to_reproduce',
+            'files_to_repro',
             'meta_dict'
         ]
         

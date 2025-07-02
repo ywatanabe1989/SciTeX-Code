@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-01-15 10:43:51
+!-- Timestamp: 2025-07-02 07:37:27
 !-- Author: ywatanabe
-!-- File: ./src/scitex/io/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/README.md
 !-- --- -->
 
 # SciTeX IO Module
@@ -200,3 +200,5 @@ scitex.io.save(fig, 'bar_chart.png')
 
 ## Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp
+
+<!-- EOF -->

@@ -23,7 +23,7 @@ Yes, we have covered all the **primary** SciTeX modules that are commonly used i
 
 ## Modules Not Covered
 The following are specialized/utility modules that represent <20% of typical usage:
-- ai, context, db, decorators, dev, dict, dt, etc, gists, linalg, os, parallel, reproduce, resource, scholar, tex, types, web
+- ai, context, db, decorators, dev, dict, dt, etc, gists, linalg, os, parallel, repro, resource, scholar, tex, types, web
 
 ## Why Current Coverage is Sufficient
 1. **80/20 Rule**: Covers 80%+ of use cases with core modules

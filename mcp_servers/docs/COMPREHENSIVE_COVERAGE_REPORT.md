@@ -5,7 +5,7 @@
 **Current Coverage: 12 MCP servers covering ~44% of modules (12/27 main modules)**
 
 - **Covered modules**: io, plt, stats, dsp, pd, torch, nn (via torch), gen (via framework), path (via config), str (via analyzer), utils (distributed across servers)
-- **Uncovered modules**: ai, context, db, decorators, dev, dict, dt, etc, gists, linalg, os, parallel, reproduce, resource, scholar, tex, types, web
+- **Uncovered modules**: ai, context, db, decorators, dev, dict, dt, etc, gists, linalg, os, parallel, repro, resource, scholar, tex, types, web
 
 ## Detailed Coverage Analysis
 
@@ -82,7 +82,7 @@
    - **Usage**: Time series, scheduling
    - **Priority**: MEDIUM - Common in data analysis
 
-8. **reproduce** - Reproducibility tools
+8. **repro** - Reproducibility tools
    - **Usage**: Random seeds, experiment tracking
    - **Priority**: MEDIUM - Research best practices
 
@@ -159,7 +159,7 @@
 ### Future Consideration (If needed)
 4. **scitex-web** - Web operations (data acquisition)
 5. **scitex-linalg** - Linear algebra (if distinct from NumPy)
-6. **scitex-reproduce** - Reproducibility tools
+6. **scitex-repro** - Reproducibility tools
 
 ### Not Recommended for MCP Implementation
 - Simple utility modules (dict, etc, types)

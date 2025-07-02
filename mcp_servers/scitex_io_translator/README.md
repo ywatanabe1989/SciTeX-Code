@@ -1,68 +1,102 @@
-# SciTeX IO Translator MCP Server
+# SciTeX IO Translator Module
 
-An MCP (Model Context Protocol) server that translates between standard Python IO operations and SciTeX format, helping researchers adopt SciTeX conventions gradually.
+The IO Translator module provides bidirectional translation between standard Python file I/O operations and SciTeX format for scientific computing reproducibility.
 
-## Features
+## Core Translation Features
 
-- **Bidirectional Translation**: Convert standard Python to SciTeX and back
-- **IO Pattern Recognition**: Automatically detects pandas, numpy, matplotlib operations
-- **Path Management**: Converts absolute paths to relative, organizes outputs
-- **Validation**: Checks code compliance with SciTeX guidelines
-- **Config Extraction**: Optionally extracts hardcoded values to config files
+The IO Translator automatically converts file operations while maintaining SciTeX conventions for reproducibility and path management.
 
-## Installation
+### Supported File Operations
 
-```bash
-cd mcp_servers/scitex_io_translator
-pip install -e .
-```
+| Standard Python | SciTeX Equivalent | Features |
+|-----------------|-------------------|----------|
+| `pd.read_csv()` | `stx.io.load()` | Auto-detection, relative paths |
+| `df.to_csv()` | `stx.io.save()` | Organized output directories |
+| `np.save()` | `stx.io.save()` | Symlink creation, data tracking |
+| `plt.savefig()` | `stx.io.save(fig)` | Figure management with symlinks |
+| `pickle.load()` | `stx.io.load()` | Format auto-detection |
+| `json.dump()` | `stx.io.save()` | Unified save interface |
 
-## Usage
-
-### Starting the Server
-
-```bash
-scitex-io-translator
-```
-
-Or with Python:
+### Example Usage
 
 ```python
-python -m scitex_io_translator.server
+# Standard Python → SciTeX
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Original code
+data = pd.read_csv('/absolute/path/data.csv')
+results = np.array([1, 2, 3])
+np.save('/absolute/path/results.npy', results)
+
+fig, ax = plt.subplots()
+ax.plot(data['x'], data['y'])
+plt.savefig('/absolute/path/plot.png')
+
+# ↓ Translates to ↓
+
+import scitex as stx
+
+def main(args):
+    data = stx.io.load('./data.csv')
+    results = np.array([1, 2, 3])
+    stx.io.save(results, './results.npy')
+    
+    fig, ax = stx.plt.subplots()
+    ax.plot(data['x'], data['y'])
+    stx.io.save(fig, './figures/plot.png', symlink_from_cwd=True)
+    return 0
 ```
 
-### Available Tools
+## Path Management
 
-#### 1. translate_to_scitex
+The translator automatically handles path conversions following SciTeX conventions:
+
+- **Absolute → Relative**: Converts absolute paths to script-relative paths
+- **Config Extraction**: Moves hardcoded paths to `./config/PATH.yaml`
+- **Output Organization**: Ensures proper directory structure (`./figures/`, `./data/`)
+- **Symlink Creation**: Adds `symlink_from_cwd=True` for plots and results
+
+### Smart Path Detection
+
+```python
+# Detects and converts various path patterns:
+'/home/user/data.csv' → './data.csv'
+'../shared/file.json' → './file.json' (with config entry)
+'C:\\Windows\\data.txt' → './data.txt' (cross-platform)
+```
+
+## MCP Server Tools
+
+### translate_to_scitex
 Converts standard Python code to SciTeX format.
 
 ```json
 {
   "tool": "translate_to_scitex",
   "arguments": {
-    "source_code": "import pandas as pd\ndf = pd.read_csv('data.csv')\ndf.to_csv('output.csv')",
-    "target_modules": ["io"],
+    "source_code": "import pandas as pd\ndf = pd.read_csv('data.csv')",
     "preserve_comments": true,
     "add_config_support": false
   }
 }
 ```
 
-#### 2. translate_from_scitex
-Converts SciTeX code back to standard Python.
+### translate_from_scitex
+Converts SciTeX code back to standard Python for sharing.
 
 ```json
 {
   "tool": "translate_from_scitex",
   "arguments": {
-    "scitex_code": "import scitex as stx\ndf = stx.io.load('./data.csv')\nstx.io.save(df, './output.csv')",
-    "target_style": "pandas",
-    "include_dependencies": true
+    "scitex_code": "import scitex as stx\ndf = stx.io.load('./data.csv')",
+    "target_style": "pandas"
   }
 }
 ```
 
-#### 3. validate_scitex_compliance
+### validate_scitex_compliance
 Validates code against SciTeX guidelines.
 
 ```json
@@ -75,133 +109,7 @@ Validates code against SciTeX guidelines.
 }
 ```
 
-#### 4. extract_io_patterns
-Analyzes code to extract IO patterns.
+## Contact
+Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
-```json
-{
-  "tool": "extract_io_patterns",
-  "arguments": {
-    "code": "df = pd.read_csv('data.csv')\nplt.savefig('plot.png')"
-  }
-}
-```
-
-## Translation Examples
-
-### Standard Python → SciTeX
-
-**Input:**
-```python
-import pandas as pd
-import matplotlib.pyplot as plt
-
-df = pd.read_csv('input.csv')
-fig, ax = plt.subplots()
-ax.plot(df['x'], df['y'])
-plt.savefig('output.png')
-```
-
-**Output:**
-```python
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Timestamp: "2025-07-02 12:00:00 (ywatanabe)"
-# File: ./script.py
-# ----------------------------------------
-import os
-__FILE__ = "./script.py"
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
-
-import scitex as stx
-
-def main():
-    """Main function."""
-    df = stx.io.load('./input.csv')
-    fig, ax = stx.plt.subplots()
-    ax.plot(df['x'], df['y'])
-    stx.io.save(fig, './figures/output.png', symlink_from_cwd=True)
-    return 0
-
-def run_main():
-    """Run main function with proper setup."""
-    import sys
-    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.gen.start(
-        sys, plt, verbose=True
-    )
-    main(CONFIG)
-    stx.gen.close(CONFIG, verbose=True)
-
-if __name__ == "__main__":
-    run_main()
-```
-
-### SciTeX → Standard Python
-
-**Input:**
-```python
-import scitex as stx
-data = stx.io.load('./data.npy')
-stx.io.save(data * 2, './output.npy')
-```
-
-**Output:**
-```python
-import numpy as np
-import os
-
-# Create output directories
-os.makedirs(os.path.dirname("./output.npy"), exist_ok=True)
-
-data = np.load('./data.npy')
-np.save('./output.npy', data * 2)
-```
-
-## Supported Translations
-
-### IO Operations
-- `pd.read_csv()` → `stx.io.load()`
-- `df.to_csv()` → `stx.io.save()`
-- `np.load()` / `np.save()` → `stx.io.load()` / `stx.io.save()`
-- `plt.savefig()` → `stx.io.save()`
-- `pickle.load()` / `pickle.dump()` → `stx.io.load()` / `stx.io.save()`
-- `json.load()` / `json.dump()` → `stx.io.load()` / `stx.io.save()`
-
-### Path Conventions
-- Absolute paths → Relative paths with `./`
-- Unorganized outputs → Organized by type (`./figures/`, `./data/`, etc.)
-- Hardcoded paths → Config file references (optional)
-
-## Integration with Claude Desktop
-
-Add to your Claude Desktop configuration:
-
-```json
-{
-  "mcpServers": {
-    "scitex-io-translator": {
-      "command": "python",
-      "args": ["-m", "scitex_io_translator.server"],
-      "cwd": "/path/to/mcp_servers/scitex_io_translator"
-    }
-  }
-}
-```
-
-## Development
-
-### Running Tests
-```bash
-python -m pytest tests/
-```
-
-### Adding New Translation Patterns
-
-1. Edit `translators/io_translator.py` to add patterns
-2. Update validation rules in `translators/validation_engine.py`
-3. Add tests for new patterns
-
-## License
-
-MIT License - See LICENSE file for details.
+<!-- EOF -->

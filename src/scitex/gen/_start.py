@@ -31,8 +31,8 @@ from ..io import flush
 from ..io._load import load
 from ..io._load_configs import load_configs
 from ..plt.utils._configure_mpl import configure_mpl
-from ..reproduce._fix_seeds import fix_seeds
-from ..reproduce._gen_ID import gen_ID
+from ..repro._fix_seeds import fix_seeds
+from ..repro._gen_ID import gen_ID
 from ..str._clean_path import clean_path
 from ..str._printc import printc as _printc
 

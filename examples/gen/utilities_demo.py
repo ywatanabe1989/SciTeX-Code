@@ -68,18 +68,18 @@ def demonstrate_utilities():
     print("-" * 30)
     
     # Fix random seeds
-    scitex.reproduce.fix_seeds(SEED)
+    scitex.repro.fix_seeds(SEED)
     print(f"Fixed random seeds to: {SEED}")
     
     # Test reproducibility
     arr1 = np.random.randn(5)
-    scitex.reproduce.fix_seeds(SEED)
+    scitex.repro.fix_seeds(SEED)
     arr2 = np.random.randn(5)
     print(f"Arrays equal after seed reset: {np.array_equal(arr1, arr2)}")
     
     # Generate unique IDs
-    unique_id = scitex.reproduce.gen_ID()
-    timestamp = scitex.reproduce.gen_timestamp()
+    unique_id = scitex.repro.gen_ID()
+    timestamp = scitex.repro.gen_timestamp()
     print(f"Unique ID: {unique_id}")
     print(f"Timestamp: {timestamp}")
     
