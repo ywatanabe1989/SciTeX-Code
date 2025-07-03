@@ -1,220 +1,162 @@
-# SciTeX Examples
+# SciTeX Example Notebooks
 
-This directory contains practical examples demonstrating how to use the scitex framework effectively.
+This directory contains comprehensive tutorials and examples for the SciTeX scientific computing library.
 
-## Structure
+## 🚀 Quick Start
 
-The examples are organized to mirror the scitex module structure:
+**New to SciTeX?** Start here:
+- [`01_getting_started_with_scitex.ipynb`](01_getting_started_with_scitex.ipynb) - Complete introduction to SciTeX
+- [`scitex_quickstart.ipynb`](scitex_quickstart.ipynb) - Quick overview of key features
 
-```
-examples/
-├── scitex/
-│   ├── io/           # File I/O examples
-│   ├── gen/          # Environment setup examples
-│   ├── plt/          # Enhanced plotting examples
-│   ├── pd/           # Pandas utilities examples
-│   ├── dsp/          # Digital signal processing examples
-│   ├── stats/        # Statistical analysis examples
-│   ├── ai/           # AI/ML examples
-│   ├── nn/           # Neural network examples
-│   ├── db/           # Database examples
-│   └── workflows/    # Complete workflow examples
-└── README.md         # This file
-```
+## 📚 Comprehensive Module Tutorials
 
-## Running Examples
+### **Core Data & I/O**
+- [`scitex_io_tutorial.ipynb`](scitex_io_tutorial.ipynb) - **🎯 RECOMMENDED** - Complete I/O operations guide
+  - Universal load/save functions for 20+ formats
+  - Configuration management and caching
+  - HDF5 exploration and batch processing
+  - *Supersedes: 01_scitex_io.ipynb, 02_scitex_io_advanced.ipynb, 15_scitex_io_operations.ipynb*
 
-All examples can be run directly from the project root:
+### **Visualization & Plotting**
+- [`scitex_plt_tutorial.ipynb`](scitex_plt_tutorial.ipynb) - **🎯 RECOMMENDED** - Publication-ready plotting
+  - Enhanced matplotlib functionality
+  - Statistical visualizations  
+  - Multi-panel figures and scientific captions
+  - *Supersedes: 03_scitex_plotting.ipynb, 03_scitex_plt.ipynb, 16_scitex_plt_plotting_utilities.ipynb*
 
-```bash
-# Basic file operations
-python examples/scitex/io/basic_file_operations.py
+### **Statistical Analysis**
+- [`scitex_stats_tutorial.ipynb`](scitex_stats_tutorial.ipynb) - **🎯 RECOMMENDED** - Comprehensive statistics
+  - Descriptive statistics with PyTorch support
+  - Correlation analysis and hypothesis testing
+  - Multiple comparison corrections
+  - Publication-ready statistical reporting
+  - *Supersedes: 02_scitex_stats.ipynb, 04_scitex_statistics.ipynb, 05_scitex_stats_analysis.ipynb*
 
-# Complete experiment workflow
-python examples/scitex/gen/experiment_workflow.py
+### **AI & Machine Learning**
+- [`scitex_ai_tutorial.ipynb`](scitex_ai_tutorial.ipynb) - **🎯 RECOMMENDED** - AI/ML with SciTeX
+  - Generative AI integration (OpenAI, Anthropic, Google, etc.)
+  - Machine learning utilities and reporting
+  - Deep learning training tools
+  - Clustering and dimensionality reduction
+  - *Supersedes: 06_scitex_ai.ipynb, 06_scitex_ai_machine_learning.ipynb, 06_scitex_ai_v02.ipynb*
 
-# Enhanced plotting capabilities
-python examples/scitex/plt/enhanced_plotting.py
+### **Scientific Literature Management**  
+- [`16_scitex_scholar.ipynb`](16_scitex_scholar.ipynb) - **🎯 FEATURED** - Research paper management
+  - Literature search and metadata enrichment
+  - BibTeX generation and bibliography management
+  - PDF downloads and local indexing
+  - *This demonstrates the new simplified Scholar API*
 
-# Pandas DataFrame operations
-python examples/scitex/pd/dataframe_operations.py
+## 🔧 Specialized Module Examples
 
-# Digital signal processing
-python examples/scitex/dsp/signal_processing.py
+### **Data Processing**
+- [`10_scitex_pd.ipynb`](10_scitex_pd.ipynb) - Pandas integration
+- [`04_scitex_dsp.ipynb`](04_scitex_dsp.ipynb) - Digital signal processing
+- [`04_scitex_dsp_signal_processing.ipynb`](04_scitex_dsp_signal_processing.ipynb) - Advanced DSP
 
-# Statistical analysis
-python examples/scitex/stats/statistical_analysis.py
+### **Deep Learning & Neural Networks**
+- [`07_scitex_nn.ipynb`](07_scitex_nn.ipynb) - Neural network utilities  
+- [`14_scitex_nn_neural_networks.ipynb`](14_scitex_nn_neural_networks.ipynb) - Advanced NN examples
+- [`08_scitex_torch.ipynb`](08_scitex_torch.ipynb) - PyTorch integration
 
-# Machine learning workflow
-python examples/scitex/ai/machine_learning_workflow.py
+### **Linear Algebra & Math**
+- [`06_scitex_linalg.ipynb`](06_scitex_linalg.ipynb) - Linear algebra operations
+- [`13_scitex_linalg_linear_algebra.ipynb`](13_scitex_linalg_linear_algebra.ipynb) - Advanced linear algebra
 
-# Neural network layers
-python examples/scitex/nn/neural_network_layers.py
+### **System & Utilities**
+- [`07_scitex_os.ipynb`](07_scitex_os.ipynb) - Operating system utilities
+- [`13_scitex_path.ipynb`](13_scitex_path.ipynb) - Path management
+- [`10_scitex_path_management.ipynb`](10_scitex_path_management.ipynb) - Advanced path operations
+- [`09_scitex_str.ipynb`](09_scitex_str.ipynb) - String utilities
+- [`12_scitex_str_string_utilities.ipynb`](12_scitex_str_string_utilities.ipynb) - Advanced string operations
 
-# Database operations
-python examples/scitex/db/database_operations.py
+### **Development Tools**
+- [`11_scitex_decorators.ipynb`](11_scitex_decorators.ipynb) - Decorator utilities
+- [`12_scitex_decorators.ipynb`](12_scitex_decorators.ipynb) - Advanced decorators
+- [`11_scitex_repro.ipynb`](11_scitex_repro.ipynb) - Reproducibility tools
+- [`08_scitex_parallel.ipynb`](08_scitex_parallel.ipynb) - Parallel processing
 
-# Complete scientific pipeline
-python examples/scitex/workflows/scientific_data_pipeline.py
-```
+### **Databases & Web**
+- [`14_scitex_db.ipynb`](14_scitex_db.ipynb) - Database operations
+- [`09_scitex_db_database_operations.ipynb`](09_scitex_db_database_operations.ipynb) - Advanced database examples
+- [`11_scitex_web.ipynb`](11_scitex_web.ipynb) - Web utilities
+- [`09_scitex_context.ipynb`](09_scitex_context.ipynb) - Context management
 
-## Example Descriptions
+### **Document & Text Processing**
+- [`10_scitex_tex.ipynb`](10_scitex_tex.ipynb) - LaTeX integration
+- [`05_scitex_gen.ipynb`](05_scitex_gen.ipynb) - General utilities
+- [`07_scitex_gen_utilities.ipynb`](07_scitex_gen_utilities.ipynb) - Advanced generation tools
 
-### 1. `io/basic_file_operations.py`
-Demonstrates fundamental file I/O operations:
-- Loading and saving various file formats (numpy, pandas, json, yaml, text)
-- Automatic directory creation
-- Working with compressed data
-- Handling collections and nested structures
+## 📖 Learning Paths
 
-### 2. `gen/experiment_workflow.py`
-Shows a complete scientific experiment workflow:
-- Setting up reproducible environment with scitex.gen.start
-- Automatic logging and output management
-- Random seed control for reproducibility
-- Generating synthetic data and analysis
-- Creating visualizations and reports
-- Proper cleanup with scitex.gen.close
+### **For Data Scientists**
+1. Getting Started → I/O Tutorial → Stats Tutorial → Plotting Tutorial
+2. AI Tutorial → Scholar Module (for literature review)
 
-### 3. `plt/enhanced_plotting.py`
-Illustrates advanced plotting features:
-- Using scitex.plt.subplots for automatic data tracking
-- Multi-panel figures with different plot types
-- Statistical visualizations with error bars
-- Custom styling and formatting
-- Automatic CSV export of plotted data
+### **For Machine Learning Engineers**  
+1. Getting Started → AI Tutorial → NN Examples → PyTorch Integration
+2. Stats Tutorial (for model validation)
 
-### 4. `pd/dataframe_operations.py`
-Demonstrates pandas utility functions:
-- DataFrame creation and type conversion with force_df
-- Column operations (melt, merge, find)
-- Advanced filtering and slicing with conditions
-- Type conversions and data cleaning
-- Coordinate transformations (xyz format)
-- Missing value handling and interpolation
+### **For Researchers**
+1. Getting Started → Scholar Module → I/O Tutorial → Stats Tutorial
+2. Plotting Tutorial (for publication figures)
 
-### 5. `dsp/signal_processing.py`
-Shows digital signal processing capabilities:
-- Signal filtering (bandpass, lowpass, highpass)
-- Power Spectral Density (PSD) analysis
-- Time-frequency analysis with wavelets
-- Hilbert transform for phase and amplitude
-- Phase-Amplitude Coupling (PAC) analysis
-- Multi-channel signal processing
-- Signal resampling and normalization
+### **For Scientific Computing**
+1. Getting Started → I/O Tutorial → Linear Algebra → DSP Examples
+2. Parallel Processing → Reproducibility Tools
 
-### 6. `stats/statistical_analysis.py`
-Covers statistical analysis workflows:
-- Descriptive statistics with NaN handling
-- Correlation analysis (Pearson, Spearman, partial)
-- Statistical tests (Brunner-Munzel, t-test)
-- Multiple comparison corrections (Bonferroni, FDR)
-- P-value formatting and visualization
-- Outlier detection (Smirnov-Grubbs)
-- Complete analysis pipeline example
+## 🎯 Recommended Priority Order
 
-### 7. `ai/machine_learning_workflow.py`
-Demonstrates machine learning capabilities:
-- Setting up reproducible ML experiments
-- Training multiple classifiers (RF, XGBoost, SVM, LR)
-- Model evaluation and comparison
-- Classification reporting with detailed metrics
-- Feature importance analysis
-- Confusion matrix visualization
-- Comprehensive ML report generation
+**High Priority** (Comprehensive & Up-to-date):
+- ✅ `scitex_io_tutorial.ipynb` - Complete I/O guide
+- ✅ `scitex_plt_tutorial.ipynb` - Complete plotting guide  
+- ✅ `scitex_stats_tutorial.ipynb` - Complete statistics guide
+- ✅ `scitex_ai_tutorial.ipynb` - Complete AI/ML guide
+- ✅ `16_scitex_scholar.ipynb` - Scholar module (new API)
 
-### 8. `nn/neural_network_layers.py`
-Demonstrates SciTeX neural network layers:
-- Signal processing layers (Filters, Hilbert, PSD, Wavelet)
-- Data augmentation layers (ChannelGainChanger, FreqGainChanger, SwapChannels)
-- Analysis layers (PAC, ModulationIndex)
-- Complete model integration with PyTorch
-- Custom layer parameters and learning
-- Visualization of layer outputs
-- Multi-channel signal processing in neural networks
+**Medium Priority** (Specialized functionality):
+- Neural networks, databases, system utilities
 
-### 9. `db/database_operations.py`
-Shows comprehensive database operations:
-- SQLite database creation and connection
-- Table creation with foreign keys
-- CRUD operations (Create, Read, Update, Delete)
-- Efficient batch operations
-- NumPy array storage as BLOBs with metadata
-- Transaction management for data integrity
-- CSV import/export functionality
-- Database maintenance (backup, optimization)
-- Complex queries with joins
-- Index creation for performance
+**Lower Priority** (Legacy or superseded):
+- Older numbered examples that are covered by comprehensive tutorials
 
-### 10. `workflows/scientific_data_pipeline.py`
-Shows a complete end-to-end scientific workflow:
-- Multi-module integration (gen, io, pd, dsp, stats, plt)
-- Synthetic physiological data generation
-- Signal preprocessing and filtering
-- Feature extraction from time-series data
-- Statistical analysis with multiple comparisons
-- Time-frequency analysis
-- Automated report generation
-- Publication-ready visualizations
+## 🔄 Organization Status
 
-## Key Features Demonstrated
+**✅ Recently Updated:**
+- Comprehensive tutorial series created for core modules
+- New tutorials include error handling, fallbacks, and integration examples
+- Publication-ready output and professional formatting
 
-1. **Automatic Output Management**: All examples save outputs to organized directories
-2. **Data Tracking**: Plots automatically export their data as CSV files
-3. **Reproducibility**: Examples show how to set random seeds and track experiments
-4. **Error Handling**: Examples include proper try-finally blocks where appropriate
-5. **Documentation**: Each example is thoroughly commented
+**🔧 Consolidation Needed:**
+- Multiple overlapping examples for same modules need cleanup
+- Consistent naming and organization in progress
 
-## Output Structure
+## 📝 Contributing
 
-After running the examples, you'll find outputs organized as:
+When adding new examples:
+1. Follow the comprehensive tutorial format
+2. Include error handling and fallbacks
+3. Add integration examples with other modules
+4. Use consistent naming: `scitex_module_tutorial.ipynb`
+5. Update this README with the new example
 
-```
-output/
-├── arrays/           # NumPy arrays and compressed data
-├── dataframes/       # CSV files from pandas DataFrames
-├── configs/          # JSON and YAML configuration files
-├── reports/          # Text and markdown reports
-├── plots/            # PNG images AND their corresponding CSV data
-└── collections/      # Combined datasets
-```
+## 🚀 Quick Module Reference
 
-## Tips for Using Examples
+| Module | Tutorial | Legacy Examples | Description |
+|--------|----------|----------------|-------------|
+| **io** | `scitex_io_tutorial.ipynb` | `01_`, `02_`, `15_` | Universal I/O operations |
+| **plt** | `scitex_plt_tutorial.ipynb` | `03_` (×2), `16_` | Publication plotting |
+| **stats** | `scitex_stats_tutorial.ipynb` | `02_`, `04_`, `05_` | Statistical analysis |
+| **ai** | `scitex_ai_tutorial.ipynb` | `06_` (×3) | AI & machine learning |
+| **scholar** | `16_scitex_scholar.ipynb` | - | Literature management |
+| **nn** | `07_`, `14_` | - | Neural networks |
+| **torch** | `08_scitex_torch.ipynb` | - | PyTorch integration |
+| **pd** | `10_scitex_pd.ipynb` | `08_` | Pandas utilities |
+| **dsp** | `04_`, `05_` | - | Signal processing |
+| **linalg** | `06_`, `13_` | - | Linear algebra |
+| **db** | `14_`, `09_` | - | Database operations |
 
-1. **Start Simple**: Begin with `basic_file_operations.py` to understand core concepts
-2. **Check Outputs**: Always examine the generated files to understand what scitex creates
-3. **Read Comments**: Examples include detailed comments explaining each step
-4. **Modify and Experiment**: Feel free to modify examples for your needs
-5. **Use as Templates**: These examples can serve as templates for your own scripts
+---
 
-## Integration with Your Projects
-
-To use these patterns in your own work:
-
-```python
-# Minimal usage
-import scitex
-data = scitex.io.load("your_data.csv")
-scitex.io.save(results, "output.json")
-
-# Full workflow
-import sys
-import matplotlib.pyplot as plt
-import scitex
-
-CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
-# Your experiment code here
-scitex.gen.close(CONFIG)
-```
-
-## Next Steps
-
-After exploring these examples:
-1. Read the full documentation in `docs/scitex_guidelines/`
-2. Check out the module-specific guides
-3. Explore the test files for more usage patterns
-4. Start building your own projects with scitex!
-
-## Contributing
-
-If you create useful examples, consider contributing them back to the project!
+*Last updated: 2025-07-03*  
+*SciTeX comprehensive tutorial series created*
