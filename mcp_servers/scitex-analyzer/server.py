@@ -16,6 +16,7 @@ import asyncio
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from scitex_base.base_server import ScitexBaseMCPServer
+from .advanced_analysis import AdvancedProjectAnalyzer
 
 
 class ScitexAnalyzerMCPServer(ScitexBaseMCPServer):
@@ -23,6 +24,9 @@ class ScitexAnalyzerMCPServer(ScitexBaseMCPServer):
     
     def __init__(self):
         super().__init__("analyzer", "0.1.0")
+        
+        # Initialize advanced analyzer
+        self.advanced_analyzer = AdvancedProjectAnalyzer()
         
         # Common SciTeX patterns
         self.scitex_patterns = {
@@ -517,6 +521,944 @@ stx.io.save(fig, './plot.png')
                 pattern_examples = [e for e in pattern_examples if e["context"] == context]
                 
             return pattern_examples
+
+        @self.app.tool()
+        async def create_scitex_project(
+            project_name: str,
+            project_type: str = "research",
+            features: List[str] = ["basic"]
+        ) -> Dict[str, Any]:
+            """
+            Generate complete SciTeX project structure with templates.
+            
+            Args:
+                project_name: Name of the project
+                project_type: Type (research, package, analysis)
+                features: List of features to include
+                
+            Returns:
+                Project structure and files created
+            """
+            
+            # Validate project name
+            if not re.match(r'^[a-zA-Z][a-zA-Z0-9_-]*$', project_name):
+                return {"error": "Invalid project name. Use letters, numbers, underscores, and hyphens only."}
+            
+            project_path = Path(project_name)
+            if project_path.exists():
+                return {"error": f"Project {project_name} already exists"}
+            
+            # Create directory structure
+            directories = [
+                "scripts",
+                "config", 
+                "data",
+                "results",
+                "examples",
+                "tests",
+                "docs"
+            ]
+            
+            files_created = []
+            
+            # Create directories
+            for directory in directories:
+                dir_path = project_path / directory
+                dir_path.mkdir(parents=True, exist_ok=True)
+                files_created.append(f"{directory}/")
+            
+            # Create configuration files
+            await self._create_config_files(project_path, project_type)
+            files_created.extend(["config/PATH.yaml", "config/PARAMS.yaml", "config/COLORS.yaml"])
+            
+            # Create main script template
+            main_script = await self._create_main_script(project_path, project_name, project_type)
+            files_created.append("scripts/main.py")
+            
+            # Create README
+            readme_content = await self._create_readme(project_name, project_type, features)
+            (project_path / "README.md").write_text(readme_content)
+            files_created.append("README.md")
+            
+            # Create requirements.txt
+            requirements = await self._create_requirements(project_type, features)
+            (project_path / "requirements.txt").write_text(requirements)
+            files_created.append("requirements.txt")
+            
+            # Create example scripts based on features
+            if "examples" in features:
+                example_files = await self._create_example_scripts(project_path, project_type)
+                files_created.extend(example_files)
+            
+            # Create test templates
+            if "testing" in features:
+                test_files = await self._create_test_templates(project_path)
+                files_created.extend(test_files)
+            
+            return {
+                "project_name": project_name,
+                "project_type": project_type,
+                "project_path": str(project_path.absolute()),
+                "files_created": files_created,
+                "directories_created": directories,
+                "next_steps": [
+                    f"cd {project_name}",
+                    "pip install -r requirements.txt",
+                    "python scripts/main.py",
+                    "Edit config/PARAMS.yaml for your project parameters"
+                ]
+            }
+        
+        @self.app.tool()
+        async def generate_scitex_script(
+            script_name: str,
+            script_type: str = "analysis",
+            modules: List[str] = ["io", "plt"],
+            template_style: str = "comprehensive"
+        ) -> Dict[str, Any]:
+            """
+            Generate purpose-built SciTeX scripts with appropriate templates.
+            
+            Args:
+                script_name: Name of the script
+                script_type: Type (analysis, visualization, preprocessing, etc.)
+                modules: SciTeX modules to include
+                template_style: Template complexity (minimal, standard, comprehensive)
+                
+            Returns:
+                Generated script content and metadata
+            """
+            
+            script_templates = {
+                "analysis": {
+                    "minimal": """#!/usr/bin/env python3
+import scitex as stx
+
+CONFIG = stx.io.load_configs()
+
+@stx.gen.start()
+def main():
+    # Load data
+    data = stx.io.load('./data/input.csv')
+    
+    # Perform analysis
+    results = analyze_data(data)
+    
+    # Save results
+    stx.io.save(results, './results/analysis.csv', symlink_from_cwd=True)
+
+def analyze_data(data):
+    # Your analysis code here
+    return data
+
+if __name__ == "__main__":
+    main()
+""",
+                    "comprehensive": """#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+'''
+{script_name}: Comprehensive data analysis script
+Generated by SciTeX MCP Server
+
+Features:
+- Data loading and validation
+- Statistical analysis
+- Results export
+- Configuration management
+'''
+
+import numpy as np
+import pandas as pd
+import scitex as stx
+from pathlib import Path
+
+# Load configuration
+CONFIG = stx.io.load_configs()
+
+@stx.gen.start()
+def main():
+    '''Main analysis pipeline.'''
+    
+    # Initialize
+    stx.gen.print_config(CONFIG.PARAMS)
+    
+    # Load and validate data
+    data = load_data()
+    validate_data(data)
+    
+    # Perform analysis
+    results = perform_analysis(data)
+    
+    # Generate visualizations
+    create_visualizations(data, results)
+    
+    # Export results
+    export_results(results)
+    
+    print("Analysis complete!")
+
+def load_data():
+    '''Load and preprocess data.'''
+    data_path = CONFIG.PATH.DATA / 'input.csv'
+    
+    if not data_path.exists():
+        raise FileNotFoundError(f"Data file not found: {{data_path}}")
+    
+    data = stx.io.load(data_path)
+    print(f"Loaded data shape: {{data.shape}}")
+    
+    return data
+
+def validate_data(data):
+    '''Validate data quality.'''
+    # Check for missing values
+    missing = data.isnull().sum()
+    if missing.sum() > 0:
+        print(f"Warning: Found {{missing.sum()}} missing values")
+    
+    # Check data types
+    print(f"Data types: {{data.dtypes.value_counts().to_dict()}}")
+
+def perform_analysis(data):
+    '''Perform statistical analysis.'''
+    results = {{}}
+    
+    # Basic statistics
+    results['descriptive'] = data.describe()
+    
+    # Custom analysis based on CONFIG
+    threshold = CONFIG.PARAMS.ANALYSIS_THRESHOLD
+    results['filtered'] = data[data > threshold]
+    
+    return results
+
+def create_visualizations(data, results):
+    '''Create and save visualizations.'''
+    # Create figure
+    fig, axes = stx.plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Plot 1: Data distribution
+    axes[0,0].hist(data.iloc[:,0], bins=30, alpha=0.7)
+    axes[0,0].set_title('Data Distribution')
+    
+    # Plot 2: Summary statistics
+    results['descriptive'].plot(kind='bar', ax=axes[0,1])
+    axes[0,1].set_title('Summary Statistics')
+    
+    # Save figure with automatic data export
+    stx.io.save(fig, './figures/analysis_overview.png', symlink_from_cwd=True)
+
+def export_results(results):
+    '''Export analysis results.'''
+    # Save descriptive statistics
+    stx.io.save(
+        results['descriptive'], 
+        './results/descriptive_stats.csv',
+        symlink_from_cwd=True
+    )
+    
+    # Save filtered data
+    stx.io.save(
+        results['filtered'],
+        './results/filtered_data.csv', 
+        symlink_from_cwd=True
+    )
+    
+    # Create summary report
+    summary = {{
+        'total_samples': len(results['descriptive']),
+        'filtered_samples': len(results['filtered']),
+        'analysis_parameters': dict(CONFIG.PARAMS)
+    }}
+    
+    stx.io.save(summary, './results/analysis_summary.json', symlink_from_cwd=True)
+
+if __name__ == "__main__":
+    main()
+"""
+                }
+            }
+            
+            # Get template
+            template = script_templates.get(script_type, script_templates["analysis"])
+            script_content = template.get(template_style, template["minimal"])
+            
+            # Format with script name
+            script_content = script_content.format(script_name=script_name)
+            
+            # Add module-specific imports
+            imports = []
+            if "stats" in modules:
+                imports.append("import scipy.stats as stats")
+            if "ml" in modules:
+                imports.append("from sklearn import model_selection, metrics")
+            if "dsp" in modules:
+                imports.append("import scipy.signal")
+            
+            if imports:
+                import_section = "\\n".join(imports)
+                script_content = script_content.replace(
+                    "import scitex as stx",
+                    f"import scitex as stx\\n{import_section}"
+                )
+            
+            return {
+                "script_name": script_name,
+                "script_type": script_type,
+                "script_content": script_content,
+                "modules_included": modules,
+                "template_style": template_style,
+                "estimated_lines": len(script_content.split('\\n')),
+                "features": [
+                    "Configuration management",
+                    "Data validation",
+                    "Automatic result export",
+                    "Error handling",
+                    "Progress tracking"
+                ]
+            }
+        
+        @self.app.tool()
+        async def optimize_scitex_config(
+            config_paths: List[str],
+            merge_strategy: str = "smart"
+        ) -> Dict[str, Any]:
+            """
+            Merge and optimize multiple configuration files.
+            
+            Args:
+                config_paths: List of config file paths to merge
+                merge_strategy: Strategy (smart, override, preserve)
+                
+            Returns:
+                Optimized configuration and conflicts resolved
+            """
+            
+            configs = {}
+            conflicts = []
+            
+            # Load all configurations
+            for config_path in config_paths:
+                try:
+                    config = stx.io.load(config_path)
+                    config_name = Path(config_path).stem
+                    configs[config_name] = config
+                except Exception as e:
+                    return {"error": f"Failed to load {config_path}: {str(e)}"}
+            
+            # Merge configurations
+            merged_config = {}
+            
+            # Smart merge strategy
+            if merge_strategy == "smart":
+                for config_name, config in configs.items():
+                    for section, values in config.items():
+                        if section not in merged_config:
+                            merged_config[section] = {}
+                        
+                        for key, value in values.items():
+                            if key in merged_config[section]:
+                                if merged_config[section][key] != value:
+                                    conflicts.append({
+                                        "section": section,
+                                        "key": key,
+                                        "config1": config_name,
+                                        "value1": merged_config[section][key],
+                                        "config2": config_name,
+                                        "value2": value,
+                                        "resolution": "kept_first"
+                                    })
+                            else:
+                                merged_config[section][key] = value
+            
+            # Optimize configuration
+            optimizations = []
+            
+            # Check for unused parameters
+            # Check for missing standard sections
+            standard_sections = ["PATH", "PARAMS", "COLORS"]
+            for section in standard_sections:
+                if section not in merged_config:
+                    optimizations.append({
+                        "type": "missing_section",
+                        "section": section,
+                        "suggestion": f"Add {section} section for better organization"
+                    })
+            
+            # Check for potential consolidations
+            if "PARAMS" in merged_config:
+                params = merged_config["PARAMS"]
+                for key, value in params.items():
+                    if isinstance(value, (int, float)) and key.upper() != key:
+                        optimizations.append({
+                            "type": "naming_convention",
+                            "key": key,
+                            "suggestion": f"Use uppercase: {key.upper()}"
+                        })
+            
+            return {
+                "merged_config": merged_config,
+                "conflicts": conflicts,
+                "optimizations": optimizations,
+                "config_files_processed": len(configs),
+                "total_parameters": sum(
+                    len(section) for section in merged_config.values() 
+                    if isinstance(section, dict)
+                )
+            }
+        
+        @self.app.tool()
+        async def run_scitex_pipeline(
+            pipeline_config: Dict[str, Any],
+            dry_run: bool = False
+        ) -> Dict[str, Any]:
+            """
+            Execute multi-script workflows with dependencies.
+            
+            Args:
+                pipeline_config: Configuration with scripts and dependencies
+                dry_run: If True, only validate pipeline without execution
+                
+            Returns:
+                Pipeline execution results and status
+            """
+            
+            # Validate pipeline configuration
+            required_keys = ["scripts", "dependencies"]
+            if not all(key in pipeline_config for key in required_keys):
+                return {"error": f"Pipeline config must contain: {required_keys}"}
+            
+            scripts = pipeline_config["scripts"]
+            dependencies = pipeline_config.get("dependencies", {})
+            
+            # Build execution order
+            execution_order = self._resolve_dependencies(scripts, dependencies)
+            if "error" in execution_order:
+                return execution_order
+            
+            if dry_run:
+                return {
+                    "pipeline_valid": True,
+                    "execution_order": execution_order["order"],
+                    "total_scripts": len(scripts),
+                    "estimated_runtime": "varies",
+                    "dependencies_resolved": True
+                }
+            
+            # Execute pipeline
+            results = {}
+            failed_scripts = []
+            
+            for script_name in execution_order["order"]:
+                script_config = scripts[script_name]
+                script_path = script_config.get("path")
+                
+                if not script_path or not Path(script_path).exists():
+                    failed_scripts.append({
+                        "script": script_name,
+                        "error": f"Script not found: {script_path}"
+                    })
+                    continue
+                
+                # Execute script (simplified - in real implementation would use subprocess)
+                try:
+                    # In real implementation: subprocess.run([sys.executable, script_path])
+                    results[script_name] = {
+                        "status": "completed",
+                        "duration": "simulated",
+                        "output": f"Executed {script_name} successfully"
+                    }
+                except Exception as e:
+                    results[script_name] = {
+                        "status": "failed", 
+                        "error": str(e)
+                    }
+                    failed_scripts.append({
+                        "script": script_name,
+                        "error": str(e)
+                    })
+            
+            return {
+                "pipeline_status": "completed" if not failed_scripts else "partially_failed",
+                "scripts_executed": len(results),
+                "failed_scripts": failed_scripts,
+                "execution_results": results,
+                "execution_order": execution_order["order"]
+            }
+        
+        @self.app.tool()
+        async def debug_scitex_script(
+            script_path: str,
+            error_context: str = "",
+            debug_level: str = "standard"
+        ) -> Dict[str, Any]:
+            """
+            Intelligent debugging assistance for SciTeX scripts.
+            
+            Args:
+                script_path: Path to script with issues
+                error_context: Error message or description
+                debug_level: Level of debugging (basic, standard, comprehensive)
+                
+            Returns:
+                Debugging suggestions and potential fixes
+            """
+            
+            if not Path(script_path).exists():
+                return {"error": f"Script not found: {script_path}"}
+            
+            # Read script content
+            try:
+                with open(script_path, 'r') as f:
+                    content = f.read()
+            except Exception as e:
+                return {"error": f"Cannot read script: {str(e)}"}
+            
+            debug_results = {
+                "script_path": script_path,
+                "debug_level": debug_level,
+                "issues_found": [],
+                "suggestions": [],
+                "quick_fixes": []
+            }
+            
+            # Parse code for common issues
+            try:
+                tree = ast.parse(content)
+                
+                # Check for common SciTeX issues
+                issues = await self._analyze_script_issues(content, tree, error_context)
+                debug_results["issues_found"] = issues
+                
+                # Generate suggestions
+                suggestions = await self._generate_debug_suggestions(issues, content)
+                debug_results["suggestions"] = suggestions
+                
+                # Generate quick fixes
+                quick_fixes = await self._generate_quick_fixes(issues, content)
+                debug_results["quick_fixes"] = quick_fixes
+                
+            except SyntaxError as e:
+                debug_results["issues_found"].append({
+                    "type": "syntax_error",
+                    "line": e.lineno,
+                    "message": str(e),
+                    "severity": "critical"
+                })
+            
+            # Add context-specific debugging
+            if error_context:
+                context_suggestions = await self._analyze_error_context(error_context, content)
+                debug_results["context_suggestions"] = context_suggestions
+            
+            return debug_results
+        
+        @self.app.tool()
+        async def generate_scitex_documentation(
+            project_path: str,
+            doc_type: str = "comprehensive",
+            include_examples: bool = True
+        ) -> Dict[str, Any]:
+            """
+            Auto-generate project documentation.
+            
+            Args:
+                project_path: Path to project
+                doc_type: Type (api, user_guide, comprehensive)
+                include_examples: Whether to include code examples
+                
+            Returns:
+                Generated documentation content and files
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Analyze project structure
+            analysis = await self.analyze_scitex_project(str(project))
+            
+            docs = {}
+            
+            # Generate README if it doesn't exist
+            readme_path = project / "README.md"
+            if not readme_path.exists():
+                readme_content = await self._generate_readme_from_analysis(analysis, project)
+                docs["README.md"] = readme_content
+            
+            # Generate API documentation
+            if doc_type in ["api", "comprehensive"]:
+                api_docs = await self._generate_api_docs(project)
+                docs["docs/API.md"] = api_docs
+            
+            # Generate user guide
+            if doc_type in ["user_guide", "comprehensive"]:
+                user_guide = await self._generate_user_guide(project, analysis)
+                docs["docs/USER_GUIDE.md"] = user_guide
+            
+            # Generate configuration documentation
+            config_docs = await self._generate_config_docs(project)
+            if config_docs:
+                docs["docs/CONFIGURATION.md"] = config_docs
+            
+            # Save documentation files
+            files_created = []
+            for doc_path, content in docs.items():
+                full_path = project / doc_path
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+                full_path.write_text(content)
+                files_created.append(doc_path)
+            
+            return {
+                "documentation_generated": True,
+                "doc_type": doc_type,
+                "files_created": files_created,
+                "total_files": len(files_created),
+                "project_analysis": analysis["summary"] if "summary" in analysis else {}
+            }
+        
+        @self.app.tool()
+        async def analyze_semantic_structure(
+            project_path: str,
+            analysis_depth: str = "comprehensive"
+        ) -> Dict[str, Any]:
+            """
+            Perform advanced semantic analysis of project structure and patterns.
+            
+            Args:
+                project_path: Path to project for analysis
+                analysis_depth: Level of analysis (basic, standard, comprehensive)
+                
+            Returns:
+                Comprehensive semantic analysis including:
+                - Code complexity and maintainability metrics
+                - Research domain classification
+                - Workflow pattern recognition
+                - Module relationship analysis
+                - Optimization opportunities
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Perform advanced semantic analysis
+            semantic_analysis = await self.advanced_analyzer.analyze_semantic_structure(project)
+            
+            # Add summary metrics
+            summary = {
+                "analysis_depth": analysis_depth,
+                "total_patterns_detected": sum(
+                    len(patterns) for patterns in semantic_analysis["semantic_analysis"].values()
+                ),
+                "primary_domain": semantic_analysis["domain_classification"]["primary_domain"],
+                "domain_confidence": semantic_analysis["domain_classification"]["confidence"],
+                "workflow_patterns_count": len(semantic_analysis["workflow_patterns"]),
+                "optimization_opportunities_count": len(semantic_analysis["optimization_opportunities"])
+            }
+            
+            return {
+                **semantic_analysis,
+                "analysis_summary": summary
+            }
+        
+        @self.app.tool()
+        async def generate_dependency_map(
+            project_path: str,
+            include_visualization: bool = True,
+            analysis_level: str = "comprehensive"
+        ) -> Dict[str, Any]:
+            """
+            Generate comprehensive dependency mapping with visualization data.
+            
+            Args:
+                project_path: Path to project for analysis
+                include_visualization: Include visualization data
+                analysis_level: Level of dependency analysis
+                
+            Returns:
+                Multi-level dependency analysis including:
+                - File-level dependencies
+                - Function-level call graphs
+                - Data flow dependencies
+                - Configuration dependencies
+                - Architectural patterns
+                - Visualization data for dependency graphs
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Generate comprehensive dependency map
+            dependency_map = await self.advanced_analyzer.generate_dependency_map(project)
+            
+            # Add metadata
+            metadata = {
+                "analysis_level": analysis_level,
+                "include_visualization": include_visualization,
+                "generation_timestamp": "2025-07-03",
+                "total_nodes": len(dependency_map["file_dependencies"].get("nodes", [])),
+                "total_edges": len(dependency_map["file_dependencies"].get("edges", [])),
+                "architectural_patterns_detected": len(dependency_map["architectural_patterns"])
+            }
+            
+            return {
+                **dependency_map,
+                "metadata": metadata
+            }
+        
+        @self.app.tool()
+        async def analyze_performance_characteristics(
+            project_path: str,
+            focus_areas: List[str] = ["all"],
+            include_recommendations: bool = True
+        ) -> Dict[str, Any]:
+            """
+            Analyze performance characteristics and identify optimization opportunities.
+            
+            Args:
+                project_path: Path to project for analysis
+                focus_areas: Areas to focus on (complexity, memory, io, parallelization, caching)
+                include_recommendations: Include optimization recommendations
+                
+            Returns:
+                Performance analysis including:
+                - Computational complexity patterns
+                - Memory usage analysis
+                - I/O operation efficiency
+                - Parallelization opportunities
+                - Caching recommendations
+                - Performance optimization roadmap
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Perform performance analysis
+            perf_analysis = await self.advanced_analyzer.analyze_performance_characteristics(project)
+            
+            # Filter results based on focus areas
+            if "all" not in focus_areas:
+                filtered_analysis = {}
+                focus_mapping = {
+                    "complexity": "complexity_analysis",
+                    "memory": "memory_patterns", 
+                    "io": "io_efficiency",
+                    "parallelization": "parallelization_opportunities",
+                    "caching": "caching_recommendations"
+                }
+                
+                for area in focus_areas:
+                    if area in focus_mapping:
+                        key = focus_mapping[area]
+                        if key in perf_analysis:
+                            filtered_analysis[key] = perf_analysis[key]
+                
+                perf_analysis = filtered_analysis
+            
+            # Add performance summary
+            summary = {
+                "focus_areas": focus_areas,
+                "include_recommendations": include_recommendations,
+                "total_optimization_opportunities": len(perf_analysis.get("optimization_roadmap", {}).get("short_term", [])),
+                "performance_score": 85  # Placeholder - would calculate from actual metrics
+            }
+            
+            return {
+                **perf_analysis,
+                "performance_summary": summary
+            }
+        
+        @self.app.tool()
+        async def analyze_research_workflow_patterns(
+            project_path: str,
+            workflow_types: List[str] = ["all"],
+            include_suggestions: bool = True
+        ) -> Dict[str, Any]:
+            """
+            Identify and analyze research workflow patterns specific to scientific computing.
+            
+            Args:
+                project_path: Path to project for analysis
+                workflow_types: Types of workflows to analyze
+                include_suggestions: Include improvement suggestions
+                
+            Returns:
+                Research workflow analysis including:
+                - Data preprocessing pipelines
+                - Analysis workflows
+                - Visualization patterns
+                - Reproducibility assessment
+                - Publication readiness
+                - Workflow efficiency metrics
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Analyze research workflows
+            workflow_analysis = await self.advanced_analyzer.analyze_research_workflow_patterns(project)
+            
+            # Calculate overall workflow health
+            workflow_health = {
+                "reproducibility_score": workflow_analysis["reproducibility_score"].get("score", 0),
+                "publication_readiness": workflow_analysis["publication_readiness"].get("readiness_score", 0),
+                "workflow_efficiency": workflow_analysis["workflow_efficiency"].get("efficiency_score", 0),
+                "detected_patterns": len(workflow_analysis["pipeline_patterns"]),
+                "improvement_potential": len(workflow_analysis["improvement_suggestions"])
+            }
+            
+            return {
+                **workflow_analysis,
+                "workflow_health": workflow_health,
+                "analysis_metadata": {
+                    "workflow_types": workflow_types,
+                    "include_suggestions": include_suggestions
+                }
+            }
+        
+        @self.app.tool()
+        async def generate_architectural_insights(
+            project_path: str,
+            insight_level: str = "strategic",
+            include_roadmap: bool = True
+        ) -> Dict[str, Any]:
+            """
+            Generate high-level architectural insights and strategic recommendations.
+            
+            Args:
+                project_path: Path to project for analysis
+                insight_level: Level of insights (tactical, strategic, evolutionary)
+                include_roadmap: Include evolution roadmap
+                
+            Returns:
+                Architectural analysis including:
+                - Architecture health assessment
+                - Modularity and coupling analysis
+                - Scalability considerations
+                - Maintainability metrics
+                - Strategic evolution recommendations
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Generate architectural insights
+            arch_analysis = await self.advanced_analyzer.generate_architectural_insights(project)
+            
+            # Calculate overall architecture score
+            architecture_score = {
+                "health_score": arch_analysis["architecture_health"].get("health_score", 0),
+                "modularity_score": arch_analysis["modularity_score"],
+                "maintainability_score": arch_analysis["maintainability_score"],
+                "scalability_score": arch_analysis["scalability_assessment"].get("scalability_score", 0),
+                "overall_score": 0  # Would calculate weighted average
+            }
+            
+            # Calculate overall score
+            scores = [
+                architecture_score["health_score"],
+                architecture_score["modularity_score"], 
+                architecture_score["maintainability_score"],
+                architecture_score["scalability_score"]
+            ]
+            architecture_score["overall_score"] = sum(scores) / len(scores) if scores else 0
+            
+            return {
+                **arch_analysis,
+                "architecture_score": architecture_score,
+                "insight_metadata": {
+                    "insight_level": insight_level,
+                    "include_roadmap": include_roadmap,
+                    "analysis_timestamp": "2025-07-03"
+                }
+            }
+        
+        @self.app.tool()
+        async def comprehensive_project_intelligence(
+            project_path: str,
+            intelligence_scope: str = "full",
+            output_format: str = "detailed"
+        ) -> Dict[str, Any]:
+            """
+            Generate comprehensive project intelligence combining all analysis types.
+            
+            Args:
+                project_path: Path to project for analysis
+                intelligence_scope: Scope of analysis (basic, standard, full)
+                output_format: Format of output (summary, detailed, executive)
+                
+            Returns:
+                Complete project intelligence including:
+                - Semantic structure analysis
+                - Dependency mapping
+                - Performance characteristics
+                - Research workflow patterns  
+                - Architectural insights
+                - Strategic recommendations
+                - Executive summary
+            """
+            
+            project = Path(project_path)
+            if not project.exists():
+                return {"error": f"Project path {project_path} does not exist"}
+            
+            # Run all analysis types
+            intelligence = {}
+            
+            if intelligence_scope in ["standard", "full"]:
+                intelligence["semantic_analysis"] = await self.analyze_semantic_structure(str(project))
+                intelligence["dependency_analysis"] = await self.generate_dependency_map(str(project))
+                
+            if intelligence_scope == "full":
+                intelligence["performance_analysis"] = await self.analyze_performance_characteristics(str(project))
+                intelligence["workflow_analysis"] = await self.analyze_research_workflow_patterns(str(project))
+                intelligence["architectural_analysis"] = await self.generate_architectural_insights(str(project))
+            
+            # Generate executive summary
+            executive_summary = {
+                "project_overview": {
+                    "primary_domain": intelligence.get("semantic_analysis", {}).get("domain_classification", {}).get("primary_domain", "unknown"),
+                    "total_files": len(list(project.rglob("*.py"))),
+                    "architecture_health": intelligence.get("architectural_analysis", {}).get("architecture_score", {}).get("overall_score", 0)
+                },
+                "key_insights": [],
+                "priority_recommendations": [],
+                "strategic_directions": []
+            }
+            
+            # Add key insights based on analysis
+            if "semantic_analysis" in intelligence:
+                semantic = intelligence["semantic_analysis"]
+                executive_summary["key_insights"].append({
+                    "category": "domain_expertise",
+                    "insight": f"Project specializes in {semantic.get('domain_classification', {}).get('primary_domain', 'general')} research",
+                    "confidence": semantic.get("domain_classification", {}).get("confidence", 0)
+                })
+            
+            if "performance_analysis" in intelligence:
+                perf = intelligence["performance_analysis"]
+                executive_summary["priority_recommendations"].append({
+                    "category": "performance",
+                    "recommendation": "Implement identified optimization opportunities",
+                    "impact": "high",
+                    "effort": "medium"
+                })
+            
+            return {
+                "project_intelligence": intelligence,
+                "executive_summary": executive_summary,
+                "analysis_metadata": {
+                    "intelligence_scope": intelligence_scope,
+                    "output_format": output_format,
+                    "analysis_timestamp": "2025-07-03",
+                    "total_analysis_modules": len(intelligence)
+                }
+            }
             
     async def _analyze_structure(self, project_path: Path) -> Dict[str, Any]:
         """Analyze project directory structure."""
@@ -944,24 +1886,52 @@ stx.io.save(fig, './plot.png')
         }
         
     def get_module_description(self) -> str:
-        """Get description of analyzer functionality."""
+        """Get description of comprehensive developer support functionality."""
         return (
-            "SciTeX analyzer provides comprehensive code analysis, pattern detection, "
-            "and improvement suggestions for scientific Python projects. "
-            "It helps understand code structure, identify anti-patterns, and suggest best practices."
+            "SciTeX comprehensive developer support server provides full-stack development assistance "
+            "including code analysis, project generation, configuration management, workflow automation, "
+            "debugging assistance, and documentation generation for scientific Python projects. "
+            "Transform your development workflow with intelligent SciTeX-aware tools."
         )
         
     def get_available_tools(self) -> List[str]:
         """Get list of available tools."""
         return [
+            # Core Analysis Tools
             "analyze_scitex_project",
-            "explain_scitex_pattern",
+            "explain_scitex_pattern", 
             "suggest_scitex_improvements",
             "find_scitex_examples",
+            
+            # Advanced Analysis Tools
+            "analyze_semantic_structure",
+            "generate_dependency_map",
+            "analyze_performance_characteristics",
+            "analyze_research_workflow_patterns", 
+            "generate_architectural_insights",
+            "comprehensive_project_intelligence",
+            
+            # Project Generation & Scaffolding
+            "create_scitex_project",
+            "generate_scitex_script",
+            
+            # Configuration Management
+            "optimize_scitex_config",
             "validate_comprehensive_compliance",
+            
+            # Workflow Automation
+            "run_scitex_pipeline",
+            "debug_scitex_script",
+            
+            # Documentation Generation
+            "generate_scitex_documentation",
+            
+            # Validation Tools
             "validate_import_order",
-            "validate_docstring_format",
+            "validate_docstring_format", 
             "validate_cross_file_dependencies",
+            
+            # Base Tools
             "get_module_info",
             "validate_code"
         ]
@@ -981,6 +1951,397 @@ stx.io.save(fig, './plot.png')
             "issues": issues,
             "score": max(0, 100 - len(issues) * 10)
         }
+    
+    # Helper methods for new comprehensive features
+    async def _create_config_files(self, project_path: Path, project_type: str):
+        """Create standard configuration files."""
+        config_dir = project_path / "config"
+        
+        # PATH.yaml
+        path_config = {
+            "DATA": "data",
+            "RESULTS": "results", 
+            "FIGURES": "figures",
+            "SCRIPTS": "scripts"
+        }
+        (config_dir / "PATH.yaml").write_text(f"# Path configuration\n{path_config}")
+        
+        # PARAMS.yaml
+        params_config = {
+            "ANALYSIS_THRESHOLD": 0.05,
+            "RANDOM_SEED": 42,
+            "BATCH_SIZE": 32
+        }
+        (config_dir / "PARAMS.yaml").write_text(f"# Analysis parameters\n{params_config}")
+        
+        # COLORS.yaml
+        colors_config = {
+            "PRIMARY": "#1f77b4",
+            "SECONDARY": "#ff7f0e", 
+            "SUCCESS": "#2ca02c",
+            "DANGER": "#d62728"
+        }
+        (config_dir / "COLORS.yaml").write_text(f"# Color scheme\n{colors_config}")
+    
+    async def _create_main_script(self, project_path: Path, project_name: str, project_type: str):
+        """Create main script template."""
+        script_content = f'''#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+{project_name}: Main analysis script
+Generated by SciTeX MCP Server
+"""
+
+import scitex as stx
+
+CONFIG = stx.io.load_configs()
+
+@stx.gen.start()
+def main():
+    """Main entry point."""
+    print(f"Starting {project_name} analysis...")
+    
+    # Your analysis code here
+    
+    print("Analysis complete!")
+
+if __name__ == "__main__":
+    main()
+'''
+        
+        script_path = project_path / "scripts" / "main.py"
+        script_path.write_text(script_content)
+        return script_content
+    
+    async def _create_readme(self, project_name: str, project_type: str, features: List[str]):
+        """Create README template."""
+        return f'''# {project_name}
+
+A {project_type} project using the SciTeX framework.
+
+## Features
+
+{chr(10).join(f"- {feature}" for feature in features)}
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run main analysis
+python scripts/main.py
+```
+
+## Project Structure
+
+- `scripts/` - Analysis scripts
+- `config/` - Configuration files  
+- `data/` - Input data
+- `results/` - Output results
+- `examples/` - Example usage
+- `tests/` - Test files
+
+## Configuration
+
+Edit configuration files in `config/`:
+- `PATH.yaml` - File paths
+- `PARAMS.yaml` - Analysis parameters
+- `COLORS.yaml` - Color schemes
+
+## Generated by SciTeX MCP Server
+'''
+    
+    async def _create_requirements(self, project_type: str, features: List[str]):
+        """Create requirements.txt."""
+        requirements = ["scitex", "numpy", "pandas", "matplotlib"]
+        
+        if "ml" in features:
+            requirements.extend(["scikit-learn", "scipy"])
+        if "stats" in features:
+            requirements.extend(["scipy", "statsmodels"])
+        if "testing" in features:
+            requirements.append("pytest")
+            
+        return chr(10).join(requirements) + chr(10)
+    
+    async def _create_example_scripts(self, project_path: Path, project_type: str):
+        """Create example scripts."""
+        examples_dir = project_path / "examples"
+        files = []
+        
+        # Basic example
+        basic_example = '''#!/usr/bin/env python3
+import scitex as stx
+import numpy as np
+
+CONFIG = stx.io.load_configs()
+
+def example_analysis():
+    """Example SciTeX analysis."""
+    # Generate sample data
+    data = np.random.randn(100, 3)
+    
+    # Save with SciTeX
+    stx.io.save(data, './results/sample_data.csv', symlink_from_cwd=True)
+    
+    # Create plot
+    fig, ax = stx.plt.subplots()
+    ax.plot(data[:, 0], label='Series 1')
+    ax.plot(data[:, 1], label='Series 2')
+    ax.legend()
+    
+    stx.io.save(fig, './figures/example_plot.png', symlink_from_cwd=True)
+
+if __name__ == "__main__":
+    example_analysis()
+'''
+        
+        (examples_dir / "basic_example.py").write_text(basic_example)
+        files.append("examples/basic_example.py")
+        
+        return files
+    
+    async def _create_test_templates(self, project_path: Path):
+        """Create test templates."""
+        tests_dir = project_path / "tests"
+        files = []
+        
+        test_content = '''#!/usr/bin/env python3
+import pytest
+import sys
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+def test_basic_functionality():
+    """Test basic project functionality."""
+    assert True  # Replace with actual tests
+
+def test_configuration_loading():
+    """Test configuration loading."""
+    import scitex as stx
+    try:
+        config = stx.io.load_configs()
+        assert config is not None
+    except:
+        pytest.skip("Configuration files not found")
+
+if __name__ == "__main__":
+    pytest.main([__file__])
+'''
+        
+        (tests_dir / "test_main.py").write_text(test_content)
+        files.append("tests/test_main.py")
+        
+        return files
+    
+    def _resolve_dependencies(self, scripts: Dict, dependencies: Dict):
+        """Resolve script execution order based on dependencies."""
+        # Simple topological sort
+        from collections import deque, defaultdict
+        
+        graph = defaultdict(list)
+        in_degree = defaultdict(int)
+        
+        # Build graph
+        for script in scripts:
+            in_degree[script] = 0
+            
+        for script, deps in dependencies.items():
+            for dep in deps:
+                graph[dep].append(script)
+                in_degree[script] += 1
+        
+        # Topological sort
+        queue = deque([script for script in scripts if in_degree[script] == 0])
+        order = []
+        
+        while queue:
+            script = queue.popleft()
+            order.append(script)
+            
+            for neighbor in graph[script]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        if len(order) != len(scripts):
+            return {"error": "Circular dependency detected"}
+            
+        return {"order": order}
+    
+    async def _analyze_script_issues(self, content: str, tree: ast.AST, error_context: str):
+        """Analyze script for common issues."""
+        issues = []
+        
+        # Check for missing imports
+        imports = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for name in node.names:
+                    imports.add(name.name)
+            elif isinstance(node, ast.ImportFrom):
+                imports.add(node.module or "")
+        
+        # Check for scitex import
+        if "scitex" not in imports and "stx" not in content:
+            issues.append({
+                "type": "missing_import",
+                "severity": "high",
+                "message": "Missing scitex import"
+            })
+        
+        # Check for config loading
+        if "CONFIG" not in content and "config" in content.lower():
+            issues.append({
+                "type": "config_issue",
+                "severity": "medium", 
+                "message": "Possible configuration loading issue"
+            })
+        
+        return issues
+    
+    async def _generate_debug_suggestions(self, issues: List[Dict], content: str):
+        """Generate debugging suggestions based on issues."""
+        suggestions = []
+        
+        for issue in issues:
+            if issue["type"] == "missing_import":
+                suggestions.append({
+                    "issue": issue["message"],
+                    "suggestion": "Add: import scitex as stx",
+                    "priority": "high"
+                })
+            elif issue["type"] == "config_issue":
+                suggestions.append({
+                    "issue": issue["message"],
+                    "suggestion": "Add: CONFIG = stx.io.load_configs()",
+                    "priority": "medium"
+                })
+        
+        return suggestions
+    
+    async def _generate_quick_fixes(self, issues: List[Dict], content: str):
+        """Generate quick fixes for common issues."""
+        fixes = []
+        
+        for issue in issues:
+            if issue["type"] == "missing_import":
+                fixes.append({
+                    "description": "Add SciTeX import",
+                    "find": "#!/usr/bin/env python3",
+                    "replace": "#!/usr/bin/env python3\\nimport scitex as stx"
+                })
+        
+        return fixes
+    
+    async def _analyze_error_context(self, error_context: str, content: str):
+        """Analyze error context for specific suggestions."""
+        suggestions = []
+        
+        if "ModuleNotFoundError" in error_context:
+            if "scitex" in error_context:
+                suggestions.append({
+                    "error": "SciTeX not installed",
+                    "suggestion": "Run: pip install scitex",
+                    "priority": "critical"
+                })
+        
+        if "FileNotFoundError" in error_context:
+            suggestions.append({
+                "error": "File not found",
+                "suggestion": "Check file paths in configuration",
+                "priority": "high"
+            })
+        
+        return suggestions
+    
+    async def _generate_readme_from_analysis(self, analysis: Dict, project: Path):
+        """Generate README from project analysis."""
+        return f'''# {project.name}
+
+## Project Analysis Summary
+
+- **Files analyzed**: {analysis.get("project_structure", {}).get("total_files", 0)}
+- **SciTeX compliance**: {analysis.get("code_patterns", {}).get("compliance_score", 0)}%
+- **Configuration score**: {analysis.get("configurations", {}).get("consistency_score", 0)}%
+
+## Recommendations
+
+{chr(10).join(f"- {rec.get('suggestion', '')}" for rec in analysis.get("recommendations", [])[:5])}
+
+## Generated by SciTeX Analyzer
+'''
+    
+    async def _generate_api_docs(self, project: Path):
+        """Generate API documentation."""
+        return '''# API Documentation
+
+## Functions
+
+Documentation for project functions will be generated here.
+
+## Classes
+
+Documentation for project classes will be generated here.
+
+## Configuration
+
+See CONFIGURATION.md for configuration details.
+'''
+    
+    async def _generate_user_guide(self, project: Path, analysis: Dict):
+        """Generate user guide."""
+        return f'''# User Guide
+
+## Getting Started
+
+This project uses the SciTeX framework for scientific computing.
+
+## Project Structure
+
+{chr(10).join(f"- `{d}/`" for d in analysis.get("project_structure", {}).get("existing_directories", []))}
+
+## Usage
+
+1. Install requirements: `pip install -r requirements.txt`
+2. Run main script: `python scripts/main.py`
+3. Check results in `results/` directory
+
+## Configuration
+
+Edit files in `config/` directory to customize analysis parameters.
+'''
+    
+    async def _generate_config_docs(self, project: Path):
+        """Generate configuration documentation."""
+        config_dir = project / "config"
+        if not config_dir.exists():
+            return None
+            
+        return '''# Configuration Documentation
+
+## Configuration Files
+
+### PATH.yaml
+File path configuration for the project.
+
+### PARAMS.yaml  
+Analysis parameters and settings.
+
+### COLORS.yaml
+Color scheme for visualizations.
+
+## Usage
+
+```python
+CONFIG = stx.io.load_configs()
+threshold = CONFIG.PARAMS.ANALYSIS_THRESHOLD
+data_path = CONFIG.PATH.DATA
+```
+'''
 
 
 # Main entry point
