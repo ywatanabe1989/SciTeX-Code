@@ -8,7 +8,11 @@ import re
 import sys
 from glob import glob
 
-import matplotlib.pyplot as plt
+# Optional matplotlib import to avoid hard dependency
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 
 
 # Functions

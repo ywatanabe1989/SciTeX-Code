@@ -29,10 +29,7 @@ import re
 import warnings
 from typing import Dict, Optional, Tuple, Union, Callable, Any
 
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import mathtext
-import matplotlib.textpath as textpath
+# matplotlib imports moved to functions that need them
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -81,6 +78,13 @@ def check_latex_capability() -> bool:
         True if LaTeX is available, False otherwise
     """
     global _latex_available, _fallback_mode
+    
+    # Import matplotlib here when actually needed
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        _latex_available = False
+        return False
     
     # If forcing a mode, return accordingly
     if _fallback_mode == "force_mathtext" or _fallback_mode == "force_plain":

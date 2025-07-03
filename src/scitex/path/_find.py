@@ -15,7 +15,6 @@ import fnmatch
 import os
 import sys
 
-import matplotlib.pyplot as plt
 import scitex
 
 
@@ -90,6 +89,12 @@ def _find(rootdir, type="f", exp=["*"]):
 
 
 if __name__ == "__main__":
+    # Import matplotlib only when running as script
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        plt = None
+    
     # Start
     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
 

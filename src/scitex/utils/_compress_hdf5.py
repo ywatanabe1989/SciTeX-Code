@@ -8,9 +8,19 @@ import os
 __FILE__ = "/ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/utils/_compress_hdf5.py"
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import h5py
+# Optional h5py import to avoid hard dependency  
+try:
+    import h5py
+except ImportError:
+    h5py = None
+
+# These are core dependencies - assume they exist
 import numpy as np
-from tqdm import tqdm
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    tqdm = None
 
 
 def compress_hdf5(input_file, output_file=None, compression_level=4):
@@ -26,6 +36,9 @@ def compress_hdf5(input_file, output_file=None, compression_level=4):
     compression_level : int, optional
         Compression level (1-9), higher means more compression but slower processing
     """
+    # Check if h5py is available
+    if h5py is None:
+        raise ImportError("h5py is required for HDF5 compression but not installed")
     if output_file is None:
         base, ext = os.path.splitext(input_file)
         output_file = f"{base}.compressed{ext}"
