@@ -350,6 +350,7 @@ if __name__ == "__main__":
     from torchvision import datasets
 
     import sys
+    import scitex
 
     ################################################################################
     ## Sets tee
