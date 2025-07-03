@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-03 11:38:49
+!-- Timestamp: 2025-07-03 12:47:12
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -14,7 +14,11 @@ We have renamed mngs to scitex. Use scitex all the time.
 Please do not use try-error as much as possible as it is difficult for me to find problems. At least, warn error messages.
 
 ## Current Priority: ipynb as examples
-- [x] Combine example notebooks for same modules under ./examples. By combining the coverages, create comprehensive examples, please. Also, organize combined ipynb with indexes for modules for sorting.
+- [ ] Combine example notebooks for same modules under ./examples. By combining the coverages, create comprehensive examples, please. Also, organize combined ipynb with indexes for modules for sorting.
+- [ ] Move obsolete ipnbs to ./examples/legacy_ntoebooks
+- [ ] Each module should have only one notebook
+- [ ] Entry notebook should have link to all the notebooks as a quickstart
+- [ ] notebooks should have indices with 02d zeropaddings
 
 
 ## MCP Servers for translation

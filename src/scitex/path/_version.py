@@ -8,11 +8,7 @@ import re
 import sys
 from glob import glob
 
-# Optional matplotlib import to avoid hard dependency
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    plt = None
+# matplotlib imported in functions that need it
 
 
 # Functions
@@ -86,6 +82,7 @@ def increment_version(dirname, fname, ext, version_prefix="_v"):
 
 if __name__ == "__main__":
     import scitex
+    import matplotlib.pyplot as plt
 
     # Start
     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
