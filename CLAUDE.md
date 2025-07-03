@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-03 12:47:12
+!-- Timestamp: 2025-07-03 12:50:55
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -16,9 +16,11 @@ Please do not use try-error as much as possible as it is difficult for me to fin
 ## Current Priority: ipynb as examples
 - [ ] Combine example notebooks for same modules under ./examples. By combining the coverages, create comprehensive examples, please. Also, organize combined ipynb with indexes for modules for sorting.
 - [ ] Move obsolete ipnbs to ./examples/legacy_ntoebooks
+- [ ] It is under migration stage so that please prepare ipynb for all modules
 - [ ] Each module should have only one notebook
 - [ ] Entry notebook should have link to all the notebooks as a quickstart
 - [ ] notebooks should have indices with 02d zeropaddings
+- [ ] The modules are in ./src/scitex/*
 
 
 ## MCP Servers for translation
