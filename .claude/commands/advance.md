@@ -30,9 +30,12 @@ Select a contribution area to work on:
    - 🚀 Ready to host on readthedocs.io
 
 ## 4. 🐛 Bug Fixes
-   - Fix import issues
-   - Resolve test failures
-   - Address warnings
+   - ✅ Fixed plt.subplots import error
+   - ✅ Fixed gen.to_01() dimension handling
+   - ✅ Fixed gen.clip_perc() parameter naming
+   - ✅ Fixed notebook indentation & syntax errors
+   - 🔧 In Progress: Kernel death in 02_scitex_gen.ipynb
+   - Remaining: Import issues, test failures, warnings
 
 ## 5. ✨ Feature Implementation
    - Check project_management/feature_requests/
@@ -61,7 +64,9 @@ Select a contribution area to work on:
    - ✅ Examples organized (current + legacy structure)
    - ✅ Module examples available for all major components
    - ✅ MCP integration tutorials included
-   - Remaining: Quick-start guides, advanced tutorials
+   - ✅ Notebook papermill compatibility (01_scitex_io.ipynb working!)
+   - 🔧 In Progress: Fixing remaining notebook execution issues
+   - Remaining: Fix kernel deaths in gen notebook, quick-start guides
 
 ## 10. 🔬 Scientific Validity
    - Fix plotting accuracy

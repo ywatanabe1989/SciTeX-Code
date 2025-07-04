@@ -1,0 +1,150 @@
+{
+  "00_SCITEX_MASTER_INDEX.ipynb": {
+    "valid": true,
+    "cells": 10,
+    "code_cells": 1
+  },
+  "01_io_final_test.ipynb": {
+    "valid": true,
+    "cells": 28,
+    "code_cells": 15
+  },
+  "01_scitex_io.ipynb": {
+    "valid": true,
+    "cells": 26,
+    "code_cells": 15
+  },
+  "01_scitex_io_test_fixed.ipynb": {
+    "valid": true,
+    "cells": 26,
+    "code_cells": 13
+  },
+  "02_scitex_gen.ipynb": {
+    "valid": true,
+    "cells": 36,
+    "code_cells": 20
+  },
+  "02_scitex_gen_test_fixed.ipynb": {
+    "valid": true,
+    "cells": 36,
+    "code_cells": 18
+  },
+  "03_scitex_utils.ipynb": {
+    "valid": true,
+    "cells": 21,
+    "code_cells": 11
+  },
+  "04_scitex_str.ipynb": {
+    "valid": true,
+    "cells": 33,
+    "code_cells": 17
+  },
+  "05_scitex_path.ipynb": {
+    "valid": true,
+    "cells": 26,
+    "code_cells": 14
+  },
+  "06_scitex_context.ipynb": {
+    "valid": true,
+    "cells": 21,
+    "code_cells": 11
+  },
+  "07_scitex_dict.ipynb": {
+    "valid": true,
+    "cells": 29,
+    "code_cells": 15
+  },
+  "08_scitex_types.ipynb": {
+    "valid": true,
+    "cells": 23,
+    "code_cells": 12
+  },
+  "09_scitex_os.ipynb": {
+    "valid": true,
+    "cells": 22,
+    "code_cells": 11
+  },
+  "10_scitex_parallel.ipynb": {
+    "valid": true,
+    "cells": 18,
+    "code_cells": 9
+  },
+  "11_scitex_stats.ipynb": {
+    "valid": true,
+    "cells": 46,
+    "code_cells": 35
+  },
+  "11_scitex_stats_test_complete.ipynb": {
+    "valid": true,
+    "cells": 46,
+    "code_cells": 33
+  },
+  "11_scitex_stats_test_fixed.ipynb": {
+    "valid": true,
+    "cells": 46,
+    "code_cells": 33
+  },
+  "12_scitex_linalg.ipynb": {
+    "valid": true,
+    "cells": 26,
+    "code_cells": 14
+  },
+  "13_scitex_dsp.ipynb": {
+    "valid": true,
+    "cells": 20,
+    "code_cells": 13
+  },
+  "14_scitex_plt.ipynb": {
+    "valid": true,
+    "cells": 29,
+    "code_cells": 15
+  },
+  "15_scitex_pd.ipynb": {
+    "valid": true,
+    "cells": 31,
+    "code_cells": 14
+  },
+  "16_scitex_ai.ipynb": {
+    "valid": true,
+    "cells": 25,
+    "code_cells": 18
+  },
+  "16_scitex_scholar.ipynb": {
+    "valid": true,
+    "cells": 26,
+    "code_cells": 13
+  },
+  "17_scitex_nn.ipynb": {
+    "valid": true,
+    "cells": 30,
+    "code_cells": 15
+  },
+  "18_scitex_torch.ipynb": {
+    "valid": true,
+    "cells": 24,
+    "code_cells": 12
+  },
+  "19_scitex_db.ipynb": {
+    "valid": true,
+    "cells": 25,
+    "code_cells": 13
+  },
+  "20_scitex_tex.ipynb": {
+    "valid": true,
+    "cells": 28,
+    "code_cells": 14
+  },
+  "21_scitex_decorators.ipynb": {
+    "valid": false,
+    "error": "Cell 4: f-string: unterminated string (21_scitex_decorators.ipynb:cell4, line 57)"
+  },
+  "22_scitex_repro.ipynb": {
+    "valid": true,
+    "cells": 23,
+    "code_cells": 12
+  },
+  "23_scitex_web.ipynb": {
+    "valid": false,
+    "error": "Cell 0: invalid syntax (23_scitex_web.ipynb:cell0, line 1)"
+  }
+}

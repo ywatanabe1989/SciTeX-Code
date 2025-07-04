@@ -5,3 +5,24 @@ System Information:
 --------------------
 Hostname: ywata-note-win
 Username: ywatanabe
+Git branch: main
+Generated: 2025-07-04 19:06:40
+
+Experiment Statistics:
+----------------------
+Total experiments: 18
+Completed: 18
+Success rate: 100.0%
+
+Best accuracy: 0.9253
+Mean accuracy: 0.7361
+Std accuracy: 0.0728
+
+Top 3 Experiments:
+------------------
+1. neural_network_optimization_run_009_20250704_190639 - Accuracy: 0.9253
+   Parameters: {'learning_rate': 0.01, 'batch_size': 64, 'optimizer': 'adam'}
+2. neural_network_optimization_run_010_20250704_190639 - Accuracy: 0.8418
+   Parameters: {'learning_rate': 0.01, 'batch_size': 64, 'optimizer': 'sgd'}
+3. neural_network_optimization_run_011_20250704_190639 - Accuracy: 0.8169
+   Parameters: {'learning_rate': 0.01, 'batch_size': 128, 'optimizer': 'adam'}
