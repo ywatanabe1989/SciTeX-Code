@@ -31,9 +31,18 @@ Output:
 
 """Imports"""
 import argparse
-import scitex as stx
-import papermill as pm
+import sys
 from pathlib import Path
+# Add parent directory to Python path
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
+try:
+    import scitex as stx
+except ImportError:
+    print("Warning: Could not import scitex, some functionality may be limited")
+    stx = None
+
+import papermill as pm
 import pandas as pd
 from datetime import datetime
 import traceback

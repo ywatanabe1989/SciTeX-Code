@@ -1,0 +1,13 @@
+00_SCITEX_MASTER_INDEX.ipynb
+01_scitex_io.ipynb
+02_scitex_gen.ipynb
+03_scitex_utils.ipynb
+04_scitex_str.ipynb
+06_scitex_context.ipynb
+09_scitex_os.ipynb
+11_scitex_stats_test_fixed.ipynb
+11_scitex_stats.ipynb
+17_scitex_nn.ipynb
+18_scitex_torch.ipynb
+20_scitex_tex.ipynb
+22_scitex_repro.ipynb

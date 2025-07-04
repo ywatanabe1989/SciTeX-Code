@@ -1,0 +1,32 @@
+[
+  {
+    "notebook": "05_scitex_path.ipynb",
+    "pattern": "FileNotFoundError - Missing directory",
+    "error_msg": "FileNotFoundError: [Errno 2] No such file or directory: 'path_examples/test_project/project_root'",
+    "return_code": 1
+  },
+  {
+    "notebook": "07_scitex_dict.ipynb",
+    "pattern": "Unknown error",
+    "error_msg": "SyntaxError: invalid syntax. Perhaps you forgot a comma?",
+    "return_code": 1
+  },
+  {
+    "notebook": "08_scitex_types.ipynb",
+    "pattern": "NameError - Undefined variable",
+    "error_msg": "NameError: name 'print_count' is not defined",
+    "return_code": 1
+  },
+  {
+    "notebook": "14_scitex_plt.ipynb",
+    "pattern": "TypeError - Function signature mismatch",
+    "error_msg": "e6fff5cdf646090dfe2.log.",
+    "return_code": 1
+  },
+  {
+    "notebook": "15_scitex_pd.ipynb",
+    "pattern": "Unknown error",
+    "error_msg": "ValueError: list.remove(x): x not in list",
+    "return_code": 1
+  }
+]

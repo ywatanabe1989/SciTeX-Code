@@ -135,8 +135,9 @@
     "code_cells": 14
   },
   "21_scitex_decorators.ipynb": {
-    "valid": false,
-    "error": "Cell 4: f-string: unterminated string (21_scitex_decorators.ipynb:cell4, line 57)"
+    "valid": true,
+    "cells": 37,
+    "code_cells": 16
   },
   "22_scitex_repro.ipynb": {
     "valid": true,
@@ -144,7 +145,8 @@
     "code_cells": 12
   },
   "23_scitex_web.ipynb": {
-    "valid": false,
-    "error": "Cell 0: invalid syntax (23_scitex_web.ipynb:cell0, line 1)"
+    "valid": true,
+    "cells": 20,
+    "code_cells": 10
   }
 }

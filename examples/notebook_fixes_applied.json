@@ -1,0 +1,92 @@
+[
+  {
+    "notebook": "05_scitex_path.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir",
+      "Fixed cleanup variable definition"
+    ]
+  },
+  {
+    "notebook": "07_scitex_dict.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added error handling for pop_keys",
+      "Added error handling for pop_keys",
+      "Added error handling for pop_keys",
+      "Added error handling for pop_keys",
+      "Fixed double brace syntax error"
+    ]
+  },
+  {
+    "notebook": "08_scitex_types.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "10_scitex_parallel.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "12_scitex_linalg.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "13_scitex_dsp.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added parents=True to mkdir"
+    ]
+  },
+  {
+    "notebook": "14_scitex_plt.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added parents=True to mkdir"
+    ]
+  },
+  {
+    "notebook": "15_scitex_pd.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "16_scitex_ai.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added parents=True to mkdir"
+    ]
+  },
+  {
+    "notebook": "16_scitex_scholar.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "19_scitex_db.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "21_scitex_decorators.ipynb",
+    "status": "no_changes",
+    "fixes": []
+  },
+  {
+    "notebook": "23_scitex_web.ipynb",
+    "status": "fixed",
+    "fixes": [
+      "Added parents=True to mkdir",
+      "Fixed double brace syntax error",
+      "Added parents=True to mkdir",
+      "Added parents=True to mkdir"
+    ]
+  }
+]

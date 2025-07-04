@@ -1,0 +1,192 @@
+{
+  "summary": {
+    "total": 30,
+    "success": 7,
+    "failed": 22,
+    "errors": 1,
+    "total_time": 471.65393710136414,
+    "timestamp": "2025-07-04T19:19:31.871203"
+  },
+  "results": [
+    {
+      "notebook": "00_SCITEX_MASTER_INDEX.ipynb",
+      "status": "success",
+      "time": 14.257378816604614,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/00_SCITEX_MASTER_INDEX_executed.ipynb"
+    },
+    {
+      "notebook": "01_scitex_io_test_fixed.ipynb",
+      "status": "failed",
+      "time": 13.121570825576782,
+      "error": ""
+    },
+    {
+      "notebook": "01_io_final_test.ipynb",
+      "status": "failed",
+      "time": 13.475391864776611,
+      "error": ""
+    },
+    {
+      "notebook": "01_scitex_io.ipynb",
+      "status": "success",
+      "time": 22.22227430343628,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/01_scitex_io_executed.ipynb"
+    },
+    {
+      "notebook": "02_scitex_gen_test_fixed.ipynb",
+      "status": "failed",
+      "time": 16.03943634033203,
+      "error": ""
+    },
+    {
+      "notebook": "03_scitex_utils.ipynb",
+      "status": "failed",
+      "time": 16.899389505386353,
+      "error": ""
+    },
+    {
+      "notebook": "04_scitex_str.ipynb",
+      "status": "failed",
+      "time": 15.115831851959229,
+      "error": ""
+    },
+    {
+      "notebook": "05_scitex_path.ipynb",
+      "status": "failed",
+      "time": 13.658708333969116,
+      "error": ""
+    },
+    {
+      "notebook": "07_scitex_dict.ipynb",
+      "status": "failed",
+      "time": 12.482704639434814,
+      "error": ""
+    },
+    {
+      "notebook": "06_scitex_context.ipynb",
+      "status": "failed",
+      "time": 23.021475076675415,
+      "error": ""
+    },
+    {
+      "notebook": "09_scitex_os.ipynb",
+      "status": "success",
+      "time": 16.519912481307983,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/09_scitex_os_executed.ipynb"
+    },
+    {
+      "notebook": "08_scitex_types.ipynb",
+      "status": "failed",
+      "time": 26.062681913375854,
+      "error": ""
+    },
+    {
+      "notebook": "10_scitex_parallel.ipynb",
+      "status": "failed",
+      "time": 25.912555932998657,
+      "error": ""
+    },
+    {
+      "notebook": "11_scitex_stats.ipynb",
+      "status": "failed",
+      "time": 16.776138305664062,
+      "error": ""
+    },
+    {
+      "notebook": "11_scitex_stats_test_complete.ipynb",
+      "status": "failed",
+      "time": 16.06459069252014,
+      "error": ""
+    },
+    {
+      "notebook": "11_scitex_stats_test_fixed.ipynb",
+      "status": "failed",
+      "time": 19.417166471481323,
+      "error": ""
+    },
+    {
+      "notebook": "02_scitex_gen.ipynb",
+      "status": "error",
+      "time": 93.47678327560425,
+      "error": "DeadKernelError: Kernel died"
+    },
+    {
+      "notebook": "12_scitex_linalg.ipynb",
+      "status": "failed",
+      "time": 36.78864288330078,
+      "error": ""
+    },
+    {
+      "notebook": "15_scitex_pd.ipynb",
+      "status": "failed",
+      "time": 14.646548986434937,
+      "error": ""
+    },
+    {
+      "notebook": "13_scitex_dsp.ipynb",
+      "status": "failed",
+      "time": 48.50008726119995,
+      "error": ""
+    },
+    {
+      "notebook": "16_scitex_scholar.ipynb",
+      "status": "failed",
+      "time": 12.546003103256226,
+      "error": ""
+    },
+    {
+      "notebook": "14_scitex_plt.ipynb",
+      "status": "failed",
+      "time": 43.28602886199951,
+      "error": ""
+    },
+    {
+      "notebook": "19_scitex_db.ipynb",
+      "status": "failed",
+      "time": 17.2321879863739,
+      "error": ""
+    },
+    {
+      "notebook": "17_scitex_nn.ipynb",
+      "status": "success",
+      "time": 33.07494783401489,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/17_scitex_nn_executed.ipynb"
+    },
+    {
+      "notebook": "20_scitex_tex.ipynb",
+      "status": "success",
+      "time": 16.37129497528076,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/20_scitex_tex_executed.ipynb"
+    },
+    {
+      "notebook": "18_scitex_torch.ipynb",
+      "status": "success",
+      "time": 45.037050008773804,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/18_scitex_torch_executed.ipynb"
+    },
+    {
+      "notebook": "21_scitex_decorators.ipynb",
+      "status": "failed",
+      "time": 16.814345121383667,
+      "error": ""
+    },
+    {
+      "notebook": "22_scitex_repro.ipynb",
+      "status": "success",
+      "time": 15.290579795837402,
+      "output": "/home/ywatanabe/proj/SciTeX-Code/examples/22_scitex_repro_executed.ipynb"
+    },
+    {
+      "notebook": "23_scitex_web.ipynb",
+      "status": "failed",
+      "time": 14.05444073677063,
+      "error": ""
+    },
+    {
+      "notebook": "16_scitex_ai.ipynb",
+      "status": "failed",
+      "time": 351.7386853694916,
+      "error": ""
+    }
+  ]
+}
