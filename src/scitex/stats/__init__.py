@@ -10,9 +10,12 @@ from ._nan_stats import nan, real
 from ._p2stars import p2stars
 from ._p2stars_wrapper import p2stars
 from ._statistical_tests import brunner_munzel_test, smirnov_grubbs
+from ._two_sample_tests import ttest_ind, brunner_munzel, mannwhitneyu, ttest, bm_test
 
 __all__ = [
+    "bm_test",
     "bonferroni_correction",
+    "brunner_munzel",
     "brunner_munzel_test",
     "calc_partial_corr",
     "corr_test",
@@ -21,11 +24,13 @@ __all__ = [
     "corr_test_spearman",
     "describe",
     "fdr_correction",
+    "mannwhitneyu",
     "multicompair",
     "nan",
     "nocorrelation_test",
     "p2stars",
-    "p2stars",
     "real",
     "smirnov_grubbs",
+    "ttest",
+    "ttest_ind",
 ]

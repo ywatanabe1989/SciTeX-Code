@@ -10,7 +10,10 @@ import sys
 import traceback
 
 def main():
-    notebook = "./examples/01_scitex_io.ipynb"
+    if len(sys.argv) > 1:
+        notebook = sys.argv[1]
+    else:
+        notebook = "./examples/01_scitex_io.ipynb"
     output = "./test_output.ipynb"
     
     print(f"Testing: {notebook}")
