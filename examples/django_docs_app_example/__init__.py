@@ -1,0 +1,1 @@
+# Django docs app example package

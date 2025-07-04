@@ -71,8 +71,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "to_claude/**"]
 
 # The suffix(es) of source filenames.
 source_suffix = {
-    '.rst': None,
-    '.md': 'myst_parser',
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -121,7 +121,7 @@ myst_enable_extensions = [
     "deflist",
     "html_admonition",
     "html_image",
-    "linkify",
+    # "linkify",  # Disabled - requires linkify-it-py package
     "replacements",
     "smartquotes",
     "substitution",
