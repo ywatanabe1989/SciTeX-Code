@@ -38,8 +38,9 @@ from ..path._getsize import getsize
 from ..str._clean_path import clean_path
 from ..str._color_text import color_text
 from ..str._readable_bytes import readable_bytes
-from ..gen._detect_environment import detect_environment, get_output_directory
-from ..gen._get_notebook_path import get_notebook_name, get_notebook_directory, get_notebook_info_simple
+# Import these inside functions to avoid circular imports
+# from ..gen._detect_environment import detect_environment, get_output_directory
+# from ..gen._get_notebook_path import get_notebook_name, get_notebook_directory, get_notebook_info_simple
 
 # Import save functions from the new modular structure
 from ._save_modules import (
@@ -280,6 +281,10 @@ def save(
 
         # When relative path
         else:
+            # Import here to avoid circular imports
+            from ..gen._detect_environment import detect_environment
+            from ..gen._get_notebook_path import get_notebook_info_simple
+            
             # Detect the current environment
             env_type = detect_environment()
             

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-04 11:00:15
+!-- Timestamp: 2025-07-04 11:42:29
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -20,5 +20,16 @@ Please do not use try-error as much as possible as it is difficult for me to fin
 ## Allow me to create read the docs
 - [ ] Host in Read the Docs
 - [ ] Host in https://scitex.ai (our django app)
+
+
+## Python Env
+Python env is ./.env
+All codes are expected run from the root of this repository `.`
+When cd to different location, it is automatically deactivated.
+
+
+## For circular importing issues
+- [ ] Check importing orders
+- [ ] Import modules in functions (lazy import)
 
 <!-- EOF -->
