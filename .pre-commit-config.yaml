@@ -1,7 +1,32 @@
-# Pre-commit hooks for code quality
+# Pre-commit hooks for SciTeX code quality
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+default_language_version:
+  python: python3.11
+
+# Global exclusions
+exclude: |
+  (?x)^(
+    \.old/.*|
+    legacy_notebooks/.*|
+    .*_executed\.ipynb|
+    .*\.bak.*|
+    build/.*|
+    dist/.*|
+    \.git/.*|
+    \.mypy_cache/.*|
+    \.pytest_cache/.*|
+    __pycache__/.*|
+    \.DS_Store|
+    .*_out/.*|
+    executed/.*|
+    backups/.*
+  )$
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -9,67 +34,93 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=10000']
       - id: check-json
+        exclude: '\.ipynb$'
       - id: check-merge-conflict
       - id: check-toml
       - id: debug-statements
       - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
       
+  # Python code formatting
   - repo: https://github.com/psf/black
-    rev: 24.3.0
+    rev: 24.4.2
     hooks:
       - id: black
-        language_version: python3.10
-        args: ['--line-length=88', '--target-version=py38']
+        language_version: python3.11
+        args: ['--line-length=100', '--target-version=py311']
         
+  # Python import sorting
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-        args: ['--profile=black', '--line-length=88']
+        args: ['--profile=black', '--line-length=100']
         
+  # Python linting
   - repo: https://github.com/pycqa/flake8
     rev: 7.0.0
     hooks:
       - id: flake8
         args: [
-          '--max-line-length=88',
-          '--extend-ignore=E203,W503',
-          '--exclude=.git,__pycache__,docs/,build/,dist/'
+          '--max-line-length=100',
+          '--extend-ignore=E203,W503,E402',
+          '--exclude=.git,__pycache__,docs/,build/,dist/,.old/,legacy_notebooks/'
         ]
         
+  # Type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         additional_dependencies: [types-all]
         args: ['--ignore-missing-imports', '--no-strict-optional']
+        exclude: '^(tests/|examples/|\.old/)'
         
-  - repo: https://github.com/pycqa/pylint
-    rev: v3.1.0
+  # Jupyter notebook cleaning
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
     hooks:
-      - id: pylint
-        args: [
-          '--disable=C0111,C0103,R0903,R0913,W0212',
-          '--max-line-length=88'
-        ]
+      - id: nbstripout
+        args: ['--extra-keys', 'cell.metadata.pycharm']
         
+  # Security checks
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.8
+    hooks:
+      - id: bandit
+        args: ['-ll', '-i']
+        exclude: '^(tests/|examples/)'
+        
+  # Documentation style checks
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        exclude: '^(tests/|examples/|setup\.py)'
+        args: ['--convention=numpy']
+        
+  # Python version upgrade suggestions
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.1
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
-        args: ['--py38-plus']
+        args: ['--py311-plus']
         
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
     hooks:
-      - id: hadolint-docker
+      - id: yamllint
+        args: ['-d', 'relaxed']
         
-  - repo: local
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
     hooks:
-      - id: pytest-check
-        name: pytest-check
-        entry: python -m pytest
-        language: system
-        pass_filenames: false
-        always_run: true
-        args: ['tests/', '-x', '--tb=short']
+      - id: markdownlint
+        args: ['--fix']
+        exclude: '^(\.old/|legacy_notebooks/)'
