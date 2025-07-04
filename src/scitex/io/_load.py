@@ -82,6 +82,10 @@ def load(lpath: str, show: bool = False, verbose: bool = False, **kwargs) -> Any
     >>> model = load('model.pth')
     """
     lpath = clean_path(lpath)
+    
+    # Convert Path objects to strings to avoid AttributeError on string methods
+    if hasattr(lpath, '__fspath__'):  # Check if it's a path-like object
+        lpath = str(lpath)
 
     # Check if it's a glob pattern
     if "*" in lpath or "?" in lpath or "[" in lpath:

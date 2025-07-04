@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-03 12:50:55
+!-- Timestamp: 2025-07-04 11:00:15
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -14,30 +14,11 @@ We have renamed mngs to scitex. Use scitex all the time.
 Please do not use try-error as much as possible as it is difficult for me to find problems. At least, warn error messages.
 
 ## Current Priority: ipynb as examples
-- [ ] Combine example notebooks for same modules under ./examples. By combining the coverages, create comprehensive examples, please. Also, organize combined ipynb with indexes for modules for sorting.
-- [ ] Move obsolete ipnbs to ./examples/legacy_ntoebooks
-- [ ] It is under migration stage so that please prepare ipynb for all modules
-- [ ] Each module should have only one notebook
-- [ ] Entry notebook should have link to all the notebooks as a quickstart
-- [ ] notebooks should have indices with 02d zeropaddings
-- [ ] The modules are in ./src/scitex/*
+- [ ] Run the example notebooks
+- [ ] Note that the environment is /home/ywatanabe/proj/scitex_repo/.env
 
-
-## MCP Servers for translation
-- [x] Do you think MCP servers are usefl? I think since the translation is not easy to formulate, as a fallback, it would be better to return text to explain how to translate to the MCP clients
-- [x] And I think MCP clients just want to use an entry tools like translate-to-scitex and translate-from-scitex; is this possible?
-- [x] How about these tools?
-  - [x] check-scitex-project-structure-for-scientific-project
-    - [x] Or create-template-scitex-project-for-scientific-project
-  - [x] check-scitex-project-structure-for-pip-package
-    - [x] Or create-template-scitex-project-for-pip-package
-  - [x] Here, SciTeX project means individual project which uses our scitex system. See guidelines and examples for SCITEX
-
-## impact_factor pip package ✅ SOLVED ETHICALLY
-- [x] The folowing attempts do not work; could you fix the cause and install impact_factor python package?
-  - [x] pip install impact_factor does not work
-  - [x] git clone git@github.com:suqingdong/impact_factor.git
-- [x] Solution: Created ethical fallback implementation without modifying original Chinese repository
-- [x] Status: Package working with Nature IF = 50.5 ✅
+## Allow me to create read the docs
+- [ ] Host in Read the Docs
+- [ ] Host in https://scitex.ai (our django app)
 
 <!-- EOF -->
