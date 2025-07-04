@@ -1,7 +1,7 @@
 .. SciTeX documentation master file
 
-SciTeX - Python Utility Package for Scientific Computing
-======================================================
+SciTeX - Scientific Tools from Literature to LaTeX Manuscript
+===========================================================
 
 .. image:: https://img.shields.io/pypi/v/scitex.svg
    :target: https://pypi.org/project/scitex/
@@ -11,7 +11,7 @@ SciTeX - Python Utility Package for Scientific Computing
    :target: https://pypi.org/project/scitex/
    :alt: Python versions
 
-**SciTeX** (pronounced "monogusa", meaning "lazy" in Japanese) is a comprehensive Python utility package designed to streamline scientific computing workflows. It provides standardized tools for I/O operations, signal processing, plotting, statistics, and more.
+**SciTeX** (Scientific tools from literature to LaTeX Manuscript) is a comprehensive Python package designed to streamline the entire scientific research workflow - from literature search and data analysis to publication-ready LaTeX manuscripts. It provides standardized tools for I/O operations, signal processing, plotting, statistics, literature management, and more.
 
 Key Features
 ------------

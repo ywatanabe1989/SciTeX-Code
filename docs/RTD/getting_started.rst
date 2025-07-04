@@ -6,7 +6,7 @@ Welcome to SciTeX! This guide will help you get up and running quickly.
 What is SciTeX?
 --------------
 
-SciTeX (Scientific Text utilities) is a comprehensive Python utility package designed to streamline scientific computing workflows. It provides standardized tools for:
+SciTeX (Scientific tools from literature to LaTeX Manuscript) is a comprehensive Python package designed to streamline the entire scientific research workflow. It provides standardized tools for:
 
 * **Data I/O**: Universal file operations for 20+ formats
 * **Visualization**: Publication-ready plotting with automatic data export

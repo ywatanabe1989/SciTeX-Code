@@ -12,6 +12,3 @@ Submodules
 
 .. autosummary::
    :toctree: generated
-   :recursive:
-
-   scitex.plt
