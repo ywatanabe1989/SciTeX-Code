@@ -49,6 +49,10 @@ def geometric_median(xx, dim=-1):
 
 
 if __name__ == "__main__":
+    import sys
+    import matplotlib.pyplot as plt
+    import scitex
+    
     # # Argument Parser
     # import argparse
     # parser = argparse.ArgumentParser(description='')

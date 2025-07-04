@@ -1,0 +1,152 @@
+{
+  "dataset_info": {
+    "total_samples": 1000,
+    "n_features": 20,
+    "n_classes": 3,
+    "class_names": [
+      "Class_A",
+      "Class_B",
+      "Class_C"
+    ],
+    "train_size": 700,
+    "test_size": 300,
+    "class_distribution": {
+      "Class_A": 333,
+      "Class_B": 334,
+      "Class_C": 333
+    }
+  },
+  "classification_results": {
+    "Random Forest": {
+      "accuracy": 0.8833333333333333,
+      "balanced_accuracy": 0.8833333333333333,
+      "precision": 0.8844573829852621,
+      "recall": 0.8833333333333333,
+      "f1_score": 0.8835783375730698,
+      "f1_weighted": 0.8835783375730699,
+      "training_time": 0.6893947124481201,
+      "prediction_time": 0.023984909057617188
+    },
+    "Gradient Boosting": {
+      "accuracy": 0.8633333333333333,
+      "balanced_accuracy": 0.8633333333333333,
+      "precision": 0.8679657493097886,
+      "recall": 0.8633333333333333,
+      "f1_score": 0.8639016793066089,
+      "f1_weighted": 0.863901679306609,
+      "training_time": 3.355766773223877,
+      "prediction_time": 0.010469198226928711
+    },
+    "SVM": {
+      "accuracy": 0.9133333333333333,
+      "balanced_accuracy": 0.9133333333333332,
+      "precision": 0.9145393207233646,
+      "recall": 0.9133333333333332,
+      "f1_score": 0.9131610697264607,
+      "f1_weighted": 0.9131610697264608,
+      "training_time": 0.13746976852416992,
+      "prediction_time": 0.02460312843322754
+    },
+    "Logistic Regression": {
+      "accuracy": 0.82,
+      "balanced_accuracy": 0.82,
+      "precision": 0.8211461232018102,
+      "recall": 0.82,
+      "f1_score": 0.8198416322214745,
+      "f1_weighted": 0.8198416322214744,
+      "training_time": 0.028779029846191406,
+      "prediction_time": 0.002733945846557617
+    },
+    "Naive Bayes": {
+      "accuracy": 0.7666666666666667,
+      "balanced_accuracy": 0.7666666666666666,
+      "precision": 0.7699819880670944,
+      "recall": 0.7666666666666666,
+      "f1_score": 0.7676851117572768,
+      "f1_weighted": 0.7676851117572767,
+      "training_time": 0.005384206771850586,
+      "prediction_time": 0.0024368762969970703
+    },
+    "K-Nearest Neighbors": {
+      "accuracy": 0.8833333333333333,
+      "balanced_accuracy": 0.8833333333333333,
+      "precision": 0.885026373760574,
+      "recall": 0.8833333333333333,
+      "f1_score": 0.8832107753226669,
+      "f1_weighted": 0.8832107753226669,
+      "training_time": 0.003215789794921875,
+      "prediction_time": 0.24176430702209473
+    },
+    "AdaBoost": {
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.75,
+      "precision": 0.7535605452709208,
+      "recall": 0.75,
+      "f1_score": 0.7504133036528381,
+      "f1_weighted": 0.7504133036528381,
+      "training_time": 0.748776912689209,
+      "prediction_time": 0.046637773513793945
+    }
+  },
+  "neural_network_results": {
+    "Small NN": {
+      "architecture": [
+        50
+      ],
+      "n_parameters": 1203,
+      "n_iterations": 59,
+      "accuracy": 0.8466666666666667,
+      "f1_score": 0.8462456400239148,
+      "training_time": 0.409160852432251
+    },
+    "Medium NN": {
+      "architecture": [
+        100,
+        50
+      ],
+      "n_parameters": 7303,
+      "n_iterations": 36,
+      "accuracy": 0.88,
+      "f1_score": 0.8797682002214033,
+      "training_time": -2.048954963684082
+    },
+    "Large NN": {
+      "architecture": [
+        200,
+        100,
+        50
+      ],
+      "n_parameters": 29503,
+      "n_iterations": 37,
+      "accuracy": 0.91,
+      "f1_score": 0.9096967996820721,
+      "training_time": 9.425507068634033
+    },
+    "Deep NN": {
+      "architecture": [
+        150,
+        100,
+        50,
+        25
+      ],
+      "n_parameters": 24653,
+      "n_iterations": 39,
+      "accuracy": 0.9266666666666666,
+      "f1_score": 0.9267560414768536,
+      "training_time": 6.95083475112915
+    }
+  },
+  "clustering_results": {
+    "optimal_k": 4,
+    "silhouette_score": 0.5423556441535576,
+    "pca_variance_explained": 0.8135444505799689,
+    "adjusted_rand_index": 1.0,
+    "normalized_mutual_info": 1.0
+  },
+  "performance_summary": {
+    "best_model": "SVM",
+    "best_accuracy": 0.9133333333333333,
+    "fastest_training": "K-Nearest Neighbors",
+    "best_f1": 0.9131610697264607
+  }
+}

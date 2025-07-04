@@ -61,6 +61,7 @@ Quick Start
    getting_started
    installation
    scitex_guidelines/SciTeX_COMPLETE_REFERENCE
+   examples/index
    tutorials/index
 
 .. toctree::

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elisp-CI Framework: Universal CI/CD Guidelines for Emacs Lisp Projects &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Elisp-CI Framework: Universal CI/CD Guidelines for Emacs Lisp Projects</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/elisp/ci.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-28 07:23:29
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/elisp/ci.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="elisp-ci-framework-universal-ci-cd-guidelines-for-emacs-lisp-projects">
+<h1>Elisp-CI Framework: Universal CI/CD Guidelines for Emacs Lisp Projects<a class="headerlink" href="#elisp-ci-framework-universal-ci-cd-guidelines-for-emacs-lisp-projects" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The Elisp-CI framework provides standardized, zero-configuration CI/CD infrastructure for Emacs Lisp projects. Developed during the ETM project, it addresses the unique challenges of testing across multiple Emacs versions while establishing modern development practices for the Elisp ecosystem.</p>
+<p><strong>Location:</strong> <code class="docutils literal notranslate"><span class="pre">.claude/to_claude/bin/elisp/elisp-ci/elisp-ci</span></code><br />
+<strong>Status:</strong> Production-ready, validated on real projects<br />
+<strong>Compatibility:</strong> Emacs 27.1 through snapshot</p>
+</section>
+<section id="core-philosophy">
+<h2>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h2>
+<section id="zero-configuration">
+<h3>🎯 <strong>Zero Configuration</strong><a class="headerlink" href="#zero-configuration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Works out-of-box with standard Elisp project structures</p></li>
+<li><p>Intelligent defaults for common patterns</p></li>
+<li><p>Minimal setup required for immediate productivity</p></li>
+</ul>
+</section>
+<section id="cross-version-reliability">
+<h3>🔄 <strong>Cross-Version Reliability</strong><a class="headerlink" href="#cross-version-reliability" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Native ERT integration eliminates external framework dependencies</p></li>
+<li><p>Comprehensive load path management</p></li>
+<li><p>Reproducible testing environments via Docker</p></li>
+</ul>
+</section>
+<section id="ecosystem-standardization">
+<h3>🌍 <strong>Ecosystem Standardization</strong><a class="headerlink" href="#ecosystem-standardization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Consistent CI/CD patterns across all Elisp projects</p></li>
+<li><p>Shared best practices and quality gates</p></li>
+<li><p>Community-driven infrastructure</p></li>
+</ul>
+</section>
+</section>
+<section id="quick-start-guide">
+<h2>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h2>
+<section id="installation">
+<h3>1. Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to PATH (recommended)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.claude/to_claude/bin/elisp-ci:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+
+<span class="c1"># Or create system-wide symlink</span>
+sudo<span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>~/.claude/to_claude/bin/elisp-ci/elisp-ci<span class="w"> </span>/usr/local/bin/elisp-ci
+
+<span class="c1"># Verify installation</span>
+elisp-ci<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="project-initialization">
+<h3>2. Project Initialization<a class="headerlink" href="#project-initialization" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>your-elisp-project/
+elisp-ci<span class="w"> </span>init
+</pre></div>
+</div>
+<p><strong>Creates:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.elisp-ci.yml</span></code> - Configuration file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/</span></code> directory with sample test</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code> with common targets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.github/workflows/elisp-ci.yml</span></code> - GitHub Actions workflow</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h3>3. Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test current Emacs version</span>
+elisp-ci<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Test all supported versions  </span>
+elisp-ci<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--all-versions
+
+<span class="c1"># Analyze project structure</span>
+elisp-ci<span class="w"> </span>analyze
+
+<span class="c1"># Validate configuration</span>
+elisp-ci<span class="w"> </span>validate
+</pre></div>
+</div>
+</section>
+</section>
+<section id="project-structure-requirements">
+<h2>Project Structure Requirements<a class="headerlink" href="#project-structure-requirements" title="Link to this heading"></a></h2>
+<section id="standard-layout-recommended">
+<h3>📁 <strong>Standard Layout (Recommended)</strong><a class="headerlink" href="#standard-layout-recommended" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>your-package/
+├── package-name.el           # Main entry point
+├── src/                      # Source files (optional)
+│   ├── package-core.el
+│   └── package-utils.el
+├── tests/                    # Test files
+│   ├── test-package-name.el
+│   └── test-package-core.el
+├── .elisp-ci.yml            # Configuration
+├── Makefile                  # Build automation
+└── .github/workflows/       # CI/CD
+    └── elisp-ci.yml
+</pre></div>
+</div>
+</section>
+<section id="modular-layout-etm-style">
+<h3>🔧 <strong>Modular Layout (ETM Style)</strong><a class="headerlink" href="#modular-layout-etm-style" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>package-name/
+├── package-name.el           # Entry point
+├── module-a/                 # Functional modules
+│   ├── module-a.el
+│   ├── module-a-core.el
+│   └── module-a-utils.el
+├── module-b/
+│   ├── module-b.el
+│   └── module-b-helpers.el
+├── tests/                    # Mirror source structure
+│   ├── test-package-name.el
+│   ├── module-a/
+│   │   ├── test-module-a.el
+│   │   └── test-module-a-core.el
+│   └── module-b/
+│       └── test-module-b.el
+└── .elisp-ci.yml
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration-guide">
+<h2>Configuration Guide<a class="headerlink" href="#configuration-guide" title="Link to this heading"></a></h2>
+<section id="basic-configuration-elisp-ci-yml">
+<h3>📋 <strong>Basic Configuration (.elisp-ci.yml)</strong><a class="headerlink" href="#basic-configuration-elisp-ci-yml" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-package&quot;</span>
+<span class="w">  </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-package.el&quot;</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Brief</span><span class="nv"> </span><span class="s">package</span><span class="nv"> </span><span class="s">description&quot;</span>
+<span class="w">  </span>
+<span class="nt">emacs_versions</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;27.1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;28.2&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;29.1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;29.4&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;snapshot&quot;</span>
+
+<span class="nt">dependencies</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># External packages required for testing</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;dash&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;s&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;f&quot;</span>
+
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">framework</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ert&quot;</span>
+<span class="w">  </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tests/&quot;</span>
+<span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test-*.el&quot;</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<span class="w">  </span><span class="nt">exclude_patterns</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*-manual.el&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*-integration.el&quot;</span>
+<span class="w">  </span>
+<span class="nt">coverage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">  </span><span class="nt">exclude_files</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tests/*&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;examples/*&quot;</span>
+
+<span class="nt">github_actions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">continue_on_error_for_snapshot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">upload_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span>
+<span class="nt">docker</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">base_image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu:22.04&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-configuration">
+<h3>🔧 <strong>Advanced Configuration</strong><a class="headerlink" href="#advanced-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># For complex projects with custom requirements</span>
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">framework</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ert&quot;</span>
+<span class="w">  </span><span class="nt">pre_hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;package-lint-batch-and-exit</span><span class="nv"> </span><span class="s">*.el&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;checkdoc-file</span><span class="nv"> </span><span class="s">*.el&quot;</span>
+<span class="w">  </span><span class="nt">post_hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;cask</span><span class="nv"> </span><span class="s">exec</span><span class="nv"> </span><span class="s">ecukes&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">custom_load_paths</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./lib&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./vendor&quot;</span>
+<span class="w">    </span>
+<span class="w">  </span><span class="nt">environment_variables</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">SOME_CONFIG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test-value&quot;</span>
+<span class="w">    </span><span class="nt">DEBUG_MODE</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+
+<span class="nt">coverage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">85</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;lcov&quot;</span>
+<span class="w">  </span><span class="nt">upload_to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;codecov&quot;</span>
+<span class="w">  </span>
+<span class="nt">performance</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">benchmark_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">baseline_version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;29.1&quot;</span>
+<span class="w">  </span><span class="nt">performance_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w">  </span><span class="c1"># 20% regression threshold</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-best-practices">
+<h2>Testing Best Practices<a class="headerlink" href="#testing-best-practices" title="Link to this heading"></a></h2>
+<section id="ert-test-structure">
+<h3>✅ <strong>ERT Test Structure</strong><a class="headerlink" href="#ert-test-structure" title="Link to this heading"></a></h3>
+<div class="highlight-elisp notranslate"><div class="highlight"><pre><span></span><span class="c1">;;; tests/test-my-package.el</span>
+<span class="c1">;;; Test file for my-package</span>
+<span class="c1">;;; Generated by elisp-ci</span>
+
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;ert</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;my-package</span><span class="p">)</span>
+
+<span class="c1">;; Loadability test (required)</span>
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-my-package-loadable</span><span class="w"> </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Test that package loads correctly.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="p">(</span><span class="nb">featurep</span><span class="w"> </span><span class="ss">&#39;my-package</span><span class="p">)))</span>
+
+<span class="c1">;; Function tests</span>
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-my-function-basic</span><span class="w"> </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Test my-function with basic input.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="p">(</span><span class="nf">equal</span><span class="w"> </span><span class="p">(</span><span class="nv">my-function</span><span class="w"> </span><span class="s">&quot;input&quot;</span><span class="p">)</span><span class="w"> </span><span class="s">&quot;expected-output&quot;</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-my-function-edge-cases</span><span class="w"> </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Test my-function with edge cases.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should-error</span><span class="w"> </span><span class="p">(</span><span class="nv">my-function</span><span class="w"> </span><span class="no">nil</span><span class="p">))</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="p">(</span><span class="nf">equal</span><span class="w"> </span><span class="p">(</span><span class="nv">my-function</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)))</span>
+
+<span class="c1">;; Integration tests</span>
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-my-package-integration</span><span class="w"> </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Test package integration scenarios.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">((</span><span class="nv">temp-buffer</span><span class="w"> </span><span class="p">(</span><span class="nv">generate-new-buffer</span><span class="w"> </span><span class="s">&quot;*test*&quot;</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">(</span><span class="k">unwind-protect</span>
+<span class="w">        </span><span class="p">(</span><span class="nb">with-current-buffer</span><span class="w"> </span><span class="nv">temp-buffer</span>
+<span class="w">          </span><span class="c1">;; Test integration scenario</span>
+<span class="w">          </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="p">(</span><span class="nv">my-package-setup</span><span class="p">))</span>
+<span class="w">          </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="p">(</span><span class="nv">my-package-feature-works</span><span class="p">)))</span>
+<span class="w">      </span><span class="p">(</span><span class="nf">kill-buffer</span><span class="w"> </span><span class="nv">temp-buffer</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">provide</span><span class="w"> </span><span class="ss">&#39;test-my-package</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="test-quality-guidelines">
+<h3>🎯 <strong>Test Quality Guidelines</strong><a class="headerlink" href="#test-quality-guidelines" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Comprehensive Coverage</strong></p>
+<ul class="simple">
+<li><p>Test loadability for every module</p></li>
+<li><p>Cover main functions and edge cases</p></li>
+<li><p>Include integration scenarios</p></li>
+</ul>
+</li>
+<li><p><strong>Test Independence</strong></p>
+<ul class="simple">
+<li><p>Each test should be self-contained</p></li>
+<li><p>No shared state between tests</p></li>
+<li><p>Clean up resources in <code class="docutils literal notranslate"><span class="pre">unwind-protect</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Descriptive Names</strong></p>
+<ul class="simple">
+<li><p>Use clear, descriptive test names</p></li>
+<li><p>Follow pattern: <code class="docutils literal notranslate"><span class="pre">test-module-function-scenario</span></code></p></li>
+<li><p>Include docstrings explaining test purpose</p></li>
+</ul>
+</li>
+<li><p><strong>Error Handling</strong></p>
+<ul class="simple">
+<li><p>Test both success and error cases</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">should-error</span></code> for expected failures</p></li>
+<li><p>Verify error messages when appropriate</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="ci-cd-integration">
+<h2>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h2>
+<section id="github-actions-automatic">
+<h3>🚀 <strong>GitHub Actions (Automatic)</strong><a class="headerlink" href="#github-actions-automatic" title="Link to this heading"></a></h3>
+<p>Elisp-CI generates optimized workflows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Auto-generated .github/workflows/elisp-ci.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Elisp CI</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths-ignore</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;**.md&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;docs/**&#39;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths-ignore</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;**.md&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;docs/**&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.emacs_version == &#39;snapshot&#39; }}</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">emacs_version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;27.1&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;28.2&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;29.1&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;29.4&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;snapshot&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">purcell/setup-emacs@master</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.emacs_version }}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Tests</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elisp-ci test --version ${{ matrix.emacs_version }}</span>
+</pre></div>
+</div>
+</section>
+<section id="docker-integration">
+<h3>🐳 <strong>Docker Integration</strong><a class="headerlink" href="#docker-integration" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build test environment</span>
+elisp-ci<span class="w"> </span>docker-build
+
+<span class="c1"># Test in containers</span>
+elisp-ci<span class="w"> </span>docker-test<span class="w"> </span>--all-versions
+
+<span class="c1"># Custom Docker configuration</span>
+docker:
+<span class="w">  </span>enabled:<span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span>registry:<span class="w"> </span><span class="s2">&quot;ghcr.io/your-org&quot;</span>
+<span class="w">  </span>cache_layers:<span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span>custom_packages:
+<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;git&quot;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;curl&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="local-development-workflow">
+<h3>📊 <strong>Local Development Workflow</strong><a class="headerlink" href="#local-development-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development cycle</span>
+elisp-ci<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--watch<span class="w">           </span><span class="c1"># Continuous testing</span>
+elisp-ci<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--coverage<span class="w">        </span><span class="c1"># Coverage analysis</span>
+elisp-ci<span class="w"> </span>analyze<span class="w">                </span><span class="c1"># Dependency check</span>
+elisp-ci<span class="w"> </span>validate<span class="w">               </span><span class="c1"># Configuration validation</span>
+
+<span class="c1"># Pre-commit workflow</span>
+make<span class="w"> </span><span class="nb">test</span><span class="w">                       </span><span class="c1"># Quick local test</span>
+make<span class="w"> </span>test-all<span class="w">                   </span><span class="c1"># Full version matrix</span>
+make<span class="w"> </span>lint<span class="w">                       </span><span class="c1"># Code quality checks</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
+<section id="dependency-analysis">
+<h3>🔍 <strong>Dependency Analysis</strong><a class="headerlink" href="#dependency-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>elisp-ci<span class="w"> </span>analyze
+
+<span class="c1"># Output example:</span>
+<span class="c1"># [INFO] Analyzing project: my-package</span>
+<span class="c1"># [INFO] Found 15 Elisp files</span>
+<span class="c1"># [INFO] Found 8 test files</span>
+<span class="c1"># [INFO] External dependencies:</span>
+<span class="c1">#   - dash</span>
+<span class="c1">#   - s</span>
+<span class="c1">#   - async</span>
+<span class="c1"># [INFO] Suggestions:</span>
+<span class="c1">#   - Add missing dependencies to .elisp-ci.yml</span>
+<span class="c1">#   - Consider package-lint for style checking</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-benchmarking">
+<h3>📈 <strong>Performance Benchmarking</strong><a class="headerlink" href="#performance-benchmarking" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>elisp-ci<span class="w"> </span>benchmark
+
+<span class="c1"># Results across Emacs versions:</span>
+<span class="c1"># Emacs 27.1: 1.45s (100%)</span>
+<span class="c1"># Emacs 28.2: 1.32s (91.0%)  </span>
+<span class="c1"># Emacs 29.1: 1.28s (88.3%)</span>
+<span class="c1"># Emacs 29.4: 1.21s (83.4%)</span>
+<span class="c1"># Snapshot:   1.18s (81.4%)</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage-reporting">
+<h3>📋 <strong>Coverage Reporting</strong><a class="headerlink" href="#coverage-reporting" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># .elisp-ci.yml</span>
+<span class="nt">coverage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">85</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;lcov&quot;</span>
+<span class="w">  </span><span class="nt">upload_to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;codecov&quot;</span>
+<span class="w">  </span><span class="nt">exclude_files</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tests/*&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;examples/*&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="migration-guide">
+<h2>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading"></a></h2>
+<section id="from-existing-ci">
+<h3>🔄 <strong>From Existing CI</strong><a class="headerlink" href="#from-existing-ci" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Backup Current Setup</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>.github/workflows<span class="w"> </span>.github/workflows.backup
+</pre></div>
+</div>
+</li>
+<li><p><strong>Initialize Elisp-CI</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>elisp-ci<span class="w"> </span>init
+</pre></div>
+</div>
+</li>
+<li><p><strong>Compare and Merge</strong></p>
+<ul class="simple">
+<li><p>Review generated vs existing workflows</p></li>
+<li><p>Merge custom configurations</p></li>
+<li><p>Test incrementally</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="package-el-projects">
+<h3>📦 <strong>Package.el Projects</strong><a class="headerlink" href="#package-el-projects" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># .elisp-ci.yml for package.el projects</span>
+<span class="nt">project</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-package&quot;</span>
+<span class="w">  </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-package.el&quot;</span>
+
+<span class="nt">dependencies</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;package-lint&quot;</span>
+
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pre_hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;package-lint-batch-and-exit</span><span class="nv"> </span><span class="s">my-package.el&quot;</span>
+<span class="w">  </span><span class="nt">framework</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ert&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="large-complex-projects">
+<h3>🏗️ <strong>Large/Complex Projects</strong><a class="headerlink" href="#large-complex-projects" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration for complex projects</span>
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<span class="w">  </span><span class="nt">parallel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">custom_load_paths</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./lib&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./modules/*&quot;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">test_suites</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">unit</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test-*.el&quot;</span>
+<span class="w">      </span><span class="nt">exclude</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;*-integration.el&quot;</span>
+<span class="w">    </span><span class="nt">integration</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;*-integration.el&quot;</span>
+<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting-guide">
+<h2>Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>🚨 <strong>Common Issues</strong><a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>1. Tests Not Found</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check configuration</span>
+elisp-ci<span class="w"> </span>validate
+
+<span class="c1"># Verify test structure</span>
+find<span class="w"> </span>tests<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;test-*.el&quot;</span>
+
+<span class="c1"># Adjust pattern if needed</span>
+test:
+<span class="w">  </span>pattern:<span class="w"> </span><span class="s2">&quot;*-test.el&quot;</span><span class="w">  </span><span class="c1"># Alternative pattern</span>
+</pre></div>
+</div>
+<p><strong>2. Dependency Loading Issues</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze dependencies</span>
+elisp-ci<span class="w"> </span>analyze
+
+<span class="c1"># Add missing dependencies</span>
+dependencies:
+<span class="w">  </span>-<span class="w"> </span><span class="s2">&quot;missing-package&quot;</span>
+
+<span class="c1"># Check load paths</span>
+test:
+<span class="w">  </span>custom_load_paths:
+<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;./vendor&quot;</span>
+</pre></div>
+</div>
+<p><strong>3. Version-Specific Failures</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test specific version locally</span>
+elisp-ci<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--version<span class="w"> </span><span class="m">27</span>.1
+
+<span class="c1"># Allow snapshot failures</span>
+github_actions:
+<span class="w">  </span>continue_on_error_for_snapshot:<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+<p><strong>4. Docker Issues</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rebuild Docker images</span>
+elisp-ci<span class="w"> </span>docker-build
+
+<span class="c1"># Clear cache</span>
+docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a
+
+<span class="c1"># Check Docker configuration</span>
+docker:
+<span class="w">  </span>enabled:<span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span>base_image:<span class="w"> </span><span class="s2">&quot;ubuntu:20.04&quot;</span><span class="w">  </span><span class="c1"># Try different base</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-optimization">
+<h3>🔧 <strong>Performance Optimization</strong><a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimize CI performance</span>
+<span class="nt">github_actions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cache_dependencies</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">parallel_jobs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">  </span>
+<span class="nt">docker</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cache_layers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">multi_stage_build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">parallel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w">  </span><span class="c1"># Reduce if tests are fast</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices-summary">
+<h2>Best Practices Summary<a class="headerlink" href="#best-practices-summary" title="Link to this heading"></a></h2>
+<section id="do">
+<h3>✅ <strong>DO</strong><a class="headerlink" href="#do" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use Standard Structure</strong></p>
+<ul class="simple">
+<li><p>Follow conventional directory layout</p></li>
+<li><p>Use descriptive file and function names</p></li>
+<li><p>Mirror test structure to source structure</p></li>
+</ul>
+</li>
+<li><p><strong>Write Quality Tests</strong></p>
+<ul class="simple">
+<li><p>Test loadability for all modules</p></li>
+<li><p>Cover edge cases and error conditions</p></li>
+<li><p>Use clear, descriptive test names</p></li>
+</ul>
+</li>
+<li><p><strong>Configure Appropriately</strong></p>
+<ul class="simple">
+<li><p>Specify all external dependencies</p></li>
+<li><p>Set reasonable timeouts</p></li>
+<li><p>Enable coverage reporting</p></li>
+</ul>
+</li>
+<li><p><strong>Maintain Documentation</strong></p>
+<ul class="simple">
+<li><p>Keep README updated with elisp-ci usage</p></li>
+<li><p>Document any custom configuration</p></li>
+<li><p>Include badge showing CI status</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="dont">
+<h3>❌ <strong>DON’T</strong><a class="headerlink" href="#dont" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Don’t Override Defaults Unnecessarily</strong></p>
+<ul class="simple">
+<li><p>Trust elisp-ci’s intelligent defaults</p></li>
+<li><p>Only customize when needed</p></li>
+<li><p>Keep configuration minimal</p></li>
+</ul>
+</li>
+<li><p><strong>Don’t Skip Testing</strong></p>
+<ul class="simple">
+<li><p>Test all supported Emacs versions</p></li>
+<li><p>Don’t ignore test failures</p></li>
+<li><p>Maintain good test coverage</p></li>
+</ul>
+</li>
+<li><p><strong>Don’t Ignore Dependencies</strong></p>
+<ul class="simple">
+<li><p>Declare all external dependencies</p></li>
+<li><p>Avoid assuming packages are available</p></li>
+<li><p>Test in clean environments</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="integration-examples">
+<h2>Integration Examples<a class="headerlink" href="#integration-examples" title="Link to this heading"></a></h2>
+<section id="real-world-success-etm-project">
+<h3>🎯 <strong>Real-World Success: ETM Project</strong><a class="headerlink" href="#real-world-success-etm-project" title="Link to this heading"></a></h3>
+<p>The Emacs Tab Manager serves as the reference implementation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ETM&#39;s elisp-ci usage</span>
+<span class="nb">cd</span><span class="w"> </span>emacs-tab-manager/
+elisp-ci<span class="w"> </span>analyze
+<span class="c1"># → Found 59 Elisp files, 25 test files</span>
+<span class="c1"># → 100% CI success across all Emacs versions</span>
+
+elisp-ci<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--all-versions
+<span class="c1"># → ✅ All tests pass on 27.1, 28.2, 29.1, 29.4, snapshot</span>
+</pre></div>
+</div>
+<p><strong>Results:</strong></p>
+<ul class="simple">
+<li><p><strong>Before Elisp-CI</strong>: 0% CI success rate</p></li>
+<li><p><strong>After Elisp-CI</strong>: 100% CI success rate</p></li>
+<li><p><strong>Impact</strong>: Production-ready CI/CD in hours, not days</p></li>
+</ul>
+</section>
+<section id="community-adoption-template">
+<h3>📊 <strong>Community Adoption Template</strong><a class="headerlink" href="#community-adoption-template" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard adoption workflow</span>
+git<span class="w"> </span>clone<span class="w"> </span>your-elisp-project
+<span class="nb">cd</span><span class="w"> </span>your-elisp-project
+elisp-ci<span class="w"> </span>init
+git<span class="w"> </span>add<span class="w"> </span>.elisp-ci.yml<span class="w"> </span>Makefile<span class="w"> </span>.github/workflows/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add elisp-ci framework&quot;</span>
+git<span class="w"> </span>push
+<span class="c1"># → Automatic CI/CD now active</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="future-enhancements">
+<h2>Future Enhancements<a class="headerlink" href="#future-enhancements" title="Link to this heading"></a></h2>
+<section id="planned-features">
+<h3>🔮 <strong>Planned Features</strong><a class="headerlink" href="#planned-features" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Enhanced IDE Integration</strong></p>
+<ul class="simple">
+<li><p>VS Code extension</p></li>
+<li><p>Emacs interactive mode</p></li>
+<li><p>Real-time test feedback</p></li>
+</ul>
+</li>
+<li><p><strong>Advanced Analytics</strong></p>
+<ul class="simple">
+<li><p>Performance trending</p></li>
+<li><p>Coverage visualization</p></li>
+<li><p>Dependency analysis</p></li>
+</ul>
+</li>
+<li><p><strong>Community Features</strong></p>
+<ul class="simple">
+<li><p>Shared configuration templates</p></li>
+<li><p>Package quality metrics</p></li>
+<li><p>Best practice recommendations</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="support-and-community">
+<h2>Support and Community<a class="headerlink" href="#support-and-community" title="Link to this heading"></a></h2>
+<section id="resources">
+<h3>📚 <strong>Resources</strong><a class="headerlink" href="#resources" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Documentation</strong>: <code class="docutils literal notranslate"><span class="pre">elisp-ci</span> <span class="pre">--help</span></code> and README.md</p></li>
+<li><p><strong>Examples</strong>: ETM project as reference implementation</p></li>
+<li><p><strong>Issues</strong>: Report via GitHub for host projects</p></li>
+</ul>
+</section>
+<section id="contributing">
+<h3>🤝 <strong>Contributing</strong><a class="headerlink" href="#contributing" title="Link to this heading"></a></h3>
+<p>The elisp-ci framework is designed to serve the entire Emacs community:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Contribute improvements</span>
+<span class="nb">cd</span><span class="w"> </span>~/.claude/to_claude/bin/elisp-ci/
+<span class="c1"># ... make enhancements ...</span>
+<span class="c1"># Submit via host project channels</span>
+</pre></div>
+</div>
+</section>
+<section id="adoption-benefits">
+<h3>🌟 <strong>Adoption Benefits</strong><a class="headerlink" href="#adoption-benefits" title="Link to this heading"></a></h3>
+<p><strong>For Maintainers:</strong></p>
+<ul class="simple">
+<li><p>Reduced CI/CD setup time</p></li>
+<li><p>Standardized quality gates</p></li>
+<li><p>Cross-version compatibility assurance</p></li>
+</ul>
+<p><strong>For Contributors:</strong></p>
+<ul class="simple">
+<li><p>Familiar development workflows</p></li>
+<li><p>Clear test feedback</p></li>
+<li><p>Consistent project structures</p></li>
+</ul>
+<p><strong>For Users:</strong></p>
+<ul class="simple">
+<li><p>Higher quality packages</p></li>
+<li><p>Better compatibility information</p></li>
+<li><p>More reliable software</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="your-understanding-check">
+<h2>Your Understanding Check<a class="headerlink" href="#your-understanding-check" title="Link to this heading"></a></h2>
+<p>Did you understand the Elisp-CI framework guidelines? If yes, please confirm:</p>
+<p><code class="docutils literal notranslate"><span class="pre">CLAUDE</span> <span class="pre">UNDERSTOOD:</span> <span class="pre">/home/ywatanabe/.claude/to_claude/guidelines/IMPORTANT-guidelines-programming-Elisp-CI-Framework-Rules.md</span></code></p>
+<hr class="docutils" />
+<p><strong>Elisp-CI Framework</strong> - Bringing modern CI/CD practices to the Emacs Lisp ecosystem, one project at a time! 🚀</p>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

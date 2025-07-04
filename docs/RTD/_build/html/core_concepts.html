@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Concepts &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=51b770b3"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Concepts</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/core_concepts.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-concepts">
+<h1>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h1>
+<p>Understanding these core concepts will help you use MNGS effectively.</p>
+<section id="philosophy">
+<h2>Philosophy<a class="headerlink" href="#philosophy" title="Link to this heading"></a></h2>
+<p>MNGS (monogusa - “lazy” in Japanese) embodies the principle of making scientific computing as effortless as possible while maintaining rigor and reproducibility.</p>
+</section>
+<section id="key-principles">
+<h2>Key Principles<a class="headerlink" href="#key-principles" title="Link to this heading"></a></h2>
+<section id="automatic-everything">
+<h3>1. Automatic Everything<a class="headerlink" href="#automatic-everything" title="Link to this heading"></a></h3>
+<p>MNGS automates common tasks that researchers often forget:</p>
+<ul class="simple">
+<li><p><strong>Logging</strong>: All output is automatically logged with timestamps</p></li>
+<li><p><strong>Data Export</strong>: Plots automatically save their underlying data</p></li>
+<li><p><strong>Path Management</strong>: Output directories are created with timestamps</p></li>
+<li><p><strong>Format Detection</strong>: File I/O automatically detects formats</p></li>
+</ul>
+</section>
+<section id="consistent-interface">
+<h3>2. Consistent Interface<a class="headerlink" href="#consistent-interface" title="Link to this heading"></a></h3>
+<p>All MNGS modules follow similar patterns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Loading any file type</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;file.ext&quot;</span><span class="p">)</span>  <span class="c1"># Works for .pkl, .npy, .csv, .mat, etc.</span>
+
+<span class="c1"># Saving any data</span>
+<span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;output.ext&quot;</span><span class="p">)</span>  <span class="c1"># Format inferred from extension</span>
+
+<span class="c1"># Creating directories</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="s2">&quot;./results&quot;</span><span class="p">)</span>  <span class="c1"># Always creates timestamped subdirs</span>
+</pre></div>
+</div>
+</section>
+<section id="session-management">
+<h3>3. Session Management<a class="headerlink" href="#session-management" title="Link to this heading"></a></h3>
+<p>The session pattern ensures proper initialization and cleanup:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start session</span>
+<span class="n">CONFIG</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">plt</span><span class="p">,</span> <span class="n">CC</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+
+<span class="c1"># Your work here</span>
+
+<span class="c1"># Clean up - ensures logs are saved</span>
+<span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This pattern:
+- Redirects stdout/stderr to log files
+- Loads configuration
+- Sets up matplotlib
+- Ensures cleanup even if errors occur</p>
+</section>
+<section id="data-preservation">
+<h3>4. Data Preservation<a class="headerlink" href="#data-preservation" title="Link to this heading"></a></h3>
+<p>MNGS prioritizes data preservation:</p>
+<ul class="simple">
+<li><p><strong>Plots</strong>: Every plot saves its data to CSV</p></li>
+<li><p><strong>Logs</strong>: All console output is preserved</p></li>
+<li><p><strong>Configs</strong>: Settings are saved with results</p></li>
+<li><p><strong>Timestamps</strong>: Everything is timestamped</p></li>
+</ul>
+<p>Example with plotting:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;plot.png&quot;</span><span class="p">)</span>
+<span class="c1"># Automatically creates plot.csv with the data</span>
+</pre></div>
+</div>
+</section>
+<section id="scientific-workflow-integration">
+<h3>5. Scientific Workflow Integration<a class="headerlink" href="#scientific-workflow-integration" title="Link to this heading"></a></h3>
+<p>MNGS is designed for typical scientific workflows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Load experimental data</span>
+<span class="n">raw_data</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;experiment_001.mat&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Process signals</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dsp</span><span class="o">.</span><span class="n">filt</span><span class="o">.</span><span class="n">bandpass</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;signal&#39;</span><span class="p">],</span> <span class="n">fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 3. Statistical analysis</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">corr_test</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;behavior&#39;</span><span class="p">])</span>
+
+<span class="c1"># 4. Visualization</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">filtered</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;correlation&#39;</span><span class="p">])</span>
+
+<span class="c1"># 5. Save everything</span>
+<span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="s2">&quot;./results&quot;</span><span class="p">)</span>
+<span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">spath</span> <span class="o">+</span> <span class="s2">&quot;analysis.pkl&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">spath</span> <span class="o">+</span> <span class="s2">&quot;figures.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<section id="module-organization">
+<h3>Module Organization<a class="headerlink" href="#module-organization" title="Link to this heading"></a></h3>
+<p>MNGS is organized into focused modules:</p>
+<ul class="simple">
+<li><p><strong>Core</strong>: <code class="docutils literal notranslate"><span class="pre">gen</span></code>, <code class="docutils literal notranslate"><span class="pre">io</span></code> - Essential functionality</p></li>
+<li><p><strong>Analysis</strong>: <code class="docutils literal notranslate"><span class="pre">stats</span></code>, <code class="docutils literal notranslate"><span class="pre">pd</span></code> - Data analysis tools</p></li>
+<li><p><strong>Visualization</strong>: <code class="docutils literal notranslate"><span class="pre">plt</span></code> - Enhanced plotting</p></li>
+<li><p><strong>Signal Processing</strong>: <code class="docutils literal notranslate"><span class="pre">dsp</span></code>, <code class="docutils literal notranslate"><span class="pre">nn</span></code> - DSP and neural networks</p></li>
+<li><p><strong>Machine Learning</strong>: <code class="docutils literal notranslate"><span class="pre">ai</span></code> - ML utilities</p></li>
+<li><p><strong>Utilities</strong>: <code class="docutils literal notranslate"><span class="pre">path</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">decorators</span></code></p></li>
+</ul>
+</section>
+<section id="dependency-management">
+<h3>Dependency Management<a class="headerlink" href="#dependency-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Core modules (<code class="docutils literal notranslate"><span class="pre">gen</span></code>, <code class="docutils literal notranslate"><span class="pre">io</span></code>) have minimal dependencies</p></li>
+<li><p>Specialized modules load dependencies on demand</p></li>
+<li><p>GPU operations fall back to CPU if CUDA unavailable</p></li>
+</ul>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<p>MNGS uses defensive programming:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automatic format detection with fallbacks</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;file.unknown&quot;</span><span class="p">)</span>  <span class="c1"># Tries multiple loaders</span>
+
+<span class="c1"># Graceful degradation</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dsp</span><span class="o">.</span><span class="n">filt</span><span class="o">.</span><span class="n">bandpass</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>  <span class="c1"># Uses GPU if available, else CPU</span>
+
+<span class="c1"># Robust statistics</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Handles NaN, inf gracefully</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Use Configuration Files</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># config.yaml</span>
+<span class="nt">PROJECT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MyExperiment&quot;</span>
+<span class="nt">DATA_DIR</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./data&quot;</span>
+<span class="nt">RESULTS_DIR</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./results&quot;</span>
+
+<span class="nt">PROCESSING</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SAMPLE_RATE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">  </span><span class="nt">FILTER_CUTOFF</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">50</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Leverage Timestamps</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creates: ./results/20250530-141523-12345/</span>
+<span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="s2">&quot;./results&quot;</span><span class="p">)</span>
+
+<span class="c1"># Organize by experiment</span>
+<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">trials</span><span class="p">:</span>
+    <span class="n">trial_path</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spath</span><span class="si">}</span><span class="s2">/trial_</span><span class="si">{</span><span class="n">trial</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Chain Operations</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process pipeline</span>
+<span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;raw.pkl&quot;</span><span class="p">)</span>
+ <span class="o">|&gt;</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dsp</span><span class="o">.</span><span class="n">filt</span><span class="o">.</span><span class="n">bandpass</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;signal&#39;</span><span class="p">],</span> <span class="n">fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+ <span class="o">|&gt;</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dsp</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+ <span class="o">|&gt;</span> <span class="k">lambda</span> <span class="n">h</span><span class="p">:</span> <span class="n">scitex</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+ <span class="o">|&gt;</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;results.pkl&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use Context Managers</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Some modules provide context managers</span>
+<span class="k">with</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">timed</span><span class="p">(</span><span class="s2">&quot;Processing&quot;</span><span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">heavy_computation</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="common-patterns">
+<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<section id="experiment-template">
+<h3>Experiment Template<a class="headerlink" href="#experiment-template" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scitex</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Initialize</span>
+    <span class="n">CONFIG</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">plt</span><span class="p">,</span> <span class="n">CC</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
+        <span class="n">sys</span><span class="p">,</span> <span class="n">plt</span><span class="p">,</span>
+        <span class="n">CONFIG</span><span class="o">=</span><span class="s2">&quot;./config/experiment.yaml&quot;</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Setup</span>
+        <span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;RESULTS_DIR&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Load data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DATA_FILE&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Process</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;PARAMS&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Save</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">spath</span> <span class="o">+</span> <span class="s2">&quot;results.pkl&quot;</span><span class="p">)</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">,</span> <span class="n">spath</span> <span class="o">+</span> <span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Visualize</span>
+        <span class="n">plot_results</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">spath</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-processing">
+<h3>Batch Processing<a class="headerlink" href="#batch-processing" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process multiple subjects</span>
+<span class="k">for</span> <span class="n">subject_id</span> <span class="ow">in</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;./data/sub-*&quot;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">timed</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">subject_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subject_id</span><span class="si">}</span><span class="s2">/data.pkl&quot;</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">process_subject</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;./results/</span><span class="si">{</span><span class="n">subject_id</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">spath</span> <span class="o">+</span> <span class="s2">&quot;processed.pkl&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

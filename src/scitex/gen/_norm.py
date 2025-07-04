@@ -79,9 +79,20 @@ def to_01(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Min-max scaled tensor
     """
-    x_min = x.min(dim=dim, keepdim=True)[0]
-    x_max = x.max(dim=dim, keepdim=True)[0]
-    return (x - x_min) / (x_max - x_min)
+    # Use dim if provided, otherwise use axis
+    dimension = dim if dim is not None else axis
+    
+    if dimension is None:
+        # Scale entire tensor
+        x_min = x.min()
+        x_max = x.max()
+    else:
+        # Scale along specified dimension
+        x_min = x.min(dim=dimension, keepdim=True)[0]
+        x_max = x.max(dim=dimension, keepdim=True)[0]
+    
+    # Avoid division by zero
+    return (x - x_min) / (x_max - x_min + 1e-8)
 
 
 @torch_fn
@@ -104,9 +115,20 @@ def to_nan01(x, axis=-1, dim=None, device="cuda"):
     torch.Tensor
         Min-max scaled tensor with NaN handling
     """
-    x_min = torch.nanmin(x, dim=dim, keepdim=True)[0]
-    x_max = torch.nanmax(x, dim=dim, keepdim=True)[0]
-    return (x - x_min) / (x_max - x_min)
+    # Use dim if provided, otherwise use axis
+    dimension = dim if dim is not None else axis
+    
+    if dimension is None:
+        # Scale entire tensor
+        x_min = torch.nanmin(x)
+        x_max = torch.nanmax(x)
+    else:
+        # Scale along specified dimension
+        x_min = torch.nanmin(x, dim=dimension, keepdim=True)[0]
+        x_max = torch.nanmax(x, dim=dimension, keepdim=True)[0]
+    
+    # Avoid division by zero
+    return (x - x_min) / (x_max - x_min + 1e-8)
 
 
 @torch_fn
@@ -139,7 +161,7 @@ def unbias(x, axis=-1, dim=None, fn="mean", device="cuda"):
 
 
 @torch_fn
-def clip_perc(x, lower_perc=2.5, upper_perc=97.5, axis=-1, dim=None, device="cuda"):
+def clip_perc(x, lower_perc=2.5, upper_perc=97.5, low=None, high=None, axis=-1, dim=None, device="cuda"):
     """Clips tensor values between specified percentiles along dimension.
 
     Parameters
@@ -150,6 +172,10 @@ def clip_perc(x, lower_perc=2.5, upper_perc=97.5, axis=-1, dim=None, device="cud
         Lower percentile (0-100)
     upper_perc : float
         Upper percentile (0-100)
+    low : float, optional
+        Alternative name for lower_perc
+    high : float, optional
+        Alternative name for upper_perc
     dim : int
         Dimension along which to compute percentiles (preferred)
     axis : int
@@ -162,8 +188,17 @@ def clip_perc(x, lower_perc=2.5, upper_perc=97.5, axis=-1, dim=None, device="cud
     torch.Tensor
         Clipped tensor
     """
-    lower = torch.quantile(x, lower_perc / 100, dim=dim, keepdim=True)
-    upper = torch.quantile(x, upper_perc / 100, dim=dim, keepdim=True)
+    # Handle alternative parameter names
+    if low is not None:
+        lower_perc = low
+    if high is not None:
+        upper_perc = high
+        
+    # Use dim if provided, otherwise use axis
+    dimension = dim if dim is not None else axis
+    
+    lower = torch.quantile(x, lower_perc / 100, dim=dimension, keepdim=True)
+    upper = torch.quantile(x, upper_perc / 100, dim=dimension, keepdim=True)
     return torch.clamp(x, min=lower, max=upper)
 
 

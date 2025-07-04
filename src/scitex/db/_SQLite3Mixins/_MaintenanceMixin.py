@@ -8,6 +8,7 @@ THIS_FILE = (
 )
 
 import contextlib
+import os
 import sqlite3
 from typing import Callable
 from typing import ContextManager, Dict, List, Optional

@@ -6,7 +6,7 @@
 
 
 # SciTeX
-A Python framework for standardized scientific projects with AI-powered development tools.
+Scientific tools from literature to LaTeX Manuscript - A comprehensive Python framework for the entire scientific research workflow.
 
 <!-- badges -->
 [![PyPI version](https://badge.fury.io/py/scitex.svg)](https://badge.fury.io/py/scitex)
@@ -121,9 +121,22 @@ See [MCP Servers Documentation](./mcp_servers/README.md) for details.
 
 ## 📖 Documentation
 
-- **[Full Documentation](https://scitex.readthedocs.io/)**: Complete API reference and guides
-- **[Examples](./examples/)**: Practical examples and workflows
+### Online Documentation
+- **[Read the Docs](https://scitex.readthedocs.io/)**: Complete API reference and guides
+- **[Interactive Examples](https://scitex.readthedocs.io/en/latest/examples/index.html)**: Browse all tutorial notebooks
+- **[Quick Start Guide](https://scitex.readthedocs.io/en/latest/getting_started.html)**: Get up and running quickly
+
+### Local Resources
+- **[Master Tutorial Index](./examples/00_SCITEX_MASTER_INDEX.ipynb)**: Comprehensive guide to all features
+- **[Examples Directory](./examples/)**: 25+ Jupyter notebooks covering all modules
 - **[Module List](./docs/scitex_modules.csv)**: Complete list of all functions
+
+### Key Tutorials
+1. **[I/O Operations](./examples/01_scitex_io.ipynb)**: Essential file handling (start here!)
+2. **[Plotting](./examples/14_scitex_plt.ipynb)**: Publication-ready visualizations
+3. **[Statistics](./examples/11_scitex_stats.ipynb)**: Research-grade statistical analysis
+4. **[Scholar](./examples/16_scitex_scholar.ipynb)**: Literature management with impact factors
+5. **[AI/ML](./examples/16_scitex_ai.ipynb)**: Complete machine learning toolkit
 
 ## 🤝 Contributing
 

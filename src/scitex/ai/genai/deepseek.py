@@ -172,6 +172,14 @@ if __name__ == "__main__":
     # -----------------------------------
     # Main
     # -----------------------------------
+    def main():
+        # Example usage
+        client = DeepSeek()
+        prompt = "Hello, how can I help you?"
+        response = client.complete(prompt)
+        print(response)
+        return 0
+    
     exit_status = main()
 
     # -----------------------------------

@@ -45,7 +45,7 @@ class AnthropicProvider(BaseProvider):
         try:
             from anthropic import Anthropic as AnthropicClient
 
-            self.client = AnthropicClient(api_key=api_key)
+            self.client = AnthropicClient(api_key=self.api_key)
         except ImportError:
             raise ImportError(
                 "Anthropic package not installed. Install with: pip install anthropic"

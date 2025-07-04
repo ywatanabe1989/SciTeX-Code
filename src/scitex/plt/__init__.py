@@ -22,8 +22,8 @@ def subplots(*args, **kwargs):
     """Lazy-loaded subplots function."""
     global _subplots
     if _subplots is None:
-        from ._subplots._SubplotsWrapper import subplots as _subplots_impl
-        _subplots = _subplots_impl
+        from ._subplots._SubplotsWrapper import subplots as _subplots_func
+        _subplots = _subplots_func
     return _subplots(*args, **kwargs)
 
 __all__ = [

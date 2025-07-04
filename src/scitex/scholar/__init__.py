@@ -11,6 +11,15 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex scholar module for scientific literature search and analysis."""
 
+# PRIMARY INTERFACE - NEW unified Scholar class (enhanced interface)
+from ._scholar import Scholar, PaperCollection
+
+# Legacy Scholar class available as ScholarLegacy
+try:
+    from .scholar import Scholar as ScholarLegacy
+except ImportError:
+    ScholarLegacy = None
+
 # Core legacy imports
 from ._local_search import LocalSearchEngine
 from ._paper import Paper
@@ -71,6 +80,12 @@ except ImportError:
     EnhancedJournalMetrics = None
 
 __all__ = [
+    # PRIMARY INTERFACE - Use these for new code
+    "Scholar",                    # Main unified interface (new enhanced)
+    "PaperCollection",           # Container for search results
+    "ScholarLegacy",             # Legacy Scholar class
+    
+    # Legacy components - for backward compatibility
     "build_index",
     "enhance_bibliography_with_metrics",
     "EnhancedJournalMetrics",

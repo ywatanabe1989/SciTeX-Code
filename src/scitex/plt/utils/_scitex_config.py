@@ -12,6 +12,7 @@ import yaml
 from pathlib import Path
 from typing import Dict, Any, Optional
 import json
+import pandas as pd
 
 
 class SciTeXConfig:

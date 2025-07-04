@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>05 SciTeX Path &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="09 SciTeX Os" href="09_scitex_os.html" />
+    <link rel="prev" title="01 SciTeX Io" href="01_scitex_io.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">05 SciTeX Path</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/05_scitex_path.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-path">
+<h1>05 SciTeX Path<a class="headerlink" href="#scitex-path" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/05_scitex_path.ipynb">05_scitex_path.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>05_scitex_path.ipynb
+</pre></div>
+</div>
+</div>
+<p>This comprehensive notebook demonstrates the SciTeX path module
+capabilities, covering path manipulation, file system operations, and
+directory management.</p>
+<section id="features-covered">
+<h2>Features Covered<a class="headerlink" href="#features-covered" title="Link to this heading"></a></h2>
+<section id="path-operations">
+<h3>Path Operations<a class="headerlink" href="#path-operations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Path cleaning and normalization</p></li>
+<li><p>Directory and file finding</p></li>
+<li><p>Path splitting and parsing</p></li>
+<li><p>Current directory utilities</p></li>
+</ul>
+</section>
+<section id="file-system-navigation">
+<h3>File System Navigation<a class="headerlink" href="#file-system-navigation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Git repository detection</p></li>
+<li><p>Module path resolution</p></li>
+<li><p>Size calculations</p></li>
+<li><p>Version management</p></li>
+</ul>
+</section>
+<section id="advanced-features">
+<h3>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Smart path creation</p></li>
+<li><p>Version incrementing</p></li>
+<li><p>Latest file detection</p></li>
+<li><p>Package data access</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../src&#39;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scitex</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="c1"># Set up example data directory</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./path_examples&quot;</span><span class="p">)</span>
+<span class="n">data_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SciTeX Path Management Tutorial - Ready to begin!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available path functions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Functions: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">__all__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-1-basic-path-operations">
+<h2>Part 1: Basic Path Operations<a class="headerlink" href="#part-1-basic-path-operations" title="Link to this heading"></a></h2>
+<section id="current-path-detection">
+<h3>1.1 Current Path Detection<a class="headerlink" href="#current-path-detection" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get current path information</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current Path Information:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Get this path (current file/notebook location)</span>
+    <span class="n">this_path</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">this_path</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This path: </span><span class="si">{</span><span class="n">this_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Alternative method</span>
+    <span class="n">this_path_alt</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_this_path</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This path (alt): </span><span class="si">{</span><span class="n">this_path_alt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Current working directory</span>
+    <span class="n">current_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current working directory: </span><span class="si">{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Path relationships</span>
+    <span class="k">if</span> <span class="n">this_path</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parent directory: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">this_path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File name: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">this_path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File stem: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">this_path</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File suffix: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">this_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting path information: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Demonstrate path existence</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Path Existence Checks:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="n">test_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;../src&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;../src/scitex&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;../src/scitex/path&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;./path_examples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;./nonexistent_directory&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;../requirements.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;../nonexistent_file.txt&quot;</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">path_str</span> <span class="ow">in</span> <span class="n">test_paths</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_str</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">&#39;:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Exists: </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Is file: </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Is directory: </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Absolute: </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="path-cleaning-and-normalization">
+<h3>1.2 Path Cleaning and Normalization<a class="headerlink" href="#path-cleaning-and-normalization" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Path cleaning examples</span>
+<span class="n">messy_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;./data/../data/./file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/home/user//double//slashes///file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;~/data/./current/./directory/file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;..</span><span class="se">\\</span><span class="s2">windows</span><span class="se">\\</span><span class="s2">style</span><span class="se">\\</span><span class="s2">path</span><span class="se">\\</span><span class="s2">file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;relative/path/with/../redundant/../elements/file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/absolute/path/with/./current/./references/file.txt&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Path Cleaning:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">messy_path</span> <span class="ow">in</span> <span class="n">messy_paths</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cleaned</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">messy_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: &#39;</span><span class="si">{</span><span class="n">messy_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleaned:  &#39;</span><span class="si">{</span><span class="n">cleaned</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resolved: &#39;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">messy_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error cleaning &#39;</span><span class="si">{</span><span class="n">messy_path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="path-splitting-and-parsing">
+<h3>1.3 Path Splitting and Parsing<a class="headerlink" href="#path-splitting-and-parsing" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Path splitting examples</span>
+<span class="n">example_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;/home/user/documents/project/data/file.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="s2">Name</span><span class="se">\\</span><span class="s2">Documents</span><span class="se">\\</span><span class="s2">project</span><span class="se">\\</span><span class="s2">results.xlsx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;../data/experiments/2024/experiment_001.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;./models/trained_model_v2.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;https://example.com/data/dataset.zip&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Path Splitting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">path_str</span> <span class="ow">in</span> <span class="n">example_paths</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">split_result</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path_str</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path: &#39;</span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split result: </span><span class="si">{</span><span class="n">split_result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Also show pathlib parsing</span>
+        <span class="n">path_obj</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_str</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parts: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">parts</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">path_obj</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;parts&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parent: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stem: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suffix: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error splitting &#39;</span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-2-file-and-directory-finding">
+<h2>Part 2: File and Directory Finding<a class="headerlink" href="#part-2-file-and-directory-finding" title="Link to this heading"></a></h2>
+<section id="directory-and-file-search">
+<h3>2.1 Directory and File Search<a class="headerlink" href="#directory-and-file-search" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create test directory structure</span>
+<span class="n">test_structure</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;project_root&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;src&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;module1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;__init__.py&quot;</span><span class="p">,</span> <span class="s2">&quot;main.py&quot;</span><span class="p">,</span> <span class="s2">&quot;utils.py&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;module2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;__init__.py&quot;</span><span class="p">,</span> <span class="s2">&quot;core.py&quot;</span><span class="p">,</span> <span class="s2">&quot;helpers.py&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;raw&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dataset1.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;dataset2.json&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;processed&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;clean_data.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;features.npy&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;tests&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;test_module1.py&quot;</span><span class="p">,</span> <span class="s2">&quot;test_module2.py&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;docs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span> <span class="s2">&quot;tutorial.md&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_test_structure</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a test directory structure.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">current_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">name</span>
+        <span class="n">current_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">create_test_structure</span><span class="p">(</span><span class="n">current_path</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">current_path</span> <span class="o">/</span> <span class="n">filename</span>
+                <span class="n">file_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Content of </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">print(&#39;Hello from </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create the test structure</span>
+<span class="n">test_root</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;test_project&quot;</span>
+<span class="n">create_test_structure</span><span class="p">(</span><span class="n">test_root</span><span class="p">,</span> <span class="n">test_structure</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Directory Structure Created:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="c1"># Function to print directory tree</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_tree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">current_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_depth</span> <span class="o">&gt;</span> <span class="n">max_depth</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="n">is_last</span> <span class="o">=</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">current_prefix</span> <span class="o">=</span> <span class="s2">&quot;└── &quot;</span> <span class="k">if</span> <span class="n">is_last</span> <span class="k">else</span> <span class="s2">&quot;├── &quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">current_prefix</span><span class="si">}{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">next_prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="k">if</span> <span class="n">is_last</span> <span class="k">else</span> <span class="s2">&quot;│   &quot;</span><span class="p">)</span>
+            <span class="n">print_tree</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">next_prefix</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">,</span> <span class="n">current_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">print_tree</span><span class="p">(</span><span class="n">test_root</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Directory finding</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Directory Finding:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">directories_to_find</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="s1">&#39;nonexistent&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">dir_name</span> <span class="ow">in</span> <span class="n">directories_to_find</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">found_dir</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">find_dir</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">test_root</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Looking for &#39;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">found_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error finding directory &#39;</span><span class="si">{</span><span class="n">dir_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># File finding</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">File Finding:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>
+
+<span class="n">files_to_find</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;main.py&#39;</span><span class="p">,</span> <span class="s1">&#39;utils.py&#39;</span><span class="p">,</span> <span class="s1">&#39;dataset1.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">,</span> <span class="s1">&#39;nonexistent.txt&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">files_to_find</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">found_file</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">find_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">test_root</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Looking for &#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">found_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error finding file &#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Git root finding</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Git Root Finding:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Try to find git root from current directory</span>
+    <span class="n">git_root</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">find_git_root</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Git root found: </span><span class="si">{</span><span class="n">git_root</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">git_root</span><span class="p">:</span>
+        <span class="n">git_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">git_root</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Git directory exists: </span><span class="si">{</span><span class="p">(</span><span class="n">git_path</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;.git&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Git root name: </span><span class="si">{</span><span class="n">git_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error finding git root: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Try from test directory (should not find git)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">git_root_from_test</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">find_git_root</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">test_root</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Git root from test dir: </span><span class="si">{</span><span class="n">git_root_from_test</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No git root from test directory (expected): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-3-size-calculations-and-file-information">
+<h2>Part 3: Size Calculations and File Information<a class="headerlink" href="#part-3-size-calculations-and-file-information" title="Link to this heading"></a></h2>
+<section id="file-and-directory-sizes">
+<h3>3.1 File and Directory Sizes<a class="headerlink" href="#file-and-directory-sizes" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create files of different sizes for testing</span>
+<span class="n">size_test_dir</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;size_tests&quot;</span>
+<span class="n">size_test_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create files with different content sizes</span>
+<span class="n">file_contents</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;small.txt&quot;</span><span class="p">:</span> <span class="s2">&quot;Small file content&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;medium.txt&quot;</span><span class="p">:</span> <span class="s2">&quot;Medium file content</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;large.txt&quot;</span><span class="p">:</span> <span class="s2">&quot;Large file content with lots of text</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;binary.dat&quot;</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Binary content</span>
+    <span class="s2">&quot;empty.txt&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">file_contents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">size_test_dir</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">filepath</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filepath</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File Size Analysis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">22</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">file_contents</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">size_test_dir</span> <span class="o">/</span> <span class="n">filename</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Using scitex.path.getsize</span>
+        <span class="n">scitex_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+
+        <span class="c1"># Using pathlib for comparison</span>
+        <span class="n">pathlib_size</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+
+        <span class="c1"># Readable format</span>
+        <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">scitex_size</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  SciTeX size: </span><span class="si">{</span><span class="n">scitex_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pathlib size: </span><span class="si">{</span><span class="n">pathlib_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Readable: </span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Match: </span><span class="si">{</span><span class="n">scitex_size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">pathlib_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting size for </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Directory size calculation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Directory Size Analysis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">26</span><span class="p">)</span>
+
+<span class="n">directories_to_analyze</span> <span class="o">=</span> <span class="p">[</span><span class="n">size_test_dir</span><span class="p">,</span> <span class="n">test_root</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">directories_to_analyze</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Calculate total directory size</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">file_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+                <span class="n">total_size</span> <span class="o">+=</span> <span class="n">size</span>
+                <span class="n">file_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">readable_total</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory: </span><span class="si">{</span><span class="n">directory</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total size: </span><span class="si">{</span><span class="n">total_size</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">readable_total</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  File count: </span><span class="si">{</span><span class="n">file_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Average file size: </span><span class="si">{</span><span class="n">total_size</span><span class="o">/</span><span class="n">file_count</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">file_count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error analyzing directory </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-4-version-management">
+<h2>Part 4: Version Management<a class="headerlink" href="#part-4-version-management" title="Link to this heading"></a></h2>
+<section id="version-incrementing-and-latest-file-detection">
+<h3>4.1 Version Incrementing and Latest File Detection<a class="headerlink" href="#version-incrementing-and-latest-file-detection" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create versioned files for testing</span>
+<span class="n">version_test_dir</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;version_tests&quot;</span>
+<span class="n">version_test_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create files with version numbers</span>
+<span class="n">versioned_files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;experiment_v1.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;experiment_v2.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;experiment_v3.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model_v001.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model_v002.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model_v010.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_1.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_2.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_11.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;results_2024_01.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;results_2024_02.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;results_2024_10.json&quot;</span>
+<span class="p">]</span>
+
+<span class="c1"># Create the files with timestamps to test ordering</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">versioned_files</span><span class="p">):</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">version_test_dir</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="n">filepath</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Content of </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">Version: </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">Created: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>  <span class="c1"># Small delay to ensure different timestamps</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Version Management:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># List all files with their timestamps</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Created versioned files:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">versioned_files</span><span class="p">:</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">version_test_dir</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
+        <span class="n">mod_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> (modified: </span><span class="si">{</span><span class="n">mod_time</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test version incrementing</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Version Incrementing:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">23</span><span class="p">)</span>
+
+<span class="n">base_names</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;experiment_v3.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model_v010.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_11.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;results_2024_10.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;new_file.txt&quot;</span>  <span class="c1"># File that doesn&#39;t exist yet</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">base_name</span> <span class="ow">in</span> <span class="n">base_names</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">base_path</span> <span class="o">=</span> <span class="n">version_test_dir</span> <span class="o">/</span> <span class="n">base_name</span>
+        <span class="n">incremented</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">increment_version</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">incremented</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error incrementing version for &#39;</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test finding latest files</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Finding Latest Files:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">23</span><span class="p">)</span>
+
+<span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;experiment_v*.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model_v*.pkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_*.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;results_*.json&quot;</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">latest</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">find_latest</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">version_test_dir</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pattern &#39;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">latest</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;None found&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error finding latest for pattern &#39;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-5-smart-path-creation-and-management">
+<h2>Part 5: Smart Path Creation and Management<a class="headerlink" href="#part-5-smart-path-creation-and-management" title="Link to this heading"></a></h2>
+<section id="smart-path-spath-operations">
+<h3>5.1 Smart Path (spath) Operations<a class="headerlink" href="#smart-path-spath-operations" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Smart path creation and management</span>
+<span class="n">spath_test_dir</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;spath_tests&quot;</span>
+<span class="n">spath_test_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Smart Path (spath) Operations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">33</span><span class="p">)</span>
+
+<span class="c1"># Test smart path creation</span>
+<span class="n">test_scenarios</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Simple file creation&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;simple_file.txt&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="s1">&#39;Simple content&#39;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;File with timestamp&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;timestamped_file.log&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="s1">&#39;Log entry with timestamp&#39;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Data file with metadata&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;data_export.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="s1">&#39;col1,col2,col3</span><span class="se">\n</span><span class="s1">1,2,3</span><span class="se">\n</span><span class="s1">4,5,6&#39;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Configuration file&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;config.json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="s1">&#39;{&quot;setting1&quot;: &quot;value1&quot;, &quot;setting2&quot;: 42}&#39;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">scenario</span> <span class="ow">in</span> <span class="n">test_scenarios</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create smart path</span>
+        <span class="n">base_path</span> <span class="o">=</span> <span class="n">spath_test_dir</span> <span class="o">/</span> <span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span>
+        <span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_path</span><span class="p">))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Base path: </span><span class="si">{</span><span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Smart path: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">spath</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Write content to the smart path</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">scenario</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">])</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  File created: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">spath</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  File size: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">spath</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Test getting the spath</span>
+        <span class="n">retrieved_spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_spath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Retrieved spath: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">retrieved_spath</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">retrieved_spath</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;None&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Demonstrate spath behavior with existing files</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Smart Path with Existing Files:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">34</span><span class="p">)</span>
+
+<span class="c1"># Create the same file multiple times to see versioning</span>
+<span class="n">base_name</span> <span class="o">=</span> <span class="s2">&quot;repeated_file.txt&quot;</span>
+<span class="n">base_path</span> <span class="o">=</span> <span class="n">spath_test_dir</span> <span class="o">/</span> <span class="n">base_name</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">spath</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">mk_spath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_path</span><span class="p">))</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Content version </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">Created at iteration </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Created </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">spath</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Error - </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># List all files created</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Files created in spath_tests:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spath_test_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+    <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+        <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-6-package-data-and-module-paths">
+<h2>Part 6: Package Data and Module Paths<a class="headerlink" href="#part-6-package-data-and-module-paths" title="Link to this heading"></a></h2>
+<section id="module-path-resolution">
+<h3>6.1 Module Path Resolution<a class="headerlink" href="#module-path-resolution" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Module path resolution</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Module Path Resolution:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="c1"># Test with various packages and modules</span>
+<span class="n">modules_to_test</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;scitex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;scitex.path&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;scitex.str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;scitex.gen&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pandas&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pathlib&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;os&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sys&#39;</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">modules_to_test</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Try to get module path using scitex</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_data_path_from_a_package</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">module_path</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">module_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">path_obj</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">module_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Exists: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Is directory: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Parent: </span><span class="si">{</span><span class="n">path_obj</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39;: Error - </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Alternative method using importlib for comparison</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Comparison with importlib:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">28</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
+
+<span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;scitex&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Using importlib</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+            <span class="n">importlib_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39; (importlib): </span><span class="si">{</span><span class="n">importlib_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39; (importlib): Not found&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Using scitex for comparison</span>
+        <span class="n">scitex_path</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_data_path_from_a_package</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39; (scitex): </span><span class="si">{</span><span class="n">scitex_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check if paths match</span>
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">origin</span> <span class="ow">and</span> <span class="n">scitex_path</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">importlib_path</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">scitex_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Paths match: </span><span class="si">{</span><span class="n">match</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39;: Comparison error - </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-7-practical-applications">
+<h2>Part 7: Practical Applications<a class="headerlink" href="#part-7-practical-applications" title="Link to this heading"></a></h2>
+<section id="project-organization-tool">
+<h3>7.1 Project Organization Tool<a class="headerlink" href="#project-organization-tool" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a comprehensive project organization tool</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProjectOrganizer</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_root</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_results</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze_project_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze the project directory structure.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyzing project: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Project root does not exist: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Basic statistics</span>
+        <span class="n">total_files</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total_dirs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">file_types</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">total_files</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                    <span class="n">total_size</span> <span class="o">+=</span> <span class="n">size</span>
+
+                    <span class="c1"># Track file types</span>
+                    <span class="n">suffix</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;no_extension&#39;</span>
+                    <span class="k">if</span> <span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_types</span><span class="p">:</span>
+                        <span class="n">file_types</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+                    <span class="n">file_types</span><span class="p">[</span><span class="n">suffix</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">file_types</span><span class="p">[</span><span class="n">suffix</span><span class="p">][</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="n">total_dirs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;total_files&#39;</span><span class="p">:</span> <span class="n">total_files</span><span class="p">,</span>
+            <span class="s1">&#39;total_dirs&#39;</span><span class="p">:</span> <span class="n">total_dirs</span><span class="p">,</span>
+            <span class="s1">&#39;total_size&#39;</span><span class="p">:</span> <span class="n">total_size</span><span class="p">,</span>
+            <span class="s1">&#39;file_types&#39;</span><span class="p">:</span> <span class="n">file_types</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Print results</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total files: </span><span class="si">{</span><span class="n">total_files</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total directories: </span><span class="si">{</span><span class="n">total_dirs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total size: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># File type breakdown</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">File types:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">file_types</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;size&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> files (</span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_large_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold_mb</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find files larger than threshold.&quot;&quot;&quot;</span>
+        <span class="n">threshold_bytes</span> <span class="o">=</span> <span class="n">threshold_mb</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
+        <span class="n">large_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Files larger than </span><span class="si">{</span><span class="n">threshold_mb</span><span class="si">}</span><span class="s2"> MB:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">threshold_bytes</span><span class="p">:</span>
+                        <span class="n">relative_path</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">)</span>
+                        <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+                        <span class="n">large_files</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">),</span> <span class="n">size</span><span class="p">,</span> <span class="n">readable_size</span><span class="p">))</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="c1"># Sort by size (largest first)</span>
+        <span class="n">large_files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">large_files</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">readable_size</span> <span class="ow">in</span> <span class="n">large_files</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  No files larger than </span><span class="si">{</span><span class="n">threshold_mb</span><span class="si">}</span><span class="s2"> MB found&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">large_files</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_duplicate_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find files with duplicate names (potentially confusing).&quot;&quot;&quot;</span>
+        <span class="n">name_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name_map</span><span class="p">:</span>
+                    <span class="n">name_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">name_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">))</span>
+
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">paths</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">paths</span> <span class="ow">in</span> <span class="n">name_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">}</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Files with duplicate names:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">paths</span> <span class="ow">in</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  No duplicate file names found&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">duplicates</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">suggest_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Suggest cleanup actions.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cleanup Suggestions:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">22</span><span class="p">)</span>
+
+        <span class="n">suggestions</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Check for common temporary files</span>
+        <span class="n">temp_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*.tmp&#39;</span><span class="p">,</span> <span class="s1">&#39;*.temp&#39;</span><span class="p">,</span> <span class="s1">&#39;*~&#39;</span><span class="p">,</span> <span class="s1">&#39;*.bak&#39;</span><span class="p">,</span> <span class="s1">&#39;*.log&#39;</span><span class="p">]</span>
+        <span class="n">temp_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">temp_patterns</span><span class="p">:</span>
+            <span class="n">temp_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">temp_files</span><span class="p">:</span>
+            <span class="n">total_temp_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">temp_files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remove </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">temp_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> temporary files (saves </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_temp_size</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check for large files</span>
+        <span class="n">large_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_large_files</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Files &gt; 5MB</span>
+        <span class="k">if</span> <span class="n">large_files</span><span class="p">:</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Review </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">large_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> large files (consider compression or archiving)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check file type distribution</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_results</span><span class="p">:</span>
+            <span class="n">file_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_results</span><span class="p">[</span><span class="s1">&#39;file_types&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;.log&#39;</span> <span class="ow">in</span> <span class="n">file_types</span> <span class="ow">and</span> <span class="n">file_types</span><span class="p">[</span><span class="s1">&#39;.log&#39;</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Archive or clean </span><span class="si">{</span><span class="n">file_types</span><span class="p">[</span><span class="s1">&#39;.log&#39;</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> log files&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">suggestions</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">suggestions</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  No obvious cleanup opportunities found&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test the project organizer</span>
+<span class="n">organizer</span> <span class="o">=</span> <span class="n">ProjectOrganizer</span><span class="p">(</span><span class="n">test_root</span><span class="p">)</span>
+<span class="n">organizer</span><span class="o">.</span><span class="n">analyze_project_structure</span><span class="p">()</span>
+<span class="n">organizer</span><span class="o">.</span><span class="n">find_large_files</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>  <span class="c1"># Very small threshold for demo</span>
+<span class="n">organizer</span><span class="o">.</span><span class="n">find_duplicate_names</span><span class="p">()</span>
+<span class="n">organizer</span><span class="o">.</span><span class="n">suggest_cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="backup-and-version-management-system">
+<h3>7.2 Backup and Version Management System<a class="headerlink" href="#backup-and-version-management-system" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a backup and version management system</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BackupManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_dir</span><span class="p">,</span> <span class="n">backup_dir</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backup_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">backup_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backup_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a timestamped backup.&quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+
+        <span class="c1"># Create timestamp</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create backup name</span>
+        <span class="n">backup_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;backup_</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">safe_desc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">description</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()</span> <span class="ow">or</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+            <span class="n">safe_desc</span> <span class="o">=</span> <span class="n">safe_desc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="n">backup_name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">safe_desc</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">backup_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backup_dir</span> <span class="o">/</span> <span class="n">backup_name</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating backup: </span><span class="si">{</span><span class="n">backup_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Copy directory structure</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">backup_path</span><span class="p">)</span>
+
+            <span class="c1"># Calculate backup size</span>
+            <span class="n">backup_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">backup_path</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Backup created successfully&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Location: </span><span class="si">{</span><span class="n">backup_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Size: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">backup_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">backup_path</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Backup failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_backups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all available backups.&quot;&quot;&quot;</span>
+        <span class="n">backups</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">backup_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;backup_&#39;</span><span class="p">):</span>
+                <span class="c1"># Get backup info</span>
+                <span class="n">stat</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
+                <span class="n">created</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">st_ctime</span><span class="p">)</span>
+
+                <span class="c1"># Calculate size</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="n">scitex</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+                <span class="p">)</span>
+
+                <span class="n">backups</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">item</span><span class="p">,</span>
+                    <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="n">created</span><span class="p">,</span>
+                    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span>
+                <span class="p">})</span>
+
+        <span class="c1"># Sort by creation time (newest first)</span>
+        <span class="n">backups</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;created&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available backups (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backups</span><span class="p">)</span><span class="si">}</span><span class="s2"> total):&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">backups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">backup</span> <span class="ow">in</span> <span class="n">backups</span><span class="p">:</span>
+                <span class="n">created_str</span> <span class="o">=</span> <span class="n">backup</span><span class="p">[</span><span class="s1">&#39;created&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+                <span class="n">size_str</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">backup</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">backup</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Created: </span><span class="si">{</span><span class="n">created_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Size: </span><span class="si">{</span><span class="n">size_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  No backups found&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">backups</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_old_backups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_count</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove old backups, keeping only the most recent ones.&quot;&quot;&quot;</span>
+        <span class="n">backups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_backups</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">backups</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">keep_count</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backups</span><span class="p">)</span><span class="si">}</span><span class="s2"> backups found, no cleanup needed&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">backups_to_remove</span> <span class="o">=</span> <span class="n">backups</span><span class="p">[</span><span class="n">keep_count</span><span class="p">:]</span>
+        <span class="n">total_freed</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Removing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backups_to_remove</span><span class="p">)</span><span class="si">}</span><span class="s2"> old backups:&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">backup</span> <span class="ow">in</span> <span class="n">backups_to_remove</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">backup</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span>
+                <span class="n">total_freed</span> <span class="o">+=</span> <span class="n">backup</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Removed </span><span class="si">{</span><span class="n">backup</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ Failed to remove </span><span class="si">{</span><span class="n">backup</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Freed space: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_freed</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test the backup manager</span>
+<span class="n">backup_dir</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;backups&quot;</span>
+<span class="n">backup_manager</span> <span class="o">=</span> <span class="n">BackupManager</span><span class="p">(</span><span class="n">test_root</span><span class="p">,</span> <span class="n">backup_dir</span><span class="p">)</span>
+
+<span class="c1"># Create a few backups</span>
+<span class="n">backup_manager</span><span class="o">.</span><span class="n">create_backup</span><span class="p">(</span><span class="s2">&quot;initial_state&quot;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Ensure different timestamps</span>
+<span class="n">backup_manager</span><span class="o">.</span><span class="n">create_backup</span><span class="p">(</span><span class="s2">&quot;after_modifications&quot;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">backup_manager</span><span class="o">.</span><span class="n">create_backup</span><span class="p">(</span><span class="s2">&quot;final_version&quot;</span><span class="p">)</span>
+
+<span class="c1"># List all backups</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">backup_manager</span><span class="o">.</span><span class="n">list_backups</span><span class="p">()</span>
+
+<span class="c1"># Test cleanup (keep only 2 most recent)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">backup_manager</span><span class="o">.</span><span class="n">cleanup_old_backups</span><span class="p">(</span><span class="n">keep_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary-and-best-practices">
+<h2>Summary and Best Practices<a class="headerlink" href="#summary-and-best-practices" title="Link to this heading"></a></h2>
+<p>This tutorial demonstrated the comprehensive path management
+capabilities of the SciTeX path module:</p>
+<section id="key-features-covered">
+<h3>Key Features Covered:<a class="headerlink" href="#key-features-covered" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Path Operations</strong>: <code class="docutils literal notranslate"><span class="pre">this_path()</span></code>, <code class="docutils literal notranslate"><span class="pre">clean()</span></code>, <code class="docutils literal notranslate"><span class="pre">split()</span></code> for
+basic path handling</p></li>
+<li><p><strong>File Finding</strong>: <code class="docutils literal notranslate"><span class="pre">find_file()</span></code>, <code class="docutils literal notranslate"><span class="pre">find_dir()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">find_git_root()</span></code> for navigation</p></li>
+<li><p><strong>Size Calculations</strong>: <code class="docutils literal notranslate"><span class="pre">getsize()</span></code> for file and directory size
+analysis</p></li>
+<li><p><strong>Version Management</strong>: <code class="docutils literal notranslate"><span class="pre">increment_version()</span></code>, <code class="docutils literal notranslate"><span class="pre">find_latest()</span></code>
+for file versioning</p></li>
+<li><p><strong>Smart Paths</strong>: <code class="docutils literal notranslate"><span class="pre">mk_spath()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_spath()</span></code> for intelligent path
+creation</p></li>
+<li><p><strong>Module Resolution</strong>: <code class="docutils literal notranslate"><span class="pre">get_data_path_from_a_package()</span></code> for package
+paths</p></li>
+<li><p><strong>Project Organization</strong>: Comprehensive directory analysis and
+cleanup</p></li>
+<li><p><strong>Backup Management</strong>: Automated backup creation and maintenance</p></li>
+</ol>
+</section>
+<section id="best-practices">
+<h3>Best Practices:<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <strong>path cleaning</strong> functions to normalize paths across platforms</p></li>
+<li><p>Apply <strong>smart path creation</strong> to avoid overwriting important files</p></li>
+<li><p>Implement <strong>version management</strong> for iterative development</p></li>
+<li><p>Use <strong>file finding</strong> utilities for robust project navigation</p></li>
+<li><p>Apply <strong>size analysis</strong> for storage optimization</p></li>
+<li><p>Create <strong>backup systems</strong> for important project data</p></li>
+<li><p>Use <strong>git root detection</strong> for repository-aware operations</p></li>
+<li><p>Implement <strong>project organization</strong> tools for maintenance</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cleanup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="n">cleanup</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Clean up example files? (y/n): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">cleanup</span><span class="p">:</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Example files cleaned up&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Example files preserved in: </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directories created: </span><span class="si">{</span><span class="nb">len</span><span class="p">([</span><span class="n">d</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">data_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files created: </span><span class="si">{</span><span class="nb">len</span><span class="p">([</span><span class="n">f</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">data_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">total_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total size: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01_scitex_io.html" class="btn btn-neutral float-left" title="01 SciTeX Io" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="09_scitex_os.html" class="btn btn-neutral float-right" title="09 SciTeX Os" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

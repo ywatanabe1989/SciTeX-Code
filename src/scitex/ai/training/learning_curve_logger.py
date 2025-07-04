@@ -223,7 +223,7 @@ class LearningCurveLogger:
                             ymin=-1e4,
                             ymax=1e4,
                             linestyle="--",
-                            color=_plt_module.colors.to_RGBA("gray", alpha=0.5),
+                            color=plt.colors.to_RGBA("gray", alpha=0.5),
                         )
 
                 if (step_k == "Validation") or (step_k == "Test"):
@@ -350,6 +350,7 @@ if __name__ == "__main__":
     from torchvision import datasets
 
     import sys
+    import scitex
 
     ################################################################################
     ## Sets tee

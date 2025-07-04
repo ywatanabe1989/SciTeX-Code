@@ -33,6 +33,8 @@ from ._type import ArrayLike, var_info
 from ._var_info import ArrayLike, var_info
 from ._wrap import wrap
 from ._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
+from ._detect_environment import detect_environment, get_output_directory, is_notebook
+from ._get_notebook_path import get_notebook_path, get_notebook_name, get_notebook_directory
 
 __all__ = [
     "ArrayLike",
@@ -92,4 +94,10 @@ __all__ = [
     "verify_host",
     "wrap",
     "xml2dict",
+    "detect_environment",
+    "get_output_directory",
+    "is_notebook",
+    "get_notebook_path",
+    "get_notebook_name",
+    "get_notebook_directory",
 ]

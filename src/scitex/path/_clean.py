@@ -27,6 +27,10 @@ def clean(path_string):
     str
         Normalized path string
     """
+    # Convert Path objects to strings to avoid AttributeError
+    if hasattr(path_string, '__fspath__'):  # Check if it's a path-like object
+        path_string = str(path_string)
+        
     if not path_string:
         return ""
     

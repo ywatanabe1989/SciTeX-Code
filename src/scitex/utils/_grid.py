@@ -12,8 +12,9 @@ import itertools as _itertools
 import random as _random
 import sys as _sys
 
-import matplotlib.pyplot as _plt
 import scitex as _scitex
+
+# matplotlib imported in functions that need it
 
 
 # Functions
@@ -108,6 +109,7 @@ def count_grids(params_grid):
 
 if __name__ == "__main__":
     import pandas as pd
+    import matplotlib.pyplot as _plt
 
     # Start
     CONFIG, _sys.stdout, _sys.stderr, _plt, CC = _scitex.gen.start(

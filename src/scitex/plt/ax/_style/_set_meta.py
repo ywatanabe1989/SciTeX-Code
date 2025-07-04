@@ -241,6 +241,7 @@ if __name__ == "__main__":
     # Start
     import sys
     import matplotlib.pyplot as plt
+    import scitex
     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
 
     # Example usage

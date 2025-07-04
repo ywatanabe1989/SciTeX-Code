@@ -1,0 +1,7 @@
+{
+    "prog": "sql_manager",
+    "desc": "A simple database manager with sqlalchemy",
+    "author": "suqingdong",
+    "author_email": "suqingdong1114@gmail.com",
+    "version": "1.0.5"
+}

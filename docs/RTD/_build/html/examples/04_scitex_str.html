@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>04 SciTeX Str &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="06 SciTeX Context" href="06_scitex_context.html" />
+    <link rel="prev" title="03 SciTeX Utils" href="03_scitex_utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">04 SciTeX Str</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/04_scitex_str.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-str">
+<h1>04 SciTeX Str<a class="headerlink" href="#scitex-str" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/04_scitex_str.ipynb">04_scitex_str.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>04_scitex_str.ipynb
+</pre></div>
+</div>
+</div>
+<p>This comprehensive notebook demonstrates the SciTeX str module
+capabilities, covering string processing, formatting, and text
+manipulation utilities.</p>
+<section id="features-covered">
+<h2>Features Covered<a class="headerlink" href="#features-covered" title="Link to this heading"></a></h2>
+<section id="text-processing">
+<h3>Text Processing<a class="headerlink" href="#text-processing" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>String cleaning and path sanitization</p></li>
+<li><p>Text search and replacement</p></li>
+<li><p>String parsing and extraction</p></li>
+<li><p>Space normalization</p></li>
+</ul>
+</section>
+<section id="formatting-and-display">
+<h3>Formatting and Display<a class="headerlink" href="#formatting-and-display" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Colored text output</p></li>
+<li><p>Debug printing utilities</p></li>
+<li><p>Block text formatting</p></li>
+<li><p>Readable byte formatting</p></li>
+</ul>
+</section>
+<section id="scientific-text">
+<h3>Scientific Text<a class="headerlink" href="#scientific-text" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>LaTeX formatting and fallbacks</p></li>
+<li><p>Scientific notation</p></li>
+<li><p>Mathematical text formatting</p></li>
+<li><p>Plot text optimization</p></li>
+</ul>
+</section>
+<section id="security-and-privacy">
+<h3>Security and Privacy<a class="headerlink" href="#security-and-privacy" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>API key masking</p></li>
+<li><p>ANSI escape code removal</p></li>
+<li><p>Safe text handling</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../src&#39;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scitex</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># Set up example data directory</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./str_examples&quot;</span><span class="p">)</span>
+<span class="n">data_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SciTeX String Processing Tutorial - Ready to begin!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available str functions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First 10 functions: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">__all__</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-1-basic-string-processing">
+<h2>Part 1: Basic String Processing<a class="headerlink" href="#part-1-basic-string-processing" title="Link to this heading"></a></h2>
+<section id="string-cleaning-and-sanitization">
+<h3>1.1 String Cleaning and Sanitization<a class="headerlink" href="#string-cleaning-and-sanitization" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Path cleaning examples</span>
+<span class="n">problematic_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;/home/user/data with spaces/file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="s2">Name</span><span class="se">\\</span><span class="s2">Documents</span><span class="se">\\</span><span class="s2">file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;~/data/file with special chars!@#.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;./data//double//slashes///file.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data/./current/./directory/file.txt&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Path Cleaning Examples:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">problematic_paths</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cleaned</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">clean_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleaned:  </span><span class="si">{</span><span class="n">cleaned</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error cleaning &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># String capitalization</span>
+<span class="n">test_strings</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MACHINE LEARNING&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DataScience&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_programming&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AI-Research&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;String Decapitalization:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">test_strings</span><span class="p">:</span>
+    <span class="n">decapitalized</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">decapitalize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">decapitalized</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="space-normalization-and-text-cleanup">
+<h3>1.2 Space Normalization and Text Cleanup<a class="headerlink" href="#space-normalization-and-text-cleanup" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Space normalization</span>
+<span class="n">messy_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;This    has     multiple   spaces&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\t\n</span><span class="s2">Tabs and newlines</span><span class="se">\t\n</span><span class="s2"> everywhere</span><span class="se">\t\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;   Leading and trailing spaces   &quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Mixed</span><span class="se">\t\n\r\n</span><span class="s2">   whitespace   characters&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Normal text with single spaces&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Space Normalization:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">messy_texts</span><span class="p">:</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">squeeze_spaces</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Squeezed: &#39;</span><span class="si">{</span><span class="n">normalized</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># ANSI escape code removal</span>
+<span class="n">colored_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31mRed text</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;32mBold green text</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[4;34mUnderlined blue text</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Normal text without ANSI codes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[91mBright red</span><span class="se">\033</span><span class="s2">[0m mixed with </span><span class="se">\033</span><span class="s2">[92mgreen</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ANSI Code Removal:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">colored_texts</span><span class="p">:</span>
+    <span class="n">clean_text</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">remove_ansi</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;With ANSI: &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleaned:   &#39;</span><span class="si">{</span><span class="n">clean_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-2-text-search-and-manipulation">
+<h2>Part 2: Text Search and Manipulation<a class="headerlink" href="#part-2-text-search-and-manipulation" title="Link to this heading"></a></h2>
+<section id="search-and-grep-functionality">
+<h3>2.1 Search and Grep Functionality<a class="headerlink" href="#search-and-grep-functionality" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create sample text for searching</span>
+<span class="n">sample_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">This is a sample text for demonstrating search functionality.</span>
+<span class="s2">The text contains multiple lines and various patterns.</span>
+<span class="s2">We have numbers like 123, 456, and 789.</span>
+<span class="s2">Email addresses: john@example.com, jane.doe@university.edu</span>
+<span class="s2">Phone numbers: (555) 123-4567, 555-987-6543</span>
+<span class="s2">URLs: https://www.example.com, http://test.org</span>
+<span class="s2">Some special characters: !@#$%^&amp;*()</span>
+<span class="s2">And finally, this text ends here.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Write to file for grep demonstration</span>
+<span class="n">test_file</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;sample_text.txt&quot;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sample_text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Text Search and Grep:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="c1"># Search for patterns in text</span>
+<span class="n">search_patterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;[0-9]+&quot;</span><span class="p">,</span>  <span class="c1"># Numbers</span>
+    <span class="s2">&quot;[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}&quot;</span><span class="p">,</span>  <span class="c1"># Email</span>
+    <span class="s2">&quot;https?://[^\s]+&quot;</span><span class="p">,</span>  <span class="c1"># URLs</span>
+    <span class="s2">&quot;\([0-9]</span><span class="si">{3}</span><span class="s2">\) [0-9]</span><span class="si">{3}</span><span class="s2">-[0-9]</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Phone numbers</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">search_patterns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Searching for pattern: &#39;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sample_text</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> matches: </span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No matches found&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Grep in file</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Grep in file &#39;</span><span class="si">{</span><span class="n">test_file</span><span class="si">}</span><span class="s2">&#39;:&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">grep_results</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">test_file</span><span class="p">),</span> <span class="s2">&quot;numbers&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">grep_results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grep results: </span><span class="si">{</span><span class="n">grep_results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No grep results&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grep error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="text-replacement-and-parsing">
+<h3>2.2 Text Replacement and Parsing<a class="headerlink" href="#text-replacement-and-parsing" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Text replacement examples</span>
+<span class="n">replacement_examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;Python&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;The quick brown fox&quot;</span><span class="p">,</span> <span class="s2">&quot;brown&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Machine Learning AI&quot;</span><span class="p">,</span> <span class="s2">&quot;AI&quot;</span><span class="p">,</span> <span class="s2">&quot;Artificial Intelligence&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Data Science 2024&quot;</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;2025&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;test@example.com&quot;</span><span class="p">,</span> <span class="s2">&quot;@example.com&quot;</span><span class="p">,</span> <span class="s2">&quot;@newdomain.org&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Text Replacement:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">original</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">replacement_examples</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">replaced</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: &#39;</span><span class="si">{</span><span class="n">original</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replace &#39;</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">&#39; with &#39;</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">replaced</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replacement error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Text parsing</span>
+<span class="n">parse_examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;name=John age=30 city=NYC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;temperature=25.5 humidity=60% pressure=1013.25&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model=LinearRegression accuracy=0.95 loss=0.05&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date=2024-01-01 time=12:30:00 timezone=UTC&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Text Parsing:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">parse_examples</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsed: </span><span class="si">{</span><span class="n">parsed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parse error for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-3-colored-text-and-debug-output">
+<h2>Part 3: Colored Text and Debug Output<a class="headerlink" href="#part-3-colored-text-and-debug-output" title="Link to this heading"></a></h2>
+<section id="colored-text-output">
+<h3>3.1 Colored Text Output<a class="headerlink" href="#colored-text-output" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Colored text examples</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">]</span>
+<span class="n">text_styles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="s1">&#39;underline&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Colored Text Output:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="c1"># Basic colors</span>
+<span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">colored</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">color_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2"> text&quot;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Color error for </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Using shorthand ct function</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using ct() shorthand:&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;Success!&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;Warning!&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;Error!&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ct() error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Demonstration of different message types</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Operation completed successfully&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Warning: Low disk space&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Error: File not found&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Info: Processing data&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Debug: Variable x = 42&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Message Types:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">message</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">colored_msg</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">color_text</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">colored_msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Message coloring error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="debug-printing-and-block-formatting">
+<h3>3.2 Debug Printing and Block Formatting<a class="headerlink" href="#debug-printing-and-block-formatting" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Debug printing examples</span>
+<span class="n">debug_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;variables&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+    <span class="s1">&#39;dataframe&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]}),</span>
+    <span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s1">&#39;nested&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;level1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;level2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}}}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Debug Printing:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">18</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">debug_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Debugging </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">print_debug</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Debug print error for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Block text formatting</span>
+<span class="n">block_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;This is a simple message&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;This is a longer message that demonstrates block formatting capabilities&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Multi-line</span><span class="se">\n</span><span class="s2">block text</span><span class="se">\n</span><span class="s2">example&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Important: This is a critical message that needs attention!&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Block Text Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">block_texts</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Original: &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">printc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># Print colored/formatted block</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Block formatting error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-4-scientific-text-and-latex-formatting">
+<h2>Part 4: Scientific Text and LaTeX Formatting<a class="headerlink" href="#part-4-scientific-text-and-latex-formatting" title="Link to this heading"></a></h2>
+<section id="latex-style-formatting">
+<h3>4.1 LaTeX Style Formatting<a class="headerlink" href="#latex-style-formatting" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># LaTeX style formatting examples</span>
+<span class="n">scientific_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;alpha&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;beta&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gamma&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;theta&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lambda&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;phi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;x_hat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;y_bar&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;z_prime&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LaTeX Style Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">scientific_texts</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">latex_formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_latex_style</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">latex_formatted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX formatting error for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Safe LaTeX formatting with fallback</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Safe LaTeX Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">scientific_texts</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">safe_latex</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">safe_to_latex_style</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">safe_latex</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Safe LaTeX error for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Hat notation in LaTeX</span>
+<span class="n">hat_examples</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Hat Notation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">hat_examples</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">hat_formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">add_hat_in_latex_style</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">hat_formatted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hat formatting error for &#39;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scientific-text-and-plot-formatting">
+<h3>4.2 Scientific Text and Plot Formatting<a class="headerlink" href="#scientific-text-and-plot-formatting" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Scientific text formatting for plots</span>
+<span class="n">plot_labels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Temperature (C)&quot;</span><span class="p">,</span> <span class="s2">&quot;°C&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Pressure (Pa)&quot;</span><span class="p">,</span> <span class="s2">&quot;Pa&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Voltage (V)&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Current (A)&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">,</span> <span class="s2">&quot;Hz&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Energy (J)&quot;</span><span class="p">,</span> <span class="s2">&quot;J&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Power (W)&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific Text Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">plot_labels</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">scientific_text</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">formatted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scientific text error for &#39;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot text formatting</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Plot Text Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="n">plot_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;x-axis label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;y-axis label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Main Title&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Subplot Title&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Legend Entry&quot;</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">plot_texts</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">format_plot_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">formatted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plot text formatting error for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Axis labels and titles</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Axis Labels and Titles:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="n">axis_examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;amplitude&quot;</span><span class="p">,</span> <span class="s2">&quot;volts&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;hertz&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;celsius&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;pascals&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">axis_examples</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">axis_label</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">axis_label</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">title_formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2"> vs time&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable: </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">, Unit: </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Axis label: &#39;</span><span class="si">{</span><span class="n">axis_label</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Title: &#39;</span><span class="si">{</span><span class="n">title_formatted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Axis formatting error for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="digit-factoring-and-smart-formatting">
+<h3>4.3 Digit Factoring and Smart Formatting<a class="headerlink" href="#digit-factoring-and-smart-formatting" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Digit factoring for better readability</span>
+<span class="n">large_numbers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1500000</span><span class="p">,</span> <span class="mi">2500000</span><span class="p">,</span> <span class="mi">3500000</span><span class="p">,</span> <span class="mi">4500000</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">12345</span><span class="p">,</span> <span class="mi">23456</span><span class="p">,</span> <span class="mi">34567</span><span class="p">,</span> <span class="mi">45678</span><span class="p">,</span> <span class="mi">56789</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.2e6</span><span class="p">,</span> <span class="mf">2.3e6</span><span class="p">,</span> <span class="mf">3.4e6</span><span class="p">,</span> <span class="mf">4.5e6</span><span class="p">,</span> <span class="mf">5.6e6</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Digit Factoring:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">numbers</span> <span class="ow">in</span> <span class="n">large_numbers</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">factored</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">factor_out_digits</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: </span><span class="si">{</span><span class="n">numbers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Factored: </span><span class="si">{</span><span class="n">factored</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Digit factoring error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Smart tick formatting</span>
+<span class="n">tick_examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">]),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">]),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1e6</span><span class="p">,</span> <span class="mf">2e6</span><span class="p">,</span> <span class="mf">3e6</span><span class="p">,</span> <span class="mf">4e6</span><span class="p">,</span> <span class="mf">5e6</span><span class="p">]),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">])</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Smart Tick Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ticks</span> <span class="ow">in</span> <span class="n">tick_examples</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">smart_tick_formatter</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original ticks: </span><span class="si">{</span><span class="n">ticks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted: </span><span class="si">{</span><span class="n">formatted</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Smart tick formatting error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-5-security-and-privacy-features">
+<h2>Part 5: Security and Privacy Features<a class="headerlink" href="#part-5-security-and-privacy-features" title="Link to this heading"></a></h2>
+<section id="api-key-masking">
+<h3>5.1 API Key Masking<a class="headerlink" href="#api-key-masking" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># API key masking examples</span>
+<span class="n">sensitive_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;API_KEY=sk-1234567890abcdef1234567890abcdef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SECRET_TOKEN=ghp_1234567890abcdef1234567890abcdef123456&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATABASE_URL=postgresql://user:password@localhost:5432/db&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OPENAI_API_KEY=sk-proj-abcdef1234567890abcdef1234567890abcdef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;This is normal text without sensitive data&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;API Key Masking:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">sensitive_data</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">masked</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">mask_api</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: &#39;</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masked:   &#39;</span><span class="si">{</span><span class="n">masked</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masking error for &#39;</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Demonstration of different API key formats</span>
+<span class="n">api_formats</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;sk-1234567890abcdef&quot;</span><span class="p">,</span>  <span class="c1"># OpenAI style</span>
+    <span class="s2">&quot;ghp_1234567890abcdef&quot;</span><span class="p">,</span>  <span class="c1"># GitHub style</span>
+    <span class="s2">&quot;xoxb-1234567890&quot;</span><span class="p">,</span>  <span class="c1"># Slack style</span>
+    <span class="s2">&quot;ya29.1234567890&quot;</span><span class="p">,</span>  <span class="c1"># Google style</span>
+    <span class="s2">&quot;EAACEdEose0cBA1234567890&quot;</span>  <span class="c1"># Facebook style</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Different API Key Formats:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">api_key</span> <span class="ow">in</span> <span class="n">api_formats</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">masked</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">mask_api</span><span class="p">(</span><span class="n">api_key</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API Key: &#39;</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">masked</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error masking &#39;</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-6-utility-functions">
+<h2>Part 6: Utility Functions<a class="headerlink" href="#part-6-utility-functions" title="Link to this heading"></a></h2>
+<section id="readable-bytes-and-file-sizes">
+<h3>6.1 Readable Bytes and File Sizes<a class="headerlink" href="#readable-bytes-and-file-sizes" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Readable byte formatting</span>
+<span class="n">byte_sizes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 1 KB</span>
+    <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># 1 MB</span>
+    <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># 1 GB</span>
+    <span class="mi">1024</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># 1 TB</span>
+    <span class="mi">1500000</span><span class="p">,</span>  <span class="c1"># 1.5 MB</span>
+    <span class="mi">2500000000</span><span class="p">,</span>  <span class="c1"># 2.5 GB</span>
+    <span class="mi">512</span><span class="p">,</span>  <span class="c1"># 512 bytes</span>
+    <span class="mi">1023</span><span class="p">,</span>  <span class="c1"># Just under 1 KB</span>
+    <span class="mi">1048576</span> <span class="o">+</span> <span class="mi">524288</span>  <span class="c1"># 1.5 MB</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Readable Byte Formatting:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">byte_sizes</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">readable</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">size</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> bytes -&gt; </span><span class="si">{</span><span class="n">readable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error formatting </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># File size examples with actual files</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">File Size Examples:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Create test files of different sizes</span>
+<span class="n">test_files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;small.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Small file content&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;medium.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Medium file content</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;large.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Large file content with lots of text</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">test_files</span><span class="p">:</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="n">file_size</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">file_size</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> bytes -&gt; </span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-7-latex-fallback-system">
+<h2>Part 7: LaTeX Fallback System<a class="headerlink" href="#part-7-latex-fallback-system" title="Link to this heading"></a></h2>
+<section id="latex-capability-detection-and-fallbacks">
+<h3>7.1 LaTeX Capability Detection and Fallbacks<a class="headerlink" href="#latex-capability-detection-and-fallbacks" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># LaTeX capability detection</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LaTeX Capability Detection:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">latex_available</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">check_latex_capability</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX available: </span><span class="si">{</span><span class="n">latex_available</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">latex_status</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get_latex_status</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX status: </span><span class="si">{</span><span class="n">latex_status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">fallback_mode</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get_fallback_mode</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fallback mode: </span><span class="si">{</span><span class="n">fallback_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX detection error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># LaTeX fallback examples</span>
+<span class="n">latex_expressions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;$\alpha + \beta = \gamma$&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;$\frac{x^2}{y^2} = z$&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;$\sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> x_i$&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;$\int_</span><span class="si">{0}</span><span class="s2">^{\infty} e^{-x} dx$&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;$\sqrt{\frac</span><span class="si">{a}{b}</span><span class="s2">}$&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">LaTeX Fallback Examples:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">28</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">latex_expressions</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Try safe rendering</span>
+        <span class="n">safe_rendered</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">safe_latex_render</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX: &#39;</span><span class="si">{</span><span class="n">expr</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Safe:  &#39;</span><span class="si">{</span><span class="n">safe_rendered</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Try conversion to unicode</span>
+        <span class="n">unicode_version</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">latex_to_unicode</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unicode: &#39;</span><span class="si">{</span><span class="n">unicode_version</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Try conversion to mathtext</span>
+        <span class="n">mathtext_version</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">latex_to_mathtext</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MathText: &#39;</span><span class="si">{</span><span class="n">mathtext_version</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LaTeX processing error for &#39;</span><span class="si">{</span><span class="n">expr</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Fallback mode management</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fallback Mode Management:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">28</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Enable fallback</span>
+    <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">enable_latex_fallback</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LaTeX fallback enabled&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Set fallback mode</span>
+    <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">set_fallback_mode</span><span class="p">(</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fallback mode set to &#39;unicode&#39;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Test with fallback</span>
+    <span class="n">test_expr</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\alpha + \beta$&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">safe_latex_render</span><span class="p">(</span><span class="n">test_expr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test expression: &#39;</span><span class="si">{</span><span class="n">test_expr</span><span class="si">}</span><span class="s2">&#39; -&gt; &#39;</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fallback management error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-8-practical-applications">
+<h2>Part 8: Practical Applications<a class="headerlink" href="#part-8-practical-applications" title="Link to this heading"></a></h2>
+<section id="scientific-data-processing-pipeline">
+<h3>8.1 Scientific Data Processing Pipeline<a class="headerlink" href="#scientific-data-processing-pipeline" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a comprehensive text processing pipeline</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextProcessor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">input_text</span><span class="p">,</span> <span class="n">output_text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span>
+            <span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="n">input_text</span><span class="p">,</span>
+            <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">output_text</span><span class="p">,</span>
+            <span class="s1">&#39;input_length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_text</span><span class="p">),</span>
+            <span class="s1">&#39;output_length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_text</span><span class="p">)</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_scientific_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process scientific text through multiple cleaning steps.&quot;&quot;&quot;</span>
+        <span class="n">original_text</span> <span class="o">=</span> <span class="n">text</span>
+
+        <span class="c1"># Step 1: Normalize spaces</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">squeeze_spaces</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="s2">&quot;Space normalization&quot;</span><span class="p">,</span> <span class="n">original_text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Step 2: Remove ANSI codes</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">remove_ansi</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="s2">&quot;ANSI removal&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;output&#39;</span><span class="p">],</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Step 3: Format for LaTeX</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">safe_to_latex_style</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="s2">&quot;LaTeX formatting&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;output&#39;</span><span class="p">],</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Step 4: Mask sensitive data</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">mask_api</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="s2">&quot;API masking&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;output&#39;</span><span class="p">],</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_processing_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the processing log with colored output.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;TEXT PROCESSING LOG&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Step </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;green&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input  (</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;input_length&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> chars): &#39;</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">][:</span><span class="mi">50</span><span class="p">]</span><span class="si">}{</span><span class="s1">&#39;...&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output (</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;output_length&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> chars): &#39;</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][:</span><span class="mi">50</span><span class="p">]</span><span class="si">}{</span><span class="s1">&#39;...&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test the pipeline</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="n">TextProcessor</span><span class="p">()</span>
+
+<span class="n">test_scientific_texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31mTemperature    measurements</span><span class="se">\033</span><span class="s2">[0m   showed   alpha = 0.05   significance with API_KEY=sk-1234567890abcdef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\t\n</span><span class="s2">Pressure   data</span><span class="se">\t\n</span><span class="s2">contains    beta   coefficients   SECRET_TOKEN=ghp_abcdef1234567890</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;The   gamma   distribution   parameters   were   DATABASE_URL=postgresql://user:pass@host:5432/db&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific Text Processing Pipeline:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_scientific_texts</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Processing text </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">process_scientific_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final result: &#39;</span><span class="si">{</span><span class="n">processed</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Show processing log</span>
+<span class="n">processor</span><span class="o">.</span><span class="n">print_processing_log</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="report-generation-with-formatted-text">
+<h3>8.2 Report Generation with Formatted Text<a class="headerlink" href="#report-generation-with-formatted-text" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate a formatted scientific report</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_scientific_report</span><span class="p">(</span><span class="n">experiment_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a formatted scientific report.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Report header</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;SCIENTIFIC EXPERIMENT REPORT&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Experiment info</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;EXPERIMENT INFORMATION&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name: </span><span class="si">{</span><span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Date: </span><span class="si">{</span><span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Researcher: </span><span class="si">{</span><span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;researcher&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Parameters</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;PARAMETERS&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">formatted_param</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_latex_style</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formatted_param</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Results</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;RESULTS&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">formatted_value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">formatted_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">formatted_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># File sizes</span>
+    <span class="k">if</span> <span class="s1">&#39;file_sizes&#39;</span> <span class="ow">in</span> <span class="n">experiment_data</span><span class="p">:</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;FILE SIZES&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">12</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">experiment_data</span><span class="p">[</span><span class="s1">&#39;file_sizes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">readable_size</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">readable_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Status</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">experiment_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;success&#39;</span><span class="p">:</span>
+        <span class="n">status_line</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;warning&#39;</span><span class="p">:</span>
+        <span class="n">status_line</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">status_line</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">)</span>
+
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status_line</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">ct</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+
+<span class="c1"># Sample experiment data</span>
+<span class="n">experiment_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Neural Network Performance Analysis&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-15&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;researcher&#39;</span><span class="p">:</span> <span class="s1">&#39;Dr. Jane Smith&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+        <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.999</span><span class="p">,</span>
+        <span class="s1">&#39;lambda&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">32</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="mf">0.9542</span><span class="p">,</span>
+        <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="mf">0.9123</span><span class="p">,</span>
+        <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="mf">0.8876</span><span class="p">,</span>
+        <span class="s1">&#39;f1_score&#39;</span><span class="p">:</span> <span class="mf">0.8998</span><span class="p">,</span>
+        <span class="s1">&#39;training_time&#39;</span><span class="p">:</span> <span class="s1">&#39;2h 45m&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;file_sizes&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;model.pkl&#39;</span><span class="p">:</span> <span class="mi">15728640</span><span class="p">,</span>  <span class="c1"># 15 MB</span>
+        <span class="s1">&#39;training_data.csv&#39;</span><span class="p">:</span> <span class="mi">104857600</span><span class="p">,</span>  <span class="c1"># 100 MB</span>
+        <span class="s1">&#39;results.json&#39;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>  <span class="c1"># 2 KB</span>
+        <span class="s1">&#39;logs.txt&#39;</span><span class="p">:</span> <span class="mi">524288</span>  <span class="c1"># 512 KB</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate and print the report</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">generate_scientific_report</span><span class="p">(</span><span class="n">experiment_data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+
+<span class="c1"># Save report to file</span>
+<span class="n">report_file</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;experiment_report.txt&quot;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">report_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="c1"># Remove color codes for file output</span>
+    <span class="n">clean_report</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">remove_ansi</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">clean_report</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Report saved to: </span><span class="si">{</span><span class="n">report_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Report file size: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">report_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary-and-best-practices">
+<h2>Summary and Best Practices<a class="headerlink" href="#summary-and-best-practices" title="Link to this heading"></a></h2>
+<p>This tutorial demonstrated the comprehensive string processing
+capabilities of the SciTeX str module:</p>
+<section id="key-features-covered">
+<h3>Key Features Covered:<a class="headerlink" href="#key-features-covered" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Text Cleaning</strong>: <code class="docutils literal notranslate"><span class="pre">clean_path()</span></code>, <code class="docutils literal notranslate"><span class="pre">squeeze_spaces()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">remove_ansi()</span></code></p></li>
+<li><p><strong>Search and Replace</strong>: <code class="docutils literal notranslate"><span class="pre">search()</span></code>, <code class="docutils literal notranslate"><span class="pre">grep()</span></code>, <code class="docutils literal notranslate"><span class="pre">replace()</span></code></p></li>
+<li><p><strong>Colored Output</strong>: <code class="docutils literal notranslate"><span class="pre">color_text()</span></code>, <code class="docutils literal notranslate"><span class="pre">ct()</span></code> for enhanced
+readability</p></li>
+<li><p><strong>Debug Tools</strong>: <code class="docutils literal notranslate"><span class="pre">print_debug()</span></code>, <code class="docutils literal notranslate"><span class="pre">printc()</span></code> for development</p></li>
+<li><p><strong>LaTeX Support</strong>: <code class="docutils literal notranslate"><span class="pre">to_latex_style()</span></code>, <code class="docutils literal notranslate"><span class="pre">safe_latex_render()</span></code>
+with fallbacks</p></li>
+<li><p><strong>Scientific Formatting</strong>: <code class="docutils literal notranslate"><span class="pre">scientific_text()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">format_plot_text()</span></code></p></li>
+<li><p><strong>Security</strong>: <code class="docutils literal notranslate"><span class="pre">mask_api()</span></code> for sensitive data protection</p></li>
+<li><p><strong>Utility Functions</strong>: <code class="docutils literal notranslate"><span class="pre">readable_bytes()</span></code>, <code class="docutils literal notranslate"><span class="pre">factor_out_digits()</span></code></p></li>
+<li><p><strong>Smart Formatting</strong>: <code class="docutils literal notranslate"><span class="pre">smart_tick_formatter()</span></code>, <code class="docutils literal notranslate"><span class="pre">axis_label()</span></code></p></li>
+<li><p><strong>LaTeX Fallback System</strong>: Robust handling of LaTeX unavailability</p></li>
+</ol>
+</section>
+<section id="best-practices">
+<h3>Best Practices:<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <strong>text cleaning</strong> functions before processing scientific data</p></li>
+<li><p>Apply <strong>API masking</strong> to protect sensitive information</p></li>
+<li><p>Use <strong>colored output</strong> for better user experience</p></li>
+<li><p>Implement <strong>LaTeX fallbacks</strong> for robust scientific text rendering</p></li>
+<li><p>Use <strong>smart formatting</strong> for better plot readability</p></li>
+<li><p>Apply <strong>debug tools</strong> during development</p></li>
+<li><p>Use <strong>readable byte formatting</strong> for file size reporting</p></li>
+<li><p>Implement <strong>comprehensive text processing pipelines</strong> for consistent
+results</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cleanup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="n">cleanup</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Clean up example files? (y/n): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">cleanup</span><span class="p">:</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Example files cleaned up&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Example files preserved in: </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files created: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">data_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">total_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total size: </span><span class="si">{</span><span class="n">scitex</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">readable_bytes</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="03_scitex_utils.html" class="btn btn-neutral float-left" title="03 SciTeX Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="06_scitex_context.html" class="btn btn-neutral float-right" title="06 SciTeX Context" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

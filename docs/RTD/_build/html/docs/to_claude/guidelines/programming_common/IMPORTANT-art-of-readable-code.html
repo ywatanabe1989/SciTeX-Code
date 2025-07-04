@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Philosophy &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Philosophy</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/programming_common/IMPORTANT-art-of-readable-code.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-25 23:31:54
+!-- Author: ywatanabe
+!-- File: /ssh:sp:/home/ywatanabe/.claude/to_claude/guidelines/programming_common/art-of-readable-code.md
+!-- --- -->
+<p>Code should minimize the time and effort needed for others to understand it. Readable code directly improves maintainability, reduces bugs, and enhances team productivity.</p>
+<hr class="docutils" />
+<section id="core-philosophy">
+<h1>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Code should be easy to understand for humans.</p></li>
+<li><p>Readability is more important than being clever.</p></li>
+<li><p>The measure of good code is how long it takes someone else to understand it.</p></li>
+<li><p>Simplicity trumps familiarity.</p></li>
+</ol>
+</section>
+<section id="naming-rules">
+<h1>Naming Rules<a class="headerlink" href="#naming-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Use specific, precise names that convey meaning.</p></li>
+<li><p>Choose names at appropriate level of abstraction.</p></li>
+<li><p>Add prefixes/suffixes when they add vital information.</p></li>
+<li><p>Establish consistent naming patterns within your codebase.</p></li>
+<li><p>Use descriptive verbs for function names.</p></li>
+<li><p>Avoid ambiguous abbreviations and acronyms.</p></li>
+<li><p>Prioritize clarity over brevity.</p></li>
+</ol>
+<section id="variable-and-function-naming">
+<h2>Variable and Function Naming<a class="headerlink" href="#variable-and-function-naming" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">fl</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;tp&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">t</span> <span class="ow">and</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;act&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fl</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">filter_active_users_by_type</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="n">user_type</span><span class="p">,</span> <span class="n">is_active</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return users of specified type who are active and over 30.&quot;&quot;&quot;</span>
+    <span class="n">filtered_users</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">user_type</span> <span class="ow">and</span> 
+            <span class="n">user</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="ow">and</span> 
+            <span class="n">user</span><span class="p">[</span><span class="s1">&#39;active&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">is_active</span><span class="p">):</span>
+            <span class="n">filtered_users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filtered_users</span>
+</pre></div>
+</div>
+</section>
+<section id="machine-learning-code-naming">
+<h2>Machine Learning Code Naming<a class="headerlink" href="#machine-learning-code-naming" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">proc</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">g_w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">y</span><span class="p">))</span>
+        <span class="n">g_b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_</span> <span class="o">%</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost: </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">-=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">g_w</span>
+        <span class="n">b</span> <span class="o">-=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">g_b</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">train_logistic_regression</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> 
+                             <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Train a logistic regression model using gradient descent.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        features: Training features matrix (n_samples, n_features)</span>
+<span class="sd">        labels: Target binary labels (n_samples,)</span>
+<span class="sd">        print_every: Print cost every n iterations</span>
+<span class="sd">        learning_rate: Step size for gradient descent</span>
+<span class="sd">        max_iterations: Maximum number of training iterations</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        weights, bias: Trained model parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">bias</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">):</span>
+        <span class="c1"># Forward pass</span>
+        <span class="n">linear_predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="o">+</span> <span class="n">bias</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">linear_predictions</span><span class="p">))</span>
+        
+        <span class="c1"># Compute gradients</span>
+        <span class="n">weight_gradient</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">num_samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">predictions</span> <span class="o">-</span> <span class="n">labels</span><span class="p">))</span>
+        <span class="n">bias_gradient</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">num_samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">predictions</span> <span class="o">-</span> <span class="n">labels</span><span class="p">)</span>
+        
+        <span class="c1"># Print cost if needed</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="o">%</span> <span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">num_samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">labels</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">+</span> 
+                <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">labels</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">predictions</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">, Cost: </span><span class="si">{</span><span class="n">cost</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Update parameters</span>
+        <span class="n">weights</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">weight_gradient</span>
+        <span class="n">bias</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">bias_gradient</span>
+        
+    <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">bias</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="aesthetics">
+<h1>Aesthetics<a class="headerlink" href="#aesthetics" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Use consistent formatting throughout the codebase.</p></li>
+<li><p>Break code into logical “paragraphs” separated by blank lines.</p></li>
+<li><p>Align code with similar structure when it helps identify patterns.</p></li>
+<li><p>Use whitespace strategically to group related items.</p></li>
+<li><p>Keep lines short enough to be easily scanned.</p></li>
+<li><p>Maintain consistent indentation.</p></li>
+</ol>
+<section id="code-formatting">
+<h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_total</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="n">tax</span><span class="p">,</span><span class="n">discount</span><span class="p">):</span>
+    <span class="n">result</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span><span class="n">result</span><span class="o">+=</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">discount</span><span class="p">:</span><span class="n">result</span><span class="o">*=</span><span class="mf">0.9</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">tax</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_total</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tax</span><span class="p">,</span> <span class="n">apply_discount</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the total price with tax and optional discount.&quot;&quot;&quot;</span>
+    <span class="n">subtotal</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># Sum all item prices</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+        <span class="n">subtotal</span> <span class="o">+=</span> <span class="n">item</span>
+    
+    <span class="c1"># Apply discount if needed</span>
+    <span class="k">if</span> <span class="n">apply_discount</span><span class="p">:</span>
+        <span class="n">subtotal</span> <span class="o">*=</span> <span class="mf">0.9</span>  <span class="c1"># 10% discount</span>
+    
+    <span class="c1"># Add tax and return</span>
+    <span class="k">return</span> <span class="n">subtotal</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tax</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-formatting">
+<h2>Configuration Formatting<a class="headerlink" href="#configuration-formatting" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DEFAULT_SETTINGS</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;timeout&quot;</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span><span class="s2">&quot;retries&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;log_level&quot;</span><span class="p">:</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="s2">&quot;cache_size&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="s2">&quot;max_connections&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;debug&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s2">&quot;user_agent&quot;</span><span class="p">:</span><span class="s2">&quot;MyApp/1.0&quot;</span><span class="p">,</span><span class="s2">&quot;ssl_verify&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span><span class="s2">&quot;chunk_size&quot;</span><span class="p">:</span><span class="mi">8192</span><span class="p">,</span><span class="s2">&quot;base_url&quot;</span><span class="p">:</span><span class="s2">&quot;https://api.example.com/v1&quot;</span><span class="p">,</span><span class="s2">&quot;poll_interval&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DEFAULT_SETTINGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Connection settings</span>
+    <span class="s2">&quot;timeout&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s2">&quot;retries&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;max_connections&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;poll_interval&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    
+    <span class="c1"># Server configuration</span>
+    <span class="s2">&quot;base_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.example.com/v1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ssl_verify&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    
+    <span class="c1"># Request settings</span>
+    <span class="s2">&quot;user_agent&quot;</span><span class="p">:</span> <span class="s2">&quot;MyApp/1.0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;chunk_size&quot;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">,</span>
+    
+    <span class="c1"># Debugging options</span>
+    <span class="s2">&quot;log_level&quot;</span><span class="p">:</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;debug&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    
+    <span class="c1"># Cache configuration</span>
+    <span class="s2">&quot;cache_size&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="comments-rules">
+<h1>Comments Rules<a class="headerlink" href="#comments-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Focus on explaining “why” not “what” in comments.</p></li>
+<li><p>Document assumptions, edge cases, and non-obvious constraints.</p></li>
+<li><p>Use “director commentary” to explain tricky sections.</p></li>
+<li><p>Add summary comments for complex blocks of code.</p></li>
+<li><p>Avoid redundant comments that repeat the code.</p></li>
+<li><p>Use markers like TODO, FIXME consistently.</p></li>
+<li><p>Update comments when code changes.</p></li>
+</ol>
+<section id="basic-comments">
+<h2>Basic Comments<a class="headerlink" href="#basic-comments" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This function adds a and b</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>  <span class="c1"># Return the sum</span>
+
+<span class="c1"># Loop through array</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="c1"># Get the current item</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="c1"># Process item</span>
+    <span class="n">process</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply Gaussian blur using a 9-step approximation</span>
+<span class="c1"># instead of the full algorithm for performance reasons</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fast_gaussian_blur</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="c1"># Early return for edge case - no blur needed</span>
+    <span class="k">if</span> <span class="n">radius</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">image_data</span>
+    
+    <span class="c1"># Implementation works in-place to avoid extra allocations</span>
+    <span class="c1"># which is critical for large images</span>
+    <span class="c1"># ... implementation ...</span>
+    
+    <span class="k">return</span> <span class="n">image_data</span>
+</pre></div>
+</div>
+</section>
+<section id="api-documentation">
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">authenticate</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticates a user.&quot;&quot;&quot;</span>
+    <span class="c1"># Code to check password</span>
+    <span class="k">if</span> <span class="n">check_password</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">generate_token</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">token</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">authenticate</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticate a user and generate an access token.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        username: The user&#39;s username (case-sensitive)</span>
+<span class="sd">        password: The user&#39;s plain-text password</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: A JWT token that&#39;s valid for 24 hours if authentication succeeds</span>
+<span class="sd">        None: If authentication fails</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        RateLimitError: If too many failed attempts from this IP address</span>
+<span class="sd">        LockoutError: If account is locked due to multiple failed attempts</span>
+<span class="sd">        </span>
+<span class="sd">    Security note:</span>
+<span class="sd">        While this function accepts plain-text passwords, they&#39;re never stored</span>
+<span class="sd">        in raw form. Passwords are verified against salted bcrypt hashes in the</span>
+<span class="sd">        database with work factor 12.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Verify credentials</span>
+    <span class="k">if</span> <span class="n">check_password</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">generate_token</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">token</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">record_failed_attempt</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="simplification-rules">
+<h1>Simplification Rules<a class="headerlink" href="#simplification-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Break down complex expressions into simpler components.</p></li>
+<li><p>Use named variables to document intermediate values.</p></li>
+<li><p>Simplify boolean expressions when possible.</p></li>
+<li><p>Avoid double negatives in conditions.</p></li>
+<li><p>Use early returns to reduce nesting.</p></li>
+<li><p>Replace complex loops with helper functions.</p></li>
+<li><p>Eliminate unnecessary variables and code.</p></li>
+</ol>
+<section id="boolean-logic-simplification">
+<h2>Boolean Logic Simplification<a class="headerlink" href="#boolean-logic-simplification" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="ow">not</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">has_permission</span><span class="p">(</span><span class="s2">&quot;admin&quot;</span><span class="p">))):</span>
+    <span class="c1"># Complex logic with double negatives</span>
+    <span class="n">do_something_for_active_admins</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">temp1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">temp2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">temp2</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">temp1</span> <span class="o">+=</span> <span class="n">temp2</span>
+    <span class="k">return</span> <span class="n">temp1</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">has_permission</span><span class="p">(</span><span class="s2">&quot;admin&quot;</span><span class="p">):</span>
+    <span class="n">do_something_for_active_admins</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">sum_of_valid_doubles</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">doubled</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">doubled</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">sum_of_valid_doubles</span> <span class="o">+=</span> <span class="n">doubled</span>
+    <span class="k">return</span> <span class="n">sum_of_valid_doubles</span>
+<span class="err">```</span> <span class="o">|</span>
+
+<span class="c1">### Regex Simplification</span>
+
+<span class="o">**</span><span class="n">DO</span> <span class="n">NOT</span><span class="o">**</span>
+<span class="err">```</span><span class="n">python</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_email</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+    <span class="c1"># Overly complex regex that&#39;s hard to understand and maintain</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^(([^&lt;&gt;()\[\]</span><span class="se">\\</span><span class="s1">.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]</span><span class="se">\\</span><span class="s1">.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$&#39;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">is_valid_email</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate an email address format.</span>
+<span class="sd">    </span>
+<span class="sd">    Validates that the string:</span>
+<span class="sd">    1. Contains a username and domain separated by &#39;@&#39;</span>
+<span class="sd">    2. Username doesn&#39;t start/end with a period</span>
+<span class="sd">    3. Domain has at least one period</span>
+<span class="sd">    4. Only contains allowed characters</span>
+<span class="sd">    </span>
+<span class="sd">    A more complete validation would require actually sending</span>
+<span class="sd">    an email to verify the address exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Split regex into named components for clarity</span>
+    <span class="n">username_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[a-zA-Z0-9_.+-]+&#39;</span>
+    <span class="n">domain_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+&#39;</span> 
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;^</span><span class="si">{</span><span class="n">username_pattern</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">domain_pattern</span><span class="si">}</span><span class="s1">$&#39;</span>
+    
+    <span class="c1"># Basic format check</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="c1"># Additional checks that are easier to express in code than regex</span>
+    <span class="n">username</span><span class="p">,</span> <span class="n">domain</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">username</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="function-rules">
+<h1>Function Rules<a class="headerlink" href="#function-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Functions should do one thing well.</p></li>
+<li><p>Extract unrelated subproblems into separate functions.</p></li>
+<li><p>Keep functions small and focused.</p></li>
+<li><p>Functions should operate at a single level of abstraction.</p></li>
+<li><p>Choose argument order thoughtfully and consistently.</p></li>
+<li><p>Minimize the number of function parameters.</p></li>
+<li><p>Consider creating wrapper functions for common use cases.</p></li>
+</ol>
+<section id="function-design">
+<h2>Function Design<a class="headerlink" href="#function-design" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_user_data</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">update_profile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">send_email</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reset_password</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">update_profile</span><span class="p">:</span>
+        <span class="c1"># Update user profile logic</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">send_email</span><span class="p">:</span>
+        <span class="c1"># Send email logic</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">get_email_template</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">)</span>
+        <span class="n">send_mail</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="p">{})</span>
+    
+    <span class="k">if</span> <span class="n">reset_password</span><span class="p">:</span>
+        <span class="c1"># Reset password logic</span>
+        <span class="n">new_password</span> <span class="o">=</span> <span class="n">generate_password</span><span class="p">()</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">new_password</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">send_mail</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s1">&#39;password_reset&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">new_password</span><span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">user</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">update_user_profile</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">profile_data</span><span class="p">):</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">profile_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">user</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">send_welcome_email</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">get_email_template</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">)</span>
+    <span class="n">send_mail</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">reset_user_password</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="n">new_password</span> <span class="o">=</span> <span class="n">generate_password</span><span class="p">()</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">new_password</span><span class="p">)</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">send_mail</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s1">&#39;password_reset&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">new_password</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">new_password</span>
+</pre></div>
+</div>
+</section>
+<section id="abstraction-level-mixing">
+<h2>Abstraction Level Mixing<a class="headerlink" href="#abstraction-level-mixing" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">analyze_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
+    <span class="c1"># Low-level string operations mixed with high-level analysis</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w\s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">word_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+    
+    <span class="c1"># Load language-specific stopwords</span>
+    <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;en&quot;</span><span class="p">:</span>
+        <span class="n">stopwords_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/stopwords/english.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">stopwords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">w</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">stopwords_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()])</span>
+        <span class="n">stopwords_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;fr&quot;</span><span class="p">:</span>
+        <span class="n">stopwords_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/stopwords/french.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">stopwords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">w</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">stopwords_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()])</span>
+        <span class="n">stopwords_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stopwords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    
+    <span class="c1"># Filter content words and count frequencies</span>
+    <span class="n">content_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stopwords</span><span class="p">]</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">content_words</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">freq</span><span class="p">:</span>
+            <span class="n">freq</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">freq</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="c1"># Calculate sentiment using third-party library</span>
+    <span class="n">sentiment_analyzer</span> <span class="o">=</span> <span class="n">SentimentIntensityAnalyzer</span><span class="p">()</span>
+    <span class="n">sentiment</span> <span class="o">=</span> <span class="n">sentiment_analyzer</span><span class="o">.</span><span class="n">polarity_scores</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    
+    <span class="c1"># Return all statistics at once</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="n">word_count</span><span class="p">,</span>
+        <span class="s2">&quot;content_word_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">content_words</span><span class="p">),</span>
+        <span class="s2">&quot;frequencies&quot;</span><span class="p">:</span> <span class="n">freq</span><span class="p">,</span>
+        <span class="s2">&quot;sentiment&quot;</span><span class="p">:</span> <span class="n">sentiment</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert text to lowercase, remove punctuation and return words.&quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w\s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_stopwords</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load stopwords for the specified language.&quot;&quot;&quot;</span>
+    <span class="n">languages</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="s2">&quot;english.txt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fr&quot;</span><span class="p">:</span> <span class="s2">&quot;french.txt&quot;</span><span class="p">,</span>
+        <span class="c1"># More languages can be added here</span>
+    <span class="p">}</span>
+    
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">languages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+        
+    <span class="n">filepath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;data/stopwords/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_word_frequencies</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Count frequency of each word in a list.&quot;&quot;&quot;</span>
+    <span class="n">frequencies</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+        <span class="n">frequencies</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">frequencies</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze text and return statistics about it.&quot;&quot;&quot;</span>
+    <span class="c1"># Each step uses a single level of abstraction</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">stopwords</span> <span class="o">=</span> <span class="n">load_stopwords</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+    <span class="n">content_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stopwords</span><span class="p">]</span>
+    
+    <span class="c1"># Analyze the text</span>
+    <span class="n">word_frequencies</span> <span class="o">=</span> <span class="n">calculate_word_frequencies</span><span class="p">(</span><span class="n">content_words</span><span class="p">)</span>
+    <span class="n">sentiment</span> <span class="o">=</span> <span class="n">SentimentIntensityAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">polarity_scores</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    
+    <span class="c1"># Return the analysis results</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">),</span>
+        <span class="s2">&quot;content_word_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">content_words</span><span class="p">),</span>
+        <span class="s2">&quot;frequencies&quot;</span><span class="p">:</span> <span class="n">word_frequencies</span><span class="p">,</span>
+        <span class="s2">&quot;sentiment&quot;</span><span class="p">:</span> <span class="n">sentiment</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="control-flow-rules">
+<h1>Control Flow Rules<a class="headerlink" href="#control-flow-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Minimize nesting depth in code.</p></li>
+<li><p>Prefer positive conditionals over negative ones.</p></li>
+<li><p>Handle the most common code path first.</p></li>
+<li><p>Return early from functions when possible.</p></li>
+<li><p>Avoid “clever” shortcuts that reduce readability.</p></li>
+<li><p>Structure conditionals to minimize cognitive load.</p></li>
+</ol>
+<section id="nesting-and-early-returns">
+<h2>Nesting and Early Returns<a class="headerlink" href="#nesting-and-early-returns" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_order</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">get_items</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">get_customer</span><span class="p">()</span><span class="o">.</span><span class="n">has_valid_payment</span><span class="p">():</span>
+                    <span class="c1"># Process the order</span>
+                    <span class="n">execute_order</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                    <span class="n">send_confirmation</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                    <span class="n">update_inventory</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">PaymentException</span><span class="p">(</span><span class="s2">&quot;Invalid payment&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">OrderException</span><span class="p">(</span><span class="s2">&quot;Empty order&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationException</span><span class="p">(</span><span class="s2">&quot;Invalid order&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Order is None&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_order</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Order is None&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">ValidationException</span><span class="p">(</span><span class="s2">&quot;Invalid order&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order</span><span class="o">.</span><span class="n">get_items</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">OrderException</span><span class="p">(</span><span class="s2">&quot;Empty order&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order</span><span class="o">.</span><span class="n">get_customer</span><span class="p">()</span><span class="o">.</span><span class="n">has_valid_payment</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">PaymentException</span><span class="p">(</span><span class="s2">&quot;Invalid payment&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Process the valid order</span>
+    <span class="n">execute_order</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="n">send_confirmation</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="n">update_inventory</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complex-conditionals">
+<h2>Complex Conditionals<a class="headerlink" href="#complex-conditionals" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">check_eligibility</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="c1"># Hard-to-follow nested conditions with mixed logic</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">subscription</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;paid&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">has_flag</span><span class="p">(</span><span class="s2">&quot;banned&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">has_flag</span><span class="p">(</span><span class="s2">&quot;suspended&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">last_login</span> <span class="ow">and</span> <span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">last_login</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">))):</span>
+                    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">profile_completion</span> <span class="o">&gt;</span> <span class="mi">80</span> <span class="ow">or</span> <span class="n">user</span><span class="o">.</span><span class="n">is_legacy_user</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">check_eligibility</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if user is eligible for premium content access.&quot;&quot;&quot;</span>
+    <span class="c1"># Validate basic requirements first</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">subscription</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;paid&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="c1"># Check disqualifying flags</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">has_flag</span><span class="p">(</span><span class="s2">&quot;banned&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">user</span><span class="o">.</span><span class="n">has_flag</span><span class="p">(</span><span class="s2">&quot;suspended&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="c1"># Check activity requirements</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">last_login</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+        
+    <span class="n">one_month_ago</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">last_login</span> <span class="o">&lt;=</span> <span class="n">one_month_ago</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="c1"># Check profile completion requirement (with Exception for legacy users)</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">profile_completion</span> <span class="o">&lt;=</span> <span class="mi">80</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_legacy_user</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="c1"># If all checks passed, user is eligible</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data-structure-rules">
+<h1>Data Structure Rules<a class="headerlink" href="#data-structure-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Use the simplest data structure that does the job.</p></li>
+<li><p>Reduce variable scope as much as possible.</p></li>
+<li><p>Prefer constants and immutable data when possible.</p></li>
+<li><p>Define variables close to where they’re used.</p></li>
+<li><p>Make interfaces to your code “narrow and deep”.</p></li>
+<li><p>Design data structures that prevent errors.</p></li>
+<li><p>Document expectations about data with assertions.</p></li>
+</ol>
+<section id="generic-dict-vs-classes">
+<h2>Generic Dict vs. Classes<a class="headerlink" href="#generic-dict-vs-classes" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_user_data</span><span class="p">(</span><span class="n">user_data</span><span class="p">):</span>
+    <span class="c1"># Using general-purpose dict with inconsistent structure</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">if</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;employee&quot;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;salary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;department&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;dept&quot;</span><span class="p">]</span>
+        <span class="c1"># Might forget to handle other properties</span>
+    <span class="k">elif</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;total_purchases&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;purchases&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;last_purchase_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;last_purchase&quot;</span><span class="p">]</span>
+        <span class="c1"># Different structure for different types</span>
+    
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Employee</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">department</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dept&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_date&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_annual_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate total annual cost including benefits.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">*</span> <span class="mf">1.25</span>  <span class="c1"># Including benefits</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Customer</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_purchases</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;purchases&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_purchase_date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;last_purchase&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loyalty_points</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;loyalty_points&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_value_score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate customer value based on purchase history.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_purchases</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">loyalty_points</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_user_from_data</span><span class="p">(</span><span class="n">user_data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;employee&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Employee</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">user_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Customer</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown user type: </span><span class="si">{</span><span class="n">user_data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="data-validation">
+<h2>Data Validation<a class="headerlink" href="#data-validation" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_account</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1"># Data format isn&#39;t enforced, values could be missing or wrong type</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># No validation of data, errors will occur later</span>
+    <span class="n">account</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+        <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+        <span class="s1">&#39;password_hash&#39;</span><span class="p">:</span> <span class="n">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">),</span>
+        <span class="s1">&#39;created_at&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="s1">&#39;is_active&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;login_count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;last_login&#39;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">}</span>
+    
+    <span class="n">save_to_database</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">account</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountCreationRequest</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to create a new user account.&quot;&quot;&quot;</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate all fields meet requirements.&quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Username validation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Username must be at least 3 characters&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9_]+$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">):</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Username can only contain letters, numbers, and underscores&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Email validation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="ow">or</span> <span class="s1">&#39;@&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Valid email is required&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Password validation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Password must be at least 8 characters&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Account</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User account with enforced types and defaults.&quot;&quot;&quot;</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">password_hash</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">is_active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">login_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">last_login</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_account</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">AccountCreationRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Account</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new account from validated request data.&quot;&quot;&quot;</span>
+    <span class="c1"># Validate incoming data</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    
+    <span class="c1"># Create account with properly typed fields and defaults</span>
+    <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+        <span class="n">email</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+        <span class="n">password_hash</span><span class="o">=</span><span class="n">hash_password</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+    <span class="p">)</span>
+    
+    <span class="n">save_to_database</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">account</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="organization-rules">
+<h1>Organization Rules<a class="headerlink" href="#organization-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Organize code from high level to low level.</p></li>
+<li><p>Keep related actions together, unrelated actions separate.</p></li>
+<li><p>Use consistent patterns for similar functionality.</p></li>
+<li><p>Minimize state changes and side effects.</p></li>
+<li><p>Place helper functions after the code that uses them.</p></li>
+<li><p>Group related functions together.</p></li>
+</ol>
+<section id="code-organization">
+<h2>Code Organization<a class="headerlink" href="#code-organization" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">():</span>
+    <span class="c1"># Mix of high-level and low-level operations</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">age</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">salary</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                
+                <span class="c1"># Complex business logic mixed with parsing</span>
+                <span class="k">if</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">salary</span> <span class="o">&lt;</span> <span class="mi">50000</span><span class="p">:</span>
+                    <span class="n">tax_rate</span> <span class="o">=</span> <span class="mf">0.15</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tax_rate</span> <span class="o">=</span> <span class="mf">0.2</span>
+                
+                <span class="n">net_salary</span> <span class="o">=</span> <span class="n">salary</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tax_rate</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="n">age</span><span class="p">,</span> <span class="s1">&#39;net_salary&#39;</span><span class="p">:</span> <span class="n">net_salary</span><span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">read_csv_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read data from CSV file and return as list of lines.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_employee_data</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a CSV line into employee data dictionary.&quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_tax_rate</span><span class="p">(</span><span class="n">employee</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine tax rate based on employee criteria.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">employee</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">employee</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">50000</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.15</span>
+    <span class="k">return</span> <span class="mf">0.2</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_net_salary</span><span class="p">(</span><span class="n">employee</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate employee&#39;s net salary after taxes.&quot;&quot;&quot;</span>
+    <span class="n">tax_rate</span> <span class="o">=</span> <span class="n">calculate_tax_rate</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">employee</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tax_rate</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main function to process employee data.&quot;&quot;&quot;</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">)</span>
+    <span class="n">employees</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">employee</span> <span class="o">=</span> <span class="n">parse_employee_data</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">employee</span><span class="p">:</span>
+            <span class="n">employee</span><span class="p">[</span><span class="s1">&#39;net_salary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_net_salary</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
+            <span class="n">employees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">employees</span>
+</pre></div>
+</div>
+</section>
+<section id="ui-organization">
+<h2>UI Organization<a class="headerlink" href="#ui-organization" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Event handlers scattered throughout file and mixed with business logic</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialize_app</span><span class="p">():</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">create_window</span><span class="p">(</span><span class="s2">&quot;My App&quot;</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    
+    <span class="c1"># Button click handlers</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_save_button_click</span><span class="p">():</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">get_form_data</span><span class="p">()</span>
+        <span class="n">validate_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">save_to_database</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">show_success_message</span><span class="p">(</span><span class="s2">&quot;Data saved successfully!&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+            <span class="n">show_error</span><span class="p">(</span><span class="s2">&quot;Name is required&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">show_error</span><span class="p">(</span><span class="s2">&quot;Description too long&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    
+    <span class="n">save_button</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="s2">&quot;Save&quot;</span><span class="p">,</span> <span class="n">on_save_button_click</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_clear_button_click</span><span class="p">():</span>
+        <span class="n">clear_form</span><span class="p">()</span>
+    
+    <span class="n">clear_button</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="s2">&quot;Clear&quot;</span><span class="p">,</span> <span class="n">on_clear_button_click</span><span class="p">)</span>
+    
+    <span class="c1"># More UI setup code...</span>
+    
+    <span class="c1"># Database functions mixed in</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_database</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">get_database_connection</span><span class="p">()</span>
+        <span class="c1"># ... database code ...</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="o">**</span><span class="n">DO</span><span class="o">**</span>
+<span class="err">```</span><span class="n">python</span>
+<span class="c1"># Organized by logical layers</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataValidator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validates form data before processing.&quot;&quot;&quot;</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_save_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate data for saving.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Name is required&quot;</span>
+            
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Description too long&quot;</span>
+            
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+        
+<span class="k">class</span><span class="w"> </span><span class="nc">DatabaseService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles database operations.&quot;&quot;&quot;</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save data to database.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_database_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="c1"># ... database code ...</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EventHandlers</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All event handlers for the application UI.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">db_service</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">ui</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_service</span> <span class="o">=</span> <span class="n">db_service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_file</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_save_button_click</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle save button click.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">get_form_data</span><span class="p">()</span>
+        
+        <span class="c1"># Validate data</span>
+        <span class="n">valid</span><span class="p">,</span> <span class="n">error_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">validate_save_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+            <span class="k">return</span>
+            
+        <span class="c1"># Save data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_service</span><span class="o">.</span><span class="n">save_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show_success_message</span><span class="p">(</span><span class="s2">&quot;Data saved successfully!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="s2">&quot;Failed to save data&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">initialize_app</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the application.&quot;&quot;&quot;</span>
+    <span class="c1"># Create services</span>
+    <span class="n">validator</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="p">()</span>
+    <span class="n">db_service</span> <span class="o">=</span> <span class="n">DatabaseService</span><span class="p">()</span>
+    
+    <span class="c1"># Create UI</span>
+    <span class="n">ui</span> <span class="o">=</span> <span class="n">ApplicationUI</span><span class="p">()</span>
+    
+    <span class="c1"># Create event handlers</span>
+    <span class="n">handlers</span> <span class="o">=</span> <span class="n">EventHandlers</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">db_service</span><span class="p">)</span>
+    
+    <span class="c1"># Connect UI events to handlers</span>
+    <span class="n">ui</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;save_button&quot;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">.</span><span class="n">on_save_button_click</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling-rules">
+<h1>Error Handling Rules<a class="headerlink" href="#error-handling-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Handle error cases explicitly.</p></li>
+<li><p>Make error messages specific and actionable.</p></li>
+<li><p>Fail early at the source of the problem.</p></li>
+<li><p>Use defensive programming for unexpected inputs.</p></li>
+<li><p>Add redundant checks for critical code.</p></li>
+</ol>
+<section id="basic-error-handling">
+<h2>Basic Error Handling<a class="headerlink" href="#basic-error-handling" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">save_user_data</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Vague error handling</span>
+        <span class="n">database</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">save_user_data</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot save None user&quot;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">database</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">DatabaseConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database connection failed while saving user </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ServiceError</span><span class="p">(</span><span class="s2">&quot;Unable to save user due to database connection issue&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User validation failed for user </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">InvalidUserDataError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User data is invalid: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error while saving user </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ServiceError</span><span class="p">(</span><span class="s2">&quot;User save operation failed&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-processing">
+<h2>Configuration Processing<a class="headerlink" href="#configuration-processing" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># Doesn&#39;t handle errors specifically</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+    <span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">][</span><span class="s1">&#39;host&#39;</span><span class="p">]</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">][</span><span class="s1">&#39;port&#39;</span><span class="p">]</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">][</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">][</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">connect_to_database</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process configuration file and establish database connection.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Path to the configuration JSON file</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Database connection object</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ConfigError: When file has missing or invalid configuration</span>
+<span class="sd">        ConnectionError: When database connection fails</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># File existence and permission checks</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuration file not found: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No permission to read configuration file: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># File opening and parsing</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid JSON in configuration file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to read configuration file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        
+    <span class="c1"># Configuration validation</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">database_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">database_config</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing &#39;database&#39; section in config&quot;</span><span class="p">)</span>
+            
+        <span class="n">host</span> <span class="o">=</span> <span class="n">database_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">host</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing database host in config&quot;</span><span class="p">)</span>
+            
+        <span class="n">port</span> <span class="o">=</span> <span class="n">database_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid database port: </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">database_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;credentials&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing database credentials in config&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ConfigError</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error processing configuration: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="k">raise</span>
+        
+    <span class="c1"># Connection attempt with specific error handling</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">connect_to_database</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database refused connection at </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">AuthenticationError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Invalid database credentials&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to connect to database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-rules">
+<h1>Testing Rules<a class="headerlink" href="#testing-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Write tests for both expected and edge cases.</p></li>
+<li><p>Make test failures easy to diagnose.</p></li>
+<li><p>Test with realistic data.</p></li>
+<li><p>Test the interface, not the implementation.</p></li>
+<li><p>Write self-testing code where practical.</p></li>
+</ol>
+<section id="basic-testing">
+<h2>Basic Testing<a class="headerlink" href="#basic-testing" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_user_registration</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">register_user</span><span class="p">(</span><span class="s2">&quot;john&quot;</span><span class="p">,</span> <span class="s2">&quot;password123&quot;</span><span class="p">,</span> <span class="s2">&quot;john@example.com&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_user_registration_with_valid_data</span><span class="p">():</span>
+    <span class="c1"># Arrange</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john_doe&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;password123&quot;</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;john@example.com&quot;</span>
+    
+    <span class="c1"># Act</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">register_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+    
+    <span class="c1"># Assert</span>
+    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="n">username</span>
+    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">email</span>
+    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">is</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_user_registration_with_duplicate_username</span><span class="p">():</span>
+    <span class="c1"># Arrange - create a user first</span>
+    <span class="n">existing_username</span> <span class="o">=</span> <span class="s2">&quot;existing_user&quot;</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">existing_username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;existing@example.com&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Act &amp; Assert</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">DuplicateUsernameError</span><span class="p">)</span> <span class="k">as</span> <span class="n">excinfo</span><span class="p">:</span>
+        <span class="n">register_user</span><span class="p">(</span><span class="n">existing_username</span><span class="p">,</span> <span class="s2">&quot;password123&quot;</span><span class="p">,</span> <span class="s2">&quot;new@example.com&quot;</span><span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="s2">&quot;Username already exists&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="test-organization">
+<h2>Test Organization<a class="headerlink" href="#test-organization" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_payment</span><span class="p">():</span>
+    <span class="c1"># Multiple things tested in one test</span>
+    <span class="n">payment</span> <span class="o">=</span> <span class="n">Payment</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">100</span>
+    <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span>
+    
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">payment</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">processed</span> <span class="ow">is</span> <span class="kc">True</span>
+    
+    <span class="n">refunded</span> <span class="o">=</span> <span class="n">payment</span><span class="o">.</span><span class="n">refund</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">refunded</span> <span class="ow">is</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TestPaymentCreation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests for payment object creation and validation.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_payment_initialized_with_correct_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">payment</span> <span class="o">=</span> <span class="n">Payment</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">amount</span> <span class="o">==</span> <span class="mi">100</span>
+        <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">currency</span> <span class="o">==</span> <span class="s2">&quot;USD&quot;</span>
+        <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;credit_card&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_payment_validates_with_valid_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">payment</span> <span class="o">=</span> <span class="n">Payment</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_payment_validation_fails_with_negative_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">payment</span> <span class="o">=</span> <span class="n">Payment</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span>
+        <span class="k">assert</span> <span class="s2">&quot;amount must be positive&quot;</span> <span class="ow">in</span> <span class="n">payment</span><span class="o">.</span><span class="n">validation_errors</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestPaymentProcessing</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests for payment processing operations.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up a valid payment for each test.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payment</span> <span class="o">=</span> <span class="n">Payment</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">card_number</span> <span class="o">=</span> <span class="s2">&quot;4111111111111111&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">expiry</span> <span class="o">=</span> <span class="s2">&quot;12/25&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">cvv</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_payment_processes_successfully</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">process</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;processed&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">payment</span><span class="o">.</span><span class="n">transaction_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optimization-rules">
+<h1>Optimization Rules<a class="headerlink" href="#optimization-rules" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Optimize for readability first, performance second.</p></li>
+<li><p>Profile before optimizing.</p></li>
+<li><p>Comment on non-obvious optimization techniques.</p></li>
+<li><p>Keep optimized (less readable) code isolated.</p></li>
+<li><p>Document performance goals and constraints.</p></li>
+</ol>
+<section id="basic-optimization">
+<h2>Basic Optimization<a class="headerlink" href="#basic-optimization" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unnecessarily complex optimization without explanation</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_closest_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)[:</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">find_closest_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find k points closest to target point using Euclidean distance.</span>
+<span class="sd">    </span>
+<span class="sd">    Implementation notes:</span>
+<span class="sd">    - We avoid using sqrt() in the distance calculation as it&#39;s unnecessary</span>
+<span class="sd">      for comparison and improves performance by ~40%</span>
+<span class="sd">    - For large point sets (&gt;10000), consider using a KD-tree instead</span>
+<span class="sd">      which would change time complexity from O(n log n) to O(k log n)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">squared_distance</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="c1"># Avoid unnecessary sqrt calculation for performance</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+    
+    <span class="c1"># Sort by squared distance and return k closest points</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">squared_distance</span><span class="p">)[:</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="premature-optimization">
+<h2>Premature Optimization<a class="headerlink" href="#premature-optimization" title="Link to this heading"></a></h2>
+<p><strong>DO NOT</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_statistics</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate mean, median, and mode of a dataset.&quot;&quot;&quot;</span>
+    <span class="c1"># Premature micro-optimization with complex one-liners</span>
+    <span class="c1"># and unnecessary caching that reduces readability</span>
+    <span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>  <span class="c1"># Cache length to avoid multiple calls</span>
+    <span class="n">_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">if</span> <span class="n">_len</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>  <span class="c1"># Pre-sort once for both median and mode</span>
+    
+    <span class="c1"># Complex one-liner for mean</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="n">_len</span> <span class="k">if</span> <span class="n">_len</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    
+    <span class="c1"># Complex calculation of median to avoid creating temporary lists</span>
+    <span class="n">median</span> <span class="o">=</span> <span class="p">(</span><span class="n">_sorted</span><span class="p">[</span><span class="n">_len</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">_len</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> 
+             <span class="p">(</span><span class="n">_sorted</span><span class="p">[</span><span class="n">_len</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_sorted</span><span class="p">[</span><span class="n">_len</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">_len</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    
+    <span class="c1"># Manual frequency counting to avoid Counter overhead</span>
+    <span class="n">_freq</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+        <span class="n">_freq</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">_freq</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    
+    <span class="c1"># Find mode with max() for performance</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_freq</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">_freq</span> <span class="k">else</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">mode</span><span class="p">}</span>
+
+</pre></div>
+</div>
+<p><strong>DO</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_statistics</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate mean, median, and mode of a dataset.</span>
+<span class="sd">    </span>
+<span class="sd">    This implementation prioritizes readability over micro-optimizations.</span>
+<span class="sd">    Performance testing showed it handles datasets of up to 100,000 elements</span>
+<span class="sd">    in under 50ms, which is sufficient for our current needs.</span>
+<span class="sd">    </span>
+<span class="sd">    For larger datasets, consider using NumPy&#39;s statistical functions which</span>
+<span class="sd">    are implemented in optimized C code.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        values: List of numeric values</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict containing mean, median, and mode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    
+    <span class="c1"># Calculate mean</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    
+    <span class="c1"># Calculate median</span>
+    <span class="n">sorted_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_values</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Odd number of values</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">sorted_values</span><span class="p">[</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Even number of values</span>
+        <span class="n">middle_right</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">middle_left</span> <span class="o">=</span> <span class="n">middle_right</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="p">(</span><span class="n">sorted_values</span><span class="p">[</span><span class="n">middle_left</span><span class="p">]</span> <span class="o">+</span> <span class="n">sorted_values</span><span class="p">[</span><span class="n">middle_right</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+    
+    <span class="c1"># Calculate mode using Counter</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+    <span class="n">value_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">mode_value</span><span class="p">,</span> <span class="n">mode_count</span> <span class="o">=</span> <span class="n">value_counts</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c1"># If all values appear the same number of times, there&#39;s no mode</span>
+    <span class="k">if</span> <span class="n">mode_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">mode_value</span>
+    
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">mode</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="key-takeaways">
+<h1>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p><strong>Optimize for human understanding</strong>: Write code for people first, computers second. The primary measure of code quality is how quickly another developer can understand it.</p></li>
+<li><p><strong>Meaningful names reveal intent</strong>: Choose descriptive, specific names for variables, functions, and classes. Good names act as documentation and make code self-explanatory.</p></li>
+<li><p><strong>Consistent formatting enhances readability</strong>: Use consistent spacing, indentation, and line breaks to visually organize code into logical groups.</p></li>
+<li><p><strong>Comments explain “why” not “what”</strong>: Focus on explaining reasoning, edge cases, and non-obvious constraints rather than restating what the code does.</p></li>
+<li><p><strong>Simple is better than clever</strong>: Avoid complex expressions and “clever” tricks. Break complexity into simpler components with clear names.</p></li>
+<li><p><strong>Functions should do one thing well</strong>: Keep functions small, focused, and operating at a single level of abstraction. Extract unrelated operations into separate functions.</p></li>
+<li><p><strong>Early returns reduce nesting</strong>: Use guard clauses and early returns to handle edge cases first, keeping the main logic path clean and less nested.</p></li>
+<li><p><strong>Strong typing prevents errors</strong>: Use typed data structures, validation, and assertions to catch errors early and make expectations explicit.</p></li>
+<li><p><strong>Organize code by logical layers</strong>: Separate concerns by grouping related functionality. Structure code from high-level to low-level within each file.</p></li>
+<li><p><strong>Specific error handling is actionable</strong>: Handle error cases explicitly with descriptive messages that guide toward resolution.</p></li>
+<li><p><strong>Test interfaces, not implementations</strong>: Write tests that verify behavior from the user’s perspective rather than internal implementation details.</p></li>
+<li><p><strong>Prioritize readability over premature optimization</strong>: Focus on making code correct and clear first. Only optimize after profiling identifies actual bottlenecks.</p></li>
+</ol>
+<!-- EOF --></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

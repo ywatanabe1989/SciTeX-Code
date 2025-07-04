@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clean Code Rules &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Clean Code Rules</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/programming_common/clean-code.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-25 23:21:34
+!-- Author: ywatanabe
+!-- File: /ssh:sp:/home/ywatanabe/.claude/to_claude/guidelines/programming_common/clean-code.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="clean-code-rules">
+<h1>Clean Code Rules<a class="headerlink" href="#clean-code-rules" title="Link to this heading"></a></h1>
+<p>Code is clean if it can be understood easily – by everyone on the team. Clean code can be read and enhanced by a developer other than its original author. With understandability comes readability, changeability, extensibility and maintainability.</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#general-rules"><span class="std std-ref">General Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#design-rules"><span class="std std-ref">Design Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#understandability-tips"><span class="std std-ref">Understandability Tips</span></a></p></li>
+<li><p><a class="reference internal" href="#names-rules"><span class="std std-ref">Names Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#functions-rules"><span class="std std-ref">Functions Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#comments-rules"><span class="std std-ref">Comments Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#source-code-structure"><span class="std std-ref">Source Code Structure</span></a></p></li>
+<li><p><a class="reference internal" href="#objects-and-data-structures"><span class="std std-ref">Objects and Data Structures</span></a></p></li>
+<li><p><a class="reference internal" href="#tests"><span class="std std-ref">Tests</span></a></p></li>
+<li><p><a class="reference internal" href="#code-smells"><span class="std std-ref">Code Smells</span></a></p></li>
+<li><p><a class="reference internal" href="#examples"><span class="std std-ref">Examples</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#naming-examples"><span class="std std-ref">Naming Examples</span></a></p></li>
+<li><p>Functions Examples</p></li>
+<li><p>Comments Examples</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="general-rules">
+<h2>General Rules<a class="headerlink" href="#general-rules" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Follow standard conventions.</p></li>
+<li><p>Keep it simple stupid. Simpler is always better. Reduce complexity as much as possible.</p></li>
+<li><p>Boy scout rule. Leave the campground cleaner than you found it.</p></li>
+<li><p>Always find root cause. Always look for the root cause of a problem.</p></li>
+</ol>
+</section>
+<section id="design-rules">
+<h2>Design Rules<a class="headerlink" href="#design-rules" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Keep configurable data at high levels.</p></li>
+<li><p>Prefer polymorphism to if/else or switch/case.</p></li>
+<li><p>Separate multi-threading code.</p></li>
+<li><p>Prevent over-configurability.</p></li>
+<li><p>Use dependency injection.</p></li>
+<li><p>Follow Law of Demeter. A class should know only its direct dependencies.</p></li>
+</ol>
+</section>
+<section id="understandability-tips">
+<h2>Understandability Tips<a class="headerlink" href="#understandability-tips" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Be consistent. If you do something a certain way, do all similar things in the same way.</p></li>
+<li><p>Use explanatory variables.</p></li>
+<li><p>Encapsulate boundary conditions. Boundary conditions are hard to keep track of. Put the processing for them in one place.</p></li>
+<li><p>Prefer dedicated value objects to primitive type.</p></li>
+<li><p>Avoid logical dependency. Don’t write methods which works correctly depending on something else in the same class.</p></li>
+<li><p>Avoid negative conditionals.</p></li>
+</ol>
+</section>
+<section id="names-rules">
+<h2>Names Rules<a class="headerlink" href="#names-rules" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Choose descriptive and unambiguous names.</p></li>
+<li><p>Make meaningful distinction.</p></li>
+<li><p>Use pronounceable names.</p></li>
+<li><p>Use searchable names.</p></li>
+<li><p>Replace magic numbers with named constants.</p></li>
+<li><p>Avoid encodings. Don’t append prefixes or type information.</p></li>
+</ol>
+</section>
+<section id="functions-rules">
+<h2>Functions Rules<a class="headerlink" href="#functions-rules" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Small.</p></li>
+<li><p>Do one thing.</p></li>
+<li><p>Use descriptive names.</p></li>
+<li><p>Prefer fewer arguments.</p></li>
+<li><p>Have no side effects.</p></li>
+<li><p>Don’t use flag arguments. Split method into several independent methods that can be called from the client without the flag.</p></li>
+</ol>
+</section>
+<section id="comments-rules">
+<h2>Comments Rules<a class="headerlink" href="#comments-rules" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Always try to explain yourself in code.</p></li>
+<li><p>Don’t be redundant.</p></li>
+<li><p>Don’t add obvious noise.</p></li>
+<li><p>Don’t use closing brace comments.</p></li>
+<li><p>Don’t comment out code. Just remove.</p></li>
+<li><p>Use as explanation of intent.</p></li>
+<li><p>Use as clarification of code.</p></li>
+<li><p>Use as warning of consequences.</p></li>
+</ol>
+</section>
+<section id="source-code-structure">
+<h2>Source Code Structure<a class="headerlink" href="#source-code-structure" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Separate concepts vertically.</p></li>
+<li><p>Related code should appear vertically dense.</p></li>
+<li><p>Declare variables close to their usage.</p></li>
+<li><p>Dependent functions should be close.</p></li>
+<li><p>Similar functions should be close.</p></li>
+<li><p>Place functions in the downward direction.</p></li>
+<li><p>Keep lines short.</p></li>
+<li><p>Don’t use horizontal alignment.</p></li>
+<li><p>Use white space to associate related things and disassociate weakly related.</p></li>
+<li><p>Don’t break indentation.</p></li>
+</ol>
+</section>
+<section id="objects-and-data-structures">
+<h2>Objects and Data Structures<a class="headerlink" href="#objects-and-data-structures" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Hide internal structure.</p></li>
+<li><p>Prefer data structures.</p></li>
+<li><p>Avoid hybrids structures (half object and half data).</p></li>
+<li><p>Should be small.</p></li>
+<li><p>Do one thing.</p></li>
+<li><p>Small number of instance variables.</p></li>
+<li><p>Base class should know nothing about their derivatives.</p></li>
+<li><p>Better to have many functions than to pass some code into a function to select a behavior.</p></li>
+<li><p>Prefer non-static methods to static methods.</p></li>
+</ol>
+</section>
+<section id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>One assert per test.</p></li>
+<li><p>Readable.</p></li>
+<li><p>Fast.</p></li>
+<li><p>Independent.</p></li>
+<li><p>Repeatable.</p></li>
+</ol>
+</section>
+<section id="code-smells">
+<h2>Code Smells<a class="headerlink" href="#code-smells" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Rigidity. The software is difficult to change. A small change causes a cascade of subsequent changes.</p></li>
+<li><p>Fragility. The software breaks in many places due to a single change.</p></li>
+<li><p>Immobility. You cannot reuse parts of the code in other projects because of involved risks and high effort.</p></li>
+<li><p>Needless Complexity.</p></li>
+<li><p>Needless Repetition.</p></li>
+<li><p>Opacity. The code is hard to understand.</p></li>
+</ol>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="naming-examples">
+<h3>Naming Examples<a class="headerlink" href="#naming-examples" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>❌ DO NOT</p></th>
+<th class="head"><p>✅ DO</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>```python</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="unclear-variable-names">
+<h1>Unclear variable names<a class="headerlink" href="#unclear-variable-names" title="Link to this heading"></a></h1>
+<p>d = 5  # elapsed time in days
+def calc(a, b, c):
+return (a * b) + c
+<code class="docutils literal notranslate"><span class="pre">|</span></code>python</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="descriptive-variable-names">
+<h1>Descriptive variable names<a class="headerlink" href="#descriptive-variable-names" title="Link to this heading"></a></h1>
+<p>days_elapsed = 5
+def calculate_total_price(base_price, tax_rate, shipping_cost):
+return (base_price * tax_rate) + shipping_cost</p>
+<div class="highlight-| notranslate"><div class="highlight"><pre><span></span>| ```python
+# Non-searchable names
+e = 3.14159
+def fn(x, y):
+    return x + y * 23
+``` | ```python
+# Searchable names
+PI = 3.14159
+TAX_MULTIPLIER = 23
+def calculate_sum(first_value, second_value):
+    return first_value + second_value * TAX_MULTIPLIER
+``` |
+| ```python
+# Hungarian notation and type encoding
+strName = &quot;John&quot;
+intAge = 25
+bIsActive = True
+``` | ```python
+# Clean names without type encoding
+name = &quot;John&quot;
+age = 25
+is_active = True
+``` |
+
+### Functions Examples
+
+| ❌ DO NOT | ✅ DO |
+|-----------|------|
+| ```python
+# Function that does multiple things
+def process_data(data):
+    # Validate data
+    if not data:
+        return None
+    
+    # Transform data
+    result = []
+    for item in data:
+        result.append(item * 2)
+    
+    # Save to database
+    save_to_db(result)
+    
+    # Send notification
+    send_notification(&quot;Data processed&quot;)
+    
+    return result
+``` | ```python
+# Functions that do one thing
+def process_data(data):
+    validated_data = validate_data(data)
+    if not validated_data:
+        return None
+    
+    transformed_data = transform_data(validated_data)
+    save_data(transformed_data)
+    notify_process_complete()
+    
+    return transformed_data
+
+def validate_data(data):
+    return data if data else None
+
+def transform_data(data):
+    return [item * 2 for item in data]
+
+def save_data(data):
+    save_to_db(data)
+
+def notify_process_complete():
+    send_notification(&quot;Data processed&quot;)
+``` |
+| ```python
+# Function with flag argument
+def render_page(is_admin):
+    if is_admin:
+        # Render admin view
+        return &quot;Admin Page&quot;
+    else:
+        # Render user view
+        return &quot;User Page&quot;
+``` | ```python
+# Separate functions instead of flag
+def render_admin_page():
+    # Render admin view
+    return &quot;Admin Page&quot;
+
+def render_user_page():
+    # Render user view
+    return &quot;User Page&quot;
+``` |
+| ```python
+# Function with too many arguments
+def create_user(name, email, password, age, address, phone, role, status):
+    # Create user with all these parameters
+    pass
+``` | ```python
+# Using a class or dictionary to group parameters
+class UserData:
+    def __init__(self, name, email, password, age, address, phone, role, status):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.age = age
+        self.address = address
+        self.phone = phone
+        self.role = role
+        self.status = status
+
+def create_user(user_data):
+    # Create user with data from user_data object
+    pass
+``` |
+
+### Comments Examples
+
+| ❌ DO NOT | ✅ DO |
+|-----------|------|
+| ```python
+# This function adds a and b
+def add(a, b):
+    return a + b
+``` | ```python
+def add(a, b):
+    return a + b
+``` |
+| ```python
+def complex_calculation(data):
+    # Loop through data
+    for item in data:
+        # Process each item
+        item.process()
+    # Return result
+    return data
+``` | ```python
+def complex_calculation(data):
+    &quot;&quot;&quot;
+    Applies specialized business logic to transform financial data
+    according to regulation X42-J.
+    &quot;&quot;&quot;
+    for item in data:
+        item.process()
+    return data
+``` |
+| ```python
+# commented out code
+# def old_function():
+#     # This used to do something
+#     pass
+
+def new_function():
+    pass
+``` | ```python
+def new_function():
+    pass
+``` |
+| ```python
+def process_data():
+    # Begin data processing
+    result = []
+    # Loop through each item
+    for i in range(10):
+        # Add item to result
+        result.append(i)
+    # End of processing
+    return result
+} # end function
+``` | ```python
+def process_data():
+    result = []
+    for i in range(10):
+        result.append(i)
+    return result
+``` |
+
+&lt;!-- EOF --&gt;
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

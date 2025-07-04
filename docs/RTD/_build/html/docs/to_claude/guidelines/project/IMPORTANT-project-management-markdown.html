@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Files and Locations &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Files and Locations</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/project/IMPORTANT-project-management-markdown.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-30 17:10:32
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/project/IMPORTANT-project-management-markdown.md
+!-- --- -->
+<p>Project management is conducted under <code class="docutils literal notranslate"><span class="pre">./project_management</span></code> directory.</p>
+<section id="core-files-and-locations">
+<h1>Core Files and Locations<a class="headerlink" href="#core-files-and-locations" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Original plan: <code class="docutils literal notranslate"><span class="pre">./project_management/USER_PLAN.md</span></code> (DO NOT EDIT)</p></li>
+<li><p>Updated plans: <code class="docutils literal notranslate"><span class="pre">./project_management/CLAUDE_PLAN.md</span></code> (Use this as a persistent memory)</p></li>
+<li><p>Progress tracking (Markdown): <code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.md</span></code></p></li>
+<li><p>Progress tracking (Mermaid) : <code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.mmd</span></code></p></li>
+<li><p>Memory across sessions: <code class="docutils literal notranslate"><span class="pre">./project_management/next_steps-&lt;timestamp&gt;.md</span></code></p></li>
+</ul>
+</section>
+<section id="progress-format">
+<h1>Progress Format<a class="headerlink" href="#progress-format" title="Link to this heading"></a></h1>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># Title</span>
+| Type | Stat | Description   |
+|------|------|---------------|
+| 🚀   | [x]  | Project Title |
+
+<span class="gu">## Goals, Milestones, and Tasks</span>
+<span class="gu">#### 🎯 Goal 1: Description</span>
+| Type | Stat | Description        |
+|------|------|--------------------|
+| 🎯   | [ ]  | Goal description   |
+|      |      | 📌 Justication     |
+|------|------|--------------------|
+| 🏁   | [ ]  | Milestone details  |
+|      | [J]  | Justication        |
+|------|------|--------------------|
+| 📋   | [x]  | Completed task     |
+|      | [J]  | 📌 <span class="sb">`/path/to/file`</span> |
+
+<span class="gu">## Key Symbols</span>
+| Symbol | Meaning       | Status | Meaning |
+|--------|---------------|--------|---------|
+| 🎯     | Goal          | [ ]    | TODO    |
+| 🏁     | Milestone     | [x]    | DONE    |
+| 📋     | Task          |        |         |
+| 💡     | Suggestion    |        |         |
+| 📌     | Justification |        |         |
+</pre></div>
+</div>
+</section>
+<section id="visual-progress-management-using-mermaid-diagram">
+<h1>Visual Progress Management using Mermaid Diagram<a class="headerlink" href="#visual-progress-management-using-mermaid-diagram" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.mmd</span></code></p>
+<ul>
+<li><p>Mermaid diagram definition file reflecting <code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.md</span></code></p></li>
+<li><p>Use tags as well</p></li>
+<li><p>Use TD layout</p></li>
+<li><p>Understand the hierarchy and summarize into core elements</p></li>
+<li><p>Summarize up to most-important 7 elements</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.svg</span></code></p>
+<ul>
+<li><p>SVG file created from the mermaid file</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./project_management/progress-&lt;title&gt;-&lt;timestamp&gt;.gif</span></code></p>
+<ul>
+<li><p>GIF image created from the SVG file</p></li>
+</ul>
+</li>
+</ul>
+<section id="rendering-tool">
+<h2>Rendering Tool<a class="headerlink" href="#rendering-tool" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.claude/bin/render_mermaid.sh</span> <span class="pre">/path/to/mermaid/file.mmd</span></code></p>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph TD
+    subgraph Legend
+        Z1[Todo]:::todo
+        Z2[In Progress]:::inProgress
+        Z3[Done]:::done
+        Z4[Directory]:::directory
+    end
+    subgraph Project Structure
+    subgraph PD[Project Description]
+        PJNAME[Project Name]:::done
+        PJGOALS[Goals]:::done
+    end
+    subgraph PDIR[Project Directory]
+        Root[&quot;\/workspace\/projects\/000-sample-project&quot;]:::directory
+        Config[config/]:::directory
+        Data[data/]:::directory
+        Scripts[scripts/]:::directory
+        Results[results/]:::directory
+        Resources[resources/]:::directory
+        Env[.env/]:::directory
+        Git[.git/]:::directory
+        Requirements[requirements.txt/]:::directory
+        Log[Log.txt/]:::directory
+        PM[project_management.mmd]:::directory
+    end
+    end
+    subgraph Execution Flow
+    subgraph Step
+        D[Compile Context]:::done
+        E[Generate Elisp]:::inProgress
+        F[Execute Elisp]:::todo
+        G{Success?}:::todo
+    end
+    subgraph &quot;Logging, Version Control, and State Update&quot;
+        H[Log Success]:::todo
+        I[Log Error]:::todo
+        J{Milestone?}:::todo
+        K[Git Commit]:::todo
+        L[Log Only]:::todo
+        M{Goal Met?}:::todo
+        N[Update Project_States]:::todo
+    end
+    end
+    subgraph PMFLOW[Project Management Flow]
+        MS1[Milestone 1]:::done
+        MS2[Milestone 2]:::inProgress
+    subgraph Tasks M1
+        T1[task1]:::done
+        T2[task2]:::done
+    end
+    subgraph Tasks M2
+        T3[task1]:::done
+        T4[task2]:::todo
+    end
+    end
+    Start[Start]:::starttag --&gt; PD
+    PD --&gt; PDIR
+    PM --&gt; PMFLOW
+    PMFLOW --&gt; PM
+    PDIR --&gt; D
+    D --&gt; E --&gt; F --&gt; G
+    G -- Yes --&gt; H
+    G -- No --&gt; I
+    H --&gt; J
+    J -- Yes --&gt; K
+    J -- No --&gt; L
+    K --&gt; M
+    I --&gt; L
+    L --&gt; M
+    M -- No --&gt; N
+    N --&gt; Root
+    M -- Yes --&gt; End[End]:::endtag
+    PJGOALS --&gt; PMFLOW
+    MS1 --&gt; T1
+    MS1 --&gt; T2
+    MS2 --&gt; T3
+    MS2 --&gt; T4
+    classDef starttag fill:#cce5ff,stroke:#333,stroke-width:2px;
+    classDef done fill:#9f9,stroke:#333,stroke-width:2px;
+    classDef inProgress fill:#ff9,stroke:#333,stroke-width:2px;
+    classDef todo fill:#fff,stroke:#333,stroke-width:2px;
+    classDef directory fill:#efe,stroke:#333,stroke-width:1px;
+    classDef endtag fill:#fcc,stroke:#333,stroke-width:2px;
+    class Root,Config,Data,Scripts,Results,Resources directory;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="your-understanding-check">
+<h1>Your Understanding Check<a class="headerlink" href="#your-understanding-check" title="Link to this heading"></a></h1>
+<p>Did you understand the guideline? If yes, please say:
+<code class="docutils literal notranslate"><span class="pre">CLAUDE</span> <span class="pre">UNDERSTOOD:</span> <span class="pre">&lt;THIS</span> <span class="pre">FILE</span> <span class="pre">PATH</span> <span class="pre">HERE&gt;</span></code></p>
+<!-- EOF --></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

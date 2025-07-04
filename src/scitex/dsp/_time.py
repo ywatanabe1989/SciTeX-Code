@@ -5,6 +5,7 @@
 
 
 import numpy as np
+import scitex
 
 
 def time(start_sec, end_sec, fs):

@@ -32,8 +32,8 @@ from sklearn.svm import SVC
 """Functions & Classes"""
 
 
-def train_svm(features: np.ndarray, labels: np.ndarray) -> SVC:
-    model = SVC(kernel="rbf", random_state=CONFIG.MNIST.RANDOM_STATE)
+def train_svm(features: np.ndarray, labels: np.ndarray, config) -> SVC:
+    model = SVC(kernel="rbf", random_state=config.MNIST.RANDOM_STATE)
     model.fit(features, labels)
     return model
 
@@ -56,13 +56,13 @@ def evaluate(
     }
 
 
-def main(args: argparse.Namespace) -> Optional[int]:
-    train_data = mngs.io.load(CONFIG.PATH.MNIST.FLATTENED.TRAIN)
-    train_labels = mngs.io.load(CONFIG.PATH.MNIST.LABELS.TRAIN)
-    test_data = mngs.io.load(CONFIG.PATH.MNIST.FLATTENED.TEST)
-    test_labels = mngs.io.load(CONFIG.PATH.MNIST.LABELS.TEST)
+def main(args: argparse.Namespace, config) -> Optional[int]:
+    train_data = mngs.io.load(config.PATH.MNIST.FLATTENED.TRAIN)
+    train_labels = mngs.io.load(config.PATH.MNIST.LABELS.TRAIN)
+    test_data = mngs.io.load(config.PATH.MNIST.FLATTENED.TEST)
+    test_labels = mngs.io.load(config.PATH.MNIST.LABELS.TEST)
 
-    model = train_svm(train_data, train_labels)
+    model = train_svm(train_data, train_labels, config)
     metrics = evaluate(model, test_data, test_labels)
 
     mngs.str.printc(
@@ -70,7 +70,7 @@ def main(args: argparse.Namespace) -> Optional[int]:
         c="green",
     )
 
-    mngs.io.save(model, eval(CONFIG.PATH.MNIST.MODEL_SVM))
+    mngs.io.save(model, eval(config.PATH.MNIST.MODEL_SVM))
     return 0
 
 
@@ -100,7 +100,6 @@ def run_main() -> None:
 
     import matplotlib.pyplot as plt
 
-    global CONFIG, CC, sys, plt
     args = parse_args()
     CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(
         sys,
@@ -110,7 +109,7 @@ def run_main() -> None:
         agg=True,
     )
 
-    exit_status = main(args)
+    exit_status = main(args, CONFIG)
 
     mngs.gen.close(
         CONFIG,

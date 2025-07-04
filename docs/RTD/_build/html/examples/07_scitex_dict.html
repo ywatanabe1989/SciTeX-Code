@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>07 SciTeX Dict &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="08 SciTeX Types" href="08_scitex_types.html" />
+    <link rel="prev" title="06 SciTeX Context" href="06_scitex_context.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">07 SciTeX Dict</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/07_scitex_dict.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-dict">
+<h1>07 SciTeX Dict<a class="headerlink" href="#scitex-dict" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/07_scitex_dict.ipynb">07_scitex_dict.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>07_scitex_dict.ipynb
+</pre></div>
+</div>
+</div>
+<p>This comprehensive notebook demonstrates the SciTeX dictionary utilities
+module, covering advanced dictionary operations, data structures, and
+utilities for scientific computing.</p>
+<section id="features-covered">
+<h2>Features Covered<a class="headerlink" href="#features-covered" title="Link to this heading"></a></h2>
+<section id="core-dictionary-classes">
+<h3>Core Dictionary Classes<a class="headerlink" href="#core-dictionary-classes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>DotDict - Attribute-style access to dictionary keys</p></li>
+<li><p>listed_dict - Dictionary with automatic list initialization</p></li>
+</ul>
+</section>
+<section id="dictionary-operations">
+<h3>Dictionary Operations<a class="headerlink" href="#dictionary-operations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>safe_merge - Merge dictionaries with conflict detection</p></li>
+<li><p>pop_keys - Remove specified keys from key lists</p></li>
+<li><p>replace - String replacement using dictionaries</p></li>
+<li><p>to_str - Convert dictionaries to string representations</p></li>
+</ul>
+</section>
+<section id="use-cases">
+<h3>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Configuration management</p></li>
+<li><p>Data aggregation and collection</p></li>
+<li><p>Parameter handling for scientific experiments</p></li>
+<li><p>Template processing and string manipulation</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../src&#39;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scitex</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="c1"># Set random seed for reproducibility</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SciTeX Dictionary Utilities Tutorial - Ready to begin!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-1-dotdict-attribute-style-dictionary-access">
+<h2>Part 1: DotDict - Attribute-Style Dictionary Access<a class="headerlink" href="#part-1-dotdict-attribute-style-dictionary-access" title="Link to this heading"></a></h2>
+<section id="basic-dotdict-usage">
+<h3>1.1 Basic DotDict Usage<a class="headerlink" href="#basic-dotdict-usage" title="Link to this heading"></a></h3>
+<p>The DotDict class allows you to access dictionary keys as attributes,
+making code more readable and intuitive:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a DotDict from a regular dictionary</span>
+<span class="n">config_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;experiment_name&#39;</span><span class="p">:</span> <span class="s1">&#39;neural_network_training&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model_params&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s1">&#39;hidden_layers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;data_params&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;train_split&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+        <span class="s1">&#39;validation_split&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s1">&#39;test_split&#39;</span><span class="p">:</span> <span class="mf">0.1</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;/tmp/experiment_results&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;random_seed&#39;</span><span class="p">:</span> <span class="mi">42</span>
+<span class="p">}</span>
+
+<span class="c1"># Convert to DotDict</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">DotDict</span><span class="p">(</span><span class="n">config_data</span><span class="p">)</span>
+
+<span class="c1"># Access using dot notation</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Experiment name: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">experiment_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Learning rate: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">learning_rate</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hidden layers: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">hidden_layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Train split: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">data_params</span><span class="o">.</span><span class="n">train_split</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Also supports traditional dictionary access</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using bracket notation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output dir: </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch size: </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_params&#39;</span><span class="p">][</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dotdict-with-complex-data-types">
+<h3>1.2 DotDict with Complex Data Types<a class="headerlink" href="#dotdict-with-complex-data-types" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a DotDict with various data types</span>
+<span class="n">complex_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="s1">&#39;Research Team&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0.0&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;arrays&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;data_matrix&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+        <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="s1">&#39;weights&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;dataframes&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+        <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;functions&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;loss_function&#39;</span><span class="p">:</span> <span class="s1">&#39;categorical_crossentropy&#39;</span>
+    <span class="p">},</span>
+    <span class="mi">123</span><span class="p">:</span> <span class="s1">&#39;integer_key&#39;</span><span class="p">,</span>  <span class="c1"># Non-string key</span>
+    <span class="s1">&#39;invalid-key&#39;</span><span class="p">:</span> <span class="s1">&#39;hyphenated_key&#39;</span>  <span class="c1"># Invalid identifier</span>
+<span class="p">}</span>
+
+<span class="n">dot_dict</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">DotDict</span><span class="p">(</span><span class="n">complex_data</span><span class="p">)</span>
+
+<span class="c1"># Access different data types</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data matrix shape: </span><span class="si">{</span><span class="n">dot_dict</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">data_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results dataframe shape: </span><span class="si">{</span><span class="n">dot_dict</span><span class="o">.</span><span class="n">dataframes</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Activation function: </span><span class="si">{</span><span class="n">dot_dict</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">activation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access non-string keys with bracket notation</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integer key: </span><span class="si">{</span><span class="n">dot_dict</span><span class="p">[</span><span class="mi">123</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hyphenated key: </span><span class="si">{</span><span class="n">dot_dict</span><span class="p">[</span><span class="s1">&#39;invalid-key&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Modify values</span>
+<span class="n">dot_dict</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;tanh&#39;</span>
+<span class="n">dot_dict</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;1.1.0&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">After modification:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New activation: </span><span class="si">{</span><span class="n">dot_dict</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">activation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New version: </span><span class="si">{</span><span class="n">dot_dict</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dotdict-methods-and-operations">
+<h3>1.3 DotDict Methods and Operations<a class="headerlink" href="#dotdict-methods-and-operations" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demonstrate DotDict methods</span>
+<span class="n">sample_dict</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">DotDict</span><span class="p">({</span>
+    <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;nested&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;more&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_dict</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keys: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Values: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Items: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check membership</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&#39;a&#39; in sample_dict: </span><span class="si">{</span><span class="s1">&#39;a&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">sample_dict</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;z&#39; in sample_dict: </span><span class="si">{</span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">sample_dict</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get method with default</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get &#39;a&#39; with default: </span><span class="si">{</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;not found&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Get &#39;z&#39; with default: </span><span class="si">{</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;not found&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Update method</span>
+<span class="n">sample_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;new_nested&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}})</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">After update: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New nested value: </span><span class="si">{</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">new_nested</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Pop method</span>
+<span class="n">popped_value</span> <span class="o">=</span> <span class="n">sample_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;not found&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Popped value: </span><span class="si">{</span><span class="n">popped_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keys after pop: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Copy method</span>
+<span class="n">copied_dict</span> <span class="o">=</span> <span class="n">sample_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">copied_dict</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Original &#39;a&#39;: </span><span class="si">{</span><span class="n">sample_dict</span><span class="o">.</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Copy &#39;a&#39;: </span><span class="si">{</span><span class="n">copied_dict</span><span class="o">.</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert back to regular dict</span>
+<span class="n">regular_dict</span> <span class="o">=</span> <span class="n">sample_dict</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Type of original: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sample_dict</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type of converted: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">regular_dict</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type of nested in converted: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">regular_dict</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-2-listed-dict-dictionary-with-automatic-list-initialization">
+<h2>Part 2: listed_dict - Dictionary with Automatic List Initialization<a class="headerlink" href="#part-2-listed-dict-dictionary-with-automatic-list-initialization" title="Link to this heading"></a></h2>
+<section id="basic-listed-dict-usage">
+<h3>2.1 Basic listed_dict Usage<a class="headerlink" href="#basic-listed-dict-usage" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a listed_dict without predefined keys</span>
+<span class="n">data_collector</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">()</span>
+
+<span class="c1"># Simulate data collection process</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="c1"># Automatically creates lists for new keys</span>
+    <span class="n">data_collector</span><span class="p">[</span><span class="s1">&#39;experiment_A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+    <span class="n">data_collector</span><span class="p">[</span><span class="s1">&#39;experiment_B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">))</span>
+    <span class="n">data_collector</span><span class="p">[</span><span class="s1">&#39;timestamps&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2024-01-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data collected:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">data_collector</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Type of data_collector: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data_collector</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length of experiment_A: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_collector</span><span class="p">[</span><span class="s1">&#39;experiment_A&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="listed-dict-with-predefined-keys">
+<h3>2.2 listed_dict with Predefined Keys<a class="headerlink" href="#listed-dict-with-predefined-keys" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create listed_dict with predefined keys</span>
+<span class="n">metrics_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">]</span>
+<span class="n">metrics_collector</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">(</span><span class="n">metrics_keys</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial state:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metrics_keys</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">metrics_collector</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Simulate multiple training runs</span>
+<span class="n">n_runs</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+    <span class="c1"># Generate realistic metrics for each run</span>
+    <span class="n">base_accuracy</span> <span class="o">=</span> <span class="mf">0.85</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_accuracy</span><span class="p">)</span>
+    <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_accuracy</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+    <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;recall&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_accuracy</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+
+    <span class="c1"># F1 score as harmonic mean of precision and recall</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;recall&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">metrics_collector</span><span class="p">[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">After </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> runs:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">metrics_collector</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">avg_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">std_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">std_value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert to DataFrame for analysis</span>
+<span class="n">metrics_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">metrics_collector</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Metrics DataFrame:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="real-world-example-experiment-log-collection">
+<h3>2.3 Real-world Example: Experiment Log Collection<a class="headerlink" href="#real-world-example-experiment-log-collection" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate a machine learning experiment with multiple conditions</span>
+<span class="n">experiment_log</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">()</span>
+
+<span class="c1"># Define experimental conditions</span>
+<span class="n">learning_rates</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">batch_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
+<span class="n">architectures</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="s1">&#39;large&#39;</span><span class="p">]</span>
+
+<span class="c1"># Run experiments</span>
+<span class="k">for</span> <span class="n">lr</span> <span class="ow">in</span> <span class="n">learning_rates</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">batch_size</span> <span class="ow">in</span> <span class="n">batch_sizes</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">architectures</span><span class="p">:</span>
+            <span class="c1"># Simulate training results</span>
+            <span class="n">final_accuracy</span> <span class="o">=</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+            <span class="n">training_time</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>  <span class="c1"># seconds</span>
+
+            <span class="c1"># Log results</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lr</span><span class="p">)</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;architecture&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arch</span><span class="p">)</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;final_accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_accuracy</span><span class="p">)</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">training_time</span><span class="p">)</span>
+            <span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;experiment_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lr</span><span class="si">{</span><span class="n">lr</span><span class="si">}</span><span class="s2">_bs</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total experiments: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;experiment_id&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique learning rates: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique batch sizes: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique architectures: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">experiment_log</span><span class="p">[</span><span class="s1">&#39;architecture&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert to DataFrame for analysis</span>
+<span class="n">experiment_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">experiment_log</span><span class="p">))</span>
+
+<span class="c1"># Find best configurations</span>
+<span class="n">best_accuracy_idx</span> <span class="o">=</span> <span class="n">experiment_df</span><span class="p">[</span><span class="s1">&#39;final_accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+<span class="n">best_config</span> <span class="o">=</span> <span class="n">experiment_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">best_accuracy_idx</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best configuration:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Learning rate: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch size: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Architecture: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;architecture&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final accuracy: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;final_accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training time: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+
+<span class="c1"># Group by architecture and show average performance</span>
+<span class="n">arch_performance</span> <span class="o">=</span> <span class="n">experiment_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;architecture&#39;</span><span class="p">)[</span><span class="s1">&#39;final_accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Performance by architecture:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arch_performance</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-3-dictionary-manipulation-functions">
+<h2>Part 3: Dictionary Manipulation Functions<a class="headerlink" href="#part-3-dictionary-manipulation-functions" title="Link to this heading"></a></h2>
+<section id="safe-merge-merge-dictionaries-with-conflict-detection">
+<h3>3.1 safe_merge - Merge Dictionaries with Conflict Detection<a class="headerlink" href="#safe-merge-merge-dictionaries-with-conflict-detection" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create test dictionaries for merging</span>
+<span class="n">config_base</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;neural_network&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="mi">3</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;training&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">32</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">config_experiment</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;experiment&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;test_run_1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-01&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;optimization&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">config_output</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;save_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/tmp/results&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;save_format&#39;</span><span class="p">:</span> <span class="s1">&#39;pickle&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;INFO&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="s1">&#39;experiment.log&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Safe merge without conflicts</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">merged_config</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">safe_merge</span><span class="p">(</span><span class="n">config_base</span><span class="p">,</span> <span class="n">config_experiment</span><span class="p">,</span> <span class="n">config_output</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully merged configurations:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Top-level keys: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">merged_config</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model type: </span><span class="si">{</span><span class="n">merged_config</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Experiment name: </span><span class="si">{</span><span class="n">merged_config</span><span class="p">[</span><span class="s1">&#39;experiment&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output path: </span><span class="si">{</span><span class="n">merged_config</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;save_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merge failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test with conflicting keys</span>
+<span class="n">config_conflict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span>  <span class="c1"># This will conflict with config_base</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;decision_tree&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;validation&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">conflicted_merge</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">safe_merge</span><span class="p">(</span><span class="n">config_base</span><span class="p">,</span> <span class="n">config_conflict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Conflict merge succeeded (this shouldn&#39;t happen)&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Expected conflict detected: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pop-keys-remove-keys-from-key-lists">
+<h3>3.2 pop_keys - Remove Keys from Key Lists<a class="headerlink" href="#pop-keys-remove-keys-from-key-lists" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Feature selection by removing unwanted features</span>
+<span class="n">all_features</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;marital_status&#39;</span><span class="p">,</span> <span class="s1">&#39;health_score&#39;</span><span class="p">,</span> <span class="s1">&#39;exercise_frequency&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;smoking_status&#39;</span><span class="p">,</span> <span class="s1">&#39;alcohol_consumption&#39;</span><span class="p">,</span> <span class="s1">&#39;bmi&#39;</span><span class="p">,</span> <span class="s1">&#39;blood_pressure&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Remove sensitive or irrelevant features</span>
+<span class="n">features_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;marital_status&#39;</span><span class="p">,</span> <span class="s1">&#39;income&#39;</span><span class="p">]</span>
+
+<span class="n">selected_features</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">all_features</span><span class="p">,</span> <span class="n">features_to_remove</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original features (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_features</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">all_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features to remove: </span><span class="si">{</span><span class="n">features_to_remove</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected features (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_features</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">selected_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example: Column selection for data analysis</span>
+<span class="n">dataframe_columns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;session_id&#39;</span><span class="p">,</span> <span class="s1">&#39;action_type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;page_url&#39;</span><span class="p">,</span> <span class="s1">&#39;referrer&#39;</span><span class="p">,</span> <span class="s1">&#39;user_agent&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_address&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="s1">&#39;clicks&#39;</span><span class="p">,</span> <span class="s1">&#39;scrolls&#39;</span><span class="p">,</span> <span class="s1">&#39;conversions&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Remove PII and technical columns for analysis</span>
+<span class="n">columns_to_exclude</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;session_id&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_address&#39;</span><span class="p">,</span> <span class="s1">&#39;user_agent&#39;</span><span class="p">]</span>
+<span class="n">analysis_columns</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">dataframe_columns</span><span class="p">,</span> <span class="n">columns_to_exclude</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Original columns: </span><span class="si">{</span><span class="n">dataframe_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns to exclude: </span><span class="si">{</span><span class="n">columns_to_exclude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analysis columns: </span><span class="si">{</span><span class="n">analysis_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example: Multi-stage feature filtering</span>
+<span class="n">ml_features</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;feature_1&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_2&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_3&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_4&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_5&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;feature_6&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_7&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_8&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_9&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_10&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Remove non-feature columns</span>
+<span class="n">non_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">]</span>
+<span class="n">features_only</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">ml_features</span><span class="p">,</span> <span class="n">non_features</span><span class="p">)</span>
+
+<span class="c1"># Remove low-importance features (simulated)</span>
+<span class="n">low_importance</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;feature_3&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_7&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_9&#39;</span><span class="p">]</span>
+<span class="n">high_importance_features</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">features_only</span><span class="p">,</span> <span class="n">low_importance</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ML pipeline feature selection:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All columns: </span><span class="si">{</span><span class="n">ml_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features only: </span><span class="si">{</span><span class="n">features_only</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High importance features: </span><span class="si">{</span><span class="n">high_importance_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="replace-string-replacement-with-dictionary">
+<h3>3.3 replace - String Replacement with Dictionary<a class="headerlink" href="#replace-string-replacement-with-dictionary" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Template processing for experiment reports</span>
+<span class="n">report_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Experiment Report</span>
+<span class="s2">=================</span>
+
+<span class="s2">Experiment Name: </span><span class="si">{EXPERIMENT_NAME}</span>
+<span class="s2">Date: </span><span class="si">{DATE}</span>
+<span class="s2">Model: </span><span class="si">{MODEL_TYPE}</span>
+<span class="s2">Dataset: </span><span class="si">{DATASET}</span>
+
+<span class="s2">Results:</span>
+<span class="s2">- Accuracy: </span><span class="si">{ACCURACY}</span>
+<span class="s2">- Precision: </span><span class="si">{PRECISION}</span>
+<span class="s2">- Recall: </span><span class="si">{RECALL}</span>
+<span class="s2">- F1 Score: </span><span class="si">{F1_SCORE}</span>
+
+<span class="s2">Training Time: </span><span class="si">{TRAINING_TIME}</span>
+<span class="s2">Status: </span><span class="si">{STATUS}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Define replacement dictionary</span>
+<span class="n">experiment_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;</span><span class="si">{EXPERIMENT_NAME}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;Image Classification Study&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{DATE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-15&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{MODEL_TYPE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;Convolutional Neural Network&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{DATASET}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;CIFAR-10&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{ACCURACY}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.923&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{PRECISION}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.918&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{RECALL}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.915&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{F1_SCORE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.916&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{TRAINING_TIME}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;2.5 hours&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{STATUS}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;COMPLETED&#39;</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate report</span>
+<span class="n">final_report</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">report_template</span><span class="p">,</span> <span class="n">experiment_values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">final_report</span><span class="p">)</span>
+
+<span class="c1"># Example: Code generation with variable substitution</span>
+<span class="n">code_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">def </span><span class="si">{FUNCTION_NAME}</span><span class="s2">(</span><span class="si">{PARAMETERS}</span><span class="s2">):</span>
+<span class="s2">    </span><span class="se">\&quot;\&quot;\&quot;</span>
+<span class="s2">    </span><span class="si">{DOCSTRING}</span>
+<span class="s2">    </span><span class="se">\&quot;\&quot;\&quot;</span>
+<span class="s2">    </span><span class="si">{BODY}</span>
+<span class="s2">    return </span><span class="si">{RETURN_VALUE}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">function_specs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;</span><span class="si">{FUNCTION_NAME}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;calculate_metrics&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{PARAMETERS}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;y_true, y_pred&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{DOCSTRING}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;Calculate classification metrics from predictions.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{BODY}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;&#39;    accuracy = np.mean(y_true == y_pred)</span>
+<span class="s1">    precision = precision_score(y_true, y_pred, average=&#39;weighted&#39;)</span>
+<span class="s1">    recall = recall_score(y_true, y_pred, average=&#39;weighted&#39;)</span>
+<span class="s1">    f1 = f1_score(y_true, y_pred, average=&#39;weighted&#39;)&#39;&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{RETURN_VALUE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;{&#39;</span><span class="n">accuracy</span><span class="s1">&#39;: accuracy, &#39;</span><span class="n">precision</span><span class="s1">&#39;: precision, &#39;</span><span class="n">recall</span><span class="s1">&#39;: recall, &#39;</span><span class="n">f1</span><span class="s1">&#39;: f1}&#39;</span>
+<span class="p">}</span>
+
+<span class="n">generated_code</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">code_template</span><span class="p">,</span> <span class="n">function_specs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generated code:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">generated_code</span><span class="p">)</span>
+
+<span class="c1"># Example: Configuration file processing</span>
+<span class="n">config_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">model_config = {</span>
+<span class="s2">    &#39;architecture&#39;: &#39;</span><span class="si">{ARCHITECTURE}</span><span class="s2">&#39;,</span>
+<span class="s2">    &#39;input_size&#39;: </span><span class="si">{INPUT_SIZE}</span><span class="s2">,</span>
+<span class="s2">    &#39;hidden_layers&#39;: </span><span class="si">{HIDDEN_LAYERS}</span><span class="s2">,</span>
+<span class="s2">    &#39;output_size&#39;: </span><span class="si">{OUTPUT_SIZE}</span><span class="s2">,</span>
+<span class="s2">    &#39;activation&#39;: &#39;</span><span class="si">{ACTIVATION}</span><span class="s2">&#39;,</span>
+<span class="s2">    &#39;dropout_rate&#39;: </span><span class="si">{DROPOUT_RATE}</span>
+<span class="s2">}</span>
+
+<span class="s2">training_config = {</span>
+<span class="s2">    &#39;learning_rate&#39;: </span><span class="si">{LEARNING_RATE}</span><span class="s2">,</span>
+<span class="s2">    &#39;batch_size&#39;: </span><span class="si">{BATCH_SIZE}</span><span class="s2">,</span>
+<span class="s2">    &#39;epochs&#39;: </span><span class="si">{EPOCHS}</span><span class="s2">,</span>
+<span class="s2">    &#39;optimizer&#39;: &#39;</span><span class="si">{OPTIMIZER}</span><span class="s2">&#39;</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">config_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;</span><span class="si">{ARCHITECTURE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;feedforward&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{INPUT_SIZE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;784&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{HIDDEN_LAYERS}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;[128, 64, 32]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{OUTPUT_SIZE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{ACTIVATION}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{DROPOUT_RATE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{LEARNING_RATE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;0.001&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{BATCH_SIZE}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;32&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{EPOCHS}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;</span><span class="si">{OPTIMIZER}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span>
+<span class="p">}</span>
+
+<span class="n">config_code</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">config_template</span><span class="p">,</span> <span class="n">config_values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generated configuration:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">config_code</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="to-str-convert-dictionary-to-string-representation">
+<h3>3.4 to_str - Convert Dictionary to String Representation<a class="headerlink" href="#to-str-convert-dictionary-to-string-representation" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Creating unique experiment identifiers</span>
+<span class="n">experiment_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="s1">&#39;bs&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="s1">&#39;arch&#39;</span><span class="p">:</span> <span class="s1">&#39;resnet&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
+<span class="p">}</span>
+
+<span class="n">experiment_id</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">experiment_params</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Experiment ID: </span><span class="si">{</span><span class="n">experiment_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Custom delimiter</span>
+<span class="n">experiment_id_custom</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">experiment_params</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Custom delimiter ID: </span><span class="si">{</span><span class="n">experiment_id_custom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example: Model hyperparameter tracking</span>
+<span class="n">model_configs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;cnn&#39;</span><span class="p">,</span> <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;filters&#39;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;rnn&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;transformer&#39;</span><span class="p">,</span> <span class="s1">&#39;heads&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">}</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model configuration strings:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model_configs</span><span class="p">):</span>
+    <span class="n">config_str</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Config </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">config_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example: Creating file names from parameters</span>
+<span class="n">experiment_settings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;dataset&#39;</span><span class="p">:</span> <span class="s1">&#39;cifar10&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;vgg16&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s1">&#39;augment&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="n">filename_base</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">experiment_settings</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+<span class="n">full_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;results_</span><span class="si">{</span><span class="n">filename_base</span><span class="si">}</span><span class="s2">.pkl&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generated filename: </span><span class="si">{</span><span class="n">full_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example: Logging experiment parameters</span>
+<span class="n">training_logs</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">([</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;config_string&#39;</span><span class="p">,</span> <span class="s1">&#39;final_loss&#39;</span><span class="p">])</span>
+
+<span class="c1"># Simulate multiple training runs</span>
+<span class="n">configs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;momentum&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s1">&#39;momentum&#39;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span> <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span> <span class="s1">&#39;momentum&#39;</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span> <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">}</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
+    <span class="n">config_str</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">final_loss</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2024-01-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;config_string&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config_str</span><span class="p">)</span>
+    <span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;final_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_loss</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training logs:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">])):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;config_string&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; Loss: </span><span class="si">{</span><span class="n">training_logs</span><span class="p">[</span><span class="s1">&#39;final_loss&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-4-advanced-use-cases-and-integration">
+<h2>Part 4: Advanced Use Cases and Integration<a class="headerlink" href="#part-4-advanced-use-cases-and-integration" title="Link to this heading"></a></h2>
+<section id="scientific-configuration-management">
+<h3>4.1 Scientific Configuration Management<a class="headerlink" href="#scientific-configuration-management" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Complex scientific experiment configuration</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExperimentConfig</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_config</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">DotDict</span><span class="p">({</span>
+            <span class="s1">&#39;experiment&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;baseline&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Baseline experiment setup&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0.0&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;synthetic&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+                <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s1">&#39;noise_level&#39;</span><span class="p">:</span> <span class="mf">0.1</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;neural_network&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;training&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+                <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+                <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s1">&#39;validation_split&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;save_model&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;save_predictions&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;save_metrics&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;plot_results&#39;</span><span class="p">:</span> <span class="kc">True</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_variants</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">modifications</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new experiment variant by modifying the base configuration.&quot;&quot;&quot;</span>
+        <span class="n">variant_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">variant_config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="c1"># Apply modifications</span>
+        <span class="k">for</span> <span class="n">key_path</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">modifications</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">key_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">variant_config</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">current</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># Generate unique identifier</span>
+        <span class="n">config_id</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">modifications</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">variant_config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">config_id</span> <span class="o">=</span> <span class="n">config_id</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_variants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variant_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">variant_config</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulate running an experiment with the given configuration.&quot;&quot;&quot;</span>
+        <span class="c1"># Simulate training</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running experiment: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Config ID: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">config_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Simulate results based on configuration</span>
+        <span class="n">base_accuracy</span> <span class="o">=</span> <span class="mf">0.8</span>
+        <span class="n">lr_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c1"># Penalize very high LR</span>
+        <span class="n">dropout_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">dropout</span> <span class="o">*</span> <span class="mf">0.5</span>  <span class="c1"># Slight penalty for high dropout</span>
+
+        <span class="n">final_accuracy</span> <span class="o">=</span> <span class="n">base_accuracy</span> <span class="o">*</span> <span class="n">lr_factor</span> <span class="o">*</span> <span class="n">dropout_factor</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">final_accuracy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">final_accuracy</span><span class="p">))</span>  <span class="c1"># Clamp to [0, 1]</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">final_accuracy</span><span class="p">,</span>
+            <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+            <span class="s1">&#39;training_time&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Log results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;experiment_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;config_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_best_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the best performing configuration.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;experiment_name&#39;</span><span class="p">][</span><span class="n">best_idx</span><span class="p">],</span>
+            <span class="s1">&#39;config_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;config_id&#39;</span><span class="p">][</span><span class="n">best_idx</span><span class="p">],</span>
+            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">][</span><span class="n">best_idx</span><span class="p">],</span>
+            <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">][</span><span class="n">best_idx</span><span class="p">],</span>
+            <span class="s1">&#39;training_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_log</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">][</span><span class="n">best_idx</span><span class="p">]</span>
+        <span class="p">}</span>
+
+<span class="c1"># Create experiment manager</span>
+<span class="n">exp_manager</span> <span class="o">=</span> <span class="n">ExperimentConfig</span><span class="p">()</span>
+
+<span class="c1"># Create different experiment variants</span>
+<span class="n">variants</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;high_lr&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;training.learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;low_lr&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;training.learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;high_dropout&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;model.dropout&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;large_batch&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;training.batch_size&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;small_batch&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;training.batch_size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;deep_model&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;model.architecture&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">]})</span>
+<span class="p">]</span>
+
+<span class="c1"># Create and run experiments</span>
+<span class="k">for</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">modifications</span> <span class="ow">in</span> <span class="n">variants</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">exp_manager</span><span class="o">.</span><span class="n">create_variant</span><span class="p">(</span><span class="n">variant_name</span><span class="p">,</span> <span class="n">modifications</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">exp_manager</span><span class="o">.</span><span class="n">run_experiment</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results: Accuracy=</span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Loss=</span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Find best configuration</span>
+<span class="n">best_config</span> <span class="o">=</span> <span class="n">exp_manager</span><span class="o">.</span><span class="n">get_best_config</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best configuration:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Config ID: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;config_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loss: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training time: </span><span class="si">{</span><span class="n">best_config</span><span class="p">[</span><span class="s1">&#39;training_time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="data-processing-pipeline-with-dictionary-utilities">
+<h3>4.2 Data Processing Pipeline with Dictionary Utilities<a class="headerlink" href="#data-processing-pipeline-with-dictionary-utilities" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a data processing pipeline using dictionary utilities</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataProcessingPipeline</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">DotDict</span><span class="p">({</span>
+            <span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;encoding&#39;</span><span class="p">:</span> <span class="s1">&#39;utf-8&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;preprocessing&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;remove_duplicates&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;handle_missing&#39;</span><span class="p">:</span> <span class="s1">&#39;impute&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;normalize&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;feature_selection&#39;</span><span class="p">:</span> <span class="kc">True</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;feature_engineering&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;create_interactions&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;polynomial_features&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;text_vectorization&#39;</span><span class="p">:</span> <span class="s1">&#39;tfidf&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;parquet&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;compression&#39;</span><span class="p">:</span> <span class="s1">&#39;snappy&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;save_metadata&#39;</span><span class="p">:</span> <span class="kc">True</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_metadata</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">listed_dict</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a dataset according to the pipeline configuration.&quot;&quot;&quot;</span>
+        <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">original_features</span> <span class="o">=</span> <span class="n">dataset_info</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing dataset: </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original features: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">original_features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Step 1: Preprocessing</span>
+        <span class="n">processed_features</span> <span class="o">=</span> <span class="n">original_features</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">remove_duplicates</span><span class="p">:</span>
+            <span class="c1"># Simulate removing duplicate features</span>
+            <span class="n">duplicate_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;feature_1_copy&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_2_duplicate&#39;</span><span class="p">]</span>
+            <span class="n">processed_features</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">processed_features</span><span class="p">,</span> <span class="n">duplicate_features</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed duplicates: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">original_features</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">processed_features</span><span class="p">)</span><span class="si">}</span><span class="s2"> features&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">feature_selection</span><span class="p">:</span>
+            <span class="c1"># Simulate feature selection</span>
+            <span class="n">low_variance_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">processed_features</span> <span class="k">if</span> <span class="s1">&#39;low_var&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+            <span class="n">processed_features</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">pop_keys</span><span class="p">(</span><span class="n">processed_features</span><span class="p">,</span> <span class="n">low_variance_features</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature selection: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">processed_features</span><span class="p">)</span><span class="si">}</span><span class="s2"> features remaining&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Step 2: Feature Engineering</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="o">.</span><span class="n">feature_engineering</span><span class="o">.</span><span class="n">create_interactions</span><span class="p">:</span>
+            <span class="c1"># Simulate creating interaction features</span>
+            <span class="n">interaction_features</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f1</span><span class="si">}</span><span class="s2">_x_</span><span class="si">{</span><span class="n">f2</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">f1</span> <span class="ow">in</span> <span class="n">processed_features</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">f2</span> <span class="ow">in</span> <span class="n">processed_features</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]]</span>
+            <span class="n">processed_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interaction_features</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created interactions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">interaction_features</span><span class="p">)</span><span class="si">}</span><span class="s2"> new features&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Log processing results</span>
+        <span class="n">processing_summary</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;dataset&#39;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">,</span>
+            <span class="s1">&#39;original_features&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_features</span><span class="p">),</span>
+            <span class="s1">&#39;final_features&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">processed_features</span><span class="p">),</span>
+            <span class="s1">&#39;reduction_ratio&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">processed_features</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_features</span><span class="p">),</span>
+            <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">processing_summary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Store feature metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_metadata</span><span class="p">[</span><span class="s1">&#39;dataset_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_metadata</span><span class="p">[</span><span class="s1">&#39;final_features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">processed_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_metadata</span><span class="p">[</span><span class="s1">&#39;feature_count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">processed_features</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">processed_features</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_processing_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a summary of all processing operations.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">[</span><span class="s1">&#39;dataset&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s2">&quot;No datasets processed yet.&quot;</span>
+
+        <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_log</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">summary_df</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_feature_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature_sets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Safely merge multiple feature sets.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Convert lists to dictionaries for merging</span>
+            <span class="n">feature_dicts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">features</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">feature_sets</span><span class="p">):</span>
+                <span class="n">feature_dict</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;set_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">feature</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="p">)}</span>
+                <span class="n">feature_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature_dict</span><span class="p">)</span>
+
+            <span class="n">merged_dict</span> <span class="o">=</span> <span class="n">scitex</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">safe_merge</span><span class="p">(</span><span class="o">*</span><span class="n">feature_dicts</span><span class="p">)</span>
+            <span class="n">merged_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">merged_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully merged </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">feature_sets</span><span class="p">)</span><span class="si">}</span><span class="s2"> feature sets&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total features: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">merged_features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">merged_features</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature merge failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+<span class="c1"># Create processing pipeline</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">DataProcessingPipeline</span><span class="p">()</span>
+
+<span class="c1"># Define test datasets</span>
+<span class="n">test_datasets</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;customer_data&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_1_copy&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;low_var_1&#39;</span><span class="p">,</span> <span class="s1">&#39;spending&#39;</span><span class="p">,</span> <span class="s1">&#39;low_var_2&#39;</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;product_data&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_2_duplicate&#39;</span><span class="p">,</span> <span class="s1">&#39;reviews&#39;</span><span class="p">,</span> <span class="s1">&#39;low_var_3&#39;</span><span class="p">,</span> <span class="s1">&#39;availability&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;transaction_data&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;payment_method&#39;</span><span class="p">,</span> <span class="s1">&#39;low_var_4&#39;</span><span class="p">,</span> <span class="s1">&#39;merchant&#39;</span><span class="p">,</span> <span class="s1">&#39;low_var_5&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="c1"># Process all datasets</span>
+<span class="n">processed_feature_sets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">test_datasets</span><span class="p">:</span>
+    <span class="n">processed_features</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">process_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">processed_feature_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">processed_features</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final features for </span><span class="si">{</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">processed_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Get processing summary</span>
+<span class="n">summary</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_processing_summary</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Processing Summary:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Merge feature sets (this should work as features are from different datasets)</span>
+<span class="n">merged_features</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">merge_feature_sets</span><span class="p">(</span><span class="o">*</span><span class="n">processed_feature_sets</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">merged_features</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Merged features: </span><span class="si">{</span><span class="n">merged_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total merged features: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">merged_features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary-and-best-practices">
+<h2>Summary and Best Practices<a class="headerlink" href="#summary-and-best-practices" title="Link to this heading"></a></h2>
+<p>This tutorial demonstrated the comprehensive dictionary utilities
+available in the SciTeX library:</p>
+<section id="key-components-covered">
+<h3>Key Components Covered:<a class="headerlink" href="#key-components-covered" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>DotDict</strong>: Enables attribute-style access to dictionary keys</p>
+<ul class="simple">
+<li><p>Supports nested dictionaries</p></li>
+<li><p>Handles various data types (arrays, DataFrames, functions)</p></li>
+<li><p>Provides standard dictionary methods</p></li>
+</ul>
+</li>
+<li><p><strong>listed_dict</strong>: Automatically initializes lists for new keys</p>
+<ul class="simple">
+<li><p>Perfect for data collection and aggregation</p></li>
+<li><p>Supports predefined keys</p></li>
+<li><p>Integrates well with pandas DataFrames</p></li>
+</ul>
+</li>
+<li><p><strong>safe_merge</strong>: Merges dictionaries with conflict detection</p>
+<ul class="simple">
+<li><p>Prevents accidental overwrites</p></li>
+<li><p>Useful for configuration management</p></li>
+<li><p>Supports multiple dictionaries</p></li>
+</ul>
+</li>
+<li><p><strong>pop_keys</strong>: Removes specified keys from key lists</p>
+<ul class="simple">
+<li><p>Feature selection and filtering</p></li>
+<li><p>Data privacy and security</p></li>
+<li><p>Multi-stage processing pipelines</p></li>
+</ul>
+</li>
+<li><p><strong>replace</strong>: String replacement using dictionaries</p>
+<ul class="simple">
+<li><p>Template processing</p></li>
+<li><p>Code generation</p></li>
+<li><p>Report generation</p></li>
+</ul>
+</li>
+<li><p><strong>to_str</strong>: Converts dictionaries to string representations</p>
+<ul class="simple">
+<li><p>Experiment identification</p></li>
+<li><p>File naming</p></li>
+<li><p>Configuration tracking</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="best-practices">
+<h3>Best Practices:<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <strong>DotDict</strong> for configuration objects and nested data structures</p></li>
+<li><p>Use <strong>listed_dict</strong> for collecting experimental data and metrics</p></li>
+<li><p>Use <strong>safe_merge</strong> when combining configurations from multiple
+sources</p></li>
+<li><p>Use <strong>pop_keys</strong> for feature selection and data filtering</p></li>
+<li><p>Use <strong>replace</strong> for template processing and code generation</p></li>
+<li><p>Use <strong>to_str</strong> for creating unique identifiers and file names</p></li>
+<li><p>Combine utilities for complex data processing pipelines</p></li>
+<li><p>Always validate merged configurations in critical applications</p></li>
+<li><p>Use meaningful delimiters in <strong>to_str</strong> for better readability</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SciTeX Dictionary Utilities Tutorial Complete!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Key takeaways:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. DotDict provides intuitive attribute-style access to dictionaries&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. listed_dict simplifies data collection and aggregation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. safe_merge prevents configuration conflicts&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;4. pop_keys enables flexible feature selection&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5. replace supports powerful template processing&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;6. to_str creates unique identifiers from parameters&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;7. All utilities work together for complex scientific computing workflows&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="06_scitex_context.html" class="btn btn-neutral float-left" title="06 SciTeX Context" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="08_scitex_types.html" class="btn btn-neutral float-right" title="08 SciTeX Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

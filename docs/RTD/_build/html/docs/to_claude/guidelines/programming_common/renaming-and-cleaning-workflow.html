@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renaming and Cleaning Workflow Guidelines &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Renaming and Cleaning Workflow Guidelines</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/programming_common/renaming-and-cleaning-workflow.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-25 16:15:00
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/guidelines-programming-Renaming-and-Cleaning-Workflow.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="renaming-and-cleaning-workflow-guidelines">
+<h1>Renaming and Cleaning Workflow Guidelines<a class="headerlink" href="#renaming-and-cleaning-workflow-guidelines" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Systematic approach for refactoring duplicate functions, aliases, and inconsistent naming across codebases.</p>
+</section>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Version control (git) with clean working directory</p></li>
+<li><p>Comprehensive test suite</p></li>
+<li><p>Backup strategy</p></li>
+</ul>
+</section>
+<section id="phase-1-discovery-and-analysis">
+<h2>Phase 1: Discovery and Analysis<a class="headerlink" href="#phase-1-discovery-and-analysis" title="Link to this heading"></a></h2>
+<section id="identify-duplicates">
+<h3>1.1 Identify Duplicates<a class="headerlink" href="#identify-duplicates" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find duplicate function definitions</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;^(defun\|^def\|^function\|^const.*=.*function&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.el&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.py&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.js&quot;</span><span class="w"> </span>src/<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span>-d
+
+<span class="c1"># Find aliases (language-specific)</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;defalias\|alias\|=.*function&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.el&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.py&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.js&quot;</span><span class="w"> </span>src/
+</pre></div>
+</div>
+</section>
+<section id="analyze-patterns">
+<h3>1.2 Analyze Patterns<a class="headerlink" href="#analyze-patterns" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Functions with similar names (e.g., <code class="docutils literal notranslate"><span class="pre">start</span></code> vs <code class="docutils literal notranslate"><span class="pre">enable</span></code>)</p></li>
+<li><p>Deprecated names still in use</p></li>
+<li><p>Inconsistent naming conventions</p></li>
+<li><p>Module-specific vs global naming</p></li>
+</ul>
+</section>
+<section id="create-analysis-script">
+<h3>1.3 Create Analysis Script<a class="headerlink" href="#create-analysis-script" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># analyze-duplicates.sh</span>
+<span class="c1"># Extract and compare duplicate definitions</span>
+<span class="c1"># Show references and usage patterns</span>
+<span class="c1"># Generate recommendations</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="phase-2-planning">
+<h2>Phase 2: Planning<a class="headerlink" href="#phase-2-planning" title="Link to this heading"></a></h2>
+<section id="categorize-changes">
+<h3>2.1 Categorize Changes<a class="headerlink" href="#categorize-changes" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Naming standardization</strong>: Align with project conventions</p></li>
+<li><p><strong>Alias removal</strong>: Replace short/unclear aliases with descriptive names</p></li>
+<li><p><strong>Duplicate elimination</strong>: Keep most appropriate implementation</p></li>
+<li><p><strong>Module consolidation</strong>: Move functions to proper modules</p></li>
+</ol>
+</section>
+<section id="create-replacement-map">
+<h3>2.2 Create Replacement Map<a class="headerlink" href="#create-replacement-map" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Format: old_name → new_name (reason)</span>
+<span class="nv">REPLACEMENTS</span><span class="o">=(</span>
+<span class="w">    </span><span class="s2">&quot;short-name:descriptive-name:Use descriptive naming&quot;</span>
+<span class="w">    </span><span class="s2">&quot;old-func:new-func:Standardize naming convention&quot;</span>
+<span class="w">    </span><span class="s2">&quot;duplicate-1:canonical-name:Remove duplicate&quot;</span>
+<span class="o">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="phase-3-implementation">
+<h2>Phase 3: Implementation<a class="headerlink" href="#phase-3-implementation" title="Link to this heading"></a></h2>
+<section id="automated-renaming-script">
+<h3>3.1 Automated Renaming Script<a class="headerlink" href="#automated-renaming-script" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># refactor-aliases.sh</span>
+
+<span class="c1"># Configuration</span>
+<span class="nv">DRY_RUN</span><span class="o">=</span><span class="nb">true</span><span class="w">  </span><span class="c1"># Always start with dry run</span>
+<span class="nv">RENAME_SCRIPT</span><span class="o">=</span><span class="s2">&quot;./path/to/replace_and_rename.sh&quot;</span>
+
+<span class="c1"># Function to perform systematic renaming</span>
+rename_function<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">old</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">new</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">reason</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Renaming: </span><span class="nv">$old</span><span class="s2"> → </span><span class="nv">$new</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Reason: </span><span class="nv">$reason</span><span class="s2">&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DRY_RUN</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="s2">&quot;</span><span class="nv">$RENAME_SCRIPT</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$old</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$new</span><span class="s2">&quot;</span><span class="w"> </span>.
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="s2">&quot;</span><span class="nv">$RENAME_SCRIPT</span><span class="s2">&quot;</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$old</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$new</span><span class="s2">&quot;</span><span class="w"> </span>.
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="c1"># Process replacements in phases</span>
+<span class="c1"># Phase 1: Standardize naming</span>
+<span class="c1"># Phase 2: Remove aliases</span>
+<span class="c1"># Phase 3: Consolidate modules</span>
+</pre></div>
+</div>
+</section>
+<section id="replace-and-rename-tool">
+<h3>3.2 Replace and Rename Tool<a class="headerlink" href="#replace-and-rename-tool" title="Link to this heading"></a></h3>
+<p>Essential features:</p>
+<ul class="simple">
+<li><p>Replace in file contents</p></li>
+<li><p>Rename files/directories</p></li>
+<li><p>Preserve git history</p></li>
+<li><p>Handle regex patterns</p></li>
+<li><p>Dry run capability</p></li>
+</ul>
+</section>
+</section>
+<section id="phase-4-cleanup">
+<h2>Phase 4: Cleanup<a class="headerlink" href="#phase-4-cleanup" title="Link to this heading"></a></h2>
+<section id="remove-duplicates">
+<h3>4.1 Remove Duplicates<a class="headerlink" href="#remove-duplicates" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># remove-duplicates.sh</span>
+
+<span class="c1"># Create backup</span>
+<span class="nv">BACKUP_DIR</span><span class="o">=</span><span class="s2">&quot;.backup-</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d-%H%M%S<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="c1"># Remove duplicate definitions</span>
+<span class="c1"># Remove obsolete aliases</span>
+<span class="c1"># Update provide/require statements</span>
+</pre></div>
+</div>
+</section>
+<section id="manual-review-required">
+<h3>4.2 Manual Review Required<a class="headerlink" href="#manual-review-required" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Duplicate function definitions (decide which to keep)</p></li>
+<li><p>Module boundaries and dependencies</p></li>
+<li><p>Public API changes</p></li>
+<li><p>Documentation updates</p></li>
+</ul>
+</section>
+</section>
+<section id="phase-5-validation">
+<h2>Phase 5: Validation<a class="headerlink" href="#phase-5-validation" title="Link to this heading"></a></h2>
+<section id="testing">
+<h3>5.1 Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
+./run_tests.sh
+
+<span class="c1"># Check for undefined references</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;undefined.*function&quot;</span><span class="w"> </span>test-output.log
+
+<span class="c1"># Verify module loading</span>
+find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.el&quot;</span><span class="w"> </span>-exec<span class="w"> </span>emacs<span class="w"> </span>--batch<span class="w"> </span>-l<span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+</pre></div>
+</div>
+</section>
+<section id="linting">
+<h3>5.2 Linting<a class="headerlink" href="#linting" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Language-specific linting</span>
+<span class="c1"># Python: black, flake8, mypy</span>
+<span class="c1"># JavaScript: eslint</span>
+<span class="c1"># Elisp: byte-compile warnings</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="phase-6-documentation">
+<h2>Phase 6: Documentation<a class="headerlink" href="#phase-6-documentation" title="Link to this heading"></a></h2>
+<section id="update-references">
+<h3>6.1 Update References<a class="headerlink" href="#update-references" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>README files</p></li>
+<li><p>API documentation</p></li>
+<li><p>Code comments</p></li>
+<li><p>Configuration examples</p></li>
+</ul>
+</section>
+<section id="migration-guide">
+<h3>6.2 Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading"></a></h3>
+<p>For public APIs, provide:</p>
+<ul class="simple">
+<li><p>Deprecation notices</p></li>
+<li><p>Migration timeline</p></li>
+<li><p>Compatibility shims</p></li>
+</ul>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="do">
+<h3>DO:<a class="headerlink" href="#do" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Always dry run first</strong></p></li>
+<li><p><strong>Work in phases</strong> - don’t change everything at once</p></li>
+<li><p><strong>Create backups</strong> before destructive operations</p></li>
+<li><p><strong>Test after each phase</strong></p></li>
+<li><p><strong>Document breaking changes</strong></p></li>
+<li><p><strong>Use version control</strong> - commit after each successful phase</p></li>
+</ol>
+</section>
+<section id="dont">
+<h3>DON’T:<a class="headerlink" href="#dont" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Don’t mix refactoring with feature changes</strong></p></li>
+<li><p><strong>Don’t ignore test failures</strong></p></li>
+<li><p><strong>Don’t rush cleanup</strong> - careful analysis prevents mistakes</p></li>
+<li><p><strong>Don’t forget transitive dependencies</strong></p></li>
+<li><p><strong>Don’t rename without understanding usage</strong></p></li>
+</ol>
+</section>
+</section>
+<section id="common-patterns">
+<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<section id="naming-conventions">
+<h3>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Short alias → Descriptive name
+start → module-feature-enable
+stop → module-feature-disable
+toggle → module-feature-toggle
+
+# Module prefixing
+generic-name → module-specific-name
+</pre></div>
+</div>
+</section>
+<section id="state-functions">
+<h3>State Functions<a class="headerlink" href="#state-functions" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Consolidate state detection
+detect-simple-state → detect-state
+detect-enhanced-state → detect-state
+get-state-property → state-get-property
+</pre></div>
+</div>
+</section>
+<section id="notification-event-patterns">
+<h3>Notification/Event Patterns<a class="headerlink" href="#notification-event-patterns" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Standardize event naming
+auto-notify-* → notification-*
+on-* → handle-*
+</pre></div>
+</div>
+</section>
+</section>
+<section id="recovery-procedures">
+<h2>Recovery Procedures<a class="headerlink" href="#recovery-procedures" title="Link to this heading"></a></h2>
+<section id="if-something-goes-wrong">
+<h3>If Something Goes Wrong:<a class="headerlink" href="#if-something-goes-wrong" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Stop immediately</strong></p></li>
+<li><p><strong>Check backup directory</strong></p></li>
+<li><p><strong>Use git to review changes</strong>: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span></code></p></li>
+<li><p><strong>Restore from backup if needed</strong></p></li>
+<li><p><strong>Analyze what went wrong</strong></p></li>
+<li><p><strong>Adjust scripts and retry</strong></p></li>
+</ol>
+</section>
+</section>
+<section id="tooling-requirements">
+<h2>Tooling Requirements<a class="headerlink" href="#tooling-requirements" title="Link to this heading"></a></h2>
+<section id="essential-tools">
+<h3>Essential Tools:<a class="headerlink" href="#essential-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">grep</span></code> / <code class="docutils literal notranslate"><span class="pre">ripgrep</span></code> for searching</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sed</span></code> / <code class="docutils literal notranslate"><span class="pre">awk</span></code> for text processing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">find</span></code> for file operations</p></li>
+<li><p>Version control (git)</p></li>
+<li><p>Language-specific parsers for AST-based refactoring</p></li>
+</ul>
+</section>
+<section id="global-helper-scripts">
+<h3>Global Helper Scripts:<a class="headerlink" href="#global-helper-scripts" title="Link to this heading"></a></h3>
+<p>Located in <code class="docutils literal notranslate"><span class="pre">~/.claude/to_claude/bin/</span></code>:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">replace_and_rename.sh</span></code></strong> - Core renaming tool</p>
+<ul class="simple">
+<li><p>Replaces text in files and renames files/directories</p></li>
+<li><p>Supports dry run mode</p></li>
+<li><p>Usage: <code class="docutils literal notranslate"><span class="pre">replace_and_rename.sh</span> <span class="pre">[-n]</span> <span class="pre">&lt;search&gt;</span> <span class="pre">&lt;replace&gt;</span> <span class="pre">[directory]</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">analyze-duplicates.sh</span></code></strong> - Discovery and analysis</p>
+<ul class="simple">
+<li><p>Auto-detects language (elisp, python, js)</p></li>
+<li><p>Finds duplicate function definitions</p></li>
+<li><p>Identifies aliases and naming inconsistencies</p></li>
+<li><p>Usage: <code class="docutils literal notranslate"><span class="pre">analyze-duplicates.sh</span> <span class="pre">[directory]</span> <span class="pre">[language]</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">refactor-rename.sh</span></code></strong> - Orchestration script</p>
+<ul class="simple">
+<li><p>Processes rename mappings in phases</p></li>
+<li><p>Creates backups automatically</p></li>
+<li><p>Supports dry run mode</p></li>
+<li><p>Usage: <code class="docutils literal notranslate"><span class="pre">DRY_RUN=false</span> <span class="pre">refactor-rename.sh</span> <span class="pre">[directory]</span> <span class="pre">[mappings.txt]</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cleanup-duplicates.sh</span></code></strong> - Cleanup script</p>
+<ul class="simple">
+<li><p>Removes duplicate functions and obsolete aliases</p></li>
+<li><p>Works with cleanup plan file</p></li>
+<li><p>Generates summary report</p></li>
+<li><p>Usage: <code class="docutils literal notranslate"><span class="pre">DRY_RUN=false</span> <span class="pre">cleanup-duplicates.sh</span> <span class="pre">[directory]</span> <span class="pre">[cleanup-plan.txt]</span></code></p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="quick-start">
+<h3>Quick Start:<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Analyze current state</span>
+~/.claude/to_claude/bin/analyze-duplicates.sh<span class="w"> </span>./src<span class="w"> </span>elisp
+
+<span class="c1"># 2. Create rename mappings file</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>rename-mappings.txt<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">old-func:new-func:Reason for change</span>
+<span class="s">another-old:another-new:Different reason</span>
+<span class="s">EOF</span>
+
+<span class="c1"># 3. Perform renaming (dry run first)</span>
+~/.claude/to_claude/bin/refactor-rename.sh<span class="w"> </span>./src<span class="w"> </span>rename-mappings.txt
+
+<span class="c1"># 4. Apply changes</span>
+<span class="nv">DRY_RUN</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>~/.claude/to_claude/bin/refactor-rename.sh<span class="w"> </span>./src<span class="w"> </span>rename-mappings.txt
+
+<span class="c1"># 5. Create cleanup plan</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>cleanup-plan.txt<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">remove-function:src/module.el:duplicate-func:Keep version in main module</span>
+<span class="s">remove-alias:src/api.el:old-alias:Replaced with new name</span>
+<span class="s">EOF</span>
+
+<span class="c1"># 6. Clean up duplicates</span>
+<span class="nv">DRY_RUN</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>~/.claude/to_claude/bin/cleanup-duplicates.sh<span class="w"> </span>./src<span class="w"> </span>cleanup-plan.txt
+</pre></div>
+</div>
+</section>
+</section>
+<section id="language-specific-considerations">
+<h2>Language-Specific Considerations<a class="headerlink" href="#language-specific-considerations" title="Link to this heading"></a></h2>
+<section id="emacs-lisp">
+<h3>Emacs Lisp:<a class="headerlink" href="#emacs-lisp" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Check <code class="docutils literal notranslate"><span class="pre">defalias</span></code> statements</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">provide</span></code>/<code class="docutils literal notranslate"><span class="pre">require</span></code> forms</p></li>
+<li><p>Handle autoloads</p></li>
+<li><p>Consider byte-compilation</p></li>
+</ul>
+</section>
+<section id="python">
+<h3>Python:<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">__all__</span></code> exports</p></li>
+<li><p>Fix import statements</p></li>
+<li><p>Handle <code class="docutils literal notranslate"><span class="pre">&#64;property</span></code> decorators</p></li>
+<li><p>Update type hints</p></li>
+</ul>
+</section>
+<section id="javascript">
+<h3>JavaScript:<a class="headerlink" href="#javascript" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update export/import statements</p></li>
+<li><p>Handle default exports</p></li>
+<li><p>Fix destructuring assignments</p></li>
+<li><p>Update TypeScript definitions</p></li>
+</ul>
+</section>
+</section>
+<section id="checklist">
+<h2>Checklist<a class="headerlink" href="#checklist" title="Link to this heading"></a></h2>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Clean git working directory</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> All tests passing</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Duplicates identified and analyzed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Replacement map created and reviewed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Dry run completed successfully</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Backups created</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Live run executed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Duplicates removed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests passing after refactor</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Documentation updated</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Changes committed with clear message</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Team notified of breaking changes</p></li>
+</ul>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

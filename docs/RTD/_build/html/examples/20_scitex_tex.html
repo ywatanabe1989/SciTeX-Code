@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>20 SciTeX Tex &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="21 SciTeX Decorators" href="21_scitex_decorators.html" />
+    <link rel="prev" title="19 SciTeX Db" href="19_scitex_db.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">20 SciTeX Tex</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/20_scitex_tex.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-tex">
+<h1>20 SciTeX Tex<a class="headerlink" href="#scitex-tex" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/20_scitex_tex.ipynb">20_scitex_tex.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>20_scitex_tex.ipynb
+</pre></div>
+</div>
+</div>
+<p>This notebook demonstrates the complete functionality of the
+<code class="docutils literal notranslate"><span class="pre">scitex.tex</span></code> module, which provides LaTeX/TeX utilities for scientific
+document preparation and mathematical notation.</p>
+<section id="module-overview">
+<h2>Module Overview<a class="headerlink" href="#module-overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">scitex.tex</span></code> module includes: - LaTeX preview functionality with
+fallback mechanisms - Vector notation utilities with robust error
+handling - Mathematical formatting tools for scientific publications</p>
+</section>
+<section id="import-setup">
+<h2>Import Setup<a class="headerlink" href="#import-setup" title="Link to this heading"></a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../src&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Import scitex tex module</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scitex.tex</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stex</span>
+
+<span class="c1"># Set random seed for reproducibility</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available functions in scitex.tex:&quot;</span><span class="p">)</span>
+<span class="n">tex_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">stex</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tex_attrs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="latex-preview-functionality">
+<h2>1. LaTeX Preview Functionality<a class="headerlink" href="#latex-preview-functionality" title="Link to this heading"></a></h2>
+<section id="basic-latex-preview">
+<h3>Basic LaTeX Preview<a class="headerlink" href="#basic-latex-preview" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">preview</span></code> function generates visual previews of LaTeX mathematical
+expressions.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 1: Basic LaTeX preview</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Basic LaTeX Preview:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Define some mathematical expressions</span>
+<span class="n">basic_expressions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;x^2 + y^2 = z^2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">frac</span><span class="si">{a}{b}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{c}{d}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sqrt{x + y}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">alpha + </span><span class="se">\\</span><span class="s2">beta = </span><span class="se">\\</span><span class="s2">gamma&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Previewing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basic_expressions</span><span class="p">)</span><span class="si">}</span><span class="s2"> basic expressions:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basic_expressions</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate preview</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">basic_expressions</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Basic LaTeX Expressions Preview&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Basic preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error generating basic preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require LaTeX installation or fallback mechanisms.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-mathematical-expressions">
+<h3>Advanced Mathematical Expressions<a class="headerlink" href="#advanced-mathematical-expressions" title="Link to this heading"></a></h3>
+<p>Let’s preview more complex mathematical expressions commonly used in
+scientific papers.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 2: Advanced mathematical expressions</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Advanced Mathematical Expressions:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="c1"># Complex mathematical expressions</span>
+<span class="n">advanced_expressions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> x_i = </span><span class="se">\\</span><span class="s2">mu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">int_{-</span><span class="se">\\</span><span class="s2">infty}^{</span><span class="se">\\</span><span class="s2">infty} e^{-x^2} dx = </span><span class="se">\\</span><span class="s2">sqrt{</span><span class="se">\\</span><span class="s2">pi}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">partial^2 f}{</span><span class="se">\\</span><span class="s2">partial x^2} + </span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">partial^2 f}{</span><span class="se">\\</span><span class="s2">partial y^2} = 0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">lim_{n </span><span class="se">\\</span><span class="s2">to </span><span class="se">\\</span><span class="s2">infty} </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{1}{n}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> X_i = E[X]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">hat{</span><span class="se">\\</span><span class="s2">theta} = </span><span class="se">\\</span><span class="s2">arg</span><span class="se">\\</span><span class="s2">max_{</span><span class="se">\\</span><span class="s2">theta} </span><span class="se">\\</span><span class="s2">mathcal</span><span class="si">{L}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">theta)&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Previewing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">advanced_expressions</span><span class="p">)</span><span class="si">}</span><span class="s2"> advanced expressions:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">advanced_expressions</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate preview with advanced expressions</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">advanced_expressions</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Advanced Mathematical Expressions&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Advanced preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error generating advanced preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fallback mechanisms may be in use.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scientific-formulas-and-equations">
+<h3>Scientific Formulas and Equations<a class="headerlink" href="#scientific-formulas-and-equations" title="Link to this heading"></a></h3>
+<p>Let’s preview some common scientific formulas and equations.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 3: Scientific formulas and equations</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific Formulas and Equations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="c1"># Common scientific formulas</span>
+<span class="n">scientific_formulas</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;E = mc^2&quot;</span><span class="p">,</span>  <span class="c1"># Einstein&#39;s mass-energy equivalence</span>
+    <span class="s2">&quot;F = ma&quot;</span><span class="p">,</span>    <span class="c1"># Newton&#39;s second law</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nabla </span><span class="se">\\</span><span class="s2">cdot </span><span class="se">\\</span><span class="s2">vec</span><span class="si">{E}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">rho}{</span><span class="se">\\</span><span class="s2">epsilon_0}&quot;</span><span class="p">,</span>  <span class="c1"># Gauss&#39;s law</span>
+    <span class="s2">&quot;H(X) = -</span><span class="se">\\</span><span class="s2">sum_</span><span class="si">{i}</span><span class="s2"> p_i </span><span class="se">\\</span><span class="s2">log_2 p_i&quot;</span><span class="p">,</span>  <span class="c1"># Shannon entropy</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sigma^2 = </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{1}</span><span class="s2">{n-1} </span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> (x_i - </span><span class="se">\\</span><span class="s2">bar</span><span class="si">{x}</span><span class="s2">)^2&quot;</span>  <span class="c1"># Sample variance</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Previewing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scientific_formulas</span><span class="p">)</span><span class="si">}</span><span class="s2"> scientific formulas:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">formula</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scientific_formulas</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate preview with scientific formulas</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">scientific_formulas</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Common Scientific Formulas&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Scientific formulas preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error generating scientific formulas preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require LaTeX installation or use fallback rendering.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="single-expression-preview">
+<h3>Single Expression Preview<a class="headerlink" href="#single-expression-preview" title="Link to this heading"></a></h3>
+<p>The preview function also works with single expressions.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 4: Single expression preview</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Single Expression Preview:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="c1"># Single complex expression</span>
+<span class="n">single_expression</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">mathbf</span><span class="si">{A}</span><span class="se">\\</span><span class="s2">mathbf</span><span class="si">{x}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">lambda </span><span class="se">\\</span><span class="s2">mathbf</span><span class="si">{x}</span><span class="s2">&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Previewing single expression: </span><span class="si">{</span><span class="n">single_expression</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate preview for single expression</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">single_expression</span><span class="p">)</span>  <span class="c1"># Can pass string directly</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Eigenvalue Equation&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Single expression preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error generating single expression preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="vector-notation-utilities">
+<h2>2. Vector Notation Utilities<a class="headerlink" href="#vector-notation-utilities" title="Link to this heading"></a></h2>
+<section id="basic-vector-notation">
+<h3>Basic Vector Notation<a class="headerlink" href="#basic-vector-notation" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">to_vec</span></code> function converts strings to LaTeX vector notation with
+fallback support.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 5: Basic vector notation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Basic Vector Notation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Test vector names</span>
+<span class="n">vector_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting strings to vector notation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original</span><span class="se">\t</span><span class="s2">→ Vector Notation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="n">vector_results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">vector_names</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">vector_notation</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">vector_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">vector_notation</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ </span><span class="si">{</span><span class="n">vector_notation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Converted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vector_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> vector names successfully&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="vector-notation-with-fallback-strategies">
+<h3>Vector Notation with Fallback Strategies<a class="headerlink" href="#vector-notation-with-fallback-strategies" title="Link to this heading"></a></h3>
+<p>Let’s explore different fallback strategies for vector notation.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 6: Vector notation with different fallback strategies</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vector Notation with Fallback Strategies:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># Test vector with different fallback strategies</span>
+<span class="n">test_vector</span> <span class="o">=</span> <span class="s2">&quot;velocity&quot;</span>
+<span class="n">fallback_strategies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;unicode&quot;</span><span class="p">,</span> <span class="s2">&quot;plain&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting &#39;</span><span class="si">{</span><span class="n">test_vector</span><span class="si">}</span><span class="s2">&#39; with different fallback strategies:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Strategy</span><span class="se">\t</span><span class="s2">→ Result&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">fallback_strategies</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Test different fallback strategies</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stex</span><span class="p">,</span> <span class="s1">&#39;safe_to_vec&#39;</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">safe_to_vec</span><span class="p">(</span><span class="n">test_vector</span><span class="p">,</span> <span class="n">fallback_strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to regular to_vec</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">test_vector</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">strategy</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">strategy</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test with different vector names</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Testing different vector names with unicode fallback:&quot;</span><span class="p">)</span>
+<span class="n">test_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;acceleration&#39;</span><span class="p">,</span> <span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">vec_name</span> <span class="ow">in</span> <span class="n">test_vectors</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stex</span><span class="p">,</span> <span class="s1">&#39;safe_to_vec&#39;</span><span class="p">):</span>
+            <span class="n">unicode_result</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">safe_to_vec</span><span class="p">(</span><span class="n">vec_name</span><span class="p">,</span> <span class="n">fallback_strategy</span><span class="o">=</span><span class="s2">&quot;unicode&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unicode_result</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">vec_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_name</span><span class="si">:</span><span class="s2">12s</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">unicode_result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_name</span><span class="si">:</span><span class="s2">12s</span><span class="si">}</span><span class="s2"> → Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="vector-notation-in-mathematical-context">
+<h3>Vector Notation in Mathematical Context<a class="headerlink" href="#vector-notation-in-mathematical-context" title="Link to this heading"></a></h3>
+<p>Let’s create mathematical expressions using vector notation.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 7: Vector notation in mathematical context</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vector Notation in Mathematical Context:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># Create mathematical expressions with vectors</span>
+<span class="n">vector_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate vector notations</span>
+    <span class="n">vec_F</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="n">vec_a</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">vec_v</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">)</span>
+    <span class="n">vec_r</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create physics equations with vectors</span>
+    <span class="n">physics_equations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_F</span><span class="si">}</span><span class="s2"> = m</span><span class="si">{</span><span class="n">vec_a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Newton&#39;s second law</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_v</span><span class="si">}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">d</span><span class="si">{</span><span class="n">vec_r</span><span class="si">}</span><span class="se">}}{{</span><span class="s2">dt</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Velocity definition</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_a</span><span class="si">}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">d</span><span class="si">{</span><span class="n">vec_v</span><span class="si">}</span><span class="se">}}{{</span><span class="s2">dt</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Acceleration definition</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">A</span><span class="se">}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">cdot </span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">B</span><span class="se">}}</span><span class="s2"> = |</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">A</span><span class="se">}}</span><span class="s2">||</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">B</span><span class="se">}}</span><span class="s2">|</span><span class="se">\\</span><span class="s2">cos</span><span class="se">\\</span><span class="s2">theta&quot;</span><span class="p">,</span>  <span class="c1"># Dot product</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">A</span><span class="se">}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">times </span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">B</span><span class="se">}}</span><span class="s2"> = |</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">A</span><span class="se">}}</span><span class="s2">||</span><span class="se">\\</span><span class="s2">vec</span><span class="se">{{</span><span class="s2">B</span><span class="se">}}</span><span class="s2">|</span><span class="se">\\</span><span class="s2">sin</span><span class="se">\\</span><span class="s2">theta </span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">n</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Cross product</span>
+    <span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Physics equations with vector notation:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">physics_equations</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">eq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Preview the vector equations</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generating preview of vector equations...&quot;</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">physics_equations</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Physics Equations with Vector Notation&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Vector equations preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error creating vector equations: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require LaTeX installation or use fallback rendering.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="latex-fallback-mechanisms">
+<h2>3. LaTeX Fallback Mechanisms<a class="headerlink" href="#latex-fallback-mechanisms" title="Link to this heading"></a></h2>
+<section id="testing-fallback-behavior">
+<h3>Testing Fallback Behavior<a class="headerlink" href="#testing-fallback-behavior" title="Link to this heading"></a></h3>
+<p>Let’s test how the module handles LaTeX rendering failures.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 8: Testing fallback behavior</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing LaTeX Fallback Mechanisms:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="c1"># Test with potentially problematic expressions</span>
+<span class="n">problematic_expressions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;x^2&quot;</span><span class="p">,</span>  <span class="c1"># Simple expression (should work)</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nonexistentcommand</span><span class="si">{x}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Invalid LaTeX command</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> x_i&quot;</span><span class="p">,</span>  <span class="c1"># Complex but valid</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">undefinedfunction{a, b}&quot;</span><span class="p">,</span>  <span class="c1"># Another invalid command</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">alpha + </span><span class="se">\\</span><span class="s2">beta&quot;</span><span class="p">,</span>  <span class="c1"># Greek letters (should work)</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing expressions with potential rendering issues:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expression</span><span class="se">\t\t\t</span><span class="s2">→ Status&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="n">successful_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">failed_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">problematic_expressions</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Test with fallback enabled</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">([</span><span class="n">expr</span><span class="p">],</span> <span class="n">enable_fallback</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">successful_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expr</span><span class="p">[:</span><span class="mi">25</span><span class="p">]</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ ✓ Success&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Close figure to save memory</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">failed_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">expr</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expr</span><span class="p">[:</span><span class="mi">25</span><span class="p">]</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ ✗ Failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)[:</span><span class="mi">20</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Summary:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful renders: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">successful_expressions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed renders: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">failed_expressions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">successful_expressions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Successful expressions will use appropriate fallbacks.&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">failed_expressions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Failed expressions:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">expr</span><span class="p">,</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">failed_expressions</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">expr</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-rendering-with-and-without-fallback">
+<h3>Comparing Rendering with and without Fallback<a class="headerlink" href="#comparing-rendering-with-and-without-fallback" title="Link to this heading"></a></h3>
+<p>Let’s compare rendering behavior with fallback enabled vs disabled.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 9: Comparing rendering with and without fallback</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Comparing Rendering: Fallback vs No Fallback:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
+
+<span class="c1"># Test expression</span>
+<span class="n">test_expression</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{n}</span><span class="s2"> x_i^2&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test expression: </span><span class="si">{</span><span class="n">test_expression</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Testing with different fallback settings:&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test with fallback enabled</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">1. With fallback enabled:&quot;</span><span class="p">)</span>
+    <span class="n">fig_with_fallback</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">([</span><span class="n">test_expression</span><span class="p">],</span> <span class="n">enable_fallback</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fig_with_fallback</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;With Fallback Enabled&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Fallback-enabled rendering successful&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Fallback-enabled rendering failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Test with fallback disabled</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. With fallback disabled:&quot;</span><span class="p">)</span>
+    <span class="n">fig_no_fallback</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">([</span><span class="n">test_expression</span><span class="p">],</span> <span class="n">enable_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">fig_no_fallback</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;With Fallback Disabled&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ No-fallback rendering successful&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ No-fallback rendering failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is expected if LaTeX is not properly installed.&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Note: Differences in rendering indicate fallback mechanisms in action.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="practical-applications">
+<h2>4. Practical Applications<a class="headerlink" href="#practical-applications" title="Link to this heading"></a></h2>
+<section id="scientific-paper-equations">
+<h3>Scientific Paper Equations<a class="headerlink" href="#scientific-paper-equations" title="Link to this heading"></a></h3>
+<p>Let’s create a collection of equations commonly found in scientific
+papers.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 10: Scientific paper equations</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific Paper Equations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Collection of equations from different scientific fields</span>
+<span class="n">paper_equations</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Statistics&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;t = </span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">bar</span><span class="si">{x}</span><span class="s2"> - </span><span class="se">\\</span><span class="s2">mu}{s/</span><span class="se">\\</span><span class="s2">sqrt</span><span class="si">{n}</span><span class="s2">}&quot;</span><span class="p">,</span>  <span class="c1"># t-test</span>
+        <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">chi^2 = </span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{k}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">frac{(O_i - E_i)^2}</span><span class="si">{E_i}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Chi-square test</span>
+        <span class="s2">&quot;r = </span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">sum(x_i - </span><span class="se">\\</span><span class="s2">bar</span><span class="si">{x}</span><span class="s2">)(y_i - </span><span class="se">\\</span><span class="s2">bar</span><span class="si">{y}</span><span class="s2">)}{</span><span class="se">\\</span><span class="s2">sqrt{</span><span class="se">\\</span><span class="s2">sum(x_i - </span><span class="se">\\</span><span class="s2">bar</span><span class="si">{x}</span><span class="s2">)^2 </span><span class="se">\\</span><span class="s2">sum(y_i - </span><span class="se">\\</span><span class="s2">bar</span><span class="si">{y}</span><span class="s2">)^2}}&quot;</span><span class="p">,</span>  <span class="c1"># Correlation</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;Physics&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nabla^2 </span><span class="se">\\</span><span class="s2">psi + </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{2m}</span><span class="s2">{</span><span class="se">\\</span><span class="s2">hbar^2}(E - V)</span><span class="se">\\</span><span class="s2">psi = 0&quot;</span><span class="p">,</span>  <span class="c1"># Schrödinger equation</span>
+        <span class="s2">&quot;G_{</span><span class="se">\\</span><span class="s2">mu</span><span class="se">\\</span><span class="s2">nu} = </span><span class="se">\\</span><span class="s2">frac{8</span><span class="se">\\</span><span class="s2">pi G}{c^4} T_{</span><span class="se">\\</span><span class="s2">mu</span><span class="se">\\</span><span class="s2">nu}&quot;</span><span class="p">,</span>  <span class="c1"># Einstein field equations</span>
+        <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">partial </span><span class="se">\\</span><span class="s2">rho}{</span><span class="se">\\</span><span class="s2">partial t} + </span><span class="se">\\</span><span class="s2">nabla </span><span class="se">\\</span><span class="s2">cdot (</span><span class="se">\\</span><span class="s2">rho </span><span class="se">\\</span><span class="s2">vec</span><span class="si">{v}</span><span class="s2">) = 0&quot;</span><span class="p">,</span>  <span class="c1"># Continuity equation</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;Machine Learning&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;J(</span><span class="se">\\</span><span class="s2">theta) = </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{1}{2m}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">sum_{i=1}^</span><span class="si">{m}</span><span class="s2"> (h_</span><span class="se">\\</span><span class="s2">theta(x^{(i)}) - y^{(i)})^2&quot;</span><span class="p">,</span>  <span class="c1"># Cost function</span>
+        <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sigma(z) = </span><span class="se">\\</span><span class="s2">frac</span><span class="si">{1}</span><span class="s2">{1 + e^{-z}}&quot;</span><span class="p">,</span>  <span class="c1"># Sigmoid function</span>
+        <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="si">{softmax}</span><span class="s2">(z_i) = </span><span class="se">\\</span><span class="s2">frac{e^</span><span class="si">{z_i}</span><span class="s2">}{</span><span class="se">\\</span><span class="s2">sum_{j=1}^</span><span class="si">{K}</span><span class="s2"> e^</span><span class="si">{z_j}</span><span class="s2">}&quot;</span><span class="p">,</span>  <span class="c1"># Softmax</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate previews for each field</span>
+<span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">equations</span> <span class="ow">in</span> <span class="n">paper_equations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> Equations:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="mi">11</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">equations</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">eq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">equations</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> Equations&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> equations preview generated&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Error generating </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific paper equations demonstration complete.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="vector-analysis-in-3d-space">
+<h3>Vector Analysis in 3D Space<a class="headerlink" href="#vector-analysis-in-3d-space" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate vector notation for 3D mathematical analysis.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 11: Vector analysis in 3D space</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vector Analysis in 3D Space:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># 3D vector operations and analysis</span>
+<span class="n">vector_3d_operations</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate vector notations for 3D analysis</span>
+    <span class="n">vec_r</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">vec_v</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">)</span>
+    <span class="n">vec_a</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">vec_F</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="n">vec_E</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">)</span>
+    <span class="n">vec_B</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create 3D vector analysis equations</span>
+    <span class="n">vector_3d_equations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_r</span><span class="si">}</span><span class="s2">(t) = x(t)</span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">i</span><span class="se">}}</span><span class="s2"> + y(t)</span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">j</span><span class="se">}}</span><span class="s2"> + z(t)</span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">k</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Position vector</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec_v</span><span class="si">}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">d</span><span class="si">{</span><span class="n">vec_r</span><span class="si">}</span><span class="se">}}{{</span><span class="s2">dt</span><span class="se">}}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">dot</span><span class="se">{{</span><span class="s2">x</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">i</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">dot</span><span class="se">{{</span><span class="s2">y</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">j</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">dot</span><span class="se">{{</span><span class="s2">z</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">k</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Velocity</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nabla f = </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial f</span><span class="se">}}{{\\</span><span class="s2">partial x</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">i</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial f</span><span class="se">}}{{\\</span><span class="s2">partial y</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">j</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial f</span><span class="se">}}{{\\</span><span class="s2">partial z</span><span class="se">}}\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">k</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Gradient</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nabla </span><span class="se">\\</span><span class="s2">cdot </span><span class="si">{</span><span class="n">vec_F</span><span class="si">}</span><span class="s2"> = </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial F_x</span><span class="se">}}{{\\</span><span class="s2">partial x</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial F_y</span><span class="se">}}{{\\</span><span class="s2">partial y</span><span class="se">}}</span><span class="s2"> + </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial F_z</span><span class="se">}}{{\\</span><span class="s2">partial z</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Divergence</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nabla </span><span class="se">\\</span><span class="s2">times </span><span class="si">{</span><span class="n">vec_E</span><span class="si">}</span><span class="s2"> = -</span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{\\</span><span class="s2">partial </span><span class="si">{</span><span class="n">vec_B</span><span class="si">}</span><span class="se">}}{{\\</span><span class="s2">partial t</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Curl (Faraday&#39;s law)</span>
+    <span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3D Vector Analysis Equations:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vector_3d_equations</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">eq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Generate preview</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generating 3D vector analysis preview...&quot;</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">vector_3d_equations</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;3D Vector Analysis&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ 3D vector analysis preview generated successfully&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error creating 3D vector analysis: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require LaTeX installation or use fallback rendering.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Demonstrate vector notation with different naming conventions</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Vector Naming Conventions:&quot;</span><span class="p">)</span>
+<span class="n">vector_names_3d</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;omega&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Name</span><span class="se">\t</span><span class="s2">→ Vector Notation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">vector_names_3d</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">notation</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">8s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ </span><span class="si">{</span><span class="n">notation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">8s</span><span class="si">}</span><span class="se">\t</span><span class="s2">→ Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="latex-for-publication-ready-figures">
+<h3>LaTeX for Publication-Ready Figures<a class="headerlink" href="#latex-for-publication-ready-figures" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate how to use the tex module for creating
+publication-ready mathematical content.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 12: Publication-ready mathematical content</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Publication-Ready Mathematical Content:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># Create a comprehensive mathematical demonstration</span>
+<span class="n">publication_equations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Fundamental equations in physics and mathematics</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text{Euler&#39;s Identity: } e^{i</span><span class="se">\\</span><span class="s2">pi} + 1 = 0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text{Gaussian Integral: } </span><span class="se">\\</span><span class="s2">int_{-</span><span class="se">\\</span><span class="s2">infty}^{</span><span class="se">\\</span><span class="s2">infty} e^{-x^2} dx = </span><span class="se">\\</span><span class="s2">sqrt{</span><span class="se">\\</span><span class="s2">pi}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text{Fourier Transform: } </span><span class="se">\\</span><span class="s2">hat</span><span class="si">{f}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">xi) = </span><span class="se">\\</span><span class="s2">int_{-</span><span class="se">\\</span><span class="s2">infty}^{</span><span class="se">\\</span><span class="s2">infty} f(x) e^{-2</span><span class="se">\\</span><span class="s2">pi i x </span><span class="se">\\</span><span class="s2">xi} dx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text{Bayes&#39; Theorem: } P(A|B) = </span><span class="se">\\</span><span class="s2">frac{P(B|A)P(A)}{P(B)}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text{Schrödinger Equation: } i</span><span class="se">\\</span><span class="s2">hbar</span><span class="se">\\</span><span class="s2">frac{</span><span class="se">\\</span><span class="s2">partial}{</span><span class="se">\\</span><span class="s2">partial t}</span><span class="se">\\</span><span class="s2">Psi = </span><span class="se">\\</span><span class="s2">hat</span><span class="si">{H}</span><span class="se">\\</span><span class="s2">Psi&quot;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fundamental equations for publication:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">publication_equations</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">eq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Create publication-style preview</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">publication_equations</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Fundamental Mathematical and Physical Equations&#39;</span><span class="p">,</span>
+                <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.98</span><span class="p">)</span>
+
+    <span class="c1"># Customize for publication appearance</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+
+    <span class="c1"># Show the figure</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Publication-ready equations preview generated&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Demonstrate saving for publication</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">For publication, you could save this as:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - fig.savefig(&#39;equations.png&#39;, dpi=300, bbox_inches=&#39;tight&#39;)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - fig.savefig(&#39;equations.pdf&#39;, bbox_inches=&#39;tight&#39;)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - fig.savefig(&#39;equations.svg&#39;, bbox_inches=&#39;tight&#39;)&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error creating publication preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require LaTeX installation for best results.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Demonstrate vector notation in publication context</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Vector notation for physics publications:&quot;</span><span class="p">)</span>
+<span class="n">physics_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]</span>
+<span class="n">physics_descriptions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Electric field&#39;</span><span class="p">,</span> <span class="s1">&#39;Magnetic field&#39;</span><span class="p">,</span> <span class="s1">&#39;Force&#39;</span><span class="p">,</span> <span class="s1">&#39;Momentum&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Angular momentum&#39;</span><span class="p">,</span> <span class="s1">&#39;Position&#39;</span><span class="p">,</span> <span class="s1">&#39;Velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;Acceleration&#39;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vector</span><span class="se">\t</span><span class="s2">Notation</span><span class="se">\t\t</span><span class="s2">Description&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">vec</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">physics_vectors</span><span class="p">,</span> <span class="n">physics_descriptions</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">notation</span> <span class="o">=</span> <span class="n">stex</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">notation</span><span class="si">:</span><span class="s2">15s</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vec</span><span class="si">}</span><span class="se">\t</span><span class="s2">Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>This notebook has demonstrated the comprehensive functionality of the
+<code class="docutils literal notranslate"><span class="pre">scitex.tex</span></code> module:</p>
+<section id="id1">
+<h3>LaTeX Preview Functionality<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>``preview``</strong>: Generate visual previews of LaTeX mathematical
+expressions</p>
+<ul>
+<li><p>Support for single expressions or lists of expressions</p></li>
+<li><p>Automatic fallback mechanisms for robust rendering</p></li>
+<li><p>Customizable figure layout and styling</p></li>
+<li><p>Error handling for invalid LaTeX syntax</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h3>Vector Notation Utilities<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>``to_vec``</strong>: Convert strings to LaTeX vector notation</p>
+<ul>
+<li><p>Automatic fallback to Unicode symbols when LaTeX fails</p></li>
+<li><p>Multiple fallback strategies (auto, mathtext, unicode, plain)</p></li>
+<li><p>Support for various vector naming conventions</p></li>
+</ul>
+</li>
+<li><p><strong>``safe_to_vec``</strong>: Explicit fallback control for vector notation</p>
+<ul>
+<li><p>Fine-grained control over rendering behavior</p></li>
+<li><p>Predictable fallback strategies</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Robustness</strong>: Comprehensive fallback mechanisms ensure rendering
+always succeeds</p></li>
+<li><p><strong>Scientific Focus</strong>: Designed specifically for mathematical and
+scientific notation</p></li>
+<li><p><strong>Publication Ready</strong>: Suitable for creating publication-quality
+mathematical content</p></li>
+<li><p><strong>Error Tolerance</strong>: Graceful handling of LaTeX rendering failures</p></li>
+<li><p><strong>Flexibility</strong>: Support for various mathematical expression types</p></li>
+</ol>
+</section>
+<section id="fallback-mechanisms">
+<h3>Fallback Mechanisms<a class="headerlink" href="#fallback-mechanisms" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>LaTeX → MathText</strong>: Falls back to matplotlib’s built-in math
+rendering</p></li>
+<li><p><strong>LaTeX → Unicode</strong>: Uses Unicode mathematical symbols</p></li>
+<li><p><strong>LaTeX → Plain Text</strong>: Simple text representation as last resort</p></li>
+<li><p><strong>Automatic Detection</strong>: Intelligent selection of best available
+renderer</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Practical Applications<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Scientific Papers</strong>: Generate equations for academic publications</p></li>
+<li><p><strong>Educational Materials</strong>: Create mathematical content for teaching</p></li>
+<li><p><strong>Presentations</strong>: Mathematical slides and figures</p></li>
+<li><p><strong>Documentation</strong>: Technical documentation with mathematical notation</p></li>
+<li><p><strong>Research Notebooks</strong>: Interactive mathematical exploration</p></li>
+</ul>
+</section>
+<section id="use-cases">
+<h3>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Physics equation previews and documentation</p></li>
+<li><p>Statistical formula visualization</p></li>
+<li><p>Machine learning mathematical foundations</p></li>
+<li><p>Vector calculus and 3D mathematics</p></li>
+<li><p>Publication-ready figure generation</p></li>
+<li><p>Cross-platform mathematical notation (with fallbacks)</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">scitex.tex</span></code> module provides essential tools for scientific
+mathematical notation with an emphasis on reliability and cross-platform
+compatibility through intelligent fallback mechanisms.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="19_scitex_db.html" class="btn btn-neutral float-left" title="19 SciTeX Db" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="21_scitex_decorators.html" class="btn btn-neutral float-right" title="21 SciTeX Decorators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

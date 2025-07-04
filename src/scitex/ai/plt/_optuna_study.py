@@ -101,6 +101,8 @@ def optuna_study(lpath, value_str, sort=False):
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    import scitex
     scitex.plt.configure_mpl(plt, fig_scale=3)
     lpath = "sqlite:///scripts/ml/clf/sub_conv_transformer_optuna/optuna_studies/optuna_study_v001.db"
     lpath = "sqlite:///scripts/ml/clf/rocket_optuna/optuna_studies/optuna_study_v001.db"
