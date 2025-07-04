@@ -77,7 +77,7 @@ def check_latex_capability() -> bool:
     bool
         True if LaTeX is available, False otherwise
     """
-    global _latex_available, _fallback_mode
+    global _latex_available
     
     # Import matplotlib here when actually needed
     try:
@@ -313,7 +313,8 @@ def safe_latex_render(
     if not text or not isinstance(text, str):
         return text
     
-    global _fallback_mode
+    # Import matplotlib when needed
+    import matplotlib.pyplot as plt
     
     # Determine if we should attempt LaTeX
     use_latex = (_fallback_mode == "auto" and check_latex_capability())
@@ -418,6 +419,9 @@ def latex_fallback_decorator(
                         else:
                             new_kwargs[key] = value
                     
+                    # Import matplotlib when needed
+                    import matplotlib.pyplot as plt
+                    
                     # Temporarily disable LaTeX for this call
                     original_usetex = plt.rcParams.get('text.usetex', False)
                     plt.rcParams['text.usetex'] = False
@@ -443,6 +447,8 @@ def get_latex_status() -> Dict[str, Any]:
     Dict[str, Any]
         Status information including capability, mode, and configuration
     """
+    import matplotlib.pyplot as plt
+    
     return {
         'latex_available': check_latex_capability(),
         'fallback_mode': get_fallback_mode(),

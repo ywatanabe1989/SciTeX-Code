@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elisp Testing Guidelines &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Elisp Testing Guidelines</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/elisp/IMPORTANT-ELISP-05-testing-guide.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-30 08:20:45
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/elisp/IMPORTANT-ELISP-05-testing-guide.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="elisp-testing-guidelines">
+<h1>Elisp Testing Guidelines<a class="headerlink" href="#elisp-testing-guidelines" title="Link to this heading"></a></h1>
+<section id="elisp-testing-rules">
+<h2>Elisp Testing Rules<a class="headerlink" href="#elisp-testing-rules" title="Link to this heading"></a></h2>
+<section id="test-structure-and-location">
+<h3>Test Structure and Location<a class="headerlink" href="#test-structure-and-location" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Test code should be located as <code class="docutils literal notranslate"><span class="pre">./tests/test-*.el</span></code> or <code class="docutils literal notranslate"><span class="pre">./tests/sub-directory/test-*.el</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./tests</span></code> directory should mirror the source code in their structures</p></li>
+<li><p>Source file and test file must be in one-on-one relationships</p></li>
+<li><p>Test files should be named as <code class="docutils literal notranslate"><span class="pre">test-*.el</span></code></p></li>
+</ul>
+</section>
+<section id="test-code-execution-rules">
+<h3>Test Code Execution Rules<a class="headerlink" href="#test-code-execution-rules" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Test codes will be executed in runtime environment</p>
+<ul>
+<li><p>Therefore, do not change variables for testing purposes</p></li>
+<li><p>DO NOT SETQ/DEFVAR/DEFCUSTOM ANYTHING</p></li>
+<li><p>DO NOT LET/LET* TEST VARIABLES</p></li>
+<li><p>TEST FUNCTION SHOULD BE SMALLEST AND ATOMIC</p>
+<ul>
+<li><p>EACH <code class="docutils literal notranslate"><span class="pre">ERT-DEFTEST</span></code> MUST INCLUDE ONLY ONE assertion statement such sa <code class="docutils literal notranslate"><span class="pre">should</span></code>, <code class="docutils literal notranslate"><span class="pre">should-not</span></code>, <code class="docutils literal notranslate"><span class="pre">should-error</span></code>.</p>
+<ul>
+<li><p>Small <code class="docutils literal notranslate"><span class="pre">ERT-DEFTEST</span></code> with PROPER NAME makes testing much easier</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>!!! IMPORTANT !!! Test codes MUST BE MEANINGFUL</p>
+<ol class="arabic simple">
+<li><p>TO VERIFY FUNCTIONALITY OF THE CODE,</p></li>
+<li><p>GUARANTEE CODE QUALITIES, and</p></li>
+<li><p>RELIABILITY OF CODEBASE</p></li>
+</ol>
+</li>
+<li><p>WE ADOPT THE <code class="docutils literal notranslate"><span class="pre">TEST-DRIVE</span> <span class="pre">DEVELOPMENT</span> <span class="pre">(TDD)</span></code> STRATEGY</p>
+<ul>
+<li><p>Thus, the quality of test code defines the quality of the project</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="loadability-testing">
+<h3>Loadability Testing<a class="headerlink" href="#loadability-testing" title="Link to this heading"></a></h3>
+<p>Check loadability in THE ENTRY FILE OF THE ENTRY OF UMBRELLA DIRECTORY.</p>
+<ul class="simple">
+<li><p>Note that same name of <code class="docutils literal notranslate"><span class="pre">ert-deftest</span></code> is not acceptable so that loadability check should be centralized in umbrella entry file</p></li>
+</ul>
+<div class="highlight-elisp notranslate"><div class="highlight"><pre><span></span><span class="c1">;;; -*- coding: utf-8; lexical-binding: t -*-</span>
+<span class="c1">;;; Author: ywatanabe</span>
+<span class="c1">;;; Timestamp: &lt;2025-02-10 20:39:59&gt;</span>
+<span class="c1">;;; File: /home/ywatanabe/proj/llemacs/llemacs.el/tests/01-01-core-base/test-lle-base.el</span>
+<span class="c1">;;; Copyright (C) 2024-2025 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-base-loadable</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Tests if lle-base is loadable.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;lle-base</span><span class="p">)</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">   </span><span class="p">(</span><span class="nb">featurep</span><span class="w"> </span><span class="ss">&#39;lle-base</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-base-restart-loadable</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Tests if lle-base-restart is loadable.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;lle-base-restart</span><span class="p">)</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">   </span><span class="p">(</span><span class="nb">featurep</span><span class="w"> </span><span class="ss">&#39;lle-base-restart</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-base-utf-8-loadable</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot;Tests if lle-base-utf-8 is loadable.&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;lle-base-utf-8</span><span class="p">)</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">   </span><span class="p">(</span><span class="nb">featurep</span><span class="w"> </span><span class="ss">&#39;lle-base-utf-8</span><span class="p">)))</span>
+
+<span class="o">...</span>
+
+<span class="p">(</span><span class="nb">provide</span><span class="w"> </span><span class="ss">&#39;test-lle-base</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="test-writing-guidelines">
+<h3>Test Writing Guidelines<a class="headerlink" href="#test-writing-guidelines" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>In each file, <code class="docutils literal notranslate"><span class="pre">ert-deftest</span></code> MUST BE MINIMAL, MEANING, and SELF-EXPLANATORY.</p></li>
+<li><p>Loadable tests should not be split across files but concentrate on central entry file (<code class="docutils literal notranslate"><span class="pre">./tests/test-&lt;package-name&gt;.el</span></code>); otherwise, duplicated error raised.</p></li>
+<li><p>Ensure the codes identical between before and after testing; implement cleanup process</p></li>
+<li><p>DO NOT ALLOW CHANGE DUE TO TEST</p></li>
+<li><p>When edition is required for testing, first store original information and revert in the cleanup stage</p></li>
+</ul>
+</section>
+</section>
+<section id="example-of-elisp-test-files">
+<h2>Example of Elisp Test Files<a class="headerlink" href="#example-of-elisp-test-files" title="Link to this heading"></a></h2>
+<section id="basic-function-testing">
+<h3>Basic Function Testing<a class="headerlink" href="#basic-function-testing" title="Link to this heading"></a></h3>
+<div class="highlight-elisp notranslate"><div class="highlight"><pre><span></span><span class="c1">;;; -*- coding: utf-8; lexical-binding: t -*-</span>
+<span class="c1">;;; Author: ywatanabe</span>
+<span class="c1">;;; Timestamp: &lt;2025-05-10 17:02:51&gt;</span>
+<span class="c1">;;; File: /home/ywatanabe/proj/llemacs/llemacs.el/tests/01-01-core-base/test-lle-base-restart.el</span>
+
+<span class="c1">;;; Copyright (C) 2025 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)</span>
+
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;ert</span><span class="p">)</span>
+
+<span class="c1">;; Now skip loadable check as it is peformed in the dedicated entry file </span>
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;lle-base-restart</span><span class="p">)</span><span class="w"> </span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-restart-is-function</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">   </span><span class="p">(</span><span class="nf">functionp</span><span class="w"> </span><span class="ss">&#39;lle-restart</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-restart-is-interactive</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">   </span><span class="p">(</span><span class="nf">commandp</span><span class="w"> </span><span class="ss">&#39;lle-restart</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-lle-restart-filters-lle-features</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span>
+<span class="w">      </span><span class="p">((</span><span class="nv">features-before</span><span class="w"> </span><span class="nv">features</span><span class="p">)</span>
+<span class="w">       </span><span class="p">(</span><span class="nv">result</span><span class="w"> </span><span class="no">nil</span><span class="p">))</span>
+<span class="w">    </span><span class="p">(</span><span class="nb">cl-letf</span>
+<span class="w">        </span><span class="p">(((</span><span class="nf">symbol-function</span><span class="w"> </span><span class="ss">&#39;load-file</span><span class="p">)</span>
+<span class="w">          </span><span class="p">(</span><span class="nb">lambda</span>
+<span class="w">            </span><span class="p">(</span><span class="nv">_</span><span class="p">)</span>
+<span class="w">            </span><span class="p">(</span><span class="k">setq</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="no">t</span><span class="p">)))</span>
+<span class="w">         </span><span class="p">((</span><span class="nf">symbol-function</span><span class="w"> </span><span class="ss">&#39;unload-feature</span><span class="p">)</span>
+<span class="w">          </span><span class="p">(</span><span class="nb">lambda</span>
+<span class="w">            </span><span class="p">(</span><span class="nv">_</span><span class="w"> </span><span class="nv">_</span><span class="p">)</span>
+<span class="w">            </span><span class="no">t</span><span class="p">))</span>
+<span class="w">         </span><span class="p">((</span><span class="nf">symbol-function</span><span class="w"> </span><span class="ss">&#39;features</span><span class="p">)</span>
+<span class="w">          </span><span class="p">(</span><span class="nb">lambda</span>
+<span class="w">            </span><span class="p">()</span>
+<span class="w">            </span><span class="o">&#39;</span><span class="p">(</span><span class="nv">lle-test</span><span class="w"> </span><span class="nv">other-feature</span><span class="w"> </span><span class="nv">lle-another</span><span class="w"> </span><span class="nv">llemacs</span><span class="p">))))</span>
+<span class="w">      </span><span class="p">(</span><span class="nv">lle-restart</span><span class="p">)</span>
+<span class="w">      </span><span class="p">(</span><span class="nv">should</span><span class="w"> </span><span class="nv">result</span><span class="p">))</span>
+<span class="w">    </span><span class="p">(</span><span class="k">setq</span><span class="w"> </span><span class="nv">features</span><span class="w"> </span><span class="nv">features-before</span><span class="p">)))</span>
+
+
+<span class="p">(</span><span class="nb">provide</span><span class="w"> </span><span class="ss">&#39;test-lle-base-restart</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="buffer-checking-tests">
+<h3>Buffer Checking Tests<a class="headerlink" href="#buffer-checking-tests" title="Link to this heading"></a></h3>
+<div class="highlight-elisp notranslate"><div class="highlight"><pre><span></span><span class="c1">;;; -*- coding: utf-8; lexical-binding: t -*-</span>
+<span class="c1">;;; Author: ywatanabe</span>
+<span class="c1">;;; Timestamp: &lt;2025-02-13 15:29:49&gt;</span>
+<span class="c1">;;; File: /home/ywatanabe/.dotfiles/.emacs.d/lisp/emacs-tab-manager/tests/test-etm-buffer-checkers.el</span>
+
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;ert</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;etm-buffer-checkers</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-etm-buffer-registered-p-with-name-only</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span>
+<span class="w">      </span><span class="p">((</span><span class="nv">etm-registered-buffers</span>
+<span class="w">        </span><span class="o">&#39;</span><span class="p">((</span><span class="s">&quot;tab1&quot;</span><span class="w"> </span><span class="o">.</span>
+<span class="w">           </span><span class="p">((</span><span class="s">&quot;home&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="p">))))))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-registered-p</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-etm-buffer-registered-p-with-type</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span>
+<span class="w">      </span><span class="p">((</span><span class="nv">etm-registered-buffers</span>
+<span class="w">        </span><span class="o">&#39;</span><span class="p">((</span><span class="s">&quot;tab1&quot;</span><span class="w"> </span><span class="o">.</span>
+<span class="w">           </span><span class="p">((</span><span class="s">&quot;home&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="p">))))))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-registered-p</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="w"> </span><span class="s">&quot;home&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should-not</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-registered-p</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="w"> </span><span class="s">&quot;results&quot;</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-etm-buffer-registered-p-with-tab</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span>
+<span class="w">      </span><span class="p">((</span><span class="nv">etm-registered-buffers</span>
+<span class="w">        </span><span class="o">&#39;</span><span class="p">((</span><span class="s">&quot;tab1&quot;</span><span class="w"> </span><span class="o">.</span>
+<span class="w">           </span><span class="p">((</span><span class="s">&quot;home&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="p">)))</span>
+<span class="w">          </span><span class="p">(</span><span class="s">&quot;tab2&quot;</span><span class="w"> </span><span class="o">.</span>
+<span class="w">           </span><span class="p">((</span><span class="s">&quot;home&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;buffer2&quot;</span><span class="p">))))))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-registered-p</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="w"> </span><span class="no">nil</span>
+<span class="w">                                </span><span class="o">&#39;</span><span class="p">((</span><span class="nv">name</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;tab1&quot;</span><span class="p">))))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should-not</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-registered-p</span><span class="w"> </span><span class="s">&quot;buffer1&quot;</span><span class="w"> </span><span class="no">nil</span>
+<span class="w">                                </span><span class="o">&#39;</span><span class="p">((</span><span class="nv">name</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;tab2&quot;</span><span class="p">))))))</span>
+
+<span class="p">(</span><span class="nb">ert-deftest</span><span class="w"> </span><span class="nv">test-etm-buffer-protected-p</span>
+<span class="w">    </span><span class="p">()</span>
+<span class="w">  </span><span class="p">(</span><span class="k">let</span>
+<span class="w">      </span><span class="p">((</span><span class="nv">etm-protected-buffers</span>
+<span class="w">        </span><span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;*scratch*&quot;</span><span class="w"> </span><span class="s">&quot;*Messages*&quot;</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-protected-p</span><span class="w"> </span><span class="s">&quot;*scratch*&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">(</span><span class="nv">should-not</span>
+<span class="w">     </span><span class="p">(</span><span class="nv">--etm-buffer-protected-p</span><span class="w"> </span><span class="s">&quot;regular-buffer&quot;</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">provide</span><span class="w"> </span><span class="ss">&#39;test-etm-buffer-checkers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="your-understanding-check">
+<h2>Your Understanding Check<a class="headerlink" href="#your-understanding-check" title="Link to this heading"></a></h2>
+<p>Did you understand the guideline? If yes, please say:
+<code class="docutils literal notranslate"><span class="pre">CLAUDE</span> <span class="pre">UNDERSTOOD:</span> <span class="pre">&lt;THIS</span> <span class="pre">FILE</span> <span class="pre">PATH</span> <span class="pre">HERE&gt;</span></code></p>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

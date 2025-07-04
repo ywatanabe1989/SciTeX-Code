@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>16 SciTeX Scholar &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="19 SciTeX Db" href="19_scitex_db.html" />
+    <link rel="prev" title="18 SciTeX Torch" href="18_scitex_torch.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">16 SciTeX Scholar</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/16_scitex_scholar.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-scholar">
+<h1>16 SciTeX Scholar<a class="headerlink" href="#scitex-scholar" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/16_scitex_scholar.ipynb">16_scitex_scholar.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>16_scitex_scholar.ipynb
+</pre></div>
+</div>
+</div>
+<p>This notebook demonstrates the new simplified <code class="docutils literal notranslate"><span class="pre">Scholar</span></code> class for
+scientific literature management with comprehensive impact factor
+support.</p>
+<section id="key-improvements">
+<h2>Key Improvements<a class="headerlink" href="#key-improvements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Single entry point</strong>: One <code class="docutils literal notranslate"><span class="pre">Scholar</span></code> class for all functionality</p></li>
+<li><p><strong>Default enrichment</strong>: Papers are enriched with journal metrics by
+default</p></li>
+<li><p><strong>No async complexity</strong>: Simple synchronous API that works in
+notebooks</p></li>
+<li><p><strong>Chainable methods</strong>: Fluent interface for common workflows</p></li>
+<li><p><strong>Smart defaults</strong>: Works out-of-the-box with reasonable settings</p></li>
+<li><p><strong>📊 Impact Factor Integration</strong>: Automatic journal impact factor
+lookup using the <code class="docutils literal notranslate"><span class="pre">impact_factor</span></code> package</p></li>
+<li><p><strong>🏆 Journal Rankings</strong>: Quartile and ranking information for
+comprehensive evaluation</p></li>
+</ul>
+</section>
+<section id="installation-setup">
+<h2>Installation &amp; Setup<a class="headerlink" href="#installation-setup" title="Link to this heading"></a></h2>
+<p>Make sure you have scitex and impact_factor installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>~/proj/scitex_repo
+<span class="c1"># impact_factor package should be automatically available</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the new simplified interface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scitex.scholar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scholar</span>
+
+<span class="c1"># Import impact factor tools for direct database access</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">impact_factor</span>
+
+<span class="c1"># Optional: Set up API keys for enhanced features</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1"># os.environ[&#39;SEMANTIC_SCHOLAR_API_KEY&#39;] = &#39;your_key_here&#39;</span>
+<span class="c1"># os.environ[&#39;OPENAI_API_KEY&#39;] = &#39;your_key_here&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Scholar and Impact Factor tools loaded successfully!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📊 Impact Factor database: </span><span class="si">{</span><span class="n">impact_factor</span><span class="o">.</span><span class="n">DEFAULT_DB</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📈 Database size: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">impact_factor</span><span class="o">.</span><span class="n">DEFAULT_DB</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="quick-start-simple-search">
+<h2>1. Quick Start - Simple Search<a class="headerlink" href="#quick-start-simple-search" title="Link to this heading"></a></h2>
+<p>The fastest way to get started:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick search using Scholar class directly with impact factor enrichment</span>
+<span class="n">scholar</span> <span class="o">=</span> <span class="n">Scholar</span><span class="p">(</span><span class="n">enrich_by_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Ensure enrichment is enabled</span>
+<span class="n">papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;deep learning neuroscience&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Display results with comprehensive impact factor information</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📚 Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers (automatically enriched with impact factors):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">papers</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Authors: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paper</span><span class="o">.</span><span class="n">authors</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">paper</span><span class="o">.</span><span class="n">authors</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Unknown&#39;</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Journal: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Unknown&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Year: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">, Citations: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">citation_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show enriched impact factor data if available</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;impact_factor&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   📊 Journal Impact Factor: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;journal_quartile&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🏆 Journal Quartile: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;journal_ranking&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">paper</span><span class="o">.</span><span class="n">journal_ranking</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   📈 Journal Ranking: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal_ranking</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Additional impact factor lookup if not automatically enriched</span>
+    <span class="k">if</span> <span class="n">paper</span><span class="o">.</span><span class="n">journal</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;impact_factor&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span><span class="p">):</span>
+        <span class="c1"># Direct lookup from impact_factor database</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">impact_factor</span><span class="o">.</span><span class="n">DEFAULT_DB</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT factor, jcr FROM factor WHERE journal LIKE ? ORDER BY factor DESC LIMIT 1&quot;</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;%</span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">])</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   📊 Impact Factor (manual lookup): </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;factor&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🏆 Quartile (manual lookup): </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;jcr&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ⚠️ Could not lookup impact factor: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-the-scholar-class">
+<h2>2. Using the Scholar Class<a class="headerlink" href="#using-the-scholar-class" title="Link to this heading"></a></h2>
+<p>For more control and advanced features:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize Scholar with custom settings</span>
+<span class="n">scholar</span> <span class="o">=</span> <span class="n">Scholar</span><span class="p">(</span>
+    <span class="n">email</span><span class="o">=</span><span class="s2">&quot;researcher@university.edu&quot;</span><span class="p">,</span>  <span class="c1"># For PubMed access</span>
+    <span class="n">enrich_by_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Default enrichment (can be turned off)</span>
+    <span class="n">workspace_dir</span><span class="o">=</span><span class="s2">&quot;./scholar_workspace&quot;</span>  <span class="c1"># Custom workspace</span>
+<span class="p">)</span>
+
+<span class="c1"># Get workspace info</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">get_workspace_info</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scholar Workspace Info:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="enhanced-search-with-filtering">
+<h2>3. Enhanced Search with Filtering<a class="headerlink" href="#enhanced-search-with-filtering" title="Link to this heading"></a></h2>
+<p>Search and filter papers using the fluent interface:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search with filtering and sorting</span>
+<span class="n">recent_papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;neural networks&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> \
+                      <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">min_citations</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> \
+                      <span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="s2">&quot;citations&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recent_papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> recent high-impact papers:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">recent_papers</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">title</span><span class="p">[:</span><span class="mi">80</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Year: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">, Citations: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">citation_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;impact_factor&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Journal IF: </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="multiple-topic-search">
+<h2>4. Multiple Topic Search<a class="headerlink" href="#multiple-topic-search" title="Link to this heading"></a></h2>
+<p>Search multiple topics and combine results:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search multiple related topics</span>
+<span class="n">topics</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;transformer neural networks&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;attention mechanisms deep learning&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BERT language models&quot;</span>
+<span class="p">]</span>
+
+<span class="n">all_papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search_multiple</span><span class="p">(</span>
+    <span class="n">queries</span><span class="o">=</span><span class="n">topics</span><span class="p">,</span>
+    <span class="n">papers_per_query</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">combine_results</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Automatically removes duplicates</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined search found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> unique papers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Filter for high-impact recent work</span>
+<span class="n">high_impact</span> <span class="o">=</span> <span class="n">all_papers</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2019</span><span class="p">,</span> <span class="n">min_citations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-impact recent papers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_impact</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="bibliography-generation">
+<h2>5. Bibliography Generation<a class="headerlink" href="#bibliography-generation" title="Link to this heading"></a></h2>
+<p>Generate enriched bibliographies with automatic formatting:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search for papers on a specific topic with impact factor filtering</span>
+<span class="n">ml_papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;machine learning interpretability&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Filter for quality papers with impact factor consideration</span>
+<span class="n">quality_papers</span> <span class="o">=</span> <span class="n">ml_papers</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2018</span><span class="p">,</span> <span class="n">min_citations</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📊 Generating enriched bibliography for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">quality_papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Enrich papers with impact factor information if not already enriched</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enrich_paper_with_impact_factor</span><span class="p">(</span><span class="n">paper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add impact factor information to a paper if available.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">paper</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">impact_factor</span><span class="o">.</span><span class="n">DEFAULT_DB</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT factor, jcr, journal_abbr</span>
+<span class="s2">        FROM factor</span>
+<span class="s2">        WHERE journal LIKE ?</span>
+<span class="s2">        ORDER BY factor DESC</span>
+<span class="s2">        LIMIT 1</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;%</span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">])</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">paper</span><span class="o">.</span><span class="n">impact_factor</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;factor&#39;</span><span class="p">]</span>
+            <span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;jcr&#39;</span><span class="p">]</span>
+            <span class="n">paper</span><span class="o">.</span><span class="n">journal_abbr</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;journal_abbr&#39;</span><span class="p">]</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not enrich </span><span class="si">{</span><span class="n">paper</span><span class="o">.</span><span class="n">journal</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">paper</span>
+
+<span class="c1"># Enrich all papers</span>
+<span class="n">enriched_papers</span> <span class="o">=</span> <span class="p">[</span><span class="n">enrich_paper_with_impact_factor</span><span class="p">(</span><span class="n">paper</span><span class="p">)</span> <span class="k">for</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">quality_papers</span><span class="p">]</span>
+
+<span class="c1"># Show impact factor distribution</span>
+<span class="n">impact_factors</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">impact_factor</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">enriched_papers</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;impact_factor&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">impact_factor</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">impact_factors</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📈 Impact Factor Statistics:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Papers with IF data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">impact_factors</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">enriched_papers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Average IF: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">impact_factors</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">impact_factors</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Highest IF: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">impact_factors</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Lowest IF: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">impact_factors</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save as enriched BibTeX (includes impact factors)</span>
+<span class="n">bib_file</span> <span class="o">=</span> <span class="s2">&quot;ml_interpretability_enriched.bib&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">💾 Saving enriched bibliography to: </span><span class="si">{</span><span class="n">bib_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Generate enriched BibTeX entries</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">enriched_papers</span><span class="p">:</span>
+            <span class="n">bibtex</span> <span class="o">=</span> <span class="n">paper</span><span class="o">.</span><span class="n">to_bibtex</span><span class="p">(</span><span class="n">include_enriched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bibtex</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Successfully saved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">enriched_papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> enriched entries&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error saving bibliography: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Preview first enriched entry</span>
+<span class="k">if</span> <span class="n">enriched_papers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📄 Sample enriched BibTeX entry:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sample_bibtex</span> <span class="o">=</span> <span class="n">enriched_papers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_bibtex</span><span class="p">(</span><span class="n">include_enriched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Show first 500 characters</span>
+        <span class="n">preview</span> <span class="o">=</span> <span class="n">sample_bibtex</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_bibtex</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">500</span> <span class="k">else</span> <span class="n">sample_bibtex</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">preview</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not generate sample BibTeX: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Show papers by impact factor quartile</span>
+<span class="n">quartile_distribution</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">enriched_papers</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;journal_quartile&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span><span class="p">:</span>
+        <span class="n">quartile_distribution</span><span class="p">[</span><span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span><span class="p">]</span> <span class="o">=</span> <span class="n">quartile_distribution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">paper</span><span class="o">.</span><span class="n">journal_quartile</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="k">if</span> <span class="n">quartile_distribution</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🏆 Journal Quartile Distribution:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">quartile</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">quartile_distribution</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">quartile</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> papers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pdf-downloads">
+<h2>6. PDF Downloads<a class="headerlink" href="#pdf-downloads" title="Link to this heading"></a></h2>
+<p>Download PDFs for open-access papers:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search for open-access papers</span>
+<span class="n">oa_papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;computer vision&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Filter for potentially open-access papers</span>
+<span class="n">recent_papers</span> <span class="o">=</span> <span class="n">oa_papers</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2020</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to download PDFs for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recent_papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers...&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Download PDFs (max 3 to avoid overwhelming servers)</span>
+    <span class="n">downloaded</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">download_pdfs</span><span class="p">(</span><span class="n">recent_papers</span><span class="p">,</span> <span class="n">max_downloads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Successfully downloaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">downloaded</span><span class="p">)</span><span class="si">}</span><span class="s2"> PDFs:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">downloaded</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">title</span><span class="p">[:</span><span class="mi">60</span><span class="p">]</span><span class="si">}</span><span class="s2">... → </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PDF download failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Note: PDF downloads require papers to be open-access&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="local-pdf-indexing-and-search">
+<h2>7. Local PDF Indexing and Search<a class="headerlink" href="#local-pdf-indexing-and-search" title="Link to this heading"></a></h2>
+<p>Build searchable index from your local PDF collection:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you have PDFs downloaded, build a local index</span>
+<span class="n">pdf_dir</span> <span class="o">=</span> <span class="s2">&quot;./scholar_workspace/pdfs&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pdf_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">pdf_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building search index from </span><span class="si">{</span><span class="n">pdf_dir</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="n">index_path</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">build_local_index</span><span class="p">(</span><span class="n">pdf_dir</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index created: </span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Search your local collection</span>
+        <span class="n">local_results</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search_local</span><span class="p">(</span><span class="s2">&quot;neural networks&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">local_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers in local collection&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No PDFs found for indexing. Download some PDFs first.&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Local indexing failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-features">
+<h2>8. Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
+<section id="paper-collection-analysis">
+<h3>Paper Collection Analysis<a class="headerlink" href="#paper-collection-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a larger collection for analysis</span>
+<span class="n">ai_papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;artificial intelligence&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Analyze the collection</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Collection Analysis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total papers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ai_papers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Year distribution</span>
+<span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ai_papers</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">year</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">years</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Year range: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">years</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">years</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+    <span class="n">year_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">years</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Papers by year:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">year_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> papers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Citation analysis</span>
+<span class="n">citations</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">citation_count</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ai_papers</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">citation_count</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">citations</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Citation statistics:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Average citations: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">citations</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">citations</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Max citations: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">citations</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Highly cited (&gt;100): </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">citations</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export to different formats</span>
+<span class="n">data_export</span> <span class="o">=</span> <span class="n">ai_papers</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Exported </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_export</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers to dictionary format&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="comparison-with-old-api">
+<h3>Comparison with Old API<a class="headerlink" href="#comparison-with-old-api" title="Link to this heading"></a></h3>
+<p>Here’s how the new API compares to the old approach:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== OLD API (Complex) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Old way - multiple imports and manual enrichment</span>
+<span class="s2">from scitex.scholar import search_papers, PaperEnrichmentService, generate_enriched_bibliography</span>
+<span class="s2">import asyncio</span>
+
+<span class="s2"># Async search</span>
+<span class="s2">papers = await search_papers(&quot;deep learning&quot;, limit=10)</span>
+
+<span class="s2"># Manual enrichment</span>
+<span class="s2">enricher = PaperEnrichmentService()</span>
+<span class="s2">enriched_papers = enricher.enrich_papers(papers)</span>
+
+<span class="s2"># Manual bibliography generation</span>
+<span class="s2">generate_enriched_bibliography(enriched_papers, &quot;output.bib&quot;, enrich=False)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== NEW API (Simple) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># New way - one class, automatic enrichment</span>
+<span class="s2">from scitex.scholar import Scholar</span>
+
+<span class="s2"># Simple search with automatic enrichment</span>
+<span class="s2">scholar = Scholar()</span>
+<span class="s2">papers = scholar.search(&quot;deep learning&quot;, limit=10)</span>
+
+<span class="s2"># One-liner bibliography with enrichment</span>
+<span class="s2">papers.save_bibliography(&quot;output.bib&quot;)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ The new API is much simpler and more intuitive!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>9. Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="performance-tips">
+<h3>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Reuse Scholar instance for multiple searches</span>
+<span class="n">scholar</span> <span class="o">=</span> <span class="n">Scholar</span><span class="p">(</span><span class="n">enrich_by_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Initialize once</span>
+
+<span class="c1"># Multiple searches reuse the same components</span>
+<span class="n">papers1</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;topic 1&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">papers2</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;topic 2&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># 2. Use appropriate limits</span>
+<span class="c1"># For exploration: limit=10-20</span>
+<span class="c1"># For comprehensive reviews: limit=50-100</span>
+<span class="c1"># For quick checks: limit=5</span>
+
+<span class="c1"># 3. Filter early to reduce processing</span>
+<span class="n">recent_quality</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;machine learning&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> \
+                       <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">min_citations</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> \
+                       <span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="s2">&quot;impact_factor&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtered to </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recent_quality</span><span class="p">)</span><span class="si">}</span><span class="s2"> high-quality recent papers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The Scholar class handles errors gracefully</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Even if some components fail, basic search should work</span>
+    <span class="n">papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;test query&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search successful: found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Fallback to basic Scholar search with minimal features</span>
+    <span class="n">scholar_basic</span> <span class="o">=</span> <span class="n">Scholar</span><span class="p">(</span><span class="n">enrich_by_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">papers</span> <span class="o">=</span> <span class="n">scholar_basic</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;test query&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fallback search: found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">papers</span><span class="p">)</span><span class="si">}</span><span class="s2"> papers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The new <code class="docutils literal notranslate"><span class="pre">Scholar</span></code> class provides:</p>
+<div class="line-block">
+<div class="line">✅ <strong>Single entry point</strong> - No need to import multiple classes</div>
+<div class="line">✅ <strong>Default enrichment</strong> - Papers automatically get journal metrics</div>
+<div class="line">✅ <strong>Simple sync API</strong> - No async/await complexity</div>
+<div class="line">✅ <strong>Chainable methods</strong> - Fluent interface for workflows</div>
+<div class="line">✅ <strong>Smart defaults</strong> - Works out-of-the-box</div>
+<div class="line">✅ <strong>Progress feedback</strong> - See what’s happening during long operations</div>
+<div class="line">✅ <strong>Error resilience</strong> - Graceful fallbacks when components fail</div>
+</div>
+<section id="quick-reference">
+<h3>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic usage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scitex.scholar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scholar</span>
+<span class="n">scholar</span> <span class="o">=</span> <span class="n">Scholar</span><span class="p">()</span>
+<span class="n">papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;your topic&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">papers</span><span class="o">.</span><span class="n">save_bibliography</span><span class="p">(</span><span class="s2">&quot;papers.bib&quot;</span><span class="p">)</span>
+
+<span class="c1"># Advanced workflow</span>
+<span class="n">papers</span> <span class="o">=</span> <span class="n">scholar</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;topic&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> \
+               <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">year_min</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">min_citations</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> \
+               <span class="o">.</span><span class="n">sort_by</span><span class="p">(</span><span class="s2">&quot;impact_factor&quot;</span><span class="p">)</span>
+<span class="n">scholar</span><span class="o">.</span><span class="n">download_pdfs</span><span class="p">(</span><span class="n">papers</span><span class="p">,</span> <span class="n">max_downloads</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The Scholar class maintains backward compatibility with all existing
+components while providing a much simpler interface for new users.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="18_scitex_torch.html" class="btn btn-neutral float-left" title="18 SciTeX Torch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="19_scitex_db.html" class="btn btn-neutral float-right" title="19 SciTeX Db" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
