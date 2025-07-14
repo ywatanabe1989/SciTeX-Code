@@ -126,3 +126,4 @@ xarray # Please ignore this package due to incompatibility with recent versions 
 xlrd
 xmltodict
 streamlit
+zarr
