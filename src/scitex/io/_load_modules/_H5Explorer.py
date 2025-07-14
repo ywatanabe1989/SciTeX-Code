@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-01 19:22:27 (ywatanabe)"
+# Timestamp: "2025-07-05 12:46:09 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_H5Explorer.py
 # ----------------------------------------
 import os
@@ -9,10 +9,9 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 import random
 import time
-
-import shutil
 import warnings
 
 # Time-stamp: "2025-06-13 21:00:00 (ywatanabe)"
@@ -273,100 +272,9 @@ def explore_h5(filepath: str) -> None:
         warnings.warn(f"Warning: File does not exist: {filepath}")
 
 
-# def has_h5_key(h5_path, key, max_retries=3):
-#     """
-#     Robust version of has_h5_key that handles corrupted files.
-
-#     Parameters:
-#     -----------
-#     h5_path : str
-#         Path to HDF5 file
-#     key : str
-#         Key to check for existence
-#     max_retries : int
-#         Maximum number of attempts to read the file
-
-#     Returns:
-#     --------
-#     bool
-#         True if key exists, False if key doesn't exist or file is corrupted
-#     """
-#     h5_path = os.path.realpath(h5_path)
-
-#     if not os.path.exists(h5_path):
-#         return False
-
-#     for attempt in range(max_retries):
-#         try:
-#             with h5py.File(h5_path, "r") as h5_file:
-#                 parts = [p for p in key.split("/") if p]  # Remove empty parts
-#                 current = h5_file
-
-#                 for part in parts:
-#                     if part in current:
-#                         current = current[part]
-#                     else:
-#                         return False
-#                 return True
-
-#         except (KeyError, FileNotFoundError):
-#             return False
-
-#         except (OSError, RuntimeError, ValueError) as e:
-#             error_msg = str(e).lower()
-#             corruption_indicators = [
-#                 "unable to synchronously",
-#                 "bad symbol table",
-#                 "free block size is zero",
-#                 "truncated file",
-#                 "unable to read signature",
-#                 "corrupted",
-#                 "invalid file signature",
-#                 "unable to check link existence",
-#             ]
-
-#             if any(
-#                 indicator in error_msg for indicator in corruption_indicators
-#             ):
-#                 print(
-#                     f"HDF5 file corruption detected on attempt {attempt + 1}: {e}"
-#                 )
-
-#                 if attempt < max_retries - 1:
-#                     # Try to repair or recreate the file
-#                     if _attempt_h5_repair(h5_path):
-#                         print(f"File repair attempted, retrying...")
-#                         continue
-#                     else:
-#                         print(f"File repair failed, treating as missing key")
-#                         return False
-#                 else:
-#                     # Final attempt failed, treat as file doesn't contain the key
-#                     print(f"Final attempt failed, treating key as missing")
-#                     return False
-#             else:
-#                 # Non-corruption error, re-raise
-#                 raise e
-
-
-#     return False
-def has_h5_key(h5_path, key, max_retries=3):
+def has_h5_key(h5_path, key, max_retries=3, action_on_corrupted="delete"):
     """
     Robust version of has_h5_key that handles corrupted files and lock conflicts.
-
-    Parameters:
-    -----------
-    h5_path : str
-        Path to HDF5 file
-    key : str
-        Key to check for existence
-    max_retries : int
-        Maximum number of attempts to read the file
-
-    Returns:
-    --------
-    bool
-        True if key exists, False if key doesn't exist or file is corrupted
     """
     h5_path = os.path.realpath(h5_path)
 
@@ -375,9 +283,8 @@ def has_h5_key(h5_path, key, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            # Use a shorter timeout for read operations
             with h5py.File(h5_path, "r") as h5_file:
-                parts = [p for p in key.split("/") if p]  # Remove empty parts
+                parts = [p for p in key.split("/") if p]
                 current = h5_file
 
                 for part in parts:
@@ -393,7 +300,6 @@ def has_h5_key(h5_path, key, max_retries=3):
         except (OSError, RuntimeError, ValueError) as e:
             error_msg = str(e).lower()
 
-            # Check for lock-related errors
             lock_indicators = [
                 "resource temporarily unavailable",
                 "file is already open",
@@ -401,7 +307,6 @@ def has_h5_key(h5_path, key, max_retries=3):
                 "file locking failed",
             ]
 
-            # Check for corruption indicators
             corruption_indicators = [
                 "unable to synchronously",
                 "bad symbol table",
@@ -411,144 +316,42 @@ def has_h5_key(h5_path, key, max_retries=3):
                 "corrupted",
                 "invalid file signature",
                 "unable to check link existence",
+                "bad heap free list",
             ]
 
             if any(indicator in error_msg for indicator in lock_indicators):
-                print(f"HDF5 file lock conflict on attempt {attempt + 1}: {e}")
-
                 if attempt < max_retries - 1:
-                    # Start with small wait time, increase gradually
-                    base_wait = 0.1 * (2**attempt)  # 0.1, 0.2, 0.4 seconds
+                    base_wait = 0.1 * (2**attempt)
                     jitter = random.uniform(0, base_wait * 0.5)
                     wait_time = base_wait + jitter
-
-                    print(f"Waiting {wait_time:.2f}s before retry...")
                     time.sleep(wait_time)
                     continue
                 else:
-                    print(
-                        f"Could not access file due to locking after {max_retries} attempts"
-                    )
                     return False
 
             elif any(
                 indicator in error_msg for indicator in corruption_indicators
             ):
-                print(
-                    f"HDF5 file corruption detected on attempt {attempt + 1}: {e}"
-                )
-
-                if attempt < max_retries - 1:
-                    # Try to repair or recreate the file
-                    if _attempt_h5_repair(h5_path):
-                        print(f"File repair attempted, retrying...")
-                        continue
-                    else:
-                        print(f"File repair failed, treating as missing key")
+                if action_on_corrupted == "delete":
+                    if _delete_corrupted_entry(h5_path, key):
                         return False
-                else:
-                    # Final attempt failed, treat as file doesn't contain the key
-                    print(f"Final attempt failed, treating key as missing")
-                    return False
+                return False
             else:
-                # Non-corruption, non-lock error, re-raise
                 raise e
 
     return False
 
 
-def _attempt_h5_repair(h5_path):
-    """
-    Attempt to repair corrupted HDF5 file by creating backup and rebuilding.
-
-    Parameters:
-    -----------
-    h5_path : str
-        Path to corrupted HDF5 file
-
-    Returns:
-    --------
-    bool
-        True if repair was attempted, False if repair failed
-    """
+def _delete_corrupted_entry(h5_path, key):
+    """Delete corrupted entry from HDF5 file."""
     try:
-        backup_path = h5_path + ".corrupted_backup"
-
-        # Create backup of corrupted file
-        if os.path.exists(h5_path):
-            shutil.copy2(h5_path, backup_path)
-            print(f"Created backup: {backup_path}")
-
-        # Try to read any salvageable data
-        salvaged_data = {}
-        try:
-            with h5py.File(h5_path, "r") as f:
-                _recursively_salvage_data(f, salvaged_data, "")
-        except:
-            print("Could not salvage any data from corrupted file")
-
-        # Remove corrupted file
-        if os.path.exists(h5_path):
-            os.remove(h5_path)
-
-        # Recreate file with salvaged data if any
-        if salvaged_data:
-            with h5py.File(h5_path, "w") as f:
-                _restore_salvaged_data(f, salvaged_data)
-            print(
-                f"Recreated file with {len(salvaged_data)} salvaged datasets"
-            )
-            return True
-        else:
-            print("No data could be salvaged, file will be recreated empty")
-            # Create empty file
-            with h5py.File(h5_path, "w") as f:
-                pass
-            return True
-
-    except Exception as e:
-        print(f"File repair failed: {e}")
-        return False
-
-
-def _recursively_salvage_data(h5_group, salvaged_data, path_prefix):
-    """Recursively try to salvage data from corrupted HDF5 group."""
-    try:
-        for key in h5_group.keys():
-            current_path = f"{path_prefix}/{key}".strip("/")
-            try:
-                item = h5_group[key]
-                if isinstance(item, h5py.Dataset):
-                    salvaged_data[current_path] = item[()]
-                elif isinstance(item, h5py.Group):
-                    _recursively_salvage_data(
-                        item, salvaged_data, current_path
-                    )
-            except:
-                print(f"Could not salvage: {current_path}")
-                continue
+        with h5py.File(h5_path, "r+") as h5_file:
+            if key in h5_file:
+                del h5_file[key]
+                print(f"Deleted corrupted entry: {key}")
+                return True
     except:
         pass
-
-
-def _restore_salvaged_data(h5_file, salvaged_data):
-    """Restore salvaged data to new HDF5 file."""
-    for path, data in salvaged_data.items():
-        try:
-            # Create groups as needed
-            parts = path.split("/")
-            current_group = h5_file
-
-            for part in parts[:-1]:
-                if part not in current_group:
-                    current_group = current_group.create_group(part)
-                else:
-                    current_group = current_group[part]
-
-            # Create dataset
-            dataset_name = parts[-1]
-            current_group.create_dataset(dataset_name, data=data)
-        except Exception as e:
-            print(f"Could not restore {path}: {e}")
+    return False
 
 # EOF

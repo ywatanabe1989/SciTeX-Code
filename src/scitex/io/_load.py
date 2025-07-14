@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-10 08:05:53 (ywatanabe)"
+# Timestamp: "2025-07-11 15:47:00 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py
 # ----------------------------------------
 import os
-
-__FILE__ = "/ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py"
+__FILE__ = (
+    "./src/scitex/io/_load.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from typing import Any
 import glob
+from typing import Any
+
 from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
-
 # from ._load_modules._catboost import _load_catboost
 from ._load_modules._con import _load_con
 from ._load_modules._db import _load_sqlite3db
@@ -24,8 +25,8 @@ from ._load_modules._image import _load_image
 from ._load_modules._joblib import _load_joblib
 from ._load_modules._json import _load_json
 from ._load_modules._markdown import _load_markdown
-from ._load_modules._numpy import _load_npy
 from ._load_modules._matlab import _load_matlab
+from ._load_modules._numpy import _load_npy
 from ._load_modules._pandas import _load_csv, _load_excel, _load_tsv
 from ._load_modules._pdf import _load_pdf
 from ._load_modules._pickle import _load_pickle
@@ -33,10 +34,12 @@ from ._load_modules._torch import _load_torch
 from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
 from ._load_modules._yaml import _load_yaml
-from ._load_modules._matlab import _load_matlab
+from ._load_modules._zarr import _load_zarr
 
 
-def load(lpath: str, show: bool = False, verbose: bool = False, **kwargs) -> Any:
+def load(
+    lpath: str, show: bool = False, verbose: bool = False, **kwargs
+) -> Any:
     """
     Load data from various file formats.
 
@@ -88,11 +91,15 @@ def load(lpath: str, show: bool = False, verbose: bool = False, **kwargs) -> Any
         # Handle glob pattern
         matched_files = sorted(glob.glob(lpath))
         if not matched_files:
-            raise FileNotFoundError(f"No files found matching pattern: {lpath}")
+            raise FileNotFoundError(
+                f"No files found matching pattern: {lpath}"
+            )
         # Load all matched files
         results = []
         for file_path in matched_files:
-            results.append(load(file_path, show=show, verbose=verbose, **kwargs))
+            results.append(
+                load(file_path, show=show, verbose=verbose, **kwargs)
+            )
         return results
 
     if not os.path.exists(lpath):
@@ -128,6 +135,7 @@ def load(lpath: str, show: bool = False, verbose: bool = False, **kwargs) -> Any
         "mat": _load_matlab,
         "hdf5": _load_hdf5,
         "h5": _load_hdf5,
+        "zarr": _load_zarr,
         "con": _load_con,
         # Documents
         "txt": _load_txt,
@@ -163,6 +171,5 @@ def load(lpath: str, show: bool = False, verbose: bool = False, **kwargs) -> Any
         return loader(lpath, **kwargs)
     except (ValueError, FileNotFoundError) as e:
         raise ValueError(f"Error loading file {lpath}: {str(e)}")
-
 
 # EOF

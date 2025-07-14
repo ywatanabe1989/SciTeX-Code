@@ -7,7 +7,7 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_modules/_db.py
 
 from typing import Any
 
-from ...db._SQLite3 import SQLite3
+from ...db import SQLite3
 
 
 def _load_sqlite3db(lpath: str, use_temp=False) -> Any:
