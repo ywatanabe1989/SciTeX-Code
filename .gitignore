@@ -825,3 +825,5 @@ ide-extensions/
 *READY_FOR_NEXT_SESSION*.md
 *PHASE3_*.md
 *IDE_INTEGRATION_COMPLETE*.md
+./docs/to_claude
+./src/scitex/docs/to_claude
