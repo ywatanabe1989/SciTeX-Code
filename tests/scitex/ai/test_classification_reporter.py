@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..', 'src'))
 import scitex
 
 # Mock the fix_seeds call to avoid parameter issues
-with patch('scitex.reproduce.fix_seeds') as mock_fix_seeds:
+with patch('scitex.repro.fix_seeds') as mock_fix_seeds:
     from scitex.ai.classification_reporter import ClassificationReporter, MultiClassificationReporter
 
 
@@ -360,7 +360,7 @@ class TestMultiClassificationReporter:
         # The save method is not implemented in ClassificationReporter
         with pytest.raises(AttributeError):
             self.multi_reporter.save(
-                files_to_reproduce=['test_file.py'],
+                files_to_repro=['test_file.py'],
                 meta_dict={'test': 'data'},
                 tgt="Target1"
             )

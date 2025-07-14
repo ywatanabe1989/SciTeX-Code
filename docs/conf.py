@@ -27,8 +27,11 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
-    # 'sphinx_rtd_theme',  # Comment out if not installed
-    # 'myst_parser',  # Comment out if not installed
+    "sphinx_rtd_theme",
+    "myst_parser",
+    "sphinx_copybutton",
+    "sphinx_autodoc_typehints",
+    "nbsphinx",  # For including Jupyter notebooks
 ]
 
 # Autodoc settings
@@ -67,11 +70,14 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "to_claude/**"]
 
 # The suffix(es) of source filenames.
-source_suffix = [".rst"]  # Only RST for now since myst_parser not installed
+source_suffix = {
+    '.rst': None,
+    '.md': 'myst_parser',
+}
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = "alabaster"  # Use default theme if sphinx_rtd_theme not installed
+html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
     "navigation_depth": 4,
@@ -87,6 +93,40 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# RTD-specific configurations
+html_title = f"{project} v{release}"
+html_short_title = project
+html_logo = None  # Add path to logo if available
+html_favicon = None  # Add path to favicon if available
+
+# Show "Edit on GitHub" links
+html_context = {
+    "display_github": True,
+    "github_user": "ywatanabe1989",
+    "github_repo": "SciTeX-Code",
+    "github_version": "main",
+    "conf_py_path": "/docs/",
+}
+
+# nbsphinx configuration for Jupyter notebooks
+nbsphinx_execute = 'never'  # Don't execute notebooks during build
+nbsphinx_allow_errors = True
+nbsphinx_timeout = 60
+
+# MyST parser configuration
+myst_enable_extensions = [
+    "dollarmath",
+    "colon_fence",
+    "deflist",
+    "html_admonition",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
+]
 
 # -- Options for intersphinx extension ---------------------------------------
 

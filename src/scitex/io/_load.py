@@ -85,6 +85,10 @@ def load(
     >>> model = load('model.pth')
     """
     lpath = clean_path(lpath)
+    
+    # Convert Path objects to strings to avoid AttributeError on string methods
+    if hasattr(lpath, '__fspath__'):  # Check if it's a path-like object
+        lpath = str(lpath)
 
     # Check if it's a glob pattern
     if "*" in lpath or "?" in lpath or "[" in lpath:
@@ -102,8 +106,50 @@ def load(
             )
         return results
 
+    # Enhanced path searching for notebook compatibility
     if not os.path.exists(lpath):
-        raise FileNotFoundError(f"{lpath} not found.")
+        # Try to find the file in common output directories
+        search_paths = [lpath]  # Original path
+        
+        # Check if we're in a notebook environment
+        try:
+            from ..gen._detect_environment import detect_environment
+            env_type = detect_environment()
+            
+            if env_type == 'jupyter':
+                # Try notebook output directories
+                import re
+                from pathlib import Path
+                
+                # Get current directory name
+                cwd = Path.cwd()
+                
+                # Common notebook output patterns
+                patterns = [
+                    f"{cwd.name}_out/{lpath}",  # Current dir output
+                    f"*_out/{lpath}",  # Any notebook output dir
+                    f"../*_out/{lpath}",  # Parent dir outputs
+                    f"test_*_out/{lpath}",  # Test output dirs
+                ]
+                
+                for pattern in patterns:
+                    matches = glob.glob(pattern)
+                    if matches:
+                        # Use the most recent file if multiple matches
+                        lpath = max(matches, key=os.path.getmtime)
+                        break
+                else:
+                    # Also check parent directory for the file
+                    parent_path = os.path.join("..", lpath)
+                    if os.path.exists(parent_path):
+                        lpath = parent_path
+        except:
+            # If detection fails, continue with original logic
+            pass
+        
+        # Final check - if still not found, raise error
+        if not os.path.exists(lpath):
+            raise FileNotFoundError(f"{lpath} not found. Searched in current directory and notebook output directories.")
 
     loaders_dict = {
         # Default

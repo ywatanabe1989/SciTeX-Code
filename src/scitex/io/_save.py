@@ -39,6 +39,13 @@ from ..path._getsize import getsize
 from ..str._clean_path import clean_path
 from ..str._color_text import color_text
 from ..str._readable_bytes import readable_bytes
+<<<<<<< HEAD
+=======
+# Import these inside functions to avoid circular imports
+# from ..gen._detect_environment import detect_environment, get_output_directory
+# from ..gen._get_notebook_path import get_notebook_name, get_notebook_directory, get_notebook_info_simple
+
+>>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe
 # Import save functions from the new modular structure
 from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
                             save_html, save_image, save_joblib, save_json,
@@ -204,6 +211,10 @@ def save(
     >>> scitex.io.save(data_dict, "data.json")
     """
     try:
+        # Convert Path objects to strings to avoid AttributeError on startswith
+        if hasattr(specified_path, '__fspath__'):  # Check if it's a path-like object
+            specified_path = str(specified_path)
+        
         ########################################
         # DO NOT MODIFY THIS SECTION
         ########################################
@@ -213,7 +224,10 @@ def save(
         # When called in /path/to/script.py,
         # data will be saved under `/path/to/script.py_out/`
         #
-        # On the other hand, when called in ipython environment,
+        # When called in a Jupyter notebook /path/to/notebook.ipynb,
+        # data will be saved under `/path/to/notebook_out/`
+        #
+        # When called in ipython environment,
         # data will be saved under `/tmp/{_os.getenv("USER")/`
         #
         ########################################
@@ -257,14 +271,45 @@ def save(
 
         # When relative path
         else:
-            script_path = inspect.stack()[1].filename
-
-            # Fake path if in ipython
-            if ("ipython" in script_path) or ("<stdin>" in script_path):
-                script_path = f'/tmp/{_os.getenv("USER")}'
-
-            sdir = clean_path(_os.path.splitext(script_path)[0] + "_out")
-            spath = _os.path.join(sdir, specified_path)
+            # Import here to avoid circular imports
+            from ..gen._detect_environment import detect_environment
+            from ..gen._get_notebook_path import get_notebook_info_simple
+            
+            # Detect the current environment
+            env_type = detect_environment()
+            
+            if env_type == 'jupyter':
+                # Special handling for Jupyter notebooks
+                notebook_name, notebook_dir = get_notebook_info_simple()
+                
+                if notebook_name:
+                    # Remove .ipynb extension and add _out
+                    notebook_base = _os.path.splitext(notebook_name)[0]
+                    sdir = _os.path.join(notebook_dir or _os.getcwd(), f"{notebook_base}_out")
+                else:
+                    # Fallback if we can't detect notebook name
+                    sdir = _os.path.join(_os.getcwd(), "notebook_out")
+                
+                spath = _os.path.join(sdir, specified_path)
+            
+            elif env_type == 'script':
+                # Regular script handling
+                script_path = inspect.stack()[1].filename
+                sdir = clean_path(_os.path.splitext(script_path)[0] + "_out")
+                spath = _os.path.join(sdir, specified_path)
+            
+            else:
+                # IPython console or interactive mode
+                script_path = inspect.stack()[1].filename
+                
+                if ("ipython" in script_path) or ("<stdin>" in script_path) or env_type in ['ipython', 'interactive']:
+                    script_path = f'/tmp/{_os.getenv("USER")}'
+                    sdir = script_path
+                else:
+                    # Unknown environment, use current directory
+                    sdir = _os.path.join(_os.getcwd(), "output")
+                
+                spath = _os.path.join(sdir, specified_path)
 
         # Sanitization
         spath_final = clean(spath)
@@ -312,9 +357,11 @@ def save(
 
     except Exception as e:
         logging.error(
-            f"Error occurred while saving: {str(e)}"
-            f"Debug: Initial script_path = {inspect.stack()[1].filename}"
-            f"Debug: Final spath = {spath}"
+            f"Error occurred while saving: {str(e)}\n"
+            f"Debug: Initial script_path = {inspect.stack()[1].filename}\n"
+            f"Debug: Final spath = {spath}\n"
+            f"Debug: specified_path type = {type(specified_path)}\n"
+            f"Debug: specified_path = {specified_path}"
         )
 
 

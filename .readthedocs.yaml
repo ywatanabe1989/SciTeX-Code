@@ -4,29 +4,29 @@
 # Required
 version: 2
 
-# Set the version of Python and other tools you might need
+# Set the OS, Python version and other tools you might need
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.10"
+    python: "3.11"
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-  configuration: docs/conf.py
-  builder: html
+  configuration: docs/RTD/conf.py
   fail_on_warning: false
 
-# Optionally declare the Python requirements required to build your docs
+# Optionally build your docs in additional formats such as PDF and ePub
+formats:
+  - pdf
+  - epub
+
+# Optional but recommended, declare the Python requirements required
+# to build your documentation
+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
   install:
-    - requirements: requirements.txt
-    - requirements: docs/requirements.txt
+    - requirements: docs/RTD/requirements.txt
     - method: pip
       path: .
       extra_requirements:
         - docs
-
-# Build PDF & ePub
-formats:
-  - pdf
-  - epub

@@ -145,13 +145,13 @@ def _parse(string: str, expression: str) -> Dict[str, Union[str, int]]:
 if __name__ == "__main__":
     string = "./data/mat_tmp/Patient_23_002/Data_2010_07_31/Hour_12/UTC_12_02_00.mat"
     expression = "./data/mat_tmp/Patient_{patient_id}/Data_{YYYY}_{MM}_{DD}/Hour_{HH}/UTC_{HH}_{mm}_00.mat"
-    results = parse_str(string, expression)
+    results = parse(string, expression)
     print(results)
 
     # Inconsistent version
     string = "./data/mat_tmp/Patient_23_002/Data_2010_07_31/Hour_12/UTC_99_99_00.mat"
     expression = "./data/mat_tmp/Patient_{patient_id}/Data_{YYYY}_{MM}_{DD}/Hour_{HH}/UTC_{HH}_{mm}_00.mat"
-    results = parse_str(string, expression)  # this should raise error
+    results = parse(string, expression)  # this should raise error
     print(results)
 
 

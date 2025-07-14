@@ -371,8 +371,8 @@ except Exception as e:
 ### 4. Reproducibility
 Always set random seeds:
 ```python
-import scitex.reproduce
-scitex.reproduce.fix_seeds(42)
+import scitex.repro
+scitex.repro.fix_seeds(42)
 ```
 
 ### 5. Memory Management

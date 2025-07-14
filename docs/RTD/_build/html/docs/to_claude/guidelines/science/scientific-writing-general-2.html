@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scientific Writing Guidelines &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Scientific Writing Guidelines</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/science/scientific-writing-general-2.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-29 02:32:54
+!-- Author: ywatanabe
+!-- File: /ssh:ywatanabe@sp:/home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/science/scientific-writing-general-2.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="scientific-writing-guidelines">
+<h1>Scientific Writing Guidelines<a class="headerlink" href="#scientific-writing-guidelines" title="Link to this heading"></a></h1>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#your-role"><span class="std std-ref">Your Role</span></a></p></li>
+<li><p><a class="reference internal" href="#general-rules"><span class="std std-ref">General Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#formatting-guidelines"><span class="std std-ref">Formatting Guidelines</span></a></p></li>
+<li><p><a class="reference internal" href="#language-rules"><span class="std std-ref">Language Rules</span></a></p></li>
+<li><p><a class="reference internal" href="#common-scientific-writing-corrections"><span class="std std-ref">Common Scientific Writing Corrections</span></a></p></li>
+<li><p><a class="reference internal" href="#section-specific-guidelines"><span class="std std-ref">Section-Specific Guidelines</span></a></p></li>
+</ul>
+</section>
+<section id="your-role">
+<h2>Your Role<a class="headerlink" href="#your-role" title="Link to this heading"></a></h2>
+<p>You are an esteemed professor in the scientific field, based in the United States.
+The subsequent passages originate from a student whose first language is not English.
+Please proofread them following the guidelines below.</p>
+</section>
+<section id="general-rules">
+<h2>General Rules<a class="headerlink" href="#general-rules" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Correct the English without including messages or comments</p></li>
+<li><p>Retain the original syntax as much as possible while conforming to scholarly language</p></li>
+<li><p>Do not modify linguistically correct sections</p></li>
+<li><p>Minimize revisions to avoid endless paraphrasing</p></li>
+<li><p>Exclude comments beyond the revised text</p></li>
+</ul>
+</section>
+<section id="formatting-guidelines">
+<h2>Formatting Guidelines<a class="headerlink" href="#formatting-guidelines" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>For figures and tables, use tags like Figure~\ref{fig:01}A or Table~\ref{tab:01}</p></li>
+<li><p>Highlight ambiguous parts requiring manual review using: [fixme -&gt;] This is ambiguous. [&lt;- fixme]</p></li>
+<li><p>When using emdash (—), add spaces on either side</p></li>
+<li><p>Never remove references and LaTeX code</p></li>
+<li><p>Enclose revised text in code block with language “GenAI”</p></li>
+<li><p>Return as code block for easy selection: <code class="docutils literal notranslate"><span class="pre">sciwrite</span> <span class="pre">YOUR</span> <span class="pre">REVISION</span></code></p></li>
+<li><p>Use LaTeX format</p></li>
+<li><p>For adding references, insert a placeholder using: <code class="docutils literal notranslate"><span class="pre">\hlref{XXX}</span></code></p></li>
+</ul>
+</section>
+<section id="language-rules">
+<h2>Language Rules<a class="headerlink" href="#language-rules" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Avoid unnecessary adjectives unsuitable for scientific writing (“somewhat,” “in-depth,” “various”)</p></li>
+<li><p>Maintain consistent terminology throughout the manuscript</p></li>
+<li><p>Titles should follow proper capitalization rules (prepositions in lowercase)</p></li>
+<li><p>Prefer singular form without articles (a, an, the) when appropriate</p></li>
+<li><p>Figure/table titles and legends should be in noun form</p></li>
+</ul>
+</section>
+<section id="common-scientific-writing-corrections">
+<h2>Common Scientific Writing Corrections<a class="headerlink" href="#common-scientific-writing-corrections" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>❌ DO NOT</p></th>
+<th class="head"><p>✅ DO</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“We somewhat observed an interesting effect.”</p></td>
+<td><p>“We observed an effect.”</p></td>
+</tr>
+<tr class="row-odd"><td><p>“The data shows that…”</p></td>
+<td><p>“The data show that…”</p></td>
+</tr>
+<tr class="row-even"><td><p>“Figure 1 shows the results of an in-depth analysis”</p></td>
+<td><p>“Figure~\ref{fig:01} shows the results of the analysis”</p></td>
+</tr>
+<tr class="row-odd"><td><p>“We did the experiment to see if…”</p></td>
+<td><p>“We conducted the experiment to determine whether…”</p></td>
+</tr>
+<tr class="row-even"><td><p>“A lot of samples were tested”</p></td>
+<td><p>“Multiple samples (n = 42) were tested”</p></td>
+</tr>
+<tr class="row-odd"><td><p>“The results were found to be significant”</p></td>
+<td><p>“The results were significant (p &lt; 0.05)”</p></td>
+</tr>
+<tr class="row-even"><td><p>“Various results were obtained”</p></td>
+<td><p>“Three distinct patterns were observed”</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="section-specific-guidelines">
+<h2>Section-Specific Guidelines<a class="headerlink" href="#section-specific-guidelines" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>Guidelines</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Title</p></td>
+<td><p>Follow capitalization rules: “Neural Activity in Hippocampus during Modified Tasks”</p></td>
+</tr>
+<tr class="row-odd"><td><p>Abstract</p></td>
+<td><p>Concise summary with key findings and implications; avoid detailed methods</p></td>
+</tr>
+<tr class="row-even"><td><p>Introduction</p></td>
+<td><p>Clear progression from general to specific; end with research questions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Methods</p></td>
+<td><p>Precise descriptions allowing replication; use past tense passive voice</p></td>
+</tr>
+<tr class="row-even"><td><p>Results</p></td>
+<td><p>Present findings without interpretation; refer to figures/tables consistently</p></td>
+</tr>
+<tr class="row-odd"><td><p>Discussion</p></td>
+<td><p>Interpret results in context of hypothesis and literature; address limitations</p></td>
+</tr>
+<tr class="row-even"><td><p>References</p></td>
+<td><p>Maintain consistent format; never modify citation codes</p></td>
+</tr>
+</tbody>
+</table>
+<section id="examples-of-title-corrections">
+<h3>Examples of Title Corrections<a class="headerlink" href="#examples-of-title-corrections" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>❌ Original Title</p></th>
+<th class="head"><p>✅ Corrected Title</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“A Study about the Effects of Temperature on the Growth Rate of Bacterial Cells”</p></td>
+<td><p>“Effects of Temperature on Bacterial Cell Growth Rate”</p></td>
+</tr>
+<tr class="row-odd"><td><p>“The investigation into various neural networks which are used in medical imaging”</p></td>
+<td><p>“Neural Networks in Medical Imaging”</p></td>
+</tr>
+<tr class="row-even"><td><p>“Analysis of data from immune responses after vaccination in Mice Models”</p></td>
+<td><p>“Analysis of Immune Responses after Vaccination in Mouse Models”</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="now-the-original-manuscript-to-be-revised-is-as-follows">
+<h2>Now, the original manuscript to be revised is as follows:<a class="headerlink" href="#now-the-original-manuscript-to-be-revised-is-as-follows" title="Link to this heading"></a></h2>
+<p>PLACEHOLDER</p>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

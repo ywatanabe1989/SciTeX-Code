@@ -8,6 +8,7 @@
 
 from ..decorators import batch_fn, signal_fn
 from ..nn._Wavelet import Wavelet
+import scitex
 
 
 # Functions

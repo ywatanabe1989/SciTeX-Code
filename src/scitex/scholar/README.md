@@ -1,225 +1,314 @@
-# SciTeX Scholar Module
+# SciTeX Scholar - Unified Literature Management
 
-A unified interface for searching and managing scientific literature from both web sources and local collections.
-
-## Features
-
-- **Unified Search Interface**: Search across multiple sources with a single API
-- **Web Sources**: PubMed, arXiv, Semantic Scholar
-- **Local Search**: Search through your PDF collection
-- **Vector Search**: Semantic similarity search using embeddings
-- **PDF Management**: Automatic PDF download and organization
-- **Caching**: Intelligent caching for faster repeated searches
-- **Export**: BibTeX generation for citations
+The SciTeX Scholar module provides a unified, easy-to-use interface for scientific literature search, enrichment, and management. The new `Scholar` class consolidates all functionality into a single entry point with method chaining support.
 
 ## Quick Start
 
 ```python
-import scitex.scholar
+from scitex.scholar import Scholar
 
-# Simple search (web only by default)
-papers = scitex.scholar.search_sync("deep learning sleep")
+# Initialize with smart defaults
+scholar = Scholar(email="researcher@university.edu")
 
-# Search both web and local directories
-papers = scitex.scholar.search_sync(
-    "transformer architecture",
-    local=["./papers", "~/Documents/research"]
-)
+# Simple search with automatic enrichment
+papers = scholar.search("deep learning neuroscience")
 
-# Local-only search
-papers = scitex.scholar.search_sync(
-    "neural oscillations",
-    web=False,
-    local=["./my_papers"]
-)
-
-# Web search with PDF download
-papers = scitex.scholar.search_sync(
-    "machine learning",
-    download_pdfs=True
-)
+# Method chaining for complex workflows
+high_impact = scholar.search("machine learning") \
+                    .filter(year_min=2020, min_citations=10) \
+                    .sort_by("impact_factor") \
+                    .save("high_impact_papers.bib")
 ```
 
-## Installation
+## Key Features
 
-The scholar module requires some optional dependencies:
+### 🎯 Single Entry Point
+- One class (`Scholar`) for all literature management tasks
+- Replaces the scattered API of multiple classes and functions
+- Smart defaults with automatic configuration detection
 
-```bash
-# For PDF text extraction
-pip install pymupdf  # or PyPDF2
+### ⛓️ Method Chaining
+- Fluent interface for readable, chainable operations
+- Natural workflow: search → filter → sort → export
+- All operations return collections for further processing
 
-# For vector search
-pip install sentence-transformers
+### 🔄 Automatic Enrichment
+- Journal metrics (impact factor, quartile) added by default
+- Can be disabled with `enrich_by_default=False`
+- Uses comprehensive journal database
 
-# For web scraping
-pip install aiohttp
+### 📊 Built-in Analysis
+- Trend analysis across paper collections
+- Export to multiple formats (BibTeX, CSV, JSON)
+- Convert to pandas DataFrame for advanced analysis
+
+### 🤖 AI Integration (Optional)
+- Research gap identification
+- Literature summaries
+- Paper recommendations
+- Supports multiple AI providers
+
+## Core Classes
+
+### Scholar Class
+
+The main interface for all operations:
+
+```python
+class Scholar:
+    def __init__(self,
+                 email=None,                    # Auto-detected from env
+                 api_keys=None,                 # Dict of API keys
+                 enrich_by_default=True,        # Auto-enrich with metrics
+                 download_dir=None,             # PDF download location
+                 ai_provider=None):             # Optional AI provider
+```
+
+**Key Methods:**
+- `search(query, limit=20, **filters)` - Search papers with enrichment
+- `search_multiple(queries, papers_per_query=10)` - Batch search
+- `quick_search(query, top_n=5)` - Returns just titles
+- `get_recommendations(paper_title, limit=10)` - Related papers
+
+### PaperCollection Class
+
+Container for search results with chainable methods:
+
+```python
+# Filtering
+.filter(year_min=2020, min_citations=10, open_access_only=True)
+
+# Sorting
+.sort_by("citations" | "year" | "impact_factor" | "title")
+
+# Analysis
+.analyze_trends()           # Statistical analysis
+.find_gaps(topic)          # AI-powered gap analysis
+.summary()                 # Text summary
+
+# Export
+.save("papers.bib", format="bibtex" | "csv" | "json")
+.to_dataframe()            # Convert to pandas
+.download_pdfs()           # Download available PDFs
+```
+
+## Usage Examples
+
+### Basic Search and Filter
+
+```python
+# Search recent high-impact papers
+papers = scholar.search("CRISPR gene editing") \
+               .filter(year_min=2021, impact_factor_min=10) \
+               .sort_by("citations")
+
+print(f"Found {len(papers)} high-impact CRISPR papers")
+print(papers.summary())
+```
+
+### Multi-Topic Literature Review
+
+```python
+# Comprehensive literature review
+topics = [
+    "machine learning drug discovery",
+    "AI pharmaceutical research", 
+    "deep learning molecular design"
+]
+
+all_papers = scholar.search_multiple(topics, papers_per_query=20)
+
+# Analyze and export
+trends = all_papers.analyze_trends()
+all_papers.save("drug_discovery_ai.bib")
+
+# AI analysis (if configured)
+gaps = all_papers.find_gaps("AI in drug discovery")
+for gap in gaps[:3]:
+    print(f"• {gap}")
+```
+
+### PDF Download and Analysis
+
+```python
+# Find and download open access papers
+oa_papers = scholar.search("neural networks brain imaging") \
+                  .filter(open_access_only=True, year_min=2020) \
+                  .download_pdfs(max_concurrent=3)
+
+# Convert to DataFrame for analysis
+df = oa_papers.to_dataframe()
+print(df.groupby('year')['citation_count'].mean())
+```
+
+### Context Manager Usage
+
+```python
+# Automatic resource management
+with Scholar(ai_provider="anthropic") as s:
+    papers = s.search("quantum machine learning", limit=10)
+    gaps = papers.find_gaps("quantum ML applications")
+    papers.save("quantum_ml.bib")
 ```
 
 ## Configuration
 
-Set the default scholar directory using environment variable:
+### Environment Variables
+
+The Scholar class automatically detects configuration from environment variables:
 
 ```bash
-export SciTeX_SCHOLAR_DIR="~/my_papers"  # Default: ~/.scitex/scholar
+# API Keys
+export SEMANTIC_SCHOLAR_API_KEY="your_s2_key"
+export OPENAI_API_KEY="your_openai_key"
+export ENTREZ_EMAIL="your.email@example.com"
+
+# Directories
+export SCHOLAR_DOWNLOAD_DIR="./papers"
+export SCHOLAR_CACHE_DIR="./cache"
 ```
 
-## API Reference
-
-### Main Functions
-
-#### `search(query, web=True, local=None, ...)`
-Asynchronous search function for finding papers.
-
-**Parameters:**
-- `query` (str): Search query
-- `web` (bool): Search web sources
-- `local` (list): Local directories to search (None or [] for no local search)
-- `max_results` (int): Maximum results to return
-- `download_pdfs` (bool): Download PDFs for web results
-- `use_vector_search` (bool): Use semantic similarity
-- `web_sources` (list): Web sources to search
-
-#### `search_sync(...)`
-Synchronous wrapper for the search function.
-
-#### `build_index(paths, recursive=True, build_vector_index=True)`
-Build search index for local papers.
-
-**Parameters:**
-- `paths` (list): Directories to index
-- `recursive` (bool): Search subdirectories
-- `build_vector_index` (bool): Create vector embeddings
-
-### Classes
-
-#### `Paper`
-Represents a scientific paper with metadata.
-
-**Attributes:**
-- `title`: Paper title
-- `authors`: List of authors
-- `abstract`: Paper abstract
-- `year`: Publication year
-- `doi`: Digital Object Identifier
-- `source`: Source (pubmed, arxiv, local, etc.)
-- `pdf_path`: Path to local PDF
-
-**Methods:**
-- `to_bibtex()`: Generate BibTeX entry
-- `has_pdf()`: Check if PDF is available
-- `get_identifier()`: Get unique identifier
-
-## Examples
-
-### Building a Local Index
+### API Key Setup
 
 ```python
-import scitex.scholar
-
-# Index your paper collection
-stats = scitex.scholar.build_index([
-    "./papers",
-    "~/Documents/research"
-])
-
-print(f"Indexed {stats['local_files_indexed']} files")
+# Manual API key configuration
+scholar = Scholar(
+    api_keys={
+        's2': 'your_semantic_scholar_key',
+        'openai': 'your_openai_key'
+    },
+    ai_provider='openai'
+)
 ```
 
-### Advanced Search with Filters
+## Data Sources
 
+The Scholar class searches multiple databases:
+
+1. **Semantic Scholar** (primary) - 200M+ papers with citation data
+2. **PubMed** - Biomedical literature with abstracts
+3. **arXiv** - Preprints with full text access
+4. **bioRxiv** - Biology preprints (limited)
+
+Results are automatically deduplicated and ranked by relevance.
+
+## Export Formats
+
+### BibTeX (Default)
 ```python
-import asyncio
-import scitex.scholar
-
-async def advanced_search():
-    # Search specific sources
-    papers = await scitex.scholar.search(
-        "neural networks",
-        web_sources=["arxiv", "pubmed"],
-        max_results=20,
-        use_vector_search=True
-    )
-    
-    # Filter by year
-    recent_papers = [p for p in papers if p.year and p.year >= 2020]
-    
-    return recent_papers
-
-papers = asyncio.run(advanced_search())
+papers.save("papers.bib")  # Enriched with journal metrics
 ```
 
-### Exporting Citations
-
+### CSV for Analysis
 ```python
-# Get papers
-papers = scitex.scholar.search_sync("transformer attention")
-
-# Export as BibTeX
-with open("references.bib", "w") as f:
-    for paper in papers:
-        f.write(paper.to_bibtex())
-        f.write("\n\n")
+papers.save("papers.csv", format="csv")
+# Columns: title, authors, year, journal, citations, impact_factor, etc.
 ```
 
-## Architecture
+### JSON for Processing
+```python
+papers.save("papers.json", format="json")
+# Structured data with all metadata
+```
 
-The scholar module consists of several components:
+### pandas DataFrame
+```python
+df = papers.to_dataframe()
+# Ready for statistical analysis, plotting, etc.
+```
 
-1. **Search Interface** (`_search.py`): Main entry point
-2. **Paper Class** (`_paper.py`): Paper representation
-3. **Web Sources** (`_web_sources.py`): API integrations
-4. **Local Search** (`_local_search.py`): PDF indexing and search
-5. **Vector Search** (`_vector_search.py`): Semantic similarity
-6. **PDF Downloader** (`_pdf_downloader.py`): Automatic downloads
+## Migration from Legacy API
+
+### Old Way (Multiple Classes)
+```python
+# Old scattered approach
+from scitex.scholar import PaperAcquisition, PaperEnrichmentService
+from scitex.scholar import generate_enriched_bibliography
+
+acquisition = PaperAcquisition(email="user@example.com")
+papers = await acquisition.search("topic", max_results=20)
+enricher = PaperEnrichmentService()
+enriched = enricher.enrich_papers(papers)
+generate_enriched_bibliography(enriched, "output.bib")
+```
+
+### New Way (Unified Interface)
+```python
+# New unified approach
+from scitex.scholar import Scholar
+
+scholar = Scholar(email="user@example.com")
+papers = scholar.search("topic", limit=20).save("output.bib")
+```
 
 ## Performance Tips
 
-1. **Build an index** for faster local searches:
-   ```python
-   scitex.scholar.build_index(recursive=True)
-   ```
+1. **Use `enrich_by_default=False`** for large searches if you don't need journal metrics
+2. **Set reasonable limits** - start with 20-50 papers for exploration
+3. **Use filters early** - filter by year, citations, etc. to reduce data
+4. **Batch operations** - use `search_multiple()` for related topics
+5. **Cache results** - enable caching for repeated searches
 
-2. **Use caching** for repeated searches (enabled by default)
+## Error Handling
 
-3. **Limit sources** when you know where to search:
-   ```python
-   papers = scitex.scholar.search_sync(
-       query,
-       web_sources=["arxiv"]  # Only search arXiv
-   )
-   ```
+The Scholar class handles common errors gracefully:
 
-4. **Disable vector search** for faster results:
-   ```python
-   papers = scitex.scholar.search_sync(
-       query,
-       use_vector_search=False
-   )
-   ```
-
-## Troubleshooting
-
-### No PDF reader available
-Install either PyMuPDF or PyPDF2:
-```bash
-pip install pymupdf
+```python
+try:
+    papers = scholar.search("nonexistent topic")
+    if not papers:
+        print("No papers found")
+except Exception as e:
+    print(f"Search failed: {e}")
 ```
 
-### Slow vector search
-The first run downloads the embedding model. Subsequent runs will be faster.
+## Advanced Features
 
-### API rate limits
-Some web sources have rate limits. The module handles this automatically with retries.
+### Research Trend Analysis
+```python
+trends = papers.analyze_trends()
+# Returns: yearly distribution, top journals, citation stats, etc.
+```
 
-## Future Enhancements
+### AI-Powered Gap Analysis
+```python
+gaps = papers.find_gaps("research topic")
+# Returns: list of identified research opportunities
+```
 
-- [ ] Additional web sources (Google Scholar, ResearchGate)
-- [ ] Full-text search in PDFs
-- [ ] Citation graph analysis
-- [ ] Duplicate detection improvements
-- [ ] Batch PDF processing
-- [ ] Integration with reference managers
+### Citation Network Analysis
+```python
+# Get papers that cite a specific paper
+recommendations = scholar.get_recommendations("paper title")
+```
 
-## Contributing
+## Backward Compatibility
 
-Contributions are welcome! Please see the main SciTeX contributing guidelines.
+All legacy functions remain available for existing code:
+
+```python
+# Legacy imports still work
+from scitex.scholar import PaperAcquisition, SemanticScholarClient
+from scitex.scholar import search_papers, generate_enriched_bibliography
+
+# But new code should use:
+from scitex.scholar import Scholar
+```
+
+## Requirements
+
+- Python 3.8+
+- Required: `aiohttp`, `pandas`, `pathlib`
+- Optional: `scitex.ai` for AI features
+- Optional: API keys for enhanced functionality
+
+## Support
+
+- 📖 Full documentation: [examples/scholar/scholar_tutorial_new.ipynb]
+- 🚀 Quick demo: [examples/scholar/simple_scholar_demo.py]
+- 🐛 Issues: Create bug reports in project management
+- 💡 Feature requests: Follow project guidelines
+
+---
+
+The unified Scholar interface makes literature management intuitive and powerful, replacing complex multi-class workflows with simple, chainable operations.

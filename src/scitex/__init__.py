@@ -44,7 +44,7 @@ nn = _LazyModule("nn")
 torch = _LazyModule("torch")
 web = _LazyModule("web")
 db = _LazyModule("db")
-reproduce = _LazyModule("reproduce")
+repro = _LazyModule("repro")
 scholar = _LazyModule("scholar")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
@@ -57,7 +57,11 @@ etc = _LazyModule("etc")
 context = _LazyModule("context")
 dev = _LazyModule("dev")
 gists = _LazyModule("gists")
+<<<<<<< HEAD
 errors = _LazyModule("errors")
+=======
+units = _LazyModule("units")
+>>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe
 
 # Import sh function directly as it's commonly used
 try:
@@ -71,4 +75,8 @@ def start(*args, **kwargs):
     return gen.start(*args, **kwargs)
 
 __all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path", 
+<<<<<<< HEAD
            "dict", "decorators", "start", "__version__", "sh", "errors"]
+=======
+           "dict", "decorators", "start", "__version__", "sh", "units"]
+>>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe

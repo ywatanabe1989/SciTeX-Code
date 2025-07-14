@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scitex-io-translator"
+version = "0.1.0"
+description = "MCP server for translating between standard Python and SciTeX IO formats"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Yusuke Watanabe", email = "ywatanabe@example.com" }
+]
+dependencies = [
+    "mcp>=0.1.0",
+    "pydantic>=2.0",
+    "aiofiles>=23.0",
+]
+
+[project.scripts]
+scitex-io-translator = "scitex_io_translator.server:main"
+
+[tool.mcp]
+name = "scitex-io-translator"
+description = "Translate between standard Python IO operations and SciTeX format"
+tools = [
+    "translate_to_scitex",
+    "translate_from_scitex",
+    "validate_scitex_compliance",
+    "extract_io_patterns"
+]
