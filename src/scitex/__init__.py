@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-14 15:20:20 (ywatanabe)"
+# Timestamp: "2025-07-14 15:28:49 (ywatanabe)"
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/__init__.py
 # ----------------------------------------
 import os
@@ -54,6 +54,7 @@ torch = _LazyModule("torch")
 web = _LazyModule("web")
 db = _LazyModule("db")
 repro = _LazyModule("repro")
+reproduce = _LazyModule("reproduce")
 scholar = _LazyModule("scholar")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
