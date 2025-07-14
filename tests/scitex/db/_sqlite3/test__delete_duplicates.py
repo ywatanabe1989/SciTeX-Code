@@ -13,16 +13,17 @@ import pandas as pd
 from unittest.mock import patch, MagicMock
 
 # Add src to path for testing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../src"))
 
-from scitex.db import delete_duplicates
-from scitex.db._delete_duplicates import (
+from scitex.db import delete_duplicates  # Test backward compatibility
+from scitex.db._sqlite3._delete_duplicates import (
     _sort_db,
     _determine_columns,
     _fetch_as_df,
     _find_duplicated,
     verify_duplicated_index,
-    _delete_entry
+    _delete_entry,
+    delete_sqlite3_duplicates
 )
 
 

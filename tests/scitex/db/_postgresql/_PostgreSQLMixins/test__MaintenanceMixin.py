@@ -23,7 +23,7 @@ if __name__ == "__main__":
 #
 # import psycopg2
 #
-# from .._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
+# from ..._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
 #
 #
 # class _MaintenanceMixin(_BaseMaintenanceMixin):

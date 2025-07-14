@@ -18,7 +18,7 @@ if __name__ == "__main__":
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py"
 #
 # from typing import List, Dict, Any, Optional
-# from .._BaseMixins._BaseSchemaMixin import _BaseSchemaMixin
+# from ..._BaseMixins._BaseSchemaMixin import _BaseSchemaMixin
 #
 # class _SchemaMixin(_BaseSchemaMixin):
 #     def get_tables(self) -> List[str]:

@@ -18,7 +18,7 @@ if __name__ == "__main__":
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_PostgreSQLMixins/_QueryMixin.py"
 #
 # from typing import List, Dict, Any, Optional, Union, Tuple
-# from .._BaseMixins._BaseQueryMixin import _BaseQueryMixin
+# from ..._BaseMixins._BaseQueryMixin import _BaseQueryMixin
 #
 # class _QueryMixin(_BaseQueryMixin):
 #     def select(self, table: str, columns: Optional[List[str]] = None, where: Optional[str] = None,
