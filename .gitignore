@@ -16,6 +16,8 @@ singularity
 slurm_logs/
 coverage_report.txt
 test_comprehensive_fixes.py
+catboost_info
+
 
 ## Exceptions
 !src/mngs/ml/ClassificationReporter/*
@@ -827,3 +829,4 @@ ide-extensions/
 *IDE_INTEGRATION_COMPLETE*.md
 ./docs/to_claude
 ./src/scitex/docs/to_claude
+src/scitex/docs
