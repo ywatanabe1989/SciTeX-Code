@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
-# Timestamp: "2025-07-14 13:52:58 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
-=======
-# Timestamp: "2025-06-24 19:06:38 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
->>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe
+# Timestamp: "2025-07-14 15:26:39 (ywatanabe)"
+# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/__init__.py
 # ----------------------------------------
 import os
 __FILE__ = (
@@ -21,12 +16,7 @@ from .__Classifiers import Classifiers
 from .classification_reporter import ClassificationReporter, MultiClassificationReporter
 from .early_stopping import EarlyStopping
 from .loss import MultiTaskLoss
-# from .genai import GenAI
-<<<<<<< HEAD
 from ._gen_ai import GenAI
-=======
-from ._gen_ai import genai_factory as GenAI
->>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe
 from .classification import ClassifierServer
 from .optim import get_optimizer, set_optimizer
 

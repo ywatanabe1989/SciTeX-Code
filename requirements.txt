@@ -100,10 +100,10 @@ markdown
 markdown2
 pygments
 xmltodict
-<<<<<<< HEAD
+
 streamlit
 zarr
-=======
+
 tabulate
 reportlab
 readability
