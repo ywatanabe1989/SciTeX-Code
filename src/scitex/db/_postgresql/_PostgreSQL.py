@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-25 02:00:06 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/db/_PostgreSQL.py
+# File: ./scitex_repo/src/scitex/db/_postgresql/_PostgreSQL.py
 
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_PostgreSQL.py"
+THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_postgresql/_PostgreSQL.py"
 
 from typing import List, Optional
 
-from ..str import printc as _printc
+from ...str import printc as _printc
 from typing import Optional
 import psycopg2
 from ._PostgreSQLMixins._BackupMixin import _BackupMixin

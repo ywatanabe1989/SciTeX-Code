@@ -13,7 +13,7 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_Tabl
 import sqlite3
 from typing import Any, Dict, List, Union
 import pandas as pd
-from .._BaseMixins._BaseTableMixin import _BaseTableMixin
+from ..._BaseMixins._BaseTableMixin import _BaseTableMixin
 
 
 class _TableMixin:

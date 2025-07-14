@@ -13,7 +13,7 @@ from typing import ContextManager, Dict, List, Optional
 
 import psycopg2
 
-from .._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
+from ..._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
 
 
 class _MaintenanceMixin(_BaseMaintenanceMixin):

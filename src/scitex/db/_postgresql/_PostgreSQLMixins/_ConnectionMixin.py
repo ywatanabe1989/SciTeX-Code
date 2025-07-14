@@ -10,7 +10,7 @@ THIS_FILE = (
 from typing import Any, Tuple
 import psycopg2
 
-from .._BaseMixins._BaseConnectionMixin import _BaseConnectionMixin
+from ..._BaseMixins._BaseConnectionMixin import _BaseConnectionMixin
 
 
 class _ConnectionMixin(_BaseConnectionMixin):

@@ -26,7 +26,7 @@ from typing import Optional
 import os
 import shutil
 import tempfile
-from .._BaseMixins._BaseConnectionMixin import _BaseConnectionMixin
+from ..._BaseMixins._BaseConnectionMixin import _BaseConnectionMixin
 import contextlib
 
 

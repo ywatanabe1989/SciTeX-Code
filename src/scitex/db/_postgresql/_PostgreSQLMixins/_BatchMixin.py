@@ -9,7 +9,7 @@ THIS_FILE = (
 
 from typing import List, Any, Optional, Dict, Union
 import pandas as pd
-from .._BaseMixins._BaseBatchMixin import _BaseBatchMixin
+from ..._BaseMixins._BaseBatchMixin import _BaseBatchMixin
 
 
 class _BatchMixin(_BaseBatchMixin):

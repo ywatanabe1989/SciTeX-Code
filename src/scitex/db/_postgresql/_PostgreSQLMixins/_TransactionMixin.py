@@ -8,7 +8,7 @@ THIS_FILE = (
 )
 
 import psycopg2
-from .._BaseMixins._BaseTransactionMixin import _BaseTransactionMixin
+from ..._BaseMixins._BaseTransactionMixin import _BaseTransactionMixin
 
 
 class _TransactionMixin(_BaseTransactionMixin):

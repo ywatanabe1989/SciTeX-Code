@@ -6,7 +6,7 @@
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_IndexMixin.py"
 
 from typing import List
-from .._BaseMixins._BaseIndexMixin import _BaseIndexMixin
+from ..._BaseMixins._BaseIndexMixin import _BaseIndexMixin
 
 
 class _IndexMixin:

@@ -10,7 +10,7 @@ THIS_FILE = (
 import subprocess
 import os
 from typing import Optional, List
-from .._BaseMixins._BaseBackupMixin import _BaseBackupMixin
+from ..._BaseMixins._BaseBackupMixin import _BaseBackupMixin
 
 
 class _BackupMixin(_BaseBackupMixin):

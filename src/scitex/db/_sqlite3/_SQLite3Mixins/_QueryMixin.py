@@ -9,7 +9,7 @@ import sqlite3
 from typing import List, Tuple
 
 import pandas as pd
-from .._BaseMixins._BaseQueryMixin import _BaseQueryMixin
+from ..._BaseMixins._BaseQueryMixin import _BaseQueryMixin
 
 
 class _QueryMixin:

@@ -10,7 +10,7 @@ from typing import Any as _Any
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
-from .._BaseMixins._BaseBlobMixin import _BaseBlobMixin
+from ..._BaseMixins._BaseBlobMixin import _BaseBlobMixin
 
 
 class _BlobMixin:

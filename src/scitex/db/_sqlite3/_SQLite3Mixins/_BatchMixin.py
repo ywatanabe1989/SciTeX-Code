@@ -26,7 +26,7 @@ Prerequisites:
 
 from typing import Any as _Any
 from typing import Dict, List, Optional
-from .._BaseMixins._BaseBatchMixin import _BaseBatchMixin
+from ..._BaseMixins._BaseBatchMixin import _BaseBatchMixin
 import sqlite3
 
 

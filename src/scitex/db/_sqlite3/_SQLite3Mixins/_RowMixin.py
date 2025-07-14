@@ -9,7 +9,7 @@ import sqlite3
 from typing import List
 from typing import Optional
 import pandas as pd
-from .._BaseMixins._BaseRowMixin import _BaseRowMixin
+from ..._BaseMixins._BaseRowMixin import _BaseRowMixin
 
 
 class _RowMixin:

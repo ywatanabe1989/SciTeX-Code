@@ -9,7 +9,7 @@ THIS_FILE = (
 
 import sqlite3
 import contextlib
-from .._BaseMixins._BaseTransactionMixin import _BaseTransactionMixin
+from ..._BaseMixins._BaseTransactionMixin import _BaseTransactionMixin
 
 
 class _TransactionMixin:

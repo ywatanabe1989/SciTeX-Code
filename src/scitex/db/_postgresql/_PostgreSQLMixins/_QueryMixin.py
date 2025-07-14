@@ -8,7 +8,7 @@ THIS_FILE = (
 )
 
 from typing import List, Dict, Any, Optional, Union, Tuple
-from .._BaseMixins._BaseQueryMixin import _BaseQueryMixin
+from ..._BaseMixins._BaseQueryMixin import _BaseQueryMixin
 
 
 class _QueryMixin(_BaseQueryMixin):

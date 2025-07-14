@@ -13,7 +13,7 @@ from typing import Callable
 from typing import ContextManager, Dict, List, Optional
 import pandas as pd
 
-from .._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
+from ..._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
 
 
 class _MaintenanceMixin:

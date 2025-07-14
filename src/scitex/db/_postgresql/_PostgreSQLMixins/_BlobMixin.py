@@ -9,7 +9,7 @@ import psycopg2
 import numpy as np
 from typing import Any as _Any
 from typing import Dict, List, Optional, Tuple, Union
-from .._BaseMixins._BaseBlobMixin import _BaseBlobMixin
+from ..._BaseMixins._BaseBlobMixin import _BaseBlobMixin
 
 
 class _BlobMixin(_BaseBlobMixin):

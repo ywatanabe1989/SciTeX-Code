@@ -11,7 +11,7 @@ from typing import List
 
 import pandas as pd
 
-from .._BaseMixins._BaseImportExportMixin import _BaseImportExportMixin
+from ..._BaseMixins._BaseImportExportMixin import _BaseImportExportMixin
 
 
 class _ImportExportMixin:

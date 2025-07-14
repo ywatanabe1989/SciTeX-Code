@@ -8,7 +8,7 @@ THIS_FILE = (
 )
 
 from typing import List, Dict, Any, Optional
-from .._BaseMixins._BaseSchemaMixin import _BaseSchemaMixin
+from ..._BaseMixins._BaseSchemaMixin import _BaseSchemaMixin
 
 
 class _SchemaMixin(_BaseSchemaMixin):
