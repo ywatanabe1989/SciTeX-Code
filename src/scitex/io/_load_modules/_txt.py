@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-05-03 11:58:11 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_modules/_txt.py
+# Timestamp: "2025-07-15 09:27:36 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_modules/_txt.py
 # ----------------------------------------
 import os
-
-__FILE__ = "./src/scitex/io/_load_modules/_txt.py"
+__FILE__ = (
+    "./src/scitex/io/_load_modules/_txt.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -44,13 +45,47 @@ import warnings
 # Removed duplicate function - see main _load_txt below
 
 
-def _load_txt(lpath, strip=False, as_lines=False):
+# def _load_txt(lpath, strip=False, as_lines=False):
+#     """
+#     Load text file and return its content.
+#     - Warn if extension is unexpected.
+#     - Try UTF-8 first, then default encoding.
+#     - If strip=True, strip whitespace.
+#     - If as_lines=True, return list of lines (backward compatibility).
+#     """
+#     if not lpath.endswith((".txt", ".log", ".event", ".py", ".sh")):
+#         warnings.warn(f"Unexpected extension for file: {lpath}")
+
+#     try:
+#         with open(lpath, "r", encoding="utf-8") as file:
+#             content = file.read()
+#     except UnicodeDecodeError:
+#         # Fallback: try to detect correct encoding
+#         encoding = _check_encoding(lpath)
+#         with open(lpath, "r", encoding=encoding) as file:
+#             content = file.read()
+
+#     # For backward compatibility, check if as_lines parameter or legacy behavior needed
+#     if as_lines:
+#         raw_lines = content.splitlines()
+#         if strip:
+#             return [line.strip() for line in raw_lines if line.strip()]
+#         return [line for line in raw_lines if line.strip()]
+
+#     # Default: return full content (possibly stripped)
+#     if strip:
+#         return content.strip()
+
+#     return content
+
+
+def _load_txt(lpath, strip=True, as_lines=True):
     """
     Load text file and return its content.
     - Warn if extension is unexpected.
     - Try UTF-8 first, then default encoding.
-    - If strip=True, strip whitespace.
-    - If as_lines=True, return list of lines (backward compatibility).
+    - If strip=True, strip whitespace from each line.
+    - If as_lines=True, return list of lines.
     """
     if not lpath.endswith((".txt", ".log", ".event", ".py", ".sh")):
         warnings.warn(f"Unexpected extension for file: {lpath}")
@@ -59,22 +94,18 @@ def _load_txt(lpath, strip=False, as_lines=False):
         with open(lpath, "r", encoding="utf-8") as file:
             content = file.read()
     except UnicodeDecodeError:
-        # Fallback: try to detect correct encoding
         encoding = _check_encoding(lpath)
         with open(lpath, "r", encoding=encoding) as file:
             content = file.read()
 
-    # For backward compatibility, check if as_lines parameter or legacy behavior needed
     if as_lines:
         raw_lines = content.splitlines()
         if strip:
             return [line.strip() for line in raw_lines if line.strip()]
-        return [line for line in raw_lines if line.strip()]
+        return [line for line in raw_lines if line]
 
-    # Default: return full content (possibly stripped)
     if strip:
         return content.strip()
-
     return content
 
 
