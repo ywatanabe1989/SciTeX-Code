@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:03:32 (ywatanabe)"
+# Timestamp: "2025-07-15 23:25:22 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3.py
 # ----------------------------------------
 import os
@@ -9,8 +9,8 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import warnings
 
+import warnings
 from typing import List, Optional
 
 from ...str import printc as _printc
@@ -114,6 +114,9 @@ class SQLite3(
             If not used with context manager, warns about potential resource leaks
         """
 
+        if not os.path.exists(db_path):
+            os.makedirs(os.path.dirname(db_path), exist_ok=True)
+
         _ConnectionMixin.__init__(self, db_path, use_temp)
         self.compress_by_default = compress_by_default
         self.autocommit = autocommit
@@ -123,6 +126,12 @@ class SQLite3(
         """Enter context manager."""
         self._context_manager_used = True
         return self
+
+    def _check_context_manager(self):
+        if not self._context_manager_used:
+            raise RuntimeError(
+                "SQLite3 must be used with context manager: 'with SQLite3(...) as db:'"
+            )
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit context manager and ensure proper cleanup."""

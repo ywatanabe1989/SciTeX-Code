@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-11 15:47:00 (ywatanabe)"
+# Timestamp: "2025-07-15 23:19:34 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py
 # ----------------------------------------
 import os
@@ -17,7 +17,6 @@ from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
 # from ._load_modules._catboost import _load_catboost
 from ._load_modules._con import _load_con
-from ._load_modules._db import _load_sqlite3db
 from ._load_modules._docx import _load_docx
 from ._load_modules._eeg import _load_eeg_data
 from ._load_modules._hdf5 import _load_hdf5
@@ -30,6 +29,7 @@ from ._load_modules._numpy import _load_npy
 from ._load_modules._pandas import _load_csv, _load_excel, _load_tsv
 from ._load_modules._pdf import _load_pdf
 from ._load_modules._pickle import _load_pickle
+from ._load_modules._sqlit3 import _load_db_sqlite3
 from ._load_modules._torch import _load_torch
 from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
@@ -85,9 +85,9 @@ def load(
     >>> model = load('model.pth')
     """
     lpath = clean_path(lpath)
-    
+
     # Convert Path objects to strings to avoid AttributeError on string methods
-    if hasattr(lpath, '__fspath__'):  # Check if it's a path-like object
+    if hasattr(lpath, "__fspath__"):  # Check if it's a path-like object
         lpath = str(lpath)
 
     # Check if it's a glob pattern
@@ -110,20 +110,21 @@ def load(
     if not os.path.exists(lpath):
         # Try to find the file in common output directories
         search_paths = [lpath]  # Original path
-        
+
         # Check if we're in a notebook environment
         try:
             from ..gen._detect_environment import detect_environment
+
             env_type = detect_environment()
-            
-            if env_type == 'jupyter':
+
+            if env_type == "jupyter":
                 # Try notebook output directories
                 import re
                 from pathlib import Path
-                
+
                 # Get current directory name
                 cwd = Path.cwd()
-                
+
                 # Common notebook output patterns
                 patterns = [
                     f"{cwd.name}_out/{lpath}",  # Current dir output
@@ -131,7 +132,7 @@ def load(
                     f"../*_out/{lpath}",  # Parent dir outputs
                     f"test_*_out/{lpath}",  # Test output dirs
                 ]
-                
+
                 for pattern in patterns:
                     matches = glob.glob(pattern)
                     if matches:
@@ -146,10 +147,12 @@ def load(
         except:
             # If detection fails, continue with original logic
             pass
-        
+
         # Final check - if still not found, raise error
         if not os.path.exists(lpath):
-            raise FileNotFoundError(f"{lpath} not found. Searched in current directory and notebook output directories.")
+            raise FileNotFoundError(
+                f"{lpath} not found. Searched in current directory and notebook output directories."
+            )
 
     loaders_dict = {
         # Default
@@ -174,7 +177,7 @@ def load(
         "xlsx": _load_excel,
         "xlsm": _load_excel,
         "xlsb": _load_excel,
-        "db": _load_sqlite3db,
+        "db": _load_db_sqlite3,
         # Scientific Data
         "npy": _load_npy,
         "npz": _load_npy,

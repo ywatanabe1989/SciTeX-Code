@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 10:59:29 (ywatanabe)"
+# Timestamp: "2025-07-15 23:25:44 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py
 # ----------------------------------------
 import os
@@ -29,6 +29,8 @@ class _QueryMixin:
         return parameters
 
     def execute(self, query: str, parameters: Tuple = ()) -> None:
+        self._check_context_manager()
+
         if not self.cursor:
             raise ConnectionError("Database not connected")
 
