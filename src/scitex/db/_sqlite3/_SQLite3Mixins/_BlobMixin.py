@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-12 10:20:56 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_BlobMixin.py
+# Timestamp: "2025-07-15 09:03:30 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_BlobMixin.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/db/_SQLite3Mixins/_BlobMixin.py"
+    "./src/scitex/db/_sqlite3/_SQLite3Mixins/_BlobMixin.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 # Time-stamp: "2024-12-01 05:13:49 (ywatanabe)"
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_BlobMixin.py"
@@ -25,6 +26,118 @@ import numpy as np
 class _BlobMixin:
     """BLOB data handling functionality"""
 
+    # def save_array(
+    #     self,
+    #     table_name: str,
+    #     data: np.ndarray,
+    #     column: str = "data",
+    #     ids: Optional[Union[int, List[int]]] = None,
+    #     where: str = None,
+    #     additional_columns: Dict[str, _Any] = None,
+    #     batch_size: int = 1000,
+    #     compress: Optional[bool] = None,  # None means use database default
+    #     compress_level: int = 6,
+    # ) -> None:
+    #     with self.lock:
+    #         if not isinstance(data, (np.ndarray, list)):
+    #             raise ValueError(
+    #                 "Input must be a NumPy array or list of arrays"
+    #             )
+
+    #         # Use database default if compress not explicitly specified
+    #         if compress is None:
+    #             compress = getattr(self, "compress_by_default", False)
+
+    #         try:
+    #             if ids is not None:
+    #                 if isinstance(ids, int):
+    #                     ids = [ids]
+    #                     data = [data]
+    #                 if len(ids) != len(data):
+    #                     raise ValueError(
+    #                         "Length of ids must match number of arrays"
+    #                     )
+
+    #                 for id_, arr in zip(ids, data):
+    #                     if not isinstance(arr, np.ndarray):
+    #                         raise ValueError(
+    #                             f"Element for id {id_} must be a NumPy array"
+    #                         )
+
+    #                     binary = arr.tobytes()
+    #                     if (
+    #                         compress and len(binary) > 1024
+    #                     ):  # Compress if > 1KB
+    #                         binary = zlib.compress(
+    #                             binary, level=compress_level
+    #                         )
+    #                         is_compressed = 1
+    #                     else:
+    #                         is_compressed = 0
+
+    #                     columns = [
+    #                         column,
+    #                         f"{column}_dtype",
+    #                         f"{column}_shape",
+    #                         f"{column}_compressed",
+    #                     ]
+    #                     values = [
+    #                         binary,
+    #                         str(arr.dtype),
+    #                         str(arr.shape),
+    #                         is_compressed,
+    #                     ]
+
+    #                     if additional_columns:
+    #                         columns = list(additional_columns.keys()) + columns
+    #                         values = list(additional_columns.values()) + values
+
+    #                     update_cols = [f"{col}=?" for col in columns]
+    #                     query = f"UPDATE {table_name} SET {','.join(update_cols)} WHERE id=?"
+    #                     values.append(id_)
+    #                     self.execute(query, tuple(values))
+
+    #             else:
+    #                 if not isinstance(data, np.ndarray):
+    #                     raise ValueError("Single input must be a NumPy array")
+
+    #                 binary = data.tobytes()
+    #                 if compress and len(binary) > 1024:  # Compress if > 1KB
+    #                     binary = zlib.compress(binary, level=compress_level)
+    #                     is_compressed = 1
+    #                 else:
+    #                     is_compressed = 0
+
+    #                 columns = [
+    #                     column,
+    #                     f"{column}_dtype",
+    #                     f"{column}_shape",
+    #                     f"{column}_compressed",
+    #                 ]
+    #                 values = [
+    #                     binary,
+    #                     str(data.dtype),
+    #                     str(data.shape),
+    #                     is_compressed,
+    #                 ]
+
+    #                 if additional_columns:
+    #                     columns = list(additional_columns.keys()) + columns
+    #                     values = list(additional_columns.values()) + values
+
+    #                 if where is not None:
+    #                     update_cols = [f"{col}=?" for col in columns]
+    #                     query = f"UPDATE {table_name} SET {','.join(update_cols)} WHERE {where}"
+    #                     self.execute(query, tuple(values))
+    #                 else:
+    #                     placeholders = ",".join(["?" for _ in columns])
+    #                     columns_str = ",".join(columns)
+    #                     query = f"INSERT INTO {table_name} ({columns_str}) VALUES ({placeholders})"
+    #                     self.execute(query, tuple(values))
+
+    #         except Exception as err:
+    #             raise ValueError(f"Failed to save array: {err}")
+
     def save_array(
         self,
         table_name: str,
@@ -34,7 +147,7 @@ class _BlobMixin:
         where: str = None,
         additional_columns: Dict[str, _Any] = None,
         batch_size: int = 1000,
-        compress: Optional[bool] = None,  # None means use database default
+        compress: Optional[bool] = None,
         compress_level: int = 6,
     ) -> None:
         with self.lock:
@@ -43,9 +156,23 @@ class _BlobMixin:
                     "Input must be a NumPy array or list of arrays"
                 )
 
-            # Use database default if compress not explicitly specified
             if compress is None:
                 compress = getattr(self, "compress_by_default", False)
+
+            # Auto-add missing columns
+            required_columns = [
+                f"{column}_dtype",
+                f"{column}_shape",
+                f"{column}_compressed",
+            ]
+
+            for col in required_columns:
+                try:
+                    self.execute(
+                        f"ALTER TABLE {table_name} ADD COLUMN {col} TEXT"
+                    )
+                except:
+                    pass
 
             try:
                 if ids is not None:
@@ -64,9 +191,7 @@ class _BlobMixin:
                             )
 
                         binary = arr.tobytes()
-                        if (
-                            compress and len(binary) > 1024
-                        ):  # Compress if > 1KB
+                        if compress and len(binary) > 1024:
                             binary = zlib.compress(
                                 binary, level=compress_level
                             )
@@ -101,7 +226,7 @@ class _BlobMixin:
                         raise ValueError("Single input must be a NumPy array")
 
                     binary = data.tobytes()
-                    if compress and len(binary) > 1024:  # Compress if > 1KB
+                    if compress and len(binary) > 1024:
                         binary = zlib.compress(binary, level=compress_level)
                         is_compressed = 1
                     else:
@@ -259,13 +384,65 @@ class _BlobMixin:
             return np.frombuffer(binary_data, dtype=dtype).reshape(shape)
         return binary_data
 
+    # def get_array_dict(self, df, columns=None, dtype=None, shape=None):
+    #     result = {}
+    #     if columns is None:
+    #         columns = [
+    #             col
+    #             for col in df.columns
+    #             if not (col.endswith("_dtype") or col.endswith("_shape"))
+    #         ]
+
+    #     for col in columns:
+    #         if f"{col}_dtype" in df.columns and f"{col}_shape" in df.columns:
+    #             arrays = [
+    #                 self.binary_to_array(
+    #                     row[col], row[f"{col}_dtype"], row[f"{col}_shape"]
+    #                 )
+    #                 for _, row in df.iterrows()
+    #             ]
+    #         elif dtype and shape:
+    #             arrays = [
+    #                 self.binary_to_array(x, dtype=dtype, shape=shape)
+    #                 for x in df[col]
+    #             ]
+    #         result[col] = np.stack(arrays)
+
+    #     return result
+
+    # def decode_array_columns(self, df, columns=None, dtype=None, shape=None):
+    #     if columns is None:
+    #         columns = [
+    #             col
+    #             for col in df.columns
+    #             if not (col.endswith("_dtype") or col.endswith("_shape"))
+    #         ]
+
+    #     for col in columns:
+    #         if f"{col}_dtype" in df.columns and f"{col}_shape" in df.columns:
+    #             df[col] = df.apply(
+    #                 lambda row: self.binary_to_array(
+    #                     row[col], row[f"{col}_dtype"], row[f"{col}_shape"]
+    #                 ),
+    #                 axis=1,
+    #             )
+    #         elif dtype and shape:
+    #             df[col] = df[col].apply(
+    #                 lambda x: self.binary_to_array(x, dtype=dtype, shape=shape)
+    #             )
+    #     return df
+
     def get_array_dict(self, df, columns=None, dtype=None, shape=None):
         result = {}
         if columns is None:
             columns = [
                 col
                 for col in df.columns
-                if not (col.endswith("_dtype") or col.endswith("_shape"))
+                if not (
+                    col.endswith("_dtype")
+                    or col.endswith("_shape")
+                    or col.endswith("_compressed")
+                )
             ]
 
         for col in columns:
@@ -290,7 +467,11 @@ class _BlobMixin:
             columns = [
                 col
                 for col in df.columns
-                if not (col.endswith("_dtype") or col.endswith("_shape"))
+                if not (
+                    col.endswith("_dtype")
+                    or col.endswith("_shape")
+                    or col.endswith("_compressed")
+                )
             ]
 
         for col in columns:

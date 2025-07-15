@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: "2024-11-29 04:31:43 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/db/_SQLite3Mixins/_QueryMixin.py
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_QueryMixin.py"
+# Timestamp: "2025-07-15 10:59:29 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
 import sqlite3
 from typing import List, Tuple
 
 import pandas as pd
-from ..._BaseMixins._BaseQueryMixin import _BaseQueryMixin
 
 
 class _QueryMixin:
@@ -18,7 +22,10 @@ class _QueryMixin:
     def _sanitize_parameters(self, parameters):
         """Convert pandas Timestamp objects to strings"""
         if isinstance(parameters, (list, tuple)):
-            return [str(p) if isinstance(p, pd.Timestamp) else p for p in parameters]
+            return [
+                str(p) if isinstance(p, pd.Timestamp) else p
+                for p in parameters
+            ]
         return parameters
 
     def execute(self, query: str, parameters: Tuple = ()) -> None:
@@ -27,14 +34,24 @@ class _QueryMixin:
 
         if any(
             keyword in query.upper()
-            for keyword in ["INSERT", "UPDATE", "DELETE", "DROP", "CREATE", "ALTER"]
+            for keyword in [
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "DROP",
+                "CREATE",
+                "ALTER",
+            ]
         ):
             self._check_writable()
 
         try:
             parameters = self._sanitize_parameters(parameters)
             self.cursor.execute(query, parameters)
-            self.conn.commit()
+            if self.autocommit:
+                self.conn.commit()
+                self.cursor.execute("PRAGMA wal_checkpoint(PASSIVE)")
+                # self.cursor.execute("PRAGMA wal_checkpoint(FULL)")
             return self.cursor
         except sqlite3.Error as err:
             raise sqlite3.Error(f"Query execution failed: {err}")
@@ -45,7 +62,14 @@ class _QueryMixin:
 
         if any(
             keyword in query.upper()
-            for keyword in ["INSERT", "UPDATE", "DELETE", "DROP", "CREATE", "ALTER"]
+            for keyword in [
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "DROP",
+                "CREATE",
+                "ALTER",
+            ]
         ):
             self._check_writable()
 
@@ -78,6 +102,5 @@ class _QueryMixin:
             self.conn.commit()
         except sqlite3.Error as err:
             raise sqlite3.Error(f"Script execution failed: {err}")
-
 
 # EOF
