@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:19:34 (ywatanabe)"
+# Timestamp: "2025-07-15 23:50:18 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py
 # ----------------------------------------
 import os
@@ -29,7 +29,7 @@ from ._load_modules._numpy import _load_npy
 from ._load_modules._pandas import _load_csv, _load_excel, _load_tsv
 from ._load_modules._pdf import _load_pdf
 from ._load_modules._pickle import _load_pickle
-from ._load_modules._sqlit3 import _load_db_sqlite3
+from ._load_modules._sqlite3 import _load_db_sqlite3
 from ._load_modules._torch import _load_torch
 from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
