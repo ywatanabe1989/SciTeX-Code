@@ -166,4 +166,5 @@ types-setuptools
 
 # Other
 pebble
->>>>>>> 6395efc4edb88c5cf39d9f55c6c44dfbc685a6fe
+
+impact-factor
