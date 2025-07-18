@@ -1,15 +1,27 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Timestamp: "2025-07-16 12:49:57 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/__init__.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/db/__init__.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Database operations module for scitex."""
 
 from ._postgresql._PostgreSQL import PostgreSQL
 from ._sqlite3._SQLite3 import SQLite3
+from ._sqlite3._delete_duplicates import delete_sqlite3_duplicates
 from ._delete_duplicates import delete_duplicates
 from ._inspect import inspect
 
 __all__ = [
     "PostgreSQL",
-    "SQLite3", 
+    "SQLite3",
     "delete_duplicates",
+    "delete_sqlite3_duplicates",
     "inspect",
 ]
 
@@ -26,3 +38,5 @@ def _cleanup_namespace():
 
 _cleanup_namespace()
 del _cleanup_namespace
+
+# EOF

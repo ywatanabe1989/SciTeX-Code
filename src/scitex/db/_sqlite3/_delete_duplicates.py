@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-12 10:23:47 (ywatanabe)"
+# Timestamp: "2025-07-16 14:00:04 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_delete_duplicates.py
 # ----------------------------------------
 import os
@@ -12,7 +12,10 @@ __DIR__ = os.path.dirname(__FILE__)
 # Time-stamp: "2024-11-11 14:16:58 (ywatanabe)"
 
 import sqlite3
-from typing import List, Optional, Tuple, Union
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 import pandas as pd
 
@@ -61,6 +64,35 @@ def _sort_db(
     cursor.execute(f"ALTER TABLE {temp_table} RENAME TO {table_name}")
 
 
+# def _determine_columns(
+#     cursor: sqlite3.Cursor,
+#     table_name: str,
+#     columns: Union[str, List[str]],
+#     include_blob: bool,
+# ) -> List[str]:
+#     cursor.execute(f"PRAGMA table_info({table_name})")
+#     table_info = cursor.fetchall()
+#     all_columns = [col[1] for col in table_info]
+#     column_types = {col[1]: col[2] for col in table_info}
+
+#     if columns == "all":
+#         columns = (
+#             all_columns
+#             if include_blob
+#             else [
+#                 col
+#                 for col in all_columns
+#                 if column_types[col].lower() != "blob"
+#             ]
+#         )
+#     elif isinstance(columns, str):
+#         columns = [columns]
+
+#     columns_str = ", ".join(columns)
+#     print(f"Columns considered for duplicates: {columns_str}")
+
+#     return columns
+
 def _determine_columns(
     cursor: sqlite3.Cursor,
     table_name: str,
@@ -73,15 +105,12 @@ def _determine_columns(
     column_types = {col[1]: col[2] for col in table_info}
 
     if columns == "all":
-        columns = (
-            all_columns
-            if include_blob
-            else [
-                col
-                for col in all_columns
-                if column_types[col].lower() != "blob"
-            ]
-        )
+        columns = all_columns
+        # Exclude blob columns
+        if not include_blob:
+            columns = [col for col in columns if column_types[col].lower() != "blob"]
+        # Exclude timestamp columns
+        columns = [col for col in columns if not col.endswith("_at")]
     elif isinstance(columns, str):
         columns = [columns]
 
@@ -89,7 +118,6 @@ def _determine_columns(
     print(f"Columns considered for duplicates: {columns_str}")
 
     return columns
-
 
 def _fetch_as_df(
     cursor: sqlite3.Cursor, columns: List[str], table_name: str
@@ -164,175 +192,6 @@ def _delete_entry(
         )
 
 
-# def delete_sqlite3_duplicates(
-#     lpath_db: str,
-#     table_name: str,
-#     columns: Union[str, List[str]] = "all",
-#     include_blob: bool = False,
-#     batch_size: int = 1000,
-#     reindex: bool = False,
-#     sort: bool = False,
-#     dry_run: bool = True,
-# ) -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]:
-#     """
-#     Delete duplicate entries from an SQLite database table.
-
-#     Parameters
-#     ----------
-#     lpath_db : str
-#         Path to the SQLite database file.
-#     table_name : str
-#         Name of the table to remove duplicates from.
-#     columns : Union[str, List[str]], optional
-#         Columns to consider when identifying duplicates. Default is "all".
-#     include_blob : bool, optional
-#         Whether to include BLOB columns when considering duplicates. Default is False.
-#     batch_size : int, optional
-#         Number of rows to process in each batch. Default is 1000.
-#     reindex : bool, optional
-#         Whether to reindex the table after deletion. Default is False.
-#     dry_run : bool, optional
-#         If True, simulates the deletion without actually modifying the database. Default is True.
-
-#     Returns
-#     -------
-#     Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame]]
-#         A tuple containing:
-#         - DataFrame of all entries after deletion process
-#         - DataFrame of remaining duplicates if any, None otherwise
-#     """
-#     try:
-#         conn = sqlite3.connect(lpath_db)
-#         cursor = conn.cursor()
-
-#         columns = _determine_columns(cursor, table_name, columns, include_blob)
-
-#         if sort:
-#             _sort_db(cursor, table_name, columns)
-
-#         df_orig = _fetch_as_df(cursor, columns, table_name)
-#         duplicates = _find_duplicated(df_orig)
-
-#         if duplicates.empty:
-#             print("Congratulations. Database is clean.")
-#             return df_orig, None
-
-#         columns_str = ", ".join(columns)
-#         where_conditions = " AND ".join([f"{col} = ?" for col in columns])
-#         delete_query = f"""
-#             DELETE FROM {table_name}
-#             WHERE {where_conditions}
-#         """
-
-#         for start in tqdm(range(0, len(duplicates), batch_size)):
-#             batch = duplicates.iloc[start:start+batch_size]
-#             batch_values = batch.values.tolist()
-
-#             if dry_run:
-#                 print(f"[DRY RUN] Would delete {len(batch)} entries")
-#             else:
-#                 cursor.executemany(delete_query, batch_values)
-#                 conn.commit()
-
-#         if not dry_run:
-#             conn.commit()
-
-#             if reindex:
-#                 print("Reindexing the table...")
-#                 cursor.execute(f"REINDEX {table_name}")
-#                 conn.commit()
-
-#         df_after = _fetch_as_df(cursor, columns, table_name)
-#         remaining_duplicates = _find_duplicated(df_after)
-
-#         if remaining_duplicates.empty:
-#             print("All duplicates successfully removed.")
-#             return df_after, None
-#         else:
-#             print(f"Warning: {len(remaining_duplicates)} duplicates still remain.\n{remaining_duplicates}")
-#             return df_after, remaining_duplicates
-
-#     except Exception as error:
-#         print(f"An error occurred: {error}")
-#         return None, None
-
-#     finally:
-#         conn.close()
-
-# def delete_sqlite3_duplicates(
-#     lpath_db: str,
-#     table_name: str,
-#     columns: Union[str, List[str]] = "all",
-#     include_blob: bool = False,
-#     batch_size: int = 1000,
-#     chunk_size: int = 100_000,
-#     reindex: bool = False,
-#     sort: bool = False,
-#     dry_run: bool = True,
-# ) -> Tuple[Optional[int], Optional[int]]:
-#     try:
-#         conn = sqlite3.connect(lpath_db)
-#         cursor = conn.cursor()
-
-#         columns = _determine_columns(cursor, table_name, columns, include_blob)
-
-#         if sort:
-#             _sort_db(cursor, table_name, columns)
-
-#         columns_str = ", ".join(columns)
-#         where_conditions = " AND ".join([f"{col} = ?" for col in columns])
-#         delete_query = f"""
-#             DELETE FROM {table_name}
-#             WHERE {where_conditions}
-#         """
-
-#         total_rows = cursor.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
-#         total_deleted = 0
-#         total_duplicates = 0
-
-#         for offset in tqdm(range(0, total_rows, chunk_size)):
-#             chunk_query = f"""
-#                 SELECT {columns_str}
-#                 FROM {table_name}
-#                 LIMIT {chunk_size} OFFSET {offset}
-#             """
-#             df_chunk = pd.read_sql_query(chunk_query, conn)
-#             duplicates = _find_duplicated(df_chunk)
-#             total_duplicates += len(duplicates)
-
-#             if duplicates.empty:
-#                 continue
-
-#             for start in range(0, len(duplicates), batch_size):
-#                 batch = duplicates.iloc[start:start+batch_size]
-#                 batch_values = batch.values.tolist()
-
-#                 if dry_run:
-#                     print(f"[DRY RUN] Would delete {len(batch)} entries")
-#                 else:
-#                     cursor.executemany(delete_query, batch_values)
-#                     conn.commit()
-#                     total_deleted += len(batch)
-
-#         if not dry_run:
-#             if reindex:
-#                 print("Reindexing the table...")
-#                 cursor.execute(f"REINDEX {table_name}")
-#                 conn.commit()
-
-#         print(f"Total duplicates found: {total_duplicates}")
-#         print(f"Total entries deleted: {total_deleted}")
-
-#         return total_duplicates, total_deleted
-
-#     except Exception as error:
-#         print(f"An error occurred: {error}")
-#         return None, None
-
-#     finally:
-#         conn.close()
-
-
 def delete_sqlite3_duplicates(
     lpath_db: str,
     table_name: str,
@@ -353,54 +212,59 @@ def delete_sqlite3_duplicates(
         columns = _determine_columns(cursor, table_name, columns, include_blob)
         columns_str = ", ".join(columns)
 
-        # Create a temporary table to store unique rows
+        # Drop temp table if exists from previous run
         temp_table = f"{table_name}_temp"
-        cursor.execute(
-            f"CREATE TABLE {temp_table} AS SELECT DISTINCT {columns_str} FROM {table_name} LIMIT 0"
-        )
+        cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
 
-        # Process in small chunks
-        offset = 0
-        total_processed = 0
-        total_unique = 0
+        # Get all columns for creating temp table with same structure
+        cursor.execute(f"PRAGMA table_info({table_name})")
+        all_cols_info = cursor.fetchall()
+        all_cols = [col[1] for col in all_cols_info]
+        all_cols_str = ", ".join(all_cols)
 
-        while True:
-            chunk_query = f"""
-                INSERT OR IGNORE INTO {temp_table}
-                SELECT DISTINCT {columns_str}
+        # Create temp table with same structure
+        cursor.execute(f"CREATE TABLE {temp_table} AS SELECT {all_cols_str} FROM {table_name} LIMIT 0")
+
+        # Get total row count
+        total_rows = cursor.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+        print(f"Total rows in table: {total_rows}")
+
+        # Insert unique rows based on specified columns
+        insert_query = f"""
+            INSERT INTO {temp_table}
+            SELECT {all_cols_str}
+            FROM (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY {columns_str} ORDER BY rowid) as rn
                 FROM {table_name}
-                LIMIT {chunk_size} OFFSET {offset}
-            """
+            )
+            WHERE rn = 1
+        """
 
-            if dry_run:
-                print(f"[DRY RUN] Would execute: {chunk_query}")
-            else:
-                cursor.execute(chunk_query)
-                conn.commit()
-
-            rows_affected = cursor.rowcount
-            if rows_affected == 0:
-                break
-
-            total_processed += chunk_size
-            total_unique += rows_affected
-            offset += chunk_size
-
-            print(f"Processed {total_processed} rows, {total_unique} unique")
-
-        total_duplicates = total_processed - total_unique
-
-        if not dry_run:
-            # Replace original table with the deduplicated one
-            cursor.execute(f"DROP TABLE {table_name}")
-            cursor.execute(f"ALTER TABLE {temp_table} RENAME TO {table_name}")
+        if dry_run:
+            print(f"[DRY RUN] Would execute deduplication based on: {columns_str}")
+        else:
+            cursor.execute(insert_query)
             conn.commit()
 
-        print(f"Total rows processed: {total_processed}")
+        # Count unique rows
+        total_unique = cursor.execute(f"SELECT COUNT(*) FROM {temp_table}").fetchone()[0]
+        total_duplicates = total_rows - total_unique
+
+        if not dry_run:
+            # Replace original table with deduplicated one
+            cursor.execute(f"DROP TABLE {table_name}")
+            cursor.execute(f"ALTER TABLE {temp_table} RENAME TO {table_name}")
+            cursor.execute("VACUUM")
+            conn.commit()
+        else:
+            # Clean up temp table in dry run
+            cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
+
+        print(f"Total rows processed: {total_rows}")
         print(f"Total unique rows: {total_unique}")
         print(f"Total duplicates removed: {total_duplicates}")
 
-        return total_processed, total_duplicates
+        return total_rows, total_duplicates
 
     except Exception as error:
         print(f"An error occurred: {error}")

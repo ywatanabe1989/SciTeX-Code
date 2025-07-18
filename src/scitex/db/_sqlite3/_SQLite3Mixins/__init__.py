@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-07-16 09:46:33 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/__init__.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/db/_sqlite3/_SQLite3Mixins/__init__.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 # Time-stamp: "2024-11-12 09:29:50 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/db/_SQLite3Mixins/__init__.py
 
+from ._ArrayMixin import _ArrayMixin
 from ._BatchMixin import _BatchMixin
 from ._BlobMixin import _BlobMixin
 from ._ConnectionMixin import _ConnectionMixin
@@ -15,6 +24,7 @@ from ._TableMixin import _TableMixin
 from ._TransactionMixin import _TransactionMixin
 
 __all__ = [
+    "_ArrayMixin",
     "_BatchMixin",
     "_BlobMixin",
     "_ConnectionMixin",

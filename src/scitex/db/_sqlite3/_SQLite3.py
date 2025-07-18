@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:25:22 (ywatanabe)"
+# Timestamp: "2025-07-16 09:46:57 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3.py
 # ----------------------------------------
 import os
@@ -14,6 +14,7 @@ import warnings
 from typing import List, Optional
 
 from ...str import printc as _printc
+from ._SQLite3Mixins._ArrayMixin import _ArrayMixin
 from ._SQLite3Mixins._BatchMixin import _BatchMixin
 from ._SQLite3Mixins._BlobMixin import _BlobMixin
 from ._SQLite3Mixins._ConnectionMixin import _ConnectionMixin
@@ -27,6 +28,7 @@ from ._SQLite3Mixins._TransactionMixin import _TransactionMixin
 
 
 class SQLite3(
+    _ArrayMixin,
     _ConnectionMixin,
     _QueryMixin,
     _TransactionMixin,

@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-07-18 14:36:44 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_TableMixin.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/db/_sqlite3/_SQLite3Mixins/_TableMixin.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 # Time-stamp: "2024-11-25 01:38:47 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/db/_SQLite3Mixins/_TableMixin.py
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_TableMixin.py"
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-11 19:13:19 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/db/_BaseSQLiteDB_modules/_TableMixin.py
 
 import sqlite3
 from typing import Any, Dict, List, Union
+
 import pandas as pd
+
 from ..._BaseMixins._BaseTableMixin import _BaseTableMixin
 
 
@@ -38,6 +46,7 @@ class _TableMixin:
                             [
                                 f"{col_name}_dtype TEXT DEFAULT 'unknown'",
                                 f"{col_name}_shape TEXT DEFAULT 'unknown'",
+                                f"{col_name}_is_compressed BOOLEAN DEFAULT FALSE",
                             ]
                         )
 
@@ -101,9 +110,7 @@ class _TableMixin:
                 return
 
             try:
-                query = (
-                    f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"
-                )
+                query = f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"
                 if default_value is not None:
                     query += f" DEFAULT {default_value}"
                 self.execute(query)
@@ -146,7 +153,9 @@ class _TableMixin:
                 return
 
             # Drop multiple columns in a single ALTER TABLE statement
-            drop_clause = ", ".join(f"DROP COLUMN {col}" for col in columns_to_drop)
+            drop_clause = ", ".join(
+                f"DROP COLUMN {col}" for col in columns_to_drop
+            )
             self.execute(f"ALTER TABLE {table_name} {drop_clause}")
 
     def get_table_names(self) -> List[str]:
@@ -178,6 +187,5 @@ class _TableMixin:
             }
         except sqlite3.Error as err:
             raise ValueError(f"Failed to get table size: {err}")
-
 
 # EOF
