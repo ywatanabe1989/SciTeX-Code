@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "scitex-io": {
+      "command": "python",
+      "args": ["-m", "scitex_io.server"],
+      "cwd": "/path/to/scitex_repo/mcp_servers/scitex-io",
+      "env": {
+        "PYTHONPATH": "/path/to/scitex_repo/mcp_servers"
+      }
+    },
+    "scitex-plt": {
+      "command": "python",
+      "args": ["-m", "scitex_plt.server"],
+      "cwd": "/path/to/scitex_repo/mcp_servers/scitex-plt",
+      "env": {
+        "PYTHONPATH": "/path/to/scitex_repo/mcp_servers"
+      }
+    }
+  }
+}

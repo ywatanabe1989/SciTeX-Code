@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-24 20:04:35 (ywatanabe)"
+# Timestamp: "2025-07-12 07:04:14 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_modules/_hdf5.py
 # ----------------------------------------
 import os
@@ -10,100 +10,64 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-import warnings
-from typing import Any
+import time
 
 import h5py
 import numpy as np
 
+from .._save_modules._hdf5 import SWMRFile
 
-def _load_group(group):
-    """Recursively load an HDF5 group with error handling."""
-    obj = {}
-    for key in group.keys():
+
+def _load_hdf5(lpath, key=None, swmr=True, max_retries=10, **kwargs):
+    """Load HDF5 file with SWMR support."""
+    for attempt in range(max_retries):
         try:
-            if isinstance(group[key], h5py.Group):
-                # Recursively load subgroups
-                obj[key] = _load_group(group[key])
-            else:
-                # Load dataset
-                dataset = group[key]
-                # Check if it's a scalar dataset
-                if dataset.shape == ():
-                    data = dataset[()]
+            with SWMRFile(lpath, "r", swmr=swmr) as h5_file:
+                if key:
+                    if key not in h5_file:
+                        return None
+                    target = h5_file[key]
                 else:
-                    data = dataset[:]
+                    target = h5_file
 
-                # Decode bytes to string if needed
-                if isinstance(data, bytes):
-                    obj[key] = data.decode("utf-8")
-                elif isinstance(data, np.void):
-                    # Handle pickled data
-                    import pickle
+                # Load data recursively
+                return _load_h5_object(target)
 
-                    obj[key] = pickle.loads(data.tobytes())
-                else:
-                    obj[key] = data
-        except (RuntimeError, OSError) as e:
-            print(f"Warning: Could not load key '{key}' from group: {e}")
-            continue
-
-    # Load attributes
-    try:
-        for key in group.attrs.keys():
-            obj[key] = group.attrs[key]
-    except (RuntimeError, OSError) as e:
-        print(f"Warning: Could not load attributes: {e}")
-
-    return obj
-
-
-def _load_hdf5(lpath: str, key: str = None, **kwargs) -> Any:
-    """Load HDF5 file with automatic group/root switching and robust error handling."""
-    try:
-        with h5py.File(lpath, "r") as hf:
-            if key:
-                if key not in hf:
-                    return None
-                target = hf[key]
+        except (OSError, IOError) as e:
+            if attempt < max_retries - 1:
+                time.sleep(0.1 * (2**attempt))
             else:
-                target = hf
+                raise
 
-            obj = {}
-            for key_name in target.keys():
-                try:
-                    if isinstance(target[key_name], h5py.Group):
-                        obj[key_name] = _load_group(target[key_name])
-                    else:
-                        dataset = target[key_name]
-                        if dataset.shape == ():
-                            data = dataset[()]
-                        else:
-                            data = dataset[:]
+    return None
 
-                        if isinstance(data, bytes):
-                            obj[key_name] = data.decode("utf-8")
-                        elif isinstance(data, np.void):
-                            import pickle
 
-                            obj[key_name] = pickle.loads(data.tobytes())
-                        else:
-                            obj[key_name] = data
-                except (RuntimeError, OSError) as e:
-                    print(f"Warning: Could not load key '{key_name}': {e}")
-                    continue
+def _load_h5_object(h5_obj):
+    """Recursively load HDF5 object."""
+    if isinstance(h5_obj, h5py.Group):
+        result = {}
+        # Load datasets
+        for key in h5_obj.keys():
+            result[key] = _load_h5_object(h5_obj[key])
+        # Load attributes
+        for key in h5_obj.attrs.keys():
+            result[f"_attr_{key}"] = h5_obj.attrs[key]
+        return result
 
-            try:
-                for attr_name in target.attrs.keys():
-                    obj[attr_name] = target.attrs[attr_name]
-            except (RuntimeError, OSError) as e:
-                print(f"Warning: Could not load attributes: {e}")
+    elif isinstance(h5_obj, h5py.Dataset):
+        data = h5_obj[()]
 
-            return obj
+        # Handle different data types
+        if isinstance(data, bytes):
+            return data.decode("utf-8")
+        elif isinstance(data, np.void):
+            # Unpickle data
+            import pickle
 
-    except (RuntimeError, OSError) as e:
-        key_warning_str = f" with {key}" if key else ""
-        warnings.warn(f"Error loading {lpath}{key_warning_str}:\n{e}")
-        return None
+            return pickle.loads(data.tobytes())
+        else:
+            return data
+    else:
+        return h5_obj
 
 # EOF

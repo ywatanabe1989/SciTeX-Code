@@ -96,6 +96,6 @@ class Classifiers(object):
 
 
 if __name__ == "__main__":
-    clf_server = ClassifierServer()
+    clf_server = Classifiers()
     # l = clf_server.list
     clf = clf_server("SVC", scaler=StandardScaler())

@@ -1,1 +1,0 @@
-SciTeX v2.0.0 successfully released to PyPI on Sat Jun 21 01:46:57 PM AEST 2025

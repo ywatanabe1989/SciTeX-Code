@@ -1,0 +1,130 @@
+# Timestamp: "2025-06-10 (Generated)"
+# File: .github/workflows/test-with-coverage.yml
+
+name: Tests with Coverage
+on:
+  push:
+    branches: [ main, develop, master ]
+  pull_request:
+    branches: [ main, develop, master ]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for better coverage tracking
+        
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y graphviz
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt 2>/dev/null || true
+        pip install pytest pytest-cov pytest-xdist coverage[toml] coverage-badge
+        pip install -e .
+        
+    - name: Check installed packages
+      run: |
+        pip list
+        python -c "import scitex; print(f'SciTeX version: {scitex.__version__}')"
+        
+    - name: Run tests with coverage
+      run: |
+        python -m pytest tests/ \
+          --cov=scitex \
+          --cov-report=xml \
+          --cov-report=html \
+          --cov-report=term-missing \
+          --cov-fail-under=85 \
+          -v \
+          --tb=short \
+          --maxfail=10 \
+          -n auto
+          
+    - name: Generate coverage badge
+      if: matrix.python-version == '3.10'
+      run: |
+        coverage-badge -o coverage.svg -f
+        
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.10'
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+        verbose: true
+        
+    - name: Upload coverage reports as artifacts
+      if: matrix.python-version == '3.10'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          htmlcov/
+          coverage.xml
+          coverage.svg
+        retention-days: 30
+        
+    - name: Comment PR with coverage
+      if: github.event_name == 'pull_request' && matrix.python-version == '3.10'
+      uses: py-cov-action/python-coverage-comment-action@v4
+      with:
+        GITHUB_TOKEN: ${{ github.token }}
+        MINIMUM_GREEN: 90
+        MINIMUM_ORANGE: 80
+        
+    - name: Check test results
+      if: failure()
+      run: |
+        echo "Tests failed for Python ${{ matrix.python-version }}"
+        echo "Please check the test output above for details"
+        
+  coverage-summary:
+    needs: test
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download coverage artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-reports
+        path: ./coverage-reports
+        
+    - name: Display coverage summary
+      run: |
+        echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ -f coverage-reports/coverage.svg ]; then
+          echo "![Coverage](coverage-reports/coverage.svg)" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Detailed coverage report available in artifacts" >> $GITHUB_STEP_SUMMARY
+
+# EOF

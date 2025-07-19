@@ -1,211 +1,228 @@
-# SciTeX-Scholar v0.2.0
+<!-- ---
+!-- Timestamp: 2025-07-19 22:41:40
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
+!-- --- -->
 
-Scientific literature search and analysis system with Semantic Scholar integration for comprehensive research intelligence.
+# SciTeX Scholar
 
-## 🚀 Key Features
-- **📚 Massive Coverage**: Search 200M+ papers (vs traditional 1M from PubMed/arXiv)
-- **🔓 Open Access Discovery**: Automatic discovery of 50M+ free PDFs
-- **🕸️ Citation Networks**: Analyze citation relationships and research impact
-- **📈 Research Trends**: Quantitative analysis of field evolution over time
-- **🤖 AI-Powered Analysis**: Multi-provider support (Anthropic, OpenAI, Google, Perplexity)
-- **📊 Journal Metrics**: Automatic impact factor and ranking integration
-- **🔍 Research Gap Detection**: AI-powered identification of research opportunities
-- **📝 Enhanced Bibliography**: Generate citations with journal metrics
+Search scientific papers with automatic journal impact factors and citation counts.
 
----
+## Quick Start
 
-## 📺 Quick Demo
+```python
+from scitex.scholar import Scholar
+import os
+
+# Initialize Scholar Class
+scholar_obj = Scholar(
+    email=os.getenv("SCITEX_PUBMED_EMAIL"),
+    api_key_semantic_scholar=os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY"),
+    workspace_dir=os.getenv("HOME") + "/.scitex/scholar",
+    impact_factors=True,
+    citations=True,
+    auto_download=False
+)
+
+# Scholar Methods
+# scholar_obj.search(...)           # Search papers from sources
+# scholar_obj.search_local(...)     # Search local PDF library
+# scholar_obj.index_local_pdfs(...) # Index PDFs in directory
+# scholar_obj.download_pdfs(...)    # Download PDFs for papers
+# scholar_obj.enrich_papers(...)    # Add journal metrics to papers
+# scholar_obj.enrich_citations(...) # Add citation counts to papers
+# scholar_obj.extract_text(...)     # Extract text from PDF
+# scholar_obj.extract_sections(...) # Extract sections from PDF
+# scholar_obj.extract_for_ai(...)   # Extract PDF content for AI processing
+# scholar_obj.extract_from_papers(...) # Batch extract from multiple papers
+# scholar_obj.find_similar(...)     # Find similar papers
+# scholar_obj.get_library_stats()   # Get statistics of paper library
+# scholar_obj.quick_search(...)     # Quick search for paper titles
+
+
+# Search from Source
+papers_obj = scholar_obj.search(
+    query="epilepsy detection",
+    limit=20,
+    sources=["pubmed"],      # ["pubmed", "arxiv", "semantic_scholar"]
+    year_min=None,
+    year_max=None
+)
+
+# Collection Methods
+# papers_obj.sort_by(...) - Sort by multiple criteria
+# papers_obj.filter(...) - Filter papers
+# papers_obj.to_dataframe() - Convert to pandas DataFrame
+# papers_obj.analyze_trends() - Get statistical analysis
+# papers_obj.deduplicate() - Remove duplicate papers
+# papers_obj.save(...) - Save to file
+# papers_obj.summary() - Get text summary
+
+# Filter with all parameters shown
+filtered = papers_obj.filter(
+    year_min=None,             # Default: None
+    year_max=None,             # Default: None
+    min_citations=10,          # Default: None
+    max_citations=None,        # Default: None
+    impact_factor_min=3.0,     # Default: None
+    open_access_only=False,    # Default: False
+    journals=None,             # Default: None (list of journal names)
+    authors=None,              # Default: None (list of author names)
+    keywords=None,             # Default: None (list of keywords)
+    has_pdf=None               # Default: None
+)
+
+# Save (format auto-detected from extension)
+filtered.save("epilepsy_papers.bib")
+# filtered.save("epilepsy_papers.json", format="json")
+# filtered.save("epilepsy_papers.csv", format="csv")
+
+
+# Papers automatically have impact factors and citations!
+for paper_obj in papers_obj[:3]:
+    print(f"{paper_obj.journal}: IF={paper_obj.impact_factor}, Citations={paper_obj.citation_count}")
+
+    # Paper Info
+    # print(paper_obj.title)     # Always available
+    # print(paper_obj.year)      # Always available
+    # print(paper_obj.authors)   # Always available (list)
+    # print(paper_obj.abstract)  # When available
+    # print(paper_obj.doi)       # When available
+    
+    # Journal Info
+    # print(paper_obj.journal)          # Always available
+    # print(paper_obj.h_index)          # When available
+    # print(paper_obj.impact_factor)    # When available via `impact_factor` package (2024 JCR data)
+    # print(paper_obj.journal_quartile) # When available
+    # print(paper_obj.journal_rank)     # When available
+    # print(paper_obj.citation_count)   # When available via Semantic Scholar
+    
+    # Scholar info
+    # print(paper_obj.source)    # Source database (pubmed, arxiv, etc.)
+    
+    # Specific to PubMed
+    # print(paper_obj.pmid)      # Only when from PubMed
+    
+    # Specific to ArXiv
+    # print(paper_obj.arxiv_id)  # Only when from ArXiv
+    
+    # Additional metadata
+    # print(paper_obj.keywords)  # When available (list)
+    # print(paper_obj.metadata)  # When available (dict)
+    # print(paper_obj.pdf_path)  # When PDF downloaded
+    # print(paper_obj.pdf_url)   # When available
+
+    # Methods
+    # paper_obj.similarity_score(other_paper_obj)  # Calculate similarity
+    # paper_obj.to_bibtex()      # Export as BibTeX string
+    # paper_obj.to_dict()        # Export as dictionary
+    # paper_obj.get_identifier() # Get primary identifier (DOI, PMID, etc.)
+
+
+# Sort papers by multiple criteria
+# Default is descending order (reverse=True)
+sorted_papers = papers_obj.sort_by('impact_factor', 'year')
+
+# # Sort by impact year (ascending) then factor (descending)
+# sorted_papers = papers_obj.sort_by(
+#     ('year', False)            # Ascending
+#     ('impact_factor', True),   # Descending    
+# )
+#  
+# # Mixed format is also supported
+# sorted_papers = papers_obj.sort_by(
+#     'impact_factor',           # Uses default reverse=True
+#     ('year', False)            # Explicitly ascending
+# )
+```
+
+## Advanced Usage
+
+```python
+# Local PDF Management
+scholar_obj.index_local_pdfs(
+    pdf_directory="/path/to/pdfs",
+    recursive=True                    # Default: True
+)
+
+local_results = scholar_obj.search_local("epilepsy", limit=20)
+
+scholar_obj.download_pdfs(
+    papers_obj,
+    output_dir="/path/to/download",   # Default: workspace_dir/pdfs
+    max_workers=5                     # Default: 5
+)
+
+# Text Extraction
+text = scholar_obj.extract_text("/path/to/paper.pdf")
+
+sections = scholar_obj.extract_sections("/path/to/paper.pdf")
+# Returns: {"title": "...", "abstract": "...", "introduction": "...", ...}
+
+ai_data = scholar_obj.extract_for_ai("/path/to/paper.pdf")
+# Returns: {"text": "...", "metadata": {...}, "sections": {...}}
+
+extracted = scholar_obj.extract_from_papers(papers_obj)
+# Returns: List[Dict] with extracted content from each paper
+
+# Find Similar Papers
+similar = scholar_obj.find_similar(
+    "Deep Learning for EEG Analysis",  # Paper title
+    limit=10                          # Default: 10
+)
+
+# Library Statistics
+stats = scholar_obj.get_library_stats()
+# Returns: {
+#     "total_papers": 150,
+#     "avg_impact_factor": 4.5,
+#     "papers_by_year": {...},
+#     "papers_by_journal": {...},
+#     "papers_with_pdf": 75
+# }
+
+# Quick Search (returns titles only)
+titles = scholar_obj.quick_search("epilepsy", top_n=5)
+```
+
+## Exporting
+
+```python
+papers_obj.save("/path/to/output.bib") # In BibTeX
+papers_obj.save("/path/to/output.json") # In Jason
+papers_obj.save("/path/to/output.csv") # In CSV
+```
+
+## Conversion
+
+``` python
+# Get BibTeX string
+bibtex_content = papers_obj.to_bibtex()
+print(bibtex_content)
+
+# Convert to DataFrame
+df = papers_obj.to_dataframe()
+```
+
+## Installation
 
 ```bash
-# Run enhanced gPAC literature review
-python examples/enhanced_gpac_review_with_semantic_scholar.py
+# Install SciTeX
+pip install -e ~/proj/scitex_repo
 
-# Quick literature search for any topic
-python quick_gpac_review.py
+# Install optional dependencies
+pip install impact-factor  # For real journal impact factors
 ```
 
-*Demonstrates 10x more paper coverage than traditional methods*
-
-## 📋 System Capabilities
-
-``` plaintext
-SciTeX-Scholar Enhanced Search Results
-=====================================
-
-Feature                    Traditional    Enhanced (S2)
-───────────────────────    ──────────     ─────────────
-Paper Coverage             ~1M papers     200M+ papers
-Open Access PDFs           ~100K          50M+
-Citation Analysis          Manual         Automated
-Research Trends            Not available  Quantitative
-Metadata Quality           Basic          Rich (fields, networks)
-PDF Discovery              Manual search  Automatic detection
-Search Speed               Sequential     Parallel + optimized
-
-Sources: PubMed, arXiv, Semantic Scholar, bioRxiv
-```
-
----
-
-## 📦 Installation
+## Environment Variables
 
 ```bash
-git clone https://github.com/ywatanabe1989/SciTeX-Scholar.git
-cd SciTeX-Scholar
-pip install -r requirements.txt
+export SCITEX_PUBMED_EMAIL="your.email@example.com"
+export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 ```
 
-Optional: Get [Semantic Scholar API key](https://api.semanticscholar.org) for higher rate limits
+## Contact
 
----
-
-## 🎯 Quick Start
-
-### Basic Literature Search
-```python
-from src.scitex_scholar.paper_acquisition import PaperAcquisition
-
-# Initialize enhanced system
-acquisition = PaperAcquisition(s2_api_key="optional_key")
-
-# Search with Semantic Scholar integration
-papers = await acquisition.search(
-    query="phase amplitude coupling",
-    sources=['semantic_scholar', 'pubmed', 'arxiv'],
-    max_results=50,
-    open_access_only=False
-)
-
-print(f"Found {len(papers)} papers with rich metadata!")
-```
-
-### Enhanced Features
-```python
-# Citation network analysis
-citations = await acquisition.get_paper_citations(paper, limit=50)
-references = await acquisition.get_paper_references(paper, limit=50)
-
-# Research trend analysis
-trends = await acquisition.analyze_research_trends("GPU neural processing", years=5)
-
-# Find highly cited papers
-influential = await acquisition.find_highly_cited_papers(
-    query="machine learning", 
-    min_citations=100
-)
-```
-
-### Complete Literature Review
-```python
-from src.scitex_scholar.literature_review_workflow import LiteratureReviewWorkflow
-
-# Full automated workflow
-workflow = LiteratureReviewWorkflow()
-results = await workflow.full_review_pipeline(
-    topic="phase amplitude coupling",
-    max_papers=100,
-    start_year=2015
-)
-
-# Generates: search results, downloads, vector index, summary, gap analysis
-```
-
----
-
-## 💻 Ready-to-Use Examples
-
-| Script | Description |
-|--------|-------------|
-| `examples/enhanced_gpac_review_with_semantic_scholar.py` | Complete gPAC literature review with S2 |
-| `examples/simple_gpac_literature_review.py` | Basic literature search without dependencies |
-| `quick_gpac_review.py` | Quick demo for gPAC paper bibliography |
-| `demo_working_literature_system.py` | System capabilities demonstration |
-
----
-
-## 📊 For Academic Papers
-
-### Generate Bibliography
-```python
-# Automatic BibTeX generation with rich metadata
-papers = await acquisition.search("your research topic")
-bib_file = generate_enhanced_bibliography(papers)
-# Copy to your LaTeX project: \bibliography{enhanced_bibliography}
-```
-
-### Research Positioning
-```python
-# Identify research gaps
-gaps = await workflow.find_research_gaps("your topic")
-# Use gap analysis to strengthen contribution claims
-
-# Analyze trends
-trends = await acquisition.analyze_research_trends("your field")
-# Position your work within current research landscape
-```
-
----
-
-## 🔓 Open Access Strategy
-
-SciTeX-Scholar implements multi-tier PDF access:
-
-### Tier 1: Automatic Discovery ✅
-- Semantic Scholar's 50M+ open access PDFs
-- Unpaywall database integration
-- arXiv preprint discovery
-- Institutional repository search
-
-### Tier 2: Legal Institutional Access 🔧
-```python
-# Framework ready for university proxy integration
-class InstitutionalProxy:
-    def access_via_institution(self, doi):
-        # Route through university VPN/proxy
-        # Requires institutional credentials
-```
-
-### Tier 3: Manual Workflow ✅
-```python
-# Generate requests for subscription papers
-subscription_requests = generate_subscription_requests(papers)
-# Outputs: interlibrary loan lists, author contacts, publisher access
-```
-
----
-
-## 📚 Architecture
-
-### Core Components
-- **`paper_acquisition.py`**: Enhanced multi-source search with S2 integration
-- **`semantic_scholar_client.py`**: Direct API client for 200M+ papers
-- **`literature_review_workflow.py`**: Complete automated review pipeline
-- **`vector_search_engine.py`**: Semantic search and similarity analysis
-- **`mcp_server.py`**: Integration with AI assistants via MCP protocol
-
-### Data Sources
-- **Semantic Scholar**: 200M+ papers (primary)
-- **PubMed**: Biomedical literature
-- **arXiv**: Preprints and CS/Physics
-- **bioRxiv**: Biology preprints
-- **Unpaywall**: Open access discovery
-
----
-
-## ⚡ Performance Comparison
-
-| Operation | Traditional | SciTeX-Scholar Enhanced |
-|-----------|-------------|-------------------------|
-| Paper Discovery | PubMed (1M) + arXiv (2M) | **Semantic Scholar (200M+)** |
-| PDF Access | Manual search | **Automatic discovery (50M+)** |
-| Citation Analysis | Not available | **Automated network mapping** |
-| Research Trends | Not available | **Quantitative over time** |
-| Metadata Quality | Title, authors, abstract | **Rich: citations, fields, networks** |
-| Search Time | ~30 seconds | **~10 seconds (parallel)** |
-
----
-
-## 📧 Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
 <!-- EOF -->

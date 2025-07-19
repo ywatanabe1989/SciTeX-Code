@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing: Comprehensive Guidelines for Coding Agents &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Testing: Comprehensive Guidelines for Coding Agents</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/programming_common/IMPORTANT-art-of-testing.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-25 23:21:33
+!-- Author: ywatanabe
+!-- File: /ssh:sp:/home/ywatanabe/.claude/to_claude/guidelines/programming_common/art-of-testing.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="testing-comprehensive-guidelines-for-coding-agents">
+<h1>Testing: Comprehensive Guidelines for Coding Agents<a class="headerlink" href="#testing-comprehensive-guidelines-for-coding-agents" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This document provides comprehensive testing guidelines synthesized from industry best practices and foundational testing literature. These guidelines enable coding agents to create robust, maintainable test suites that give confidence in code quality and behavior.</p>
+</section>
+<section id="core-testing-philosophy">
+<h2>Core Testing Philosophy<a class="headerlink" href="#core-testing-philosophy" title="Link to this heading"></a></h2>
+<section id="the-testing-mindset">
+<h3>The Testing Mindset<a class="headerlink" href="#the-testing-mindset" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Tests are specifications</strong> - They document expected behavior</p></li>
+<li><p><strong>Tests enable change</strong> - Good tests make refactoring safe</p></li>
+<li><p><strong>Tests provide feedback</strong> - They catch regressions quickly</p></li>
+<li><p><strong>Tests build confidence</strong> - They reduce fear of making changes</p></li>
+</ul>
+</section>
+<section id="quality-metrics">
+<h3>Quality Metrics<a class="headerlink" href="#quality-metrics" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Coverage is necessary but not sufficient</strong> - Aim for high coverage but focus on quality</p></li>
+<li><p><strong>Test value over test count</strong> - Fewer, high-quality tests are better than many poor tests</p></li>
+<li><p><strong>Fast feedback loops</strong> - Tests should run quickly and frequently</p></li>
+</ul>
+</section>
+</section>
+<section id="the-testing-pyramid">
+<h2>The Testing Pyramid<a class="headerlink" href="#the-testing-pyramid" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="n">E2E</span> <span class="n">Tests</span> <span class="p">(</span><span class="n">Few</span><span class="p">)</span>
+       <span class="o">/</span>              \
+    <span class="n">Integration</span> <span class="n">Tests</span> <span class="p">(</span><span class="n">Some</span><span class="p">)</span>
+   <span class="o">/</span>                        \
+<span class="n">Unit</span> <span class="n">Tests</span> <span class="p">(</span><span class="n">Many</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="distribution-guidelines">
+<h3>Distribution Guidelines<a class="headerlink" href="#distribution-guidelines" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Unit Tests</strong>: 70% - Fast, isolated, test single units of functionality</p></li>
+<li><p><strong>Integration Tests</strong>: 20% - Test component interactions and contracts</p></li>
+<li><p><strong>End-to-End Tests</strong>: 10% - Test complete user workflows and critical paths</p></li>
+</ul>
+</section>
+<section id="pyramid-principles">
+<h3>Pyramid Principles<a class="headerlink" href="#pyramid-principles" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>More lower-level tests</strong> - Unit tests are fastest and most reliable</p></li>
+<li><p><strong>Each level has different purposes</strong> - Don’t duplicate testing across levels</p></li>
+<li><p><strong>Balance cost and confidence</strong> - Higher-level tests cost more but provide integration confidence</p></li>
+</ol>
+</section>
+</section>
+<section id="first-principles-foundational">
+<h2>FIRST Principles (Foundational)<a class="headerlink" href="#first-principles-foundational" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Fast</strong>: Tests should run in milliseconds, not seconds</p></li>
+<li><p><strong>Independent</strong>: Tests should not depend on each other or external state</p></li>
+<li><p><strong>Repeatable</strong>: Tests should produce consistent results in any environment</p></li>
+<li><p><strong>Self-validating</strong>: Tests should have clear pass/fail outcomes without manual inspection</p></li>
+<li><p><strong>Timely</strong>: Tests should be written at the right time (preferably before production code)</p></li>
+</ul>
+</section>
+<section id="test-driven-development-tdd">
+<h2>Test-Driven Development (TDD)<a class="headerlink" href="#test-driven-development-tdd" title="Link to this heading"></a></h2>
+<section id="red-green-refactor-cycle">
+<h3>Red-Green-Refactor Cycle<a class="headerlink" href="#red-green-refactor-cycle" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Red</strong>: Write a failing test that specifies desired behavior</p></li>
+<li><p><strong>Green</strong>: Write minimal code to make the test pass</p></li>
+<li><p><strong>Refactor</strong>: Improve code quality while keeping tests green</p></li>
+</ol>
+</section>
+<section id="tdd-benefits">
+<h3>TDD Benefits<a class="headerlink" href="#tdd-benefits" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Better design</strong> - Forces thinking about interfaces before implementation</p></li>
+<li><p><strong>Comprehensive coverage</strong> - Every line of code has a reason to exist</p></li>
+<li><p><strong>Living documentation</strong> - Tests serve as executable specifications</p></li>
+<li><p><strong>Regression protection</strong> - Changes that break behavior are caught immediately</p></li>
+</ul>
+</section>
+<section id="tdd-best-practices">
+<h3>TDD Best Practices<a class="headerlink" href="#tdd-best-practices" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Write the smallest failing test possible</strong></p></li>
+<li><p><strong>Make it pass with minimal code</strong></p></li>
+<li><p><strong>Refactor ruthlessly</strong> while keeping tests green</p></li>
+<li><p><strong>Don’t skip the refactor step</strong> - technical debt accumulates quickly</p></li>
+<li><p><strong>Write tests for behavior, not implementation</strong></p></li>
+</ol>
+</section>
+</section>
+<section id="test-structure-and-organization">
+<h2>Test Structure and Organization<a class="headerlink" href="#test-structure-and-organization" title="Link to this heading"></a></h2>
+<section id="aaa-pattern-arrange-act-assert">
+<h3>AAA Pattern (Arrange-Act-Assert)<a class="headerlink" href="#aaa-pattern-arrange-act-assert" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;UserService.createUser&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should create user with valid email and password&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Arrange</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;john.doe@example.com&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SecurePassword123!&#39;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">mockRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createMockRepository</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">UserService</span><span class="p">(</span><span class="nx">mockRepository</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Act</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="nx">userData</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Assert</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toMatchObject</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">expect</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Number</span><span class="p">),</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="nx">userData</span><span class="p">.</span><span class="nx">email</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">mockRepository</span><span class="p">.</span><span class="nx">save</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span>
+<span class="w">      </span><span class="nx">expect</span><span class="p">.</span><span class="nx">objectContaining</span><span class="p">(</span><span class="nx">userData</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="test-naming-conventions">
+<h3>Test Naming Conventions<a class="headerlink" href="#test-naming-conventions" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Use descriptive names</strong> that explain the scenario and expected outcome</p></li>
+<li><p><strong>Follow pattern</strong>: <code class="docutils literal notranslate"><span class="pre">should</span> <span class="pre">[expected</span> <span class="pre">behavior]</span> <span class="pre">when</span> <span class="pre">[condition]</span></code></p></li>
+<li><p><strong>Be specific</strong> about the context and expected result</p></li>
+<li><p><strong>Avoid technical jargon</strong> in favor of business language</p></li>
+</ul>
+</section>
+<section id="directory-structure">
+<h3>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src/
+├── components/
+│   ├── UserService.js
+│   └── __tests__/
+│       ├── UserService.test.js
+│       └── UserService.integration.test.js
+├── utils/
+│   ├── validation.js
+│   └── __tests__/
+│       └── validation.test.js
+└── __tests__/
+    ├── e2e/
+    │   └── user-registration.e2e.test.js
+    └── integration/
+        └── api-contracts.test.js
+</pre></div>
+</div>
+</section>
+</section>
+<section id="unit-testing-best-practices">
+<h2>Unit Testing Best Practices<a class="headerlink" href="#unit-testing-best-practices" title="Link to this heading"></a></h2>
+<section id="core-principles">
+<h3>Core Principles<a class="headerlink" href="#core-principles" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Test one thing at a time</strong> - Each test should verify a single behavior</p></li>
+<li><p><strong>Use meaningful test data</strong> - Avoid generic or nonsensical values</p></li>
+<li><p><strong>Mock external dependencies</strong> - Isolate the unit under test</p></li>
+<li><p><strong>Test edge cases</strong> - Include boundary conditions and error scenarios</p></li>
+<li><p><strong>Keep tests simple</strong> - Test code should be simpler than production code</p></li>
+</ol>
+</section>
+<section id="effective-mocking-strategies">
+<h3>Effective Mocking Strategies<a class="headerlink" href="#effective-mocking-strategies" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Good: Mock external dependencies</span>
+<span class="nx">jest</span><span class="p">.</span><span class="nx">mock</span><span class="p">(</span><span class="s1">&#39;../repositories/UserRepository&#39;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">mockUserRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../repositories/UserRepository&#39;</span><span class="p">);</span>
+
+<span class="nx">beforeEach</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">mockUserRepository</span><span class="p">.</span><span class="nx">findById</span><span class="p">.</span><span class="nx">mockReset</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">mockUserRepository</span><span class="p">.</span><span class="nx">save</span><span class="p">.</span><span class="nx">mockReset</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle repository errors gracefully&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Arrange</span>
+<span class="w">  </span><span class="nx">mockUserRepository</span><span class="p">.</span><span class="nx">save</span><span class="p">.</span><span class="nx">mockRejectedValue</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">&#39;Database connection failed&#39;</span><span class="p">));</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Act &amp; Assert</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="nx">validUserData</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">rejects</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Failed to create user&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="test-data-management">
+<h3>Test Data Management<a class="headerlink" href="#test-data-management" title="Link to this heading"></a></h3>
+<section id="builder-pattern">
+<h4>Builder Pattern<a class="headerlink" href="#builder-pattern" title="Link to this heading"></a></h4>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nx">UserTestDataBuilder</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">constructor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;john.doe@example.com&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="mf">30</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;user&#39;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">withName</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">name</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">withEmail</span><span class="p">(</span><span class="nx">email</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="p">.</span><span class="nx">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">email</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">withAge</span><span class="p">(</span><span class="nx">age</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="p">.</span><span class="nx">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">age</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">asAdmin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="p">.</span><span class="nx">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">build</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">userData</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Usage</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">adminUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">UserTestDataBuilder</span><span class="p">()</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">withName</span><span class="p">(</span><span class="s1">&#39;Admin User&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">withEmail</span><span class="p">(</span><span class="s1">&#39;admin@example.com&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">asAdmin</span><span class="p">()</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">build</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="object-mother-pattern">
+<h4>Object Mother Pattern<a class="headerlink" href="#object-mother-pattern" title="Link to this heading"></a></h4>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span><span class="w"> </span><span class="nx">UserMother</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="nx">validUser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;john.doe@example.com&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SecurePassword123!&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="mf">30</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="nx">userWithInvalidEmail</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">validUser</span><span class="p">(),</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;invalid-email-format&#39;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="nx">underageUser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">validUser</span><span class="p">(),</span>
+<span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="mf">15</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="nx">adminUser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="k">this</span><span class="p">.</span><span class="nx">validUser</span><span class="p">(),</span>
+<span class="w">      </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">permissions</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;write&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delete&#39;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="integration-testing-guidelines">
+<h2>Integration Testing Guidelines<a class="headerlink" href="#integration-testing-guidelines" title="Link to this heading"></a></h2>
+<section id="api-integration-tests">
+<h3>API Integration Tests<a class="headerlink" href="#api-integration-tests" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;User API Integration&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">app</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">testDb</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">beforeAll</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">testDb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createTestDatabase</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApp</span><span class="p">({</span><span class="w"> </span><span class="nx">database</span><span class="o">:</span><span class="w"> </span><span class="nx">testDb</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">afterAll</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">closeTestDatabase</span><span class="p">(</span><span class="nx">testDb</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">beforeEach</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">cleanTestData</span><span class="p">(</span><span class="nx">testDb</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should create user and return 201 with user data&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;john@example.com&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SecurePassword123!&#39;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/api/users&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">userData</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mf">201</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">body</span><span class="p">).</span><span class="nx">toMatchObject</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">expect</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Number</span><span class="p">),</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">userData</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="nx">userData</span><span class="p">.</span><span class="nx">email</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">password</span><span class="p">).</span><span class="nx">toBeUndefined</span><span class="p">();</span><span class="w"> </span><span class="c1">// Should not return password</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Verify data was actually saved</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">savedUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">testDb</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findById</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">savedUser</span><span class="p">).</span><span class="nx">toBeTruthy</span><span class="p">();</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="database-integration-tests">
+<h3>Database Integration Tests<a class="headerlink" href="#database-integration-tests" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;UserRepository Integration&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">repository</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">testDb</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">beforeAll</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">testDb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createTestDatabase</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">UserRepository</span><span class="p">(</span><span class="nx">testDb</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">afterEach</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">testDb</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">deleteAll</span><span class="p">();</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle concurrent user creation&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userData1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">UserMother</span><span class="p">.</span><span class="nx">validUser</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userData2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">UserMother</span><span class="p">.</span><span class="nx">validUser</span><span class="p">(),</span><span class="w"> </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;jane@example.com&#39;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Act: Create users concurrently</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">user1</span><span class="p">,</span><span class="w"> </span><span class="nx">user2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span>
+<span class="w">      </span><span class="nx">repository</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">userData1</span><span class="p">),</span>
+<span class="w">      </span><span class="nx">repository</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">userData2</span><span class="p">)</span>
+<span class="w">    </span><span class="p">]);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Assert: Both users should be created with unique IDs</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user1</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user2</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user1</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toBe</span><span class="p">(</span><span class="nx">user2</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">allUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">repository</span><span class="p">.</span><span class="nx">findAll</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">allUsers</span><span class="p">).</span><span class="nx">toHaveLength</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling-and-edge-case-testing">
+<h2>Error Handling and Edge Case Testing<a class="headerlink" href="#error-handling-and-edge-case-testing" title="Link to this heading"></a></h2>
+<section id="exception-testing">
+<h3>Exception Testing<a class="headerlink" href="#exception-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Error Handling&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should throw specific error with helpful message&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">calculator</span><span class="p">.</span><span class="nx">divide</span><span class="p">(</span><span class="mf">10</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}).</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Division by zero is not allowed&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle async errors properly&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">mockRepository</span><span class="p">.</span><span class="nx">findById</span><span class="p">.</span><span class="nx">mockRejectedValue</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">&#39;Database connection lost&#39;</span><span class="p">));</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">userService</span><span class="p">.</span><span class="nx">getUserById</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">rejects</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Failed to retrieve user data&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should validate input parameters&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}).</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;User data is required&#39;</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">({});</span>
+<span class="w">    </span><span class="p">}).</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Email is required&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="boundary-and-edge-cases">
+<h3>Boundary and Edge Cases<a class="headerlink" href="#boundary-and-edge-cases" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Edge Cases&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle empty input gracefully&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">sumArray</span><span class="p">([])).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">findMaxValue</span><span class="p">([])).</span><span class="nx">toBeNull</span><span class="p">();</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle null and undefined values&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">formatUserName</span><span class="p">(</span><span class="kc">null</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">formatUserName</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">formatUserName</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle extreme values&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">calculateInterest</span><span class="p">(</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="p">)).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">calculateInterest</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">calculateInterest</span><span class="p">(</span><span class="o">-</span><span class="mf">1000</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span><span class="w"> </span><span class="c1">// No negative principal</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle unicode and special characters&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">unicodeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;김철수&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">emojiName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;John 😀 Doe&#39;</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">validateName</span><span class="p">(</span><span class="nx">unicodeName</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">validateName</span><span class="p">(</span><span class="nx">emojiName</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="asynchronous-testing-patterns">
+<h2>Asynchronous Testing Patterns<a class="headerlink" href="#asynchronous-testing-patterns" title="Link to this heading"></a></h2>
+<section id="promise-based-testing">
+<h3>Promise-based Testing<a class="headerlink" href="#promise-based-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Async Operations&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle successful async operations&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchUserData</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toMatchObject</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">expect</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">String</span><span class="p">)</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle async rejections&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">fetchUserData</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">))</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">rejects</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;User not found&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should timeout long-running operations&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">jest</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="mf">5000</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">verySlowOperation</span><span class="p">())</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">rejects</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Operation timed out&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="mf">6000</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="callback-testing">
+<h3>Callback Testing<a class="headerlink" href="#callback-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Callback-based Operations&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle successful callbacks&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">done</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">getUserData</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">,</span><span class="w"> </span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">expect</span><span class="p">(</span><span class="nx">error</span><span class="p">).</span><span class="nx">toBeNull</span><span class="p">();</span>
+<span class="w">        </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">done</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">testError</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">done</span><span class="p">(</span><span class="nx">testError</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle callback errors&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">done</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">getUserData</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">,</span><span class="w"> </span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">expect</span><span class="p">(</span><span class="nx">error</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">expect</span><span class="p">.</span><span class="nx">objectContaining</span><span class="p">({</span>
+<span class="w">          </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;User not found&#39;</span>
+<span class="w">        </span><span class="p">}));</span>
+<span class="w">        </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user</span><span class="p">).</span><span class="nx">toBeUndefined</span><span class="p">();</span>
+<span class="w">        </span><span class="nx">done</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">testError</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">done</span><span class="p">(</span><span class="nx">testError</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-anti-patterns-to-avoid">
+<h2>Testing Anti-Patterns to Avoid<a class="headerlink" href="#testing-anti-patterns-to-avoid" title="Link to this heading"></a></h2>
+<section id="testing-implementation-details">
+<h3>1. Testing Implementation Details<a class="headerlink" href="#testing-implementation-details" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Bad: Testing internal implementation</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should call getUserFromDatabase method&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">spy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jest</span><span class="p">.</span><span class="nx">spyOn</span><span class="p">(</span><span class="nx">userService</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;getUserFromDatabase&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getUser</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">spy</span><span class="p">).</span><span class="nx">toHaveBeenCalled</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="c1">// Good: Testing behavior</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should return user data when valid ID is provided&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getUser</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">user</span><span class="p">).</span><span class="nx">toMatchObject</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">expect</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">String</span><span class="p">)</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="fragile-tests">
+<h3>2. Fragile Tests<a class="headerlink" href="#fragile-tests" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Bad: Test depends on specific order</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should return users in creation order&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getAllUsers</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">users</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">name</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">users</span><span class="p">[</span><span class="mf">1</span><span class="p">].</span><span class="nx">name</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Good: Test the important behavior</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should return all active users&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getAllUsers</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">users</span><span class="p">).</span><span class="nx">toHaveLength</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">users</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">user</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;active&#39;</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">users</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">u</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">u</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">names</span><span class="p">).</span><span class="nx">toContain</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">names</span><span class="p">).</span><span class="nx">toContain</span><span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="over-mocking">
+<h3>3. Over-Mocking<a class="headerlink" href="#over-mocking" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Bad: Mocking everything</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should process user data&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">mockValidator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jest</span><span class="p">.</span><span class="nx">mock</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">mockFormatter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jest</span><span class="p">.</span><span class="nx">mock</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">mockLogger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jest</span><span class="p">.</span><span class="nx">mock</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// ... too many mocks make the test meaningless</span>
+<span class="p">});</span>
+
+<span class="c1">// Good: Mock only external dependencies</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should process user data&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Only mock external service, test real validation and formatting</span>
+<span class="w">  </span><span class="nx">mockExternalService</span><span class="p">.</span><span class="nx">fetchUserData</span><span class="p">.</span><span class="nx">mockResolvedValue</span><span class="p">(</span><span class="nx">rawUserData</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">userProcessor</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toMatchObject</span><span class="p">(</span><span class="nx">expectedProcessedData</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="mystery-guest-hidden-test-data">
+<h3>4. Mystery Guest (Hidden Test Data)<a class="headerlink" href="#mystery-guest-hidden-test-data" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Bad: Mysterious test data</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should validate user&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span><span class="nx">testUser</span><span class="p">);</span><span class="w"> </span><span class="c1">// Where does testUser come from?</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Good: Clear test data</span>
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should validate user with all required fields&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">validUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;john@example.com&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="mf">30</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span><span class="nx">validUser</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="test-maintenance-and-refactoring">
+<h2>Test Maintenance and Refactoring<a class="headerlink" href="#test-maintenance-and-refactoring" title="Link to this heading"></a></h2>
+<section id="keeping-tests-dry">
+<h3>Keeping Tests DRY<a class="headerlink" href="#keeping-tests-dry" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;UserService&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">userService</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">mockRepository</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">beforeEach</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">mockRepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createMockRepository</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">userService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">UserService</span><span class="p">(</span><span class="nx">mockRepository</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">validUserData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">UserMother</span><span class="p">.</span><span class="nx">validUser</span><span class="p">();</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;createUser&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should create user with valid data&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">mockRepository</span><span class="p">.</span><span class="nx">save</span><span class="p">.</span><span class="nx">mockResolvedValue</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">validUserData</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="nx">validUserData</span><span class="p">);</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+<span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">email</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="nx">validUserData</span><span class="p">.</span><span class="nx">email</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should validate email format&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">invalidUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">validUserData</span><span class="p">,</span><span class="w"> </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;invalid-format&#39;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="nx">invalidUser</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">rejects</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;Invalid email format&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="test-evolution-with-code">
+<h3>Test Evolution with Code<a class="headerlink" href="#test-evolution-with-code" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// When refactoring from sync to async</span>
+<span class="c1">// Before</span>
+<span class="kd">class</span><span class="w"> </span><span class="nx">UserService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">createUser</span><span class="p">(</span><span class="nx">userData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">userData</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// After</span>
+<span class="kd">class</span><span class="w"> </span><span class="nx">UserService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">createUser</span><span class="p">(</span><span class="nx">userData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span><span class="nx">userData</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">userData</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Update tests accordingly</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;createUser&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should create user successfully&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Add async</span>
+<span class="w">    </span><span class="nx">mockRepository</span><span class="p">.</span><span class="nx">save</span><span class="p">.</span><span class="nx">mockResolvedValue</span><span class="p">(</span><span class="nx">expectedUser</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use mockResolvedValue</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">createUser</span><span class="p">(</span><span class="nx">validUserData</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add await</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">expectedUser</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-and-load-testing">
+<h2>Performance and Load Testing<a class="headerlink" href="#performance-and-load-testing" title="Link to this heading"></a></h2>
+<section id="performance-testing">
+<h3>Performance Testing<a class="headerlink" href="#performance-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Performance Tests&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should process large datasets efficiently&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">largeDataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">generateTestData</span><span class="p">(</span><span class="mf">10000</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">startTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">dataProcessor</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">largeDataset</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">endTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toHaveLength</span><span class="p">(</span><span class="mf">10000</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">endTime</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">startTime</span><span class="p">).</span><span class="nx">toBeLessThan</span><span class="p">(</span><span class="mf">1000</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should complete in under 1 second</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle concurrent requests&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">concurrentRequests</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Array</span><span class="p">.</span><span class="kr">from</span><span class="p">({</span><span class="w"> </span><span class="nx">length</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">(</span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getUserById</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">startTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">concurrentRequests</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">endTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">results</span><span class="p">).</span><span class="nx">toHaveLength</span><span class="p">(</span><span class="mf">100</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">user</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">endTime</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">startTime</span><span class="p">).</span><span class="nx">toBeLessThan</span><span class="p">(</span><span class="mf">5000</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should handle 100 concurrent requests in under 5 seconds</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="security-testing">
+<h2>Security Testing<a class="headerlink" href="#security-testing" title="Link to this heading"></a></h2>
+<section id="input-validation-testing">
+<h3>Input Validation Testing<a class="headerlink" href="#input-validation-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Security Tests&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should prevent SQL injection attempts&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">maliciousInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&#39;; DROP TABLE users; --&quot;</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">userService</span><span class="p">.</span><span class="nx">searchUsers</span><span class="p">(</span><span class="nx">maliciousInput</span><span class="p">))</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">not</span><span class="p">.</span><span class="nx">toThrow</span><span class="p">();</span><span class="w"> </span><span class="c1">// Should handle gracefully, not crash</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Verify no actual damage was done</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">usersStillExist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">userService</span><span class="p">.</span><span class="nx">getAllUsers</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">usersStillExist</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should sanitize HTML input&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">htmlInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sanitizeInput</span><span class="p">(</span><span class="nx">htmlInput</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toContain</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toContain</span><span class="p">(</span><span class="s1">&#39;alert&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should validate file upload types&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">executableFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;malware.exe&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/octet-stream&#39;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">fileUploadService</span><span class="p">.</span><span class="nx">validateFile</span><span class="p">(</span><span class="nx">executableFile</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}).</span><span class="nx">toThrow</span><span class="p">(</span><span class="s1">&#39;File type not allowed&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="test-coverage-and-quality-metrics">
+<h2>Test Coverage and Quality Metrics<a class="headerlink" href="#test-coverage-and-quality-metrics" title="Link to this heading"></a></h2>
+<section id="coverage-guidelines">
+<h3>Coverage Guidelines<a class="headerlink" href="#coverage-guidelines" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Aim for 80-90% code coverage</strong> as a baseline</p></li>
+<li><p><strong>Focus on critical path coverage</strong> - ensure important features are tested</p></li>
+<li><p><strong>Don’t chase 100% coverage</strong> at the expense of test quality</p></li>
+<li><p><strong>Use coverage to find untested code</strong>, not as the primary quality metric</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Quality Metrics<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Example: Testing critical business logic thoroughly</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;PaymentProcessor&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;processPayment&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Happy path</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should process valid payment successfully&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Error cases</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should reject payment with insufficient funds&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should reject payment with expired card&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should reject payment with invalid CVV&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Edge cases</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle exactly zero amount&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle maximum allowed amount&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle international transactions&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// Security</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should not log sensitive payment data&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should handle PCI compliance requirements&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-tools-and-frameworks">
+<h2>Testing Tools and Frameworks<a class="headerlink" href="#testing-tools-and-frameworks" title="Link to this heading"></a></h2>
+<section id="popular-testing-frameworks-by-language">
+<h3>Popular Testing Frameworks by Language<a class="headerlink" href="#popular-testing-frameworks-by-language" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>JavaScript</strong>: Jest, Vitest, Mocha, Cypress, Playwright</p></li>
+<li><p><strong>Python</strong>: pytest, unittest, nose2, Hypothesis</p></li>
+<li><p><strong>Java</strong>: JUnit 5, TestNG, Mockito, AssertJ</p></li>
+<li><p><strong>C#</strong>: xUnit, NUnit, MSTest, Moq</p></li>
+<li><p><strong>Ruby</strong>: RSpec, Test::Unit, FactoryBot</p></li>
+<li><p><strong>Go</strong>: testing package, Testify, Ginkgo</p></li>
+<li><p><strong>Rust</strong>: Built-in test framework, proptest</p></li>
+<li><p><strong>Swift</strong>: XCTest, Quick + Nimble</p></li>
+</ul>
+</section>
+<section id="essential-testing-utilities">
+<h3>Essential Testing Utilities<a class="headerlink" href="#essential-testing-utilities" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Mocking</strong>: Jest mocks, Sinon.js, Mockito, unittest.mock</p></li>
+<li><p><strong>Assertions</strong>: Chai, Should.js, Hamcrest, AssertJ</p></li>
+<li><p><strong>Test Data Generation</strong>: Faker.js, Factory Bot, Hypothesis</p></li>
+<li><p><strong>Coverage Tools</strong>: Istanbul, nyc, JaCoCo, Coverage.py</p></li>
+<li><p><strong>Load Testing</strong>: Artillery, k6, JMeter</p></li>
+</ul>
+</section>
+</section>
+<section id="best-practices-summary">
+<h2>Best Practices Summary<a class="headerlink" href="#best-practices-summary" title="Link to this heading"></a></h2>
+<section id="the-testing-commandments">
+<h3>The Testing Commandments<a class="headerlink" href="#the-testing-commandments" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Write tests first</strong> (TDD approach when possible)</p></li>
+<li><p><strong>Test behavior, not implementation</strong></p></li>
+<li><p><strong>Keep tests simple and focused</strong></p></li>
+<li><p><strong>Use descriptive test names</strong></p></li>
+<li><p><strong>Mock external dependencies appropriately</strong></p></li>
+<li><p><strong>Test edge cases and error conditions</strong></p></li>
+<li><p><strong>Maintain test independence</strong></p></li>
+<li><p><strong>Keep test code clean and maintainable</strong></p></li>
+<li><p><strong>Run tests frequently and fix failures immediately</strong></p></li>
+<li><p><strong>Review and refactor tests regularly</strong></p></li>
+</ol>
+</section>
+<section id="test-quality-checklist">
+<h3>Test Quality Checklist<a class="headerlink" href="#test-quality-checklist" title="Link to this heading"></a></h3>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests have clear, descriptive names</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests follow AAA pattern (Arrange-Act-Assert)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Each test verifies one specific behavior</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> External dependencies are properly mocked</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Edge cases and error conditions are covered</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests run fast and don’t depend on external services</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Test data is meaningful and realistic</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests are independent of each other</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Code coverage is adequate for critical paths</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Tests serve as living documentation</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-testing-patterns">
+<h2>Advanced Testing Patterns<a class="headerlink" href="#advanced-testing-patterns" title="Link to this heading"></a></h2>
+<section id="contract-testing">
+<h3>Contract Testing<a class="headerlink" href="#contract-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// API Contract Tests</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;User API Contract&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should match expected response schema&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/users/1&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mf">200</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">body</span><span class="p">).</span><span class="nx">toMatchSchema</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;object&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">properties</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;number&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;string&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;string&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">format</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;email&#39;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">createdAt</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;string&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">format</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;date-time&#39;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;email&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;createdAt&#39;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="property-based-testing">
+<h3>Property-Based Testing<a class="headerlink" href="#property-based-testing" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Using fast-check for property-based testing</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;String utilities&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should preserve length when reversing strings&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fc</span><span class="p">.</span><span class="nx">assert</span><span class="p">(</span>
+<span class="w">      </span><span class="nx">fc</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span><span class="nx">fc</span><span class="p">.</span><span class="nx">string</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="nx">str</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">reversed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">reverseString</span><span class="p">(</span><span class="nx">str</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">reversed</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">str</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">      </span><span class="p">})</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should be idempotent when applied twice&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fc</span><span class="p">.</span><span class="nx">assert</span><span class="p">(</span>
+<span class="w">      </span><span class="nx">fc</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span><span class="nx">fc</span><span class="p">.</span><span class="nx">string</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="nx">str</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">doubleReversed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">reverseString</span><span class="p">(</span><span class="nx">reverseString</span><span class="p">(</span><span class="nx">str</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">doubleReversed</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">str</span><span class="p">;</span>
+<span class="w">      </span><span class="p">})</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>This guide synthesizes best practices from:</p>
+<ul class="simple">
+<li><p>“The Art of Unit Testing” by Roy Osherove</p></li>
+<li><p>“Unit Testing Principles, Practices, and Patterns” by Vladimir Khorikov (Manning, 2020)</p></li>
+<li><p>“Growing Object-Oriented Software, Guided by Tests” by Steve Freeman &amp; Nat Pryce</p></li>
+<li><p>“How Google Tests Software” by James Whittaker, Jason Arbon &amp; Jeff Carollo</p></li>
+<li><p>“Effective Unit Testing” by Lasse Koskela</p></li>
+<li><p>“xUnit Test Patterns: Refactoring Test Code” by Gerard Meszaros</p></li>
+<li><p>Industry best practices from Google, Microsoft, and other leading software organizations</p></li>
+</ul>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>19 SciTeX Db &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="20 SciTeX Tex" href="20_scitex_tex.html" />
+    <link rel="prev" title="16 SciTeX Scholar" href="16_scitex_scholar.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SciTeX Examples and Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#research-tools">Research Tools</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">SciTeX Examples and Tutorials</a></li>
+      <li class="breadcrumb-item active">19 SciTeX Db</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/examples/19_scitex_db.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scitex-db">
+<h1>19 SciTeX Db<a class="headerlink" href="#scitex-db" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page is generated from the Jupyter notebook <a class="reference external" href="https://github.com/scitex/scitex/blob/main/examples/19_scitex_db.ipynb">19_scitex_db.ipynb</a></p>
+<p>To run this notebook interactively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/
+jupyter<span class="w"> </span>notebook<span class="w"> </span>19_scitex_db.ipynb
+</pre></div>
+</div>
+</div>
+<p>This notebook demonstrates the complete functionality of the
+<code class="docutils literal notranslate"><span class="pre">scitex.db</span></code> module, which provides database operations and utilities
+for scientific data management.</p>
+<section id="module-overview">
+<h2>Module Overview<a class="headerlink" href="#module-overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">scitex.db</span></code> module includes: - SQLite3 database management with
+comprehensive mixins - PostgreSQL database operations - Database
+inspection and analysis tools - Duplicate data detection and removal</p>
+</section>
+<section id="import-setup">
+<h2>Import Setup<a class="headerlink" href="#import-setup" title="Link to this heading"></a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../src&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Import scitex db module</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scitex.db</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sdb</span>
+
+<span class="c1"># Set random seed for reproducibility</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available classes/functions in scitex.db:&quot;</span><span class="p">)</span>
+<span class="n">db_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">sdb</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">db_attrs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="database-inspection-tools">
+<h2>1. Database Inspection Tools<a class="headerlink" href="#database-inspection-tools" title="Link to this heading"></a></h2>
+<section id="creating-sample-database">
+<h3>Creating Sample Database<a class="headerlink" href="#creating-sample-database" title="Link to this heading"></a></h3>
+<p>Let’s start by creating a sample database for demonstration purposes.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 1: Create sample database for demonstration</span>
+<span class="c1"># Create temporary database file</span>
+<span class="n">temp_db</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.db&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">db_path</span> <span class="o">=</span> <span class="n">temp_db</span><span class="o">.</span><span class="n">name</span>
+<span class="n">temp_db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating sample database at: </span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create sample data</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Experimental data table</span>
+<span class="n">experiments_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;experiment_id&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
+    <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;S</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s1">03d</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">)],</span>
+    <span class="s1">&#39;condition&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;control&#39;</span><span class="p">,</span> <span class="s1">&#39;treatment_A&#39;</span><span class="p">,</span> <span class="s1">&#39;treatment_B&#39;</span><span class="p">],</span> <span class="mi">20</span><span class="p">),</span>
+    <span class="s1">&#39;measurement&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+    <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Subjects metadata table</span>
+<span class="n">subjects_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;S</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s1">03d</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)],</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">],</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Time series data table</span>
+<span class="n">time_series_data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">exp_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>  <span class="c1"># First 5 experiments have time series</span>
+    <span class="n">n_points</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">time_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">time_points</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_points</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">signal</span><span class="p">)):</span>
+        <span class="n">time_series_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;experiment_id&#39;</span><span class="p">:</span> <span class="n">exp_id</span><span class="p">,</span>
+            <span class="s1">&#39;time_point&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+            <span class="s1">&#39;time_value&#39;</span><span class="p">:</span> <span class="n">t</span><span class="p">,</span>
+            <span class="s1">&#39;signal_value&#39;</span><span class="p">:</span> <span class="n">s</span>
+        <span class="p">})</span>
+
+<span class="c1"># Create database and tables</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+
+<span class="c1"># Experiments table</span>
+<span class="n">experiments_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">experiments_data</span><span class="p">)</span>
+<span class="n">experiments_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Subjects table</span>
+<span class="n">subjects_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">subjects_data</span><span class="p">)</span>
+<span class="n">subjects_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;subjects&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Time series table</span>
+<span class="n">time_series_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">time_series_data</span><span class="p">)</span>
+<span class="n">time_series_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;time_series&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample database created with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">experiments_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> experiments&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of subjects: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subjects_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of time series points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="database-inspection">
+<h3>Database Inspection<a class="headerlink" href="#database-inspection" title="Link to this heading"></a></h3>
+<p>Now let’s use the <code class="docutils literal notranslate"><span class="pre">inspect</span></code> function to examine our database.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 2: Database inspection</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Database Inspection:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Inspect all tables</span>
+    <span class="n">inspection_results</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">db_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of tables inspected: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inspection_results</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show structure of each inspection result</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inspection_results</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Table </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> structure:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during inspection: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require additional dependencies or configuration.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 3: Inspect specific tables</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inspecting specific tables:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Inspect only experiments table</span>
+    <span class="n">experiments_inspection</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">db_path</span><span class="p">,</span> <span class="n">table_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Inspect only subjects table</span>
+    <span class="n">subjects_inspection</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">db_path</span><span class="p">,</span> <span class="n">table_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;subjects&#39;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Specific table inspection completed.&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during specific table inspection: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sqlite3-database-management">
+<h2>2. SQLite3 Database Management<a class="headerlink" href="#sqlite3-database-management" title="Link to this heading"></a></h2>
+<section id="basic-sqlite3-operations">
+<h3>Basic SQLite3 Operations<a class="headerlink" href="#basic-sqlite3-operations" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate the comprehensive SQLite3 class functionality.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 4: SQLite3 database management</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SQLite3 Database Management:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Initialize SQLite3 database manager</span>
+    <span class="n">db_manager</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">SQLite3</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database manager initialized for: </span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SQLite3 class available methods:&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show available methods</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">db_manager</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">methods</span><span class="p">[:</span><span class="mi">10</span><span class="p">]):</span>  <span class="c1"># Show first 10 methods</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">methods</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">methods</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s2"> more methods&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Call the database summary</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Database Summary:&quot;</span><span class="p">)</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">db_manager</span><span class="p">(</span><span class="n">print_summary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error with SQLite3 manager: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require additional dependencies or configuration.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="database-querying">
+<h3>Database Querying<a class="headerlink" href="#database-querying" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate database querying capabilities.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 5: Database querying</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Database Querying Examples:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="c1"># Direct SQL queries for demonstration</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Query 1: Basic select</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Basic SELECT query:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM experiments LIMIT 5&quot;</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+    <span class="c1"># Get column names</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA table_info(experiments)&quot;</span><span class="p">)</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns: </span><span class="si">{</span><span class="n">columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First 5 experiments:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Query 2: Aggregation</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Aggregation query:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT condition,</span>
+<span class="s2">               COUNT(*) as count,</span>
+<span class="s2">               AVG(measurement) as avg_measurement,</span>
+<span class="s2">               ROUND(AVG(measurement), 2) as avg_rounded</span>
+<span class="s2">        FROM experiments</span>
+<span class="s2">        GROUP BY condition</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">agg_results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results by condition:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">agg_results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Condition: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, Count: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, Avg: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Query 3: Join query</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. JOIN query:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT e.experiment_id, e.condition, e.measurement, s.age, s.gender</span>
+<span class="s2">        FROM experiments e</span>
+<span class="s2">        JOIN subjects s ON e.subject_id = s.subject_id</span>
+<span class="s2">        LIMIT 5</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">join_results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Experiment data with subject info:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">join_results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Exp </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, measurement=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, subject: age=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">, gender=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Query 4: Statistical analysis</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4. Statistical analysis:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT</span>
+<span class="s2">            COUNT(*) as total_experiments,</span>
+<span class="s2">            MIN(measurement) as min_measurement,</span>
+<span class="s2">            MAX(measurement) as max_measurement,</span>
+<span class="s2">            AVG(measurement) as mean_measurement,</span>
+<span class="s2">            COUNT(DISTINCT subject_id) as unique_subjects</span>
+<span class="s2">        FROM experiments</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total experiments: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measurement range: [</span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean measurement: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique subjects: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during querying: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="duplicate-detection-and-removal">
+<h2>3. Duplicate Detection and Removal<a class="headerlink" href="#duplicate-detection-and-removal" title="Link to this heading"></a></h2>
+<section id="creating-data-with-duplicates">
+<h3>Creating Data with Duplicates<a class="headerlink" href="#creating-data-with-duplicates" title="Link to this heading"></a></h3>
+<p>Let’s create a database with duplicate entries to demonstrate the
+duplicate removal functionality.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 6: Create database with duplicates</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating database with duplicate entries:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
+
+<span class="c1"># Create temporary database with duplicates</span>
+<span class="n">temp_dup_db</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.db&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dup_db_path</span> <span class="o">=</span> <span class="n">temp_dup_db</span><span class="o">.</span><span class="n">name</span>
+<span class="n">temp_dup_db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Create sample data with intentional duplicates</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Original data</span>
+<span class="n">original_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Item_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">)],</span>
+    <span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="mi">20</span><span class="p">),</span>
+    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+    <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">original_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">original_data</span><span class="p">)</span>
+
+<span class="c1"># Create duplicates by repeating some rows</span>
+<span class="n">duplicate_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>  <span class="c1"># Duplicate these rows</span>
+<span class="n">duplicated_rows</span> <span class="o">=</span> <span class="n">original_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">duplicate_indices</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">duplicated_rows</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>  <span class="c1"># Give new IDs to duplicates</span>
+
+<span class="c1"># Combine original and duplicated data</span>
+<span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">original_df</span><span class="p">,</span> <span class="n">duplicated_rows</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create database with duplicates</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dup_db_path</span><span class="p">)</span>
+<span class="n">combined_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;test_data&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created database with duplicates at: </span><span class="si">{</span><span class="n">dup_db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original entries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate entries added: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicated_rows</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total entries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">combined_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Show the data structure</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First few entries:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">combined_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Duplicated entries (different IDs, same other data):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">duplicate_indices</span><span class="p">:</span>
+    <span class="n">original_row</span> <span class="o">=</span> <span class="n">original_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">duplicate_row</span> <span class="o">=</span> <span class="n">duplicated_rows</span><span class="p">[</span><span class="n">duplicated_rows</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">duplicate_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original: ID=</span><span class="si">{</span><span class="n">original_row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Name=</span><span class="si">{</span><span class="n">original_row</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Category=</span><span class="si">{</span><span class="n">original_row</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate: ID=</span><span class="si">{</span><span class="n">duplicate_row</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Name=</span><span class="si">{</span><span class="n">duplicate_row</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Category=</span><span class="si">{</span><span class="n">duplicate_row</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Duplicate Detection and Removal<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Now let’s use the <code class="docutils literal notranslate"><span class="pre">delete_duplicates</span></code> function to identify and remove
+duplicates.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 7: Duplicate detection and removal (dry run)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Duplicate Detection and Removal:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># First, do a dry run to see what would be removed</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. DRY RUN - Detecting duplicates:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+    <span class="c1"># Exclude &#39;id&#39; column from duplicate detection (since IDs are unique)</span>
+    <span class="n">columns_to_check</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]</span>
+
+    <span class="n">dry_run_result</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">delete_duplicates</span><span class="p">(</span>
+        <span class="n">dup_db_path</span><span class="p">,</span>
+        <span class="s1">&#39;test_data&#39;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">columns_to_check</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dry_run_result</span><span class="p">:</span>
+        <span class="n">total_processed</span><span class="p">,</span> <span class="n">total_duplicates</span> <span class="o">=</span> <span class="n">dry_run_result</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Dry run results:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total rows that would be processed: </span><span class="si">{</span><span class="n">total_processed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total duplicates that would be removed: </span><span class="si">{</span><span class="n">total_duplicates</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Now do the actual removal</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. ACTUAL REMOVAL - Removing duplicates:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+    <span class="n">actual_result</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">delete_duplicates</span><span class="p">(</span>
+        <span class="n">dup_db_path</span><span class="p">,</span>
+        <span class="s1">&#39;test_data&#39;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">columns_to_check</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">actual_result</span><span class="p">:</span>
+        <span class="n">total_processed</span><span class="p">,</span> <span class="n">total_duplicates</span> <span class="o">=</span> <span class="n">actual_result</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Actual removal results:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total rows processed: </span><span class="si">{</span><span class="n">total_processed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total duplicates removed: </span><span class="si">{</span><span class="n">total_duplicates</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Verify the results</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. VERIFICATION - Checking results:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dup_db_path</span><span class="p">)</span>
+    <span class="n">remaining_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM test_data&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remaining entries after duplicate removal: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">remaining_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected unique entries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">original_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if there are still duplicates</span>
+    <span class="n">duplicate_check</span> <span class="o">=</span> <span class="n">remaining_df</span><span class="p">[</span><span class="n">columns_to_check</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remaining duplicates: </span><span class="si">{</span><span class="n">duplicate_check</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">duplicate_check</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ All duplicates successfully removed!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠ Some duplicates may still remain.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show final data</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Final data sample:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">remaining_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during duplicate removal: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This might require additional dependencies or configuration.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="postgresql-database-operations">
+<h2>4. PostgreSQL Database Operations<a class="headerlink" href="#postgresql-database-operations" title="Link to this heading"></a></h2>
+<section id="postgresql-class-demonstration">
+<h3>PostgreSQL Class Demonstration<a class="headerlink" href="#postgresql-class-demonstration" title="Link to this heading"></a></h3>
+<p>Note: PostgreSQL operations require a running PostgreSQL server and
+proper credentials.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 8: PostgreSQL operations (conceptual demonstration)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PostgreSQL Database Operations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Note: This will likely fail without a running PostgreSQL server</span>
+    <span class="c1"># This is just to show the interface</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attempting to create PostgreSQL connection...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(This will likely fail without a running PostgreSQL server)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show available PostgreSQL class</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">PostgreSQL class available: </span><span class="si">{</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">sdb</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PostgreSQL&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sdb</span><span class="p">,</span> <span class="s1">&#39;PostgreSQL&#39;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PostgreSQL class methods:&quot;</span><span class="p">)</span>
+        <span class="n">postgres_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">sdb</span><span class="o">.</span><span class="n">PostgreSQL</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">postgres_methods</span><span class="p">[:</span><span class="mi">10</span><span class="p">]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">postgres_methods</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">postgres_methods</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s2"> more methods&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Conceptual usage (would require actual PostgreSQL server)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Conceptual usage:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# pg_db = sdb.PostgreSQL(&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#     dbname=&#39;scientific_data&#39;,&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#     user=&#39;researcher&#39;,&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#     password=&#39;password&#39;,&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#     host=&#39;localhost&#39;,&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#     port=5432&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# )&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# pg_db.connect()&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# results = pg_db.query(&#39;SELECT * FROM experiments&#39;)&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PostgreSQL operations not available: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This requires psycopg2 and a running PostgreSQL server.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="practical-applications">
+<h2>5. Practical Applications<a class="headerlink" href="#practical-applications" title="Link to this heading"></a></h2>
+<section id="scientific-data-management-workflow">
+<h3>Scientific Data Management Workflow<a class="headerlink" href="#scientific-data-management-workflow" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate a complete scientific data management workflow.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 9: Complete scientific data management workflow</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scientific Data Management Workflow:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># Create a more complex scientific database</span>
+<span class="n">workflow_db</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.db&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">workflow_db_path</span> <span class="o">=</span> <span class="n">workflow_db</span><span class="o">.</span><span class="n">name</span>
+<span class="n">workflow_db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating scientific database at: </span><span class="si">{</span><span class="n">workflow_db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Simulate experimental setup</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># 1. Experimental conditions</span>
+<span class="n">conditions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;condition_id&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="s1">&#39;condition_name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;low_dose&#39;</span><span class="p">,</span> <span class="s1">&#39;medium_dose&#39;</span><span class="p">,</span> <span class="s1">&#39;high_dose&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;dose_mg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;Control condition&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Low dose treatment&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Medium dose treatment&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;High dose treatment&#39;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># 2. Subject information</span>
+<span class="n">n_subjects</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">subjects</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;SUBJ_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s1">03d</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_subjects</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">n_subjects</span><span class="p">),</span>
+    <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">],</span> <span class="n">n_subjects</span><span class="p">),</span>
+    <span class="s1">&#39;weight_kg&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">n_subjects</span><span class="p">),</span>
+    <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;experimental&#39;</span><span class="p">,</span> <span class="s1">&#39;control&#39;</span><span class="p">],</span> <span class="n">n_subjects</span><span class="p">),</span>
+    <span class="s1">&#39;enrollment_date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">n_subjects</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># 3. Measurements (multiple per subject)</span>
+<span class="n">measurements</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">measurement_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">subject_id</span> <span class="ow">in</span> <span class="n">subjects</span><span class="p">[</span><span class="s1">&#39;subject_id&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">condition_id</span> <span class="ow">in</span> <span class="n">conditions</span><span class="p">[</span><span class="s1">&#39;condition_id&#39;</span><span class="p">]:</span>
+        <span class="c1"># Each subject gets 3 measurements per condition</span>
+        <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="c1"># Simulate dose-response relationship</span>
+            <span class="n">dose</span> <span class="o">=</span> <span class="n">conditions</span><span class="p">[</span><span class="s1">&#39;dose_mg&#39;</span><span class="p">][</span><span class="n">condition_id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">baseline_response</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="n">dose_effect</span> <span class="o">=</span> <span class="n">dose</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">baseline_response</span> <span class="o">+</span> <span class="n">dose_effect</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+            <span class="n">measurements</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;measurement_id&#39;</span><span class="p">:</span> <span class="n">measurement_id</span><span class="p">,</span>
+                <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span> <span class="n">subject_id</span><span class="p">,</span>
+                <span class="s1">&#39;condition_id&#39;</span><span class="p">:</span> <span class="n">condition_id</span><span class="p">,</span>
+                <span class="s1">&#39;replicate&#39;</span><span class="p">:</span> <span class="n">rep</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s1">&#39;response_value&#39;</span><span class="p">:</span> <span class="n">response</span><span class="p">,</span>
+                <span class="s1">&#39;measurement_date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">measurement_id</span><span class="p">),</span>
+                <span class="s1">&#39;quality_score&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="p">})</span>
+            <span class="n">measurement_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># 4. Create database</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">)</span>
+
+<span class="c1"># Create tables</span>
+<span class="n">conditions_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">conditions</span><span class="p">)</span>
+<span class="n">subjects_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">subjects</span><span class="p">)</span>
+<span class="n">measurements_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">measurements</span><span class="p">)</span>
+
+<span class="n">conditions_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;conditions&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">subjects_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;subjects&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">measurements_df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;measurements&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database created with:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">conditions_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> experimental conditions&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subjects_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> subjects&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">measurements_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> measurements&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5. Inspect the database</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Inspecting the scientific database:&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">inspection_results</span> <span class="o">=</span> <span class="n">sdb</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully inspected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inspection_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> tables&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inspection error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 6. Perform scientific analysis queries</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Scientific Analysis Queries:&quot;</span><span class="p">)</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Analysis 1: Dose-response relationship</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT c.condition_name, c.dose_mg,</span>
+<span class="s2">               COUNT(m.measurement_id) as n_measurements,</span>
+<span class="s2">               AVG(m.response_value) as mean_response,</span>
+<span class="s2">               ROUND(AVG(m.response_value), 2) as mean_rounded,</span>
+<span class="s2">               MIN(m.response_value) as min_response,</span>
+<span class="s2">               MAX(m.response_value) as max_response</span>
+<span class="s2">        FROM measurements m</span>
+<span class="s2">        JOIN conditions c ON m.condition_id = c.condition_id</span>
+<span class="s2">        GROUP BY c.condition_id, c.condition_name, c.dose_mg</span>
+<span class="s2">        ORDER BY c.dose_mg</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">dose_response</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">1. Dose-Response Analysis:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Condition</span><span class="se">\t\t</span><span class="s2">Dose (mg)</span><span class="se">\t</span><span class="s2">N</span><span class="se">\t</span><span class="s2">Mean Response</span><span class="se">\t</span><span class="s2">Range&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">65</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dose_response</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">15s</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">8.0f</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="si">:</span><span class="s2">11.2f</span><span class="si">}</span><span class="se">\t</span><span class="s2">[</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Analysis 2: Subject demographics</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT gender,</span>
+<span class="s2">               COUNT(*) as count,</span>
+<span class="s2">               AVG(age) as avg_age,</span>
+<span class="s2">               AVG(weight_kg) as avg_weight</span>
+<span class="s2">        FROM subjects</span>
+<span class="s2">        GROUP BY gender</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">demographics</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Subject Demographics:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gender</span><span class="se">\t</span><span class="s2">Count</span><span class="se">\t</span><span class="s2">Avg Age</span><span class="se">\t</span><span class="s2">Avg Weight (kg)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">demographics</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Analysis 3: Data quality assessment</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT</span>
+<span class="s2">            COUNT(*) as total_measurements,</span>
+<span class="s2">            AVG(quality_score) as avg_quality,</span>
+<span class="s2">            COUNT(CASE WHEN quality_score &lt; 0.8 THEN 1 END) as low_quality_count,</span>
+<span class="s2">            ROUND(COUNT(CASE WHEN quality_score &lt; 0.8 THEN 1 END) * 100.0 / COUNT(*), 2) as low_quality_percent</span>
+<span class="s2">        FROM measurements</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">quality</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Data Quality Assessment:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total measurements: </span><span class="si">{</span><span class="n">quality</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average quality score: </span><span class="si">{</span><span class="n">quality</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Low quality measurements (&lt;0.8): </span><span class="si">{</span><span class="n">quality</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">quality</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analysis error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="database-maintenance-and-optimization">
+<h3>Database Maintenance and Optimization<a class="headerlink" href="#database-maintenance-and-optimization" title="Link to this heading"></a></h3>
+<p>Let’s demonstrate database maintenance operations.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 10: Database maintenance and optimization</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Database Maintenance and Optimization:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="c1"># Check database file size before maintenance</span>
+<span class="n">db_size_before</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database size before maintenance: </span><span class="si">{</span><span class="n">db_size_before</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+
+<span class="c1"># Perform maintenance operations</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># 1. Analyze database structure</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">1. Database Structure Analysis:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;&quot;</span><span class="p">)</span>
+    <span class="n">tables</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of tables: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT COUNT(*) FROM </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">row_count</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2. Check for indexes</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Index Analysis:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name, tbl_name, sql FROM sqlite_master WHERE type=&#39;index&#39;&quot;</span><span class="p">)</span>
+    <span class="n">indexes</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of indexes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Create useful indexes for scientific queries</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Creating Indexes for Performance:&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Index on measurements for faster joins</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE INDEX IF NOT EXISTS idx_measurements_subject ON measurements(subject_id)&quot;</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE INDEX IF NOT EXISTS idx_measurements_condition ON measurements(condition_id)&quot;</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE INDEX IF NOT EXISTS idx_measurements_date ON measurements(measurement_date)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Created indexes on measurements table&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ Error creating indexes: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 4. Database statistics</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4. Database Statistics:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA database_list&quot;</span><span class="p">)</span>
+    <span class="n">db_info</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database info: </span><span class="si">{</span><span class="n">db_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check page count and size</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA page_count&quot;</span><span class="p">)</span>
+    <span class="n">page_count</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA page_size&quot;</span><span class="p">)</span>
+    <span class="n">page_size</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pages: </span><span class="si">{</span><span class="n">page_count</span><span class="si">}</span><span class="s2">, Page size: </span><span class="si">{</span><span class="n">page_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Calculated DB size: </span><span class="si">{</span><span class="n">page_count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">page_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 5. Vacuum database to reclaim space</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">5. Database Vacuum Operation:&quot;</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;VACUUM&quot;</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Database vacuumed successfully&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 6. Update statistics</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;ANALYZE&quot;</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Database statistics updated&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maintenance error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Check database size after maintenance</span>
+<span class="n">db_size_after</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">workflow_db_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Database size after maintenance: </span><span class="si">{</span><span class="n">db_size_after</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+<span class="n">size_change</span> <span class="o">=</span> <span class="n">db_size_after</span> <span class="o">-</span> <span class="n">db_size_before</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size change: </span><span class="si">{</span><span class="n">size_change</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">size_change</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Space saved: </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">size_change</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">size_change</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Space used (indexes): </span><span class="si">{</span><span class="n">size_change</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No size change&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cleanup">
+<h2>6. Cleanup<a class="headerlink" href="#cleanup" title="Link to this heading"></a></h2>
+<p>Let’s clean up the temporary databases created during this
+demonstration.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 11: Cleanup temporary databases</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cleaning up temporary databases:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="n">temp_databases</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">db_path</span><span class="p">,</span> <span class="s2">&quot;Sample database&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">dup_db_path</span><span class="p">,</span> <span class="s2">&quot;Duplicate test database&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">workflow_db_path</span><span class="p">,</span> <span class="s2">&quot;Scientific workflow database&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">db_file</span><span class="p">,</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">temp_databases</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">db_file</span><span class="p">):</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Removed </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Error removing </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cleanup complete!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>This notebook has demonstrated the comprehensive functionality of the
+<code class="docutils literal notranslate"><span class="pre">scitex.db</span></code> module:</p>
+<section id="database-management-classes">
+<h3>Database Management Classes<a class="headerlink" href="#database-management-classes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>``SQLite3``</strong>: Comprehensive SQLite database management with
+multiple mixins</p>
+<ul>
+<li><p>Connection management</p></li>
+<li><p>Query operations</p></li>
+<li><p>Transaction handling</p></li>
+<li><p>Table operations</p></li>
+<li><p>Index management</p></li>
+<li><p>Batch operations</p></li>
+<li><p>BLOB handling</p></li>
+<li><p>Import/Export capabilities</p></li>
+<li><p>Maintenance operations</p></li>
+</ul>
+</li>
+<li><p><strong>``PostgreSQL``</strong>: Enterprise-grade PostgreSQL database operations</p>
+<ul>
+<li><p>Advanced connection management</p></li>
+<li><p>Schema operations</p></li>
+<li><p>Backup and restore</p></li>
+<li><p>Performance optimization</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="utility-functions">
+<h3>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>``inspect``</strong>: Database structure analysis and exploration</p>
+<ul>
+<li><p>Table enumeration</p></li>
+<li><p>Schema inspection</p></li>
+<li><p>Sample data viewing</p></li>
+<li><p>Metadata extraction</p></li>
+</ul>
+</li>
+<li><p><strong>``delete_duplicates``</strong>: Intelligent duplicate detection and
+removal</p>
+<ul>
+<li><p>Flexible column selection</p></li>
+<li><p>Batch processing for large datasets</p></li>
+<li><p>Dry-run capability for safety</p></li>
+<li><p>Performance optimization</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Scientific Focus</strong>: Designed for research data management</p></li>
+<li><p><strong>Robustness</strong>: Comprehensive error handling and validation</p></li>
+<li><p><strong>Performance</strong>: Optimized for large scientific datasets</p></li>
+<li><p><strong>Flexibility</strong>: Support for various database operations</p></li>
+<li><p><strong>Safety</strong>: Dry-run modes and transaction management</p></li>
+</ol>
+</section>
+<section id="id2">
+<h3>Practical Applications<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Experimental Data Storage</strong>: Structured storage of research data</p></li>
+<li><p><strong>Data Quality Control</strong>: Duplicate detection and removal</p></li>
+<li><p><strong>Database Inspection</strong>: Quick exploration of database contents</p></li>
+<li><p><strong>Performance Optimization</strong>: Index creation and maintenance</p></li>
+<li><p><strong>Multi-database Support</strong>: SQLite for local work, PostgreSQL for
+enterprise</p></li>
+</ul>
+</section>
+<section id="use-cases">
+<h3>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Laboratory data management</p></li>
+<li><p>Clinical trial databases</p></li>
+<li><p>Sensor data collection</p></li>
+<li><p>Experimental result archiving</p></li>
+<li><p>Scientific collaboration platforms</p></li>
+<li><p>Research data repositories</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">scitex.db</span></code> module provides a complete toolkit for scientific
+database management, from simple data storage to complex multi-table
+research databases with advanced querying and maintenance capabilities.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="16_scitex_scholar.html" class="btn btn-neutral float-left" title="16 SciTeX Scholar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="20_scitex_tex.html" class="btn btn-neutral float-right" title="20 SciTeX Tex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

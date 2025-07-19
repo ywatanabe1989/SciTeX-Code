@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-02 00:08:10 (ywatanabe)"
+# Timestamp: "2025-07-19 11:25:00 (ywatanabe)"
 # File: ./src/scitex/scholar/__init__.py
 # ----------------------------------------
 import os
@@ -9,93 +9,145 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-"""Scitex scholar module for scientific literature search and analysis."""
 
-# Core legacy imports
-from ._local_search import LocalSearchEngine
-from ._paper import Paper
-from ._pdf_downloader import PDFDownloader
-from ._search import build_index, get_scholar_dir, search_sync
-from ._vector_search import VectorSearchEngine
+"""
+SciTeX Scholar - Scientific Literature Management Made Simple
 
-# Enhanced functionality imports
-try:
-    from ._paper_acquisition import PaperAcquisition, PaperMetadata, search_papers_with_ai, full_literature_review
-except ImportError:
-    PaperAcquisition = None
-    PaperMetadata = None
-    search_papers_with_ai = None
-    full_literature_review = None
+This module provides a unified interface for:
+- Searching scientific literature across multiple sources
+- Automatic paper enrichment with journal metrics
+- PDF downloads and local library management
+- Bibliography generation in multiple formats
 
-try:
-    from ._semantic_scholar_client import SemanticScholarClient, S2Paper, search_papers, get_paper_info
-except ImportError:
-    SemanticScholarClient = None
-    S2Paper = None
-    search_papers = None
-    get_paper_info = None
+Quick Start:
+    from scitex.scholar import Scholar
+    
+    scholar = Scholar()
+    papers = scholar.search("deep learning")
+    papers.save("papers.bib")
+"""
 
-try:
-    from ._journal_metrics import JournalMetrics, lookup_journal_impact_factor, enhance_bibliography_with_metrics
-except ImportError:
-    JournalMetrics = None
-    lookup_journal_impact_factor = None
-    enhance_bibliography_with_metrics = None
+# Import main class
+from .scholar import Scholar, search, quick_search
 
-# Optional advanced modules
-try:
-    from ._literature_review_workflow import LiteratureReviewWorkflow
-except ImportError:
-    LiteratureReviewWorkflow = None
+# Import core classes for advanced users
+from ._core import Paper, PaperCollection
 
-try:
-    from ._vector_search_engine import VectorSearchEngine as EnhancedVectorSearchEngine
-except ImportError:
-    EnhancedVectorSearchEngine = None
+# Import utility functions
+from ._utils import (
+    papers_to_bibtex,
+    papers_to_ris,
+    papers_to_json,
+    papers_to_markdown
+)
 
-try:
-    from ._mcp_server import MCPServer
-except ImportError:
-    MCPServer = None
+# Version
+__version__ = "2.0.0"
 
-try:
-    from ._paper_enrichment import PaperEnrichmentService, generate_enriched_bibliography
-except ImportError:
-    PaperEnrichmentService = None
-    generate_enriched_bibliography = None
-
-try:
-    from ._impact_factor_integration import ImpactFactorService, EnhancedJournalMetrics
-except ImportError:
-    ImpactFactorService = None
-    EnhancedJournalMetrics = None
-
+# What users see with "from scitex.scholar import *"
 __all__ = [
-    "build_index",
-    "enhance_bibliography_with_metrics",
-    "EnhancedJournalMetrics",
-    "EnhancedVectorSearchEngine",
-    "full_literature_review",
-    "generate_enriched_bibliography",
-    "get_paper_info",
-    "get_scholar_dir",
-    "ImpactFactorService",
-    "JournalMetrics",
-    "LiteratureReviewWorkflow",
-    "LocalSearchEngine",
-    "lookup_journal_impact_factor",
-    "MCPServer",
-    "Paper",
-    "PaperAcquisition",
-    "PaperEnrichmentService",
-    "PaperMetadata",
-    "PDFDownloader",
-    "S2Paper",
-    "search_papers",
-    "search_papers_with_ai",
-    "search_sync",
-    "SemanticScholarClient",
-    "VectorSearchEngine",
+    # Main interface
+    'Scholar',
+    
+    # Convenience functions
+    'search',
+    'quick_search',
+    
+    # Core classes
+    'Paper',
+    'PaperCollection',
+    
+    # Format converters
+    'papers_to_bibtex',
+    'papers_to_ris', 
+    'papers_to_json',
+    'papers_to_markdown'
 ]
 
-# EOF
+# For backward compatibility, provide access to old functions with deprecation warnings
+def __getattr__(name):
+    """Provide backward compatibility with deprecation warnings."""
+    import warnings
+    
+    # Map old names to new functionality
+    compatibility_map = {
+        'search_sync': 'search',
+        'build_index': 'Scholar().index_local_pdfs',
+        'get_scholar_dir': 'Scholar().workspace_dir',
+        'LocalSearchEngine': 'Scholar',
+        'VectorSearchEngine': 'Scholar',
+        'PDFDownloader': 'Scholar',
+        'search_papers': 'search',
+        'S2Paper': 'Paper',
+        'PaperMetadata': 'Paper',
+        'PaperAcquisition': 'Scholar',
+        'SemanticScholarClient': 'Scholar',
+        'JournalMetrics': 'Scholar',
+        'PaperEnrichmentService': 'Scholar',
+        'generate_enriched_bibliography': 'PaperCollection.save'
+    }
+    
+    if name in compatibility_map:
+        warnings.warn(
+            f"{name} is deprecated. Use {compatibility_map[name]} instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        
+        # Return the Scholar class for most cases
+        if name in ['search_sync', 'search_papers']:
+            return search
+        elif name == 'build_index':
+            def build_index(paths, **kwargs):
+                scholar = Scholar()
+                stats = {}
+                for path in paths:
+                    stats.update(scholar.index_local_pdfs(path))
+                return stats
+            return build_index
+        else:
+            return Scholar
+    
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+# Module docstring for help()
+def _module_docstring():
+    """
+    SciTeX Scholar - Scientific Literature Management
+    
+    Main Classes:
+        Scholar: Main interface for all functionality
+        Paper: Represents a scientific paper
+        PaperCollection: Collection of papers with analysis tools
+    
+    Quick Start:
+        >>> from scitex.scholar import Scholar
+        >>> scholar = Scholar()
+        >>> papers = scholar.search("machine learning")
+        >>> papers.filter(year_min=2020).save("ml_papers.bib")
+    
+    Common Workflows:
+        # Search and enrich
+        papers = scholar.search("deep learning", year_min=2022)
+        
+        # Download PDFs
+        papers.download_pdfs()
+        
+        # Filter results
+        high_impact = papers.filter(impact_factor_min=5.0)
+        
+        # Save bibliography
+        papers.save("bibliography.bib", format="bibtex")
+        
+        # Search local library
+        scholar.index_local_pdfs("./my_papers")
+        local = scholar.search_local("transformer")
+    
+    For more information, see the documentation at:
+    https://github.com/ywatanabe1989/SciTeX-Code
+    """
+    pass
+
+# Set module docstring
+__doc__ = _module_docstring.__doc__

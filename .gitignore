@@ -16,6 +16,8 @@ singularity
 slurm_logs/
 coverage_report.txt
 test_comprehensive_fixes.py
+catboost_info
+
 
 ## Exceptions
 !src/mngs/ml/ClassificationReporter/*
@@ -28,6 +30,25 @@ test_comprehensive_fixes.py
 ## for convenience
 *.old*
 *old*
+
+## Notebook outputs and temporary files
+*_out/
+*_executed.ipynb
+executed/
+indentation_fix_report_*.txt
+execution_results_*.json
+notebook_*.json
+fixed_notebooks_*.json
+*_test.ipynb
+*_test_*.ipynb
+*_original.ipynb
+*_output.ipynb
+
+## Temporary Python scripts
+fix_*.py
+remove_*.py
+analyze_*.py
+test_*.py
 
 #################################################################
 ## Python
@@ -825,3 +846,6 @@ ide-extensions/
 *READY_FOR_NEXT_SESSION*.md
 *PHASE3_*.md
 *IDE_INTEGRATION_COMPLETE*.md
+./docs/to_claude
+./src/scitex/docs/to_claude
+src/scitex/docs

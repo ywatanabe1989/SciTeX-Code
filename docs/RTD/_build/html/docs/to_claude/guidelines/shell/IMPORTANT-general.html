@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shell-specific Rules &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Shell-specific Rules</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/shell/IMPORTANT-general.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- ---
+!-- Timestamp: 2025-05-17 07:14:15
+!-- Author: ywatanabe
+!-- File: /ssh:ywatanabe@sp:/home/ywatanabe/.dotfiles/.claude/to_claude/guidelines/guidelines_programming_shell_scripting_rules.md
+!-- --- -->
+<section class="tex2jax_ignore mathjax_ignore" id="shell-specific-rules">
+<h1>Shell-specific Rules<a class="headerlink" href="#shell-specific-rules" title="Link to this heading"></a></h1>
+<p>================================================================================</p>
+<section id="shell-script-general-rules">
+<h2>Shell Script General Rules<a class="headerlink" href="#shell-script-general-rules" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Include one-line explanation for function, followed by example usage</p></li>
+<li><p>Ensure if-fi syntaxes are correct</p></li>
+<li><p>Include <code class="docutils literal notranslate"><span class="pre">argument</span> <span class="pre">parser</span></code> and <code class="docutils literal notranslate"><span class="pre">usage</span></code> function with <code class="docutils literal notranslate"><span class="pre">-h|--help</span></code> option</p></li>
+<li><p>Include logging functionality</p></li>
+</ul>
+</section>
+<section id="shell-script-template">
+<h2>Shell Script Template<a class="headerlink" href="#shell-script-template" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># script-name.sh</span>
+<span class="c1"># Author: ywatanabe (ywatanabe@alumni.u-tokyo.ac.jp)</span>
+<span class="c1"># Date: $(date +&quot;%Y-%m-%d-%H-%M&quot;)</span>
+
+<span class="nv">LOG_FILE</span><span class="o">=</span><span class="s2">&quot;.</span><span class="nv">$0</span><span class="s2">.log&quot;</span><span class="w"> </span><span class="c1"># Hided and intensional extension of .sh.log</span>
+
+usage<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Usage: </span><span class="nv">$0</span><span class="s2"> [-s|--subject &lt;subject&gt;] [-m|--message &lt;message&gt;] [-h|--help]&quot;</span>
+<span class="w">    </span><span class="nb">echo</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Options:&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  -s, --subject   Subject of the notification (default: &#39;Subject&#39;)&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  -m, --message   Message body of the notification (default: &#39;Message&#39;)&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  -h, --help      Display this help message&quot;</span>
+<span class="w">    </span><span class="nb">echo</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Example:&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  </span><span class="nv">$0</span><span class="s2"> -s \&quot;About the Project A\&quot; -m \&quot;Hi, ...\&quot;&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  </span><span class="nv">$0</span><span class="s2"> -s \&quot;Notification\&quot; -m \&quot;This is a notification from ...\&quot;&quot;</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="o">}</span>
+
+my-echo<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="k">in</span>
+<span class="w">          </span>-s<span class="p">|</span>--subject<span class="o">)</span>
+<span class="w">              </span><span class="nv">subject</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">              </span><span class="nb">shift</span><span class="w"> </span><span class="m">1</span>
+<span class="w">              </span><span class="p">;;</span>
+<span class="w">          </span>-m<span class="p">|</span>--message<span class="o">)</span>
+<span class="w">              </span><span class="nb">shift</span>
+<span class="w">              </span><span class="nv">message</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">              </span><span class="nb">shift</span>
+<span class="w">              </span><span class="p">;;</span>
+<span class="w">          </span>-h<span class="p">|</span>--help<span class="o">)</span>
+<span class="w">              </span>usage
+<span class="w">              </span><span class="p">;;</span>
+<span class="w">          </span>*<span class="o">)</span>
+<span class="w">              </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Unknown option: </span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">              </span>usage
+<span class="w">              </span><span class="p">;;</span>
+<span class="w">      </span><span class="k">esac</span>
+<span class="w">  </span><span class="k">done</span>
+
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">subject</span><span class="k">:-</span><span class="nv">Subject</span><span class="si">}</span><span class="s2">: </span><span class="si">${</span><span class="nv">message</span><span class="k">:-</span><span class="nv">Message</span><span class="si">}</span><span class="s2"> (Yusuke Watanabe)&quot;</span>
+<span class="o">}</span>
+
+main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>my-echo<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+
+main<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LOG_FILE</span><span class="s2">&quot;</span>
+
+notify<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$0</span><span class="s2"> finished&quot;</span><span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$0</span><span class="s2"> finished&quot;</span>
+
+<span class="c1"># EOF</span>
+</pre></div>
+</div>
+</section>
+<section id="shell-script-template-run-all-sh">
+<h2>Shell Script Template - run_all.sh<a class="headerlink" href="#shell-script-template-run-all-sh" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Timestamp: &quot;2025-01-18 06:47:46 (ywatanabe)&quot;</span>
+<span class="c1"># File: ./scripts/&lt;timestamp&gt;-&lt;title&gt;/run_all.sh</span>
+
+<span class="nv">LOG_FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">%.log&quot;</span>
+
+usage<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Usage: </span><span class="nv">$0</span><span class="s2"> [-h|--help]&quot;</span>
+<span class="w">    </span><span class="nb">echo</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Options:&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot; -h, --help   Display this help message&quot;</span>
+<span class="w">    </span><span class="nb">echo</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Example:&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot; </span><span class="nv">$0</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="o">}</span>
+
+main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$#</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="k">in</span>
+<span class="w">            </span>-h<span class="p">|</span>--help<span class="o">)</span><span class="w"> </span>usage<span class="w"> </span><span class="p">;;</span>
+<span class="w">              </span>-<span class="o">)</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Unknown option: </span><span class="nv">$1</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>usage<span class="w"> </span><span class="p">;;</span>
+<span class="w">        </span><span class="k">esac</span>
+<span class="w">    </span><span class="k">done</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nv">commands</span><span class="o">=(</span>
+<span class="w">        </span><span class="s2">&quot;./scripts/&lt;timestamp&gt;-&lt;title&gt;/001_filename1.py&quot;</span>
+<span class="w">        </span><span class="s2">&quot;./scripts/&lt;timestamp&gt;-&lt;title&gt;/002_filename2.py&quot;</span><span class="w"> </span>
+<span class="w">        </span><span class="s2">&quot;./scripts/&lt;timestamp&gt;-&lt;title&gt;/003_filename3.py&quot;</span>
+<span class="w">    </span><span class="o">)</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">commands</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$command</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$command</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Error: </span><span class="nv">$command</span><span class="s2"> failed.&quot;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="m">1</span>
+<span class="w">        </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">done</span>
+
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;All scripts finished successfully.&quot;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>
+<span class="o">}</span>
+
+<span class="o">{</span><span class="w"> </span>main<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LOG_FILE</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="shell-slurm-example">
+<h2>Shell Slurm Example<a class="headerlink" href="#shell-slurm-example" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>File name should <code class="docutils literal notranslate"><span class="pre">*_sbatch.sh</span></code></p></li>
+<li><p>Use multiple nodes if possible</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Timestamp: &quot;2025-04-23 12:53:36 (ywatanabe)&quot;</span>
+<span class="c1"># File: /ssh:sp:/home/ywatanabe/proj/neurovista/scripts/eda/plot_seizure_aligned_signals.sh</span>
+
+<span class="c1">#SBATCH --job-name=plot_seizures</span>
+<span class="c1">#SBATCH --time=12:00:00</span>
+<span class="c1">#SBATCH --mem=32G</span>
+<span class="c1">#SBATCH --cpus-per-task=1</span>
+<span class="c1">#SBATCH --array=1-15</span>
+
+<span class="c1"># Make sure we&#39;re reading just one line per task</span>
+<span class="nv">patient_id</span><span class="o">=</span><span class="k">$(</span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SLURM_ARRAY_TASK_ID</span><span class="si">}</span><span class="s2">p&quot;</span><span class="w"> </span>./data/PATIENT_IDS.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="k">)</span>
+
+<span class="k">for</span><span class="w"> </span>seizure_type<span class="w"> </span><span class="k">in</span><span class="w"> </span>seizure<span class="w"> </span>control<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>onset_or_offset<span class="w"> </span><span class="k">in</span><span class="w"> </span>onset<span class="w"> </span>offset<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">        </span><span class="nv">pre_sec</span><span class="o">=</span><span class="m">30</span>
+<span class="w">        </span><span class="nv">post_sec</span><span class="o">=</span><span class="m">30</span>
+
+<span class="w">        </span><span class="c1"># Run the Python script for this patient</span>
+<span class="w">        </span>./scripts/eda/plot_seizure_aligned_signals.py<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--patient_id<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$patient_id</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--seizure_or_control<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$seizure_type</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--onset_or_offset<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$onset_or_offset</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--pre_sec<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$pre_sec</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--post_sec<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$post_sec</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">done</span>
+<span class="k">done</span>
+
+
+<span class="c1"># sbatch ./scripts/eda/plot_seizure_aligned_signals_sbatch.sh</span>
+
+<span class="c1"># EOF</span>
+</pre></div>
+</div>
+</section>
+<section id="shell-hierarchy-sorting-rules">
+<h2>Shell Hierarchy, Sorting Rules<a class="headerlink" href="#shell-hierarchy-sorting-rules" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Functions must be sorted considering their hierarchy.</p></li>
+<li><p>Upstream functions should be placed in upper positions</p>
+<ul class="simple">
+<li><p>from top (upstream functions) to down (utility functions)</p></li>
+</ul>
+</li>
+<li><p>Do not change any code contents during sorting</p></li>
+<li><p>Includes comments to show hierarchy</p>
+<ul class="simple">
+<li><p>For Shell scripts</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Main entry point</span>
+<span class="c1"># ---------------------------------------- </span>
+
+
+<span class="c1"># 2. Core functions</span>
+<span class="c1"># ---------------------------------------- </span>
+
+
+<span class="c1"># 3. Helper functions</span>
+<span class="c1"># ---------------------------------------- </span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="custom-bash-commands-and-scripts">
+<h2>Custom Bash commands and scripts<a class="headerlink" href="#custom-bash-commands-and-scripts" title="Link to this heading"></a></h2>
+<p>Agents can access <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code>, <code class="docutils literal notranslate"><span class="pre">~/.bash.d/*.src</span></code>, <code class="docutils literal notranslate"><span class="pre">~/.bin/*/*.sh</span></code></p>
+<ul class="simple">
+<li><p>All <code class="docutils literal notranslate"><span class="pre">*sh</span></code> files should have <code class="docutils literal notranslate"><span class="pre">-h|--help</span> </code>option</p>
+<ul>
+<li><p>If it is not the case, revise the file contents</p></li>
+</ul>
+</li>
+<li><p>Run all tests: <code class="docutils literal notranslate"><span class="pre">PROJECT_ROOT/run-tests.sh</span></code></p></li>
+<li><p>Run tests with debug output: <code class="docutils literal notranslate"><span class="pre">./run-tests.sh</span> <span class="pre">-d</span></code></p></li>
+<li><p>Run a single test: <code class="docutils literal notranslate"><span class="pre">./run-tests.sh</span> <span class="pre">-s</span> <span class="pre">tests/test-ecc-variables.el</span></code></p></li>
+</ul>
+</section>
+<section id="your-understanding-check">
+<h2>Your Understanding Check<a class="headerlink" href="#your-understanding-check" title="Link to this heading"></a></h2>
+<p>Did you understand the guideline? If yes, please say:
+<code class="docutils literal notranslate"><span class="pre">CLAUDE</span> <span class="pre">UNDERSTOOD:</span> <span class="pre">&lt;THIS</span> <span class="pre">FILE</span> <span class="pre">PATH</span> <span class="pre">HERE&gt;</span></code></p>
+<!-- EOF --></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

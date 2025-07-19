@@ -1,7 +1,7 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-01-29 21:00:00 (ywatanabe)"
-# File: ./gPAC/examples/sync_examples_with_source.sh
+# Timestamp: "2025-07-14 15:00:41 (ywatanabe)"
+# File: ./examples/sync_examples_with_source.sh
 
 THIS_DIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
 LOG_PATH="$THIS_DIR/.$(basename $0).log"
@@ -35,8 +35,8 @@ PURPLE='\033[0;35m'
 ########################################
 # Default Values
 DO_MOVE=false
-SRC_DIR="$(realpath "${THIS_DIR}/../src/gpac")"
-EXAMPLES_DIR="$(realpath "${THIS_DIR}/../examples/gpac")"
+SRC_DIR="$(realpath "${THIS_DIR}/../src/scitex")"
+EXAMPLES_DIR="$(realpath "${THIS_DIR}/../examples/scitex")"
 
 usage() {
     echo "Usage: $0 [options]"
@@ -99,66 +99,18 @@ prepare_examples_structure_as_source() {
 ########################################
 # Example Template
 ########################################
-get_example_template() {
-    local src_file=$1
-    local module_name=$(basename "${src_file%.py}")
-    local src_rel_path="${src_file#$SRC_DIR/}"
-    
-    cat << EOL
-#!/usr/bin/env python3
-"""
-Example: Using ${module_name} module
-
-This example demonstrates the usage of ${module_name} from gPAC.
-
-Source: ${src_rel_path}
-"""
-
-import numpy as np
-import torch
-import scitex
-from gpac import ${module_name}
-
-
-def main():
-    """Main example function."""
-    # Set random seed for reproducibility
-    scitex.gen.fix_seeds(42)
-    
-    # Create output directory using scitex
-    sdir = scitex.io.get_dirpath(__file__, "outputs")
-    
-    # TODO: Add example code for ${module_name}
-    print(f"Example for ${module_name} module")
-    print("This is a placeholder example file.")
-    print(f"Please implement examples demonstrating {module_name} usage.")
-    
-    # Example structure:
-    # 1. Initialize the module
-    # 2. Create sample data
-    # 3. Process data
-    # 4. Visualize results
-    # 5. Save outputs using scitex
-    
-    print("\\nExample completed!")
-
-
-if __name__ == "__main__":
-    main()
-EOL
-}
 
 update_example_file() {
     local example_file=$1
     local src_file=$2
-    
+
     if [ ! -f "$example_file" ]; then
         # If file doesn't exist, create it with template
         echo "$example_file not found. Creating..."
         mkdir -p "$(dirname "$example_file")"
-        
+
         # Create with example template
-        get_example_template "$src_file" > "$example_file"
+        touch "$example_file"
         chmod +x "$example_file"
         echo_success "Created: $example_file"
     else
@@ -225,7 +177,7 @@ move_stale_example_files_to_old() {
         if [[ ! "$src_filename" =~ ^_ ]]; then
             src_filename="_${src_filename}"
         fi
-        
+
         src_rel_dir="$example_rel_dir"
         src_rel_path="$src_rel_dir/$src_filename"
         src_path="$SRC_DIR/$src_rel_path"
@@ -267,52 +219,77 @@ main() {
     # Create examples/gpac directory if it doesn't exist
     mkdir -p "$EXAMPLES_DIR"
 
-    # Only create examples for key modules (not every single source file)
-    local KEY_MODULES=(
-        "_PAC.py"
-        "_BandPassFilter.py"
-        "_Hilbert.py"
-        "_ModulationIndex.py"
-        "_SyntheticDataGenerator.py"
-        "_Profiler.py"
-    )
+    # # Only create examples for key modules (not every single source file)
+    # local KEY_MODULES=(
+    #     "_PAC.py"
+    #     "_BandPassFilter.py"
+    #     "_Hilbert.py"
+    #     "_ModulationIndex.py"
+    #     "_SyntheticDataGenerator.py"
+    #     "_Profiler.py"
+    # )
 
-    # Process each key module
-    for module in "${KEY_MODULES[@]}"; do
-        find_files "$SRC_DIR" f "$module" | while read -r src_file; do
-            # Skip if in subdirectory we don't want examples for
-            [[ "$src_file" =~ /PackageHandlers/ ]] && continue
-            
-            # derive relative path and parts
-            rel="${src_file#$SRC_DIR/}"
-            rel_dir=$(dirname "$rel")
-            src_base=$(basename "$rel")
+    # # Process each key module
+    # for module in "${KEY_MODULES[@]}"; do
+    #     find_files "$SRC_DIR" f "$module" | while read -r src_file; do
+    #         # Skip if in subdirectory we don't want examples for
+    #         [[ "$src_file" =~ /PackageHandlers/ ]] && continue
 
-            # ensure example subdir exists
-            examples_dir="$EXAMPLES_DIR/$rel_dir"
-            mkdir -p "$examples_dir"
+    #         # derive relative path and parts
+    #         rel="${src_file#$SRC_DIR/}"
+    #         rel_dir=$(dirname "$rel")
+    #         src_base=$(basename "$rel")
 
-            # build correct example file path
-            # Convert _ModuleName.py to example_ModuleName.py
-            example_base="example${src_base}"
-            example_file="$examples_dir/$example_base"
+    #         # ensure example subdir exists
+    #         examples_dir="$EXAMPLES_DIR/$rel_dir"
+    #         mkdir -p "$examples_dir"
 
-            # Process each file
-            update_example_file "$example_file" "$src_file"
-        done
+    #         # build correct example file path
+    #         # Convert _ModuleName.py to example_ModuleName.py
+    #         example_base="example${src_base}"
+    #         example_file="$examples_dir/$example_base"
+
+    #         # Process each file
+    #         update_example_file "$example_file" "$src_file"
+    #     done
+    # done
+
+    find_files "$SRC_DIR" f "*.py" | while read -r src_file; do
+        # Skip __init__.py files
+        [[ "$(basename "$src_file")" == "__init__.py" ]] && continue
+
+        # Skip if in subdirectory we don't want examples for
+        [[ "$src_file" =~ /PackageHandlers/ ]] && continue
+
+        # derive relative path and parts
+        rel="${src_file#$SRC_DIR/}"
+        rel_dir=$(dirname "$rel")
+        src_base=$(basename "$rel")
+
+        # ensure example subdir exists
+        examples_dir="$EXAMPLES_DIR/$rel_dir"
+        mkdir -p "$examples_dir"
+
+        # build correct example file path
+        # Convert _ModuleName.py to example_ModuleName.py
+        example_base="example_${src_base}"
+        example_file="$examples_dir/$example_base"
+
+        # Process each file
+        update_example_file "$example_file" "$src_file"
     done
 
     # Also create general examples in the root examples directory
     echo ""
     echo "Creating/checking general examples..."
-    
+
     # These are already created, just check they exist
     local GENERAL_EXAMPLES=(
         "example_pac_analysis.py"
-        "example_bandpass_filter.py" 
+        "example_bandpass_filter.py"
         "example_profiler.py"
     )
-    
+
     for example in "${GENERAL_EXAMPLES[@]}"; do
         if [ -f "${THIS_DIR}/$example" ]; then
             echo_success "Found: ${THIS_DIR}/$example"

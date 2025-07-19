@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Testing Guidelines for Elisp Projects &mdash; SciTeX v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started with SciTeX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#what-is-scitex">What is SciTeX?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-mngs">Installing MNGS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#from-source">From Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../quickstart.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">SciTeX Examples and Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#master-tutorial-index">Master Tutorial Index</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html">SciTeX Master Tutorial Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-navigation">🎯 Quick Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#quick-start">🌟 Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#core-modules">📚 Core Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#scientific-computing">🔬 Scientific Computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ai-machine-learning">🤖 AI &amp; Machine Learning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#research-tools">📚 Research Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#learning-paths">🎓 Learning Paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#module-reference">📋 Module Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#tips-for-success">💡 Tips for Success</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/00_SCITEX_MASTER_INDEX.html#ready-to-start">🚀 Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#quick-navigation">Quick Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#i-o-and-file-operations">I/O and File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/01_scitex_io.html">01 SciTeX Io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/05_scitex_path.html">05 SciTeX Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/09_scitex_os.html">09 SciTeX Os</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#utilities-and-data-structures">Utilities and Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/02_scitex_gen.html">02 SciTeX Gen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/03_scitex_utils.html">03 SciTeX Utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/04_scitex_str.html">04 SciTeX Str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/06_scitex_context.html">06 SciTeX Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/07_scitex_dict.html">07 SciTeX Dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/08_scitex_types.html">08 SciTeX Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#scientific-computing">Scientific Computing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/10_scitex_parallel.html">10 SciTeX Parallel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/11_scitex_stats.html">11 SciTeX Stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/12_scitex_linalg.html">12 SciTeX Linalg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/13_scitex_dsp.html">13 SciTeX Dsp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#data-analysis-and-visualization">Data Analysis and Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/14_scitex_plt.html">14 SciTeX Plt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/15_scitex_pd.html">15 SciTeX Pd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#machine-learning-and-ai">Machine Learning and AI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_ai.html">16 SciTeX Ai</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/17_scitex_nn.html">17 SciTeX Nn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/18_scitex_torch.html">18 SciTeX Torch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#research-tools">Research Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/16_scitex_scholar.html">16 SciTeX Scholar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/19_scitex_db.html">19 SciTeX Db</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/20_scitex_tex.html">20 SciTeX Tex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/21_scitex_decorators.html">21 SciTeX Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/22_scitex_repro.html">22 SciTeX Repro</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/23_scitex_web.html">23 SciTeX Web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#learning-paths">Learning Paths</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#by-skill-level">By Skill Level</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#common-patterns">Common Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#tips-for-success">Tips for Success</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/index.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#ready-to-start">Ready to Start?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Docker Testing Guidelines for Elisp Projects</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/SciTeX-Code/blob/main/docs/docs/to_claude/guidelines/elisp/testing-with-docker.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="docker-testing-guidelines-for-elisp-projects">
+<h1>Docker Testing Guidelines for Elisp Projects<a class="headerlink" href="#docker-testing-guidelines-for-elisp-projects" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Docker provides a consistent, reproducible environment for testing Elisp code across different Emacs versions and configurations. This guide covers both Docker and Apptainer (formerly Singularity) approaches for containerized testing.</p>
+</section>
+<section id="why-use-container-based-testing">
+<h2>Why Use Container-Based Testing?<a class="headerlink" href="#why-use-container-based-testing" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Reproducibility</strong>: Ensures tests run in identical environments</p></li>
+<li><p><strong>Cross-Version Testing</strong>: Test against multiple Emacs versions easily</p></li>
+<li><p><strong>Clean Environment</strong>: No interference from local Emacs configuration</p></li>
+<li><p><strong>CI/CD Integration</strong>: Seamless integration with continuous integration pipelines</p></li>
+<li><p><strong>Dependency Isolation</strong>: Manage package dependencies without affecting local setup</p></li>
+</ol>
+</section>
+<section id="using-elisp-ci-with-docker">
+<h2>Using elisp-ci with Docker<a class="headerlink" href="#using-elisp-ci-with-docker" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">elisp-ci</span></code> tool provides built-in Docker support for Elisp testing:</p>
+<section id="basic-docker-commands">
+<h3>Basic Docker Commands<a class="headerlink" href="#basic-docker-commands" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build Docker image for testing</span>
+elisp-ci<span class="w"> </span>docker-build
+
+<span class="c1"># Run tests in Docker container</span>
+elisp-ci<span class="w"> </span>docker-test
+
+<span class="c1"># Test with specific Emacs version</span>
+elisp-ci<span class="w"> </span>docker-test<span class="w"> </span>--emacs-version<span class="w"> </span><span class="m">28</span>.2
+
+<span class="c1"># Test with multiple versions</span>
+elisp-ci<span class="w"> </span>docker-test<span class="w"> </span>--emacs-version<span class="w"> </span><span class="m">27</span>.2,28.2,29.1
+</pre></div>
+</div>
+</section>
+<section id="creating-a-dockerfile-for-elisp-testing">
+<h3>Creating a Dockerfile for Elisp Testing<a class="headerlink" href="#creating-a-dockerfile-for-elisp-testing" title="Link to this heading"></a></h3>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># Basic Dockerfile for Elisp testing</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu:22.04</span>
+
+<span class="c"># Install dependencies</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>emacs<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>make<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>curl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ca-certificates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/apt/lists/*
+
+<span class="c"># Set working directory</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+
+<span class="c"># Copy project files</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/app
+
+<span class="c"># Install Cask or other package managers if needed</span>
+<span class="k">RUN</span><span class="w"> </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/cask/cask/master/go<span class="w"> </span><span class="p">|</span><span class="w"> </span>python
+
+<span class="c"># Run tests</span>
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;make&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="docker-compose-configuration">
+<h3>Docker Compose Configuration<a class="headerlink" href="#docker-compose-configuration" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># docker-compose.yml for multi-version testing</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">emacs-27</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dockerfile.emacs27</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make test</span>
+<span class="w">    </span>
+<span class="w">  </span><span class="nt">emacs-28</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dockerfile.emacs28</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make test</span>
+<span class="w">    </span>
+<span class="w">  </span><span class="nt">emacs-29</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dockerfile.emacs29</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make test</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="apptainer-singularity-workaround">
+<h2>Apptainer (Singularity) Workaround<a class="headerlink" href="#apptainer-singularity-workaround" title="Link to this heading"></a></h2>
+<p>Apptainer is often preferred in HPC environments where Docker requires root privileges. Here’s how to use Apptainer for Elisp testing:</p>
+<section id="converting-docker-images-to-apptainer">
+<h3>Converting Docker Images to Apptainer<a class="headerlink" href="#converting-docker-images-to-apptainer" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pull Docker image and convert to Apptainer</span>
+apptainer<span class="w"> </span>pull<span class="w"> </span>docker://ubuntu:22.04
+
+<span class="c1"># Build from Docker image</span>
+apptainer<span class="w"> </span>build<span class="w"> </span>emacs-test.sif<span class="w"> </span>docker://silex/emacs:28.2
+</pre></div>
+</div>
+</section>
+<section id="apptainer-definition-file">
+<h3>Apptainer Definition File<a class="headerlink" href="#apptainer-definition-file" title="Link to this heading"></a></h3>
+<div class="highlight-singularity notranslate"><div class="highlight"><pre><span></span><span class="c"># emacs-test.def</span>
+<span class="k">Bootstrap</span>:<span class="w"> </span>docker
+<span class="k">From</span>:<span class="w"> </span>ubuntu:<span class="m">22.04</span>
+
+<span class="gh">%post</span>
+<span class="w">    </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>emacs<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>make<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>curl<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>ca-certificates
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Install Cask</span>
+<span class="w">    </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/cask/cask/master/go<span class="w"> </span><span class="p">|</span><span class="w"> </span>python
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Clean up</span>
+<span class="w">    </span>apt-get<span class="w"> </span>clean
+<span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/apt/lists/*
+
+<span class="gh">%environment</span>
+<span class="w">    </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/root/.cask/bin:<span class="nv">$PATH</span>
+
+<span class="gh">%runscript</span>
+<span class="w">    </span><span class="nb">cd</span><span class="w"> </span>/app
+<span class="w">    </span>make<span class="w"> </span><span class="nb">test</span>
+
+<span class="gh">%labels</span>
+<span class="w">    </span>Author<span class="w"> </span>your-name
+<span class="w">    </span>Version<span class="w"> </span><span class="m">1</span>.0
+</pre></div>
+</div>
+</section>
+<section id="using-apptainer-for-testing">
+<h3>Using Apptainer for Testing<a class="headerlink" href="#using-apptainer-for-testing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the container</span>
+apptainer<span class="w"> </span>build<span class="w"> </span>emacs-test.sif<span class="w"> </span>emacs-test.def
+
+<span class="c1"># Run tests with bind mount</span>
+apptainer<span class="w"> </span>run<span class="w"> </span>--bind<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/app<span class="w"> </span>emacs-test.sif
+
+<span class="c1"># Interactive shell for debugging</span>
+apptainer<span class="w"> </span>shell<span class="w"> </span>--bind<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/app<span class="w"> </span>emacs-test.sif
+</pre></div>
+</div>
+</section>
+<section id="apptainer-with-elisp-ci">
+<h3>Apptainer with elisp-ci<a class="headerlink" href="#apptainer-with-elisp-ci" title="Link to this heading"></a></h3>
+<p>Since elisp-ci doesn’t natively support Apptainer, create a wrapper script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># apptainer-elisp-test.sh</span>
+
+<span class="c1"># Convert Docker image name to Apptainer</span>
+<span class="nv">EMACS_VERSION</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="nv">28</span><span class="p">.2</span><span class="si">}</span>
+<span class="nv">IMAGE_NAME</span><span class="o">=</span><span class="s2">&quot;emacs-</span><span class="si">${</span><span class="nv">EMACS_VERSION</span><span class="si">}</span><span class="s2">.sif&quot;</span>
+
+<span class="c1"># Build if not exists</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$IMAGE_NAME</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>apptainer<span class="w"> </span>build<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$IMAGE_NAME</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;docker://silex/emacs:</span><span class="si">${</span><span class="nv">EMACS_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+
+<span class="c1"># Run tests</span>
+apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--bind<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/workspace<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$IMAGE_NAME</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;cd /workspace &amp;&amp; make test&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Version Matrix Testing</strong>: Always test against multiple Emacs versions</p></li>
+<li><p><strong>Minimal Images</strong>: Use alpine-based images when possible for faster builds</p></li>
+<li><p><strong>Layer Caching</strong>: Structure Dockerfiles to maximize layer reuse</p></li>
+<li><p><strong>CI Integration</strong>: Use container testing in GitHub Actions/GitLab CI</p></li>
+<li><p><strong>Local Development</strong>: Provide both Docker and native testing options</p></li>
+</ol>
+</section>
+<section id="example-integration">
+<h2>Example Integration<a class="headerlink" href="#example-integration" title="Link to this heading"></a></h2>
+<section id="makefile-integration">
+<h3>Makefile Integration<a class="headerlink" href="#makefile-integration" title="Link to this heading"></a></h3>
+<div class="highlight-makefile notranslate"><div class="highlight"><pre><span></span><span class="c"># Test targets</span>
+<span class="nf">.PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">test</span> <span class="n">test</span>-<span class="n">docker</span> <span class="n">test</span>-<span class="n">apptainer</span>
+
+<span class="nf">test</span><span class="o">:</span>
+<span class="w">	</span>./run_tests.sh
+
+<span class="nf">test-docker</span><span class="o">:</span>
+<span class="w">	</span>elisp-ci<span class="w"> </span>docker-test
+
+<span class="nf">test-apptainer</span><span class="o">:</span>
+<span class="w">	</span>./apptainer-elisp-test.sh<span class="w"> </span><span class="m">28</span>.2
+<span class="w">	</span>./apptainer-elisp-test.sh<span class="w"> </span><span class="m">29</span>.1
+
+<span class="nf">test-all</span><span class="o">:</span><span class="w"> </span><span class="n">test</span> <span class="n">test</span>-<span class="n">docker</span> <span class="n">test</span>-<span class="n">apptainer</span>
+</pre></div>
+</div>
+</section>
+<section id="github-actions-with-containers">
+<h3>GitHub Actions with Containers<a class="headerlink" href="#github-actions-with-containers" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test</span>
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">emacs-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">27.2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">28.2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">29.1</span><span class="p p-Indicator">]</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nt">container</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">silex/emacs:${{ matrix.emacs-version }}</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make test</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="docker-issues">
+<h3>Docker Issues<a class="headerlink" href="#docker-issues" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Permission Denied</strong>: Use <code class="docutils literal notranslate"><span class="pre">--user</span> <span class="pre">$(id</span> <span class="pre">-u):$(id</span> <span class="pre">-g)</span></code> flag</p></li>
+<li><p><strong>Network Issues</strong>: Use <code class="docutils literal notranslate"><span class="pre">--network</span> <span class="pre">host</span></code> for package downloads</p></li>
+<li><p><strong>Volume Mounting</strong>: Ensure proper bind mount permissions</p></li>
+</ul>
+</section>
+<section id="apptainer-issues">
+<h3>Apptainer Issues<a class="headerlink" href="#apptainer-issues" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Bind Mount Failures</strong>: Check directory permissions and SELinux context</p></li>
+<li><p><strong>Image Build Failures</strong>: Ensure sufficient disk space in <code class="docutils literal notranslate"><span class="pre">/tmp</span></code></p></li>
+<li><p><strong>Environment Variables</strong>: Use <code class="docutils literal notranslate"><span class="pre">--env</span></code> or <code class="docutils literal notranslate"><span class="pre">%environment</span></code> section</p></li>
+</ul>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>Container-based testing ensures reproducible, cross-version testing for Elisp projects. While Docker is more common, Apptainer provides a rootless alternative suitable for HPC environments. Choose based on your infrastructure constraints and security requirements.</p>
+<p>Key commands:</p>
+<ul class="simple">
+<li><p>Docker: <code class="docutils literal notranslate"><span class="pre">elisp-ci</span> <span class="pre">docker-test</span></code></p></li>
+<li><p>Apptainer: <code class="docutils literal notranslate"><span class="pre">apptainer</span> <span class="pre">run</span> <span class="pre">--bind</span> <span class="pre">$(pwd):/app</span> <span class="pre">emacs-test.sif</span></code></p></li>
+</ul>
+<p>Both approaches achieve the same goal: consistent, isolated testing environments for Elisp code.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

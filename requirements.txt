@@ -1,0 +1,171 @@
+# Core scientific computing
+numpy
+scipy
+pandas
+matplotlib
+seaborn
+scikit-learn
+scikit-image
+statsmodels
+sympy
+plotly
+
+# Data processing
+PyYAML
+Pyarrow
+h5py
+openpyxl
+xlrd
+python-docx
+lxml
+lxml_html_clean
+xarray
+pymatreader
+
+# Machine learning / AI
+torch
+torchvision
+torchaudio
+torchsummary
+transformers
+accelerate
+bitsandbytes
+fairscale
+pytorch_pretrained_vit
+einops
+optuna
+catboost
+umap-learn
+sktime
+
+# Specialized analysis
+mne
+obspy
+pyedflib
+pybids
+tensorpac
+ripple_detection
+geom_median
+
+# AI services
+openai
+anthropic
+google-genai
+groq
+llama-stack
+
+# Web and APIs
+requests
+fastapi
+flask
+aiohttp
+selenium
+webdriver-manager
+bs4
+html2text
+google-search-results
+googlesearch-python
+
+# Jupyter and notebooks
+jupyterlab
+jupyter-collaboration
+ipykernel
+papermill
+
+# Utilities
+joblib
+psutil
+packaging
+platformdirs
+more-itertools
+natsort
+icecream
+pyperclip
+readchar
+plyer
+timeout-decorator
+ansi-escapes
+chardet
+termplotlib
+tldr
+attrdict
+joypy
+julius
+sounddevice
+tk
+
+# File and data handling
+Pillow
+markdown
+markdown2
+pygments
+xmltodict
+
+streamlit
+zarr
+
+tabulate
+reportlab
+readability
+readability-lxml
+ruamel.yaml
+
+# Database
+sqlalchemy
+psycopg2-binary
+
+# Version control
+GitPython
+
+# Development tools
+pytest
+pytest-cov
+pytest-xdist
+pytest-timeout
+pytest-mock
+pytest-env
+black
+isort
+flake8
+mypy
+pylint
+pre-commit
+ruff-lsp
+pyright
+python-lsp-server
+pyls
+jedi
+ipython
+ipdb
+line-profiler
+memory-profiler
+rope
+autopep8
+pyupgrade
+
+# Documentation
+sphinx
+sphinx-rtd-theme
+sphinx-autodoc-typehints
+sphinx-autobuild
+myst-parser
+nbsphinx
+docutils<0.18
+
+# Build and distribution
+build
+twine
+wheel
+setuptools
+six
+
+# Type hints
+types-requests
+types-PyYAML
+types-setuptools
+
+# Other
+pebble
+
+impact-factor
+PyMuPDF
