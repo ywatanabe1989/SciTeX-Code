@@ -178,14 +178,62 @@ yearly_counts = df.groupby('year').size()
 ## Configuration
 
 ### Environment Variables
+
+To fully utilize the Scholar module and access papers from all sources (including subscription journals), configure these environment variables:
+
 ```bash
-# Email for API compliance
+# REQUIRED for PubMed access (finds papers from Nature, Science, Cell, etc.)
+# Use your institutional email for better access
 export SCHOLAR_EMAIL="your.email@university.edu"
-# OR
+# OR (alternative name)
 export ENTREZ_EMAIL="your.email@university.edu"
 
-# API key for higher rate limits
+# RECOMMENDED for better Semantic Scholar access
+# Without this, you'll hit rate limits quickly and get errors
+# Get free API key at: https://www.semanticscholar.org/product/api
 export SEMANTIC_SCHOLAR_API_KEY="your-api-key"
+
+# OPTIONAL - Custom workspace directory for PDF downloads and indices
+export SCITEX_SCHOLAR_DIR="~/Documents/scholar_data"
+```
+
+#### What Each Variable Enables:
+
+- **SCHOLAR_EMAIL / ENTREZ_EMAIL**: 
+  - ✅ Access to PubMed database (required by NCBI)
+  - ✅ Find papers from subscription journals (Nature, Science, Cell, etc.)
+  - ✅ Access clinical and biomedical literature
+  - ❌ Without it: PubMed searches return 0 results
+
+- **SEMANTIC_SCHOLAR_API_KEY**:
+  - ✅ 100x higher rate limits (1 request/second vs 100 requests/second)
+  - ✅ Access to full paper metadata
+  - ✅ More reliable searches
+  - ❌ Without it: Frequent "Internal Server Error" messages
+
+#### Quick Setup:
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export SCHOLAR_EMAIL="john.doe@university.edu"
+export SEMANTIC_SCHOLAR_API_KEY="your-key-here"
+
+# Reload your shell
+source ~/.bashrc
+```
+
+#### Verify Your Setup:
+```python
+from scitex.scholar import Scholar
+
+# Check configuration
+scholar = Scholar()
+print(f"Email: {scholar.email}")  # Should show your email
+print(f"Semantic Scholar API: {'Configured' if scholar.api_keys.get('s2') else 'Not configured'}")
+
+# Test each source
+for source in ['pubmed', 'semantic_scholar', 'arxiv']:
+    results = scholar.search("test", sources=[source], limit=1)
+    print(f"{source}: {'Working' if len(results) > 0 else 'Not working'}")
 ```
 
 ### Python Configuration
@@ -283,6 +331,39 @@ papers = Scholar().search("query")
 - Check your internet connection
 - Verify API keys are set correctly
 - Try different sources or broader queries
+
+### Getting Only arXiv Papers?
+This means PubMed and Semantic Scholar aren't working properly:
+```python
+# Check your configuration
+scholar = Scholar()
+print(f"Email configured: {scholar.email}")  # Should show your email
+print(f"API keys: {list(scholar.api_keys.keys())}")  # Should show ['s2'] if configured
+
+# If not configured, you'll only get arXiv results
+```
+
+### PubMed Returning 0 Results?
+```bash
+# PubMed REQUIRES email - set it:
+export SCHOLAR_EMAIL="your.email@university.edu"
+```
+
+### Semantic Scholar Errors?
+```python
+# If you see "Internal Server Error" messages:
+# 1. Get free API key: https://www.semanticscholar.org/product/api
+# 2. Set environment variable:
+export SEMANTIC_SCHOLAR_API_KEY="your-key"
+```
+
+### Want Papers from Nature, Science, Cell?
+```python
+# These come from PubMed - ensure email is set!
+# Then search with journal names:
+papers = scholar.search('"Nature" neuroscience', sources=['pubmed'])
+papers = scholar.search('epilepsy', sources=['pubmed'])  # Includes all journals
+```
 
 ### Slow Performance?
 - Use `limit` parameter to reduce results
