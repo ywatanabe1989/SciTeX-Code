@@ -1,14 +1,15 @@
 <!-- ---
-!-- Timestamp: 2025-07-14 15:27:26
+!-- Timestamp: 2025-07-19 10:56:41
 !-- Author: ywatanabe
-!-- File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/CLAUDE.md
+!-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
 
+-----
+# General
 ## Multi Agent System
 Working with other agents using the bulletin board: ./project_management/BULLETIN-BOARD.md
 
-Current top-most priority lies in scholar module improvement.
-
+## SciTeX Guidelines
 See ./docs/to_claude/guidelines/python/*SCITEX*.md
 
 ## No try-error as much as possible
@@ -16,14 +17,16 @@ Please do not use try-error as much as possible as it is difficult for me to fin
 
 ## Working Directory
 - Note that you are automatically cd backed to `./` (this project root) by each iteration
+-----
 
-## Modularize the db module
-- [ ] ./src/scitex/db/_sqlite3
-- [ ] ./src/scitex/db/_postgresql
-- [ ] Also, check other modules about whether they use old db codes (paths)
-- [ ] Also, update examples and tests for the updated db module
+# This project, SciTeX-Code
 
 ## Error/Warning handling
 Use ./scitex_repo/src/scitex/errors.py
+
+## Scholar module
+The scholar module should be simplified and organized
+
+-----
 
 <!-- EOF -->
