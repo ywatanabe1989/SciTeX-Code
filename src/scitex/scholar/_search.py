@@ -109,11 +109,15 @@ class SemanticScholarEngine(SearchEngine):
                                 papers.append(paper)
                     else:
                         error_msg = await response.text()
-                        logger.error(f"Semantic Scholar search failed: {error_msg}")
+                        # Don't print error message directly - just log it
+                        logger.debug(f"Semantic Scholar API returned {response.status}: {error_msg}")
+                        # Return empty list to let other sources handle the search
+                        return []
                         
         except Exception as e:
-            logger.error(f"Semantic Scholar search error: {e}")
-            raise SearchError(query, "Semantic Scholar", str(e))
+            logger.debug(f"Semantic Scholar search error: {e}")
+            # Return empty list instead of raising to allow fallback to other sources
+            return []
         
         return papers
     
@@ -695,7 +699,7 @@ class UnifiedSearcher:
         all_papers = []
         for source, result in zip(sources, results):
             if isinstance(result, Exception):
-                logger.error(f"Search failed for {source}: {result}")
+                logger.debug(f"Search failed for {source}: {result}")
             else:
                 all_papers.extend(result)
         

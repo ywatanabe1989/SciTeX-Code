@@ -138,6 +138,15 @@ class Scholar:
         # Create collection
         collection = PaperCollection(papers)
         
+        # Log search results
+        if not papers:
+            logger.info(f"No results found for query: '{query}'")
+            # Suggest alternative sources if default sources were used
+            if sources is None or 'semantic_scholar' in sources:
+                logger.info("Try searching with different sources or check your internet connection")
+        else:
+            logger.info(f"Found {len(papers)} papers for query: '{query}'")
+        
         # Auto-enrich if enabled
         if self.auto_enrich and papers:
             logger.info("Auto-enriching papers with journal metrics...")
