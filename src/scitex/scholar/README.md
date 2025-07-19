@@ -1,213 +1,207 @@
+<!-- ---
+!-- Timestamp: 2025-07-19 22:41:40
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
+!-- --- -->
+
 # SciTeX Scholar
 
-Simple and powerful scientific literature search with real journal metrics.
+Search scientific papers with automatic journal impact factors and citation counts.
 
 ## Quick Start
 
 ```python
 from scitex.scholar import Scholar
-
-# Create scholar instance with default parameters
 import os
-scholar = Scholar(
+
+# Initialize Scholar Class
+scholar_obj = Scholar(
     email=os.getenv("SCITEX_PUBMED_EMAIL"),
     api_key_semantic_scholar=os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY"),
-    workspace_dir=None,        # Default: ~/.scitex/scholar
-    impact_factors=True,       # Automatically add journal impact factors (default: True)
-    citations=True,            # Automatically add citation counts (default: True)
-    auto_download=False        # Automatically download PDFs (default: False)
+    workspace_dir=os.getenv("HOME") + "/.scitex/scholar",
+    impact_factors=True,
+    citations=True,
+    auto_download=False
 )
 
-# Search PubMed for papers (automatically enriched)
-papers = scholar.search(
+# Scholar Methods
+# scholar_obj.search(...)           # Search papers from sources
+# scholar_obj.search_local(...)     # Search local PDF library
+# scholar_obj.index_local_pdfs(...) # Index PDFs in directory
+# scholar_obj.download_pdfs(...)    # Download PDFs for papers
+# scholar_obj.enrich_papers(...)    # Add journal metrics to papers
+# scholar_obj.enrich_citations(...) # Add citation counts to papers
+# scholar_obj.extract_text(...)     # Extract text from PDF
+# scholar_obj.extract_sections(...) # Extract sections from PDF
+# scholar_obj.extract_for_ai(...)   # Extract PDF content for AI processing
+# scholar_obj.extract_from_papers(...) # Batch extract from multiple papers
+# scholar_obj.find_similar(...)     # Find similar papers
+# scholar_obj.get_library_stats()   # Get statistics of paper library
+# scholar_obj.quick_search(...)     # Quick search for paper titles
+
+
+# Search from Source
+papers_obj = scholar_obj.search(
     query="epilepsy detection",
-    limit=5,
-    source="pubmed",           # Explicit source specification
-    year_min=None,
-    year_max=None
-)
-
-# Papers now have impact factors and citation counts!
-for paper in papers:
-    print(f"{paper.journal}: IF={paper.impact_factor}, Citations={paper.citation_count}")
-
-# Save as BibTeX
-papers.save("epilepsy_papers.bib")
-```
-
-## Real Example: Epilepsy Detection Papers
-
-```python
-# Search for epilepsy detection papers
-papers = scholar.search(
-    query="epilepsy detection",
-    limit=5,
-    source="pubmed"
-)
-
-# Results from PubMed (actual papers found):
-# 1. "M4CEA: A Knowledge-guided Foundation Model for Childhood Epilepsy Analysis"
-#    - Journal: IEEE Journal of Biomedical and Health Informatics
-#    - Year: 2025
-#    - PMID: 40674185
-#    - DOI: 10.1109/JBHI.2025.3590463
-#
-# 2. "Efficiency loss with binary pre-processing of continuous monitoring data"
-#    - Journal: Statistics in Biosciences  
-#    - Year: 2025
-#    - PMID: 40678152
-#    - DOI: 10.1007/s12561-025-09473-w
-```
-
-## Key Features
-
-### 1. Automatic Enrichment (Default Behavior)
-
-```python
-# Papers are automatically enriched with impact factors AND citation counts
-scholar = Scholar()  # Default: impact_factors=True, citations=True
-papers = scholar.search("epilepsy detection")
-
-# Real results with automatic enrichment:
-# IEEE Journal of Biomedical and Health Informatics: IF=6.7, Citations=245
-# Statistics in Biosciences: IF=0.8, Citations=12
-# Human Mutation: IF=3.3, Citations=89
-# Frontiers in Cell and Developmental Biology: IF=4.6, Citations=156
-# Molecular Pharmaceutics: IF=4.5, Citations=203
-```
-
-### 2. Data Sources
-
-- **Impact Factors**: From `impact_factor` package (2024 JCR data)
-  - Install: `pip install impact-factor`
-  - Falls back to built-in data if not installed
-
-- **Citation Counts**: From Semantic Scholar API
-  - Cross-references PubMed papers by DOI/title
-  - Requires API key for best results (free)
-
-### 3. Filter and Sort Papers
-
-```python
-# Filter by year
-recent = papers.filter(year_min=2024)
-
-# Filter by impact factor
-high_impact = papers.filter(impact_factor_min=5.0)
-
-# Filter by multiple criteria
-quality_papers = papers.filter(
-    year_min=2020,
-    year_max=2025,
-    impact_factor_min=3.0,
-    min_citations=10
-)
-
-# Sort papers
-by_impact = papers.sort_by("impact_factor", reverse=True)  # Highest first
-by_year = papers.sort_by("year", reverse=False)           # Oldest first
-```
-
-### 4. Export in Multiple Formats
-
-```python
-# BibTeX (default)
-papers.save("output.bib")
-
-# JSON with all metadata
-papers.save("output.json", format="json")
-
-# Get BibTeX string
-bibtex_content = papers.to_bibtex()
-print(bibtex_content)
-```
-
-## Search Parameters
-
-```python
-papers = scholar.search(
-    query="epilepsy detection",      # Search query (required)
-    limit=20,                        # Number of results (default: 20)
-    source='pubmed',                 # Source: 'pubmed', 'arxiv', 'semantic_scholar' (default: 'pubmed')
-    year_min=None,                   # Minimum publication year (default: None)
-    year_max=None                    # Maximum publication year (default: None)
-)
-```
-
-## Environment Setup
-
-### PubMed Email Requirement
-PubMed (through NCBI's ENTREZ system) requires an email address when accessing their API. This is used to:
-- Track usage and prevent abuse
-- Contact you if there are issues with your queries
-- Provide better rate limits for registered users
-
-```bash
-# Required for PubMed access
-export SCITEX_PUBMED_EMAIL="your.email@university.edu"
-
-# Recommended for better Semantic Scholar access (free API key)
-export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
-
-# To install impact_factor package (for real journal metrics)
-pip install impact-factor
-```
-
-## Complete Workflow Example
-
-```python
-from scitex.scholar import Scholar
-
-# Initialize (automatic enrichment enabled by default)
-scholar = Scholar()
-
-# 1. Search PubMed (automatically enriched)
-papers = scholar.search(
-    query="deep learning EEG epilepsy",
     limit=20,
-    source='pubmed',
+    sources=["pubmed"],      # ["pubmed", "arxiv", "semantic_scholar"]
     year_min=None,
     year_max=None
 )
-print(f"Found {len(papers)} papers with impact factors and citations")
 
-# 2. Filter for quality (using the enriched data)
-quality = papers.filter(
-    year_min=2020,
-    year_max=2025,
-    min_citations=5,
-    max_citations=None,
-    impact_factor_min=3.0,
-    open_access_only=False,
-    journals=None,
-    authors=None,
-    keywords=None,
-    has_pdf=None
+# Collection Methods
+# papers_obj.sort_by(...) - Sort by multiple criteria
+# papers_obj.filter(...) - Filter papers
+# papers_obj.to_dataframe() - Convert to pandas DataFrame
+# papers_obj.analyze_trends() - Get statistical analysis
+# papers_obj.deduplicate() - Remove duplicate papers
+# papers_obj.save(...) - Save to file
+# papers_obj.summary() - Get text summary
+
+# Filter with all parameters shown
+filtered = papers_obj.filter(
+    year_min=None,             # Default: None
+    year_max=None,             # Default: None
+    min_citations=10,          # Default: None
+    max_citations=None,        # Default: None
+    impact_factor_min=3.0,     # Default: None
+    open_access_only=False,    # Default: False
+    journals=None,             # Default: None (list of journal names)
+    authors=None,              # Default: None (list of author names)
+    keywords=None,             # Default: None (list of keywords)
+    has_pdf=None               # Default: None
 )
-print(f"Quality papers: {len(quality)}")
 
-# 3. Sort by impact
-sorted_papers = quality.sort_by("impact_factor")
+# Save (format auto-detected from extension)
+filtered.save("epilepsy_papers.bib")
+# filtered.save("epilepsy_papers.json", format="json")
+# filtered.save("epilepsy_papers.csv", format="csv")
 
-# 4. Export
-sorted_papers.save("epilepsy_ml_papers.bib")
+
+# Papers automatically have impact factors and citations!
+for paper_obj in papers_obj[:3]:
+    print(f"{paper_obj.journal}: IF={paper_obj.impact_factor}, Citations={paper_obj.citation_count}")
+
+    # Paper Info
+    # print(paper_obj.title)     # Always available
+    # print(paper_obj.year)      # Always available
+    # print(paper_obj.authors)   # Always available (list)
+    # print(paper_obj.abstract)  # When available
+    # print(paper_obj.doi)       # When available
+    
+    # Journal Info
+    # print(paper_obj.journal)          # Always available
+    # print(paper_obj.h_index)          # When available
+    # print(paper_obj.impact_factor)    # When available via `impact_factor` package (2024 JCR data)
+    # print(paper_obj.journal_quartile) # When available
+    # print(paper_obj.journal_rank)     # When available
+    # print(paper_obj.citation_count)   # When available via Semantic Scholar
+    
+    # Scholar info
+    # print(paper_obj.source)    # Source database (pubmed, arxiv, etc.)
+    
+    # Specific to PubMed
+    # print(paper_obj.pmid)      # Only when from PubMed
+    
+    # Specific to ArXiv
+    # print(paper_obj.arxiv_id)  # Only when from ArXiv
+    
+    # Additional metadata
+    # print(paper_obj.keywords)  # When available (list)
+    # print(paper_obj.metadata)  # When available (dict)
+    # print(paper_obj.pdf_path)  # When PDF downloaded
+    # print(paper_obj.pdf_url)   # When available
+
+    # Methods
+    # paper_obj.similarity_score(other_paper_obj)  # Calculate similarity
+    # paper_obj.to_bibtex()      # Export as BibTeX string
+    # paper_obj.to_dict()        # Export as dictionary
+    # paper_obj.get_identifier() # Get primary identifier (DOI, PMID, etc.)
+
+
+# Sort papers by multiple criteria
+# Default is descending order (reverse=True)
+sorted_papers = papers_obj.sort_by('impact_factor', 'year')
+
+# # Sort by impact year (ascending) then factor (descending)
+# sorted_papers = papers_obj.sort_by(
+#     ('year', False)            # Ascending
+#     ('impact_factor', True),   # Descending    
+# )
+#  
+# # Mixed format is also supported
+# sorted_papers = papers_obj.sort_by(
+#     'impact_factor',           # Uses default reverse=True
+#     ('year', False)            # Explicitly ascending
+# )
 ```
 
-### Disabling Automatic Enrichment
+## Advanced Usage
 
 ```python
-# If you need faster searches without enrichment
-scholar_fast = Scholar(
-    impact_factors=False,    # Don't add impact factors
-    citations=False          # Don't add citation counts
+# Local PDF Management
+scholar_obj.index_local_pdfs(
+    pdf_directory="/path/to/pdfs",
+    recursive=True                    # Default: True
 )
-papers = scholar_fast.search(query="epilepsy", limit=10)  # No enrichment
 
-# Or selectively disable
-scholar_no_citations = Scholar(
-    impact_factors=True,     # Keep impact factors
-    citations=False          # But skip citation counts (faster)
+local_results = scholar_obj.search_local("epilepsy", limit=20)
+
+scholar_obj.download_pdfs(
+    papers_obj,
+    output_dir="/path/to/download",   # Default: workspace_dir/pdfs
+    max_workers=5                     # Default: 5
 )
+
+# Text Extraction
+text = scholar_obj.extract_text("/path/to/paper.pdf")
+
+sections = scholar_obj.extract_sections("/path/to/paper.pdf")
+# Returns: {"title": "...", "abstract": "...", "introduction": "...", ...}
+
+ai_data = scholar_obj.extract_for_ai("/path/to/paper.pdf")
+# Returns: {"text": "...", "metadata": {...}, "sections": {...}}
+
+extracted = scholar_obj.extract_from_papers(papers_obj)
+# Returns: List[Dict] with extracted content from each paper
+
+# Find Similar Papers
+similar = scholar_obj.find_similar(
+    "Deep Learning for EEG Analysis",  # Paper title
+    limit=10                          # Default: 10
+)
+
+# Library Statistics
+stats = scholar_obj.get_library_stats()
+# Returns: {
+#     "total_papers": 150,
+#     "avg_impact_factor": 4.5,
+#     "papers_by_year": {...},
+#     "papers_by_journal": {...},
+#     "papers_with_pdf": 75
+# }
+
+# Quick Search (returns titles only)
+titles = scholar_obj.quick_search("epilepsy", top_n=5)
+```
+
+## Exporting
+
+```python
+papers_obj.save("/path/to/output.bib") # In BibTeX
+papers_obj.save("/path/to/output.json") # In Jason
+papers_obj.save("/path/to/output.csv") # In CSV
+```
+
+## Conversion
+
+``` python
+# Get BibTeX string
+bibtex_content = papers_obj.to_bibtex()
+print(bibtex_content)
+
+# Convert to DataFrame
+df = papers_obj.to_dataframe()
 ```
 
 ## Installation
@@ -220,73 +214,15 @@ pip install -e ~/proj/scitex_repo
 pip install impact-factor  # For real journal impact factors
 ```
 
-## Tips
+## Environment Variables
 
-1. **No results?** Check your email is set: `export SCITEX_PUBMED_EMAIL="your.email@edu"`
-2. **Want citation counts?** Use `scholar.enrich_citations(papers)` after searching
-3. **Need specific journals?** Filter: `papers.filter(journals=["Nature", "Science"])`
-4. **Local PDFs?** Index them: `scholar.index_local_pdfs("./my_papers")`
-
-## API Reference
-
-### Scholar Methods
-
-```python
-# Initialize Scholar
-import os
-scholar = Scholar(
-    email=os.getenv("SCITEX_PUBMED_EMAIL"),
-    api_key_semantic_scholar=os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY"),
-    workspace_dir=None,        # Default: ~/.scitex/scholar
-    impact_factors=True,       # Add impact factors (default: True)
-    citations=True,            # Add citations (default: True)
-    auto_download=False        # Download PDFs (default: False)
-)
-
-# Search for papers
-papers = scholar.search(
-    query="...",               # Search query (required)
-    limit=20,                  # Max results (default: 20)
-    source="pubmed",           # "pubmed", "arxiv", "semantic_scholar" (default: "pubmed")
-    year_min=None,             # Min year (default: None)
-    year_max=None              # Max year (default: None)
-)
-
-# Other methods
-scholar.enrich_papers(papers)         # Manually add impact factors
-scholar.enrich_citations(papers)      # Manually add citations
-scholar.index_local_pdfs(directory, recursive=True)
-scholar.search_local(query, limit=20)
-```
-
-### PaperCollection Methods
-
-```python
-# Filter papers
-filtered = papers.filter(
-    year_min=None,
-    year_max=None,
-    min_citations=None,
-    max_citations=None,
-    impact_factor_min=None,
-    open_access_only=False,
-    journals=None,             # List of journal names
-    authors=None,              # List of author names
-    keywords=None,             # List of keywords
-    has_pdf=None               # True/False/None
-)
-
-# Sort papers
-sorted_papers = papers.sort_by(
-    criteria='citations',      # 'citations', 'year', 'impact_factor', 'title'
-    reverse=True               # Descending order (default: True)
-)
-
-# Export
-papers.save(filename="output.bib", format='bibtex')  # 'bibtex' or 'json'
-papers.to_dataframe()          # Convert to pandas DataFrame
+```bash
+export SCITEX_PUBMED_EMAIL="your.email@example.com"
+export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 ```
 
 ## Contact
 
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
+
+<!-- EOF -->
