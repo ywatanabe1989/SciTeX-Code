@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-19 11:25:00 (ywatanabe)"
-# File: ./src/scitex/scholar/__init__refactored.py
+# File: ./src/scitex/scholar/__init__.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/__init__refactored.py"
+    "./src/scitex/scholar/__init__.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -28,7 +28,7 @@ Quick Start:
 """
 
 # Import main class
-from .scholar_refactored import Scholar, search, quick_search
+from .scholar import Scholar, search, quick_search
 
 # Import core classes for advanced users
 from ._core import Paper, PaperCollection

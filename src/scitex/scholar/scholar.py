@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-19 11:20:00 (ywatanabe)"
-# File: ./src/scitex/scholar/scholar_refactored.py
+# File: ./src/scitex/scholar/scholar.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/scholar_refactored.py"
+    "./src/scitex/scholar/scholar.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -28,7 +28,7 @@ import os
 from datetime import datetime
 
 from ._core import Paper, PaperCollection, PaperEnricher
-from ._search_unified import UnifiedSearcher, get_scholar_dir
+from ._search import UnifiedSearcher, get_scholar_dir
 from ._download import PDFManager
 
 logger = logging.getLogger(__name__)
