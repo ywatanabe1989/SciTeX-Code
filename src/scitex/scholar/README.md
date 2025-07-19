@@ -1,376 +1,196 @@
 # SciTeX Scholar
 
-Scientific literature management made simple and powerful.
-
-## Overview
-
-The refactored Scholar module provides a unified, intuitive interface for scientific literature management. It simplifies the previous 24-file architecture into just 6 core files while maintaining all functionality.
-
-## Installation
-
-```bash
-pip install -e ~/proj/scitex_repo
-```
+Simple and powerful scientific literature search with real journal metrics.
 
 ## Quick Start
 
 ```python
 from scitex.scholar import Scholar
 
-# Initialize (auto-detects API keys from environment)
+# Create scholar instance
 scholar = Scholar()
 
-# Simple search with automatic enrichment
-papers = scholar.search("deep learning neuroscience")
-papers.save("papers.bib")
+# Search PubMed for papers
+papers = scholar.search("epilepsy detection", limit=5)
 
-# Method chaining for complex workflows
-papers = scholar.search("transformer models", year_min=2020) \
-              .filter(min_citations=50) \
-              .sort_by("impact_factor") \
-              .save("transformers.bib")
+# Save as BibTeX
+papers.save("epilepsy_papers.bib")
 ```
 
-## Core Concepts
+## Real Example: Epilepsy Detection Papers
 
-### 1. The Scholar Class
-The main entry point that handles all operations:
-- Paper searching across multiple sources
-- Local PDF library management
-- Automatic enrichment with journal metrics
-- Smart defaults and environment detection
-
-### 2. Paper and PaperCollection
-- `Paper`: Represents a scientific paper with comprehensive metadata
-- `PaperCollection`: A container for papers with filtering, sorting, and analysis methods
-
-### 3. Method Chaining
-Most operations return a `PaperCollection`, allowing intuitive workflows:
 ```python
-papers.filter(year_min=2020).sort_by("citations").deduplicate().save("output.bib")
+# Search for epilepsy detection papers
+papers = scholar.search("epilepsy detection", limit=5)
+
+# Results from PubMed (actual papers found):
+# 1. "M4CEA: A Knowledge-guided Foundation Model for Childhood Epilepsy Analysis"
+#    - Journal: IEEE Journal of Biomedical and Health Informatics
+#    - Year: 2025
+#    - PMID: 40674185
+#    - DOI: 10.1109/JBHI.2025.3590463
+#
+# 2. "Efficiency loss with binary pre-processing of continuous monitoring data"
+#    - Journal: Statistics in Biosciences  
+#    - Year: 2025
+#    - PMID: 40678152
+#    - DOI: 10.1007/s12561-025-09473-w
 ```
 
-## Basic Usage Examples
+## Key Features
 
-### Simple Search
+### 1. Automatic Journal Metrics (Impact Factors)
+
 ```python
-from scitex.scholar import Scholar
+# Enrich papers with real impact factors
+enriched = scholar.enrich_papers(papers)
 
-scholar = Scholar()
-papers = scholar.search("machine learning", limit=20)
+# Real results:
+for paper in enriched:
+    print(f"{paper.journal}: IF={paper.impact_factor}")
 
-# Papers are automatically enriched with journal metrics
-for paper in papers[:5]:
-    print(f"{paper.title}")
-    print(f"  IF: {paper.impact_factor}, Citations: {paper.citation_count}")
+# Output:
+# IEEE Journal of Biomedical and Health Informatics: IF=6.7
+# Statistics in Biosciences: IF=0.8
+# Human Mutation: IF=3.3
+# Frontiers in Cell and Developmental Biology: IF=4.6
+# Molecular Pharmaceutics: IF=4.5
 ```
 
-### Filtering and Sorting
+### 2. Add Citation Counts (PubMed Workaround)
+
 ```python
+# PubMed doesn't provide citation counts, but we can get them from Semantic Scholar
+papers = scholar.search("machine learning cancer", source='pubmed')
+papers = scholar.enrich_citations(papers)  # Cross-references with Semantic Scholar
+
+# Now you can filter by citations
+highly_cited = papers.filter(min_citations=100)
+```
+
+### 3. Filter and Sort Papers
+
+```python
+# Filter by year
+recent = papers.filter(year_min=2024)
+
+# Filter by impact factor
+high_impact = papers.filter(impact_factor_min=5.0)
+
 # Filter by multiple criteria
-high_impact = papers.filter(
+quality_papers = papers.filter(
     year_min=2020,
-    min_citations=50,
-    impact_factor_min=5.0,
-    keywords=["deep learning", "neural networks"]
+    year_max=2025,
+    impact_factor_min=3.0,
+    min_citations=10
 )
 
-# Sort by different criteria
-by_citations = papers.sort_by("citations")
-by_impact = papers.sort_by("impact_factor")
-by_year = papers.sort_by("year", reverse=False)  # Oldest first
+# Sort papers
+by_impact = papers.sort_by("impact_factor", reverse=True)  # Highest first
+by_year = papers.sort_by("year", reverse=False)           # Oldest first
 ```
 
-### Quick Search (Just Titles)
+### 4. Export in Multiple Formats
+
 ```python
-from scitex.scholar import quick_search
-
-titles = quick_search("transformer architecture", top_n=5)
-for title in titles:
-    print(title)
-```
-
-## Advanced Usage
-
-### Multi-Source Search
-```python
-# Search specific sources
-papers = scholar.search(
-    "quantum computing",
-    sources=['semantic_scholar', 'arxiv'],  # Exclude PubMed
-    limit=50
-)
-
-# Default searches all sources: semantic_scholar, pubmed, arxiv
-```
-
-### Local PDF Library
-```python
-# Index your PDF collection
-stats = scholar.index_local_pdfs("./my_papers", recursive=True)
-print(f"Indexed {stats['indexed']} PDFs")
-
-# Search within your library
-local_papers = scholar.search_local("attention mechanism")
-```
-
-### Literature Review Workflow
-```python
-# Search multiple topics
-topics = ["transformer models", "attention mechanism", "BERT"]
-all_papers = []
-
-for topic in topics:
-    papers = scholar.search(topic, limit=30)
-    all_papers.extend(papers.papers)
-
-# Create collection and remove duplicates
-collection = PaperCollection(all_papers)
-unique = collection.deduplicate(threshold=0.85)
-
-# Filter to recent, high-quality papers
-review = unique.filter(year_min=2020, min_citations=20)
-
-# Analyze and save
-trends = review.analyze_trends()
-print(f"Papers by year: {trends['yearly_distribution']}")
-
-review.save("literature_review.bib")
-```
-
-### Finding Similar Papers
-```python
-# Find papers similar to a reference
-similar = scholar.find_similar("Attention is All You Need", limit=10)
-```
-
-### Export in Multiple Formats
-```python
-from scitex.scholar import papers_to_markdown, papers_to_ris
-
 # BibTeX (default)
 papers.save("output.bib")
 
-# JSON with metadata
+# JSON with all metadata
 papers.save("output.json", format="json")
 
-# RIS for EndNote/Mendeley
-ris_content = papers_to_ris(papers.papers)
-with open("output.ris", "w") as f:
-    f.write(ris_content)
-
-# Markdown summary
-md_content = papers_to_markdown(papers.papers, group_by='year')
-with open("summary.md", "w") as f:
-    f.write(md_content)
+# Get BibTeX string
+bibtex_content = papers.to_bibtex()
+print(bibtex_content)
 ```
 
-### Data Analysis with Pandas
+## Search Parameters
+
 ```python
-# Convert to DataFrame for analysis
-df = papers.to_dataframe()
-
-# Analyze with pandas
-high_quality = df[(df['citation_count'] > 100) & (df['impact_factor'] > 10)]
-yearly_counts = df.groupby('year').size()
+papers = scholar.search(
+    query="epilepsy detection",      # Search query (required)
+    limit=20,                        # Number of results (default: 20)
+    source='pubmed',                 # Source: 'pubmed', 'arxiv', 'semantic_scholar' (default: 'pubmed')
+    year_min=2020,                   # Minimum publication year (optional)
+    year_max=2025                    # Maximum publication year (optional)
+)
 ```
 
-## Configuration
-
-### Environment Variables
-
-To fully utilize the Scholar module and access papers from all sources (including subscription journals), configure these environment variables:
+## Environment Setup
 
 ```bash
-# REQUIRED for PubMed access (finds papers from Nature, Science, Cell, etc.)
-# Use your institutional email for better access
+# Required for PubMed access
 export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
 
-# RECOMMENDED for better Semantic Scholar access
-# Without this, you'll hit rate limits quickly and get errors
-# Get free API key at: https://www.semanticscholar.org/product/api
+# Recommended for better Semantic Scholar access (free API key)
 export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 
-# OPTIONAL - Custom workspace directory for PDF downloads and indices
-export SCITEX_SCHOLAR_DIR="~/Documents/scholar_data"
+# To install impact_factor package (for real journal metrics)
+pip install impact-factor
 ```
 
-#### What Each Variable Enables:
+## Complete Workflow Example
 
-- **SCITEX_ENTREZ_EMAIL**: 
-  - ✅ Access to PubMed database (required by NCBI)
-  - ✅ Find papers from subscription journals (Nature, Science, Cell, etc.)
-  - ✅ Access clinical and biomedical literature
-  - ❌ Without it: Uses default email (ywata1989@gmail.com)
-
-- **SCITEX_SEMANTIC_SCHOLAR_API_KEY**:
-  - ✅ 100x higher rate limits (1 request/second vs 100 requests/second)
-  - ✅ Access to full paper metadata
-  - ✅ More reliable searches
-  - ❌ Without it: Shows warning and may hit rate limits
-
-#### Quick Setup:
-```bash
-# Add to your ~/.bashrc or ~/.zshrc
-export SCITEX_ENTREZ_EMAIL="john.doe@university.edu"
-export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-key-here"
-
-# Reload your shell
-source ~/.bashrc
-```
-
-#### Verify Your Setup:
 ```python
 from scitex.scholar import Scholar
 
-# Check configuration
+# Initialize
 scholar = Scholar()
-print(f"Email: {scholar.email}")  # Should show your email
-print(f"Semantic Scholar API: {'Configured' if scholar.api_keys.get('s2') else 'Not configured'}")
 
-# Test each source
-for source in ['pubmed', 'semantic_scholar', 'arxiv']:
-    results = scholar.search("test", sources=[source], limit=1)
-    print(f"{source}: {'Working' if len(results) > 0 else 'Not working'}")
-```
+# 1. Search PubMed
+papers = scholar.search("deep learning EEG epilepsy", limit=20)
+print(f"Found {len(papers)} papers")
 
-### Python Configuration
-```python
-scholar = Scholar(
-    email="your.email@university.edu",
-    api_keys={'s2': 'your-api-key'},
-    auto_enrich=True,       # Default: True - Auto-fetch journal metrics
-    auto_download=False,    # Default: False - Don't auto-download PDFs
-    workspace_dir="./scholar_data"  # Custom workspace directory
+# 2. Enrich with journal metrics
+papers = scholar.enrich_papers(papers)      # Add impact factors
+papers = scholar.enrich_citations(papers)   # Add citation counts
+
+# 3. Filter for quality
+quality = papers.filter(
+    year_min=2020,
+    impact_factor_min=3.0,
+    min_citations=5
 )
+print(f"Quality papers: {len(quality)}")
+
+# 4. Sort by impact
+sorted_papers = quality.sort_by("impact_factor")
+
+# 5. Export
+sorted_papers.save("epilepsy_ml_papers.bib")
 ```
+
+## Installation
+
+```bash
+# Install SciTeX
+pip install -e ~/proj/scitex_repo
+
+# Install optional dependencies
+pip install impact-factor  # For real journal impact factors
+```
+
+## Tips
+
+1. **No results?** Check your email is set: `export SCITEX_ENTREZ_EMAIL="your.email@edu"`
+2. **Want citation counts?** Use `scholar.enrich_citations(papers)` after searching
+3. **Need specific journals?** Filter: `papers.filter(journals=["Nature", "Science"])`
+4. **Local PDFs?** Index them: `scholar.index_local_pdfs("./my_papers")`
 
 ## API Reference
 
 ### Scholar Methods
-
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `search(query, limit=20, sources=None, year_min=None, year_max=None)` | Search for papers | PaperCollection |
-| `search_local(query, limit=20)` | Search local PDF library | PaperCollection |
-| `index_local_pdfs(directory, recursive=True)` | Index PDFs for searching | Dict with stats |
-| `find_similar(paper_title, limit=10)` | Find similar papers | PaperCollection |
-| `download_pdfs(papers, force=False)` | Download PDFs | Dict of paths |
-| `enrich_papers(papers)` | Add journal metrics | Papers/Collection |
-| `quick_search(query, top_n=5)` | Get just titles | List[str] |
+- `search(query, limit, source, year_min, year_max)` - Search for papers
+- `enrich_papers(papers)` - Add journal impact factors
+- `enrich_citations(papers)` - Add citation counts from Semantic Scholar
+- `index_local_pdfs(directory, recursive)` - Index local PDF collection
+- `search_local(query, limit)` - Search within indexed PDFs
 
 ### PaperCollection Methods
-
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `filter(**criteria)` | Filter by various criteria | PaperCollection |
-| `sort_by(criteria, reverse=True)` | Sort papers | PaperCollection |
-| `deduplicate(threshold=0.85)` | Remove duplicates | PaperCollection |
-| `analyze_trends()` | Statistical analysis | Dict |
-| `save(filename, format='bibtex')` | Export papers | Path |
-| `to_dataframe()` | Convert to pandas | DataFrame |
-| `summary()` | Text summary | str |
-
-### Filter Criteria
-
-- `year_min`, `year_max`: Publication year range
-- `min_citations`, `max_citations`: Citation count range
-- `impact_factor_min`: Minimum journal impact factor
-- `journals`: List of journal names to include
-- `authors`: List of author names to match
-- `keywords`: List of keywords to search for
-- `has_pdf`: True/False - has PDF available
-- `open_access_only`: Only papers with free PDFs
-
-## Examples
-
-### Basic Example
-See [`examples/scholar/scholar_basic_usage.py`](../../../examples/scholar/scholar_basic_usage.py)
-
-### Advanced Example
-See [`examples/scholar/scholar_advanced_usage.py`](../../../examples/scholar/scholar_advanced_usage.py)
-
-### Simple Script Example
-See [`examples/scholar_simple_example.py`](../../../examples/scholar_simple_example.py)
-
-## Architecture
-
-The refactored module structure:
-
-```
-scholar/
-├── __init__.py          # Public API and exports
-├── scholar.py           # Main Scholar class
-├── _core.py            # Paper, PaperCollection, enrichment
-├── _search.py          # Unified search engines
-├── _download.py        # PDF management
-├── _utils.py           # Format converters and helpers
-└── _legacy/            # Old files (backward compatibility)
-```
-
-## Migration from Old API
-
-If you're using the old API, see the [Migration Guide](./docs/scholar_migration_guide.md).
-
-Most old imports still work with deprecation warnings:
-```python
-# Old way (shows warning)
-from scitex.scholar import search_sync
-papers = search_sync("query")
-
-# New way
-from scitex.scholar import Scholar
-papers = Scholar().search("query")
-```
-
-## Troubleshooting
-
-### No Results?
-- Check your internet connection
-- Verify API keys are set correctly
-- Try different sources or broader queries
-
-### Getting Only arXiv Papers?
-This means PubMed and Semantic Scholar aren't working properly:
-```python
-# Check your configuration
-scholar = Scholar()
-print(f"Email configured: {scholar.email}")  # Should show your email
-print(f"API keys: {list(scholar.api_keys.keys())}")  # Should show ['s2'] if configured
-
-# If not configured, you'll only get arXiv results
-```
-
-### PubMed Returning 0 Results?
-```bash
-# PubMed REQUIRES email - set it:
-export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
-```
-
-### Semantic Scholar Errors?
-```bash
-# If you see warning messages about API key:
-# 1. Get free API key: https://www.semanticscholar.org/product/api
-# 2. Set environment variable:
-export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-key"
-```
-
-### Want Papers from Nature, Science, Cell?
-```python
-# These come from PubMed - ensure email is set!
-# Then search with journal names:
-papers = scholar.search('"Nature" neuroscience', sources=['pubmed'])
-papers = scholar.search('epilepsy', sources=['pubmed'])  # Includes all journals
-```
-
-### Slow Performance?
-- Use `limit` parameter to reduce results
-- Disable auto-enrichment: `Scholar(auto_enrich=False)`
-- Use specific sources instead of 'all'
-
-### Import Errors?
-- Ensure scitex is installed: `pip install -e ~/proj/scitex_repo`
-- Check Python path includes the src directory
+- `filter(year_min, year_max, min_citations, impact_factor_min, journals, authors, keywords)` - Filter papers
+- `sort_by(criteria, reverse)` - Sort by: 'citations', 'year', 'impact_factor', 'title'
+- `save(filename, format)` - Export as 'bibtex' or 'json'
+- `to_dataframe()` - Convert to pandas DataFrame
 
 ## Contact
 
