@@ -7,11 +7,18 @@ Simple and powerful scientific literature search with real journal metrics.
 ```python
 from scitex.scholar import Scholar
 
-# Create scholar instance
-scholar = Scholar()
+# Create scholar instance with default parameters
+scholar = Scholar(
+    email=None,                # Auto-detected from SCITEX_ENTREZ_EMAIL env var
+    api_keys=None,             # Auto-detected from SCITEX_SEMANTIC_SCHOLAR_API_KEY
+    workspace_dir=None,        # Default: ~/.scitex/scholar
+    impact_factors=True,       # Automatically add journal impact factors (default: True)
+    citations=True,            # Automatically add citation counts (default: True)
+    auto_download=False        # Automatically download PDFs (default: False)
+)
 
 # Search PubMed for papers (automatically enriched)
-papers = scholar.search("epilepsy detection", limit=5)
+papers = scholar.search(query="epilepsy detection", limit=5)
 
 # Papers now have impact factors and citation counts!
 for paper in papers:
@@ -111,15 +118,21 @@ papers = scholar.search(
     query="epilepsy detection",      # Search query (required)
     limit=20,                        # Number of results (default: 20)
     source='pubmed',                 # Source: 'pubmed', 'arxiv', 'semantic_scholar' (default: 'pubmed')
-    year_min=2020,                   # Minimum publication year (optional)
-    year_max=2025                    # Maximum publication year (optional)
+    year_min=None,                   # Minimum publication year (default: None)
+    year_max=None                    # Maximum publication year (default: None)
 )
 ```
 
 ## Environment Setup
 
+### What is ENTREZ?
+ENTREZ is the search system used by NCBI (National Center for Biotechnology Information) to access databases like PubMed. When you search PubMed through their API, they require an email address to:
+- Track usage and prevent abuse
+- Contact you if there are issues with your queries
+- Provide better rate limits for registered users
+
 ```bash
-# Required for PubMed access
+# Required for PubMed access (NCBI's ENTREZ system)
 export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
 
 # Recommended for better Semantic Scholar access (free API key)
@@ -138,14 +151,27 @@ from scitex.scholar import Scholar
 scholar = Scholar()
 
 # 1. Search PubMed (automatically enriched)
-papers = scholar.search("deep learning EEG epilepsy", limit=20)
+papers = scholar.search(
+    query="deep learning EEG epilepsy",
+    limit=20,
+    source='pubmed',
+    year_min=None,
+    year_max=None
+)
 print(f"Found {len(papers)} papers with impact factors and citations")
 
 # 2. Filter for quality (using the enriched data)
 quality = papers.filter(
     year_min=2020,
+    year_max=2025,
+    min_citations=5,
+    max_citations=None,
     impact_factor_min=3.0,
-    min_citations=5
+    open_access_only=False,
+    journals=None,
+    authors=None,
+    keywords=None,
+    has_pdf=None
 )
 print(f"Quality papers: {len(quality)}")
 
@@ -160,11 +186,17 @@ sorted_papers.save("epilepsy_ml_papers.bib")
 
 ```python
 # If you need faster searches without enrichment
-scholar_fast = Scholar(impact_factors=False, citations=False)
-papers = scholar_fast.search("epilepsy")  # No enrichment
+scholar_fast = Scholar(
+    impact_factors=False,    # Don't add impact factors
+    citations=False          # Don't add citation counts
+)
+papers = scholar_fast.search(query="epilepsy", limit=10)  # No enrichment
 
 # Or selectively disable
-scholar_no_citations = Scholar(citations=False)  # Only impact factors
+scholar_no_citations = Scholar(
+    impact_factors=True,     # Keep impact factors
+    citations=False          # But skip citation counts (faster)
+)
 ```
 
 ## Installation
@@ -187,17 +219,61 @@ pip install impact-factor  # For real journal impact factors
 ## API Reference
 
 ### Scholar Methods
-- `search(query, limit, source, year_min, year_max)` - Search for papers
-- `enrich_papers(papers)` - Add journal impact factors
-- `enrich_citations(papers)` - Add citation counts from Semantic Scholar
-- `index_local_pdfs(directory, recursive)` - Index local PDF collection
-- `search_local(query, limit)` - Search within indexed PDFs
+
+```python
+# Initialize Scholar
+scholar = Scholar(
+    email=None,                # Auto-detected from env
+    api_keys=None,             # Auto-detected from env
+    workspace_dir=None,        # Default: ~/.scitex/scholar
+    impact_factors=True,       # Add impact factors (default: True)
+    citations=True,            # Add citations (default: True)
+    auto_download=False        # Download PDFs (default: False)
+)
+
+# Search for papers
+papers = scholar.search(
+    query="...",               # Search query (required)
+    limit=20,                  # Max results (default: 20)
+    source='pubmed',           # 'pubmed', 'arxiv', 'semantic_scholar' (default: 'pubmed')
+    year_min=None,             # Min year (default: None)
+    year_max=None              # Max year (default: None)
+)
+
+# Other methods
+scholar.enrich_papers(papers)         # Manually add impact factors
+scholar.enrich_citations(papers)      # Manually add citations
+scholar.index_local_pdfs(directory, recursive=True)
+scholar.search_local(query, limit=20)
+```
 
 ### PaperCollection Methods
-- `filter(year_min, year_max, min_citations, impact_factor_min, journals, authors, keywords)` - Filter papers
-- `sort_by(criteria, reverse)` - Sort by: 'citations', 'year', 'impact_factor', 'title'
-- `save(filename, format)` - Export as 'bibtex' or 'json'
-- `to_dataframe()` - Convert to pandas DataFrame
+
+```python
+# Filter papers
+filtered = papers.filter(
+    year_min=None,
+    year_max=None,
+    min_citations=None,
+    max_citations=None,
+    impact_factor_min=None,
+    open_access_only=False,
+    journals=None,             # List of journal names
+    authors=None,              # List of author names
+    keywords=None,             # List of keywords
+    has_pdf=None               # True/False/None
+)
+
+# Sort papers
+sorted_papers = papers.sort_by(
+    criteria='citations',      # 'citations', 'year', 'impact_factor', 'title'
+    reverse=True               # Descending order (default: True)
+)
+
+# Export
+papers.save(filename="output.bib", format='bibtex')  # 'bibtex' or 'json'
+papers.to_dataframe()          # Convert to pandas DataFrame
+```
 
 ## Contact
 
