@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-24 19:06:38 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
+# Timestamp: "2025-07-14 13:54:57 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/__init__.py
 # ----------------------------------------
 import os
 __FILE__ = (
@@ -26,7 +26,7 @@ from . import act
 from . import classification
 from . import clustering
 from . import feature_extraction
-from . import genai
+# from . import genai
 from . import layer
 from . import loss
 from . import metrics
@@ -53,7 +53,7 @@ __all__ = [
     "classification",
     "clustering",
     "feature_extraction",
-    "genai",
+    # "genai",
     "layer",
     "loss",
     "metrics",
