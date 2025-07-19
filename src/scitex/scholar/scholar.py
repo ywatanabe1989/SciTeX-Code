@@ -30,6 +30,7 @@ from datetime import datetime
 from ._core import Paper, PaperCollection, PaperEnricher
 from ._search import UnifiedSearcher, get_scholar_dir
 from ._download import PDFManager
+from ._citation_enricher import CitationEnricher
 # PDF extraction is now handled by scitex.io
 from ..errors import ConfigurationError, SciTeXWarning
 import warnings
@@ -110,6 +111,10 @@ class Scholar:
         
         self._enricher = PaperEnricher()
         
+        self._citation_enricher = CitationEnricher(
+            s2_api_key=self.api_keys.get('s2')
+        )
+        
         self._pdf_manager = PDFManager(self.workspace_dir)
         
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
@@ -154,8 +159,8 @@ class Scholar:
         # Log search results
         if not papers:
             logger.info(f"No results found for query: '{query}'")
-            # Suggest alternative sources if default sources were used
-            if sources is None or 'semantic_scholar' in sources:
+            # Suggest alternative sources if default source was used
+            if source == 'semantic_scholar':
                 logger.info("Try searching with different sources or check your internet connection")
         else:
             logger.info(f"Found {len(papers)} papers for query: '{query}'")
@@ -245,6 +250,25 @@ class Scholar:
             return papers
         else:
             return self._enricher.enrich_papers(papers)
+    
+    def enrich_citations(self,
+                        papers: Union[List[Paper], PaperCollection]) -> Union[List[Paper], PaperCollection]:
+        """
+        Enrich papers with citation counts from Semantic Scholar.
+        
+        This is especially useful for PubMed papers which don't include citation data.
+        
+        Args:
+            papers: Papers to enrich with citation counts
+            
+        Returns:
+            Papers with citation counts added where possible
+        """
+        if isinstance(papers, PaperCollection):
+            self._citation_enricher.enrich_citations(papers.papers)
+            return papers
+        else:
+            return self._citation_enricher.enrich_citations(papers)
     
     def get_library_stats(self) -> Dict[str, Any]:
         """Get statistics about local PDF library."""
