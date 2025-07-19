@@ -72,7 +72,7 @@ class Scholar:
     
     def __init__(self,
                  email: Optional[str] = None,
-                 api_keys: Optional[Dict[str, str]] = None,
+                 api_key_semantic_scholar: Optional[str] = None,
                  workspace_dir: Optional[Union[str, Path]] = None,
                  impact_factors: bool = True,
                  citations: bool = True,
@@ -81,9 +81,9 @@ class Scholar:
         Initialize Scholar with smart defaults.
         
         Args:
-            email: Email for API compliance (auto-detected from env)
-            api_keys: API keys dict {'s2': 'key'} (auto-detected from env)
-            workspace_dir: Directory for downloads and indices
+            email: Email for PubMed API. If None, uses os.getenv("SCITEX_PUBMED_EMAIL")
+            api_key_semantic_scholar: Semantic Scholar API key. If None, uses os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY")
+            workspace_dir: Directory for downloads and indices (default: ~/.scitex/scholar)
             impact_factors: Automatically add journal impact factors from impact_factor package
                           (2024 JCR data). Install with: pip install impact-factor (default: True)
             citations: Automatically add citation counts from Semantic Scholar by cross-referencing
@@ -91,20 +91,18 @@ class Scholar:
             auto_download: Automatically download open-access PDFs (default: False)
         """
         # Auto-detect configuration with SCITEX_ prefix
-        self.email = email or os.getenv('SCITEX_ENTREZ_EMAIL') or 'ywata1989@gmail.com'
+        self.email = email or os.getenv('SCITEX_PUBMED_EMAIL') or os.getenv('SCITEX_ENTREZ_EMAIL') or 'ywata1989@gmail.com'
         
-        # API keys
-        self.api_keys = api_keys or {}
-        if 's2' not in self.api_keys:
-            self.api_keys['s2'] = os.getenv('SCITEX_SEMANTIC_SCHOLAR_API_KEY')
-            if not self.api_keys['s2']:
-                warnings.warn(
-                    "SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. "
-                    "Semantic Scholar searches may be rate-limited. "
-                    "Get a free API key at: https://www.semanticscholar.org/product/api",
-                    SciTeXWarning,
-                    stacklevel=2
-                )
+        # API key for Semantic Scholar
+        self.api_key_semantic_scholar = api_key_semantic_scholar or os.getenv('SCITEX_SEMANTIC_SCHOLAR_API_KEY')
+        if not self.api_key_semantic_scholar:
+            warnings.warn(
+                "SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. "
+                "Semantic Scholar searches may be rate-limited. "
+                "Get a free API key at: https://www.semanticscholar.org/product/api",
+                SciTeXWarning,
+                stacklevel=2
+            )
         
         # Workspace
         self.workspace_dir = Path(workspace_dir) if workspace_dir else get_scholar_dir()
@@ -118,13 +116,13 @@ class Scholar:
         # Initialize components
         self._searcher = UnifiedSearcher(
             email=self.email,
-            s2_api_key=self.api_keys.get('s2')
+            semantic_scholar_api_key=self.api_key_semantic_scholar
         )
         
         self._enricher = PaperEnricher()
         
         self._citation_enricher = CitationEnricher(
-            s2_api_key=self.api_keys.get('s2')
+            semantic_scholar_api_key=self.api_key_semantic_scholar
         )
         
         self._pdf_manager = PDFManager(self.workspace_dir)

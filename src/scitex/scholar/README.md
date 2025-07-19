@@ -8,9 +8,10 @@ Simple and powerful scientific literature search with real journal metrics.
 from scitex.scholar import Scholar
 
 # Create scholar instance with default parameters
+import os
 scholar = Scholar(
-    email=None,                # Auto-detected from SCITEX_ENTREZ_EMAIL env var
-    api_keys=None,             # Auto-detected from SCITEX_SEMANTIC_SCHOLAR_API_KEY
+    email=os.getenv("SCITEX_PUBMED_EMAIL"),
+    api_key_semantic_scholar=os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY"),
     workspace_dir=None,        # Default: ~/.scitex/scholar
     impact_factors=True,       # Automatically add journal impact factors (default: True)
     citations=True,            # Automatically add citation counts (default: True)
@@ -18,7 +19,13 @@ scholar = Scholar(
 )
 
 # Search PubMed for papers (automatically enriched)
-papers = scholar.search(query="epilepsy detection", limit=5)
+papers = scholar.search(
+    query="epilepsy detection",
+    limit=5,
+    source="pubmed",           # Explicit source specification
+    year_min=None,
+    year_max=None
+)
 
 # Papers now have impact factors and citation counts!
 for paper in papers:
@@ -32,7 +39,11 @@ papers.save("epilepsy_papers.bib")
 
 ```python
 # Search for epilepsy detection papers
-papers = scholar.search("epilepsy detection", limit=5)
+papers = scholar.search(
+    query="epilepsy detection",
+    limit=5,
+    source="pubmed"
+)
 
 # Results from PubMed (actual papers found):
 # 1. "M4CEA: A Knowledge-guided Foundation Model for Childhood Epilepsy Analysis"
@@ -125,15 +136,15 @@ papers = scholar.search(
 
 ## Environment Setup
 
-### What is ENTREZ?
-ENTREZ is the search system used by NCBI (National Center for Biotechnology Information) to access databases like PubMed. When you search PubMed through their API, they require an email address to:
+### PubMed Email Requirement
+PubMed (through NCBI's ENTREZ system) requires an email address when accessing their API. This is used to:
 - Track usage and prevent abuse
 - Contact you if there are issues with your queries
 - Provide better rate limits for registered users
 
 ```bash
-# Required for PubMed access (NCBI's ENTREZ system)
-export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
+# Required for PubMed access
+export SCITEX_PUBMED_EMAIL="your.email@university.edu"
 
 # Recommended for better Semantic Scholar access (free API key)
 export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
@@ -211,7 +222,7 @@ pip install impact-factor  # For real journal impact factors
 
 ## Tips
 
-1. **No results?** Check your email is set: `export SCITEX_ENTREZ_EMAIL="your.email@edu"`
+1. **No results?** Check your email is set: `export SCITEX_PUBMED_EMAIL="your.email@edu"`
 2. **Want citation counts?** Use `scholar.enrich_citations(papers)` after searching
 3. **Need specific journals?** Filter: `papers.filter(journals=["Nature", "Science"])`
 4. **Local PDFs?** Index them: `scholar.index_local_pdfs("./my_papers")`
@@ -222,9 +233,10 @@ pip install impact-factor  # For real journal impact factors
 
 ```python
 # Initialize Scholar
+import os
 scholar = Scholar(
-    email=None,                # Auto-detected from env
-    api_keys=None,             # Auto-detected from env
+    email=os.getenv("SCITEX_PUBMED_EMAIL"),
+    api_key_semantic_scholar=os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY"),
     workspace_dir=None,        # Default: ~/.scitex/scholar
     impact_factors=True,       # Add impact factors (default: True)
     citations=True,            # Add citations (default: True)
@@ -235,7 +247,7 @@ scholar = Scholar(
 papers = scholar.search(
     query="...",               # Search query (required)
     limit=20,                  # Max results (default: 20)
-    source='pubmed',           # 'pubmed', 'arxiv', 'semantic_scholar' (default: 'pubmed')
+    source="pubmed",           # "pubmed", "arxiv", "semantic_scholar" (default: "pubmed")
     year_min=None,             # Min year (default: None)
     year_max=None              # Max year (default: None)
 )

@@ -72,8 +72,10 @@ papers = scholar.search("deep learning", source='arxiv')
 ## Environment Variables
 
 All environment variables now use the SCITEX_ prefix:
-- `SCITEX_ENTREZ_EMAIL` - Email for PubMed API (default: ywata1989@gmail.com)
+- `SCITEX_PUBMED_EMAIL` - Email for PubMed API (default: ywata1989@gmail.com)
 - `SCITEX_SEMANTIC_SCHOLAR_API_KEY` - API key for Semantic Scholar
+
+Note: `SCITEX_ENTREZ_EMAIL` is still supported for backward compatibility.
 
 ## Migration Notes
 

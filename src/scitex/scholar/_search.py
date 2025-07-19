@@ -655,10 +655,10 @@ class UnifiedSearcher:
     
     def __init__(self, 
                  email: Optional[str] = None,
-                 s2_api_key: Optional[str] = None):
+                 semantic_scholar_api_key: Optional[str] = None):
         """Initialize unified searcher with all engines."""
         self.engines = {
-            'semantic_scholar': SemanticScholarEngine(s2_api_key),
+            'semantic_scholar': SemanticScholarEngine(semantic_scholar_api_key),
             'pubmed': PubMedEngine(email),
             'arxiv': ArxivEngine(),
             'local': LocalSearchEngine(),
@@ -768,12 +768,12 @@ async def search(query: str,
                 sources: List[str] = None,
                 limit: int = 20,
                 email: Optional[str] = None,
-                s2_api_key: Optional[str] = None,
+                semantic_scholar_api_key: Optional[str] = None,
                 **kwargs) -> List[Paper]:
     """
     Async convenience function for searching papers.
     """
-    searcher = UnifiedSearcher(email=email, s2_api_key=s2_api_key)
+    searcher = UnifiedSearcher(email=email, semantic_scholar_api_key=semantic_scholar_api_key)
     return await searcher.search(query, sources, limit, **kwargs)
 
 
@@ -781,12 +781,12 @@ def search_sync(query: str,
                sources: List[str] = None,
                limit: int = 20,
                email: Optional[str] = None,
-               s2_api_key: Optional[str] = None,
+               semantic_scholar_api_key: Optional[str] = None,
                **kwargs) -> List[Paper]:
     """
     Synchronous convenience function for searching papers.
     """
-    return asyncio.run(search(query, sources, limit, email, s2_api_key, **kwargs))
+    return asyncio.run(search(query, sources, limit, email, semantic_scholar_api_key, **kwargs))
 
 
 def build_index(paths: List[Union[str, Path]],

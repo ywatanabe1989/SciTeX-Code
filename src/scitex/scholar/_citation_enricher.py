@@ -24,9 +24,9 @@ class CitationEnricher:
     Useful for PubMed papers which don't include citation data.
     """
     
-    def __init__(self, s2_api_key: Optional[str] = None):
+    def __init__(self, semantic_scholar_api_key: Optional[str] = None):
         """Initialize citation enricher."""
-        self.s2_api_key = s2_api_key
+        self.semantic_scholar_api_key = semantic_scholar_api_key
         
     def enrich_citations(self, papers: List[Paper]) -> List[Paper]:
         """
@@ -83,7 +83,7 @@ class CitationEnricher:
         
         try:
             # Create S2 engine
-            s2_engine = SemanticScholarEngine(api_key=self.s2_api_key)
+            s2_engine = SemanticScholarEngine(api_key=self.semantic_scholar_api_key)
             
             # Search for the paper
             results = await s2_engine.search(query, limit=3)
@@ -123,16 +123,16 @@ class CitationEnricher:
         return similarity >= threshold
 
 
-def enrich_with_citations(papers: List[Paper], s2_api_key: Optional[str] = None) -> List[Paper]:
+def enrich_with_citations(papers: List[Paper], semantic_scholar_api_key: Optional[str] = None) -> List[Paper]:
     """
     Convenience function to enrich papers with citation counts.
     
     Args:
         papers: List of papers to enrich
-        s2_api_key: Optional Semantic Scholar API key
+        semantic_scholar_api_key: Optional Semantic Scholar API key
         
     Returns:
         Papers with citation counts added
     """
-    enricher = CitationEnricher(s2_api_key=s2_api_key)
+    enricher = CitationEnricher(semantic_scholar_api_key=semantic_scholar_api_key)
     return enricher.enrich_citations(papers)
