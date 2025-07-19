@@ -628,7 +628,7 @@ class PaperCollection:
              format: str = "bibtex",
              include_enriched: bool = True) -> Path:
         """
-        Save collection to file.
+        Save collection to file using scitex.io.
         
         Args:
             output_path: Output file path
@@ -638,30 +638,37 @@ class PaperCollection:
         Returns:
             Path to saved file
         """
-        output_path = Path(output_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        # Import scitex.io locally to avoid circular imports
+        from ..io import save
+        
+        output_path = str(output_path)
         
         if format.lower() == "bibtex":
-            content = self._to_bibtex(include_enriched)
+            # Convert papers to BibTeX format expected by scitex.io
+            entries = self._to_bibtex_entries(include_enriched)
+            save(entries, output_path, add_header=True)
         elif format.lower() == "json":
-            content = self._to_json()
+            # Convert to dict format for JSON
+            data = {
+                'metadata': {
+                    'created': datetime.now().isoformat(),
+                    'num_papers': len(self._papers),
+                    'enriched': self._enriched
+                },
+                'papers': [p.to_dict() for p in self._papers]
+            }
+            save(data, output_path)
         elif format.lower() == "csv":
             df = self.to_dataframe()
-            df.to_csv(output_path, index=False)
-            return output_path
+            save(df, output_path)
         else:
             raise ValueError(f"Unsupported format: {format}")
         
-        output_path.write_text(content, encoding='utf-8')
         logger.info(f"Saved {len(self._papers)} papers to {output_path}")
-        return output_path
+        return Path(output_path)
     
-    def _to_bibtex(self, include_enriched: bool) -> str:
-        """Convert collection to BibTeX format."""
-        header = f"% SciTeX Scholar Bibliography\n"
-        header += f"% Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-        header += f"% Papers: {len(self._papers)}\n\n"
-        
+    def _to_bibtex_entries(self, include_enriched: bool) -> List[Dict[str, Any]]:
+        """Convert collection to BibTeX entries format for scitex.io."""
         entries = []
         used_keys = set()
         
@@ -676,9 +683,68 @@ class PaperCollection:
                 counter += 1
             
             used_keys.add(paper._bibtex_key)
-            entries.append(paper.to_bibtex(include_enriched))
+            
+            # Create entry in scitex.io format
+            entry = {
+                'entry_type': self._determine_entry_type(paper),
+                'key': paper._bibtex_key,
+                'fields': self._paper_to_bibtex_fields(paper, include_enriched)
+            }
+            entries.append(entry)
         
-        return header + "\n\n".join(entries)
+        return entries
+    
+    def _determine_entry_type(self, paper: Paper) -> str:
+        """Determine BibTeX entry type for a paper."""
+        if paper.arxiv_id:
+            return 'misc'
+        elif paper.journal:
+            return 'article'
+        else:
+            return 'misc'
+    
+    def _paper_to_bibtex_fields(self, paper: Paper, include_enriched: bool) -> Dict[str, str]:
+        """Convert paper to BibTeX fields dict."""
+        fields = {}
+        
+        # Required fields
+        fields['title'] = paper.title
+        fields['author'] = ' and '.join(paper.authors) if paper.authors else 'Unknown'
+        
+        # Optional fields
+        if paper.year:
+            fields['year'] = str(paper.year)
+        
+        if paper.journal:
+            fields['journal'] = paper.journal
+        
+        if paper.doi:
+            fields['doi'] = paper.doi
+        
+        if paper.arxiv_id:
+            fields['eprint'] = paper.arxiv_id
+            fields['archivePrefix'] = 'arXiv'
+        
+        if paper.abstract:
+            fields['abstract'] = paper.abstract
+        
+        if paper.keywords:
+            fields['keywords'] = ', '.join(paper.keywords)
+        
+        if paper.pdf_url:
+            fields['url'] = paper.pdf_url
+        
+        # Enriched metadata
+        if include_enriched:
+            if paper.impact_factor:
+                fields['note'] = f"Impact Factor: {paper.impact_factor}"
+            if paper.citation_count:
+                if 'note' in fields:
+                    fields['note'] += f", Citations: {paper.citation_count}"
+                else:
+                    fields['note'] = f"Citations: {paper.citation_count}"
+        
+        return fields
     
     def _to_json(self) -> str:
         """Convert collection to JSON format."""
@@ -742,18 +808,36 @@ class PaperEnricher:
     """
     Enriches papers with journal metrics and additional metadata.
     
-    This functionality is integrated from _paper_enrichment.py and _journal_metrics.py.
+    This functionality is integrated from _paper_enrichment.py and _journal_metrics.py,
+    and uses the impact_factor package for real journal impact factors.
     """
     
-    def __init__(self, journal_data_path: Optional[Path] = None):
+    def __init__(self, journal_data_path: Optional[Path] = None, use_impact_factor_package: bool = True):
         """
         Initialize enricher with optional custom journal data.
         
         Args:
             journal_data_path: Path to custom journal metrics data
+            use_impact_factor_package: Whether to use impact_factor package for real data
         """
         self.journal_data_path = journal_data_path
         self._journal_data = None
+        self._impact_factor_instance = None
+        self.use_impact_factor_package = use_impact_factor_package
+        
+        # Try to initialize impact_factor package
+        if self.use_impact_factor_package:
+            try:
+                from impact_factor.core import Factor
+                self._impact_factor_instance = Factor()
+                logger.info("Impact factor package initialized successfully")
+            except ImportError:
+                logger.warning(
+                    "impact_factor package not available. Install with: pip install impact-factor\n"
+                    "Falling back to built-in sample data."
+                )
+                self._impact_factor_instance = None
+        
         self._load_journal_data()
     
     def enrich_papers(self, papers: List[Paper]) -> List[Paper]:
@@ -813,6 +897,42 @@ class PaperEnricher:
     
     def _get_journal_metrics(self, journal_name: str) -> Optional[Dict[str, Any]]:
         """Get metrics for a specific journal."""
+        # First try impact_factor package if available
+        if self._impact_factor_instance:
+            try:
+                # Search for journal in impact_factor database
+                results = self._impact_factor_instance.search(journal_name)
+                
+                if results and len(results) > 0:
+                    # Get the best match (usually first result)
+                    best_match = results[0]
+                    
+                    # Extract metrics from impact_factor result
+                    metrics = {
+                        'impact_factor': float(best_match.get('factor', 0)),
+                        'journal_name': best_match.get('journal', journal_name),
+                        'issn': best_match.get('issn', ''),
+                        'year': best_match.get('year', 2024),
+                        'source': 'impact_factor_package'
+                    }
+                    
+                    # Try to get quartile from JCR data if available
+                    if 'jcr_quartile' in best_match:
+                        metrics['quartile'] = best_match['jcr_quartile']
+                    elif 'quartile' in best_match:
+                        metrics['quartile'] = best_match['quartile']
+                    
+                    # Add rank if available
+                    if 'rank' in best_match:
+                        metrics['rank'] = best_match['rank']
+                    
+                    logger.debug(f"Found IF={metrics['impact_factor']} for {journal_name} from impact_factor package")
+                    return metrics
+                    
+            except Exception as e:
+                logger.debug(f"Error querying impact_factor package for {journal_name}: {e}")
+        
+        # Fall back to built-in data
         if not self._journal_data:
             return None
         
@@ -821,12 +941,16 @@ class PaperEnricher:
         
         # Direct match
         if normalized in self._journal_data:
-            return self._journal_data[normalized]
+            metrics = self._journal_data[normalized].copy()
+            metrics['source'] = 'built_in_data'
+            return metrics
         
         # Partial match
         for journal, metrics in self._journal_data.items():
             if journal in normalized or normalized in journal:
-                return metrics
+                result = metrics.copy()
+                result['source'] = 'built_in_data'
+                return result
         
         return None
 

@@ -168,3 +168,4 @@ types-setuptools
 pebble
 
 impact-factor
+PyMuPDF

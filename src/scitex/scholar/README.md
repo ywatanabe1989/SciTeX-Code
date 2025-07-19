@@ -184,14 +184,12 @@ To fully utilize the Scholar module and access papers from all sources (includin
 ```bash
 # REQUIRED for PubMed access (finds papers from Nature, Science, Cell, etc.)
 # Use your institutional email for better access
-export SCHOLAR_EMAIL="your.email@university.edu"
-# OR (alternative name)
-export ENTREZ_EMAIL="your.email@university.edu"
+export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
 
 # RECOMMENDED for better Semantic Scholar access
 # Without this, you'll hit rate limits quickly and get errors
 # Get free API key at: https://www.semanticscholar.org/product/api
-export SEMANTIC_SCHOLAR_API_KEY="your-api-key"
+export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 
 # OPTIONAL - Custom workspace directory for PDF downloads and indices
 export SCITEX_SCHOLAR_DIR="~/Documents/scholar_data"
@@ -199,23 +197,23 @@ export SCITEX_SCHOLAR_DIR="~/Documents/scholar_data"
 
 #### What Each Variable Enables:
 
-- **SCHOLAR_EMAIL / ENTREZ_EMAIL**: 
+- **SCITEX_ENTREZ_EMAIL**: 
   - ✅ Access to PubMed database (required by NCBI)
   - ✅ Find papers from subscription journals (Nature, Science, Cell, etc.)
   - ✅ Access clinical and biomedical literature
-  - ❌ Without it: PubMed searches return 0 results
+  - ❌ Without it: Uses default email (ywata1989@gmail.com)
 
-- **SEMANTIC_SCHOLAR_API_KEY**:
+- **SCITEX_SEMANTIC_SCHOLAR_API_KEY**:
   - ✅ 100x higher rate limits (1 request/second vs 100 requests/second)
   - ✅ Access to full paper metadata
   - ✅ More reliable searches
-  - ❌ Without it: Frequent "Internal Server Error" messages
+  - ❌ Without it: Shows warning and may hit rate limits
 
 #### Quick Setup:
 ```bash
 # Add to your ~/.bashrc or ~/.zshrc
-export SCHOLAR_EMAIL="john.doe@university.edu"
-export SEMANTIC_SCHOLAR_API_KEY="your-key-here"
+export SCITEX_ENTREZ_EMAIL="john.doe@university.edu"
+export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-key-here"
 
 # Reload your shell
 source ~/.bashrc
@@ -346,15 +344,15 @@ print(f"API keys: {list(scholar.api_keys.keys())}")  # Should show ['s2'] if con
 ### PubMed Returning 0 Results?
 ```bash
 # PubMed REQUIRES email - set it:
-export SCHOLAR_EMAIL="your.email@university.edu"
+export SCITEX_ENTREZ_EMAIL="your.email@university.edu"
 ```
 
 ### Semantic Scholar Errors?
-```python
-# If you see "Internal Server Error" messages:
+```bash
+# If you see warning messages about API key:
 # 1. Get free API key: https://www.semanticscholar.org/product/api
 # 2. Set environment variable:
-export SEMANTIC_SCHOLAR_API_KEY="your-key"
+export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-key"
 ```
 
 ### Want Papers from Nature, Science, Cell?

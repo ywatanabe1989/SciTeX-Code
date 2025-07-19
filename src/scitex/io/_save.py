@@ -45,6 +45,7 @@ from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
                             save_matlab, save_mp4, save_npy, save_npz,
                             save_pickle, save_pickle_compressed, save_text,
                             save_torch, save_yaml, save_zarr)
+from ._save_modules._bibtex import save_bibtex
 
 
 def _get_figure_with_data(obj):
@@ -573,6 +574,8 @@ _FILE_HANDLERS = {
     ".py": save_text,
     ".css": save_text,
     ".js": save_text,
+    # Bibliography
+    ".bib": save_bibtex,
     # Data formats
     ".html": save_html,
     ".hdf5": save_hdf5,

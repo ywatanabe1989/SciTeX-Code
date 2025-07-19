@@ -35,6 +35,7 @@ from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
 from ._load_modules._yaml import _load_yaml
 from ._load_modules._zarr import _load_zarr
+from ._load_modules._bibtex import _load_bibtex
 
 
 def load(
@@ -162,6 +163,8 @@ def load(
         "yml": _load_yaml,
         "json": _load_json,
         "xml": _load_xml,
+        # Bibliography
+        "bib": _load_bibtex,
         # ML/DL Models
         "pth": _load_torch,
         "pt": _load_torch,

@@ -79,7 +79,7 @@ class SemanticScholarEngine(SearchEngine):
         params = {
             'query': query,
             'limit': min(limit, 100),
-            'fields': 'title,authors,abstract,year,citationCount,journal,doi,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr'
+            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr'
         }
         
         # Add year filters if provided
@@ -188,9 +188,11 @@ class PubMedEngine(SearchEngine):
         }
         
         # Add date filters
-        if 'year_min' in kwargs or 'year_max' in kwargs:
-            min_date = f"{kwargs.get('year_min', 1900)}/01/01"
-            max_date = f"{kwargs.get('year_max', datetime.now().year)}/12/31"
+        year_min = kwargs.get('year_min')
+        year_max = kwargs.get('year_max')
+        if year_min is not None or year_max is not None:
+            min_date = f"{year_min or 1900}/01/01"
+            max_date = f"{year_max or datetime.now().year}/12/31"
             search_params['mindate'] = min_date
             search_params['maxdate'] = max_date
         
@@ -199,6 +201,8 @@ class PubMedEngine(SearchEngine):
         try:
             async with aiohttp.ClientSession() as session:
                 # Search for IDs
+                logger.info(f"PubMed API URL: {self.base_url}/esearch.fcgi")
+                logger.info(f"PubMed search params: {search_params}")
                 async with session.get(
                     f"{self.base_url}/esearch.fcgi",
                     params=search_params
@@ -206,6 +210,7 @@ class PubMedEngine(SearchEngine):
                     if response.status == 200:
                         data = await response.json()
                         pmids = data.get('esearchresult', {}).get('idlist', [])
+                        logger.info(f"PubMed search returned {len(pmids)} PMIDs")
                         
                         if pmids:
                             # Fetch details
@@ -214,8 +219,11 @@ class PubMedEngine(SearchEngine):
                         logger.error(f"PubMed search failed: {response.status}")
                         
         except Exception as e:
-            logger.error(f"PubMed search error: {e}")
-            raise SearchError(query, "PubMed", str(e))
+            logger.error(f"PubMed search error: {type(e).__name__}: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            # Return empty list instead of raising to allow other sources
+            return []
         
         return papers
     
@@ -677,7 +685,7 @@ class UnifiedSearcher:
             Merged and ranked list of papers
         """
         if sources is None:
-            sources = ['semantic_scholar', 'pubmed', 'arxiv']
+            sources = ['pubmed']  # Default to PubMed only
         
         # Filter to valid sources
         sources = [s for s in sources if s in self.engines]
@@ -693,6 +701,7 @@ class UnifiedSearcher:
             task = engine.search(query, limit, **kwargs)
             tasks.append(task)
         
+        logger.debug(f"Searching {len(tasks)} sources: {sources}")
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
         # Merge results
@@ -701,6 +710,7 @@ class UnifiedSearcher:
             if isinstance(result, Exception):
                 logger.debug(f"Search failed for {source}: {result}")
             else:
+                logger.debug(f"{source} returned {len(result)} papers")
                 all_papers.extend(result)
         
         # Deduplicate if requested

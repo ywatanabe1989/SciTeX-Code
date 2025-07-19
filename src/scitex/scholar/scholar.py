@@ -30,6 +30,9 @@ from datetime import datetime
 from ._core import Paper, PaperCollection, PaperEnricher
 from ._search import UnifiedSearcher, get_scholar_dir
 from ._download import PDFManager
+# PDF extraction is now handled by scitex.io
+from ..errors import ConfigurationError, SciTeXWarning
+import warnings
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +42,13 @@ class Scholar:
     Main interface for SciTeX Scholar - scientific literature management made simple.
     
     Example usage:
-        # Basic search
+        # Basic search (uses PubMed by default)
         scholar = Scholar()
         papers = scholar.search("deep learning neuroscience")
         papers.save("my_papers.bib")
+        
+        # Search specific source
+        papers = scholar.search("transformer models", source='arxiv')
         
         # Advanced workflow
         papers = scholar.search("transformer models", year_min=2020) \\
@@ -72,15 +78,21 @@ class Scholar:
             auto_enrich: Automatically enrich papers with journal metrics
             auto_download: Automatically download open-access PDFs
         """
-        # Auto-detect configuration
-        self.email = email or os.getenv('SCHOLAR_EMAIL') or os.getenv('ENTREZ_EMAIL')
-        if not self.email:
-            logger.info("No email provided. Some sources may have limited functionality.")
+        # Auto-detect configuration with SCITEX_ prefix
+        self.email = email or os.getenv('SCITEX_ENTREZ_EMAIL') or 'ywata1989@gmail.com'
         
         # API keys
         self.api_keys = api_keys or {}
         if 's2' not in self.api_keys:
-            self.api_keys['s2'] = os.getenv('SEMANTIC_SCHOLAR_API_KEY')
+            self.api_keys['s2'] = os.getenv('SCITEX_SEMANTIC_SCHOLAR_API_KEY')
+            if not self.api_keys['s2']:
+                warnings.warn(
+                    "SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. "
+                    "Semantic Scholar searches may be rate-limited. "
+                    "Get a free API key at: https://www.semanticscholar.org/product/api",
+                    SciTeXWarning,
+                    stacklevel=2
+                )
         
         # Workspace
         self.workspace_dir = Path(workspace_dir) if workspace_dir else get_scholar_dir()
@@ -105,17 +117,17 @@ class Scholar:
     def search(self,
                query: str,
                limit: int = 20,
-               sources: Optional[List[str]] = None,
+               source: str = 'pubmed',
                year_min: Optional[int] = None,
                year_max: Optional[int] = None,
                **kwargs) -> PaperCollection:
         """
-        Search for papers across multiple sources.
+        Search for papers from a specific source.
         
         Args:
             query: Search query
             limit: Maximum results (default 20)
-            sources: Sources to search (default: ['semantic_scholar', 'pubmed', 'arxiv'])
+            source: Source to search ('pubmed', 'semantic_scholar', or 'arxiv')
             year_min: Minimum publication year
             year_max: Maximum publication year
             **kwargs: Additional search parameters
@@ -124,16 +136,17 @@ class Scholar:
             PaperCollection with results
         """
         # Run async search in sync context
-        papers = self._run_async(
-            self._searcher.search(
-                query=query,
-                sources=sources,
-                limit=limit,
-                year_min=year_min,
-                year_max=year_max,
-                **kwargs
-            )
+        coro = self._searcher.search(
+            query=query,
+            sources=[source],
+            limit=limit,
+            year_min=year_min,
+            year_max=year_max,
+            **kwargs
         )
+        logger.debug(f"Searching with source: {source}")
+        papers = self._run_async(coro)
+        logger.debug(f"Search returned {len(papers)} papers")
         
         # Create collection
         collection = PaperCollection(papers)
@@ -284,21 +297,97 @@ class Scholar:
         
         return PaperCollection(similar_papers[:limit])
     
+    def extract_text(self, pdf_path: Union[str, Path]) -> str:
+        """
+        Extract text from PDF file for downstream AI processing.
+        
+        Args:
+            pdf_path: Path to PDF file
+            
+        Returns:
+            Extracted text as string
+        """
+        # Use scitex.io for PDF text extraction
+        from ..io import load
+        return load(str(pdf_path), mode='text')
+    
+    def extract_sections(self, pdf_path: Union[str, Path]) -> Dict[str, str]:
+        """
+        Extract text organized by sections.
+        
+        Args:
+            pdf_path: Path to PDF file
+            
+        Returns:
+            Dictionary mapping section names to text
+        """
+        # Use scitex.io for section extraction
+        from ..io import load
+        return load(str(pdf_path), mode='sections')
+    
+    def extract_for_ai(self, pdf_path: Union[str, Path]) -> Dict[str, Any]:
+        """
+        Extract comprehensive data from PDF for AI processing.
+        
+        Args:
+            pdf_path: Path to PDF file
+            
+        Returns:
+            Dictionary with:
+            - full_text: Complete text
+            - sections: Text by section
+            - metadata: PDF metadata
+            - stats: Word count, page count, etc.
+        """
+        # Use scitex.io for comprehensive extraction
+        from ..io import load
+        return load(str(pdf_path), mode='full')
+    
+    def extract_from_papers(self, papers: Union[List[Paper], PaperCollection]) -> List[Dict[str, Any]]:
+        """
+        Extract text from multiple papers for AI processing.
+        
+        Args:
+            papers: Papers to extract text from
+            
+        Returns:
+            List of extraction results with paper metadata
+        """
+        if isinstance(papers, PaperCollection):
+            papers = papers.papers
+        
+        results = []
+        for paper in papers:
+            if paper.pdf_path and paper.pdf_path.exists():
+                extraction = self.extract_for_ai(paper.pdf_path)
+                extraction['paper'] = {
+                    'title': paper.title,
+                    'authors': paper.authors,
+                    'year': paper.year,
+                    'doi': paper.doi,
+                    'journal': paper.journal
+                }
+                results.append(extraction)
+            else:
+                # Include paper even without PDF
+                results.append({
+                    'paper': {
+                        'title': paper.title,
+                        'authors': paper.authors,
+                        'year': paper.year,
+                        'doi': paper.doi,
+                        'journal': paper.journal
+                    },
+                    'full_text': paper.abstract or '',
+                    'error': 'No PDF available'
+                })
+        
+        return results
+    
     def _run_async(self, coro):
         """Run async coroutine in sync context."""
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # Already in async context
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(asyncio.run, coro)
-                    return future.result()
-            else:
-                return loop.run_until_complete(coro)
-        except RuntimeError:
-            # No event loop, create new one
-            return asyncio.run(coro)
+        # Simplified approach - always create new event loop
+        return asyncio.run(coro)
     
     # Context manager support
     def __enter__(self):
