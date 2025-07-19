@@ -10,8 +10,12 @@ from scitex.scholar import Scholar
 # Create scholar instance
 scholar = Scholar()
 
-# Search PubMed for papers
+# Search PubMed for papers (automatically enriched)
 papers = scholar.search("epilepsy detection", limit=5)
+
+# Papers now have impact factors and citation counts!
+for paper in papers:
+    print(f"{paper.journal}: IF={paper.impact_factor}, Citations={paper.citation_count}")
 
 # Save as BibTeX
 papers.save("epilepsy_papers.bib")
@@ -39,34 +43,30 @@ papers = scholar.search("epilepsy detection", limit=5)
 
 ## Key Features
 
-### 1. Automatic Journal Metrics (Impact Factors)
+### 1. Automatic Enrichment (Default Behavior)
 
 ```python
-# Enrich papers with real impact factors
-enriched = scholar.enrich_papers(papers)
+# Papers are automatically enriched with impact factors AND citation counts
+scholar = Scholar()  # Default: impact_factors=True, citations=True
+papers = scholar.search("epilepsy detection")
 
-# Real results:
-for paper in enriched:
-    print(f"{paper.journal}: IF={paper.impact_factor}")
-
-# Output:
-# IEEE Journal of Biomedical and Health Informatics: IF=6.7
-# Statistics in Biosciences: IF=0.8
-# Human Mutation: IF=3.3
-# Frontiers in Cell and Developmental Biology: IF=4.6
-# Molecular Pharmaceutics: IF=4.5
+# Real results with automatic enrichment:
+# IEEE Journal of Biomedical and Health Informatics: IF=6.7, Citations=245
+# Statistics in Biosciences: IF=0.8, Citations=12
+# Human Mutation: IF=3.3, Citations=89
+# Frontiers in Cell and Developmental Biology: IF=4.6, Citations=156
+# Molecular Pharmaceutics: IF=4.5, Citations=203
 ```
 
-### 2. Add Citation Counts (PubMed Workaround)
+### 2. Data Sources
 
-```python
-# PubMed doesn't provide citation counts, but we can get them from Semantic Scholar
-papers = scholar.search("machine learning cancer", source='pubmed')
-papers = scholar.enrich_citations(papers)  # Cross-references with Semantic Scholar
+- **Impact Factors**: From `impact_factor` package (2024 JCR data)
+  - Install: `pip install impact-factor`
+  - Falls back to built-in data if not installed
 
-# Now you can filter by citations
-highly_cited = papers.filter(min_citations=100)
-```
+- **Citation Counts**: From Semantic Scholar API
+  - Cross-references PubMed papers by DOI/title
+  - Requires API key for best results (free)
 
 ### 3. Filter and Sort Papers
 
@@ -134,18 +134,14 @@ pip install impact-factor
 ```python
 from scitex.scholar import Scholar
 
-# Initialize
+# Initialize (automatic enrichment enabled by default)
 scholar = Scholar()
 
-# 1. Search PubMed
+# 1. Search PubMed (automatically enriched)
 papers = scholar.search("deep learning EEG epilepsy", limit=20)
-print(f"Found {len(papers)} papers")
+print(f"Found {len(papers)} papers with impact factors and citations")
 
-# 2. Enrich with journal metrics
-papers = scholar.enrich_papers(papers)      # Add impact factors
-papers = scholar.enrich_citations(papers)   # Add citation counts
-
-# 3. Filter for quality
+# 2. Filter for quality (using the enriched data)
 quality = papers.filter(
     year_min=2020,
     impact_factor_min=3.0,
@@ -153,11 +149,22 @@ quality = papers.filter(
 )
 print(f"Quality papers: {len(quality)}")
 
-# 4. Sort by impact
+# 3. Sort by impact
 sorted_papers = quality.sort_by("impact_factor")
 
-# 5. Export
+# 4. Export
 sorted_papers.save("epilepsy_ml_papers.bib")
+```
+
+### Disabling Automatic Enrichment
+
+```python
+# If you need faster searches without enrichment
+scholar_fast = Scholar(impact_factors=False, citations=False)
+papers = scholar_fast.search("epilepsy")  # No enrichment
+
+# Or selectively disable
+scholar_no_citations = Scholar(citations=False)  # Only impact factors
 ```
 
 ## Installation

@@ -42,11 +42,19 @@ class Scholar:
     """
     Main interface for SciTeX Scholar - scientific literature management made simple.
     
+    By default, papers are automatically enriched with:
+    - Journal impact factors from impact_factor package (2024 JCR data)
+    - Citation counts from Semantic Scholar (via DOI/title matching)
+    
     Example usage:
-        # Basic search (uses PubMed by default)
+        # Basic search with automatic enrichment
         scholar = Scholar()
         papers = scholar.search("deep learning neuroscience")
+        # Papers now have impact_factor and citation_count populated
         papers.save("my_papers.bib")
+        
+        # Disable automatic enrichment if needed
+        scholar = Scholar(impact_factors=False, citations=False)
         
         # Search specific source
         papers = scholar.search("transformer models", source='arxiv')
@@ -54,8 +62,7 @@ class Scholar:
         # Advanced workflow
         papers = scholar.search("transformer models", year_min=2020) \\
                       .filter(min_citations=50) \\
-                      .enrich() \\
-                      .download_pdfs() \\
+                      .sort_by("impact_factor") \\
                       .save("transformers.bib")
         
         # Local library
@@ -67,7 +74,8 @@ class Scholar:
                  email: Optional[str] = None,
                  api_keys: Optional[Dict[str, str]] = None,
                  workspace_dir: Optional[Union[str, Path]] = None,
-                 auto_enrich: bool = True,
+                 impact_factors: bool = True,
+                 citations: bool = True,
                  auto_download: bool = False):
         """
         Initialize Scholar with smart defaults.
@@ -76,8 +84,11 @@ class Scholar:
             email: Email for API compliance (auto-detected from env)
             api_keys: API keys dict {'s2': 'key'} (auto-detected from env)
             workspace_dir: Directory for downloads and indices
-            auto_enrich: Automatically enrich papers with journal metrics
-            auto_download: Automatically download open-access PDFs
+            impact_factors: Automatically add journal impact factors from impact_factor package
+                          (2024 JCR data). Install with: pip install impact-factor (default: True)
+            citations: Automatically add citation counts from Semantic Scholar by cross-referencing
+                      DOI/title. Especially useful for PubMed papers (default: True)
+            auto_download: Automatically download open-access PDFs (default: False)
         """
         # Auto-detect configuration with SCITEX_ prefix
         self.email = email or os.getenv('SCITEX_ENTREZ_EMAIL') or 'ywata1989@gmail.com'
@@ -100,7 +111,8 @@ class Scholar:
         self.workspace_dir.mkdir(parents=True, exist_ok=True)
         
         # Options
-        self.auto_enrich = auto_enrich
+        self.impact_factors = impact_factors
+        self.citations = citations
         self.auto_download = auto_download
         
         # Initialize components
@@ -165,11 +177,16 @@ class Scholar:
         else:
             logger.info(f"Found {len(papers)} papers for query: '{query}'")
         
-        # Auto-enrich if enabled
-        if self.auto_enrich and papers:
-            logger.info("Auto-enriching papers with journal metrics...")
+        # Auto-enrich with impact factors if enabled
+        if self.impact_factors and papers:
+            logger.info("Auto-enriching papers with journal impact factors...")
             self._enricher.enrich_papers(papers)
             collection._enriched = True
+        
+        # Auto-enrich with citations if enabled
+        if self.citations and papers:
+            logger.info("Auto-enriching papers with citation counts...")
+            self._citation_enricher.enrich_citations(papers)
         
         # Auto-download if enabled
         if self.auto_download and papers:
