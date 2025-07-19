@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-06-29 11:08:34
+!-- Timestamp: 2025-07-01 06:31:27
 !-- Author: ywatanabe
-!-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/mcp_servers/from_user.md
+!-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/mcp_servers/docs/from_user.md
 !-- --- -->
 
 - [ ] Implement README.md

@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Timestamp: "2025-07-14 15:28:49 (ywatanabe)"
+# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/__init__.py
+# ----------------------------------------
+import os
+__FILE__ = (
+    "./src/scitex/__init__.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """
 Minimal scitex initialization.
 Modules are imported on-demand to avoid circular dependencies.
 """
 
-import os
 import warnings
 
 # Configure warnings
@@ -21,7 +30,7 @@ class _LazyModule:
     def __init__(self, name):
         self._name = name
         self._module = None
-    
+
     def __getattr__(self, attr):
         if self._module is None:
             import importlib
@@ -45,6 +54,7 @@ torch = _LazyModule("torch")
 web = _LazyModule("web")
 db = _LazyModule("db")
 repro = _LazyModule("repro")
+reproduce = _LazyModule("reproduce")
 scholar = _LazyModule("scholar")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
@@ -57,6 +67,7 @@ etc = _LazyModule("etc")
 context = _LazyModule("context")
 dev = _LazyModule("dev")
 gists = _LazyModule("gists")
+errors = _LazyModule("errors")
 units = _LazyModule("units")
 
 # Import sh function directly as it's commonly used
@@ -70,5 +81,7 @@ def start(*args, **kwargs):
     """Convenience function to access gen.start"""
     return gen.start(*args, **kwargs)
 
-__all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path", 
-           "dict", "decorators", "start", "__version__", "sh", "units"]
+__all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path",
+           "dict", "decorators", "start", "__version__", "sh", "errors", "units"]
+
+# EOF

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-14 13:54:57 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/__init__.py
+# Timestamp: "2025-07-19 10:50:54 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
 # ----------------------------------------
 import os
 __FILE__ = (
@@ -16,8 +16,7 @@ from .__Classifiers import Classifiers
 from .classification_reporter import ClassificationReporter, MultiClassificationReporter
 from .early_stopping import EarlyStopping
 from .loss import MultiTaskLoss
-# from .genai import GenAI
-from ._gen_ai import genai_factory as GenAI
+from ._gen_ai import GenAI
 from .classification import ClassifierServer
 from .optim import get_optimizer, set_optimizer
 
