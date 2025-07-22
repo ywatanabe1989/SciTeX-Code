@@ -98,9 +98,9 @@ def main():
     # Example 5: Quick search (just titles)
     stx.str.printc("\n=== Example 5: Quick Search ===", c="blue")
     
-    from scitex.scholar import quick_search
+    from scitex.scholar import _search_quick
     
-    titles = quick_search("neural networks", top_n=5)
+    titles = _search_quick("neural networks", top_n=5)
     print("\nQuick search results:")
     for i, title in enumerate(titles, 1):
         print(f"{i}. {title}")

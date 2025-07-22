@@ -386,6 +386,10 @@ def _save(
     no_csv=False,
     **kwargs,
 ):
+    # Don't use object's own save method - use consistent handlers
+    # This ensures all saves go through the same pipeline and get
+    # the yellow confirmation message
+    
     # Get file extension
     ext = _os.path.splitext(spath)[1].lower()
 

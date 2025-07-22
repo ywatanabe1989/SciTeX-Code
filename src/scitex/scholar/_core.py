@@ -245,9 +245,12 @@ class Paper:
             Score between 0 and 1 (1 = identical)
         """
         # Title similarity (40% weight)
-        title_sim = SequenceMatcher(None, 
-                                   self.title.lower(), 
-                                   other.title.lower()).ratio() * 0.4
+        if self.title and other.title:
+            title_sim = SequenceMatcher(None, 
+                                       self.title.lower(), 
+                                       other.title.lower()).ratio() * 0.4
+        else:
+            title_sim = 0
         
         # Author similarity (20% weight)
         if self.authors and other.authors:

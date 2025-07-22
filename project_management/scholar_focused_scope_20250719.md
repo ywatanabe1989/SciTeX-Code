@@ -33,7 +33,7 @@ papers.save("papers.ris", format="ris")
 # Extract text for AI processing
 for paper in papers:
     if paper.pdf_path:
-        text = scholar.extract_text(paper.pdf_path)
+        text = scholar._extract_text(paper.pdf_path)
         # Pass to downstream AI system
 ```
 
@@ -90,12 +90,12 @@ papers.save("papers.bib")
 text_data = []
 for paper in papers:
     if paper.pdf_path:
-        text = scholar.extract_text(paper.pdf_path)
+        text = scholar._extract_text(paper.pdf_path)
         text_data.append({
             'paper_id': paper.get_identifier(),
             'title': paper.title,
             'text': text,
-            'sections': scholar.extract_sections(paper.pdf_path)
+            'sections': scholar._extract_sections(paper.pdf_path)
         })
 
 # Pass text_data to AI system
@@ -108,7 +108,7 @@ Currently missing - add PyMuPDF integration:
 
 ```python
 # Add to _download.py or new _pdf_extractor.py
-def extract_text(self, pdf_path: Path) -> str:
+def _extract_text(self, pdf_path: Path) -> str:
     """Extract clean text from PDF."""
     import fitz  # PyMuPDF
     doc = fitz.open(pdf_path)
@@ -117,7 +117,7 @@ def extract_text(self, pdf_path: Path) -> str:
         text += page.get_text()
     return text
 
-def extract_sections(self, pdf_path: Path) -> Dict[str, str]:
+def _extract_sections(self, pdf_path: Path) -> Dict[str, str]:
     """Extract text by sections."""
     # Implementation for section-aware extraction
     pass

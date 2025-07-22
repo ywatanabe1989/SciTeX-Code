@@ -32,7 +32,7 @@ class TestLoadPdf:
         
         # Create mock reader and pages
         mock_page = MagicMock()
-        mock_page.extract_text.return_value = "Sample text from page 1"
+        mock_page._extract_text.return_value = "Sample text from page 1"
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page]
@@ -55,11 +55,11 @@ class TestLoadPdf:
         
         # Create mock pages
         mock_page1 = MagicMock()
-        mock_page1.extract_text.return_value = "Content from page 1"
+        mock_page1._extract_text.return_value = "Content from page 1"
         mock_page2 = MagicMock()
-        mock_page2.extract_text.return_value = "Content from page 2"
+        mock_page2._extract_text.return_value = "Content from page 2"
         mock_page3 = MagicMock()
-        mock_page3.extract_text.return_value = "Content from page 3"
+        mock_page3._extract_text.return_value = "Content from page 3"
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page1, mock_page2, mock_page3]
@@ -71,10 +71,10 @@ class TestLoadPdf:
         expected_text = "Content from page 1\nContent from page 2\nContent from page 3"
         assert result == expected_text
         
-        # Verify all pages had extract_text called
-        mock_page1.extract_text.assert_called_once()
-        mock_page2.extract_text.assert_called_once()
-        mock_page3.extract_text.assert_called_once()
+        # Verify all pages had _extract_text called
+        mock_page1._extract_text.assert_called_once()
+        mock_page2._extract_text.assert_called_once()
+        mock_page3._extract_text.assert_called_once()
     
     @patch('scitex.io._load_modules._pdf.PyPDF2')
     def test_empty_pdf_handling(self, mock_pypdf2):
@@ -98,13 +98,13 @@ class TestLoadPdf:
         
         # Create mock pages with various empty content
         mock_page1 = MagicMock()
-        mock_page1.extract_text.return_value = "Regular content"
+        mock_page1._extract_text.return_value = "Regular content"
         mock_page2 = MagicMock()
-        mock_page2.extract_text.return_value = ""  # Empty page
+        mock_page2._extract_text.return_value = ""  # Empty page
         mock_page3 = MagicMock()
-        mock_page3.extract_text.return_value = "   "  # Whitespace only
+        mock_page3._extract_text.return_value = "   "  # Whitespace only
         mock_page4 = MagicMock()
-        mock_page4.extract_text.return_value = "More content"
+        mock_page4._extract_text.return_value = "More content"
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page1, mock_page2, mock_page3, mock_page4]
@@ -122,11 +122,11 @@ class TestLoadPdf:
         
         # Create mock pages with Unicode content
         mock_page1 = MagicMock()
-        mock_page1.extract_text.return_value = "Héllo Wörld! 你好世界"
+        mock_page1._extract_text.return_value = "Héllo Wörld! 你好世界"
         mock_page2 = MagicMock()
-        mock_page2.extract_text.return_value = "Математика and العربية"
+        mock_page2._extract_text.return_value = "Математика and العربية"
         mock_page3 = MagicMock()
-        mock_page3.extract_text.return_value = "Symbols: ∑ ∫ π ∞ 🔬"
+        mock_page3._extract_text.return_value = "Symbols: ∑ ∫ π ∞ 🔬"
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page1, mock_page2, mock_page3]
@@ -168,7 +168,7 @@ class TestLoadPdf:
         for i in range(100):
             mock_page = MagicMock()
             page_text = f"This is content from page {i+1}."
-            mock_page.extract_text.return_value = page_text
+            mock_page._extract_text.return_value = page_text
             mock_pages.append(mock_page)
             expected_lines.append(page_text)
         
@@ -217,7 +217,7 @@ class TestLoadPdf:
         from scitex.io._load_modules import _load_pdf
         
         mock_page = MagicMock()
-        mock_page.extract_text.return_value = "Test content"
+        mock_page._extract_text.return_value = "Test content"
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page]
         mock_pypdf2.PdfReader.return_value = mock_reader
@@ -246,7 +246,7 @@ class TestLoadPdf:
         from scitex.io._load_modules import _load_pdf
         
         mock_page = MagicMock()
-        mock_page.extract_text.return_value = "Test content"
+        mock_page._extract_text.return_value = "Test content"
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page]
         mock_pypdf2.PdfReader.return_value = mock_reader
@@ -274,11 +274,11 @@ class TestLoadPdf:
         
         # Test pages with special characters and formatting
         mock_page1 = MagicMock()
-        mock_page1.extract_text.return_value = "Line 1\nLine 2\nLine 3"
+        mock_page1._extract_text.return_value = "Line 1\nLine 2\nLine 3"
         mock_page2 = MagicMock()
-        mock_page2.extract_text.return_value = "Tabs\there\tand\tthere"
+        mock_page2._extract_text.return_value = "Tabs\there\tand\tthere"
         mock_page3 = MagicMock()
-        mock_page3.extract_text.return_value = "Special chars: !@#$%^&*()"
+        mock_page3._extract_text.return_value = "Special chars: !@#$%^&*()"
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page1, mock_page2, mock_page3]
@@ -326,15 +326,15 @@ class TestLoadPdf:
         
         # Simulate a scientific paper with typical content
         mock_page1 = MagicMock()
-        mock_page1.extract_text.return_value = "Abstract\nThis paper presents a novel approach to..."
+        mock_page1._extract_text.return_value = "Abstract\nThis paper presents a novel approach to..."
         mock_page2 = MagicMock()
-        mock_page2.extract_text.return_value = "1. Introduction\nRecent advances in machine learning..."
+        mock_page2._extract_text.return_value = "1. Introduction\nRecent advances in machine learning..."
         mock_page3 = MagicMock()
-        mock_page3.extract_text.return_value = "2. Methods\nWe employed a cross-validation approach..."
+        mock_page3._extract_text.return_value = "2. Methods\nWe employed a cross-validation approach..."
         mock_page4 = MagicMock()
-        mock_page4.extract_text.return_value = "3. Results\nThe experimental results show..."
+        mock_page4._extract_text.return_value = "3. Results\nThe experimental results show..."
         mock_page5 = MagicMock()
-        mock_page5.extract_text.return_value = "References\n[1] Smith, J. et al. (2023)..."
+        mock_page5._extract_text.return_value = "References\n[1] Smith, J. et al. (2023)..."
         
         mock_reader = MagicMock()
         mock_reader.pages = [mock_page1, mock_page2, mock_page3, mock_page4, mock_page5]

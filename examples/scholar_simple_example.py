@@ -34,7 +34,7 @@ Output:
 """Imports"""
 import argparse
 import scitex as stx
-from scitex.scholar import Scholar, search, quick_search
+from scitex.scholar import Scholar, search, _search_quick
 
 """Functions & Classes"""
 def main(args):
@@ -42,7 +42,7 @@ def main(args):
     
     # Method 1: Quick search without creating instance
     stx.str.printc("\n=== Quick Search ===", c="blue")
-    titles = quick_search("deep learning", top_n=3)
+    titles = _search_quick("deep learning", top_n=3)
     for i, title in enumerate(titles, 1):
         print(f"{i}. {title}")
     
@@ -131,7 +131,7 @@ def main(args):
     # Local library example
     if args.index_dir:
         stx.str.printc("\n=== Local Library ===", c="blue")
-        stats = scholar.index_local_pdfs(args.index_dir)
+        stats = scholar._index_local_pdfs(args.index_dir)
         print(f"Indexed {stats['indexed']} PDFs")
         
         # Search local

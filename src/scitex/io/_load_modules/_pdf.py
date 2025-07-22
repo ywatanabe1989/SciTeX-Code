@@ -86,7 +86,7 @@ def _load_pdf(lpath: str, **kwargs) -> Any:
     
     # Extract based on mode
     if mode == 'text':
-        return _extract_text(lpath, backend, clean_text)
+        return __extract_text(lpath, backend, clean_text)
     elif mode == 'sections':
         return _extract_sections(lpath, backend, clean_text)
     elif mode == 'metadata':
@@ -99,15 +99,15 @@ def _load_pdf(lpath: str, **kwargs) -> Any:
         raise ValueError(f"Unknown extraction mode: {mode}")
 
 
-def _extract_text(lpath: str, backend: str, clean: bool) -> str:
+def __extract_text(lpath: str, backend: str, clean: bool) -> str:
     """Extract plain text from PDF."""
     if backend == 'fitz':
-        return _extract_text_fitz(lpath, clean)
+        return __extract_text_fitz(lpath, clean)
     else:
-        return _extract_text_pypdf2(lpath, clean)
+        return __extract_text_pypdf2(lpath, clean)
 
 
-def _extract_text_fitz(lpath: str, clean: bool) -> str:
+def __extract_text_fitz(lpath: str, clean: bool) -> str:
     """Extract text using PyMuPDF."""
     if not FITZ_AVAILABLE:
         raise ImportError("PyMuPDF (fitz) not available")
@@ -135,7 +135,7 @@ def _extract_text_fitz(lpath: str, clean: bool) -> str:
         raise
 
 
-def _extract_text_pypdf2(lpath: str, clean: bool) -> str:
+def __extract_text_pypdf2(lpath: str, clean: bool) -> str:
     """Extract text using PyPDF2."""
     if not PYPDF2_AVAILABLE:
         raise ImportError("PyPDF2 not available")
@@ -146,7 +146,7 @@ def _extract_text_pypdf2(lpath: str, clean: bool) -> str:
         
         for page_num in range(len(reader.pages)):
             page = reader.pages[page_num]
-            text = page.extract_text()
+            text = page._extract_text()
             if text.strip():
                 text_parts.append(text)
         
@@ -165,7 +165,7 @@ def _extract_text_pypdf2(lpath: str, clean: bool) -> str:
 def _extract_sections(lpath: str, backend: str, clean: bool) -> Dict[str, str]:
     """Extract text organized by sections."""
     # Get full text first
-    text = _extract_text(lpath, backend, clean=False)
+    text = __extract_text(lpath, backend, clean=False)
     
     # Parse into sections
     sections = _parse_sections(text)
@@ -321,7 +321,7 @@ def _extract_pages(lpath: str, backend: str, clean: bool) -> List[Dict[str, Any]
         
         for page_num in range(len(reader.pages)):
             page = reader.pages[page_num]
-            text = page.extract_text()
+            text = page._extract_text()
             if clean:
                 text = _clean_pdf_text(text)
             
@@ -349,7 +349,7 @@ def _extract_full(lpath: str, backend: str, clean: bool, extract_images: bool) -
     
     # Extract all components
     try:
-        result['full_text'] = _extract_text(lpath, backend, clean)
+        result['full_text'] = __extract_text(lpath, backend, clean)
         result['sections'] = _extract_sections(lpath, backend, clean)
         result['metadata'] = _extract_metadata(lpath, backend)
         result['pages'] = _extract_pages(lpath, backend, clean)
