@@ -67,6 +67,7 @@ class SemanticScholarEngine(SearchEngine):
         self.api_key = api_key
         self.base_url = "https://api.semanticscholar.org/graph/v1"
         self.rate_limit = 0.1 if api_key else 1.0  # Faster with API key
+        
     
     async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search Semantic Scholar for papers."""
@@ -104,7 +105,7 @@ class SemanticScholarEngine(SearchEngine):
                         data = await response.json()
                         
                         for item in data.get('data', []):
-                            paper = self._parse_s2_paper(item)
+                            paper = self._parse_semantic_scholar_paper(item)
                             if paper:
                                 papers.append(paper)
                     else:
@@ -121,8 +122,12 @@ class SemanticScholarEngine(SearchEngine):
         
         return papers
     
-    def _parse_s2_paper(self, data: Dict[str, Any]) -> Optional[Paper]:
+    def _parse_semantic_scholar_paper(self, data: Dict[str, Any]) -> Optional[Paper]:
         """Parse Semantic Scholar paper data."""
+        if not data or not isinstance(data, dict):
+            logger.warning("Received None or non-dict data for Semantic Scholar paper")
+            return None
+            
         try:
             # Extract authors
             authors = []
@@ -137,13 +142,18 @@ class SemanticScholarEngine(SearchEngine):
                 pdf_url = data.get('url')
             
             # Extract journal/venue
-            journal = data.get('journal', {}).get('name') or data.get('venue', '')
+            journal_data = data.get('journal')
+            journal = ''
+            if journal_data and isinstance(journal_data, dict):
+                journal = journal_data.get('name', '')
+            if not journal:
+                journal = data.get('venue', '')
             
             # Create paper
             paper = Paper(
                 title=data.get('title', ''),
                 authors=authors,
-                abstract=data.get('abstract', '') or data.get('tldr', {}).get('text', ''),
+                abstract=data.get('abstract', '') or (data.get('tldr', {}) or {}).get('text', ''),
                 source='semantic_scholar',
                 year=data.get('year'),
                 doi=data.get('doi'),
@@ -152,16 +162,17 @@ class SemanticScholarEngine(SearchEngine):
                 citation_count=data.get('citationCount', 0),
                 pdf_url=pdf_url,
                 metadata={
-                    's2_paper_id': data.get('paperId'),
+                    'semantic_scholar_paper_id': data.get('paperId'),
                     'fields_of_study': data.get('fieldsOfStudy', []),
-                    'is_open_access': data.get('isOpenAccess', False)
+                    'is_open_access': data.get('isOpenAccess', False),
+                    'citation_count_source': 'Semantic Scholar' if data.get('citationCount') is not None else None
                 }
             )
             
             return paper
             
         except Exception as e:
-            logger.warning(f"Failed to parse S2 paper: {e}")
+            logger.warning(f"Failed to parse Semantic Scholar paper: {e}")
             return None
 
 
@@ -184,7 +195,8 @@ class PubMedEngine(SearchEngine):
             'term': query,
             'retmax': limit,
             'retmode': 'json',
-            'email': self.email
+            'email': self.email,
+            'sort': 'relevance'  # Sort by relevance instead of date to get diverse years
         }
         
         # Add date filters
@@ -195,6 +207,13 @@ class PubMedEngine(SearchEngine):
             max_date = f"{year_max or datetime.now().year}/12/31"
             search_params['mindate'] = min_date
             search_params['maxdate'] = max_date
+            search_params['datetype'] = 'pdat'  # Publication date
+        else:
+            # When no date range specified, search last 20 years to avoid only getting current year
+            current_year = datetime.now().year
+            search_params['mindate'] = f"{current_year - 20}/01/01"
+            search_params['maxdate'] = f"{current_year}/12/31"
+            search_params['datetype'] = 'pdat'
         
         papers = []
         
@@ -657,13 +676,31 @@ class UnifiedSearcher:
                  email: Optional[str] = None,
                  semantic_scholar_api_key: Optional[str] = None):
         """Initialize unified searcher with all engines."""
-        self.engines = {
-            'semantic_scholar': SemanticScholarEngine(semantic_scholar_api_key),
-            'pubmed': PubMedEngine(email),
-            'arxiv': ArxivEngine(),
-            'local': LocalSearchEngine(),
-            'vector': VectorSearchEngine()
-        }
+        self.email = email
+        self.semantic_scholar_api_key = semantic_scholar_api_key
+        self._engines = {}  # Lazy-loaded engines
+    
+    @property
+    def engines(self):
+        """Lazy-load engines as needed."""
+        return self._engines
+    
+    def _get_engine(self, source: str):
+        """Get or create engine for a source."""
+        if source not in self._engines:
+            if source == 'semantic_scholar':
+                self._engines[source] = SemanticScholarEngine(self.semantic_scholar_api_key)
+            elif source == 'pubmed':
+                self._engines[source] = PubMedEngine(self.email)
+            elif source == 'arxiv':
+                self._engines[source] = ArxivEngine()
+            elif source == 'local':
+                self._engines[source] = LocalSearchEngine()
+            elif source == 'vector':
+                self._engines[source] = VectorSearchEngine()
+            else:
+                raise ValueError(f"Unknown source: {source}")
+        return self._engines[source]
     
     async def search(self,
                     query: str,
@@ -688,7 +725,8 @@ class UnifiedSearcher:
             sources = ['pubmed']  # Default to PubMed only
         
         # Filter to valid sources
-        sources = [s for s in sources if s in self.engines]
+        valid_sources = ['semantic_scholar', 'pubmed', 'arxiv', 'local', 'vector']
+        sources = [s for s in sources if s in valid_sources]
         
         if not sources:
             logger.warning("No valid search sources specified")
@@ -697,9 +735,12 @@ class UnifiedSearcher:
         # Search all sources concurrently
         tasks = []
         for source in sources:
-            engine = self.engines[source]
-            task = engine.search(query, limit, **kwargs)
-            tasks.append(task)
+            try:
+                engine = self._get_engine(source)
+                task = engine.search(query, limit, **kwargs)
+                tasks.append(task)
+            except Exception as e:
+                logger.debug(f"Failed to initialize {source} engine: {e}")
         
         logger.debug(f"Searching {len(tasks)} sources: {sources}")
         results = await asyncio.gather(*tasks, return_exceptions=True)

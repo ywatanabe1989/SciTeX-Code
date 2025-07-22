@@ -28,7 +28,7 @@ Quick Start:
 """
 
 # Import main class
-from .scholar import Scholar, search, quick_search
+from .scholar import Scholar, search, search_quick
 
 # Import core classes for advanced users
 from ._core import Paper, PaperCollection
@@ -51,7 +51,7 @@ __all__ = [
     
     # Convenience functions
     'search',
-    'quick_search',
+    'search_quick',
     
     # Core classes
     'Paper',
@@ -72,13 +72,13 @@ def __getattr__(name):
     # Map old names to new functionality
     compatibility_map = {
         'search_sync': 'search',
-        'build_index': 'Scholar().index_local_pdfs',
+        'build_index': 'Scholar()._index_local_pdfs',
         'get_scholar_dir': 'Scholar().workspace_dir',
         'LocalSearchEngine': 'Scholar',
         'VectorSearchEngine': 'Scholar',
         'PDFDownloader': 'Scholar',
         'search_papers': 'search',
-        'S2Paper': 'Paper',
+        'SemanticScholarPaper': 'Paper',
         'PaperMetadata': 'Paper',
         'PaperAcquisition': 'Scholar',
         'SemanticScholarClient': 'Scholar',
@@ -102,7 +102,7 @@ def __getattr__(name):
                 scholar = Scholar()
                 stats = {}
                 for path in paths:
-                    stats.update(scholar.index_local_pdfs(path))
+                    stats.update(scholar._index_local_pdfs(path))
                 return stats
             return build_index
         else:
@@ -141,7 +141,7 @@ def _module_docstring():
         papers.save("bibliography.bib", format="bibtex")
         
         # Search local library
-        scholar.index_local_pdfs("./my_papers")
+        scholar._index_local_pdfs("./my_papers")
         local = scholar.search_local("transformer")
     
     For more information, see the documentation at:

@@ -43,7 +43,7 @@ papers = scholar.search("deep learning")
 from scitex.scholar import PaperEnrichmentService, generate_enriched_bibliography
 
 enricher = PaperEnrichmentService()
-enriched_papers = enricher.enrich_papers(papers)
+enriched_papers = enricher._enrich_papers(papers)
 generate_enriched_bibliography(enriched_papers, "output.bib", enrich=True)
 ```
 
@@ -89,7 +89,7 @@ results = engine.search("transformer", ["./pdfs"])
 **New way:**
 ```python
 # Index once
-scholar.index_local_pdfs("./pdfs")
+scholar._index_local_pdfs("./pdfs")
 
 # Search anytime
 results = scholar.search_local("transformer")
@@ -108,7 +108,7 @@ results = scholar.search_local("transformer")
 | `VectorSearchEngine` | Built into `Scholar` |
 | `PaperEnrichmentService` | Automatic in `Scholar` |
 | `generate_enriched_bibliography()` | `PaperCollection.save()` |
-| `build_index()` | `Scholar().index_local_pdfs()` |
+| `build_index()` | `Scholar()._index_local_pdfs()` |
 | `get_scholar_dir()` | `Scholar().workspace_dir` |
 
 ## Deprecated Features
@@ -171,8 +171,8 @@ similar = scholar.find_similar("Attention is All You Need", limit=10)
 ### Quick Search
 ```python
 # Just get titles
-from scitex.scholar import quick_search
-titles = quick_search("transformer architecture", top_n=5)
+from scitex.scholar import _search_quick
+titles = _search_quick("transformer architecture", top_n=5)
 ```
 
 ## Tips

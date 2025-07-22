@@ -1,0 +1,12 @@
+[94m
+########################################
+## scitex v2.0.0
+## 2025Y-07M-22D-15h18m32s_OFXv (PID: 144161)
+########################################
+[0m
+[93m
+========================================
+./src/scitex/scholar/examples/example.py
+Namespace(query='epilepsy prediction', limit=50, sources=['pubmed'], year_min=2020, year_max=2024, display_count=3, save=False)
+========================================
+[0m

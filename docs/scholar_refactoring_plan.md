@@ -77,7 +77,7 @@ gaps = papers.find_research_gaps()
 trends = papers.analyze_trends()
 
 # Local library
-scholar.index_local_pdfs("./my_papers")
+scholar._index_local_pdfs("./my_papers")
 local_results = scholar.search_local("transformer")
 
 # Batch operations
