@@ -139,7 +139,7 @@ class SemanticScholarEngine(SearchEngine):
         # Build URL for fetching paper by ID
         url = f"{self.base_url}/paper/{paper_id}"
         params = {
-            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr,doi,externalIds'
+            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr,externalIds'
         }
         
         try:

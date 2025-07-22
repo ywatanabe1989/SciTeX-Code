@@ -33,6 +33,8 @@ from ._core import Paper, PaperCollection
 from ._download import PDFManager
 from ._search import UnifiedSearcher, get_scholar_dir
 from .enrichment import UnifiedEnricher
+from .doi_resolver import DOIResolver
+from .batch_doi_resolver import BatchDOIResolver
 from ..io import load
 
 logger = logging.getLogger(__name__)
@@ -147,6 +149,13 @@ class Scholar:
         )
 
         self._pdf_manager = PDFManager(self.workspace_dir)
+        
+        # Initialize DOI resolver
+        self._doi_resolver = DOIResolver(email=self._email_crossref or "research@example.com")
+        self._batch_resolver = BatchDOIResolver(
+            email=self._email_crossref or "research@example.com",
+            max_workers=3  # Process 3 papers in parallel
+        )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
 
@@ -389,10 +398,9 @@ class Scholar:
                 enrich_journal_metrics=self._flag_impact_factors,
             )
             
-            # Fetch missing abstracts and URLs if requested
-            if add_missing_abstracts or add_missing_urls:
-                logger.info("Fetching missing information from online sources...")
-                self._fetch_missing_fields(papers, add_missing_abstracts, add_missing_urls)
+            # Always fetch missing DOIs, and optionally abstracts/URLs
+            logger.info("Fetching missing DOIs and other information from online sources...")
+            self._fetch_missing_fields(papers, add_missing_abstracts, add_missing_urls)
         
         # Merge original fields if preserving
         if preserve_original_fields:
@@ -507,8 +515,8 @@ class Scholar:
         fetch_urls: bool
     ):
         """
-        Fetch missing abstracts and URLs from online sources.
-        Also fetches DOIs for papers with Semantic Scholar URLs.
+        Fetch missing DOIs, abstracts and URLs from online sources.
+        Uses batch processing for efficiency when handling multiple papers.
         
         Args:
             papers: List of Paper objects
@@ -516,19 +524,16 @@ class Scholar:
             fetch_urls: Whether to fetch missing URLs
         """
         papers_to_update = []
-        papers_needing_doi = []
         
         for paper in papers:
             needs_update = False
             
+            # Always try to get DOI if missing
+            if not paper.doi:
+                needs_update = True
             if fetch_abstracts and not paper.abstract:
                 needs_update = True
             if fetch_urls and not paper.pdf_url:
-                needs_update = True
-            
-            # Check if paper has Semantic Scholar URL but no DOI
-            if hasattr(paper, '_semantic_scholar_corpus_id') and not paper.doi:
-                papers_needing_doi.append(paper)
                 needs_update = True
             
             if needs_update:
@@ -538,97 +543,174 @@ class Scholar:
             return
         
         logger.info(f"Fetching missing fields for {len(papers_to_update)} papers...")
-        if papers_needing_doi:
-            logger.info(f"  Including DOI lookup for {len(papers_needing_doi)} papers with Semantic Scholar URLs")
         
-        # Try to find papers with missing fields
-        for paper in papers_to_update:
-            # If paper has Semantic Scholar corpus ID, try to fetch directly
-            if hasattr(paper, '_semantic_scholar_corpus_id'):
-                try:
-                    # Use Semantic Scholar API to get paper details
-                    corpus_id = paper._semantic_scholar_corpus_id
-                    logger.debug(f"Fetching Semantic Scholar paper with CorpusId: {corpus_id}")
-                    
-                    # Search by corpus ID (this will use the enricher's existing functionality)
-                    results = self.search(
-                        f"CorpusId:{corpus_id}",
-                        limit=1,
-                        sources=['semantic_scholar'],
-                    )
-                    
-                    if results and len(results) > 0:
-                        ss_paper = results[0]
-                        
-                        # Update DOI if missing
-                        if not paper.doi and ss_paper.doi:
-                            paper.doi = ss_paper.doi
-                            logger.debug(f"Added DOI for: {paper.title[:50]}... -> {ss_paper.doi}")
-                        
-                        # Update abstract if missing
-                        if fetch_abstracts and not paper.abstract and ss_paper.abstract:
-                            paper.abstract = ss_paper.abstract
-                            logger.debug(f"Added abstract for: {paper.title[:50]}...")
-                        
-                        # Update proper URL if current is API URL
-                        if fetch_urls and paper.pdf_url and 'api.semanticscholar.org' in paper.pdf_url:
-                            if ss_paper.pdf_url and 'api.semanticscholar.org' not in ss_paper.pdf_url:
-                                paper.pdf_url = ss_paper.pdf_url
-                                logger.debug(f"Replaced API URL with direct URL for: {paper.title[:50]}...")
-                        
-                        continue  # Skip regular search if we found via corpus ID
-                        
-                except Exception as e:
-                    logger.debug(f"Could not fetch via Semantic Scholar corpus ID for '{paper.title[:50]}...': {e}")
+        # Use batch processing for efficiency
+        if len(papers_to_update) > 1:
+            logger.info("Using batch processing for efficient DOI resolution...")
             
-            # Regular search by title and author
-            query_parts = [paper.title]
-            if paper.authors:
-                # Add first author's last name
-                first_author = paper.authors[0]
-                last_name = first_author.split()[-1] if first_author else ""
-                if last_name:
-                    query_parts.append(last_name)
+            # Process all papers in batch
+            enhanced_data = self._batch_resolver.enhance_papers_parallel(
+                papers_to_update,
+                show_progress=True
+            )
             
-            query = " ".join(query_parts)
+            # Update URLs if needed
+            for paper in papers_to_update:
+                if paper.doi and fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
+                    paper.pdf_url = f"https://doi.org/{paper.doi}"
+                    logger.info(f"  ✓ Updated URL to DOI link for: {paper.title[:50]}...")
+        
+        else:
+            # Single paper - use regular resolver
+            paper = papers_to_update[0]
+            logger.debug(f"Processing single paper: {paper.title[:50]}...")
             
-            # Search for the paper
-            try:
-                results = self.search(
-                    query, 
-                    limit=3,
-                    sources=['semantic_scholar', 'pubmed'],
-                    year_min=paper.year - 1 if paper.year else None,
-                    year_max=paper.year + 1 if paper.year else None,
+            # Try to get DOI
+            if not paper.doi:
+                authors_tuple = tuple(paper.authors) if paper.authors else None
+                
+                doi = self._doi_resolver.title_to_doi(
+                    title=paper.title,
+                    year=paper.year,
+                    authors=authors_tuple
                 )
                 
-                # Find best match by title similarity
-                best_match = None
-                best_score = 0
-                
-                for result in results:
-                    score = result.similarity_score(paper)
-                    if score > best_score and score > 0.8:  # 80% similarity threshold
-                        best_score = score
-                        best_match = result
-                
-                if best_match:
-                    # Update missing fields
-                    if fetch_abstracts and not paper.abstract and best_match.abstract:
-                        paper.abstract = best_match.abstract
-                        logger.debug(f"Added abstract for: {paper.title[:50]}...")
+                if doi:
+                    paper.doi = doi
+                    logger.info(f"  ✓ Found DOI: {doi}")
                     
-                    if fetch_urls and not paper.pdf_url and best_match.pdf_url:
-                        paper.pdf_url = best_match.pdf_url
-                        logger.debug(f"Added URL for: {paper.title[:50]}...")
-                    
-                    # Also update DOI if missing
-                    if not paper.doi and best_match.doi:
-                        paper.doi = best_match.doi
-                        logger.debug(f"Added DOI for: {paper.title[:50]}... -> {best_match.doi}")
-                        
-            except Exception as e:
-                logger.debug(f"Could not fetch missing fields for '{paper.title[:50]}...': {e}")
+                    # Update URL if needed
+                    if fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
+                        paper.pdf_url = f"https://doi.org/{doi}"
+                        logger.info(f"  ✓ Updated URL to DOI link")
+            
+            # Get abstract if needed
+            if paper.doi and fetch_abstracts and not paper.abstract:
+                abstract = self._doi_resolver.get_abstract(paper.doi)
+                if abstract:
+                    paper.abstract = abstract
+                    logger.info(f"  ✓ Found abstract")
+    
+    def resolve_doi(self, title: str, year: Optional[int] = None, authors: Optional[List[str]] = None) -> Optional[str]:
+        """
+        Resolve DOI from paper title using multiple sources.
+        
+        This method uses CrossRef, PubMed, and OpenAlex to find DOIs,
+        avoiding rate-limited services like Semantic Scholar.
+        
+        Args:
+            title: Paper title
+            year: Publication year (optional but improves accuracy)
+            authors: List of author names (optional but improves accuracy)
+            
+        Returns:
+            DOI string if found, None otherwise
+            
+        Example:
+            doi = scholar.resolve_doi(
+                "The functional role of cross-frequency coupling",
+                year=2010
+            )
+            # Returns: "10.1016/j.tins.2010.09.001"
+        """
+        # Convert authors to tuple for caching if provided
+        authors_tuple = tuple(authors) if authors else None
+        return self._doi_resolver.title_to_doi(title, year, authors_tuple)
+    
+    def _search_crossref_by_title(self, title: str, authors: List[str] = None) -> List[Dict[str, Any]]:
+        """
+        Search CrossRef API by title to find DOI.
+        
+        Args:
+            title: Paper title
+            authors: List of author names (optional)
+            
+        Returns:
+            List of matching papers from CrossRef
+        """
+        try:
+            import requests
+            from urllib.parse import quote
+            
+            # Build query
+            query = quote(title)
+            
+            # Add author to query if available
+            if authors and len(authors) > 0:
+                first_author = authors[0]
+                # Extract last name
+                last_name = first_author.split()[-1] if first_author else ""
+                if last_name:
+                    query += f"+{quote(last_name)}"
+            
+            # CrossRef API URL
+            url = f"https://api.crossref.org/works"
+            params = {
+                'query': title,  # Use unquoted title for query parameter
+                'rows': 5,
+                'select': 'DOI,title,author,abstract,published-print,type'
+            }
+            
+            # Add email if configured for polite access
+            if self._email_crossref:
+                params['mailto'] = self._email_crossref
+            
+            response = requests.get(url, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('message', {}).get('items', [])
+                
+                # Filter results by title similarity
+                results = []
+                for item in items:
+                    crossref_title = item.get('title', [''])[0]
+                    # Simple similarity check
+                    if crossref_title and self._title_similarity(title, crossref_title) > 0.8:
+                        results.append(item)
+                
+                return results
+            else:
+                logger.debug(f"CrossRef API returned {response.status_code}")
+                return []
+                
+        except Exception as e:
+            logger.debug(f"CrossRef search error: {e}")
+            return []
+    
+    def _title_similarity(self, title1: str, title2: str) -> float:
+        """
+        Calculate similarity between two titles (simple approach).
+        
+        Args:
+            title1: First title
+            title2: Second title
+            
+        Returns:
+            Similarity score between 0 and 1
+        """
+        # Normalize titles
+        t1 = title1.lower().strip()
+        t2 = title2.lower().strip()
+        
+        # Remove punctuation
+        import string
+        translator = str.maketrans('', '', string.punctuation)
+        t1 = t1.translate(translator)
+        t2 = t2.translate(translator)
+        
+        # Split into words
+        words1 = set(t1.split())
+        words2 = set(t2.split())
+        
+        # Calculate Jaccard similarity
+        if not words1 or not words2:
+            return 0.0
+            
+        intersection = len(words1 & words2)
+        union = len(words1 | words2)
+        
+        return intersection / union if union > 0 else 0.0
 
     def get_library_stats(self) -> Dict[str, Any]:
         """Get statistics about local PDF library."""
