@@ -22,6 +22,7 @@ This is the main entry point for all scholar functionality, providing:
 
 import asyncio
 import logging
+import re
 import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -32,6 +33,7 @@ from ._core import Paper, PaperCollection
 from ._download import PDFManager
 from ._search import UnifiedSearcher, get_scholar_dir
 from .enrichment import UnifiedEnricher
+from ..io import load
 
 logger = logging.getLogger(__name__)
 
@@ -315,6 +317,257 @@ class Scholar:
                 enrich_citations=citations,
                 enrich_journal_metrics=journal_metrics,
             )
+
+    def enhance_bibtex(
+        self,
+        bibtex_path: Union[str, Path],
+        output_path: Optional[Union[str, Path]] = None,
+        backup: bool = True,
+        preserve_original_fields: bool = True,
+        add_missing_abstracts: bool = True,
+        add_missing_urls: bool = True,
+    ) -> PaperCollection:
+        """
+        Enhance an existing BibTeX file with impact factors, citations, and missing fields.
+        
+        Args:
+            bibtex_path: Path to input BibTeX file
+            output_path: Path for enhanced output (defaults to input path)
+            backup: Create backup of original file before overwriting
+            preserve_original_fields: Keep all original BibTeX fields
+            add_missing_abstracts: Fetch abstracts for entries without them
+            add_missing_urls: Fetch URLs for entries without them
+        
+        Returns:
+            PaperCollection with enhanced papers
+        """
+        bibtex_path = Path(bibtex_path)
+        if not bibtex_path.exists():
+            raise FileNotFoundError(f"BibTeX file not found: {bibtex_path}")
+        
+        # Set output path
+        if output_path is None:
+            output_path = bibtex_path
+        else:
+            output_path = Path(output_path)
+        
+        # Create backup if needed
+        if backup and output_path == bibtex_path:
+            backup_path = bibtex_path.with_suffix('.bib.bak')
+            import shutil
+            shutil.copy2(bibtex_path, backup_path)
+            logger.info(f"Created backup: {backup_path}")
+        
+        # Load existing BibTeX entries
+        logger.info(f"Loading BibTeX file: {bibtex_path}")
+        entries = load(str(bibtex_path))
+        
+        # Convert BibTeX entries to Paper objects
+        papers = []
+        original_fields_map = {}
+        
+        for entry in entries:
+            paper = self._bibtex_entry_to_paper(entry)
+            if paper:
+                papers.append(paper)
+                # Store original fields for preservation
+                if preserve_original_fields:
+                    original_fields_map[paper.get_identifier()] = entry['fields']
+        
+        logger.info(f"Parsed {len(papers)} papers from BibTeX file")
+        
+        # Create collection
+        collection = PaperCollection(papers)
+        
+        # Enrich papers with impact factors and citations
+        if papers:
+            logger.info("Enriching papers with impact factors and citations...")
+            self._enricher.enrich_all(
+                papers,
+                enrich_impact_factors=self._flag_impact_factors,
+                enrich_citations=self._flag_citations,
+                enrich_journal_metrics=self._flag_impact_factors,
+            )
+            
+            # Fetch missing abstracts and URLs if requested
+            if add_missing_abstracts or add_missing_urls:
+                logger.info("Fetching missing information from online sources...")
+                self._fetch_missing_fields(papers, add_missing_abstracts, add_missing_urls)
+        
+        # Merge original fields if preserving
+        if preserve_original_fields:
+            for paper in papers:
+                paper_id = paper.get_identifier()
+                if paper_id in original_fields_map:
+                    paper._original_bibtex_fields = original_fields_map[paper_id]
+        
+        # Save enhanced BibTeX
+        collection.save(str(output_path))
+        logger.info(f"Saved enhanced BibTeX to: {output_path}")
+        
+        return collection
+
+    def _bibtex_entry_to_paper(self, entry: Dict[str, Any]) -> Optional[Paper]:
+        """
+        Convert a parsed BibTeX entry to a Paper object.
+        
+        Args:
+            entry: Parsed BibTeX entry dictionary
+        
+        Returns:
+            Paper object or None if conversion fails
+        """
+        try:
+            fields = entry.get('fields', {})
+            
+            # Extract authors
+            authors_str = fields.get('author', '')
+            authors = self._parse_bibtex_authors(authors_str)
+            
+            # Create Paper object with available fields
+            paper = Paper(
+                title=fields.get('title', '').strip(),
+                authors=authors,
+                year=int(fields.get('year', 0)) if fields.get('year', '').isdigit() else None,
+                journal=fields.get('journal', fields.get('booktitle', '')),
+                doi=fields.get('doi', ''),
+                pmid=fields.get('pmid', ''),
+                arxiv_id=fields.get('arxiv', ''),
+                abstract=fields.get('abstract', ''),
+                pdf_url=fields.get('url', ''),
+                keywords=self._parse_bibtex_keywords(fields.get('keywords', '')),
+                source=f"bibtex:{entry.get('key', 'unknown')}",
+            )
+            
+            # Add volume, pages if available
+            if 'volume' in fields:
+                paper.volume = fields['volume']
+            if 'pages' in fields:
+                paper.pages = fields['pages']
+            
+            # Store entry type and key
+            paper._bibtex_entry_type = entry.get('entry_type', 'article')
+            paper._bibtex_key = entry.get('key', '')
+            
+            return paper
+            
+        except Exception as e:
+            logger.warning(f"Failed to convert BibTeX entry: {e}")
+            return None
+    
+    def _parse_bibtex_authors(self, authors_str: str) -> List[str]:
+        """Parse BibTeX author string into list of author names."""
+        if not authors_str:
+            return []
+        
+        # Split by 'and'
+        authors = []
+        for author in authors_str.split(' and '):
+            author = author.strip()
+            if author:
+                # Handle "Last, First" format
+                if ',' in author:
+                    parts = author.split(',', 1)
+                    author = f"{parts[1].strip()} {parts[0].strip()}"
+                authors.append(author)
+        
+        return authors
+    
+    def _parse_bibtex_keywords(self, keywords_str: str) -> List[str]:
+        """Parse BibTeX keywords string into list."""
+        if not keywords_str:
+            return []
+        
+        # Split by comma or semicolon
+        keywords = []
+        for kw in re.split(r'[,;]', keywords_str):
+            kw = kw.strip()
+            if kw:
+                keywords.append(kw)
+        
+        return keywords
+    
+    def _fetch_missing_fields(
+        self, 
+        papers: List[Paper], 
+        fetch_abstracts: bool, 
+        fetch_urls: bool
+    ):
+        """
+        Fetch missing abstracts and URLs from online sources.
+        
+        Args:
+            papers: List of Paper objects
+            fetch_abstracts: Whether to fetch missing abstracts
+            fetch_urls: Whether to fetch missing URLs
+        """
+        papers_to_update = []
+        
+        for paper in papers:
+            needs_update = False
+            
+            if fetch_abstracts and not paper.abstract:
+                needs_update = True
+            if fetch_urls and not paper.pdf_url:
+                needs_update = True
+            
+            if needs_update:
+                papers_to_update.append(paper)
+        
+        if not papers_to_update:
+            return
+        
+        logger.info(f"Fetching missing fields for {len(papers_to_update)} papers...")
+        
+        # Try to find papers with missing fields
+        for paper in papers_to_update:
+            # Build search query from title and first author
+            query_parts = [paper.title]
+            if paper.authors:
+                # Add first author's last name
+                first_author = paper.authors[0]
+                last_name = first_author.split()[-1] if first_author else ""
+                if last_name:
+                    query_parts.append(last_name)
+            
+            query = " ".join(query_parts)
+            
+            # Search for the paper
+            try:
+                results = self.search(
+                    query, 
+                    limit=3,
+                    sources=['semantic_scholar', 'pubmed'],
+                    year_min=paper.year - 1 if paper.year else None,
+                    year_max=paper.year + 1 if paper.year else None,
+                )
+                
+                # Find best match by title similarity
+                best_match = None
+                best_score = 0
+                
+                for result in results:
+                    score = result.similarity_score(paper)
+                    if score > best_score and score > 0.8:  # 80% similarity threshold
+                        best_score = score
+                        best_match = result
+                
+                if best_match:
+                    # Update missing fields
+                    if fetch_abstracts and not paper.abstract and best_match.abstract:
+                        paper.abstract = best_match.abstract
+                        logger.debug(f"Added abstract for: {paper.title[:50]}...")
+                    
+                    if fetch_urls and not paper.pdf_url and best_match.pdf_url:
+                        paper.pdf_url = best_match.pdf_url
+                        logger.debug(f"Added URL for: {paper.title[:50]}...")
+                    
+                    # Also update DOI if missing
+                    if not paper.doi and best_match.doi:
+                        paper.doi = best_match.doi
+                        
+            except Exception as e:
+                logger.debug(f"Could not fetch missing fields for '{paper.title[:50]}...': {e}")
 
     def get_library_stats(self) -> Dict[str, Any]:
         """Get statistics about local PDF library."""

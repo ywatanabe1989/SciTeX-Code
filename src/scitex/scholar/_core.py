@@ -861,7 +861,8 @@ class PaperCollection:
                 'source': paper.source,
                 'has_pdf': bool(paper.pdf_url or paper.pdf_path),
                 'num_keywords': len(paper.keywords),
-                'abstract_word_count': len(paper.abstract.split()) if paper.abstract else 0
+                'abstract_word_count': len(paper.abstract.split()) if paper.abstract else 0,
+                'abstract': paper.abstract or 'N/A'
             }
             data.append(row)
         
@@ -977,6 +978,11 @@ class PaperCollection:
     
     def _determine_entry_type(self, paper: Paper) -> str:
         """Determine BibTeX entry type for a paper."""
+        # Use original entry type if available
+        if hasattr(paper, '_bibtex_entry_type') and paper._bibtex_entry_type:
+            return paper._bibtex_entry_type
+        
+        # Otherwise determine based on paper properties
         if paper.arxiv_id:
             return 'misc'
         elif paper.journal:
@@ -988,11 +994,15 @@ class PaperCollection:
         """Convert paper to BibTeX fields dict."""
         fields = {}
         
-        # Required fields
+        # If paper has original BibTeX fields, start with those
+        if hasattr(paper, '_original_bibtex_fields'):
+            fields = paper._original_bibtex_fields.copy()
+        
+        # Required fields (always override to ensure accuracy)
         fields['title'] = paper.title
         fields['author'] = ' and '.join(paper.authors) if paper.authors else 'Unknown'
         
-        # Optional fields
+        # Optional fields (only override if we have better data)
         if paper.year:
             fields['year'] = str(paper.year)
         
@@ -1015,15 +1025,45 @@ class PaperCollection:
         if paper.pdf_url:
             fields['url'] = paper.pdf_url
         
+        # Volume and pages (from original or paper object)
+        if hasattr(paper, 'volume') and paper.volume:
+            fields['volume'] = str(paper.volume)
+        if hasattr(paper, 'pages') and paper.pages:
+            fields['pages'] = str(paper.pages)
+        
         # Enriched metadata
         if include_enriched:
-            if paper.impact_factor:
-                fields['note'] = f"Impact Factor: {paper.impact_factor}"
-            if paper.citation_count:
+            # Get JCR year dynamically from enrichment module
+            from .enrichment import JCR_YEAR
+            
+            if paper.impact_factor is not None and paper.impact_factor > 0:
+                fields[f'JCR_{JCR_YEAR}_impact_factor'] = str(paper.impact_factor)
+                if paper.impact_factor_source:
+                    fields['impact_factor_source'] = paper.impact_factor_source
+            
+            if paper.journal_quartile and paper.journal_quartile != 'Unknown':
+                fields[f'JCR_{JCR_YEAR}_quartile'] = paper.journal_quartile
+                if hasattr(paper, 'quartile_source') and paper.quartile_source:
+                    fields['quartile_source'] = paper.quartile_source
+            
+            if paper.citation_count is not None:
+                fields['citation_count'] = str(paper.citation_count)
+                if paper.citation_count_source:
+                    fields['citation_count_source'] = paper.citation_count_source
+            
+            # Add enrichment note
+            enriched_info = []
+            if paper.impact_factor is not None and paper.impact_factor > 0:
+                enriched_info.append(f"IF={paper.impact_factor}")
+            if paper.citation_count is not None:
+                enriched_info.append(f"Citations={paper.citation_count}")
+            
+            if enriched_info:
+                enrichment_note = f"[SciTeX Enhanced: {', '.join(enriched_info)}]"
                 if 'note' in fields:
-                    fields['note'] += f", Citations: {paper.citation_count}"
+                    fields['note'] = f"{fields['note']}; {enrichment_note}"
                 else:
-                    fields['note'] = f"Citations: {paper.citation_count}"
+                    fields['note'] = enrichment_note
         
         return fields
     

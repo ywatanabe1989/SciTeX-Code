@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-22 15:23:43 (ywatanabe)"
+# Timestamp: "2025-07-22 17:27:44 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/example.py
 # ----------------------------------------
 import os
@@ -71,9 +71,13 @@ def main(args):
 
     # Save papers in multiple formats
     if args.save:
-        papers.save(os.path.join(__DIR__, "papers.bib"))
-        papers.save(os.path.join(__DIR__, "papers.csv"))
-        papers.save(os.path.join(__DIR__, "papers.json"))
+        if args.output_filename:
+            filename = args.output_filename
+        else:
+            filename = args.query.replace(" ", "-")
+        papers.save(os.path.join(__DIR__, f"{filename}.bib"))
+        papers.save(os.path.join(__DIR__, f"{filename}.csv"))
+        papers.save(os.path.join(__DIR__, f"{filename}.json"))
 
         stx.str.printc(f"Saved papers to {__DIR__}", c="cyan")
 
@@ -97,6 +101,14 @@ def parse_args():
         ),
         required=script_mode,
         help="Search query for papers",
+    )
+
+    parser.add_argument(
+        "--output_filename",
+        "-o",
+        type=str,
+        default="",
+        help="File name of output files",
     )
 
     parser.add_argument(
@@ -180,6 +192,9 @@ def run_main():
 if __name__ == "__main__":
     run_main()
 
-# /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/example.py --query 'epilepsy prediction' --save
+
+# /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/example.py --query 'epilepsy prediction' --save --year-min 2000 --year-max 2025 --limit 128
+
+# /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/example.py --query 'epilepsy prediction' --save --year-min 2000 --year-max 2025 --limit 128
 
 # EOF

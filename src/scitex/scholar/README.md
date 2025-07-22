@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-22 15:08:48
+!-- Timestamp: 2025-07-22 17:19:15
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -226,7 +226,7 @@ If you use SciTeX Scholar in your research, please cite:
 
 ## License
 
-[License information to be added]
+MIT
 
 ## Contact
 
