@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "created": "2025-07-22T17:38:50.758228",
+    "num_papers": 4,
+    "enriched": true
+  },
+  "papers": [
+    {
+      "title": "Measuring phase-amplitude coupling between neuronal oscillations of different frequencies.",
+      "authors": [
+        "Tort, Adriano B L",
+        "Komorowski, Robert",
+        "Eichenbaum, Howard",
+        "Kopell, Nancy"
+      ],
+      "abstract": "Neuronal oscillations of different frequencies can interact in several ways. There has been particular interest in the modulation of the amplitude of high-frequency oscillations by the phase of low-frequency oscillations, since recent evidence suggests a functional role for this type of cross-frequency coupling (CFC). Phase-amplitude coupling has been reported in continuous electrophysiological signals obtained from the brain at both local and macroscopic levels. In the present work, we present a new measure for assessing phase-amplitude CFC. This measure is defined as an adaptation of the Kullback-Leibler distance-a function that is used to infer the distance between two distributions-and calculates how much an empirical amplitude distribution-like function over phase bins deviates from the uniform distribution. We show that a CFC measure defined this way is well suited for assessing the intensity of phase-amplitude coupling. We also review seven other CFC measures; we show that, by some performance benchmarks, our measure is especially attractive for this task. We also discuss some technical aspects related to the measure, such as the length of the epochs used for these analyses and the utility of surrogate control analyses. Finally, we apply the measure and a related CFC tool to actual hippocampal recordings obtained from freely moving rats and show, for the first time, that the CA3 and CA1 regions present different CFC characteristics.",
+      "year": "2010",
+      "journal": "Journal of neurophysiology",
+      "doi": "10.1152/jn.00106.2010",
+      "pmid": "20463205",
+      "arxiv_id": null,
+      "keywords": [
+        "Action Potentials",
+        "Animals",
+        "Biological Clocks",
+        "Hippocampus",
+        "Models, Neurological",
+        "Nerve Net",
+        "Neurons",
+        "Rats",
+        "Time Factors"
+      ],
+      "citation_count": 1143,
+      "citation_count_source": null,
+      "impact_factor": 2.1,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q3",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    },
+    {
+      "title": "Human high-order thalamic nuclei gate conscious perception through the thalamofrontal loop.",
+      "authors": [
+        "Fang, Zepeng",
+        "Dang, Yuanyuan",
+        "Ping, An'an",
+        "Wang, Chenyu",
+        "Zhao, Qianchuan",
+        "Zhao, Hulin",
+        "Li, Xiaoli",
+        "Zhang, Mingsha"
+      ],
+      "abstract": "Human high-order thalamic nuclei activity is known to closely correlate with conscious states. However, it is not clear how those thalamic nuclei and thalamocortical interactions directly contribute to the transient process of human conscious perception. We simultaneously recorded stereoelectroencephalography data from the thalamic nuclei and prefrontal cortex (PFC), while patients with implanted electrodes performed a visual consciousness task. Compared with the ventral nuclei and PFC, the intralaminar and medial nuclei presented earlier and stronger consciousness-related activity. Transient thalamofrontal neural synchrony and cross-frequency coupling were both driven by the θ phase of the intralaminar and medial nuclei during conscious perception. The intralaminar and medial thalamic nuclei thus play a gate role to drive the activity of the PFC during the emergence of conscious perception.",
+      "year": "2025",
+      "journal": "Science (New York, N.Y.)",
+      "doi": "10.1126/science.adr3675",
+      "pmid": "40179184",
+      "arxiv_id": null,
+      "keywords": [
+        "Humans",
+        "Consciousness",
+        "Prefrontal Cortex",
+        "Male",
+        "Thalamic Nuclei",
+        "Adult",
+        "Visual Perception",
+        "Female",
+        "Electroencephalography",
+        "Electrodes, Implanted",
+        "Intralaminar Thalamic Nuclei",
+        "Neural Pathways"
+      ],
+      "citation_count": 4,
+      "citation_count_source": null,
+      "impact_factor": null,
+      "impact_factor_source": null,
+      "journal_quartile": null,
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "citation_count_source": "CrossRef"
+      }
+    },
+    {
+      "title": "The functional role of cross-frequency coupling.",
+      "authors": [
+        "Canolty, Ryan T",
+        "Knight, Robert T"
+      ],
+      "abstract": "Recent studies suggest that cross-frequency coupling (CFC) might play a functional role in neuronal computation, communication and learning. In particular, the strength of phase-amplitude CFC differs across brain areas in a task-relevant manner, changes quickly in response to sensory, motor and cognitive events, and correlates with performance in learning tasks. Importantly, whereas high-frequency brain activity reflects local domains of cortical processing, low-frequency brain rhythms are dynamically entrained across distributed brain regions by both external sensory input and internal cognitive events. CFC might thus serve as a mechanism to transfer information from large-scale brain networks operating at behavioral timescales to the fast, local cortical processing required for effective computation and synaptic modification, thus integrating functional systems across multiple spatiotemporal scales.",
+      "year": "2010",
+      "journal": "Trends in cognitive sciences",
+      "doi": "10.1016/j.tics.2010.09.001",
+      "pmid": "20932795",
+      "arxiv_id": null,
+      "keywords": [
+        "Brain Mapping",
+        "Cerebral Cortex",
+        "Cortical Synchronization",
+        "Humans",
+        "Mental Processes",
+        "Models, Neurological",
+        "Nerve Net"
+      ],
+      "citation_count": 1743,
+      "citation_count_source": null,
+      "impact_factor": 16.7,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q1",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    },
+    {
+      "title": "Cross-frequency coupling in psychiatric disorders: A systematic review.",
+      "authors": [
+        "Yakubov, Boris",
+        "Das, Sushmit",
+        "Zomorrodi, Reza",
+        "Blumberger, Daniel M",
+        "Enticott, Peter G",
+        "Kirkovski, Melissa",
+        "Rajji, Tarek K",
+        "Desarkar, Pushpal"
+      ],
+      "abstract": "Cross-frequency coupling (CFC), an electrophysiologically derived measure of oscillatory coupling in the brain, is believed to play a critical role in neuronal computation, learning and communication. It has received much recent attention in the study of both health and disease. We searched for literature that studied CFC during resting state and task-related activities during electroencephalography and magnetoencephalography in psychiatric disorders. Thirty-eight studies were identified, which included attention-deficit hyperactivity disorder, Alzheimer's dementia, autism spectrum disorder, bipolar disorder, depression, obsessive compulsive disorder, social anxiety disorder and schizophrenia. The systematic review was registered with PROSPERO (ID#CRD42021224188). The current review indicates measurable differences exist between CFC in disease states vs. healthy controls. There was variance in CFC at different regions of the brain within the same psychiatric disorders, perhaps this could be explained by the mechanisms and functionality of CFC. There was heterogeneity in methodologies used, which may lead to spurious CFC analyses. Going forward, standardized methodologies need to be established and utilized in further research to understand the neuropathophysiology associated with psychiatric disorders.",
+      "year": "2022",
+      "journal": "Neuroscience and biobehavioral reviews",
+      "doi": "10.1016/j.neubiorev.2022.104690",
+      "pmid": "35569580",
+      "arxiv_id": null,
+      "keywords": [
+        "Autism Spectrum Disorder",
+        "Brain",
+        "Electroencephalography",
+        "Humans",
+        "Neurons",
+        "Obsessive-Compulsive Disorder"
+      ],
+      "citation_count": 45,
+      "citation_count_source": null,
+      "impact_factor": 7.5,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q1",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "created": "2025-07-22T17:42:05.046172",
+    "num_papers": 1,
+    "enriched": true
+  },
+  "papers": [
+    {
+      "title": "Effect of Phase Clustering Bias on Phase-Amplitude Coupling for Emotional EEG.",
+      "authors": [
+        "Sheng, Tingyu",
+        "Feng, Qiansheng",
+        "Luo, Zhiguo",
+        "Zhao, Shaokai",
+        "Xu, Minpeng",
+        "Ming, Dong",
+        "Yan, Ye",
+        "Yin, Erwei"
+      ],
+      "abstract": "Emotions are thought to be related to distinct patterns of neural oscillations, but the interactions among multi-frequency neural oscillations during different emotional states lack full exploration. Phase-amplitude coupling is a promising tool for understanding the complexity of the neurophysiological system, thereby playing a crucial role in revealing the physiological mechanisms underlying emotional electroencephalogram (EEG). However, the non-sinusoidal characteristics of EEG lead to the non-uniform distribution of phase angles, which could potentially affect the analysis of phase-amplitude coupling. Removing phase clustering bias (PCB) can uniform the distribution of phase angles, but the effect of this approach is unknown on emotional EEG phase-amplitude coupling. This study aims to explore the effect of PCB on cross-frequency phase-amplitude coupling for emotional EEG. The technique of removing PCB was implemented on a publicly accessible emotional EEG dataset to calculate debiased phase-amplitude coupling. Statistical analysis and classification were conducted to compare the difference in emotional EEG phase-amplitude coupling prior to and post the removal of PCB. Emotional EEG phase-amplitude coupling values are overestimated due to PCB. Removing PCB enhances the difference in coupling strength between fear and happy emotions in the frontal lobe. Comparable emotion recognition performance was achieved with fewer features after removing PCB. These findings suggest that removing PCB enhances the difference in emotional EEG phase-amplitude coupling patterns and generates features that contain more emotional information. Removing PCB may be advantageous for analyzing emotional EEG phase-amplitude coupling and recognizing human emotions.",
+      "year": "2024",
+      "journal": "Journal of integrative neuroscience",
+      "doi": "10.31083/j.jin2302033",
+      "pmid": "38419437",
+      "arxiv_id": null,
+      "keywords": [
+        "Humans",
+        "Electroencephalography",
+        "Emotions",
+        "Fear",
+        "Cluster Analysis",
+        "Frontal Lobe"
+      ],
+      "citation_count": 4,
+      "citation_count_source": null,
+      "impact_factor": 2.5,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q3",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    }
+  ]
+}

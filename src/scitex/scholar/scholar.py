@@ -424,6 +424,15 @@ class Scholar:
             authors_str = fields.get('author', '')
             authors = self._parse_bibtex_authors(authors_str)
             
+            # Extract Semantic Scholar Corpus ID if URL is from api.semanticscholar.org
+            url = fields.get('url', '')
+            semantic_scholar_id = None
+            if 'api.semanticscholar.org/CorpusId:' in url:
+                # Extract corpus ID from URL
+                match = re.search(r'CorpusId:(\d+)', url)
+                if match:
+                    semantic_scholar_id = match.group(1)
+            
             # Create Paper object with available fields
             paper = Paper(
                 title=fields.get('title', '').strip(),
@@ -438,6 +447,10 @@ class Scholar:
                 keywords=self._parse_bibtex_keywords(fields.get('keywords', '')),
                 source=f"bibtex:{entry.get('key', 'unknown')}",
             )
+            
+            # Store Semantic Scholar ID for later use
+            if semantic_scholar_id:
+                paper._semantic_scholar_corpus_id = semantic_scholar_id
             
             # Add volume, pages if available
             if 'volume' in fields:
@@ -495,6 +508,7 @@ class Scholar:
     ):
         """
         Fetch missing abstracts and URLs from online sources.
+        Also fetches DOIs for papers with Semantic Scholar URLs.
         
         Args:
             papers: List of Paper objects
@@ -502,6 +516,7 @@ class Scholar:
             fetch_urls: Whether to fetch missing URLs
         """
         papers_to_update = []
+        papers_needing_doi = []
         
         for paper in papers:
             needs_update = False
@@ -511,6 +526,11 @@ class Scholar:
             if fetch_urls and not paper.pdf_url:
                 needs_update = True
             
+            # Check if paper has Semantic Scholar URL but no DOI
+            if hasattr(paper, '_semantic_scholar_corpus_id') and not paper.doi:
+                papers_needing_doi.append(paper)
+                needs_update = True
+            
             if needs_update:
                 papers_to_update.append(paper)
         
@@ -518,10 +538,50 @@ class Scholar:
             return
         
         logger.info(f"Fetching missing fields for {len(papers_to_update)} papers...")
+        if papers_needing_doi:
+            logger.info(f"  Including DOI lookup for {len(papers_needing_doi)} papers with Semantic Scholar URLs")
         
         # Try to find papers with missing fields
         for paper in papers_to_update:
-            # Build search query from title and first author
+            # If paper has Semantic Scholar corpus ID, try to fetch directly
+            if hasattr(paper, '_semantic_scholar_corpus_id'):
+                try:
+                    # Use Semantic Scholar API to get paper details
+                    corpus_id = paper._semantic_scholar_corpus_id
+                    logger.debug(f"Fetching Semantic Scholar paper with CorpusId: {corpus_id}")
+                    
+                    # Search by corpus ID (this will use the enricher's existing functionality)
+                    results = self.search(
+                        f"CorpusId:{corpus_id}",
+                        limit=1,
+                        sources=['semantic_scholar'],
+                    )
+                    
+                    if results and len(results) > 0:
+                        ss_paper = results[0]
+                        
+                        # Update DOI if missing
+                        if not paper.doi and ss_paper.doi:
+                            paper.doi = ss_paper.doi
+                            logger.debug(f"Added DOI for: {paper.title[:50]}... -> {ss_paper.doi}")
+                        
+                        # Update abstract if missing
+                        if fetch_abstracts and not paper.abstract and ss_paper.abstract:
+                            paper.abstract = ss_paper.abstract
+                            logger.debug(f"Added abstract for: {paper.title[:50]}...")
+                        
+                        # Update proper URL if current is API URL
+                        if fetch_urls and paper.pdf_url and 'api.semanticscholar.org' in paper.pdf_url:
+                            if ss_paper.pdf_url and 'api.semanticscholar.org' not in ss_paper.pdf_url:
+                                paper.pdf_url = ss_paper.pdf_url
+                                logger.debug(f"Replaced API URL with direct URL for: {paper.title[:50]}...")
+                        
+                        continue  # Skip regular search if we found via corpus ID
+                        
+                except Exception as e:
+                    logger.debug(f"Could not fetch via Semantic Scholar corpus ID for '{paper.title[:50]}...': {e}")
+            
+            # Regular search by title and author
             query_parts = [paper.title]
             if paper.authors:
                 # Add first author's last name
@@ -565,6 +625,7 @@ class Scholar:
                     # Also update DOI if missing
                     if not paper.doi and best_match.doi:
                         paper.doi = best_match.doi
+                        logger.debug(f"Added DOI for: {paper.title[:50]}... -> {best_match.doi}")
                         
             except Exception as e:
                 logger.debug(f"Could not fetch missing fields for '{paper.title[:50]}...': {e}")

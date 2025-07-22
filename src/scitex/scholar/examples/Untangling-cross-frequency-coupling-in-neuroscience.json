@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "created": "2025-07-22T17:39:17.788145",
+    "num_papers": 3,
+    "enriched": true
+  },
+  "papers": [
+    {
+      "title": "Untangling cross-frequency coupling in neuroscience.",
+      "authors": [
+        "Aru, Juhan",
+        "Aru, Jaan",
+        "Priesemann, Viola",
+        "Wibral, Michael",
+        "Lana, Luiz",
+        "Pipa, Gordon",
+        "Singer, Wolf",
+        "Vicente, Raul"
+      ],
+      "abstract": "Cross-frequency coupling (CFC) has been proposed to coordinate neural dynamics across spatial and temporal scales. Despite its potential relevance for understanding healthy and pathological brain function, the standard CFC analysis and physiological interpretation come with fundamental problems. For example, apparent CFC can appear because of spectral correlations due to common non-stationarities that may arise in the total absence of interactions between neural frequency components. To provide a road map towards an improved mechanistic understanding of CFC, we organize the available and potential novel statistical/modeling approaches according to their biophysical interpretability. While we do not provide solutions for all the problems described, we provide a list of practical recommendations to avoid common errors and to enhance the interpretability of CFC analysis.",
+      "year": "2015",
+      "journal": "Current opinion in neurobiology",
+      "doi": "10.1016/j.conb.2014.08.002",
+      "pmid": "25212583",
+      "arxiv_id": null,
+      "keywords": [
+        "Action Potentials",
+        "Animals",
+        "Humans",
+        "Models, Neurological",
+        "Nerve Net",
+        "Neurosciences"
+      ],
+      "citation_count": 473,
+      "citation_count_source": null,
+      "impact_factor": 4.8,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q1",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    },
+    {
+      "title": "Untangling Cortico-Striatal Connectivity and Cross-Frequency Coupling in L-DOPA-Induced Dyskinesia.",
+      "authors": [
+        "Belić, Jovana J",
+        "Halje, Pär",
+        "Richter, Ulrike",
+        "Petersson, Per",
+        "Hellgren Kotaleski, Jeanette"
+      ],
+      "abstract": "We simultaneously recorded local field potentials (LFPs) in the primary motor cortex and sensorimotor striatum in awake, freely behaving, 6-OHDA lesioned hemi-parkinsonian rats in order to study the features directly related to pathological states such as parkinsonian state and levodopa-induced dyskinesia. We analyzed the spectral characteristics of the obtained signals and observed that during dyskinesia the most prominent feature was a relative power increase in the high gamma frequency range at around 80 Hz, while for the parkinsonian state it was in the beta frequency range. Here we show that during both pathological states effective connectivity in terms of Granger causality is bidirectional with an accent on the striatal influence on the cortex. In the case of dyskinesia, we also found a high increase in effective connectivity at 80 Hz. In order to further understand the 80-Hz phenomenon, we performed cross-frequency analysis and observed characteristic patterns in the case of dyskinesia but not in the case of the parkinsonian state or the control state. We noted a large decrease in the modulation of the amplitude at 80 Hz by the phase of low frequency oscillations (up to ~10 Hz) across both structures in the case of dyskinesia. This may suggest a lack of coupling between the low frequency activity of the recorded network and the group of neurons active at ~80 Hz.",
+      "year": "2016",
+      "journal": "Frontiers in systems neuroscience",
+      "doi": "10.3389/fnsys.2016.00026",
+      "pmid": "27065818",
+      "arxiv_id": null,
+      "keywords": [],
+      "citation_count": 32,
+      "citation_count_source": null,
+      "impact_factor": 3.1,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q2",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    },
+    {
+      "title": "Mining Time-Resolved Functional Brain Graphs to an EEG-Based Chronnectomic Brain Aged Index (CBAI).",
+      "authors": [
+        "Dimitriadis, Stavros I",
+        "Salis, Christos I"
+      ],
+      "abstract": "The brain at rest consists of spatially and temporal distributed but functionally connected regions that called intrinsic connectivity networks (ICNs). Resting state electroencephalography (rs-EEG) is a way to characterize brain networks without confounds associated with task EEG such as task difficulty and performance. A novel framework of how to study dynamic functional connectivity under the notion of functional connectivity microstates (FCμstates) and symbolic dynamics is further discussed. Furthermore, we introduced a way to construct a single integrated dynamic functional connectivity graph (IDFCG) that preserves both the strength of the connections between every pair of sensors but also the type of dominant intrinsic coupling modes (DICM). The whole methodology is demonstrated in a significant and unexplored task for EEG which is the definition of an objective Chronnectomic Brain Aged index (CBAI) extracted from resting-state data (",
+      "year": "2017",
+      "journal": "Frontiers in human neuroscience",
+      "doi": "10.3389/fnhum.2017.00423",
+      "pmid": "28936168",
+      "arxiv_id": null,
+      "keywords": [],
+      "citation_count": 45,
+      "citation_count_source": null,
+      "impact_factor": 2.4,
+      "impact_factor_source": "JCR 2024",
+      "journal_quartile": "Q2",
+      "journal_rank": null,
+      "h_index": null,
+      "pdf_url": null,
+      "pdf_path": null,
+      "source": "pubmed",
+      "metadata": {
+        "impact_factor_source": "JCR 2024",
+        "quartile_source": "JCR 2024",
+        "citation_count_source": "CrossRef"
+      }
+    }
+  ]
+}

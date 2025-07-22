@@ -73,6 +73,12 @@ class SemanticScholarEngine(SearchEngine):
         """Search Semantic Scholar for papers."""
         await self._rate_limit()
         
+        # Check if query is for a specific paper ID
+        if query.startswith('CorpusId:'):
+            corpus_id = query.replace('CorpusId:', '').strip()
+            paper = await self._fetch_paper_by_id(f"CorpusId:{corpus_id}")
+            return [paper] if paper else []
+        
         headers = {}
         if self.api_key:
             headers['x-api-key'] = self.api_key
@@ -80,7 +86,7 @@ class SemanticScholarEngine(SearchEngine):
         params = {
             'query': query,
             'limit': min(limit, 100),
-            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr'
+            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr,doi,externalIds'
         }
         
         # Add year filters if provided
@@ -122,6 +128,34 @@ class SemanticScholarEngine(SearchEngine):
         
         return papers
     
+    async def _fetch_paper_by_id(self, paper_id: str) -> Optional[Paper]:
+        """Fetch a specific paper by its ID (CorpusId, DOI, arXiv ID, etc.)."""
+        await self._rate_limit()
+        
+        headers = {}
+        if self.api_key:
+            headers['x-api-key'] = self.api_key
+        
+        # Build URL for fetching paper by ID
+        url = f"{self.base_url}/paper/{paper_id}"
+        params = {
+            'fields': 'title,authors,abstract,year,citationCount,journal,paperId,venue,fieldsOfStudy,isOpenAccess,url,tldr,doi,externalIds'
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        return self._parse_semantic_scholar_paper(data)
+                    else:
+                        logger.debug(f"Failed to fetch paper {paper_id}: {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.debug(f"Error fetching paper {paper_id}: {e}")
+            return None
+    
     def _parse_semantic_scholar_paper(self, data: Dict[str, Any]) -> Optional[Paper]:
         """Parse Semantic Scholar paper data."""
         if not data or not isinstance(data, dict):
@@ -149,6 +183,11 @@ class SemanticScholarEngine(SearchEngine):
             if not journal:
                 journal = data.get('venue', '')
             
+            # Extract DOI from externalIds if not directly available
+            doi = data.get('doi')
+            if not doi and data.get('externalIds'):
+                doi = data.get('externalIds', {}).get('DOI')
+            
             # Create paper
             paper = Paper(
                 title=data.get('title', ''),
@@ -156,7 +195,7 @@ class SemanticScholarEngine(SearchEngine):
                 abstract=data.get('abstract', '') or (data.get('tldr', {}) or {}).get('text', ''),
                 source='semantic_scholar',
                 year=data.get('year'),
-                doi=data.get('doi'),
+                doi=doi,
                 journal=journal,
                 keywords=data.get('fieldsOfStudy', []),
                 citation_count=data.get('citationCount', 0),
@@ -165,7 +204,8 @@ class SemanticScholarEngine(SearchEngine):
                     'semantic_scholar_paper_id': data.get('paperId'),
                     'fields_of_study': data.get('fieldsOfStudy', []),
                     'is_open_access': data.get('isOpenAccess', False),
-                    'citation_count_source': 'Semantic Scholar' if data.get('citationCount') is not None else None
+                    'citation_count_source': 'Semantic Scholar' if data.get('citationCount') is not None else None,
+                    'external_ids': data.get('externalIds', {})
                 }
             )
             
