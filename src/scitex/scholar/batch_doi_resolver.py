@@ -97,16 +97,27 @@ class BatchDOIResolver:
         title = paper.get('title', '')
         year = paper.get('year')
         authors = paper.get('authors', [])
+        url = paper.get('url') or paper.get('pdf_url')
         
-        # Convert authors to tuple for caching
-        authors_tuple = tuple(authors) if authors else None
+        doi = None
         
-        # Resolve DOI
-        doi = self._resolver.title_to_doi(
-            title=title,
-            year=year,
-            authors=authors_tuple
-        )
+        # First try URL resolution if available
+        if url and not doi:
+            doi = self._resolver.resolve_from_url(url)
+            if doi:
+                logger.debug(f"Found DOI from URL for: {title[:50]}...")
+        
+        # If no DOI from URL, try title-based search
+        if not doi:
+            # Convert authors to tuple for caching
+            authors_tuple = tuple(authors) if authors else None
+            
+            # Resolve DOI
+            doi = self._resolver.title_to_doi(
+                title=title,
+                year=year,
+                authors=authors_tuple
+            )
         
         # Get abstract if DOI found
         abstract = None
@@ -118,7 +129,8 @@ class BatchDOIResolver:
             'doi': doi,
             'abstract': abstract,
             'year': year,
-            'authors': authors
+            'authors': authors,
+            'url': url
         }
     
     def enhance_papers_parallel(
@@ -145,7 +157,8 @@ class BatchDOIResolver:
             paper_data.append({
                 'title': paper.title,
                 'year': paper.year,
-                'authors': paper.authors
+                'authors': paper.authors,
+                'pdf_url': paper.pdf_url  # Include URL for resolution
             })
             paper_map[paper.title] = paper_id
         

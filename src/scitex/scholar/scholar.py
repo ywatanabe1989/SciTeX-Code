@@ -567,22 +567,31 @@ class Scholar:
             
             # Try to get DOI
             if not paper.doi:
-                authors_tuple = tuple(paper.authors) if paper.authors else None
+                # First try URL resolution if available
+                if paper.pdf_url:
+                    doi = self._doi_resolver.resolve_from_url(paper.pdf_url)
+                    if doi:
+                        paper.doi = doi
+                        logger.info(f"  ✓ Found DOI from URL: {doi}")
                 
-                doi = self._doi_resolver.title_to_doi(
-                    title=paper.title,
-                    year=paper.year,
-                    authors=authors_tuple
-                )
-                
-                if doi:
-                    paper.doi = doi
-                    logger.info(f"  ✓ Found DOI: {doi}")
+                # If still no DOI, try title-based search
+                if not paper.doi:
+                    authors_tuple = tuple(paper.authors) if paper.authors else None
                     
-                    # Update URL if needed
-                    if fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
-                        paper.pdf_url = f"https://doi.org/{doi}"
-                        logger.info(f"  ✓ Updated URL to DOI link")
+                    doi = self._doi_resolver.title_to_doi(
+                        title=paper.title,
+                        year=paper.year,
+                        authors=authors_tuple
+                    )
+                    
+                    if doi:
+                        paper.doi = doi
+                        logger.info(f"  ✓ Found DOI from title: {doi}")
+                
+                # Update URL if needed
+                if paper.doi and fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
+                    paper.pdf_url = f"https://doi.org/{paper.doi}"
+                    logger.info(f"  ✓ Updated URL to DOI link")
             
             # Get abstract if needed
             if paper.doi and fetch_abstracts and not paper.abstract:

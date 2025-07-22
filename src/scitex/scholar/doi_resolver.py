@@ -3,8 +3,9 @@
 
 import logging
 import time
+import re
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, List, Type
+from typing import Optional, Dict, Any, List, Type, Tuple
 from functools import lru_cache
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,25 @@ class DOISource(ABC):
     def rate_limit_delay(self) -> float:
         """Delay between requests in seconds."""
         return 0.5
+    
+    def extract_doi_from_url(self, url: str) -> Optional[str]:
+        """Extract DOI from URL if present."""
+        if not url:
+            return None
+        
+        # Direct DOI URLs
+        if 'doi.org/' in url:
+            match = re.search(r'doi\.org/(.+?)(?:\?|$|#)', url)
+            if match:
+                return match.group(1).strip()
+        
+        # DOI pattern in URL
+        doi_pattern = r'10\.\d{4,}/[-._;()/:\w]+'
+        match = re.search(doi_pattern, url)
+        if match:
+            return match.group(0)
+        
+        return None
 
 
 class CrossRefSource(DOISource):
@@ -422,3 +442,107 @@ class DOIResolver:
         self.SOURCE_CLASSES[name] = source_class
         if name not in self.sources:
             self.sources.append(name)
+    
+    def resolve_from_url(self, url: str) -> Optional[str]:
+        """
+        Resolve DOI from URL using multiple strategies.
+        
+        Args:
+            url: URL that might contain or lead to a DOI
+            
+        Returns:
+            DOI if found
+        """
+        if not url:
+            return None
+        
+        # 1. Try direct DOI extraction
+        doi = self._extract_doi_from_url(url)
+        if doi:
+            return doi
+        
+        # 2. Try Semantic Scholar
+        if 'semanticscholar.org' in url and 'CorpusId:' in url:
+            doi = self._resolve_semantic_scholar(url)
+            if doi:
+                return doi
+        
+        # 3. Try PubMed
+        if 'ncbi.nlm.nih.gov' in url and 'pubmed' in url:
+            doi = self._resolve_pubmed_url(url)
+            if doi:
+                return doi
+        
+        return None
+    
+    def _extract_doi_from_url(self, url: str) -> Optional[str]:
+        """Extract DOI directly from URL."""
+        # Use the base class method
+        source = self._get_source('crossref')
+        if source:
+            return source.extract_doi_from_url(url)
+        return None
+    
+    def _resolve_semantic_scholar(self, url: str) -> Optional[str]:
+        """Resolve DOI from Semantic Scholar URL."""
+        match = re.search(r'CorpusId:(\d+)', url)
+        if not match:
+            return None
+        
+        corpus_id = match.group(1)
+        
+        try:
+            import requests
+            api_url = f"https://api.semanticscholar.org/graph/v1/paper/CorpusID:{corpus_id}"
+            params = {'fields': 'externalIds'}
+            
+            response = requests.get(api_url, params=params, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                external_ids = data.get('externalIds', {})
+                if external_ids and 'DOI' in external_ids:
+                    logger.info(f"  ✓ Found DOI from Semantic Scholar: {external_ids['DOI']}")
+                    return external_ids['DOI']
+            elif response.status_code == 429:
+                logger.warning("Semantic Scholar rate limited")
+            
+            time.sleep(1.5)  # Rate limiting
+        except Exception as e:
+            logger.debug(f"Semantic Scholar error: {e}")
+        
+        return None
+    
+    def _resolve_pubmed_url(self, url: str) -> Optional[str]:
+        """Resolve DOI from PubMed URL."""
+        match = re.search(r'pubmed/(\d+)', url)
+        if not match:
+            return None
+        
+        pmid = match.group(1)
+        
+        try:
+            import requests
+            api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+            params = {
+                'db': 'pubmed',
+                'id': pmid,
+                'retmode': 'json',
+                'email': self.email
+            }
+            
+            response = requests.get(api_url, params=params, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                result = data.get('result', {}).get(pmid, {})
+                
+                for article_id in result.get('articleids', []):
+                    if article_id.get('idtype') == 'doi':
+                        doi = article_id.get('value')
+                        logger.info(f"  ✓ Found DOI from PubMed: {doi}")
+                        return doi
+            
+            time.sleep(0.3)  # NCBI rate limit
+        except Exception as e:
+            logger.debug(f"PubMed URL error: {e}")
+        
+        return None
