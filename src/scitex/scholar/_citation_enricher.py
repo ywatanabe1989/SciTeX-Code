@@ -55,17 +55,49 @@ class CitationEnricher:
             # Skip if already has citation count
             if paper.citation_count is not None:
                 continue
+            
+            # Try CrossRef first if DOI is available
+            if paper.doi:
+                citation_count, source = self._get_citation_count_crossref(paper)
+                if citation_count is not None:
+                    paper.citation_count = citation_count
+                    paper.citation_count_source = source
+                    paper.metadata['citation_count_source'] = source
+                    enriched_count += 1
+                    logger.debug(f"Added citation count {citation_count} (from {source}) to: {paper.title[:50]}...")
+                    continue
                 
             # Try to get citation count from Semantic Scholar
             citation_count = await self._get_citation_count_s2(paper)
             
             if citation_count is not None:
                 paper.citation_count = citation_count
+                paper.citation_count_source = "Semantic Scholar"
+                paper.metadata['citation_count_source'] = "Semantic Scholar"
                 enriched_count += 1
-                logger.debug(f"Added citation count {citation_count} to: {paper.title[:50]}...")
+                logger.debug(f"Added citation count {citation_count} (from Semantic Scholar) to: {paper.title[:50]}...")
         
         logger.info(f"Enriched {enriched_count}/{len(papers)} papers with citation counts")
         return papers
+    
+    def _get_citation_count_crossref(self, paper: Paper) -> tuple[Optional[int], Optional[str]]:
+        """Get citation count from CrossRef."""
+        try:
+            # Import here to avoid circular dependency
+            from ..web import get_crossref_metrics
+            
+            if not paper.doi:
+                return None, None
+                
+            metrics = get_crossref_metrics(paper.doi)
+            if metrics and 'citations' in metrics:
+                return metrics['citations'], "CrossRef"
+            
+            return None, None
+            
+        except Exception as e:
+            logger.debug(f"CrossRef lookup failed for DOI {paper.doi}: {e}")
+            return None, None
     
     async def _get_citation_count_s2(self, paper: Paper) -> Optional[int]:
         """Get citation count from Semantic Scholar."""
@@ -82,11 +114,11 @@ class CitationEnricher:
             return None
         
         try:
-            # Create S2 engine
-            s2_engine = SemanticScholarEngine(api_key=self.semantic_scholar_api_key)
+            # Create Semantic Scholar engine
+            semantic_scholar_engine = SemanticScholarEngine(api_key=self.semantic_scholar_api_key)
             
             # Search for the paper
-            results = await s2_engine.search(query, limit=3)
+            results = await semantic_scholar_engine.search(query, limit=3)
             
             # Find best match
             for result in results:

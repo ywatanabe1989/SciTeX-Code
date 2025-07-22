@@ -287,7 +287,7 @@ class PDFIndexer:
                 
                 # Extract text from first page for preview
                 if reader.pages:
-                    first_page_text = reader.pages[0].extract_text()
+                    first_page_text = reader.pages[0]._extract_text()
                     metadata['preview'] = first_page_text[:500]
                 
                 metadata['pages'] = len(reader.pages)
