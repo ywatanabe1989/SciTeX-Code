@@ -374,7 +374,7 @@ Here’s how the new API compares to the old approach:
     
     # Manual enrichment
     enricher = PaperEnrichmentService()
-    enriched_papers = enricher.enrich_papers(papers)
+    enriched_papers = enricher._enrich_papers(papers)
     
     # Manual bibliography generation
     generate_enriched_bibliography(enriched_papers, "output.bib", enrich=False)

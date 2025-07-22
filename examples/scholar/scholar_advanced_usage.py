@@ -52,7 +52,7 @@ def example_local_library():
     pdf_dir = Path("./my_papers")
     if pdf_dir.exists():
         # Index local PDFs
-        stats = scholar.index_local_pdfs(pdf_dir, recursive=True)
+        stats = scholar._index_local_pdfs(pdf_dir, recursive=True)
         print(f"Indexed {stats['indexed']} PDFs")
         
         # Search within local library
@@ -132,7 +132,7 @@ def example_custom_enrichment():
     
     # Enrich with journal metrics
     scholar = Scholar()
-    enriched = scholar.enrich_papers(collection)
+    enriched = scholar._enrich_papers(collection)
     
     print("Enrichment results:")
     for paper in enriched:

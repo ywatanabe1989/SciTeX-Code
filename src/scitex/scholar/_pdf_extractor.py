@@ -60,7 +60,7 @@ class PDFExtractor:
         except ImportError:
             return False
     
-    def extract_text(self, pdf_path: Path) -> str:
+    def _extract_text(self, pdf_path: Path) -> str:
         """
         Extract all text from PDF.
         
@@ -78,7 +78,7 @@ class PDFExtractor:
         else:
             return self._extract_fallback(pdf_path)
     
-    def extract_sections(self, pdf_path: Path) -> Dict[str, str]:
+    def _extract_sections(self, pdf_path: Path) -> Dict[str, str]:
         """
         Extract text organized by sections.
         
@@ -210,7 +210,7 @@ class PDFExtractor:
             logger.error(f"Error extracting metadata from {pdf_path}: {e}")
             return {}
     
-    def extract_for_ai(self, pdf_path: Path) -> Dict[str, any]:
+    def _extract_for_ai(self, pdf_path: Path) -> Dict[str, any]:
         """
         Extract comprehensive data for AI processing.
         
@@ -235,10 +235,10 @@ class PDFExtractor:
         
         try:
             # Extract text
-            result['full_text'] = self.extract_text(pdf_path)
+            result['full_text'] = self._extract_text(pdf_path)
             
             # Extract sections
-            result['sections'] = self.extract_sections(pdf_path)
+            result['sections'] = self._extract_sections(pdf_path)
             
             # Extract metadata
             result['metadata'] = self.extract_metadata(pdf_path)
@@ -258,20 +258,20 @@ class PDFExtractor:
                 doc.close()
             
         except Exception as e:
-            logger.error(f"Error in extract_for_ai: {e}")
+            logger.error(f"Error in _extract_for_ai: {e}")
             result['error'] = str(e)
         
         return result
 
 
 # Convenience function
-def extract_text(pdf_path: Path) -> str:
+def _extract_text(pdf_path: Path) -> str:
     """Extract text from PDF file."""
     extractor = PDFExtractor()
-    return extractor.extract_text(pdf_path)
+    return extractor._extract_text(pdf_path)
 
 
-def extract_for_ai(pdf_path: Path) -> Dict[str, any]:
+def _extract_for_ai(pdf_path: Path) -> Dict[str, any]:
     """Extract comprehensive PDF data for AI processing."""
     extractor = PDFExtractor()
-    return extractor.extract_for_ai(pdf_path)
+    return extractor._extract_for_ai(pdf_path)

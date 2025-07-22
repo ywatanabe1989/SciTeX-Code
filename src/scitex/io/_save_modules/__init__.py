@@ -34,6 +34,7 @@ from ._html import save_html
 from ._image import save_image
 from ._mp4 import _mk_mp4 as save_mp4
 from ._zarr import _save_zarr as save_zarr
+from ._bibtex import save_bibtex
 
 # Import additional save utilities
 from ._listed_dfs_as_csv import _save_listed_dfs_as_csv as save_listed_dfs_as_csv
@@ -60,6 +61,7 @@ __all__ = [
     "save_image",
     "save_mp4",
     "save_zarr",
+    "save_bibtex",
     "save_listed_dfs_as_csv",
     "save_listed_scalars_as_csv",
     "save_optuna_study_as_csv_and_pngs",

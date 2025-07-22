@@ -542,7 +542,7 @@ comprehensive evaluation</p></li>
 
 <span class="s2"># Manual enrichment</span>
 <span class="s2">enricher = PaperEnrichmentService()</span>
-<span class="s2">enriched_papers = enricher.enrich_papers(papers)</span>
+<span class="s2">enriched_papers = enricher._enrich_papers(papers)</span>
 
 <span class="s2"># Manual bibliography generation</span>
 <span class="s2">generate_enriched_bibliography(enriched_papers, &quot;output.bib&quot;, enrich=False)</span>

@@ -17,7 +17,7 @@ from scitex.scholar import Scholar
 
 scholar = Scholar()
 papers = scholar.search("epilepsy detection")
-enriched = scholar.enrich_papers(papers)
+enriched = scholar._enrich_papers(papers)
 
 # Papers now have real impact factors when available
 for paper in enriched:
@@ -52,9 +52,9 @@ PDF text extraction is now handled by scitex.io:
 
 ```python
 # Extract text for AI processing
-text = scholar.extract_text("paper.pdf")
-sections = scholar.extract_sections("paper.pdf")
-full_data = scholar.extract_for_ai("paper.pdf")
+text = scholar._extract_text("paper.pdf")
+sections = scholar._extract_sections("paper.pdf")
+full_data = scholar._extract_for_ai("paper.pdf")
 ```
 
 ## Simplified Search
@@ -66,7 +66,7 @@ PubMed is now the default search source:
 papers = scholar.search("neuroscience")
 
 # Specify other sources if needed
-papers = scholar.search("deep learning", source='arxiv')
+papers = scholar.search("deep learning", sources='arxiv')
 ```
 
 ## Environment Variables

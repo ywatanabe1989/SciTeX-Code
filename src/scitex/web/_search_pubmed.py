@@ -24,7 +24,7 @@
 import argparse
 import asyncio
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import aiohttp
 import scitex
@@ -170,21 +170,67 @@ def _get_citation(pmid: str) -> str:
     return response.text if response.ok else ""
 
 
-def get_crossref_metrics(doi: str) -> Dict[str, Any]:
+def get_crossref_metrics(doi: str, api_key: Optional[str] = None, email: Optional[str] = None) -> Dict[str, Any]:
     """Get article metrics from CrossRef using DOI."""
+    import os
     base_url = "https://api.crossref.org/works/"
-    headers = {"User-Agent": "mailto:your.email@example.com"}  # Replace with your email
+    
+    # Use provided email or fallback to environment variables
+    if not email:
+        email = os.getenv("SCITEX_CROSSREF_EMAIL", os.getenv("SCITEX_PUBMED_EMAIL", "research@example.com"))
+    headers = {"User-Agent": f"SciTeX/1.0 (mailto:{email})"}
+    
+    # Add API key as query parameter if provided
+    params = {}
+    if api_key:
+        params['key'] = api_key
 
-    response = requests.get(f"{base_url}{doi}", headers=headers)
-    if response.ok:
-        data = response.json()["message"]
-        return {
-            "citations": data.get("is-referenced-by-count", 0),
-            "type": data.get("type", ""),
-            "publisher": data.get("publisher", ""),
-            "references": len(data.get("reference", [])),
-            "doi": data.get("DOI", ""),
-        }
+    try:
+        response = requests.get(f"{base_url}{doi}", headers=headers, params=params, timeout=10)
+        if response.ok:
+            data = response.json()["message"]
+            return {
+                "citations": data.get("is-referenced-by-count", 0),
+                "type": data.get("type", ""),
+                "publisher": data.get("publisher", ""),
+                "references": len(data.get("reference", [])),
+                "doi": data.get("DOI", ""),
+            }
+    except Exception as e:
+        print(f"CrossRef API error for DOI {doi}: {e}")
+    return {}
+
+
+async def get_crossref_metrics_async(doi: str, api_key: Optional[str] = None, email: Optional[str] = None) -> Dict[str, Any]:
+    """Get article metrics from CrossRef using DOI (async version)."""
+    import os
+    base_url = "https://api.crossref.org/works/"
+    
+    # Use provided email or fallback to environment variables
+    if not email:
+        email = os.getenv("SCITEX_CROSSREF_EMAIL", os.getenv("SCITEX_PUBMED_EMAIL", "research@example.com"))
+    headers = {"User-Agent": f"SciTeX/1.0 (mailto:{email})"}
+    
+    # Add API key as query parameter if provided
+    params = {}
+    if api_key:
+        params['key'] = api_key
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{base_url}{doi}", headers=headers, params=params, timeout=10) as response:
+                if response.ok:
+                    data = await response.json()
+                    message = data["message"]
+                    return {
+                        "citations": message.get("is-referenced-by-count", 0),
+                        "type": message.get("type", ""),
+                        "publisher": message.get("publisher", ""),
+                        "references": len(message.get("reference", [])),
+                        "doi": message.get("DOI", ""),
+                    }
+    except Exception as e:
+        print(f"CrossRef API error for DOI {doi}: {e}")
     return {}
 
 

@@ -1,0 +1,37 @@
+
+########################################
+## scitex v2.0.0
+## 2025Y-07M-22D-15h21m33s_hm0H (PID: 144881)
+########################################
+
+
+========================================
+./src/scitex/scholar/examples/example.py
+Namespace(query='epilepsy prediction', limit=50, sources=['pubmed'], year_min=2020, year_max=2024, display_count=3, save=True)
+========================================
+
+
+----------------------------------------
+Found 50 papers
+----------------------------------------
+
+Towards network-guided neuromodulation for epilepsy.
+  Journal: Brain : a journal of neurology (IF: None)
+  Citations: 151
+  Year: 2022
+
+Neuromodulation in epilepsy: state-of-the-art approved therapies.
+  Journal: The Lancet. Neurology (IF: None)
+  Citations: 211
+  Year: 2021
+
+Alzheimer Disease and Epilepsy: A Mendelian Randomization Study.
+  Journal: Neurology (IF: 7.7)
+  Citations: 40
+  Year: 2023
+
+
+----------------------------------------
+Saved papers to ./src/scitex/scholar/examples/output
+----------------------------------------
+

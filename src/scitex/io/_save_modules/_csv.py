@@ -83,7 +83,11 @@ def _save_csv(obj, spath: str, **kwargs) -> None:
     elif isinstance(obj, dict):
         pd.DataFrame.from_dict(obj).to_csv(spath, **kwargs)
     else:
-        try:
-            pd.DataFrame({"data": [obj]}).to_csv(spath, **kwargs)
-        except:
-            raise ValueError(f"Unable to save type {type(obj)} as CSV")
+        # Check if it's a PaperCollection or similar object with to_dataframe method
+        if hasattr(obj, 'to_dataframe') and callable(getattr(obj, 'to_dataframe')):
+            obj.to_dataframe().to_csv(spath, **kwargs)
+        else:
+            try:
+                pd.DataFrame({"data": [obj]}).to_csv(spath, **kwargs)
+            except:
+                raise ValueError(f"Unable to save type {type(obj)} as CSV")
