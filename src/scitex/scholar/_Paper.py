@@ -180,7 +180,7 @@ class Paper:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from ._UnifiedEnricher import JCR_YEAR
+            from ._MetadataEnricher import JCR_YEAR
             
             if self.impact_factor is not None:
                 # Only add if it's a real value (not 0.0)
@@ -239,6 +239,10 @@ class Paper:
         Returns:
             Score between 0 and 1 (1 = identical)
         """
+        # If both have DOIs and they match, they're the same paper
+        if self.doi and other.doi and self.doi == other.doi:
+            return 1.0
+        
         # Title similarity (40% weight)
         if self.title and other.title:
             title_sim = SequenceMatcher(None, 

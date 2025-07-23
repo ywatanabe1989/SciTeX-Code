@@ -28,14 +28,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 # PDF extraction is now handled by scitex.io
-from ..errors import ConfigurationError, SciTeXWarning
+from ..errors import ConfigurationError, SciTeXWarning, BibTeXEnrichmentError
 from ..io import load
+from ._Config import ScholarConfig
 from ._DOIResolver import BatchDOIResolver, DOIResolver
 from ._Paper import Paper
 from ._Papers import Papers
 from ._PDFManager import PDFManager
 from ._SearchEngines import UnifiedSearcher, get_scholar_dir
-from ._UnifiedEnricher import UnifiedEnricher
+from ._MetadataEnricher import MetadataEnricher
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,8 @@ class Scholar:
         papers.save("my_papers.bib")
 
         # Disable automatic enrichment if needed
-        scholar = Scholar(impact_factors=False, citations=False)
+        config = ScholarConfig(enable_auto_enrich=False)
+        scholar = Scholar(config=config)
 
         # Search specific source
         papers = scholar.search("transformer models", sources='arxiv')
@@ -74,51 +76,38 @@ class Scholar:
 
     def __init__(
         self,
-        email_pubmed: Optional[str] = None,
-        email_crossref: Optional[str] = None,
-        api_key_semantic_scholar: Optional[str] = None,
-        api_key_crossref: Optional[str] = None,
-        workspace_dir: Optional[Union[str, Path]] = None,
-        impact_factors: bool = True,
-        citations: bool = True,
-        auto_download: bool = False,
+        config: Optional[Union[ScholarConfig, str, Path]] = None,
     ):
         """
-        Initialize Scholar with smart defaults.
+        Initialize Scholar with configuration.
 
         Args:
-            email_pubmed: Email for PubMed API. If None, uses os.getenv("SCITEX_PUBMED_EMAIL")
-            email_crossref: Email for CrossRef API. If None, uses os.getenv("SCITEX_CROSSREF_EMAIL")
-            api_key_semantic_scholar: Semantic Scholar API key. If None, uses os.getenv("SCITEX_SEMANTIC_SCHOLAR_API_KEY")
-            api_key_crossref: CrossRef API key for higher rate limits (optional). If None, uses os.getenv("SCITEX_CROSSREF_API_KEY")
-            workspace_dir: Directory for downloads and indices (default: ~/.scitex/scholar)
-            impact_factors: Automatically add journal impact factors from impact_factor package
-                          (2024 JCR data). Install with: pip install impact-factor (default: True)
-            citations: Automatically add citation counts from CrossRef (primary) and Semantic Scholar (fallback).
-                      CrossRef works without key but has higher rate limits with one. (default: True)
-            auto_download: Automatically download open-access PDFs (default: False)
+            config: Can be:
+                   - ScholarConfig instance
+                   - Path to YAML config file (str or Path) 
+                   - None (uses ScholarConfig.load() to find config)
         """
-        # PubMed email configuration
-        self._email_pubmed = email_pubmed or os.getenv("SCITEX_PUBMED_EMAIL")
-
-        # CrossRef email configuration
-        self._email_crossref = email_crossref or os.getenv(
-            "SCITEX_CROSSREF_EMAIL"
-        )
-
-        # API key for Semantic Scholar
-        self._api_key_semantic_scholar = api_key_semantic_scholar or os.getenv(
-            "SCITEX_SEMANTIC_SCHOLAR_API_KEY"
-        )
-
-        # API key for CrossRef (optional - for higher rate limits)
-        self._api_key_crossref = api_key_crossref or os.getenv(
-            "SCITEX_CROSSREF_API_KEY"
-        )
-
-        if citations and not self._api_key_semantic_scholar:
+        # Handle different config input types
+        if config is None:
+            self.config = ScholarConfig.load()  # Auto-detect config
+        elif isinstance(config, (str, Path)):
+            self.config = ScholarConfig.from_yaml(config)
+        elif isinstance(config, ScholarConfig):
+            self.config = config
+        else:
+            raise TypeError(f"Invalid config type: {type(config)}")
+        
+        # Set workspace directory
+        if self.config.pdf_dir:
+            self.workspace_dir = Path(self.config.pdf_dir)
+        else:
+            self.workspace_dir = get_scholar_dir()
+        self.workspace_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Warn if citations enabled but no API key
+        if self.config.enable_auto_enrich and not self.config.semantic_scholar_api_key:
             warnings.warn(
-                "SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. "
+                "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY not found. "
                 "Citation counts will use CrossRef (works without key). "
                 "For additional citation sources, get a free API key at: "
                 "https://www.semanticscholar.org/product/api",
@@ -126,42 +115,34 @@ class Scholar:
                 stacklevel=2,
             )
 
-        # Workspace
-        self.workspace_dir = (
-            Path(workspace_dir) if workspace_dir else get_scholar_dir()
-        )
-        self.workspace_dir.mkdir(parents=True, exist_ok=True)
-
-        # Options
-        self._flag_impact_factors = impact_factors
-        self._flag_citations = citations
-        self._flag_auto_download = auto_download
-
         # Initialize components
         self._searcher = UnifiedSearcher(
-            email=self._email_pubmed,
-            semantic_scholar_api_key=self._api_key_semantic_scholar,
+            email=self.config.pubmed_email,
+            semantic_scholar_api_key=self.config.semantic_scholar_api_key,
         )
 
-        self._enricher = UnifiedEnricher(
-            semantic_scholar_api_key=self._api_key_semantic_scholar,
-            crossref_api_key=self._api_key_crossref,
-            email=self._email_crossref,
-            use_impact_factor_package=True,
+        self._enricher = MetadataEnricher(
+            semantic_scholar_api_key=self.config.semantic_scholar_api_key,
+            crossref_api_key=self.config.crossref_api_key,
+            email=self.config.crossref_email,
+            use_impact_factor_package=self.config.use_impact_factor_package,
         )
 
         self._pdf_manager = PDFManager(self.workspace_dir)
 
         # Initialize DOI resolver
         self._doi_resolver = DOIResolver(
-            email=self._email_crossref or "research@example.com"
+            email=self.config.crossref_email
         )
         self._batch_resolver = BatchDOIResolver(
-            email=self._email_crossref or "research@example.com",
-            max_workers=3,  # Process 3 papers in parallel
+            email=self.config.crossref_email,
+            max_workers=self.config.max_parallel_requests,
         )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
+        
+        # Print configuration summary
+        self._print_config_summary()
 
     def search(
         self,
@@ -221,18 +202,18 @@ class Scholar:
             logger.info(f"Found {len(papers)} papers for query: '{query}'")
 
         # Auto-enrich if enabled
-        if (self._flag_impact_factors or self._flag_citations) and papers:
+        if self.config.enable_auto_enrich and papers:
             logger.info("Auto-enriching papers...")
             self._enricher.enrich_all(
                 papers,
-                enrich_impact_factors=self._flag_impact_factors,
-                enrich_citations=self._flag_citations,
-                enrich_journal_metrics=self._flag_impact_factors,
+                enrich_impact_factors=self.config.use_impact_factor_package,
+                enrich_citations=True,
+                enrich_journal_metrics=self.config.use_impact_factor_package,
             )
             collection._enriched = True
 
         # Auto-download if enabled
-        if self._flag_auto_download and papers:
+        if self.config.enable_auto_download and papers:
             open_access = [p for p in papers if p.pdf_url]
             if open_access:
                 logger.info(
@@ -274,26 +255,100 @@ class Scholar:
         return self._pdf_manager.indexer.index_directory(directory, recursive)
 
     def download_pdfs(
-        self, papers: Union[List[Paper], Papers], force: bool = False
-    ) -> Dict[str, Path]:
+        self, 
+        items: Union[List[str], List[Paper], Papers, str, Paper],
+        download_dir: Optional[Union[str, Path]] = None,
+        force: bool = False,
+        max_workers: int = 4,
+        show_progress: bool = True,
+        acknowledge_ethical_usage: Optional[bool] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
-        Download PDFs for papers.
+        Download PDFs for DOIs or papers.
+
+        This is the main entry point for downloading PDFs. It accepts various input types
+        and delegates to the appropriate downloader.
 
         Args:
-            papers: Papers to download
-            force: Force re-download
+            items: Can be:
+                - List of DOI strings
+                - Single DOI string
+                - List of Paper objects
+                - Single Paper object
+                - Papers collection
+            download_dir: Directory to save PDFs (default: workspace_dir/pdfs)
+            force: Force re-download even if files exist
+            max_workers: Maximum concurrent downloads
+            show_progress: Show download progress
+            acknowledge_ethical_usage: Acknowledge ethical usage terms for Sci-Hub (default: from config)
+            **kwargs: Additional arguments passed to downloader
 
         Returns:
-            Dictionary mapping paper IDs to downloaded paths
+            Dictionary with download results:
+                - 'successful': Number of successful downloads
+                - 'failed': Number of failed downloads
+                - 'results': List of detailed results
+                - 'downloaded_files': Dict mapping DOIs to file paths
+
+        Examples:
+            >>> # Download from DOIs
+            >>> scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
+            
+            >>> # Download from Papers collection
+            >>> papers = scholar.search("deep learning")
+            >>> scholar.download_pdfs(papers)
+            
+            >>> # Download single DOI
+            >>> scholar.download_pdfs("10.1234/example")
         """
-        if isinstance(papers, Papers):
-            papers = papers.papers
-
-        result = self._run_async(
-            self._pdf_manager.download_and_index(papers, force)
+        from ._SciHubDownloader import dois_to_local_pdfs
+        
+        # Set default download directory
+        if download_dir is None:
+            download_dir = self.workspace_dir / "pdfs"
+        
+        # Normalize input to list
+        if isinstance(items, str):
+            # Single DOI string
+            items = [items]
+        elif isinstance(items, Paper):
+            # Single Paper object
+            items = [items]
+        elif isinstance(items, Papers):
+            # Papers collection
+            items = items.papers
+        
+        # Determine if we have DOIs or Papers
+        if items and isinstance(items[0], str):
+            # List of DOI strings
+            dois = items
+        else:
+            # List of Paper objects - extract DOIs
+            dois = []
+            for paper in items:
+                if paper.doi:
+                    dois.append(paper)
+                else:
+                    logger.warning(f"Paper '{paper.title}' has no DOI, skipping download")
+        
+        if not dois:
+            return {
+                'successful': 0,
+                'failed': 0,
+                'results': [],
+                'downloaded_files': {}
+            }
+        
+        # Download PDFs using the unified downloader
+        return dois_to_local_pdfs(
+            dois,
+            download_dir=download_dir,
+            max_workers=max_workers,
+            show_progress=show_progress,
+            acknowledge_ethical_usage=acknowledge_ethical_usage,
+            **kwargs
         )
-
-        return result
 
     def _enrich_papers(
         self,
@@ -356,7 +411,8 @@ class Scholar:
         """
         bibtex_path = Path(bibtex_path)
         if not bibtex_path.exists():
-            raise FileNotFoundError(f"BibTeX file not found: {bibtex_path}")
+            from ..errors import PathNotFoundError
+            raise PathNotFoundError(str(bibtex_path))
 
         # Set output path
         if output_path is None:
@@ -374,7 +430,13 @@ class Scholar:
 
         # Load existing BibTeX entries
         logger.info(f"Loading BibTeX file: {bibtex_path}")
-        entries = load(str(bibtex_path))
+        try:
+            entries = load(str(bibtex_path))
+        except Exception as e:
+            raise BibTeXEnrichmentError(
+                str(bibtex_path),
+                f"Failed to load BibTeX file: {str(e)}"
+            )
 
         # Convert BibTeX entries to Paper objects
         papers = []
@@ -402,9 +464,9 @@ class Scholar:
             )
             self._enricher.enrich_all(
                 papers,
-                enrich_impact_factors=self._flag_impact_factors,
-                enrich_citations=self._flag_citations,
-                enrich_journal_metrics=self._flag_impact_factors,
+                enrich_impact_factors=self.config.use_impact_factor_package,
+                enrich_citations=True,
+                enrich_journal_metrics=self.config.use_impact_factor_package,
             )
 
             # Always fetch missing DOIs, and optionally abstracts/URLs
@@ -929,6 +991,64 @@ class Scholar:
 
         return results
 
+    def _print_config_summary(self):
+        """Print configuration summary on initialization."""
+        print("\n" + "="*60)
+        print("SciTeX Scholar v2.0 - Configuration Summary")
+        print("="*60)
+        
+        # Helper function to mask sensitive data
+        def mask_sensitive(value, show_first=4):
+            """Mask sensitive data showing only first few characters."""
+            if not value:
+                return None
+            if len(str(value)) > show_first + 3:
+                return f"{str(value)[:show_first]}{'*' * (len(str(value)) - show_first)}"
+            else:
+                return "*" * len(str(value))
+        
+        # API Keys status
+        print("\n📚 API Keys:")
+        if self.config.semantic_scholar_api_key:
+            masked_key = mask_sensitive(self.config.semantic_scholar_api_key)
+            print(f"  • Semantic Scholar: ✓ Configured ({masked_key})")
+        else:
+            print(f"  • Semantic Scholar: ✗ Not set (citations via CrossRef only)")
+            
+        if self.config.crossref_api_key:
+            masked_key = mask_sensitive(self.config.crossref_api_key)
+            print(f"  • CrossRef: ✓ Configured ({masked_key})")
+        else:
+            print(f"  • CrossRef: ✗ Not set (works without key)")
+            
+        if self.config.pubmed_email:
+            # Mask email but show domain
+            parts = self.config.pubmed_email.split('@')
+            if len(parts) == 2:
+                masked_email = f"{mask_sensitive(parts[0], 2)}@{parts[1]}"
+            else:
+                masked_email = mask_sensitive(self.config.pubmed_email)
+            print(f"  • PubMed Email: ✓ Set ({masked_email})")
+        else:
+            print(f"  • PubMed Email: ✗ Not set (required for PubMed)")
+        
+        # Features
+        print("\n⚙️  Features:")
+        print(f"  • Auto-enrichment: {'✓ Enabled' if self.config.enable_auto_enrich else '✗ Disabled'}")
+        print(f"  • Impact factors: {'✓ Using JCR package' if self.config.use_impact_factor_package else '✗ Using built-in data'}")
+        print(f"  • Auto-download PDFs: {'✓ Enabled' if self.config.enable_auto_download else '✗ Disabled'}")
+        print(f"  • Sci-Hub access: {'✓ Acknowledged' if self.config.acknowledge_scihub_ethical_usage else '✗ Requires acknowledgment'}")
+        
+        # Settings
+        print("\n📁 Settings:")
+        print(f"  • Workspace: {self.workspace_dir}")
+        print(f"  • Default search limit: {self.config.default_search_limit}")
+        print(f"  • Default sources: {', '.join(self.config.default_search_sources)}")
+        
+        print("\n💡 Tip: Configure with environment variables or YAML file")
+        print("  See: stx.scholar.ScholarConfig.show_env_vars()")
+        print("="*60 + "\n")
+    
     def _run_async(self, coro):
         """Run async coroutine in sync context."""
         # Simplified approach - always create new event loop
