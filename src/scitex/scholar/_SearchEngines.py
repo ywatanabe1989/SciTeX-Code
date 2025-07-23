@@ -31,7 +31,7 @@ import aiohttp
 import xml.etree.ElementTree as ET
 from urllib.parse import quote_plus
 
-from ._core import Paper
+from ._Paper import Paper
 from ..errors import SearchError
 
 logger = logging.getLogger(__name__)

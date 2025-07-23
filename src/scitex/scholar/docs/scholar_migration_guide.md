@@ -107,7 +107,7 @@ results = scholar.search_local("transformer")
 | `LocalSearchEngine` | `Scholar().search_local()` |
 | `VectorSearchEngine` | Built into `Scholar` |
 | `PaperEnrichmentService` | Automatic in `Scholar` |
-| `generate_enriched_bibliography()` | `PaperCollection.save()` |
+| `generate_enriched_bibliography()` | `Papers.save()` |
 | `build_index()` | `Scholar()._index_local_pdfs()` |
 | `get_scholar_dir()` | `Scholar().workspace_dir` |
 
@@ -179,7 +179,7 @@ titles = _search_quick("transformer architecture", top_n=5)
 
 1. **Auto-enrichment**: Papers are automatically enriched with journal metrics. Disable with `Scholar(auto_enrich=False)`
 
-2. **Method chaining**: Most methods return `PaperCollection` for chaining:
+2. **Method chaining**: Most methods return `Papers` for chaining:
    ```python
    papers.filter(year_min=2020).sort_by("impact_factor").save("papers.bib")
    ```

@@ -1,23 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-19 11:07:00 (ywatanabe)"
-# File: ./src/scitex/scholar/_core.py
+# Timestamp: "2025-07-23 10:40:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Papers.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_core.py"
+    "./src/scitex/scholar/_Papers.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-Core paper functionality for SciTeX Scholar module.
+Papers class for SciTeX Scholar module.
 
-This module consolidates:
-- Paper class with all metadata and methods
-- PaperCollection for managing groups of papers
-- Enrichment functionality for journal metrics
-- Format conversions (BibTeX, JSON, etc.)
+A collection of papers with analysis and export capabilities.
 """
 
 import re
@@ -30,356 +26,12 @@ import pandas as pd
 from difflib import SequenceMatcher
 
 from ..errors import ScholarError
+from ._Paper import Paper
 
 logger = logging.getLogger(__name__)
 
 
-class Paper:
-    """
-    Represents a scientific paper with comprehensive metadata.
-    
-    This class consolidates functionality from _paper.py, _paper_enhanced.py,
-    and includes enrichment capabilities.
-    """
-    
-    def __init__(self, 
-                 title: str,
-                 authors: List[str],
-                 abstract: str,
-                 source: str,
-                 year: Optional[Union[int, str]] = None,
-                 doi: Optional[str] = None,
-                 pmid: Optional[str] = None,
-                 arxiv_id: Optional[str] = None,
-                 journal: Optional[str] = None,
-                 keywords: Optional[List[str]] = None,
-                 citation_count: Optional[int] = None,
-                 pdf_url: Optional[str] = None,
-                 pdf_path: Optional[Path] = None,
-                 impact_factor: Optional[float] = None,
-                 journal_quartile: Optional[str] = None,
-                 journal_rank: Optional[int] = None,
-                 h_index: Optional[int] = None,
-                 metadata: Optional[Dict[str, Any]] = None):
-        """Initialize paper with comprehensive metadata."""
-        self.title = title
-        self.authors = authors
-        self.abstract = abstract
-        self.source = source
-        self.year = str(year) if year else None
-        self.doi = doi
-        self.pmid = pmid
-        self.arxiv_id = arxiv_id
-        self.journal = journal
-        self.keywords = keywords or []
-        self.citation_count = citation_count
-        self.pdf_url = pdf_url
-        self.pdf_path = Path(pdf_path) if pdf_path else None
-        
-        # Enriched metadata
-        self.impact_factor = impact_factor
-        self.journal_quartile = journal_quartile
-        self.journal_rank = journal_rank
-        self.h_index = h_index
-        
-        # Additional metadata
-        self.metadata = metadata or {}
-        
-        # Track data sources
-        self.citation_count_source = self.metadata.get('citation_count_source', None)
-        self.impact_factor_source = self.metadata.get('impact_factor_source', None)
-        self.quartile_source = self.metadata.get('quartile_source', None)
-        
-        # Track all sources where this paper was found (for deduplication)
-        self.all_sources = self.metadata.get('all_sources', [source] if source else [])
-        if self.all_sources and source not in self.all_sources:
-            self.all_sources.append(source)
-        
-        # Computed properties
-        self._bibtex_key = None
-        self._formatted_authors = None
-    
-    def __str__(self) -> str:
-        """String representation of the paper."""
-        authors_str = self.authors[0] if self.authors else "Unknown"
-        if len(self.authors) > 1:
-            authors_str += " et al."
-        
-        year_str = f" ({self.year})" if self.year else ""
-        journal_str = f" - {self.journal}" if self.journal else ""
-        
-        return f"{authors_str}{year_str}. {self.title}{journal_str}"
-    
-    def __repr__(self) -> str:
-        """Developer-friendly representation."""
-        return f"Paper(title='{self.title[:50]}...', authors={len(self.authors)}, year={self.year})"
-    
-    def get_identifier(self) -> str:
-        """
-        Get unique identifier for the paper.
-        Priority: DOI > PMID > arXiv ID > title-based hash
-        """
-        if self.doi:
-            return f"doi:{self.doi}"
-        elif self.pmid:
-            return f"pmid:{self.pmid}"
-        elif self.arxiv_id:
-            return f"arxiv:{self.arxiv_id}"
-        else:
-            # Create deterministic hash from title and first author
-            import hashlib
-            text = f"{self.title}_{self.authors[0] if self.authors else 'unknown'}"
-            return f"hash:{hashlib.md5(text.encode()).hexdigest()[:12]}"
-    
-    def _to_bibtex(self, include_enriched: bool = True) -> str:
-        """
-        Convert paper to BibTeX format.
-        
-        Args:
-            include_enriched: Include enriched metadata (impact factor, etc.)
-            
-        Returns:
-            BibTeX formatted string
-        """
-        # Generate BibTeX key if not cached
-        if not self._bibtex_key:
-            self._generate_bibtex_key()
-        
-        # Determine entry type
-        if self.arxiv_id:
-            entry_type = "misc"
-        elif self.journal:
-            entry_type = "article"
-        else:
-            entry_type = "misc"
-        
-        # Build BibTeX entry
-        lines = [f"@{entry_type}{{{self._bibtex_key},"]
-        
-        # Required fields
-        lines.append(f'  title = {{{self._escape_bibtex(self.title)}}},')
-        lines.append(f'  author = {{{self._format_authors_bibtex()}}},')
-        
-        # Optional fields
-        if self.year:
-            lines.append(f'  year = {{{self.year}}},')
-        
-        if self.journal:
-            lines.append(f'  journal = {{{self._escape_bibtex(self.journal)}}},')
-        
-        if self.doi:
-            lines.append(f'  doi = {{{self.doi}}},')
-        
-        if self.arxiv_id:
-            lines.append(f'  eprint = {{{self.arxiv_id}}},')
-            lines.append('  archivePrefix = {arXiv},')
-        
-        if self.abstract:
-            abstract_escaped = self._escape_bibtex(self.abstract)
-            lines.append(f'  abstract = {{{abstract_escaped}}},')
-        
-        if self.keywords:
-            keywords_str = ", ".join(self.keywords)
-            lines.append(f'  keywords = {{{keywords_str}}},')
-        
-        # Enriched metadata
-        if include_enriched:
-            # Get JCR year dynamically from enrichment module
-            from .enrichment import JCR_YEAR
-            
-            if self.impact_factor is not None:
-                # Only add if it's a real value (not 0.0)
-                if self.impact_factor > 0:
-                    lines.append(f'  JCR_{JCR_YEAR}_impact_factor = {{{self.impact_factor}}},')
-                    if self.impact_factor_source:
-                        lines.append(f'  impact_factor_source = {{{self.impact_factor_source}}},')
-            
-            if self.journal_quartile and self.journal_quartile != 'Unknown':
-                lines.append(f'  JCR_{JCR_YEAR}_quartile = {{{self.journal_quartile}}},')
-                if self.quartile_source:
-                    lines.append(f'  quartile_source = {{{self.quartile_source}}},')
-            
-            if self.citation_count is not None:
-                lines.append(f'  citation_count = {{{self.citation_count}}},')
-                # Add citation source if available
-                if self.citation_count_source:
-                    lines.append(f'  citation_count_source = {{{self.citation_count_source}}},')
-        
-        # Add note about SciTeX
-        lines.append('  note = {Generated by SciTeX Scholar}')
-        
-        lines.append('}')
-        
-        return '\n'.join(lines)
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert paper to dictionary format."""
-        return {
-            'title': self.title,
-            'authors': self.authors,
-            'abstract': self.abstract,
-            'year': self.year,
-            'journal': self.journal,
-            'doi': self.doi,
-            'pmid': self.pmid,
-            'arxiv_id': self.arxiv_id,
-            'keywords': self.keywords,
-            'citation_count': self.citation_count,
-            'citation_count_source': self.citation_count_source,
-            'impact_factor': self.impact_factor,
-            'impact_factor_source': self.impact_factor_source,
-            'journal_quartile': self.journal_quartile,
-            'journal_rank': self.journal_rank,
-            'h_index': self.h_index,
-            'pdf_url': self.pdf_url,
-            'pdf_path': str(self.pdf_path) if self.pdf_path else None,
-            'source': self.source,
-            'metadata': self.metadata
-        }
-    
-    def similarity_score(self, other: 'Paper') -> float:
-        """
-        Calculate similarity score with another paper.
-        
-        Returns:
-            Score between 0 and 1 (1 = identical)
-        """
-        # Title similarity (40% weight)
-        if self.title and other.title:
-            title_sim = SequenceMatcher(None, 
-                                       self.title.lower(), 
-                                       other.title.lower()).ratio() * 0.4
-        else:
-            title_sim = 0
-        
-        # Author similarity (20% weight)
-        if self.authors and other.authors:
-            # Check first author match
-            author_sim = 0.2 if self.authors[0].lower() == other.authors[0].lower() else 0
-        else:
-            author_sim = 0
-        
-        # Abstract similarity (30% weight)
-        if self.abstract and other.abstract:
-            abstract_sim = SequenceMatcher(None,
-                                         self.abstract[:200].lower(),
-                                         other.abstract[:200].lower()).ratio() * 0.3
-        else:
-            abstract_sim = 0
-        
-        # Year similarity (10% weight)
-        if self.year and other.year:
-            year_diff = abs(int(self.year) - int(other.year))
-            year_sim = max(0, 1 - year_diff / 10) * 0.1
-        else:
-            year_sim = 0
-        
-        return title_sim + author_sim + abstract_sim + year_sim
-    
-    def _generate_bibtex_key(self) -> None:
-        """Generate BibTeX citation key."""
-        # Get first author last name
-        if self.authors:
-            first_author = self.authors[0]
-            # Handle "Last, First" format
-            if ',' in first_author:
-                last_name = first_author.split(',')[0].strip()
-            else:
-                # Handle "First Last" format
-                last_name = first_author.split()[-1]
-            
-            last_name = re.sub(r'[^a-zA-Z]', '', last_name).lower()
-        else:
-            last_name = "unknown"
-        
-        # Get year
-        year = self.year or "0000"
-        
-        # Get first significant word from title
-        title_words = re.findall(r'\b\w+\b', self.title.lower())
-        # Skip common words
-        stop_words = {'a', 'an', 'the', 'of', 'in', 'on', 'at', 'to', 'for', 
-                     'and', 'or', 'but', 'with', 'by', 'from'}
-        significant_words = [w for w in title_words if w not in stop_words and len(w) > 3]
-        
-        if significant_words:
-            title_part = significant_words[0][:6]
-        else:
-            title_part = title_words[0][:6] if title_words else "paper"
-        
-        self._bibtex_key = f"{last_name}{year}{title_part}"
-    
-    def _format_authors_bibtex(self) -> str:
-        """Format authors for BibTeX."""
-        if not self._formatted_authors:
-            self._formatted_authors = " and ".join(self.authors)
-        return self._formatted_authors
-    
-    def _escape_bibtex(self, text: str) -> str:
-        """Escape special characters for BibTeX."""
-        # Handle special characters
-        replacements = {
-            '\\': r'\\',
-            '{': r'\{',
-            '}': r'\}',
-            '_': r'\_',
-            '&': r'\&',
-            '%': r'\%',
-            '$': r'\$',
-            '#': r'\#',
-            '~': r'\textasciitilde{}',
-            '^': r'\textasciicircum{}'
-        }
-        
-        for old, new in replacements.items():
-            text = text.replace(old, new)
-        
-        return text
-    
-    def save(self, output_path: Union[str, Path], format: Optional[str] = None) -> None:
-        """
-        Save single paper to file.
-        
-        Simple save method - just writes the file without extra features.
-        For symlinks, verbose output, etc., use scitex.io.save() instead.
-        
-        Args:
-            output_path: Output file path
-            format: Output format ('bibtex', 'json'). Auto-detected from extension if None.
-        """
-        output_path = Path(output_path)
-        
-        # Auto-detect format from extension
-        if format is None:
-            ext = output_path.suffix.lower()
-            if ext in ['.bib', '.bibtex']:
-                format = 'bibtex'
-            elif ext == '.json':
-                format = 'json'
-            else:
-                format = 'bibtex'
-        
-        # Ensure parent directory exists
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        if format.lower() == "bibtex":
-            # Write BibTeX content
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(f"% BibTeX entry\n")
-                f.write(f"% Generated by SciTeX Scholar on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-                f.write(self._to_bibtex())
-        
-        elif format.lower() == "json":
-            # Write JSON
-            import json
-            with open(output_path, 'w', encoding='utf-8') as f:
-                json.dump(self.to_dict(), f, indent=2, ensure_ascii=False)
-        
-        else:
-            raise ValueError(f"Unsupported format for Paper: {format}")
-
-
-class PaperCollection:
+class Papers:
     """
     A collection of papers with analysis and export capabilities.
     
@@ -403,6 +55,208 @@ class PaperCollection:
         # Automatically deduplicate unless explicitly disabled
         if auto_deduplicate and papers:
             self._deduplicate_in_place(source_priority=source_priority)
+    
+    @classmethod
+    def from_bibtex(cls, bibtex_input: Union[str, Path]) -> 'Papers':
+        """
+        Create Papers from BibTeX file path or content string.
+        
+        This method intelligently detects whether the input is a file path or
+        BibTeX content string and handles it appropriately.
+        
+        Args:
+            bibtex_input: Either:
+                - Path to a BibTeX file (str or Path object)
+                - BibTeX content as a string
+        
+        Returns:
+            Papers instance
+            
+        Examples:
+            >>> # From file path
+            >>> collection = Papers.from_bibtex("papers.bib")
+            >>> collection = Papers.from_bibtex(Path("~/refs/papers.bib"))
+            
+            >>> # From BibTeX content string
+            >>> bibtex_content = '''@article{example2023,
+            ...     title = {Example Paper},
+            ...     author = {John Doe},
+            ...     year = {2023}
+            ... }'''
+            >>> collection = Papers.from_bibtex(bibtex_content)
+        """
+        # Detect if input is a file path or content
+        is_path = False
+        
+        # Convert to string for checking
+        input_str = str(bibtex_input)
+        
+        # Check if it's likely a path
+        if len(input_str) < 500:  # Paths are typically shorter than BibTeX content
+            # Check for path-like characteristics
+            if (input_str.endswith('.bib') or 
+                input_str.endswith('.bibtex') or
+                '/' in input_str or 
+                '\\' in input_str or
+                input_str.startswith('~') or
+                input_str.startswith('.') or
+                os.path.exists(os.path.expanduser(input_str))):
+                is_path = True
+        
+        # If it contains @ at the beginning of a line, it's likely content
+        if '\n@' in input_str or input_str.strip().startswith('@'):
+            is_path = False
+        
+        # Delegate to appropriate method
+        if is_path:
+            return cls._from_bibtex_file(input_str)
+        else:
+            return cls._from_bibtex_text(input_str)
+    
+    @classmethod
+    def _from_bibtex_file(cls, file_path: Union[str, Path]) -> 'Papers':
+        """
+        Create Papers from a BibTeX file.
+        
+        Args:
+            file_path: Path to the BibTeX file
+            
+        Returns:
+            Papers instance
+        """
+        # Load from file
+        bibtex_path = Path(os.path.expanduser(str(file_path)))
+        if not bibtex_path.exists():
+            raise ScholarError(f"BibTeX file not found: {bibtex_path}")
+        
+        # Use scitex.io to load the file
+        from ...io import load
+        entries = load(str(bibtex_path))
+        logger.info(f"Loaded {len(entries)} entries from {bibtex_path}")
+        
+        # Convert entries to Paper objects
+        papers = []
+        for entry in entries:
+            paper = cls._bibtex_entry_to_paper(entry)
+            if paper:
+                papers.append(paper)
+        
+        logger.info(f"Created Papers with {len(papers)} papers from file")
+        return cls(papers, auto_deduplicate=True)
+    
+    @classmethod
+    def _from_bibtex_text(cls, bibtex_content: str) -> 'Papers':
+        """
+        Create Papers from BibTeX content string.
+        
+        Args:
+            bibtex_content: BibTeX content as a string
+            
+        Returns:
+            Papers instance
+        """
+        # Parse BibTeX content directly
+        from ...io import loads
+        entries = loads(bibtex_content)
+        logger.info(f"Parsed {len(entries)} entries from BibTeX content")
+        
+        # Convert entries to Paper objects
+        papers = []
+        for entry in entries:
+            paper = cls._bibtex_entry_to_paper(entry)
+            if paper:
+                papers.append(paper)
+        
+        logger.info(f"Created Papers with {len(papers)} papers from text")
+        return cls(papers, auto_deduplicate=True)
+    
+    @staticmethod
+    def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Optional[Paper]:
+        """
+        Convert a BibTeX entry dict to a Paper object.
+        
+        Args:
+            entry: BibTeX entry dictionary with 'entry_type', 'key', and 'fields'
+            
+        Returns:
+            Paper object or None if conversion fails
+        """
+        try:
+            # Extract fields
+            fields = entry.get('fields', {})
+            
+            # Required fields
+            title = fields.get('title', '')
+            if not title:
+                logger.warning(f"Skipping entry {entry.get('key', 'unknown')} - no title")
+                return None
+            
+            # Authors
+            author_str = fields.get('author', '')
+            authors = []
+            if author_str:
+                # Split by ' and ' for BibTeX format
+                authors = [a.strip() for a in author_str.split(' and ')]
+            
+            # Create Paper object
+            paper = Paper(
+                title=title,
+                authors=authors,
+                abstract=fields.get('abstract', ''),
+                source='bibtex',
+                year=fields.get('year'),
+                doi=fields.get('doi'),
+                pmid=fields.get('pmid'),
+                arxiv_id=fields.get('eprint'),  # arXiv ID often stored as eprint
+                journal=fields.get('journal'),
+                keywords=fields.get('keywords', '').split(', ') if fields.get('keywords') else [],
+                metadata={'bibtex_key': entry.get('key', ''), 'bibtex_entry_type': entry.get('entry_type', 'misc')}
+            )
+            
+            # Store original BibTeX fields for later reconstruction
+            paper._original_bibtex_fields = fields.copy()
+            paper._bibtex_entry_type = entry.get('entry_type', 'misc')
+            paper._bibtex_key = entry.get('key', '')
+            
+            # Check for enriched metadata
+            # Citation count
+            if 'citation_count' in fields:
+                try:
+                    paper.citation_count = int(fields['citation_count'])
+                    paper.citation_count_source = fields.get('citation_count_source', 'bibtex')
+                except ValueError:
+                    pass
+            
+            # Impact factor (check various field names)
+            for field_name in fields:
+                if 'impact_factor' in field_name and 'JCR' in field_name:
+                    try:
+                        paper.impact_factor = float(fields[field_name])
+                        paper.impact_factor_source = fields.get('impact_factor_source', 'bibtex')
+                        break
+                    except ValueError:
+                        pass
+            
+            # Journal quartile
+            for field_name in fields:
+                if 'quartile' in field_name and 'JCR' in field_name:
+                    paper.journal_quartile = fields[field_name]
+                    paper.quartile_source = fields.get('quartile_source', 'bibtex')
+                    break
+            
+            # Additional fields that might be present
+            if 'volume' in fields:
+                paper.volume = fields['volume']
+            if 'pages' in fields:
+                paper.pages = fields['pages']
+            if 'url' in fields:
+                paper.pdf_url = fields['url']
+            
+            return paper
+            
+        except Exception as e:
+            logger.error(f"Error converting BibTeX entry to Paper: {e}")
+            return None
     
     @property
     def papers(self) -> List[Paper]:
@@ -457,20 +311,20 @@ class PaperCollection:
         """Iterate over papers."""
         return iter(self._papers)
     
-    def __getitem__(self, index: Union[int, slice]) -> Union[Paper, 'PaperCollection']:
+    def __getitem__(self, index: Union[int, slice]) -> Union[Paper, 'Papers']:
         """Get paper by index or slice."""
         if isinstance(index, slice):
-            return PaperCollection(self._papers[index], auto_deduplicate=False)
+            return Papers(self._papers[index], auto_deduplicate=False)
         return self._papers[index]
     
     def __dir__(self) -> List[str]:
         """Return list of attributes for tab completion."""
         # Include all public methods and properties
-        return ['papers', 'summary', 'filter', 'save', 'sort_by', 'summarize', 'to_dataframe']
+        return ['papers', 'summary', 'filter', 'save', 'sort_by', 'summarize', 'to_dataframe', 'from_bibtex']
     
     def __repr__(self) -> str:
         """String representation for REPL."""
-        return f"<PaperCollection with {len(self._papers)} papers>"
+        return f"<Papers with {len(self._papers)} papers>"
     
     def filter(self, 
                year_min: Optional[int] = None,
@@ -482,11 +336,11 @@ class PaperCollection:
                journals: Optional[List[str]] = None,
                authors: Optional[List[str]] = None,
                keywords: Optional[List[str]] = None,
-               has_pdf: Optional[bool] = None) -> 'PaperCollection':
+               has_pdf: Optional[bool] = None) -> 'Papers':
         """
         Filter papers by various criteria.
         
-        Returns new PaperCollection with filtered results.
+        Returns new Papers with filtered results.
         """
         filtered = []
         
@@ -558,9 +412,9 @@ class PaperCollection:
             filtered.append(paper)
         
         logger.info(f"Filtered {len(self._papers)} papers to {len(filtered)} papers")
-        return PaperCollection(filtered, auto_deduplicate=False)
+        return Papers(filtered, auto_deduplicate=False)
     
-    def sort_by(self, *criteria, **kwargs) -> 'PaperCollection':
+    def sort_by(self, *criteria, **kwargs) -> 'Papers':
         """
         Sort papers by multiple criteria.
         
@@ -583,7 +437,7 @@ class PaperCollection:
             - 'relevance': Currently uses citation count
             
         Returns:
-            New sorted PaperCollection
+            New sorted Papers
             
         Examples:
             # Sort by impact factor (descending)
@@ -652,9 +506,6 @@ class PaperCollection:
         
         # Sort papers
         # For string criteria with reverse=True, we need special handling
-        sorted_papers = sorted(self._papers, key=sort_key)
-        
-        # Handle string criteria that need reverse sorting
         # This is complex with multiple criteria, so we'll use a different approach
         # We'll build the sort key differently
         
@@ -687,7 +538,7 @@ class PaperCollection:
             return 0
         
         sorted_papers = sorted(self._papers, key=cmp_to_key(compare_papers))
-        return PaperCollection(sorted_papers, auto_deduplicate=False)
+        return Papers(sorted_papers, auto_deduplicate=False)
     
     def _calculate_completeness_score(self, paper: Paper, source_priority: List[str] = None) -> int:
         """
@@ -839,7 +690,7 @@ class PaperCollection:
             return self._df_cache
         
         # Import JCR year dynamically to include in column names
-        from .enrichment import JCR_YEAR
+        from ._UnifiedEnricher import JCR_YEAR
         
         data = []
         for paper in self._papers:
@@ -1034,7 +885,7 @@ class PaperCollection:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from .enrichment import JCR_YEAR
+            from ._UnifiedEnricher import JCR_YEAR
             
             if paper.impact_factor is not None and paper.impact_factor > 0:
                 fields[f'JCR_{JCR_YEAR}_impact_factor'] = str(paper.impact_factor)
@@ -1220,4 +1071,4 @@ class PaperCollection:
 
 
 # Export all classes and functions
-__all__ = ['Paper', 'PaperCollection']
+__all__ = ['Papers']

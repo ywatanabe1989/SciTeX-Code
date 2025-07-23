@@ -27,7 +27,8 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-from ._core import Paper, PaperCollection
+from ._Paper import Paper
+from ._Papers import Papers
 
 logger = logging.getLogger(__name__)
 

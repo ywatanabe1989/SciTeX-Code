@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-22 17:19:15
+!-- Timestamp: 2025-07-23 10:03:18
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -141,6 +141,20 @@ bibtex = paper.to_bibtex()
 dict_data = paper.to_dict()
 identifier = paper.get_identifier()  # Primary ID (DOI/PMID/etc.)
 ```
+
+## Enrich an existing BibTeX file
+
+``` python
+enriched_papers = scholar.enrich_bibtex(
+    bibtex_path="/path/to/filename.bib",
+    output_path="/path/to/enhanced_filename.bib",  # Optional, defaults to overwriting input
+    backup=True,                            # Create backup before overwriting
+    preserve_original_fields=True,          # Keep all original BibTeX fields
+    add_missing_abstracts=True,             # Fetch missing abstracts
+    add_missing_urls=True                   # Fetch missing URLs
+)
+```
+
 
 ## Advanced Features
 

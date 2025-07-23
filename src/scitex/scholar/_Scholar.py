@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-22 13:58:32 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/scholar.py
+# Timestamp: "2025-07-23 15:52:28 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Scholar.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/scholar.py"
+    "./src/scitex/scholar/_Scholar.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -29,13 +29,13 @@ from typing import Any, Dict, List, Optional, Union
 
 # PDF extraction is now handled by scitex.io
 from ..errors import ConfigurationError, SciTeXWarning
-from ._core import Paper, PaperCollection
-from ._download import PDFManager
-from ._search import UnifiedSearcher, get_scholar_dir
-from .enrichment import UnifiedEnricher
-from .doi_resolver import DOIResolver
-from .batch_doi_resolver import BatchDOIResolver
 from ..io import load
+from ._DOIResolver import BatchDOIResolver, DOIResolver
+from ._Paper import Paper
+from ._Papers import Papers
+from ._PDFManager import PDFManager
+from ._SearchEngines import UnifiedSearcher, get_scholar_dir
+from ._UnifiedEnricher import UnifiedEnricher
 
 logger = logging.getLogger(__name__)
 
@@ -100,20 +100,22 @@ class Scholar:
         """
         # PubMed email configuration
         self._email_pubmed = email_pubmed or os.getenv("SCITEX_PUBMED_EMAIL")
-        
+
         # CrossRef email configuration
-        self._email_crossref = email_crossref or os.getenv("SCITEX_CROSSREF_EMAIL")
+        self._email_crossref = email_crossref or os.getenv(
+            "SCITEX_CROSSREF_EMAIL"
+        )
 
         # API key for Semantic Scholar
         self._api_key_semantic_scholar = api_key_semantic_scholar or os.getenv(
             "SCITEX_SEMANTIC_SCHOLAR_API_KEY"
         )
-        
+
         # API key for CrossRef (optional - for higher rate limits)
         self._api_key_crossref = api_key_crossref or os.getenv(
             "SCITEX_CROSSREF_API_KEY"
         )
-        
+
         if citations and not self._api_key_semantic_scholar:
             warnings.warn(
                 "SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. "
@@ -149,12 +151,14 @@ class Scholar:
         )
 
         self._pdf_manager = PDFManager(self.workspace_dir)
-        
+
         # Initialize DOI resolver
-        self._doi_resolver = DOIResolver(email=self._email_crossref or "research@example.com")
+        self._doi_resolver = DOIResolver(
+            email=self._email_crossref or "research@example.com"
+        )
         self._batch_resolver = BatchDOIResolver(
             email=self._email_crossref or "research@example.com",
-            max_workers=3  # Process 3 papers in parallel
+            max_workers=3,  # Process 3 papers in parallel
         )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
@@ -167,7 +171,7 @@ class Scholar:
         year_min: Optional[int] = None,
         year_max: Optional[int] = None,
         **kwargs,
-    ) -> PaperCollection:
+    ) -> Papers:
         """
         Search for papers from one or more sources.
 
@@ -182,7 +186,7 @@ class Scholar:
             **kwargs: Additional search parameters
 
         Returns:
-            PaperCollection with results
+            Papers with results
         """
         # Ensure sources is a list
         if isinstance(sources, str):
@@ -203,7 +207,7 @@ class Scholar:
 
         # Create collection (deduplication is automatic)
         # Pass source priority for intelligent deduplication
-        collection = PaperCollection(papers, source_priority=sources)
+        collection = Papers(papers, source_priority=sources)
 
         # Log search results
         if not papers:
@@ -240,7 +244,7 @@ class Scholar:
 
         return collection
 
-    def search_local(self, query: str, limit: int = 20) -> PaperCollection:
+    def search_local(self, query: str, limit: int = 20) -> Papers:
         """
         Search local PDF library.
 
@@ -249,10 +253,10 @@ class Scholar:
             limit: Maximum results
 
         Returns:
-            PaperCollection with local results
+            Papers with local results
         """
         papers = self._pdf_manager.search_library(query, limit)
-        return PaperCollection(papers)
+        return Papers(papers)
 
     def _index_local_pdfs(
         self, directory: Union[str, Path], recursive: bool = True
@@ -270,7 +274,7 @@ class Scholar:
         return self._pdf_manager.indexer.index_directory(directory, recursive)
 
     def download_pdfs(
-        self, papers: Union[List[Paper], PaperCollection], force: bool = False
+        self, papers: Union[List[Paper], Papers], force: bool = False
     ) -> Dict[str, Path]:
         """
         Download PDFs for papers.
@@ -282,7 +286,7 @@ class Scholar:
         Returns:
             Dictionary mapping paper IDs to downloaded paths
         """
-        if isinstance(papers, PaperCollection):
+        if isinstance(papers, Papers):
             papers = papers.papers
 
         result = self._run_async(
@@ -293,11 +297,11 @@ class Scholar:
 
     def _enrich_papers(
         self,
-        papers: Union[List[Paper], PaperCollection],
+        papers: Union[List[Paper], Papers],
         impact_factors: bool = True,
         citations: bool = True,
         journal_metrics: bool = True,
-    ) -> Union[List[Paper], PaperCollection]:
+    ) -> Union[List[Paper], Papers]:
         """
         Enrich papers with all available metadata.
 
@@ -310,7 +314,7 @@ class Scholar:
         Returns:
             Enriched papers (same type as input)
         """
-        if isinstance(papers, PaperCollection):
+        if isinstance(papers, Papers):
             self._enricher.enrich_all(
                 papers.papers,
                 enrich_impact_factors=impact_factors,
@@ -327,7 +331,7 @@ class Scholar:
                 enrich_journal_metrics=journal_metrics,
             )
 
-    def enhance_bibtex(
+    def enrich_bibtex(
         self,
         bibtex_path: Union[str, Path],
         output_path: Optional[Union[str, Path]] = None,
@@ -335,199 +339,227 @@ class Scholar:
         preserve_original_fields: bool = True,
         add_missing_abstracts: bool = True,
         add_missing_urls: bool = True,
-    ) -> PaperCollection:
+    ) -> Papers:
         """
-        Enhance an existing BibTeX file with impact factors, citations, and missing fields.
-        
+        Enrich an existing BibTeX file with impact factors, citations, and missing fields.
+
         Args:
             bibtex_path: Path to input BibTeX file
-            output_path: Path for enhanced output (defaults to input path)
+            output_path: Path for enriched output (defaults to input path)
             backup: Create backup of original file before overwriting
             preserve_original_fields: Keep all original BibTeX fields
             add_missing_abstracts: Fetch abstracts for entries without them
             add_missing_urls: Fetch URLs for entries without them
-        
+
         Returns:
-            PaperCollection with enhanced papers
+            Papers with enriched papers
         """
         bibtex_path = Path(bibtex_path)
         if not bibtex_path.exists():
             raise FileNotFoundError(f"BibTeX file not found: {bibtex_path}")
-        
+
         # Set output path
         if output_path is None:
             output_path = bibtex_path
         else:
             output_path = Path(output_path)
-        
+
         # Create backup if needed
         if backup and output_path == bibtex_path:
-            backup_path = bibtex_path.with_suffix('.bib.bak')
+            backup_path = bibtex_path.with_suffix(".bib.bak")
             import shutil
+
             shutil.copy2(bibtex_path, backup_path)
             logger.info(f"Created backup: {backup_path}")
-        
+
         # Load existing BibTeX entries
         logger.info(f"Loading BibTeX file: {bibtex_path}")
         entries = load(str(bibtex_path))
-        
+
         # Convert BibTeX entries to Paper objects
         papers = []
         original_fields_map = {}
-        
+
         for entry in entries:
             paper = self._bibtex_entry_to_paper(entry)
             if paper:
                 papers.append(paper)
                 # Store original fields for preservation
                 if preserve_original_fields:
-                    original_fields_map[paper.get_identifier()] = entry['fields']
-        
+                    original_fields_map[paper.get_identifier()] = entry[
+                        "fields"
+                    ]
+
         logger.info(f"Parsed {len(papers)} papers from BibTeX file")
-        
+
         # Create collection
-        collection = PaperCollection(papers)
-        
+        collection = Papers(papers)
+
         # Enrich papers with impact factors and citations
         if papers:
-            logger.info("Enriching papers with impact factors and citations...")
+            logger.info(
+                "Enriching papers with impact factors and citations..."
+            )
             self._enricher.enrich_all(
                 papers,
                 enrich_impact_factors=self._flag_impact_factors,
                 enrich_citations=self._flag_citations,
                 enrich_journal_metrics=self._flag_impact_factors,
             )
-            
+
             # Always fetch missing DOIs, and optionally abstracts/URLs
-            logger.info("Fetching missing DOIs and other information from online sources...")
-            self._fetch_missing_fields(papers, add_missing_abstracts, add_missing_urls)
-        
+            logger.info(
+                "Fetching missing DOIs and other information from online sources..."
+            )
+            self._fetch_missing_fields(
+                papers, add_missing_abstracts, add_missing_urls
+            )
+
         # Merge original fields if preserving
         if preserve_original_fields:
             for paper in papers:
                 paper_id = paper.get_identifier()
                 if paper_id in original_fields_map:
-                    paper._original_bibtex_fields = original_fields_map[paper_id]
-        
-        # Save enhanced BibTeX
+                    paper._original_bibtex_fields = original_fields_map[
+                        paper_id
+                    ]
+
+        # Save enriched BibTeX
         collection.save(str(output_path))
-        logger.info(f"Saved enhanced BibTeX to: {output_path}")
-        
+        logger.info(f"Saved enriched BibTeX to: {output_path}")
+
         return collection
+
+    def enrich_bibtex(self, *args, **kwargs) -> Papers:
+        """
+        Backward compatibility alias for enrich_bibtex.
+
+        .. deprecated::
+            Use enrich_bibtex() instead.
+        """
+        warnings.warn(
+            "enrich_bibtex() is deprecated, use enrich_bibtex() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.enrich_bibtex(*args, **kwargs)
 
     def _bibtex_entry_to_paper(self, entry: Dict[str, Any]) -> Optional[Paper]:
         """
         Convert a parsed BibTeX entry to a Paper object.
-        
+
         Args:
             entry: Parsed BibTeX entry dictionary
-        
+
         Returns:
             Paper object or None if conversion fails
         """
         try:
-            fields = entry.get('fields', {})
-            
+            fields = entry.get("fields", {})
+
             # Extract authors
-            authors_str = fields.get('author', '')
+            authors_str = fields.get("author", "")
             authors = self._parse_bibtex_authors(authors_str)
-            
+
             # Extract Semantic Scholar Corpus ID if URL is from api.semanticscholar.org
-            url = fields.get('url', '')
+            url = fields.get("url", "")
             semantic_scholar_id = None
-            if 'api.semanticscholar.org/CorpusId:' in url:
+            if "api.semanticscholar.org/CorpusId:" in url:
                 # Extract corpus ID from URL
-                match = re.search(r'CorpusId:(\d+)', url)
+                match = re.search(r"CorpusId:(\d+)", url)
                 if match:
                     semantic_scholar_id = match.group(1)
-            
+
             # Create Paper object with available fields
             paper = Paper(
-                title=fields.get('title', '').strip(),
+                title=fields.get("title", "").strip(),
                 authors=authors,
-                year=int(fields.get('year', 0)) if fields.get('year', '').isdigit() else None,
-                journal=fields.get('journal', fields.get('booktitle', '')),
-                doi=fields.get('doi', ''),
-                pmid=fields.get('pmid', ''),
-                arxiv_id=fields.get('arxiv', ''),
-                abstract=fields.get('abstract', ''),
-                pdf_url=fields.get('url', ''),
-                keywords=self._parse_bibtex_keywords(fields.get('keywords', '')),
+                year=(
+                    int(fields.get("year", 0))
+                    if fields.get("year", "").isdigit()
+                    else None
+                ),
+                journal=fields.get("journal", fields.get("booktitle", "")),
+                doi=fields.get("doi", ""),
+                pmid=fields.get("pmid", ""),
+                arxiv_id=fields.get("arxiv", ""),
+                abstract=fields.get("abstract", ""),
+                pdf_url=fields.get("url", ""),
+                keywords=self._parse_bibtex_keywords(
+                    fields.get("keywords", "")
+                ),
                 source=f"bibtex:{entry.get('key', 'unknown')}",
             )
-            
+
             # Store Semantic Scholar ID for later use
             if semantic_scholar_id:
                 paper._semantic_scholar_corpus_id = semantic_scholar_id
-            
+
             # Add volume, pages if available
-            if 'volume' in fields:
-                paper.volume = fields['volume']
-            if 'pages' in fields:
-                paper.pages = fields['pages']
-            
+            if "volume" in fields:
+                paper.volume = fields["volume"]
+            if "pages" in fields:
+                paper.pages = fields["pages"]
+
             # Store entry type and key
-            paper._bibtex_entry_type = entry.get('entry_type', 'article')
-            paper._bibtex_key = entry.get('key', '')
-            
+            paper._bibtex_entry_type = entry.get("entry_type", "article")
+            paper._bibtex_key = entry.get("key", "")
+
             return paper
-            
+
         except Exception as e:
             logger.warning(f"Failed to convert BibTeX entry: {e}")
             return None
-    
+
     def _parse_bibtex_authors(self, authors_str: str) -> List[str]:
         """Parse BibTeX author string into list of author names."""
         if not authors_str:
             return []
-        
+
         # Split by 'and'
         authors = []
-        for author in authors_str.split(' and '):
+        for author in authors_str.split(" and "):
             author = author.strip()
             if author:
                 # Handle "Last, First" format
-                if ',' in author:
-                    parts = author.split(',', 1)
+                if "," in author:
+                    parts = author.split(",", 1)
                     author = f"{parts[1].strip()} {parts[0].strip()}"
                 authors.append(author)
-        
+
         return authors
-    
+
     def _parse_bibtex_keywords(self, keywords_str: str) -> List[str]:
         """Parse BibTeX keywords string into list."""
         if not keywords_str:
             return []
-        
+
         # Split by comma or semicolon
         keywords = []
-        for kw in re.split(r'[,;]', keywords_str):
+        for kw in re.split(r"[,;]", keywords_str):
             kw = kw.strip()
             if kw:
                 keywords.append(kw)
-        
+
         return keywords
-    
+
     def _fetch_missing_fields(
-        self, 
-        papers: List[Paper], 
-        fetch_abstracts: bool, 
-        fetch_urls: bool
+        self, papers: List[Paper], fetch_abstracts: bool, fetch_urls: bool
     ):
         """
         Fetch missing DOIs, abstracts and URLs from online sources.
         Uses batch processing for efficiency when handling multiple papers.
-        
+
         Args:
             papers: List of Paper objects
             fetch_abstracts: Whether to fetch missing abstracts
             fetch_urls: Whether to fetch missing URLs
         """
         papers_to_update = []
-        
+
         for paper in papers:
             needs_update = False
-            
+
             # Always try to get DOI if missing
             if not paper.doi:
                 needs_update = True
@@ -535,36 +567,45 @@ class Scholar:
                 needs_update = True
             if fetch_urls and not paper.pdf_url:
                 needs_update = True
-            
+
             if needs_update:
                 papers_to_update.append(paper)
-        
+
         if not papers_to_update:
             return
-        
-        logger.info(f"Fetching missing fields for {len(papers_to_update)} papers...")
-        
+
+        logger.info(
+            f"Fetching missing fields for {len(papers_to_update)} papers..."
+        )
+
         # Use batch processing for efficiency
         if len(papers_to_update) > 1:
-            logger.info("Using batch processing for efficient DOI resolution...")
-            
+            logger.info(
+                "Using batch processing for efficient DOI resolution..."
+            )
+
             # Process all papers in batch
             enhanced_data = self._batch_resolver.enhance_papers_parallel(
-                papers_to_update,
-                show_progress=True
+                papers_to_update, show_progress=True
             )
-            
+
             # Update URLs if needed
             for paper in papers_to_update:
-                if paper.doi and fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
+                if (
+                    paper.doi
+                    and fetch_urls
+                    and "api.semanticscholar.org" in (paper.pdf_url or "")
+                ):
                     paper.pdf_url = f"https://doi.org/{paper.doi}"
-                    logger.info(f"  ✓ Updated URL to DOI link for: {paper.title[:50]}...")
-        
+                    logger.info(
+                        f"  ✓ Updated URL to DOI link for: {paper.title[:50]}..."
+                    )
+
         else:
             # Single paper - use regular resolver
             paper = papers_to_update[0]
             logger.debug(f"Processing single paper: {paper.title[:50]}...")
-            
+
             # Try to get DOI
             if not paper.doi:
                 # First try URL resolution if available
@@ -573,48 +614,59 @@ class Scholar:
                     if doi:
                         paper.doi = doi
                         logger.info(f"  ✓ Found DOI from URL: {doi}")
-                
+
                 # If still no DOI, try title-based search
                 if not paper.doi:
-                    authors_tuple = tuple(paper.authors) if paper.authors else None
-                    
+                    authors_tuple = (
+                        tuple(paper.authors) if paper.authors else None
+                    )
+
                     doi = self._doi_resolver.title_to_doi(
                         title=paper.title,
                         year=paper.year,
-                        authors=authors_tuple
+                        authors=authors_tuple,
                     )
-                    
+
                     if doi:
                         paper.doi = doi
                         logger.info(f"  ✓ Found DOI from title: {doi}")
-                
+
                 # Update URL if needed
-                if paper.doi and fetch_urls and 'api.semanticscholar.org' in (paper.pdf_url or ''):
+                if (
+                    paper.doi
+                    and fetch_urls
+                    and "api.semanticscholar.org" in (paper.pdf_url or "")
+                ):
                     paper.pdf_url = f"https://doi.org/{paper.doi}"
                     logger.info(f"  ✓ Updated URL to DOI link")
-            
+
             # Get abstract if needed
             if paper.doi and fetch_abstracts and not paper.abstract:
                 abstract = self._doi_resolver.get_abstract(paper.doi)
                 if abstract:
                     paper.abstract = abstract
                     logger.info(f"  ✓ Found abstract")
-    
-    def resolve_doi(self, title: str, year: Optional[int] = None, authors: Optional[List[str]] = None) -> Optional[str]:
+
+    def resolve_doi(
+        self,
+        title: str,
+        year: Optional[int] = None,
+        authors: Optional[List[str]] = None,
+    ) -> Optional[str]:
         """
         Resolve DOI from paper title using multiple sources.
-        
+
         This method uses CrossRef, PubMed, and OpenAlex to find DOIs,
         avoiding rate-limited services like Semantic Scholar.
-        
+
         Args:
             title: Paper title
             year: Publication year (optional but improves accuracy)
             authors: List of author names (optional but improves accuracy)
-            
+
         Returns:
             DOI string if found, None otherwise
-            
+
         Example:
             doi = scholar.resolve_doi(
                 "The functional role of cross-frequency coupling",
@@ -625,25 +677,28 @@ class Scholar:
         # Convert authors to tuple for caching if provided
         authors_tuple = tuple(authors) if authors else None
         return self._doi_resolver.title_to_doi(title, year, authors_tuple)
-    
-    def _search_crossref_by_title(self, title: str, authors: List[str] = None) -> List[Dict[str, Any]]:
+
+    def _search_crossref_by_title(
+        self, title: str, authors: List[str] = None
+    ) -> List[Dict[str, Any]]:
         """
         Search CrossRef API by title to find DOI.
-        
+
         Args:
             title: Paper title
             authors: List of author names (optional)
-            
+
         Returns:
             List of matching papers from CrossRef
         """
         try:
-            import requests
             from urllib.parse import quote
-            
+
+            import requests
+
             # Build query
             query = quote(title)
-            
+
             # Add author to query if available
             if authors and len(authors) > 0:
                 first_author = authors[0]
@@ -651,74 +706,78 @@ class Scholar:
                 last_name = first_author.split()[-1] if first_author else ""
                 if last_name:
                     query += f"+{quote(last_name)}"
-            
+
             # CrossRef API URL
             url = f"https://api.crossref.org/works"
             params = {
-                'query': title,  # Use unquoted title for query parameter
-                'rows': 5,
-                'select': 'DOI,title,author,abstract,published-print,type'
+                "query": title,  # Use unquoted title for query parameter
+                "rows": 5,
+                "select": "DOI,title,author,abstract,published-print,type",
             }
-            
+
             # Add email if configured for polite access
             if self._email_crossref:
-                params['mailto'] = self._email_crossref
-            
+                params["mailto"] = self._email_crossref
+
             response = requests.get(url, params=params, timeout=10)
-            
+
             if response.status_code == 200:
                 data = response.json()
-                items = data.get('message', {}).get('items', [])
-                
+                items = data.get("message", {}).get("items", [])
+
                 # Filter results by title similarity
                 results = []
                 for item in items:
-                    crossref_title = item.get('title', [''])[0]
+                    crossref_title = item.get("title", [""])[0]
                     # Simple similarity check
-                    if crossref_title and self._title_similarity(title, crossref_title) > 0.8:
+                    if (
+                        crossref_title
+                        and self._title_similarity(title, crossref_title) > 0.8
+                    ):
                         results.append(item)
-                
+
                 return results
             else:
                 logger.debug(f"CrossRef API returned {response.status_code}")
                 return []
-                
+
         except Exception as e:
             logger.debug(f"CrossRef search error: {e}")
             return []
-    
+
     def _title_similarity(self, title1: str, title2: str) -> float:
         """
         Calculate similarity between two titles (simple approach).
-        
+
         Args:
             title1: First title
             title2: Second title
-            
+
         Returns:
             Similarity score between 0 and 1
         """
         # Normalize titles
         t1 = title1.lower().strip()
         t2 = title2.lower().strip()
-        
+
         # Remove punctuation
         import string
-        translator = str.maketrans('', '', string.punctuation)
+
+        translator = str.maketrans("", "", string.punctuation)
         t1 = t1.translate(translator)
         t2 = t2.translate(translator)
-        
+
         # Split into words
         words1 = set(t1.split())
         words2 = set(t2.split())
-        
+
         # Calculate Jaccard similarity
         if not words1 or not words2:
             return 0.0
-            
+
         intersection = len(words1 & words2)
         union = len(words1 | words2)
-        
+
         return intersection / union if union > 0 else 0.0
 
     def get_library_stats(self) -> Dict[str, Any]:
@@ -739,9 +798,7 @@ class Scholar:
         papers = self.search(query, limit=top_n)
         return [p.title for p in papers]
 
-    def find_similar(
-        self, paper_title: str, limit: int = 10
-    ) -> PaperCollection:
+    def find_similar(self, paper_title: str, limit: int = 10) -> Papers:
         """
         Find papers similar to a given paper.
 
@@ -750,13 +807,13 @@ class Scholar:
             limit: Number of similar papers
 
         Returns:
-            PaperCollection with similar papers
+            Papers with similar papers
         """
         # First find the paper
         reference = self.search(paper_title, limit=1)
         if not reference:
             logger.warning(f"Could not find paper: {paper_title}")
-            return PaperCollection([])
+            return Papers([])
 
         # Search for similar topics
         ref_paper = reference[0]
@@ -776,7 +833,7 @@ class Scholar:
             if p.get_identifier() != ref_paper.get_identifier()
         ]
 
-        return PaperCollection(similar_papers[:limit])
+        return Papers(similar_papers[:limit])
 
     def _extract_text(self, pdf_path: Union[str, Path]) -> str:
         """
@@ -828,7 +885,7 @@ class Scholar:
         return load(str(pdf_path), mode="full")
 
     def extract_text_from_papers(
-        self, papers: Union[List[Paper], PaperCollection]
+        self, papers: Union[List[Paper], Papers]
     ) -> List[Dict[str, Any]]:
         """
         Extract text from multiple papers for AI processing.
@@ -839,7 +896,7 @@ class Scholar:
         Returns:
             List of extraction results with paper metadata
         """
-        if isinstance(papers, PaperCollection):
+        if isinstance(papers, Papers):
             papers = papers.papers
 
         results = []
@@ -893,7 +950,7 @@ class Scholar:
 
 
 # Convenience functions for quick use
-def search(query: str, **kwargs) -> PaperCollection:
+def search(query: str, **kwargs) -> Papers:
     """Quick search without creating Scholar instance."""
     scholar = Scholar()
     return scholar.search(query, **kwargs)
@@ -905,7 +962,36 @@ def search_quick(query: str, top_n: int = 5) -> List[str]:
     return scholar.search_quick(query, top_n)
 
 
+def enrich_bibtex(
+    bibtex_path: Union[str, Path],
+    output_path: Optional[Union[str, Path]] = None,
+) -> Papers:
+    """
+    Quick function to enrich a BibTeX file with impact factors and citations.
+
+    This is the easiest way to enrich your bibliography with:
+    - Journal impact factors (2024 JCR data)
+    - Citation counts from CrossRef and Semantic Scholar
+    - Missing DOIs
+
+    Args:
+        bibtex_path: Path to BibTeX file to enrich
+        output_path: Optional output path (defaults to overwriting input with backup)
+
+    Returns:
+        Papers collection with enriched data
+
+    Example:
+        >>> from scitex.scholar import enrich_bibtex
+        >>> enrich_bibtex("my_papers.bib")
+        >>> # Or save to new file:
+        >>> enrich_bibtex("my_papers.bib", "my_papers_enriched.bib")
+    """
+    scholar = Scholar()
+    return scholar.enrich_bibtex(bibtex_path, output_path)
+
+
 # Export main class and convenience functions
-__all__ = ["Scholar", "search", "search_quick"]
+__all__ = ["Scholar", "search", "search_quick", "enrich_bibtex"]
 
 # EOF

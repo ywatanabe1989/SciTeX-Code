@@ -19,7 +19,7 @@ from scitex.scholar import Scholar
 scholar = Scholar()
 
 # Enhance an existing BibTeX file
-enhanced_papers = scholar.enhance_bibtex(
+enhanced_papers = scholar.enrich_bibtex(
     bibtex_path="my_references.bib",
     output_path="enhanced_references.bib",  # Optional, defaults to overwriting input
     backup=True,                            # Create backup before overwriting
@@ -28,7 +28,7 @@ enhanced_papers = scholar.enhance_bibtex(
     add_missing_urls=True                   # Fetch missing URLs
 )
 
-# The method returns a PaperCollection with enhanced papers
+# The method returns a Papers with enhanced papers
 print(f"Enhanced {len(enhanced_papers)} papers")
 ```
 
@@ -36,19 +36,19 @@ print(f"Enhanced {len(enhanced_papers)} papers")
 
 ```bash
 # Basic usage (overwrites input file, creates backup)
-python enhance_bibtex.py references.bib
+python enrich_bibtex_full.py references.bib
 
 # Specify output file
-python enhance_bibtex.py references.bib --output enhanced_refs.bib
+python enrich_bibtex_full.py references.bib --output enhanced_refs.bib
 
 # Skip fetching abstracts and URLs (only add impact factors/citations)
-python enhance_bibtex.py references.bib --no-abstracts --no-urls
+python enrich_bibtex_full.py references.bib --no-abstracts --no-urls
 
 # Dry run to see what would be enhanced
-python enhance_bibtex.py references.bib --dry-run
+python enrich_bibtex_full.py references.bib --dry-run
 
 # Full options
-python enhance_bibtex.py references.bib \
+python enrich_bibtex_full.py references.bib \
     --output enhanced.bib \
     --no-backup \
     --no-abstracts \

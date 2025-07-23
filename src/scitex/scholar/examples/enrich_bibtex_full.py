@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-22 18:00:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/enhance_bibtex.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/enrich_bibtex_full.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/examples/enhance_bibtex.py"
+    "./src/scitex/scholar/examples/enrich_bibtex_full.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-Example script to enhance existing BibTeX files with impact factors, citations, and missing fields.
+Example script to enrich existing BibTeX files with impact factors, citations, and missing fields.
 
 Usage:
-    python enhance_bibtex.py input.bib [options]
+    python enrich_bibtex_full.py input.bib [options]
     
 Options:
     --output FILE           Output file (default: overwrites input)
@@ -45,12 +45,12 @@ logger = logging.getLogger(__name__)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Enhance BibTeX files with impact factors, citations, and missing fields"
+        description="Enrich BibTeX files with impact factors, citations, and missing fields"
     )
     
     parser.add_argument(
         "input",
-        help="Input BibTeX file to enhance"
+        help="Input BibTeX file to enrich"
     )
     
     parser.add_argument(
@@ -91,7 +91,7 @@ def main():
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Show what would be enhanced without saving"
+        help="Show what would be enriched without saving"
     )
     
     args = parser.parse_args()
@@ -109,10 +109,10 @@ def main():
     )
     
     try:
-        # Enhance the BibTeX file
-        logger.info(f"Enhancing BibTeX file: {input_path}")
+        # Enrich the BibTeX file
+        logger.info(f"Enriching BibTeX file: {input_path}")
         
-        enhanced_papers = scholar.enhance_bibtex(
+        enriched_papers = scholar.enrich_bibtex(
             bibtex_path=input_path,
             output_path=args.output,
             backup=not args.no_backup,
@@ -122,12 +122,12 @@ def main():
         )
         
         # Show summary
-        logger.info(f"Enhanced {len(enhanced_papers)} papers")
+        logger.info(f"Enriched {len(enriched_papers)} papers")
         
         if args.dry_run:
             logger.info("Dry run - no files were saved")
-            # Show what was enhanced
-            for paper in enhanced_papers:
+            # Show what was enriched
+            for paper in enriched_papers:
                 enrichments = []
                 if paper.impact_factor:
                     enrichments.append(f"IF={paper.impact_factor}")
@@ -140,22 +140,22 @@ def main():
                     logger.info(f"  - {paper.title[:60]}... [{', '.join(enrichments)}]")
         else:
             output_file = args.output or input_path
-            logger.info(f"Enhanced BibTeX saved to: {output_file}")
+            logger.info(f"Enriched BibTeX saved to: {output_file}")
             
-            # Show enhancement statistics
-            papers_with_if = sum(1 for p in enhanced_papers if p.impact_factor and p.impact_factor > 0)
-            papers_with_citations = sum(1 for p in enhanced_papers if p.citation_count is not None)
-            papers_with_abstracts = sum(1 for p in enhanced_papers if p.abstract)
+            # Show enrichment statistics
+            papers_with_if = sum(1 for p in enriched_papers if p.impact_factor and p.impact_factor > 0)
+            papers_with_citations = sum(1 for p in enriched_papers if p.citation_count is not None)
+            papers_with_abstracts = sum(1 for p in enriched_papers if p.abstract)
             
-            logger.info(f"Enhancement statistics:")
-            logger.info(f"  - Papers with impact factors: {papers_with_if}/{len(enhanced_papers)}")
-            logger.info(f"  - Papers with citation counts: {papers_with_citations}/{len(enhanced_papers)}")
-            logger.info(f"  - Papers with abstracts: {papers_with_abstracts}/{len(enhanced_papers)}")
+            logger.info(f"Enrichment statistics:")
+            logger.info(f"  - Papers with impact factors: {papers_with_if}/{len(enriched_papers)}")
+            logger.info(f"  - Papers with citation counts: {papers_with_citations}/{len(enriched_papers)}")
+            logger.info(f"  - Papers with abstracts: {papers_with_abstracts}/{len(enriched_papers)}")
         
         return 0
         
     except Exception as e:
-        logger.error(f"Error enhancing BibTeX: {e}")
+        logger.error(f"Error enriching BibTeX: {e}")
         return 1
 
 

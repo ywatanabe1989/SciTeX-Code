@@ -29,7 +29,7 @@ import hashlib
 from datetime import datetime
 import json
 
-from ._core import Paper
+from ._Paper import Paper
 from ..errors import PDFDownloadError
 
 logger = logging.getLogger(__name__)
