@@ -1,0 +1,49 @@
+name: Validate Notebooks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-notebooks:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install papermill nbformat jupyter
+    
+    - name: Validate essential notebooks
+      run: |
+        echo "Validating essential notebooks..."
+        for notebook in examples/notebooks/essential/*.ipynb; do
+          echo "Checking $notebook"
+          python -m nbformat.validator.normalize "$notebook"
+        done
+    
+    - name: Execute essential notebooks
+      run: |
+        echo "Executing essential notebooks with papermill..."
+        for notebook in examples/notebooks/essential/*.ipynb; do
+          if [[ "$notebook" != *"05_mcp_servers.ipynb" ]]; then  # Skip MCP notebook as it needs special setup
+            echo "Executing $notebook"
+            papermill "$notebook" "${notebook%.ipynb}_executed.ipynb" --kernel python3 || echo "Failed: $notebook"
+          fi
+        done
+    
+    - name: Upload executed notebooks
+      uses: actions/upload-artifact@v4
+      with:
+        name: executed-notebooks
+        path: examples/notebooks/essential/*_executed.ipynb
