@@ -18,6 +18,69 @@ from unittest.mock import Mock, patch, AsyncMock, MagicMock
 from scitex.scholar import Scholar, Paper, Papers, ScholarConfig
 
 
+def create_mock_scholar_config(tmp_path):
+    """
+    Create a complete mock ScholarConfig with all required attributes.
+    
+    This helper ensures all tests use consistent mock configurations
+    and prevents AttributeError for missing mock attributes.
+    """
+    mock_config = Mock(spec=ScholarConfig)
+    
+    # Core paths
+    mock_config.workspace_dir = tmp_path
+    mock_config.pdf_dir = str(tmp_path / "pdfs")
+    
+    # API Keys
+    mock_config.semantic_scholar_api_key = None
+    mock_config.crossref_api_key = None
+    
+    # Email addresses
+    mock_config.pubmed_email = "test@example.com"
+    mock_config.crossref_email = "test@example.com"
+    
+    # Feature toggles
+    mock_config.enable_auto_enrich = True
+    mock_config.use_impact_factor_package = False
+    mock_config.enable_auto_download = False
+    mock_config.acknowledge_scihub_ethical_usage = True
+    
+    # Search configuration
+    mock_config.default_search_sources = ["pubmed", "arxiv"]
+    mock_config.default_search_limit = 20
+    
+    # PDF management
+    mock_config.enable_pdf_extraction = True
+    
+    # Performance settings
+    mock_config.max_parallel_requests = 3
+    mock_config.request_timeout = 30
+    mock_config.cache_size = 1000
+    mock_config.google_scholar_timeout = 10
+    
+    # Advanced settings
+    mock_config.verify_ssl = True
+    mock_config.debug_mode = False
+    
+    # OpenAthens authentication
+    mock_config.openathens_enabled = False
+    mock_config.openathens_org_id = None
+    mock_config.openathens_idp_url = None
+    mock_config.openathens_email = None
+    mock_config.openathens_username = None
+    mock_config.openathens_password = None
+    mock_config.openathens_institution_name = None
+    
+    # Lean Library settings
+    mock_config.use_lean_library = True
+    mock_config.lean_library_browser_profile = None
+    
+    # HTTP settings
+    mock_config.user_agent = "SciTeX-Scholar/1.0"
+    
+    return mock_config
+
+
 class TestScholar:
     """Test suite for Scholar class."""
     
@@ -25,21 +88,7 @@ class TestScholar:
     def scholar(self, tmp_path):
         """Create a Scholar instance for testing."""
         with patch('scitex.scholar._Scholar.ScholarConfig') as mock_config_class:
-            mock_config = Mock(spec=ScholarConfig)
-            mock_config.workspace_dir = tmp_path
-            mock_config.pdf_dir = str(tmp_path / "pdfs")
-            mock_config.semantic_scholar_api_key = None
-            mock_config.crossref_email = "test@example.com"
-            mock_config.pubmed_email = "test@example.com"
-            mock_config.crossref_api_key = None
-            mock_config.use_impact_factor_package = False
-            mock_config.enable_auto_enrich = True
-            mock_config.acknowledge_scihub_ethical_usage = True
-            mock_config.max_parallel_requests = 3
-            mock_config.enable_auto_download = False
-            mock_config.default_search_sources = ["pubmed", "arxiv"]
-            mock_config.default_search_limit = 20
-            
+            mock_config = create_mock_scholar_config(tmp_path)
             mock_config_class.load.return_value = mock_config
             
             scholar = Scholar()
@@ -48,19 +97,7 @@ class TestScholar:
     def test_initialization_default(self, tmp_path):
         """Test Scholar initialization with default config."""
         with patch('scitex.scholar._Scholar.ScholarConfig') as mock_config_class:
-            mock_config = Mock()
-            mock_config.workspace_dir = tmp_path
-            mock_config.pdf_dir = str(tmp_path / "pdfs")
-            mock_config.acknowledge_scihub_ethical_usage = True
-            mock_config.pubmed_email = "test@example.com"
-            mock_config.semantic_scholar_api_key = None
-            mock_config.crossref_email = "test@example.com"
-            mock_config.crossref_api_key = None
-            mock_config.use_impact_factor_package = False
-            mock_config.max_parallel_requests = 3
-            mock_config.default_search_sources = ["pubmed", "arxiv"]
-            mock_config.default_search_limit = 20
-            mock_config.enable_auto_download = False
+            mock_config = create_mock_scholar_config(tmp_path)
             mock_config_class.load.return_value = mock_config
             
             scholar = Scholar()
@@ -72,20 +109,7 @@ class TestScholar:
         config_file = tmp_path / "config.yaml"
         
         with patch('scitex.scholar._Scholar.ScholarConfig') as mock_config_class:
-            mock_config = Mock()
-            mock_config.workspace_dir = tmp_path
-            mock_config.pdf_dir = str(tmp_path / "pdfs")
-            mock_config.acknowledge_scihub_ethical_usage = True
-            mock_config.pubmed_email = "test@example.com"
-            mock_config.semantic_scholar_api_key = None
-            mock_config.crossref_email = "test@example.com"
-            mock_config.crossref_api_key = None
-            mock_config.use_impact_factor_package = False
-            mock_config.max_parallel_requests = 3
-            mock_config.enable_auto_enrich = True
-            mock_config.enable_auto_download = False
-            mock_config.default_search_sources = ["pubmed", "arxiv"]
-            mock_config.default_search_limit = 20
+            mock_config = create_mock_scholar_config(tmp_path)
             mock_config_class.from_yaml.return_value = mock_config
             
             scholar = Scholar(config=config_file)
@@ -94,20 +118,7 @@ class TestScholar:
     
     def test_initialization_with_config_object(self, tmp_path):
         """Test Scholar initialization with ScholarConfig object."""
-        mock_config = Mock(spec=ScholarConfig)
-        mock_config.workspace_dir = tmp_path
-        mock_config.pdf_dir = str(tmp_path / "pdfs")
-        mock_config.acknowledge_scihub_ethical_usage = True
-        mock_config.pubmed_email = "test@example.com"
-        mock_config.semantic_scholar_api_key = None
-        mock_config.crossref_email = "test@example.com"
-        mock_config.crossref_api_key = None
-        mock_config.use_impact_factor_package = False
-        mock_config.max_parallel_requests = 3
-        mock_config.enable_auto_enrich = True
-        mock_config.enable_auto_download = False
-        mock_config.default_search_sources = ["pubmed", "arxiv"]
-        mock_config.default_search_limit = 20
+        mock_config = create_mock_scholar_config(tmp_path)
         
         scholar = Scholar(config=mock_config)
         assert scholar.config == mock_config
@@ -520,20 +531,7 @@ class TestScholarIntegration:
     def test_full_workflow(self, tmp_path):
         """Test complete Scholar workflow."""
         # Create config
-        config = Mock(spec=ScholarConfig)
-        config.workspace_dir = tmp_path
-        config.pdf_dir = str(tmp_path / "pdfs")
-        config.semantic_scholar_api_key = None
-        config.crossref_email = "test@example.com"
-        config.pubmed_email = "test@example.com"
-        config.crossref_api_key = None
-        config.use_impact_factor_package = False
-        config.enable_auto_enrich = True
-        config.acknowledge_scihub_ethical_usage = True
-        config.max_parallel_requests = 3
-        config.enable_auto_download = False
-        config.default_search_sources = ["pubmed", "arxiv"]
-        config.default_search_limit = 20
+        config = create_mock_scholar_config(tmp_path)
         
         scholar = Scholar(config=config)
         
