@@ -17,19 +17,19 @@
 # ============================================================================
 
 # Semantic Scholar API key (get free key at: https://www.semanticscholar.org/product/api)
-# Can also set via: SCITEX_SEMANTIC_SCHOLAR_API_KEY
+# Can also set via: SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY
 semantic_scholar_api_key: null
 
 # CrossRef API key (optional - for higher rate limits)
-# Can also set via: SCITEX_CROSSREF_API_KEY
+# Can also set via: SCITEX_SCHOLAR_CROSSREF_API_KEY
 crossref_api_key: null
 
 # Email for PubMed API access (required for PubMed searches)
-# Can also set via: SCITEX_PUBMED_EMAIL
+# Can also set via: SCITEX_SCHOLAR_PUBMED_EMAIL
 pubmed_email: "research@example.com"
 
 # Email for CrossRef API access
-# Can also set via: SCITEX_CROSSREF_EMAIL
+# Can also set via: SCITEX_SCHOLAR_CROSSREF_EMAIL
 crossref_email: "research@example.com"
 
 # ============================================================================
@@ -40,21 +40,44 @@ crossref_email: "research@example.com"
 # Can also set via: SCITEX_SCHOLAR_AUTO_ENRICH
 enable_auto_enrich: true
 
-# Use impact_factor package for real journal impact factors (2024 JCR data)
-# Requires: pip install impact-factor
-# Can also set via: SCITEX_USE_IMPACT_FACTOR_PACKAGE
-use_impact_factor_package: true
+# Automatically download open-access PDFs during search
+# Can also set via: SCITEX_SCHOLAR_AUTO_DOWNLOAD
+enable_auto_download: false
+
+# Acknowledge ethical usage terms for Sci-Hub access
+# Can also set via: SCITEX_SCHOLAR_ACKNOWLEDGE_SCIHUB_ETHICAL_USAGE
+acknowledge_scihub_ethical_usage: false
+
+# ============================================================================
+# OPENATHENS AUTHENTICATION (Institutional Access)
+# ============================================================================
+
+# Enable OpenAthens authentication for paywalled papers
+# Can also set via: SCITEX_SCHOLAR_OPENATHENS_ENABLED
+openathens_enabled: false
+
+# Your institutional email address
+# Can also set via: SCITEX_SCHOLAR_OPENATHENS_EMAIL
+openathens_email: null
+
+# Organization ID (deprecated - not needed for MyAthens)
+# Can also set via: SCITEX_SCHOLAR_OPENATHENS_ORG_ID
+openathens_org_id: null
+
+# Identity Provider URL (deprecated - not needed for MyAthens)
+# Can also set via: SCITEX_SCHOLAR_OPENATHENS_IDP_URL
+openathens_idp_url: null
 
 # ============================================================================
 # SEARCH CONFIGURATION
 # ============================================================================
 
 # Default sources to search (can override per search)
-# Available: ["pubmed", "arxiv", "semantic_scholar"]
+# Available: ["pubmed", "semantic_scholar", "arxiv"]
 default_search_sources:
   - pubmed
-  - arxiv
   - semantic_scholar
+  - arxiv
 
 # Default number of search results
 default_search_limit: 20
@@ -64,7 +87,7 @@ default_search_limit: 20
 # ============================================================================
 
 # Directory for storing downloaded PDFs
-# Can also set via: SCITEX_PDF_DIR
+# Can also set via: SCITEX_SCHOLAR_PDF_DIR
 pdf_dir: "~/.scitex/scholar/pdfs"
 
 # Enable PDF text extraction features

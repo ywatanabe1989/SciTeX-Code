@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-23 15:52:28 (ywatanabe)"
+# Timestamp: "2025-07-24 17:31:26 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Scholar.py
 # ----------------------------------------
 import os
@@ -28,15 +28,20 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 # PDF extraction is now handled by scitex.io
-from ..errors import ConfigurationError, SciTeXWarning, BibTeXEnrichmentError
+from ..errors import (
+    BibTeXEnrichmentError,
+    ConfigurationError,
+    ScholarError,
+    SciTeXWarning,
+)
 from ..io import load
 from ._Config import ScholarConfig
 from ._DOIResolver import BatchDOIResolver, DOIResolver
+from ._MetadataEnricher import MetadataEnricher
 from ._Paper import Paper
 from ._Papers import Papers
 from ._PDFDownloader import PDFDownloader
 from ._SearchEngines import UnifiedSearcher, get_scholar_dir
-from ._MetadataEnricher import MetadataEnricher
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +89,7 @@ class Scholar:
         Args:
             config: Can be:
                    - ScholarConfig instance
-                   - Path to YAML config file (str or Path) 
+                   - Path to YAML config file (str or Path)
                    - None (uses ScholarConfig.load() to find config)
         """
         # Handle different config input types
@@ -96,24 +101,27 @@ class Scholar:
             self.config = config
         else:
             raise TypeError(f"Invalid config type: {type(config)}")
-        
+
         # Set workspace directory
         if self.config.pdf_dir:
             self.workspace_dir = Path(self.config.pdf_dir)
         else:
             self.workspace_dir = get_scholar_dir()
         self.workspace_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Warn if citations enabled but no API key
-        if self.config.enable_auto_enrich and not self.config.semantic_scholar_api_key:
-            warnings.warn(
-                "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY not found. "
-                "Citation counts will use CrossRef (works without key). "
-                "For additional citation sources, get a free API key at: "
-                "https://www.semanticscholar.org/product/api",
-                SciTeXWarning,
-                stacklevel=2,
-            )
+
+        # # Warn if citations enabled but no API key
+        # if (
+        #     self.config.enable_auto_enrich
+        #     and not self.config.semantic_scholar_api_key
+        # ):
+        #     warnings.warn(
+        #         "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY not found. "
+        #         "Citation counts will use CrossRef (works without key). "
+        #         "For additional citation sources, get a free API key at: "
+        #         "https://www.semanticscholar.org/product/api",
+        #         SciTeXWarning,
+        #         stacklevel=2,
+        #     )
 
         # Initialize components
         self._searcher = UnifiedSearcher(
@@ -125,26 +133,33 @@ class Scholar:
             semantic_scholar_api_key=self.config.semantic_scholar_api_key,
             crossref_api_key=self.config.crossref_api_key,
             email=self.config.crossref_email,
-            use_impact_factor_package=self.config.use_impact_factor_package,
+            use_impact_factor_package=True,  # Always use impact_factor package when available
         )
+
+        # Prepare OpenAthens config if enabled
+        openathens_config = None
+        if self.config.openathens_enabled:
+            openathens_config = {
+                "email": self.config.openathens_email,
+            }
 
         self._pdf_downloader = PDFDownloader(
             download_dir=self.workspace_dir / "pdfs",
             use_scihub=True,
-            acknowledge_ethical_usage=self.config.acknowledge_scihub_ethical_usage
+            acknowledge_ethical_usage=self.config.acknowledge_scihub_ethical_usage,
+            use_openathens=self.config.openathens_enabled,
+            openathens_config=openathens_config,
         )
 
         # Initialize DOI resolver
-        self._doi_resolver = DOIResolver(
-            email=self.config.crossref_email
-        )
+        self._doi_resolver = DOIResolver(email=self.config.crossref_email)
         self._batch_resolver = BatchDOIResolver(
             email=self.config.crossref_email,
             max_workers=self.config.max_parallel_requests,
         )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
-        
+
         # Print configuration summary
         self._print_config_summary()
 
@@ -173,6 +188,18 @@ class Scholar:
         Returns:
             Papers with results
         """
+        print(f"Searching papers...")
+        print(f"Query: {query}")
+        print(f"  Limit: {limit}")
+        print(f"  Sources: {sources}")
+
+        if year_min:
+            print(f"  Year min: {year_min}")
+        if year_max:
+            print(f"  Year max: {year_max}")
+        for key, value in kwargs.items():
+            print(f"  {key}: {value}")
+
         # Ensure sources is a list
         if isinstance(sources, str):
             sources = [sources]
@@ -210,9 +237,9 @@ class Scholar:
             logger.info("Auto-enriching papers...")
             self._enricher.enrich_all(
                 papers,
-                enrich_impact_factors=self.config.use_impact_factor_package,
+                enrich_impact_factors=True,  # Always enrich with impact factors
                 enrich_citations=True,
-                enrich_journal_metrics=self.config.use_impact_factor_package,
+                enrich_journal_metrics=True,  # Always enrich with journal metrics
             )
             collection._enriched = True
 
@@ -227,6 +254,8 @@ class Scholar:
                 dois = [p.doi for p in open_access if p.doi]
                 if dois:
                     self.download_pdfs(dois, show_progress=False)
+
+        print(f"Found {len(collection)} papers")
 
         return collection
 
@@ -243,7 +272,7 @@ class Scholar:
         """
         # Use the UnifiedSearcher with 'local' source
         papers = self._run_async(
-            self._searcher.search(query, sources=['local'], limit=limit)
+            self._searcher.search(query, sources=["local"], limit=limit)
         )
         return Papers(papers)
 
@@ -264,14 +293,14 @@ class Scholar:
         return self._searcher.build_local_index([directory])
 
     def download_pdfs(
-        self, 
+        self,
         items: Union[List[str], List[Paper], Papers, str, Paper],
         download_dir: Optional[Union[str, Path]] = None,
         force: bool = False,
         max_workers: int = 4,
         show_progress: bool = True,
         acknowledge_ethical_usage: Optional[bool] = None,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, Any]:
         """
         Download PDFs for DOIs or papers.
@@ -303,20 +332,20 @@ class Scholar:
         Examples:
             >>> # Download from DOIs
             >>> scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
-            
+
             >>> # Download from Papers collection
             >>> papers = scholar.search("deep learning")
             >>> scholar.download_pdfs(papers)
-            
+
             >>> # Download single DOI
             >>> scholar.download_pdfs("10.1234/example")
         """
         # Use the integrated PDFDownloader instead of standalone SciHubDownloader
-        
+
         # Set default download directory
         if download_dir is None:
             download_dir = self.workspace_dir / "pdfs"
-        
+
         # Normalize input to list
         if isinstance(items, str):
             # Single DOI string
@@ -327,7 +356,7 @@ class Scholar:
         elif isinstance(items, Papers):
             # Papers collection
             items = items.papers
-        
+
         # Determine if we have DOIs or Papers
         if items and isinstance(items[0], str):
             # List of DOI strings
@@ -339,52 +368,60 @@ class Scholar:
                 if paper.doi:
                     dois.append(paper)
                 else:
-                    logger.warning(f"Paper '{paper.title}' has no DOI, skipping download")
-        
+                    logger.warning(
+                        f"Paper '{paper.title}' has no DOI, skipping download"
+                    )
+
         if not dois:
             return {
-                'successful': 0,
-                'failed': 0,
-                'results': [],
-                'downloaded_files': {}
+                "successful": 0,
+                "failed": 0,
+                "results": [],
+                "downloaded_files": {},
             }
-        
+
         # Update PDFDownloader settings
-        self._pdf_downloader.acknowledge_ethical_usage = acknowledge_ethical_usage
+        self._pdf_downloader.acknowledge_ethical_usage = (
+            acknowledge_ethical_usage
+        )
         self._pdf_downloader.max_concurrent = max_workers
-        
+
         # Download PDFs using the integrated downloader
         async def download_batch():
             # Extract DOIs and metadata
             identifiers = []
             metadata_list = []
-            
+
             for item in dois:
                 if isinstance(item, str):
                     identifiers.append(item)
                     metadata_list.append(None)
                 elif isinstance(item, Paper):
                     identifiers.append(item.doi)
-                    metadata_list.append({
-                        'title': item.title,
-                        'authors': item.authors,
-                        'year': item.year
-                    })
-            
+                    metadata_list.append(
+                        {
+                            "title": item.title,
+                            "authors": item.authors,
+                            "year": item.year,
+                        }
+                    )
+
             return await self._pdf_downloader.batch_download(
                 identifiers=identifiers,
                 output_dir=download_dir,
                 metadata_list=metadata_list,
-                progress_callback=lambda c, t, _: logger.info(f"Downloaded {c}/{t}") if show_progress else None
+                show_progress=show_progress,
             )
-        
+
         # Run async function
         try:
             import asyncio
+
             loop = asyncio.get_event_loop()
             if loop.is_running():
                 # If already in async context
                 import concurrent.futures
+
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                     future = executor.submit(asyncio.run, download_batch())
                     results = future.result()
@@ -393,17 +430,44 @@ class Scholar:
         except RuntimeError:
             # No event loop
             results = asyncio.run(download_batch())
-        
-        # Convert results to match old format for backward compatibility
-        successful = sum(1 for path in results.values() if path is not None)
-        failed = len(results) - successful
-        
-        return {
-            'successful': successful,
-            'failed': failed,
-            'results': list(results.keys()),
-            'downloaded_files': {doi: str(path) for doi, path in results.items() if path}
-        }
+
+        # Create Papers instance with successfully downloaded papers
+        downloaded_papers = []
+
+        # Map identifiers back to papers
+        identifier_to_paper = {}
+        for item in items:
+            if isinstance(item, Paper):
+                identifier = item.doi or item.get_identifier()
+                if identifier:
+                    identifier_to_paper[identifier] = item
+
+        # If we have DOI strings, we need to create Paper objects for successful downloads
+        if not identifier_to_paper:
+            # We were given DOI strings, not Paper objects
+            for identifier, path in results.items():
+                if path:
+                    # Create a minimal Paper object with the DOI and PDF path
+                    paper = Paper(
+                        title=f"Paper with DOI: {identifier}",
+                        authors=[],
+                        year=None,
+                        journal=None,
+                        doi=identifier,
+                        source="direct_download"
+                    )
+                    paper.pdf_path = path
+                    downloaded_papers.append(paper)
+        else:
+            # Collect successfully downloaded papers from existing Paper objects
+            for identifier, path in results.items():
+                if path and identifier in identifier_to_paper:
+                    paper = identifier_to_paper[identifier]
+                    paper.pdf_path = path  # Update PDF path
+                    downloaded_papers.append(paper)
+
+        # Create Papers instance
+        return Papers(downloaded_papers)
 
     def _enrich_papers(
         self,
@@ -467,6 +531,7 @@ class Scholar:
         bibtex_path = Path(bibtex_path)
         if not bibtex_path.exists():
             from ..errors import PathNotFoundError
+
             raise PathNotFoundError(str(bibtex_path))
 
         # Set output path
@@ -489,8 +554,7 @@ class Scholar:
             entries = load(str(bibtex_path))
         except Exception as e:
             raise BibTeXEnrichmentError(
-                str(bibtex_path),
-                f"Failed to load BibTeX file: {str(e)}"
+                str(bibtex_path), f"Failed to load BibTeX file: {str(e)}"
             )
 
         # Convert BibTeX entries to Paper objects
@@ -519,9 +583,9 @@ class Scholar:
             )
             self._enricher.enrich_all(
                 papers,
-                enrich_impact_factors=self.config.use_impact_factor_package,
+                enrich_impact_factors=True,  # Always enrich with impact factors
                 enrich_citations=True,
-                enrich_journal_metrics=self.config.use_impact_factor_package,
+                enrich_journal_metrics=True,  # Always enrich with journal metrics
             )
 
             # Always fetch missing DOIs, and optionally abstracts/URLs
@@ -897,19 +961,87 @@ class Scholar:
 
         return intersection / union if union > 0 else 0.0
 
+    def configure_openathens(
+        self, email: Optional[str] = None, save_to_env: bool = False
+    ):
+        """
+        Configure OpenAthens authentication.
+
+        Args:
+            email: Institutional email address (e.g., 'user@institution.edu')
+            save_to_env: Save configuration to environment variables
+
+        Note:
+            Uses the unified MyAthens interface. Authentication is done
+            manually in the browser when you call authenticate_openathens().
+        """
+        import getpass
+
+        # Update configuration
+        self.config.openathens_enabled = True
+        if email:
+            self.config.openathens_email = email
+
+        # Save to environment if requested
+        if save_to_env:
+            import os
+
+            os.environ["SCITEX_SCHOLAR_OPENATHENS_ENABLED"] = "true"
+            if email:
+                os.environ["SCITEX_SCHOLAR_OPENATHENS_EMAIL"] = email
+
+        # Reinitialize PDF downloader with OpenAthens
+        openathens_config = {
+            "email": self.config.openathens_email,
+        }
+
+        self._pdf_downloader = PDFDownloader(
+            download_dir=self.workspace_dir / "pdfs",
+            use_scihub=True,
+            acknowledge_ethical_usage=self.config.acknowledge_scihub_ethical_usage,
+            use_openathens=True,
+            openathens_config=openathens_config,
+        )
+
+        logger.info("OpenAthens configured")
+
+    async def authenticate_openathens(self, force: bool = False) -> bool:
+        """
+        Manually trigger OpenAthens authentication.
+
+        Args:
+            force: Force re-authentication even if session exists
+
+        Returns:
+            True if authentication successful
+        """
+        if not self.config.openathens_enabled:
+            raise ScholarError(
+                "OpenAthens not configured. Call configure_openathens() first."
+            )
+
+        if not self._pdf_downloader.openathens_authenticator:
+            raise ScholarError("OpenAthens authenticator not initialized")
+
+        return (
+            await self._pdf_downloader.openathens_authenticator.authenticate(
+                force=force
+            )
+        )
+
     def get_library_stats(self) -> Dict[str, Any]:
         """Get statistics about local PDF library."""
         # Get stats from the local search engine
         pdf_dir = self.workspace_dir / "pdfs"
         if not pdf_dir.exists():
             return {"total_pdfs": 0, "indexed": 0}
-        
+
         # Count PDF files
         pdf_files = list(pdf_dir.rglob("*.pdf"))
         return {
             "total_pdfs": len(pdf_files),
             "pdf_directory": str(pdf_dir),
-            "indexed": len(pdf_files)  # Assume all PDFs are indexed
+            "indexed": len(pdf_files),  # Assume all PDFs are indexed
         }
 
     def search_quick(self, query: str, top_n: int = 5) -> List[str]:
@@ -1059,10 +1191,10 @@ class Scholar:
 
     def _print_config_summary(self):
         """Print configuration summary on initialization."""
-        print("\n" + "="*60)
-        print("SciTeX Scholar v2.0 - Configuration Summary")
-        print("="*60)
-        
+        print("\n" + "=" * 60)
+        print("SciTeX Scholar - Configuration Summary")
+        print("=" * 60)
+
         # Helper function to mask sensitive data
         def mask_sensitive(value, show_first=4):
             """Mask sensitive data showing only first few characters."""
@@ -1072,24 +1204,26 @@ class Scholar:
                 return f"{str(value)[:show_first]}{'*' * (len(str(value)) - show_first)}"
             else:
                 return "*" * len(str(value))
-        
+
         # API Keys status
         print("\n📚 API Keys:")
         if self.config.semantic_scholar_api_key:
             masked_key = mask_sensitive(self.config.semantic_scholar_api_key)
             print(f"  • Semantic Scholar: ✓ Configured ({masked_key})")
         else:
-            print(f"  • Semantic Scholar: ✗ Not set (citations via CrossRef only)")
-            
+            print(
+                f"  • Semantic Scholar: ✗ Not set (citations via CrossRef only)"
+            )
+
         if self.config.crossref_api_key:
             masked_key = mask_sensitive(self.config.crossref_api_key)
             print(f"  • CrossRef: ✓ Configured ({masked_key})")
         else:
             print(f"  • CrossRef: ✗ Not set (works without key)")
-            
+
         if self.config.pubmed_email:
             # Mask email but show domain
-            parts = self.config.pubmed_email.split('@')
+            parts = self.config.pubmed_email.split("@")
             if len(parts) == 2:
                 masked_email = f"{mask_sensitive(parts[0], 2)}@{parts[1]}"
             else:
@@ -1097,24 +1231,49 @@ class Scholar:
             print(f"  • PubMed Email: ✓ Set ({masked_email})")
         else:
             print(f"  • PubMed Email: ✗ Not set (required for PubMed)")
-        
+
         # Features
         print("\n⚙️  Features:")
-        print(f"  • Auto-enrichment: {'✓ Enabled' if self.config.enable_auto_enrich else '✗ Disabled'}")
-        print(f"  • Impact factors: {'✓ Using JCR package' if self.config.use_impact_factor_package else '✗ Using built-in data'}")
-        print(f"  • Auto-download PDFs: {'✓ Enabled' if self.config.enable_auto_download else '✗ Disabled'}")
-        print(f"  • Sci-Hub access: {'✓ Acknowledged' if self.config.acknowledge_scihub_ethical_usage else '✗ Requires acknowledgment'}")
-        
+        print(
+            f"  • Auto-enrichment: {'✓ Enabled' if self.config.enable_auto_enrich else '✗ Disabled'}"
+        )
+        print(
+            f"  • Impact factors: ✓ Using JCR package (2024 data)"
+        )
+        print(
+            f"  • Auto-download PDFs: {'✓ Enabled' if self.config.enable_auto_download else '✗ Disabled'}"
+        )
+        print(
+            f"  • Sci-Hub access: {'✓ Acknowledged' if self.config.acknowledge_scihub_ethical_usage else '✗ Requires acknowledgment'}"
+        )
+
+        # OpenAthens status
+        if self.config.openathens_enabled:
+            print(
+                f"  • OpenAthens: ✓ Enabled ({self.config.openathens_org_id})"
+            )
+            if self.config.openathens_username:
+                masked_user = mask_sensitive(
+                    self.config.openathens_username, 3
+                )
+                print(f"    - Username: {masked_user}")
+            if self.config.openathens_idp_url:
+                print(f"    - IdP URL: {self.config.openathens_idp_url}")
+        else:
+            print(f"  • OpenAthens: ✗ Disabled")
+
         # Settings
         print("\n📁 Settings:")
         print(f"  • Workspace: {self.workspace_dir}")
         print(f"  • Default search limit: {self.config.default_search_limit}")
-        print(f"  • Default sources: {', '.join(self.config.default_search_sources)}")
-        
+        print(
+            f"  • Default sources: {', '.join(self.config.default_search_sources)}"
+        )
+
         print("\n💡 Tip: Configure with environment variables or YAML file")
         print("  See: stx.scholar.ScholarConfig.show_env_vars()")
-        print("="*60 + "\n")
-    
+        print("=" * 60 + "\n")
+
     def _run_async(self, coro):
         """Run async coroutine in sync context."""
         # Simplified approach - always create new event loop

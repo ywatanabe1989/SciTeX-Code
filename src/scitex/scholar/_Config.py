@@ -78,9 +78,6 @@ class ScholarConfig:
     enable_auto_enrich: bool = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_AUTO_ENRICH", "true").lower() == "true"
     )
-    use_impact_factor_package: bool = field(
-        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_USE_IMPACT_FACTOR_PACKAGE", "true").lower() == "true"
-    )
     enable_auto_download: bool = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_AUTO_DOWNLOAD", "false").lower() == "true"
     )
@@ -90,7 +87,7 @@ class ScholarConfig:
     
     # Search configuration
     default_search_sources: list = field(
-        default_factory=lambda: ["pubmed", "arxiv", "semantic_scholar"]
+        default_factory=lambda: ["pubmed", "semantic_scholar", "arxiv"]
     )
     default_search_limit: int = 20
     
@@ -107,6 +104,29 @@ class ScholarConfig:
     
     # Advanced settings
     verify_ssl: bool = True
+    
+    # OpenAthens authentication
+    openathens_enabled: bool = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_ENABLED", "false").lower() == "true"
+    )
+    openathens_org_id: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_ORG_ID")
+    )
+    openathens_idp_url: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_IDP_URL")
+    )
+    openathens_email: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL")
+    )
+    openathens_username: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_USERNAME")  # Deprecated
+    )
+    openathens_password: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_PASSWORD")  # Deprecated
+    )
+    openathens_institution_name: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_INSTITUTION_NAME")
+    )
     user_agent: str = "SciTeX-Scholar/1.0"  # HTTP User-Agent for API requests
     
     def to_dict(self) -> Dict[str, Any]:

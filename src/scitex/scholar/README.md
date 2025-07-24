@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-24 09:57:44
+!-- Timestamp: 2025-07-24 17:45:14
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -8,15 +8,28 @@
 
 A comprehensive Python library for scientific literature management with automatic enrichment of journal impact factors and citation counts.
 
-## Features
+## 🌟 Key Features
 
-- **Multi-Source Search**: Search papers from PubMed, arXiv, and Semantic Scholar
-- **IF & Citation Count**: Get journal impact factors (2024 JCR data) and citation counts automatically
-- **PDF Downloading**: Automatic download of PDFs
-- **Local PDF**: Index and search your local PDF library
-- **Export Formats**: Export to BibTeX, JSON, CSV, and Markdown
-- **Filtering & Sorting**: Filter by citations, impact factor, year, journal, etc.
-- **Text Extraction**: Extract text from PDFs for AI/NLP processing
+### Literature Search & Management
+- **Multi-Source Search**: Unified search across PubMed, arXiv, and Semantic Scholar
+- **Automatic Enrichment**: Journal impact factors (2024 JCR data) and citation counts
+- **Smart Deduplication**: Intelligent merging of results from multiple sources
+- **Advanced Filtering**: By citations, impact factor, year, journal quartile, etc.
+- **Multiple Export Formats**: BibTeX, RIS, JSON, CSV, and Markdown
+
+### PDF Management
+- **OpenAthens Authentication**: Institutional access to paywalled papers
+- **Multi-Strategy Downloads**: Direct links, Zotero translators, browser automation
+- **Local PDF Library**: Index and search your existing PDF collection # Need Check
+- **Text Extraction**: Extract full text and sections for AI/NLP processing # Need Check
+- **Secure Cookie Storage**: Encrypted session management with explicit storage location
+
+### Data Analysis & Integration
+- **Pandas Integration**: Convert results to DataFrames for analysis
+- **Batch Operations**: Process hundreds of papers efficiently # Need Check
+- **Vector Similarity**: Find related papers using embeddings # Need Check
+- **Statistics & Summaries**: Built-in analysis tools # Need Check
+- **Zotero Integration**: Import/export with Zotero libraries # Need Check
 
 ## Installation
 
@@ -38,56 +51,80 @@ git clone git@github.com:zotero/translators.git zotero_translators
 ```python
 from scitex.scholar import Scholar, ScholarConfig
 
-# Simple usage with defaults (reads from environment variables)
+# Main Entry
 scholar = Scholar()
 
-# Or customize with ScholarConfig
-config = ScholarConfig(
-    semantic_scholar_api_key="your-api-key",
-    enable_auto_enrich=True,  # Auto-enrich with IF & citations
-    use_impact_factor_package=True,  # Use real 2024 JCR data
-    default_search_limit=50,
-    pdf_dir="~/.scitex/scholar",  # Where to store PDFs
-    acknowledge_scihub_ethical_usage=True,
-)
-scholar = Scholar(config)
+# # Configuration (optional)
+# config = ScholarConfig(
+#     semantic_scholar_api_key=os.getenv("SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY"),
+#     enable_auto_enrich=True,  # Auto-enrich with IF & citations. False for faster search.
+#     use_impact_factor_package=True,  # Use real 2024 JCR data
+#     default_search_limit=50,
+#     pdf_dir="~/.scitex/scholar",  # Where to store PDFs
+#     acknowledge_scihub_ethical_usage=False,
+# )
+# scholar = Scholar(config)
 
-# Search for papers - automatically enriched with impact factors & citations
+# Papers
 papers = scholar.search(
     query="epilepsy detection machine learning",
-    limit=50,
-    sources=["pubmed"],  # or ["pubmed", "arxiv", "semantic_scholar"]
+    limit=10,
+    sources=["pubmed"],  # or ["pubmed", "semantic_scholar", "arxiv"]
     year_min=2020,
     year_max=2024
 )
+# Found 9 papers
 
-print(f"Found {len(papers)} papers")
+papers_df = papers.to_dataframe()
 
-# Papers are automatically enriched!
-for paper in papers[:3]:
-    print(f"{paper.title}")
-    print(f"  Journal: {paper.journal} (IF: {paper.impact_factor})")
-    print(f"  Citations: {paper.citation_count}")
-    print(f"  Year: {paper.year}")
-    print()
+print(papers_df.columns)
+# Index(['title', 'first_author', 'num_authors', 'year', 'journal',
+#        'citation_count', 'citation_count_source', 'impact_factor',
+#        'impact_factor_source', 'quartile', 'quartile_source', 'doi', 'pmid',
+#        'arxiv_id', 'source', 'has_pdf', 'num_keywords', 'abstract_word_count',
+#        'abstract'],
+#       dtype='object')
 
-# Download PDFs for high-impact papers
-high_impact = papers.filter(impact_factor_min=5.0)
-downloaded = scholar.download_pdfs(high_impact, acknowledge_ethical_usage=True)
-print(f"Download Status:\n{downloaded}")
+print(papers_df)
+#                                                title  ...                                           abstract
+# 0                      Ambulatory seizure detection.  ...  To review recent advances in the field of seiz...
+# 1               Artificial Intelligence in Epilepsy.  ...  The study of seizure patterns in electroenceph...
+# 2  Editorial: Seizure Forecasting and Detection: ...  ...                                                N/A
+# 3         Deep learning in neuroimaging of epilepsy.  ...  In recent years, artificial intelligence, part...
+# 4  Epileptic Seizure Detection Using Machine Lear...  ...  Epilepsy is a life-threatening neurological br...
+# 5  Magnetoencephalography-based approaches to epi...  ...  Epilepsy is a chronic central nervous system d...
+# 6  Machine Learning and Artificial Intelligence A...  ...  Machine Learning (ML) and Artificial Intellige...
+# 7  An overview of machine learning and deep learn...  ...  Epilepsy is a neurological disorder (the third...
+# 8  Artificial intelligence/machine learning for e...  ...  Accurate seizure and epilepsy diagnosis remain...
+#  
+# [9 rows x 19 columns]
 
-# Access PDFs for processing
-for paper in high_impact:
+# Filtering
+filted_papers = papers.filter(min_citations=3)
+
+# Download PDFs
+downloaded_papers = scholar.download_pdfs(filted_papers) # Shows progress with methods being tried
+
+
+# Example output:
+# [10.1097/WCO.0000000000001248] Trying method: Direct patterns
+# [10.1097/WCO.0000000000001248] Trying method: OpenAthens
+# [10.1097/WCO.0000000000001248] Trying method: Zotero translators
+# [10.1097/WCO.0000000000001248] ✓ Downloaded successfully
+# Overall progress: 1/4
+# ...
+
+print(f"Downloaded {len(downloaded_papers)} papers successfully")
+
+# Individual Paper
+for paper in filted_papers:
     if paper.pdf_path and paper.pdf_path.exists():
         text = scholar._extract_text(paper.pdf_path)
         print(f"Extracted {len(text)} characters from {paper.title}")
-
-# Disable auto-enrichment for faster searches
-config = ScholarConfig(enable_auto_enrich=False)
-scholar = Scholar(config)
-papers = scholar.search("deep learning")  # No enrichment
 ```
 
+<details>
+<summary>Configuration</summary>
 ## Configuration
 
 SciTeX Scholar uses a flexible configuration system with three priority levels:
@@ -171,6 +208,10 @@ export SCITEX_SCHOLAR_USE_IMPACT_FACTOR_PACKAGE="true"
 export SCITEX_SCHOLAR_AUTO_DOWNLOAD="false"
 export SCITEX_SCHOLAR_ACKNOWLEDGE_SCIHUB_ETHICAL_USAGE="false"  # Must be true for Sci-Hub
 
+# OpenAthens institutional access
+export SCITEX_SCHOLAR_OPENATHENS_ENABLED="true"
+export SCITEX_SCHOLAR_OPENATHENS_EMAIL="your.email@institution.edu"
+
 # PDF directory
 export SCITEX_SCHOLAR_PDF_DIR="~/.scitex/scholar/pdfs"
 
@@ -198,8 +239,9 @@ config = ScholarConfig(
 scholar = Scholar(config)
 papers = scholar.search("your query")
 ```
+</details>
 
-## Paper Collection Operations
+## Papers Class Operations
 
 ```python
 # Filter papers by various criteria
@@ -237,7 +279,9 @@ df = papers.to_dataframe()
 print(df.columns)  # See available columns
 ```
 
-## Individual Paper Access
+<details>
+<summary>Paper Class Operations</summary>
+## Paper Class Operations
 
 ```python
 # Access individual papers
@@ -272,6 +316,7 @@ bibtex = paper.to_bibtex()
 dict_data = paper.to_dict()
 identifier = paper.get_identifier()  # Primary ID (DOI/PMID/etc.)
 ```
+</details>
 
 ## Enrich an existing BibTeX file
 
@@ -311,24 +356,24 @@ papers = scholar.search("machine learning", limit=10)
 #### 2. Manual PDF Downloads
 
 ```python
-# NEW: Unified download API - accepts multiple input types
+# NEW: Unified download API - returns Papers instance with downloaded papers
 
 # Download from DOI strings
-downloaded = scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
-print(f"Downloaded {downloaded['successful']} PDFs")
+downloaded_papers = scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
+print(f"Downloaded {len(downloaded_papers)} PDFs")
 
 # Download from single DOI
-downloaded = scholar.download_pdfs("10.1234/example")
+downloaded_papers = scholar.download_pdfs("10.1234/example")
 
 # Download from Papers collection
 papers = scholar.search("deep learning")
-downloaded = scholar.download_pdfs(papers)
+downloaded_papers = scholar.download_pdfs(papers)
 
 # Download with Papers convenience method
-downloaded = papers.download_pdfs()  # Creates Scholar instance if needed
+downloaded_papers = papers.download_pdfs()  # Creates Scholar instance if needed
 
 # Advanced options
-downloaded = scholar.download_pdfs(
+downloaded_papers = scholar.download_pdfs(
     papers,
     download_dir="./my_pdfs",
     max_workers=4,
@@ -336,9 +381,9 @@ downloaded = scholar.download_pdfs(
     acknowledge_ethical_usage=True  # Required for Sci-Hub
 )
 
-# Access downloaded PDF paths
-for doi, path in downloaded['downloaded_files'].items():
-    print(f"{doi}: {path}")
+# Access downloaded papers
+for paper in downloaded_papers:
+    print(f"{paper.doi}: {paper.pdf_path}")
 ```
 
 #### 3. Sci-Hub Integration (Use Responsibly)
@@ -386,7 +431,73 @@ Sci-Hub access may be restricted in your jurisdiction. Please:
 - Use this feature responsibly for legitimate academic purposes only
 - See `docs/SCIHUB_ETHICAL_USAGE.md` for detailed guidelines
 
-#### 4. Local PDF Library Management
+#### 4. OpenAthens Institutional Access (Recommended)
+
+OpenAthens provides legitimate access to paywalled papers through your institutional subscriptions:
+
+```python
+# Configure OpenAthens (one-time setup)
+scholar.configure_openathens(
+    email="your.email@institution.edu"  # Your institutional email
+)
+
+# Or via environment variables
+export SCITEX_SCHOLAR_OPENATHENS_EMAIL="your.email@institution.edu"
+export SCITEX_SCHOLAR_OPENATHENS_ENABLED="true"
+```
+
+**First-time authentication:**
+```python
+# Authenticate (opens browser for manual login)
+await scholar.authenticate_openathens()
+# Log in with your institutional credentials
+# Session is saved for ~8 hours
+```
+
+**Download papers with institutional access:**
+```python
+# Download specific papers by DOI
+dois = ["10.1038/s41586-019-1666-5", "10.1126/science.abj8754"]
+downloaded_papers = scholar.download_pdfs(dois, output_dir="./pdfs")
+
+# Download from search results
+papers = scholar.search("deep learning", limit=20)
+downloaded_papers = scholar.download_pdfs(papers)
+
+# The system automatically uses your saved OpenAthens session
+print(f"Downloaded {len(downloaded_papers)} papers")
+```
+
+**Session management:**
+```python
+# Check if authenticated
+if await scholar.is_openathens_authenticated():
+    print("Session active")
+    
+# Force re-authentication if needed
+await scholar.authenticate_openathens(force=True)
+```
+
+**Supported publishers:**
+- Nature Publishing Group
+- Science/AAAS
+- Cell Press
+- Annual Reviews
+- Elsevier journals
+- Wiley
+- Springer Nature
+- And many more...
+
+**Security features:**
+- Session cookies are encrypted at rest using Fernet encryption
+- Machine-specific salt for key derivation (PBKDF2-HMAC-SHA256)
+- Restricted file permissions (0600)
+- Sessions stored in `~/.scitex/scholar/openathens_sessions/`
+- Automatic migration from unencrypted to encrypted format
+
+See `docs/HOW_TO_USE_OPENATHENS.md` for setup instructions and `docs/OPENATHENS_SECURITY.md` for security details.
+
+#### 5. Local PDF Library Management
 
 ```python
 # Index your existing PDF collection
@@ -460,12 +571,9 @@ export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 export SCITEX_CROSSREF_API_KEY="your-api-key"
 ```
 
-## Data Sources & Enrichment
-
-### Search Sources
-- **PubMed**: Biomedical literature (default)
-- **arXiv**: Physics, mathematics, computer science preprints
-- **Semantic Scholar**: Cross-disciplinary academic papers
+## TODO
+- [ ] Add support for EZproxy
+- [ ] Add support for Shibboleth
 
 ## Citation
 
