@@ -210,6 +210,50 @@ class PDFDownloadError(ScholarError):
         )
 
 
+class DOIResolutionError(ScholarError):
+    """Raised when DOI resolution fails."""
+
+    def __init__(self, doi: str, reason: str):
+        super().__init__(
+            f"Failed to resolve DOI: {doi}",
+            context={"doi": doi, "reason": reason},
+            suggestion="Verify the DOI is correct and try again",
+        )
+
+
+class PDFExtractionError(ScholarError):
+    """Raised when PDF text extraction fails."""
+
+    def __init__(self, filepath: str, reason: str):
+        super().__init__(
+            f"Failed to extract text from PDF: {filepath}",
+            context={"filepath": filepath, "reason": reason},
+            suggestion="Ensure the PDF is not corrupted or encrypted",
+        )
+
+
+class BibTeXEnrichmentError(ScholarError):
+    """Raised when BibTeX enrichment fails."""
+
+    def __init__(self, bibtex_file: str, reason: str):
+        super().__init__(
+            f"Failed to enrich BibTeX file: {bibtex_file}",
+            context={"bibtex_file": bibtex_file, "reason": reason},
+            suggestion="Check the BibTeX format and ensure all entries are valid",
+        )
+
+
+class TranslatorError(ScholarError):
+    """Raised when Zotero translator operations fail."""
+
+    def __init__(self, translator_name: str, reason: str):
+        super().__init__(
+            f"Translator error in {translator_name}: {reason}",
+            context={"translator": translator_name, "reason": reason},
+            suggestion="Check translator compatibility and JavaScript environment",
+        )
+
+
 """Plotting Errors"""
 
 
@@ -481,6 +525,10 @@ __all__ = [
     "SearchError",
     "EnrichmentError",
     "PDFDownloadError",
+    "DOIResolutionError",
+    "PDFExtractionError",
+    "BibTeXEnrichmentError",
+    "TranslatorError",
     # Plotting
     "PlottingError",
     "FigureNotFoundError",
