@@ -486,8 +486,8 @@ class OpenAthensAuthenticator:
                 
                 current_url = page.url
                 
-                # Check 1: Are we on the account page? (authenticated)
-                if "/account" in current_url and "my.openathens.net" in current_url:
+                # Check 1: Are we on any authenticated MyAthens page?
+                if "my.openathens.net" in current_url and any(path in current_url for path in ["/account", "/app", "/library"]):
                     # Double-check for logout button as confirmation
                     has_logout = await page.evaluate("""
                         () => {
@@ -507,9 +507,9 @@ class OpenAthensAuthenticator:
                     await browser.close()
                     
                     if has_logout:
-                        return True, "Authenticated: Successfully accessed account page"
+                        return True, f"Authenticated: Successfully accessed MyAthens page at {current_url}"
                     else:
-                        return True, "Authenticated: On account page (no logout button found)"
+                        return True, f"Authenticated: On MyAthens page at {current_url} (no logout button found)"
                 
                 # Check 2: Were we redirected to login? (not authenticated)
                 if "login" in current_url or "signin" in current_url:

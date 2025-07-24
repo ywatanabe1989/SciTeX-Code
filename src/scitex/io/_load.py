@@ -15,6 +15,13 @@ from typing import Any
 
 from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
+from ._load_cache import (
+    get_cached_data,
+    cache_data,
+    get_cache_info,
+    configure_cache,
+    load_npy_cached
+)
 # from ._load_modules._catboost import _load_catboost
 from ._load_modules._con import _load_con
 from ._load_modules._docx import _load_docx
@@ -39,12 +46,12 @@ from ._load_modules._bibtex import _load_bibtex
 
 
 def load(
-    lpath: str, show: bool = False, verbose: bool = False, **kwargs
+    lpath: str, show: bool = False, verbose: bool = False, cache: bool = True, **kwargs
 ) -> Any:
     """
     Load data from various file formats.
 
-    This function supports loading data from multiple file formats.
+    This function supports loading data from multiple file formats with optional caching.
 
     Parameters
     ----------
@@ -54,6 +61,8 @@ def load(
         If True, display additional information during loading. Default is False.
     verbose : bool, optional
         If True, print verbose output during loading. Default is False.
+    cache : bool, optional
+        If True, enable caching for faster repeated loads. Default is True.
     **kwargs : dict
         Additional keyword arguments to be passed to the specific loading function.
 
@@ -154,6 +163,14 @@ def load(
             raise FileNotFoundError(
                 f"{lpath} not found. Searched in current directory and notebook output directories."
             )
+    
+    # Try to get from cache first
+    if cache:
+        cached_data = get_cached_data(lpath)
+        if cached_data is not None:
+            if verbose:
+                print(f"[Cache HIT] Loaded from cache: {lpath}")
+            return cached_data
 
     loaders_dict = {
         # Default
@@ -217,10 +234,23 @@ def load(
     }
 
     ext = lpath.split(".")[-1] if "." in lpath else ""
+    
+    # Special handling for numpy files with caching
+    if cache and ext in ["npy", "npz"]:
+        return load_npy_cached(lpath, **kwargs)
+    
     loader = preserve_doc(loaders_dict.get(ext, _load_txt))
 
     try:
-        return loader(lpath, **kwargs)
+        result = loader(lpath, **kwargs)
+        
+        # Cache the result if caching is enabled
+        if cache:
+            cache_data(lpath, result)
+            if verbose:
+                print(f"[Cache STORED] Cached data for: {lpath}")
+        
+        return result
     except (ValueError, FileNotFoundError) as e:
         raise ValueError(f"Error loading file {lpath}: {str(e)}")
 

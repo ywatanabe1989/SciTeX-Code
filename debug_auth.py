@@ -39,10 +39,10 @@ async def check_auth():
     
     # Load session
     print("\nLoading session...")
-    await auth._load_session_cache()
+    await auth._load_session_cache_async()
     
     # Check authentication status
-    is_auth = await auth.is_authenticated()
+    is_auth = await auth.is_authenticated_async()
     print(f"\nAuthenticated: {is_auth}")
     
     if hasattr(auth, '_cookies'):
@@ -53,7 +53,7 @@ async def check_auth():
     
     # Do a live check
     print("\nDoing live verification...")
-    is_auth_live, details = await auth.verify_authentication()
+    is_auth_live, details = await auth.verify_authentication_async()
     print(f"Live check: {is_auth_live}")
     print(f"Details: {details}")
 

@@ -22,6 +22,13 @@ from ._cache import cache
 from ._load_modules._H5Explorer import H5Explorer, explore_h5, has_h5_key
 from ._load_modules._ZarrExplorer import ZarrExplorer, explore_zarr, has_zarr_key
 
+# Import load cache control functions
+from ._load_cache import (
+    get_cache_info,
+    configure_cache,
+    clear_cache as clear_load_cache
+)
+
 # Import save module functions
 try:
     from ._save_modules import (
@@ -90,6 +97,10 @@ __all__ = [
     "has_zarr_key",
     "migrate_h5_to_zarr",
     "migrate_h5_to_zarr_batch",
+    # Load cache control functions
+    "get_cache_info",
+    "configure_cache",
+    "clear_load_cache",
 ]
 
 # EOF
