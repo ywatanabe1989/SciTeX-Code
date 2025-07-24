@@ -1,0 +1,107 @@
+# SciTeX Scholar Default Configuration
+# 
+# This file shows all available configuration options with their default values.
+# To use custom configuration:
+#   1. Copy this file to one of these locations:
+#      - ~/.scitex/scholar/config.yaml (recommended)
+#      - ./scholar_config.yaml (project-specific)
+#      - Set SCITEX_SCHOLAR_CONFIG environment variable to your config path
+#   2. Modify the values as needed
+#   3. Remove or comment out any settings you want to keep as default
+#
+# Note: API keys and sensitive data should be set via environment variables
+# or in your personal config file, not committed to version control.
+
+# ============================================================================
+# API AUTHENTICATION
+# ============================================================================
+
+# Semantic Scholar API key (get free key at: https://www.semanticscholar.org/product/api)
+# Can also set via: SCITEX_SEMANTIC_SCHOLAR_API_KEY
+semantic_scholar_api_key: null
+
+# CrossRef API key (optional - for higher rate limits)
+# Can also set via: SCITEX_CROSSREF_API_KEY
+crossref_api_key: null
+
+# Email for PubMed API access (required for PubMed searches)
+# Can also set via: SCITEX_PUBMED_EMAIL
+pubmed_email: "research@example.com"
+
+# Email for CrossRef API access
+# Can also set via: SCITEX_CROSSREF_EMAIL
+crossref_email: "research@example.com"
+
+# ============================================================================
+# FEATURE SETTINGS
+# ============================================================================
+
+# Automatically enrich papers with impact factors and citation counts
+# Can also set via: SCITEX_SCHOLAR_AUTO_ENRICH
+enable_auto_enrich: true
+
+# Use impact_factor package for real journal impact factors (2024 JCR data)
+# Requires: pip install impact-factor
+# Can also set via: SCITEX_USE_IMPACT_FACTOR_PACKAGE
+use_impact_factor_package: true
+
+# ============================================================================
+# SEARCH CONFIGURATION
+# ============================================================================
+
+# Default sources to search (can override per search)
+# Available: ["pubmed", "arxiv", "semantic_scholar"]
+default_search_sources:
+  - pubmed
+  - arxiv
+  - semantic_scholar
+
+# Default number of search results
+default_search_limit: 20
+
+# ============================================================================
+# PDF MANAGEMENT
+# ============================================================================
+
+# Directory for storing downloaded PDFs
+# Can also set via: SCITEX_PDF_DIR
+pdf_dir: "~/.scitex/scholar/pdfs"
+
+# Enable PDF text extraction features
+enable_pdf_extraction: true
+
+# ============================================================================
+# PERFORMANCE SETTINGS
+# ============================================================================
+
+# Maximum number of parallel API requests
+# Be respectful to API providers - don't set too high
+max_parallel_requests: 3
+
+# Request timeout in seconds
+request_timeout: 30
+
+# Size of LRU cache for journal lookups
+cache_size: 1000
+
+# ============================================================================
+# ADVANCED SETTINGS
+# ============================================================================
+
+# SSL certificate verification (disable only for debugging)
+verify_ssl: true
+
+# User agent string for API requests
+# This identifies your software to API providers (format: name/version)
+# Note: This is NOT the package version - it's just an HTTP identifier
+user_agent: "SciTeX-Scholar/1.0"
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+
+# Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+# log_level: "INFO"
+
+# Log file path (null for console only)
+# log_file: null

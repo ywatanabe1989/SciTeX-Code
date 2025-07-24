@@ -701,7 +701,7 @@ def _enrich_papers_with_citations(
 
 
 __all__ = [
-    "UnifiedEnricher",
+    "MetadataEnricher",
     "_enrich_papers_with_all",
     "_enrich_papers_with_impact_factors",
     "_enrich_papers_with_citations",

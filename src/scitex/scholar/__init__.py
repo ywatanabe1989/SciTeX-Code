@@ -48,10 +48,20 @@ from ._utils import (
     papers_to_markdown
 )
 
-# Citation enrichment is now part of UnifiedEnricher
+# Import enrichment functionality
+from ._MetadataEnricher import (
+    MetadataEnricher,
+    _enrich_papers_with_all,
+    _enrich_papers_with_impact_factors,
+    _enrich_papers_with_citations,
+)
 
-# Import Sci-Hub downloader
-from ._SciHubDownloader import dois_to_local_pdfs, dois_to_local_pdfs_async
+# PDF download functionality
+from ._PDFDownloader import (
+    PDFDownloader,
+    download_pdf,
+    download_pdfs as download_pdfs_async,
+)
 
 # Create module-level convenience function
 def download_pdfs(
@@ -123,12 +133,13 @@ __all__ = [
     'papers_to_json',
     'papers_to_markdown',
 
-    # Utils
-    # 'enrich_with_citations',  # Now part of Scholar.enrich_papers()
-
-    # Sci-Hub downloader
-    'dois_to_local_pdfs',
-    'dois_to_local_pdfs_async'
+    # Enrichment
+    'MetadataEnricher',
+    
+    # PDF download functionality
+    'PDFDownloader',
+    'download_pdf',
+    'download_pdfs_async',
 ]
 
 # For backward compatibility, provide access to old functions with deprecation warnings

@@ -34,7 +34,7 @@ from ._Config import ScholarConfig
 from ._DOIResolver import BatchDOIResolver, DOIResolver
 from ._Paper import Paper
 from ._Papers import Papers
-from ._PDFManager import PDFManager
+from ._PDFDownloader import PDFDownloader
 from ._SearchEngines import UnifiedSearcher, get_scholar_dir
 from ._MetadataEnricher import MetadataEnricher
 
@@ -128,7 +128,11 @@ class Scholar:
             use_impact_factor_package=self.config.use_impact_factor_package,
         )
 
-        self._pdf_manager = PDFManager(self.workspace_dir)
+        self._pdf_downloader = PDFDownloader(
+            download_dir=self.workspace_dir / "pdfs",
+            use_scihub=True,
+            acknowledge_ethical_usage=self.config.acknowledge_scihub_ethical_usage
+        )
 
         # Initialize DOI resolver
         self._doi_resolver = DOIResolver(
@@ -219,9 +223,10 @@ class Scholar:
                 logger.info(
                     f"Auto-downloading {len(open_access)} open-access PDFs..."
                 )
-                self._run_async(
-                    self._pdf_manager.download_and_index(open_access)
-                )
+                # Download PDFs for open access papers
+                dois = [p.doi for p in open_access if p.doi]
+                if dois:
+                    self.download_pdfs(dois, show_progress=False)
 
         return collection
 
@@ -236,7 +241,10 @@ class Scholar:
         Returns:
             Papers with local results
         """
-        papers = self._pdf_manager.search_library(query, limit)
+        # Use the UnifiedSearcher with 'local' source
+        papers = self._run_async(
+            self._searcher.search(query, sources=['local'], limit=limit)
+        )
         return Papers(papers)
 
     def _index_local_pdfs(
@@ -252,7 +260,8 @@ class Scholar:
         Returns:
             Indexing statistics
         """
-        return self._pdf_manager.indexer.index_directory(directory, recursive)
+        # Build local index using the searcher
+        return self._searcher.build_local_index([directory])
 
     def download_pdfs(
         self, 
@@ -302,7 +311,7 @@ class Scholar:
             >>> # Download single DOI
             >>> scholar.download_pdfs("10.1234/example")
         """
-        from ._SciHubDownloader import dois_to_local_pdfs
+        # Use the integrated PDFDownloader instead of standalone SciHubDownloader
         
         # Set default download directory
         if download_dir is None:
@@ -340,15 +349,61 @@ class Scholar:
                 'downloaded_files': {}
             }
         
-        # Download PDFs using the unified downloader
-        return dois_to_local_pdfs(
-            dois,
-            download_dir=download_dir,
-            max_workers=max_workers,
-            show_progress=show_progress,
-            acknowledge_ethical_usage=acknowledge_ethical_usage,
-            **kwargs
-        )
+        # Update PDFDownloader settings
+        self._pdf_downloader.acknowledge_ethical_usage = acknowledge_ethical_usage
+        self._pdf_downloader.max_concurrent = max_workers
+        
+        # Download PDFs using the integrated downloader
+        async def download_batch():
+            # Extract DOIs and metadata
+            identifiers = []
+            metadata_list = []
+            
+            for item in dois:
+                if isinstance(item, str):
+                    identifiers.append(item)
+                    metadata_list.append(None)
+                elif isinstance(item, Paper):
+                    identifiers.append(item.doi)
+                    metadata_list.append({
+                        'title': item.title,
+                        'authors': item.authors,
+                        'year': item.year
+                    })
+            
+            return await self._pdf_downloader.batch_download(
+                identifiers=identifiers,
+                output_dir=download_dir,
+                metadata_list=metadata_list,
+                progress_callback=lambda c, t, _: logger.info(f"Downloaded {c}/{t}") if show_progress else None
+            )
+        
+        # Run async function
+        try:
+            import asyncio
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If already in async context
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, download_batch())
+                    results = future.result()
+            else:
+                results = loop.run_until_complete(download_batch())
+        except RuntimeError:
+            # No event loop
+            results = asyncio.run(download_batch())
+        
+        # Convert results to match old format for backward compatibility
+        successful = sum(1 for path in results.values() if path is not None)
+        failed = len(results) - successful
+        
+        return {
+            'successful': successful,
+            'failed': failed,
+            'results': list(results.keys()),
+            'downloaded_files': {doi: str(path) for doi, path in results.items() if path}
+        }
 
     def _enrich_papers(
         self,
@@ -844,7 +899,18 @@ class Scholar:
 
     def get_library_stats(self) -> Dict[str, Any]:
         """Get statistics about local PDF library."""
-        return self._pdf_manager.get_library_stats()
+        # Get stats from the local search engine
+        pdf_dir = self.workspace_dir / "pdfs"
+        if not pdf_dir.exists():
+            return {"total_pdfs": 0, "indexed": 0}
+        
+        # Count PDF files
+        pdf_files = list(pdf_dir.rglob("*.pdf"))
+        return {
+            "total_pdfs": len(pdf_files),
+            "pdf_directory": str(pdf_dir),
+            "indexed": len(pdf_files)  # Assume all PDFs are indexed
+        }
 
     def search_quick(self, query: str, top_n: int = 5) -> List[str]:
         """

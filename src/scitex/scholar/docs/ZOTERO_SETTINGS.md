@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-22 23:19:50
+!-- Timestamp: 2025-07-24 06:25:58
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/docs/ZOTERO_SETTINGS.md
 !-- --- -->
@@ -8,10 +8,8 @@ Option 3: Fix Zotero Connector (If you want full automation)
 The WSL2 networking issue can sometimes be fixed:
 
 In Windows Zotero: Edit → Preferences → Advanced → Config Editor
-Search for: extensions.zotero.connector.enabled
-Set to: true
-Also search for: extensions.zotero.connector.port
-Set to: 23119
+`extensions.zotero.connector.enabled`: true
+`extensions.zotero.connector.port`: 23119
 Restart Zotero
 
 Then try this in Windows admin PowerShell:

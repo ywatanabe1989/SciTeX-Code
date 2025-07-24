@@ -1,0 +1,10 @@
+# SciTeX Scholar Configuration (Minimal Template)
+# Copy to ~/.scitex/scholar/config.yaml and add your API keys
+
+# Required for PubMed searches
+pubmed_email: "your.email@example.com"
+
+# Optional but recommended for better features
+semantic_scholar_api_key: null  # Get free at: https://www.semanticscholar.org/product/api
+
+# That's it! All other settings will use sensible defaults.

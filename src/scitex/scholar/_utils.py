@@ -259,6 +259,38 @@ def _paper_to_markdown_entry(paper: Paper) -> str:
 
 
 # Text processing utilities
+def normalize_filename(filename: str, max_length: int = 100) -> str:
+    """
+    Normalize a filename for safe filesystem usage.
+    
+    Args:
+        filename: Original filename
+        max_length: Maximum length for the filename
+        
+    Returns:
+        Safe filename
+    """
+    # Remove/replace unsafe characters
+    safe_name = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    
+    # Replace multiple spaces/underscores with single underscore
+    safe_name = re.sub(r'[\s_]+', '_', safe_name)
+    
+    # Remove leading/trailing spaces and underscores
+    safe_name = safe_name.strip('_ ')
+    
+    # Limit length
+    if len(safe_name) > max_length:
+        # Keep extension if present
+        if '.' in safe_name:
+            name, ext = safe_name.rsplit('.', 1)
+            safe_name = name[:max_length - len(ext) - 1] + '.' + ext
+        else:
+            safe_name = safe_name[:max_length]
+    
+    return safe_name
+
+
 def normalize_author_name(name: str) -> str:
     """
     Normalize author name format.

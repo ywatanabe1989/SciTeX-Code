@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-23 18:36:33
+!-- Timestamp: 2025-07-24 09:57:44
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -29,6 +29,8 @@ pip install impact-factor  # For real 2024 JCR impact factors
 pip install PyMuPDF       # For PDF text extraction
 pip install sentence-transformers  # For vector similarity search
 pip install selenium webdriver-manager  # For PDF downloading from Sci-Hub
+
+git clone git@github.com:zotero/translators.git zotero_translators
 ```
 
 ## Quick Start
