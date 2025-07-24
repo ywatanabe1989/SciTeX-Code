@@ -242,16 +242,16 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/pd/_sort.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/pd/_sort.py
 # --------------------------------------------------------------------------------
 # #!./env/bin/python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-08-25 09:35:39 (ywatanabe)"
 # # ./src/scitex/pd/_sort.py
-#
+# 
 # import pandas as pd
-#
-#
+# 
+# 
 # def sort(
 #     dataframe,
 #     by=None,
@@ -265,7 +265,7 @@ if __name__ == "__main__":
 # ):
 #     """
 #     Sort DataFrame by specified column(s) with optional custom ordering and column reordering.
-#
+# 
 #     Example
 #     -------
 #     import pandas as pd
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 #     custom_order = {'A': ['bar', 'baz', 'foo']}
 #     sorted_df = sort(df, by=None, orders=custom_order)
 #     print(sorted_df)
-#
+# 
 #     Parameters
 #     ----------
 #     dataframe : pandas.DataFrame
@@ -294,32 +294,26 @@ if __name__ == "__main__":
 #         Apply the key function to the values before sorting.
 #     orders : dict, optional
 #         Dictionary of column names and their custom sort orders.
-#
+# 
 #     Returns
 #     -------
 #     pandas.DataFrame
 #         Sorted DataFrame with reordered columns.
 #     """
 #     if orders:
-#         by = (
-#             [by]
-#             if isinstance(by, str)
-#             else list(orders.keys()) if by is None else by
-#         )
-#
+#         by = [by] if isinstance(by, str) else list(orders.keys()) if by is None else by
+# 
 #         def apply_custom_order(column):
 #             return (
-#                 pd.Categorical(
-#                     column, categories=orders[column.name], ordered=True
-#                 )
+#                 pd.Categorical(column, categories=orders[column.name], ordered=True)
 #                 if column.name in orders
 #                 else column
 #             )
-#
+# 
 #         key = apply_custom_order
 #     elif isinstance(by, str):
 #         by = [by]
-#
+# 
 #     sorted_df = dataframe.sort_values(
 #         by=by,
 #         ascending=ascending,
@@ -329,12 +323,12 @@ if __name__ == "__main__":
 #         ignore_index=ignore_index,
 #         key=key,
 #     )
-#
+# 
 #     # Reorder columns
 #     if by:
 #         other_columns = [col for col in sorted_df.columns if col not in by]
 #         sorted_df = sorted_df[by + other_columns]
-#
+# 
 #     if inplace:
 #         dataframe.update(sorted_df)
 #         dataframe.reindex(columns=sorted_df.columns)
@@ -343,5 +337,5 @@ if __name__ == "__main__":
 #         return sorted_df
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/pd/_sort.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/pd/_sort.py
 # --------------------------------------------------------------------------------

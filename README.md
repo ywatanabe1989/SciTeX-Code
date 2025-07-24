@@ -56,6 +56,7 @@ pip install scitex
 |                       | [`scitex.linalg`](./src/scitex/linalg#readme)         | Linear algebra                   |
 | **Signal Processing** | [`scitex.dsp`](./src/scitex/dsp#readme)               | Digital Signal Processing        |
 | **Statistics**        | [`scitex.stats`](./src/scitex/stats#readme)           | Statistical analysis tools       |
+| **Literature**        | [`scitex.scholar`](./src/scitex/scholar#readme)       | Academic paper search & download |
 | **ETC**               | [`scitex.decorators`](./src/scitex/decorators#readme) | Function decorators              |
 |                       | [`scitex.gists`](./src/scitex/gists#readme)           | Code snippets                    |
 |                       | [`scitex.resource`](./src/scitex/resource#readme)     | Resource management              |
@@ -91,6 +92,35 @@ scitex.gen.close(config, info)
 ```
 
 ## 🆕 What's New in v2.0
+
+### 📚 Scholar Module with Enhanced Search Capabilities
+
+The Scholar module now supports **5 search engines** including the newly added **CrossRef**:
+- **PubMed**: Biomedical literature database
+- **Semantic Scholar**: AI-powered research tool with citation graphs
+- **Google Scholar**: Comprehensive academic search (via scholarly package)
+- **CrossRef**: DOI registration agency with 150M+ scholarly works (NEW!)
+- **arXiv**: Preprint repository for physics, mathematics, computer science
+
+```python
+from scitex.scholar import Scholar
+
+# Initialize Scholar
+scholar = Scholar()
+
+# Search across multiple databases
+papers = scholar.search(
+    query="machine learning",
+    sources=["pubmed", "crossref", "arxiv"],  # Mix and match sources
+    limit=20
+)
+```
+
+Features:
+- Automatic enrichment with 2024 JCR impact factors
+- YAML configuration support
+- PDF download with institutional access (OpenAthens - now fully working!)
+- Unified API across all search engines
 
 ### 🤖 MCP Servers for AI-Assisted Development
 

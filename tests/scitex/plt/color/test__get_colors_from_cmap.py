@@ -246,7 +246,6 @@ def test_color_consistency():
     assert colors_list[1] == color_half
     assert colors_list[2] == color_1
 
-
 if __name__ == "__main__":
     import os
 
@@ -255,7 +254,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/color/_get_colors_from_cmap.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_get_colors_from_cmap.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -263,9 +262,8 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/color/_get_from_cmap.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/color/_get_from_cmap.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/color/_get_from_cmap.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
 # 
@@ -310,8 +308,8 @@ if __name__ == "__main__":
 #     tuple
 #         RGBA color tuple with values from 0 to 1
 #     """
-#     # Get the colormap
-#     cmap = matplotlib.cm.get_cmap(cmap_name)
+#     # Get the colormap using the recommended approach
+#     cmap = matplotlib.colormaps[cmap_name]
 # 
 #     # Normalize the value
 #     if value_range is None:
@@ -361,10 +359,7 @@ if __name__ == "__main__":
 #     else:
 #         values = np.linspace(value_range[0], value_range[1], n_colors)
 # 
-#     return [
-#         get_color_from_cmap(cmap_name, val, value_range, alpha)
-#         for val in values
-#     ]
+#     return [get_color_from_cmap(cmap_name, val, value_range, alpha) for val in values]
 # 
 # 
 # def get_categorical_colors_from_cmap(
@@ -393,7 +388,9 @@ if __name__ == "__main__":
 # 
 #     return {cat: colors[idx] for idx, cat in enumerate(unique_categories)}
 # 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/color/_get_colors_from_cmap.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_get_colors_from_cmap.py
 # --------------------------------------------------------------------------------

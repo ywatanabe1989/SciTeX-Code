@@ -127,7 +127,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_fillv.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_fillv.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -135,14 +135,14 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/ax/_plot_fillv.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/ax/_plot_fillv.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/ax/_plot_fillv.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
 # 
 # import matplotlib
 # import numpy as np
+# from ....plt.utils import assert_valid_axis
 # 
 # 
 # def plot_fillv(axes, starts, ends, color="red", alpha=0.2):
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 # 
 #     Parameters
 #     ----------
-#     axes : matplotlib.axes.Axes or numpy.ndarray of matplotlib.axes.Axes
+#     axes : matplotlib.axes.Axes or scitex.plt._subplots.AxisWrapper or numpy.ndarray of axes
 #         The axis object(s) to fill intervals on.
 #     starts : array-like
 #         Array-like of start positions.
@@ -173,9 +173,7 @@ if __name__ == "__main__":
 #     axes = axes if isinstance(axes, np.ndarray) else [axes]
 # 
 #     for ax in axes:
-#         assert isinstance(
-#             ax, matplotlib.axes._axes.Axes
-#         ), "First argument must be a matplotlib axis"
+#         assert_valid_axis(ax, "First argument must be a matplotlib axis or scitex axis wrapper")
 #         for start, end in zip(starts, ends):
 #             ax.axvspan(start, end, color=color, alpha=alpha)
 # 
@@ -184,10 +182,9 @@ if __name__ == "__main__":
 #     else:
 #         return axes
 # 
+# 
 # # EOF
-# --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_fillv.py
-# --------------------------------------------------------------------------------
 
-
-# EOF
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_fillv.py
+# --------------------------------------------------------------------------------

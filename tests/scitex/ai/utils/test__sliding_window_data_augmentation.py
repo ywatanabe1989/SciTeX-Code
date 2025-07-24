@@ -781,22 +781,28 @@ class TestSlidingWindowDataAugmentationDocumentation:
             augmented = sliding_window_data_augmentation(sensor_data, window_size)
             assert augmented.shape == (n_sensors, window_size)
 
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-v", "-s"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Source Code Reference:
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/utils/_sliding_window_data_augmentation.py
 # --------------------------------------------------------------------------------
-# Function: sliding_window_data_augmentation(x, window_size_pts)
+# #!/usr/bin/env python3
+# # -*- coding: utf-8 -*-
+# # Time-stamp: "2024-01-24 13:56:36 (ywatanabe)"
 # 
-# Parameters:
-#   - x: Input array with shape (..., time_dimension)
-#   - window_size_pts: Size of the window to extract
+# import random
 # 
-# Returns:
-#   - Sliced array with shape (..., window_size_pts)
 # 
-# The function randomly selects a starting position and extracts a window
-# of the specified size from the last dimension of the input array.
+# def sliding_window_data_augmentation(x, window_size_pts):
+#     start = random.randint(0, x.shape[-1] - window_size_pts)
+#     end = start + window_size_pts
+#     return x[..., start:end]
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/utils/_sliding_window_data_augmentation.py
 # --------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-24 17:45:14
+!-- Timestamp: 2025-07-24 20:04:40
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -11,14 +11,14 @@ A comprehensive Python library for scientific literature management with automat
 ## 🌟 Key Features
 
 ### Literature Search & Management
-- **Multi-Source Search**: Unified search across PubMed, arXiv, and Semantic Scholar
+- **Multi-Source Search**: Unified search across PubMed, arXiv, Semantic Scholar, and Google Scholar
 - **Automatic Enrichment**: Journal impact factors (2024 JCR data) and citation counts
 - **Smart Deduplication**: Intelligent merging of results from multiple sources
 - **Advanced Filtering**: By citations, impact factor, year, journal quartile, etc.
 - **Multiple Export Formats**: BibTeX, RIS, JSON, CSV, and Markdown
 
 ### PDF Management
-- **OpenAthens Authentication**: Institutional access to paywalled papers
+- **OpenAthens Authentication**: Institutional access to paywalled papers (requires manual 2FA)
 - **Multi-Strategy Downloads**: Direct links, Zotero translators, browser automation
 - **Local PDF Library**: Index and search your existing PDF collection # Need Check
 - **Text Extraction**: Extract full text and sections for AI/NLP processing # Need Check
@@ -42,8 +42,13 @@ pip install impact-factor  # For real 2024 JCR impact factors
 pip install PyMuPDF       # For PDF text extraction
 pip install sentence-transformers  # For vector similarity search
 pip install selenium webdriver-manager  # For PDF downloading from Sci-Hub
+pip install scholarly     # For Google Scholar search (Note: may be rate-limited)
 
 git clone git@github.com:zotero/translators.git zotero_translators
+
+# Install Lean Library browser extension (recommended for institutional access)
+# Chrome/Edge: https://chrome.google.com/webstore/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa
+# Firefox: https://addons.mozilla.org/en-US/firefox/addon/lean-library/
 ```
 
 ## Quick Start
@@ -69,11 +74,16 @@ scholar = Scholar()
 papers = scholar.search(
     query="epilepsy detection machine learning",
     limit=10,
-    sources=["pubmed"],  # or ["pubmed", "semantic_scholar", "arxiv"]
+    sources=["pubmed"],  # or ["pubmed", "semantic_scholar", "google_scholar", "crossref", "arxiv"]
     year_min=2020,
     year_max=2024
 )
-# Found 9 papers
+# Searching papers...
+# Query: epilepsy detection machine learning
+#   Limit: 10
+#   Sources: ['pubmed']
+#   Year min: 2020
+#   Year max: 2024
 
 papers_df = papers.to_dataframe()
 
@@ -173,8 +183,9 @@ acknowledge_scihub_ethical_usage: false  # Must be true to use Sci-Hub
 # Search Defaults
 default_search_sources:
   - pubmed
-  - arxiv
   - semantic_scholar
+  - google_scholar
+  - arxiv
 default_search_limit: 50
 
 # PDF Management
@@ -277,6 +288,9 @@ stats = papers.summary  # Returns dict with basic stats
 # Convert to pandas DataFrame for analysis
 df = papers.to_dataframe()
 print(df.columns)  # See available columns
+
+# N/A values now include reasons
+# Example: "N/A (No journal specified)" or "N/A (Journal 'Example Journal' not found in JCR 2024 database)"
 ```
 
 <details>
@@ -431,7 +445,39 @@ Sci-Hub access may be restricted in your jurisdiction. Please:
 - Use this feature responsibly for legitimate academic purposes only
 - See `docs/SCIHUB_ETHICAL_USAGE.md` for detailed guidelines
 
-#### 4. OpenAthens Institutional Access (Recommended)
+#### 4. Lean Library Browser Extension (Primary Method - Recommended)
+
+Lean Library provides automatic institutional access via browser extension. It's the easiest and most reliable method:
+
+**One-time setup:**
+1. Install the [Lean Library extension](https://chrome.google.com/webstore/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa)
+2. Select your institution in the extension settings
+3. That's it! Scholar will automatically use it
+
+```python
+# Lean Library is enabled by default
+scholar = Scholar()
+
+# Download papers - Lean Library will be tried first
+downloaded_papers = scholar.download_pdfs([
+    "10.1038/s41586-020-2832-5",  # Nature paper
+    "10.1126/science.abc1234",     # Science paper
+])
+
+# Check if Lean Library was used
+for paper in downloaded_papers:
+    if paper.pdf_source == "Lean Library":
+        print(f"Downloaded via Lean Library: {paper.title}")
+```
+
+**Advantages:**
+- ✅ No manual login required
+- ✅ Works with all major publishers
+- ✅ Shows green icon when you have access
+- ✅ Persistent sessions (no timeout)
+- ✅ Used by Harvard, Stanford, Yale, etc.
+
+#### 5. OpenAthens Institutional Access (Alternative Method)
 
 OpenAthens provides legitimate access to paywalled papers through your institutional subscriptions:
 
@@ -553,6 +599,30 @@ for item in extracted:
     print(f"Text length: {len(item['full_text'])} chars")
 ```
 
+## Understanding N/A Values
+
+When enrichment data is unavailable, the DataFrame now provides explanations:
+
+```python
+# Example DataFrame output with N/A reasons:
+df = papers.to_dataframe()
+
+# Impact factor column might show:
+# - "N/A (No journal specified)" - for arXiv preprints or papers without journal info
+# - "N/A (Journal 'Example Journal' not found in JCR 2024 database)" - journal not in database
+# - "N/A (Not enriched)" - enrichment was not performed
+
+# Citation count column might show:
+# - "N/A (API rate limit reached)" - hit API limits during enrichment
+# - "N/A (Paper not found in citation databases)" - couldn't find paper in databases
+# - "N/A (Citation lookup failed)" - other API errors
+# - "N/A (Not enriched)" - enrichment was not performed
+
+# Filter to see only papers with missing data
+na_papers = df[df['impact_factor'].astype(str).str.startswith('N/A')]
+print(na_papers[['title', 'impact_factor', 'journal']])
+```
+
 ## Environment Variables
 
 Set these for enhanced functionality:
@@ -565,11 +635,50 @@ export SCITEX_PUBMED_EMAIL="your.email@example.com"
 export SCITEX_CROSSREF_EMAIL="your.email@example.com"
 
 # Optional: For Semantic Scholar API (free at https://www.semanticscholar.org/product/api)
+# HIGHLY RECOMMENDED to avoid rate limiting!
 export SCITEX_SEMANTIC_SCHOLAR_API_KEY="your-api-key"
 
 # Optional: For CrossRef API higher rate limits
 export SCITEX_CROSSREF_API_KEY="your-api-key"
+
+# Optional: Google Scholar timeout (default: 10 seconds)
+export SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT=10
 ```
+
+### API Rate Limits
+
+**Semantic Scholar**: 
+- Without API key: 1 request per second (very limited)
+- With free API key: 100 requests per 5 minutes
+- Get a free key at: https://www.semanticscholar.org/product/api
+
+**PubMed**: 
+- 3 requests per second without API key (usually sufficient)
+
+**arXiv**: 
+- No strict limits but be respectful
+
+**Google Scholar**: 
+- Aggressively blocks automated access
+- Consider using other sources
+
+## Google Scholar Notes
+
+⚠️ **Important**: Google Scholar has aggressive anti-bot measures that typically block automated searches:
+
+- Most searches will fail with "Cannot Fetch from Google Scholar" error
+- Even with timeouts, Google Scholar often blocks requests immediately
+- This is a limitation of Google Scholar, not the SciTeX implementation
+
+**Recommended alternatives for reliable automated searches:**
+- **PubMed**: Best for biomedical literature
+- **Semantic Scholar**: Excellent citation data and AI/CS papers  
+- **arXiv**: Preprints in physics, mathematics, computer science
+
+**If you need Google Scholar:**
+- Use the `scholarly` package directly with proxy configuration
+- Consider manual searches through the web interface
+- See the `scholarly` documentation for proxy setup instructions
 
 ## TODO
 - [ ] Add support for EZproxy

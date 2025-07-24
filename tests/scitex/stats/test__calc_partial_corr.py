@@ -193,27 +193,28 @@ class TestPartialCorrValidation:
         with pytest.raises((ValueError, Exception)):
             scitex.stats.calc_partial_corr(x, y, z)
 
-
 if __name__ == "__main__":
     import os
 
-    pytest.main([os.path.abspath(__file__), "-v"])
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/stats/_calc_partial_corr.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/stats/_calc_partial_corr.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
-#
+# 
 # import numpy as np
-#
-#
+# 
+# 
 # def calc_partial_corr(x, y, z):
 #     """remove the influence of the variable z from the correlation between x and y."""
-#
+# 
 #     x = np.array(x).astype(np.float128)
 #     y = np.array(y).astype(np.float128)
 #     z = np.array(z).astype(np.float128)
-#
+# 
 #     r_xy = np.corrcoef(x, y)[0, 1]
 #     r_xz = np.corrcoef(x, z)[0, 1]
 #     r_yz = np.corrcoef(y, z)[0, 1]
@@ -221,5 +222,5 @@ if __name__ == "__main__":
 #     return float(r_xy_z)
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/_scitex_repo/src/scitex/stats/_calc_partial_corr.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/stats/_calc_partial_corr.py
 # --------------------------------------------------------------------------------

@@ -45,11 +45,11 @@ class SearchEngine:
         self.rate_limit = 0.1  # seconds between requests
         self._last_request = 0
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search for papers. Must be implemented by subclasses."""
         raise NotImplementedError
     
-    async def _rate_limit(self):
+    async def _rate_limit_async(self):
         """Enforce rate limiting."""
         import time
         now = time.time()
@@ -69,14 +69,14 @@ class SemanticScholarEngine(SearchEngine):
         self.rate_limit = 0.1 if api_key else 1.0  # Faster with API key
         
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search Semantic Scholar for papers."""
-        await self._rate_limit()
+        await self._rate_limit_async()
         
         # Check if query is for a specific paper ID
         if query.startswith('CorpusId:'):
             corpus_id = query.replace('CorpusId:', '').strip()
-            paper = await self._fetch_paper_by_id(f"CorpusId:{corpus_id}")
+            paper = await self._fetch_paper_by_id_async(f"CorpusId:{corpus_id}")
             return [paper] if paper else []
         
         headers = {}
@@ -116,11 +116,23 @@ class SemanticScholarEngine(SearchEngine):
                                 papers.append(paper)
                     else:
                         error_msg = await response.text()
-                        # Don't print error message directly - just log it
-                        logger.debug(f"Semantic Scholar API returned {response.status}: {error_msg}")
-                        # Return empty list to let other sources handle the search
-                        return []
                         
+                        if response.status == 429:
+                            # Rate limiting - show this to user
+                            logger.warning("Semantic Scholar rate limit reached. Please wait a moment or get a free API key at https://www.semanticscholar.org/product/api")
+                            raise SearchError(
+                                query=query,
+                                source="semantic_scholar",
+                                reason="Rate limit reached. Please wait 1-2 seconds between searches or get a free API key."
+                            )
+                        else:
+                            # Other errors - just log
+                            logger.debug(f"Semantic Scholar API returned {response.status}: {error_msg}")
+                            return []
+                        
+        except SearchError:
+            # Re-raise SearchError so user sees it
+            raise
         except Exception as e:
             logger.debug(f"Semantic Scholar search error: {e}")
             # Return empty list instead of raising to allow fallback to other sources
@@ -128,9 +140,9 @@ class SemanticScholarEngine(SearchEngine):
         
         return papers
     
-    async def _fetch_paper_by_id(self, paper_id: str) -> Optional[Paper]:
+    async def _fetch_paper_by_id_async(self, paper_id: str) -> Optional[Paper]:
         """Fetch a specific paper by its ID (CorpusId, DOI, arXiv ID, etc.)."""
-        await self._rate_limit()
+        await self._rate_limit_async()
         
         headers = {}
         if self.api_key:
@@ -225,9 +237,9 @@ class PubMedEngine(SearchEngine):
         self.base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
         self.rate_limit = 0.4  # NCBI rate limit
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search PubMed for papers."""
-        await self._rate_limit()
+        await self._rate_limit_async()
         
         # First, search for IDs
         search_params = {
@@ -273,7 +285,7 @@ class PubMedEngine(SearchEngine):
                         
                         if pmids:
                             # Fetch details
-                            papers = await self._fetch_pubmed_details(session, pmids)
+                            papers = await self._fetch_pubmed_details_async(session, pmids)
                     else:
                         logger.error(f"PubMed search failed: {response.status}")
                         
@@ -286,9 +298,9 @@ class PubMedEngine(SearchEngine):
         
         return papers
     
-    async def _fetch_pubmed_details(self, session: aiohttp.ClientSession, pmids: List[str]) -> List[Paper]:
+    async def _fetch_pubmed_details_async(self, session: aiohttp.ClientSession, pmids: List[str]) -> List[Paper]:
         """Fetch detailed information for PubMed IDs."""
-        await self._rate_limit()
+        await self._rate_limit_async()
         
         fetch_params = {
             'db': 'pubmed',
@@ -402,9 +414,9 @@ class ArxivEngine(SearchEngine):
         self.base_url = "http://export.arxiv.org/api/query"
         self.rate_limit = 0.5
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search arXiv for papers."""
-        await self._rate_limit()
+        await self._rate_limit_async()
         
         params = {
             'search_query': f'all:{query}',
@@ -502,6 +514,357 @@ class ArxivEngine(SearchEngine):
         return papers
 
 
+class CrossRefEngine(SearchEngine):
+    """CrossRef search engine for academic papers."""
+    
+    def __init__(self, api_key: Optional[str] = None, email: Optional[str] = None):
+        super().__init__("crossref")
+        self.api_key = api_key
+        self.email = email or "research@example.com"
+        self.base_url = "https://api.crossref.org/works"
+        self.rate_limit = 0.5  # CrossRef recommends 50ms between requests
+        
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+        """Search CrossRef for papers."""
+        await self._rate_limit_async()
+        
+        # Build query parameters
+        params = {
+            'query': query,
+            'rows': min(limit, 1000),  # CrossRef max is 1000
+            'sort': 'relevance',
+            'order': 'desc'
+        }
+        
+        # Add filters for year if provided
+        filters = []
+        if 'year_min' in kwargs and kwargs['year_min'] is not None:
+            filters.append(f"from-pub-date:{kwargs['year_min']}")
+        if 'year_max' in kwargs and kwargs['year_max'] is not None:
+            filters.append(f"until-pub-date:{kwargs['year_max']}")
+        
+        if filters:
+            params['filter'] = ','.join(filters)
+        
+        # Add API key if available
+        if self.api_key:
+            params['key'] = self.api_key
+            
+        # Headers with user agent
+        headers = {
+            'User-Agent': f'SciTeX/1.0 (mailto:{self.email})'
+        }
+        
+        papers = []
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.base_url, params=params, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        papers = self._parse_crossref_response(data)
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"CrossRef search failed: {response.status} - {error_text}")
+                        raise SearchError(
+                            query=query,
+                            source="crossref",
+                            reason=f"API returned status {response.status}"
+                        )
+                        
+        except asyncio.TimeoutError:
+            logger.error("CrossRef search timed out")
+            raise SearchError(
+                query=query,
+                source="crossref", 
+                reason="Search timed out"
+            )
+        except Exception as e:
+            logger.error(f"CrossRef search error: {e}")
+            raise SearchError(
+                query=query,
+                source="crossref",
+                reason=str(e)
+            )
+        
+        return papers
+    
+    def _parse_crossref_response(self, data: Dict[str, Any]) -> List[Paper]:
+        """Parse CrossRef API response into Paper objects."""
+        papers = []
+        
+        items = data.get('message', {}).get('items', [])
+        
+        for item in items:
+            try:
+                # Extract basic metadata
+                title = ' '.join(item.get('title', ['No title']))
+                
+                # Authors
+                authors = []
+                for author in item.get('author', []):
+                    given = author.get('given', '')
+                    family = author.get('family', '')
+                    if given and family:
+                        authors.append(f"{given} {family}")
+                    elif family:
+                        authors.append(family)
+                
+                # Abstract - CrossRef doesn't always have abstracts
+                abstract = item.get('abstract', '')
+                
+                # Year from published-print or published-online
+                year = None
+                published = item.get('published-print') or item.get('published-online')
+                if published and 'date-parts' in published:
+                    date_parts = published['date-parts']
+                    if date_parts and date_parts[0]:
+                        year = str(date_parts[0][0])
+                
+                # Journal
+                journal = None
+                container_title = item.get('container-title', [])
+                if container_title:
+                    journal = container_title[0]
+                
+                # DOI
+                doi = item.get('DOI')
+                
+                # Citation count
+                citation_count = item.get('is-referenced-by-count', 0)
+                
+                # Keywords/subjects
+                keywords = item.get('subject', [])
+                
+                # URL
+                url = item.get('URL')
+                
+                paper = Paper(
+                    title=title,
+                    authors=authors,
+                    abstract=abstract,
+                    source='crossref',
+                    year=year,
+                    doi=doi,
+                    journal=journal,
+                    keywords=keywords,
+                    citation_count=citation_count,
+                    metadata={
+                        'citation_count_source': 'CrossRef',
+                        'url': url,
+                        'publisher': item.get('publisher'),
+                        'issn': item.get('ISSN', []),
+                        'type': item.get('type'),
+                        'score': item.get('score')
+                    }
+                )
+                
+                papers.append(paper)
+                
+            except Exception as e:
+                logger.warning(f"Failed to parse CrossRef item: {e}")
+                continue
+        
+        return papers
+
+
+class GoogleScholarEngine(SearchEngine):
+    """Search engine for Google Scholar using scholarly package."""
+    
+    def __init__(self, timeout: int = 10):
+        super().__init__("google_scholar")
+        self.rate_limit = 2.0  # Be respectful to Google Scholar
+        self._scholarly = None
+        self.timeout = timeout
+        
+    def _init_scholarly(self):
+        """Lazy load scholarly package."""
+        if self._scholarly is None:
+            try:
+                from scholarly import scholarly
+                self._scholarly = scholarly
+                # Configure proxy to avoid blocking (optional)
+                # from scholarly import ProxyGenerator
+                # pg = ProxyGenerator()
+                # pg.FreeProxies()  # Use free proxies
+                # scholarly.use_proxy(pg)
+            except ImportError:
+                raise ImportError(
+                    "scholarly package not installed. "
+                    "Install with: pip install scholarly"
+                )
+        return self._scholarly
+    
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+        """
+        Search Google Scholar for papers.
+        
+        Args:
+            query: Search query
+            limit: Maximum number of results
+            **kwargs: Additional parameters (year_min, year_max)
+            
+        Returns:
+            List of Paper objects
+        """
+        papers = []
+        
+        try:
+            # Initialize scholarly
+            scholarly = self._init_scholarly()
+            
+            # Quick test to see if Google Scholar is accessible
+            try:
+                # Try a minimal search to detect blocking immediately
+                test_search = scholarly.search_pubs("test")
+                next(test_search)  # Try to get first result
+            except Exception as e:
+                if "Cannot Fetch" in str(e) or "403" in str(e):
+                    logger.warning("Google Scholar is blocking requests")
+                    raise SearchError(
+                        query=query,
+                        source="google_scholar",
+                        reason="Google Scholar is blocking automated access. Use PubMed or Semantic Scholar instead."
+                    )
+            
+            # Apply year filters if provided
+            year_min = kwargs.get('year_min')
+            year_max = kwargs.get('year_max')
+            
+            # Build query with year filters
+            search_query = query
+            if year_min and year_max:
+                search_query += f" after:{year_min-1} before:{year_max+1}"
+            elif year_min:
+                search_query += f" after:{year_min-1}"
+            elif year_max:
+                search_query += f" before:{year_max+1}"
+            
+            logger.info(f"Searching Google Scholar: {search_query}")
+            
+            # Run search in executor with timeout to avoid blocking
+            loop = asyncio.get_event_loop()
+            
+            def search_with_limit():
+                """Search and limit results to avoid hanging."""
+                results = []
+                try:
+                    search_query_obj = scholarly.search_pubs(search_query)
+                    for i, result in enumerate(search_query_obj):
+                        if i >= limit:
+                            break
+                        results.append(result)
+                except Exception as e:
+                    logger.warning(f"Google Scholar search interrupted: {e}")
+                    # Common error from scholarly when blocked
+                    if "Cannot Fetch" in str(e) or "403" in str(e):
+                        logger.info("Google Scholar is blocking automated requests. This is common due to anti-bot measures.")
+                return results
+            
+            # Apply timeout to prevent hanging
+            try:
+                search_results = await asyncio.wait_for(
+                    loop.run_in_executor(None, search_with_limit),
+                    timeout=self.timeout
+                )
+            except asyncio.TimeoutError:
+                logger.warning(f"Google Scholar search timed out after {self.timeout} seconds")
+                raise SearchError(
+                    query=search_query,
+                    source="google_scholar",
+                    reason=f"Search timed out after {self.timeout} seconds. Google Scholar may be blocking requests. You can increase timeout with SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT environment variable."
+                )
+            
+            # Process results
+            for result in search_results:
+                
+                try:
+                    # Extract basic info from search result
+                    bib = result.get('bib', {})
+                    
+                    title = bib.get('title', '')
+                    if not title:
+                        continue
+                    
+                    # Authors
+                    authors = bib.get('author', '').split(' and ')
+                    if not authors or authors == ['']:
+                        authors = []
+                    
+                    # Abstract (often not available in search results)
+                    abstract = bib.get('abstract', '')
+                    
+                    # Year
+                    year = None
+                    pub_year = bib.get('pub_year')
+                    if pub_year:
+                        try:
+                            year = int(pub_year)
+                        except:
+                            pass
+                    
+                    # Journal/Venue
+                    journal = bib.get('venue', '')
+                    
+                    # Citation count
+                    citation_count = result.get('num_citations', 0)
+                    
+                    # URL
+                    url = result.get('pub_url', '')
+                    
+                    # Try to extract DOI from URL or other fields
+                    doi = None
+                    if 'doi.org/' in url:
+                        doi = url.split('doi.org/')[-1]
+                    
+                    # Create Paper object
+                    paper = Paper(
+                        title=title,
+                        authors=authors,
+                        abstract=abstract or "Abstract not available from Google Scholar search",
+                        source='google_scholar',
+                        year=year,
+                        journal=journal,
+                        doi=doi,
+                        citation_count=citation_count,
+                        metadata={
+                            'google_scholar_url': url,
+                            'google_scholar_id': result.get('author_id', ''),
+                            'eprint_url': result.get('eprint_url', '')
+                        }
+                    )
+                    
+                    papers.append(paper)
+                    
+                except Exception as e:
+                    logger.warning(f"Failed to parse Google Scholar result: {e}")
+                    continue
+                    
+        except ImportError as e:
+            logger.error(f"Google Scholar search unavailable: {e}")
+            raise SearchError(
+                query=query,
+                source="google_scholar",
+                reason=f"Google Scholar search unavailable: {e}"
+            )
+        except Exception as e:
+            logger.error(f"Google Scholar search failed: {e}")
+            if "robot" in str(e).lower() or "captcha" in str(e).lower() or "Cannot Fetch" in str(e):
+                raise SearchError(
+                    query=query,
+                    source="google_scholar",
+                    reason="Google Scholar is blocking automated access. Consider using PubMed or Semantic Scholar instead, or configure a proxy in the scholarly package."
+                )
+            raise SearchError(
+                query=query,
+                source="google_scholar",
+                reason=f"Search failed: {e}"
+            )
+        
+        logger.info(f"Found {len(papers)} papers from Google Scholar")
+        return papers
+
+
 class LocalSearchEngine(SearchEngine):
     """Search engine for local PDF files."""
     
@@ -510,7 +873,7 @@ class LocalSearchEngine(SearchEngine):
         self.index_path = index_path or get_scholar_dir() / "local_index.json"
         self.index = self._load_index()
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search local PDF collection."""
         # Local search is synchronous, wrap in async
         return await asyncio.to_thread(self._search_sync, query, limit, kwargs)
@@ -619,7 +982,7 @@ class VectorSearchEngine(SearchEngine):
         self._embeddings = None
         self._load_index()
     
-    async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
+    async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
         """Search using vector similarity."""
         # Vector search is CPU-bound, use thread
         return await asyncio.to_thread(self._search_sync, query, limit)
@@ -714,10 +1077,14 @@ class UnifiedSearcher:
     
     def __init__(self, 
                  email: Optional[str] = None,
-                 semantic_scholar_api_key: Optional[str] = None):
+                 semantic_scholar_api_key: Optional[str] = None,
+                 crossref_api_key: Optional[str] = None,
+                 google_scholar_timeout: int = 10):
         """Initialize unified searcher with all engines."""
         self.email = email
         self.semantic_scholar_api_key = semantic_scholar_api_key
+        self.crossref_api_key = crossref_api_key
+        self.google_scholar_timeout = google_scholar_timeout
         self._engines = {}  # Lazy-loaded engines
     
     @property
@@ -734,6 +1101,10 @@ class UnifiedSearcher:
                 self._engines[source] = PubMedEngine(self.email)
             elif source == 'arxiv':
                 self._engines[source] = ArxivEngine()
+            elif source == 'google_scholar':
+                self._engines[source] = GoogleScholarEngine(timeout=self.google_scholar_timeout)
+            elif source == 'crossref':
+                self._engines[source] = CrossRefEngine(api_key=self.crossref_api_key, email=self.email)
             elif source == 'local':
                 self._engines[source] = LocalSearchEngine()
             elif source == 'vector':
@@ -742,7 +1113,7 @@ class UnifiedSearcher:
                 raise ValueError(f"Unknown source: {source}")
         return self._engines[source]
     
-    async def search(self,
+    async def search_async(self,
                     query: str,
                     sources: List[str] = None,
                     limit: int = 20,
@@ -765,7 +1136,7 @@ class UnifiedSearcher:
             sources = ['pubmed']  # Default to PubMed only
         
         # Filter to valid sources
-        valid_sources = ['semantic_scholar', 'pubmed', 'arxiv', 'local', 'vector']
+        valid_sources = ['pubmed', 'semantic_scholar', 'google_scholar', 'crossref', 'arxiv', 'local', 'vector']
         sources = [s for s in sources if s in valid_sources]
         
         if not sources:
@@ -777,7 +1148,7 @@ class UnifiedSearcher:
         for source in sources:
             try:
                 engine = self._get_engine(source)
-                task = engine.search(query, limit, **kwargs)
+                task = engine.search_async(query, limit, **kwargs)
                 tasks.append(task)
             except Exception as e:
                 logger.debug(f"Failed to initialize {source} engine: {e}")
@@ -845,7 +1216,7 @@ def get_scholar_dir() -> Path:
     return scholar_dir
 
 
-async def search(query: str,
+async def search_async(query: str,
                 sources: List[str] = None,
                 limit: int = 20,
                 email: Optional[str] = None,
@@ -855,7 +1226,7 @@ async def search(query: str,
     Async convenience function for searching papers.
     """
     searcher = UnifiedSearcher(email=email, semantic_scholar_api_key=semantic_scholar_api_key)
-    return await searcher.search(query, sources, limit, **kwargs)
+    return await searcher.search_async(query, sources, limit, **kwargs)
 
 
 def search_sync(query: str,
@@ -867,7 +1238,7 @@ def search_sync(query: str,
     """
     Synchronous convenience function for searching papers.
     """
-    return asyncio.run(search(query, sources, limit, email, semantic_scholar_api_key, **kwargs))
+    return asyncio.run(search_async(query, sources, limit, email, semantic_scholar_api_key, **kwargs))
 
 
 def build_index(paths: List[Union[str, Path]],

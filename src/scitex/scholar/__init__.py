@@ -59,9 +59,12 @@ from ._MetadataEnricher import (
 # PDF download functionality
 from ._PDFDownloader import (
     PDFDownloader,
-    download_pdf,
-    download_pdfs as download_pdfs_async,
+    download_pdf_async,
+    download_pdfs_async,
 )
+# SmartPDFDownloader removed - using PDFDownloader directly
+
+# Browser-based download functionality removed - simplified structure
 
 # Create module-level convenience function
 def download_pdfs(
@@ -138,8 +141,10 @@ __all__ = [
     
     # PDF download functionality
     'PDFDownloader',
-    'download_pdf',
+    'download_pdf_async',
     'download_pdfs_async',
+    
+    # Browser-based functionality
 ]
 
 # For backward compatibility, provide access to old functions with deprecation warnings

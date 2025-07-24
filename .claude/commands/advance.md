@@ -34,6 +34,7 @@ Select a contribution area to work on:
    - ✅ Fixed gen.to_01() dimension handling
    - ✅ Fixed gen.clip_perc() parameter naming
    - ✅ Fixed notebook indentation & syntax errors
+   - ✅ Fixed Scholar OpenAthens authentication (complete with PDF downloads!)
    - 🔧 In Progress: Kernel death in 02_scitex_gen.ipynb
    - Remaining: Import issues, test failures, warnings
 

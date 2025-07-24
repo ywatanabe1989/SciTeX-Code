@@ -127,6 +127,7 @@ class MetadataEnricher:
         enrich_citations: bool = True,
         enrich_journal_metrics: bool = True,
         parallel: bool = True,
+        use_semantic_scholar_for_citations: bool = True,
     ) -> List[Paper]:
         """
         Enrich papers with all available metadata.
@@ -171,18 +172,18 @@ class MetadataEnricher:
                 if loop.is_running():
                     # If already in async context, create task
                     task = asyncio.create_task(
-                        self._enrich_citations_async(papers)
+                        self._enrich_citations_async_async(papers, use_semantic_scholar_for_citations)
                     )
                     papers = asyncio.run_coroutine_threadsafe(
                         task, loop
                     ).result()
                 else:
                     papers = loop.run_until_complete(
-                        self._enrich_citations_async(papers)
+                        self._enrich_citations_async_async(papers, use_semantic_scholar_for_citations)
                     )
             except RuntimeError:
                 # No event loop, create new one
-                papers = asyncio.run(self._enrich_citations_async(papers))
+                papers = asyncio.run(self._enrich_citations_async_async(papers, use_semantic_scholar_for_citations))
 
         logger.info("Enrichment completed")
         return papers
@@ -275,10 +276,24 @@ class MetadataEnricher:
 
         for paper in papers:
             if not paper.journal:
+                # Set N/A reasons for papers without journal info
+                if include_impact_factors and paper.impact_factor is None:
+                    paper.impact_factor_na_reason = "No journal specified"
+                    paper.metadata["impact_factor_na_reason"] = paper.impact_factor_na_reason
+                if include_metrics and paper.journal_quartile is None:
+                    paper.journal_quartile_na_reason = "No journal specified"
+                    paper.metadata["journal_quartile_na_reason"] = paper.journal_quartile_na_reason
                 continue
 
             metrics = self._get_journal_metrics(paper.journal)
             if not metrics:
+                # Set N/A reasons when journal metrics not found
+                if include_impact_factors and paper.impact_factor is None:
+                    paper.impact_factor_na_reason = f"Journal '{paper.journal}' not found in JCR {JCR_YEAR} database"
+                    paper.metadata["impact_factor_na_reason"] = paper.impact_factor_na_reason
+                if include_metrics and paper.journal_quartile is None:
+                    paper.journal_quartile_na_reason = f"Journal '{paper.journal}' not found in JCR {JCR_YEAR} database"
+                    paper.metadata["journal_quartile_na_reason"] = paper.journal_quartile_na_reason
                 continue
 
             # Add requested data
@@ -412,8 +427,8 @@ class MetadataEnricher:
 
     # Private methods for citation functionality
 
-    async def _enrich_citations_async(
-        self, papers: List[Paper]
+    async def _enrich_citations_async_async(
+        self, papers: List[Paper], use_semantic_scholar: bool = True
     ) -> List[Paper]:
         """
         Asynchronously enrich papers with citation counts.
@@ -439,19 +454,19 @@ class MetadataEnricher:
 
         # Create tasks for concurrent enrichment
         tasks = [
-            self._get_citation_count_for_paper(paper)
+            self._get_citation_count_for_paper_async(paper, use_semantic_scholar)
             for _, paper in papers_needing_citations
         ]
 
         # Run with semaphore to limit concurrent requests
         semaphore = asyncio.Semaphore(5)  # Max 5 concurrent requests
 
-        async def limited_task(task):
+        async def limited_task_async(task):
             async with semaphore:
                 return await task
 
         results = await asyncio.gather(
-            *[limited_task(task) for task in tasks], return_exceptions=True
+            *[limited_task_async(task) for task in tasks], return_exceptions=True
         )
 
         # Update papers with results
@@ -461,17 +476,27 @@ class MetadataEnricher:
                 logger.debug(
                     f"Failed to get citations for '{paper.title[:50]}...': {result}"
                 )
+                # Set N/A reason for citation count
+                if "rate limit" in str(result).lower():
+                    paper.citation_count_na_reason = "API rate limit reached"
+                else:
+                    paper.citation_count_na_reason = "Citation lookup failed"
+                paper.metadata["citation_count_na_reason"] = paper.citation_count_na_reason
             elif result is not None:
                 paper.citation_count = result
                 enriched_count += 1
+            else:
+                # No result but no exception - paper not found
+                paper.citation_count_na_reason = "Paper not found in citation databases"
+                paper.metadata["citation_count_na_reason"] = paper.citation_count_na_reason
 
         logger.info(
             f"Successfully enriched {enriched_count}/{len(papers_needing_citations)} papers with citations"
         )
         return papers
 
-    async def _get_citation_count_for_paper(
-        self, paper: Paper
+    async def _get_citation_count_for_paper_async(
+        self, paper: Paper, use_semantic_scholar: bool = True
     ) -> Optional[int]:
         """
         Get citation count for a single paper.
@@ -502,9 +527,14 @@ class MetadataEnricher:
                     f"CrossRef citation lookup failed for {paper.doi}: {e}"
                 )
 
-        # Fall back to Semantic Scholar
+        # Fall back to Semantic Scholar if allowed
+        if not use_semantic_scholar:
+            logger.debug("Skipping Semantic Scholar citation lookup (not in search sources)")
+            return None
+            
         # Import here to avoid circular dependency
         from ._SearchEngines import SemanticScholarEngine
+        from ..errors import SearchError
 
         # Build search query
         query: Optional[str] = None
@@ -534,6 +564,12 @@ class MetadataEnricher:
                     )
                     return result.citation_count
 
+        except SearchError as e:
+            # Rate limit or other API errors - handle gracefully
+            if "rate limit" in str(e).lower():
+                logger.debug(f"Semantic Scholar rate limit reached during enrichment - skipping")
+            else:
+                logger.debug(f"Semantic Scholar citation lookup failed: {e}")
         except Exception as e:
             logger.debug(f"Semantic Scholar citation lookup failed: {e}")
 

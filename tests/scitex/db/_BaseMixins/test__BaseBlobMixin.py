@@ -256,23 +256,24 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/db/_BaseMixins/_BaseBlobMixin.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/db/_BaseMixins/_BaseBlobMixin.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-25 01:45:48 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/db/_BaseMixins/_BaseBlobMixin.py
-#
+# 
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_BaseMixins/_BaseBlobMixin.py"
-#
+# 
 # from abc import ABC, abstractmethod
 # from typing import Any, Dict, List, Optional, Tuple, Union
 # import numpy as np
 # import pandas as pd
-#
+# 
+# 
 # class _BaseBlobMixin(ABC):
 #     """Base class for BLOB data handling functionality"""
-#
+# 
 #     @abstractmethod
 #     def save_array(
 #         self,
@@ -286,7 +287,7 @@ if __name__ == "__main__":
 #     ) -> None:
 #         """Save numpy array(s) to database"""
 #         pass
-#
+# 
 #     @abstractmethod
 #     def load_array(
 #         self,
@@ -301,7 +302,7 @@ if __name__ == "__main__":
 #     ) -> Optional[np.ndarray]:
 #         """Load numpy array(s) from database"""
 #         pass
-#
+# 
 #     @abstractmethod
 #     def binary_to_array(
 #         self,
@@ -313,7 +314,7 @@ if __name__ == "__main__":
 #     ) -> Optional[np.ndarray]:
 #         """Convert binary data to numpy array"""
 #         pass
-#
+# 
 #     @abstractmethod
 #     def get_array_dict(
 #         self,
@@ -324,7 +325,7 @@ if __name__ == "__main__":
 #     ) -> Dict[str, np.ndarray]:
 #         """Convert DataFrame columns to dictionary of arrays"""
 #         pass
-#
+# 
 #     @abstractmethod
 #     def decode_array_columns(
 #         self,
@@ -335,10 +336,10 @@ if __name__ == "__main__":
 #     ) -> pd.DataFrame:
 #         """Decode binary columns in DataFrame to numpy arrays"""
 #         pass
-#
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/db/_BaseMixins/_BaseBlobMixin.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/db/_BaseMixins/_BaseBlobMixin.py
 # --------------------------------------------------------------------------------

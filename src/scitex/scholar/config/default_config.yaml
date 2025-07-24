@@ -73,10 +73,12 @@ openathens_idp_url: null
 # ============================================================================
 
 # Default sources to search (can override per search)
-# Available: ["pubmed", "semantic_scholar", "arxiv"]
+# Available: ["pubmed", "semantic_scholar", "google_scholar", "crossref", "arxiv"]
 default_search_sources:
   - pubmed
   - semantic_scholar
+  - google_scholar
+  - crossref
   - arxiv
 
 # Default number of search results
@@ -107,6 +109,10 @@ request_timeout: 30
 # Size of LRU cache for journal lookups
 cache_size: 1000
 
+# Google Scholar timeout in seconds
+# Can also set via: SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT
+google_scholar_timeout: 10
+
 # ============================================================================
 # ADVANCED SETTINGS
 # ============================================================================
@@ -118,6 +124,21 @@ verify_ssl: true
 # This identifies your software to API providers (format: name/version)
 # Note: This is NOT the package version - it's just an HTTP identifier
 user_agent: "SciTeX-Scholar/1.0"
+
+# ============================================================================
+# LEAN LIBRARY BROWSER EXTENSION
+# ============================================================================
+
+# Enable Lean Library browser extension support
+# Lean Library provides automatic institutional access via browser extension
+# It's used by many universities (Harvard, Stanford, Yale, etc.)
+# Can also set via: SCITEX_SCHOLAR_USE_LEAN_LIBRARY
+use_lean_library: true
+
+# Optional: Specify browser profile path if auto-detection fails
+# Usually not needed - the system will find Chrome/Edge/Chromium automatically
+# Can also set via: SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE
+# lean_library_browser_profile: "/path/to/browser/profile"
 
 # ============================================================================
 # LOGGING

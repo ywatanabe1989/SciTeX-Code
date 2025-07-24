@@ -312,10 +312,11 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/layer/_switch.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/layer/_switch.py
 # --------------------------------------------------------------------------------
 # from ._Pass import Pass
-#
+# 
+# 
 # def switch(layer, is_used):
 #     if is_used:
 #         return layer
@@ -323,5 +324,5 @@ if __name__ == "__main__":
 #         return Pass()
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/layer/_switch.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/layer/_switch.py
 # --------------------------------------------------------------------------------

@@ -263,25 +263,32 @@ class TestOpenAI:
                 )
                 assert openai_ai.max_tokens == 1000  # Custom value, not default 8192
 
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_OpenAI.py
+# --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Timestamp: "2025-01-22 01:21:11 (ywatanabe)"
 # # File: _OpenAI.py
-#
+# 
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_OpenAI.py"
-#
-#
+# 
+# 
 # """Imports"""
 # import os
 # from openai import OpenAI as _OpenAI
 # from ._BaseGenAI import BaseGenAI
-#
+# 
 # """Functions & Classes"""
-#
-#
+# 
+# 
 # class OpenAI(BaseGenAI):
 #     def __init__(
 #         self,
@@ -296,15 +303,15 @@ if __name__ == "__main__":
 #         max_tokens=None,
 #     ):
 #         self.passed_model = model
-#
+# 
 #         # import scitex
 #         # scitex.str.print_debug()
 #         # scitex.gen.printc(model)
-#
+# 
 #         if model.startswith("o"):
 #             for reasoning_effort in ["low", "midium", "high"]:
 #                 model = model.replace(f"-{reasoning_effort}", "")
-#
+# 
 #         # Set max_tokens based on model
 #         if max_tokens is None:
 #             if "gpt-4-turbo" in model:
@@ -317,7 +324,7 @@ if __name__ == "__main__":
 #                 max_tokens = 4_096
 #             else:
 #                 max_tokens = 4_096
-#
+# 
 #         super().__init__(
 #             system_setting=system_setting,
 #             model=model,
@@ -329,13 +336,13 @@ if __name__ == "__main__":
 #             chat_history=chat_history,
 #             max_tokens=max_tokens,
 #         )
-#
+# 
 #     def _init_client(
 #         self,
 #     ):
 #         client = _OpenAI(api_key=self.api_key)
 #         return client
-#
+# 
 #     def _api_call_static(self):
 #         kwargs = dict(
 #             model=self.passed_model,
@@ -345,12 +352,12 @@ if __name__ == "__main__":
 #             temperature=self.temperature,
 #             max_tokens=self.max_tokens,
 #         )
-#
+# 
 #         # # o models adjustment
 #         # import scitex
 #         # scitex.str.print_debug()
 #         # scitex.gen.printc(kwargs.get("model"))
-#
+# 
 #         if kwargs.get("model").startswith("o"):
 #             kwargs.pop("max_tokens")
 #             for reasoning_effort in ["low", "midium", "high"]:
@@ -364,15 +371,15 @@ if __name__ == "__main__":
 #         # scitex.gen.printc(kwargs.get("model"))
 #         # scitex.gen.printc(kwargs.get("reasoning_effort"))
 #         # scitex.str.print_debug()
-#
+# 
 #         output = self.client.chat.completions.create(**kwargs)
 #         self.input_tokens += output.usage.prompt_tokens
 #         self.output_tokens += output.usage.completion_tokens
-#
+# 
 #         out_text = output.choices[0].message.content
-#
+# 
 #         return out_text
-#
+# 
 #     def _api_call_stream(self):
 #         kwargs = dict(
 #             model=self.model,
@@ -384,21 +391,19 @@ if __name__ == "__main__":
 #             temperature=self.temperature,
 #             stream_options={"include_usage": True},
 #         )
-#
+# 
 #         if kwargs.get("model").startswith("o"):
 #             for reasoning_effort in ["low", "midium", "high"]:
 #                 kwargs["reasoning_effort"] = reasoning_effort
-#                 kwargs["model"] = kwargs["model"].replace(
-#                     f"-{reasoning_effort}", ""
-#                 )
+#                 kwargs["model"] = kwargs["model"].replace(f"-{reasoning_effort}", "")
 #             full_response = self._api_call_static()
 #             for char in full_response:
 #                 yield char
 #             return
-#
+# 
 #         stream = self.client.chat.completions.create(**kwargs)
 #         buffer = ""
-#
+# 
 #         for chunk in stream:
 #             if chunk:
 #                 try:
@@ -409,7 +414,7 @@ if __name__ == "__main__":
 #                     self.output_tokens += chunk.usage.completion_tokens
 #                 except:
 #                     pass
-#
+# 
 #                 try:
 #                     current_text = chunk.choices[0].delta.content
 #                     if current_text:
@@ -420,11 +425,11 @@ if __name__ == "__main__":
 #                             buffer = ""
 #                 except Exception as e:
 #                     pass
-#
+# 
 #         # Yield any remaining text
 #         if buffer:
 #             yield buffer
-#
+# 
 #     def _api_format_history(self, history):
 #         formatted_history = []
 #         for msg in history:
@@ -450,18 +455,18 @@ if __name__ == "__main__":
 #                 }
 #             formatted_history.append(formatted_msg)
 #         return formatted_history
-#
-#
+# 
+# 
 # def main() -> None:
 #     import scitex
-#
+# 
 #     ai = scitex.ai.GenAI(
 #         model="o1-low",
 #         api_key=os.getenv("OPENAI_API_KEY"),
 #     )
-#
+# 
 #     print(ai("hi, could you tell me what is in the pic?"))
-#
+# 
 #     # print(
 #     #     ai(
 #     #         "hi, could you tell me what is in the pic?",
@@ -471,8 +476,8 @@ if __name__ == "__main__":
 #     #     )
 #     # )
 #     pass
-#
-#
+# 
+# 
 # # def main():
 # #     model = "o1-mini"
 # #     # model = "o1-preview"
@@ -481,26 +486,24 @@ if __name__ == "__main__":
 # #     max_tokens = 4906
 # #     m = scitex.ai.GenAI(model, stream=stream, max_tokens=max_tokens)
 # #     m("hi")
-#
+# 
 # if __name__ == "__main__":
 #     import sys
-#
+# 
 #     import matplotlib.pyplot as plt
 #     import scitex
-#
-#     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
-#         sys, plt, verbose=False
-#     )
+# 
+#     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
 #     main()
 #     scitex.gen.close(CONFIG, verbose=False, notify=False)
-#
+# 
 # # EOF
 # """
 # python -m scitex.ai._gen_ai._OpenAI
 # """
-#
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/_gen_ai/_OpenAI.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_OpenAI.py
 # --------------------------------------------------------------------------------

@@ -1,0 +1,48 @@
+[
+  {
+    "doi": "10.1016/j.neubiorev.2020.07.005",
+    "status": "failed"
+  },
+  {
+    "doi": "10.3389/fnins.2019.00573",
+    "status": "failed"
+  },
+  {
+    "doi": "10.1007/978-3-030-88163-4_9",
+    "status": "failed"
+  },
+  {
+    "doi": "10.3390/e23081070",
+    "status": "failed"
+  },
+  {
+    "doi": "10.1002/hbm.26190",
+    "status": "failed"
+  },
+  {
+    "doi": "10.1523/ENEURO.0507-22.2023",
+    "pdf_url": "https://www.eneuro.org/content/eneuro/10/11/ENEURO.0507-22.2023.full.pdf",
+    "filename": "10.1523_ENEURO.0507-22.2023.pdf",
+    "status": "success"
+  },
+  {
+    "doi": "10.1038/s41598-019-48870-2",
+    "pdf_url": "https://www.nature.com/articles/s41598-019-48870-2.pdf",
+    "filename": "10.1038_s41598-019-48870-2.pdf",
+    "status": "success"
+  },
+  {
+    "doi": "10.1016/j.neuroimage.2021.118573",
+    "status": "failed"
+  },
+  {
+    "doi": "10.1016/j.neuroimage.2021.118403",
+    "status": "failed"
+  },
+  {
+    "doi": "10.1523/ENEURO.0334-16.2016",
+    "pdf_url": "https://www.eneuro.org/content/eneuro/3/6/ENEURO.0334-16.2016.full.pdf",
+    "filename": "10.1523_ENEURO.0334-16.2016.pdf",
+    "status": "success"
+  }
+]

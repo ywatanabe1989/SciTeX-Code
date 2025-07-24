@@ -202,7 +202,6 @@ class TestEnsure3D:
         assert result.shape == (1, 1, 5)
         assert np.array_equal(result[0, 0], x_list)
 
-
 if __name__ == "__main__":
     import os
 
@@ -211,25 +210,27 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/dsp/_ensure_3d.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/dsp/_ensure_3d.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-05 01:03:47 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/dsp/_ensure_3d.py
-#
-# from ..decorators import torch_fn
-#
-# @torch_fn
+# 
+# from ..decorators import signal_fn
+# 
+# 
+# @signal_fn
 # def ensure_3d(x):
 #     if x.ndim == 1:  # assumes (seq_len,)
 #         x = x.unsqueeze(0).unsqueeze(0)
 #     elif x.ndim == 2:  # assumes (batch_siize, seq_len)
 #         x = x.unsqueeze(1)
 #     return x
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/dsp/_ensure_3d.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/dsp/_ensure_3d.py
 # --------------------------------------------------------------------------------

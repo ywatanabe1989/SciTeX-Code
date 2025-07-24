@@ -8,18 +8,21 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/db/_postgresql/_PostgreSQLMixins/_SchemaMixin.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Timestamp: "2025-02-27 22:14:23 (ywatanabe)"
 # # File: /home/ywatanabe/proj/scitex_dev/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py
-#
-# THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py"
-#
+# 
+# THIS_FILE = (
+#     "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py"
+# )
+# 
 # from typing import List, Dict, Any, Optional
 # from ..._BaseMixins._BaseSchemaMixin import _BaseSchemaMixin
-#
+# 
+# 
 # class _SchemaMixin(_BaseSchemaMixin):
 #     def get_tables(self) -> List[str]:
 #         """Get all tables in the current database"""
@@ -30,7 +33,7 @@ if __name__ == "__main__":
 #         """
 #         self.execute(query)
 #         return [row[0] for row in self.cursor.fetchall()]
-#
+# 
 #     def get_columns(self, table: str) -> List[Dict[str, Any]]:
 #         """Get detailed information about columns in a table"""
 #         query = """
@@ -42,7 +45,7 @@ if __name__ == "__main__":
 #         self.execute(query, (table,))
 #         columns = [desc[0] for desc in self.cursor.description]
 #         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
-#
+# 
 #     def get_primary_keys(self, table: str) -> List[str]:
 #         """Get primary key columns for a table"""
 #         query = """
@@ -53,7 +56,7 @@ if __name__ == "__main__":
 #         """
 #         self.execute(query, (table,))
 #         return [row[0] for row in self.cursor.fetchall()]
-#
+# 
 #     def get_foreign_keys(self, table: str) -> List[Dict[str, Any]]:
 #         """Get foreign key constraints for a table"""
 #         query = """
@@ -72,7 +75,7 @@ if __name__ == "__main__":
 #         self.execute(query, (table,))
 #         columns = [desc[0] for desc in self.cursor.description]
 #         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
-#
+# 
 #     def get_indexes(self, table: str) -> List[Dict[str, Any]]:
 #         """Get all indexes for a table"""
 #         query = """
@@ -90,7 +93,7 @@ if __name__ == "__main__":
 #         self.execute(query, (table,))
 #         columns = [desc[0] for desc in self.cursor.description]
 #         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
-#
+# 
 #     def table_exists(self, table: str) -> bool:
 #         """Check if a table exists"""
 #         query = """
@@ -102,7 +105,7 @@ if __name__ == "__main__":
 #         """
 #         self.execute(query, (table,))
 #         return self.cursor.fetchone()[0]
-#
+# 
 #     def column_exists(self, table: str, column: str) -> bool:
 #         """Check if a column exists in a table"""
 #         query = """
@@ -115,21 +118,25 @@ if __name__ == "__main__":
 #         """
 #         self.execute(query, (table, column))
 #         return self.cursor.fetchone()[0]
-#
-#     def create_index(self, table: str, columns: List[str], index_name: Optional[str] = None) -> None:
+# 
+#     def create_index(
+#         self, table: str, columns: List[str], index_name: Optional[str] = None
+#     ) -> None:
 #         """Create an index on specified columns"""
 #         self._check_writable()
 #         if not index_name:
 #             index_name = f"idx_{table}_{'_'.join(columns)}"
-#         columns_str = ', '.join(columns)
+#         columns_str = ", ".join(columns)
 #         self.execute(f"CREATE INDEX {index_name} ON {table} ({columns_str})")
-#
+# 
 #     def drop_index(self, index_name: str) -> None:
 #         """Drop an index"""
 #         self._check_writable()
 #         self.execute(f"DROP INDEX IF EXISTS {index_name}")
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/db/_PostgreSQLMixins/_SchemaMixin.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/db/_postgresql/_PostgreSQLMixins/_SchemaMixin.py
 # --------------------------------------------------------------------------------

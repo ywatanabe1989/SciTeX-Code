@@ -426,7 +426,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/decorators/_wrap.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/decorators/_wrap.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -434,12 +434,12 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/decorators/_wrap.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/decorators/_wrap.py"
-# )
+# 
+# __FILE__ = "./src/scitex/decorators/_wrap.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
+# 
 # def wrap(func):
 #     """Basic function wrapper that preserves function metadata.
 #     Usage:
@@ -454,18 +454,20 @@ if __name__ == "__main__":
 #     or when you want to ensure function metadata is preserved.
 #     """
 #     import functools
-#
+# 
 #     @functools.wraps(func)
 #     def wrapper(*args, **kwargs):
 #         return func(*args, **kwargs)
-#
+# 
 #     # Store reference to original function
 #     wrapper._original_func = func
 #     # Mark as a wrapper for detection
 #     wrapper._is_wrapper = True
 #     return wrapper
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/decorators/_wrap.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/decorators/_wrap.py
 # --------------------------------------------------------------------------------

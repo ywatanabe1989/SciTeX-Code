@@ -187,7 +187,6 @@ class TestSymlog:
 
         assert np.isclose(scalar_result, array_result[0])
 
-
 if __name__ == "__main__":
     import os
 
@@ -196,27 +195,27 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_symlog.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_symlog.py
 # --------------------------------------------------------------------------------
 # #!./env/bin/python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-07-06 07:16:38 (ywatanabe)"
 # # ./src/scitex/gen/_symlog.py
-#
+# 
 # import numpy as np
-#
-#
+# 
+# 
 # def symlog(x, linthresh=1.0):
 #     """
 #     Apply a symmetric log transformation to the input data.
-#
+# 
 #     Parameters
 #     ----------
 #     x : array-like
 #         Input data to be transformed.
 #     linthresh : float, optional
 #         Range within which the transformation is linear. Defaults to 1.0.
-#
+# 
 #     Returns
 #     -------
 #     array-like
@@ -227,5 +226,5 @@ if __name__ == "__main__":
 #     return sign_x * (np.log1p(abs_x / linthresh))
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_symlog.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_symlog.py
 # --------------------------------------------------------------------------------

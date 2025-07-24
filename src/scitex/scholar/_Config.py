@@ -78,6 +78,9 @@ class ScholarConfig:
     enable_auto_enrich: bool = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_AUTO_ENRICH", "true").lower() == "true"
     )
+    use_impact_factor_package: bool = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_USE_IMPACT_FACTOR_PACKAGE", "true").lower() == "true"
+    )
     enable_auto_download: bool = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_AUTO_DOWNLOAD", "false").lower() == "true"
     )
@@ -87,7 +90,7 @@ class ScholarConfig:
     
     # Search configuration
     default_search_sources: list = field(
-        default_factory=lambda: ["pubmed", "semantic_scholar", "arxiv"]
+        default_factory=lambda: ["pubmed", "semantic_scholar", "google_scholar", "crossref", "arxiv"]
     )
     default_search_limit: int = 20
     
@@ -101,9 +104,15 @@ class ScholarConfig:
     max_parallel_requests: int = 3
     request_timeout: int = 30
     cache_size: int = 1000
+    google_scholar_timeout: int = field(
+        default_factory=lambda: int(os.getenv("SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT", "10"))
+    )
     
     # Advanced settings
     verify_ssl: bool = True
+    debug_mode: bool = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_DEBUG_MODE", "false").lower() == "true"
+    )
     
     # OpenAthens authentication
     openathens_enabled: bool = field(
@@ -127,6 +136,13 @@ class ScholarConfig:
     openathens_institution_name: Optional[str] = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_OPENATHENS_INSTITUTION_NAME")
     )
+# Lean Library browser extension support
+    use_lean_library: bool = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_USE_LEAN_LIBRARY", "true").lower() == "true"
+    )
+    lean_library_browser_profile: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE")
+    )
     user_agent: str = "SciTeX-Scholar/1.0"  # HTTP User-Agent for API requests
     
     def to_dict(self) -> Dict[str, Any]:
@@ -148,6 +164,8 @@ class ScholarConfig:
             "request_timeout": self.request_timeout,
             "cache_size": self.cache_size,
             "verify_ssl": self.verify_ssl,
+            "use_lean_library": self.use_lean_library,
+            "lean_library_browser_profile": self.lean_library_browser_profile,
             "user_agent": self.user_agent,
         }
     

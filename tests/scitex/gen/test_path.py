@@ -359,6 +359,17 @@ class TestFutureReadiness:
             assert isinstance(description, str)
             # Ready for functions following these naming patterns
 
-
 if __name__ == "__main__":
-    pytest.main([os.path.abspath(__file__), "-v", "-s"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/path.py
+# --------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/path.py
+# --------------------------------------------------------------------------------

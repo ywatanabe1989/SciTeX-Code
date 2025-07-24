@@ -396,24 +396,24 @@ if __name__ == "__main__":
 
     import pytest
 
-    pytest.main([os.path.abspath(__file__), "-v"])
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/plt/_learning_curve.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/plt/_learning_curve.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-03-12 19:52:48 (ywatanabe)"
-#
+# 
 # import re
-#
+# 
 # import matplotlib
 # import matplotlib.pyplot as plt
 # import scitex
 # import numpy as np
 # import pandas as pd
-#
-#
+# 
+# 
 # def process_i_global(metrics_df):
 #     if metrics_df.index.name != "i_global":
 #         try:
@@ -428,21 +428,19 @@ if __name__ == "__main__":
 #         print("The index is already set to 'i_global'.")
 #     metrics_df["i_global"] = metrics_df.index  # alias
 #     return metrics_df
-#
-#
+# 
+# 
 # def set_yaxis_for_acc(ax, key_plt):
 #     if re.search("[aA][cC][cC]", key_plt):  # acc, ylim, yticks
 #         ax.set_ylim(0, 1)
 #         ax.set_yticks([0, 0.5, 1.0])
 #     return ax
-#
-#
+# 
+# 
 # def plot_tra(ax, metrics_df, key_plt, lw=1, color="blue"):
-#     indi_step = scitex.gen.search(
-#         "^[Tt]rain(ing)?", metrics_df.step, as_bool=True
-#     )[0]
+#     indi_step = scitex.gen.search("^[Tt]rain(ing)?", metrics_df.step, as_bool=True)[0]
 #     step_df = metrics_df[indi_step]
-#
+# 
 #     if len(step_df) != 0:
 #         ax.plot(
 #             step_df.index,  # i_global
@@ -452,14 +450,12 @@ if __name__ == "__main__":
 #             linewidth=lw,
 #         )
 #         ax.legend()
-#
+# 
 #     return ax
-#
-#
+# 
+# 
 # def scatter_val(ax, metrics_df, key_plt, s=3, color="green"):
-#     indi_step = scitex.gen.search(
-#         "^[Vv]alid(ation)?", metrics_df.step, as_bool=True
-#     )[0]
+#     indi_step = scitex.gen.search("^[Vv]alid(ation)?", metrics_df.step, as_bool=True)[0]
 #     step_df = metrics_df[indi_step]
 #     if len(step_df) != 0:
 #         ax.scatter(
@@ -472,8 +468,8 @@ if __name__ == "__main__":
 #         )
 #         ax.legend()
 #     return ax
-#
-#
+# 
+# 
 # def scatter_tes(ax, metrics_df, key_plt, s=3, color="red"):
 #     indi_step = scitex.gen.search("^[Tt]est", metrics_df.step, as_bool=True)[0]
 #     step_df = metrics_df[indi_step]
@@ -488,8 +484,8 @@ if __name__ == "__main__":
 #         )
 #         ax.legend()
 #     return ax
-#
-#
+# 
+# 
 # def vline_at_epochs(ax, metrics_df, color="grey"):
 #     # Determine the global iteration values where new epochs start
 #     epoch_starts = metrics_df[metrics_df["i_batch"] == 0].index.values
@@ -502,17 +498,15 @@ if __name__ == "__main__":
 #         color=color,
 #     )
 #     return ax
-#
-#
+# 
+# 
 # def select_ticks(metrics_df, max_n_ticks=4):
 #     # Calculate epoch starts and their corresponding labels for ticks
 #     unique_epochs = metrics_df["i_epoch"].drop_duplicates().values
 #     epoch_starts = (
-#         metrics_df[metrics_df["i_batch"] == 0]["i_global"]
-#         .drop_duplicates()
-#         .values
+#         metrics_df[metrics_df["i_batch"] == 0]["i_global"].drop_duplicates().values
 #     )
-#
+# 
 #     # Given the performance issue, let's just select a few epoch starts for labeling
 #     # We use MaxNLocator to pick ticks; however, it's used here to choose a reasonable number of epoch markers
 #     if len(epoch_starts) > max_n_ticks:
@@ -528,8 +522,8 @@ if __name__ == "__main__":
 #         selected_ticks = epoch_starts
 #         selected_labels = unique_epochs
 #     return selected_ticks, selected_labels
-#
-#
+# 
+# 
 # def learning_curve(
 #     metrics_df,
 #     keys,
@@ -556,58 +550,52 @@ if __name__ == "__main__":
 #         # 123268      Test     66900      299      868  0.000067
 #         # 123269      Test     66900      299      869  0.000067
 #         # 123270      Test     66900      299      870  0.000068
-#
+# 
 #         # [123271 rows x 5 columns]
 #     """
 #     metrics_df = process_i_global(metrics_df)
 #     selected_ticks, selected_labels = select_ticks(metrics_df)
-#
+# 
 #     # fig, axes = plt.subplots(len(keys), 1, sharex=True, sharey=False)
 #     fig, axes = scitex.plt.subplots(len(keys), 1, sharex=True, sharey=False)
 #     axes = axes if len(keys) != 1 else [axes]
-#
+# 
 #     axes[-1].set_xlabel("Iteration #")
 #     fig.text(0.5, 0.95, title, ha="center")
-#
+# 
 #     for i_plt, key_plt in enumerate(keys):
 #         ax = axes[i_plt]
 #         ax.set_yscale(yscale)
 #         ax.set_ylabel(key_plt)
-#
+# 
 #         ax = set_yaxis_for_acc(ax, key_plt)
 #         ax = plot_tra(ax, metrics_df, key_plt, lw=linewidth, color=cc["blue"])
-#         ax = scatter_val(
-#             ax, metrics_df, key_plt, s=scattersize, color=cc["green"]
-#         )
-#         ax = scatter_tes(
-#             ax, metrics_df, key_plt, s=scattersize, color=cc["red"]
-#         )
-#
+#         ax = scatter_val(ax, metrics_df, key_plt, s=scattersize, color=cc["green"])
+#         ax = scatter_tes(ax, metrics_df, key_plt, s=scattersize, color=cc["red"])
+# 
 #         # # Custom tick marks
 #         # ax = scitex.plt.ax.map_ticks(
 #         #     ax, selected_ticks, selected_labels, axis="x"
 #         # )
-#
+# 
 #     if spath is not None:
 #         scitex.io.save(fig, spath)
-#
+# 
 #     return fig
-#
-#
+# 
+# 
 # if __name__ == "__main__":
-#
+# 
 #     plt, cc = scitex.plt.configure_mpl(plt)
 #     # lpath = "./scripts/ml/.old/pretrain_EEGPT_old/2024-01-29-12-04_eDflsnWv_v8/metrics.csv"
 #     lpath = "./scripts/ml/pretrain_EEGPT/[DEBUG] 2024-02-11-06-45_4uUpdfpb/metrics.csv"
-#
+# 
 #     sdir, _, _ = scitex.gen.split_fpath(lpath)
 #     metrics_df = scitex.io.load(lpath)
-#     fig = learning_curve(
-#         metrics_df, title="Pretraining on db_v8", yscale="log"
-#     )
+#     fig = learning_curve(metrics_df, title="Pretraining on db_v8", yscale="log")
 #     # plt.show()
 #     scitex.io.save(fig, sdir + "learning_curve.png")
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/plt/_learning_curve.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/plt/_learning_curve.py
 # --------------------------------------------------------------------------------

@@ -456,9 +456,11 @@ class TestConvenienceFunctions:
             assert ".scitex" in str(scholar_dir)
             mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
-
 if __name__ == "__main__":
     import os
+
+    import pytest
+
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
@@ -498,7 +500,7 @@ if __name__ == "__main__":
 # from urllib.parse import quote_plus
 # 
 # from ._Paper import Paper
-# from ..errors import SearchError, ScholarError, IOError as SciTeXIOError
+# from ..errors import SearchError
 # 
 # logger = logging.getLogger(__name__)
 # 
@@ -513,11 +515,7 @@ if __name__ == "__main__":
 #     
 #     async def search(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
 #         """Search for papers. Must be implemented by subclasses."""
-#         raise ScholarError(
-#             "Search method not implemented",
-#             context={"engine": self.name},
-#             suggestion="Subclasses must implement the search method"
-#         )
+#         raise NotImplementedError
 #     
 #     async def _rate_limit(self):
 #         """Enforce rate limiting."""
@@ -591,10 +589,6 @@ if __name__ == "__main__":
 #                         # Return empty list to let other sources handle the search
 #                         return []
 #                         
-#         except aiohttp.ClientError as e:
-#             logger.debug(f"Semantic Scholar network error: {e}")
-#             # Return empty list instead of raising to allow fallback to other sources
-#             return []
 #         except Exception as e:
 #             logger.debug(f"Semantic Scholar search error: {e}")
 #             # Return empty list instead of raising to allow fallback to other sources
@@ -626,9 +620,6 @@ if __name__ == "__main__":
 #                         logger.debug(f"Failed to fetch paper {paper_id}: {response.status}")
 #                         return None
 #                         
-#         except aiohttp.ClientError as e:
-#             logger.debug(f"Network error fetching paper {paper_id}: {e}")
-#             return None
 #         except Exception as e:
 #             logger.debug(f"Error fetching paper {paper_id}: {e}")
 #             return None
@@ -688,11 +679,8 @@ if __name__ == "__main__":
 #             
 #             return paper
 #             
-#         except (KeyError, TypeError, ValueError) as e:
-#             logger.warning(f"Failed to parse Semantic Scholar paper: {e}")
-#             return None
 #         except Exception as e:
-#             logger.warning(f"Unexpected error parsing Semantic Scholar paper: {e}")
+#             logger.warning(f"Failed to parse Semantic Scholar paper: {e}")
 #             return None
 # 
 # 
@@ -757,12 +745,10 @@ if __name__ == "__main__":
 #                     else:
 #                         logger.error(f"PubMed search failed: {response.status}")
 #                         
-#         except aiohttp.ClientError as e:
-#             logger.error(f"PubMed network error: {type(e).__name__}: {e}")
-#             # Return empty list instead of raising to allow other sources
-#             return []
 #         except Exception as e:
 #             logger.error(f"PubMed search error: {type(e).__name__}: {e}")
+#             import traceback
+#             logger.error(traceback.format_exc())
 #             # Return empty list instead of raising to allow other sources
 #             return []
 #         
@@ -866,17 +852,12 @@ if __name__ == "__main__":
 #                     
 #                     papers.append(paper)
 #                     
-#                 except (KeyError, AttributeError, TypeError) as e:
+#                 except Exception as e:
 #                     logger.warning(f"Failed to parse PubMed article: {e}")
 #                     continue
-#                 except Exception as e:
-#                     logger.warning(f"Unexpected error parsing PubMed article: {e}")
-#                     continue
 #                     
-#         except ET.ParseError as e:
-#             logger.error(f"Failed to parse PubMed XML: {e}")
 #         except Exception as e:
-#             logger.error(f"Unexpected error parsing PubMed XML: {e}")
+#             logger.error(f"Failed to parse PubMed XML: {e}")
 #         
 #         return papers
 # 
@@ -911,11 +892,7 @@ if __name__ == "__main__":
 #                         papers = self._parse_arxiv_xml(xml_data)
 #                     else:
 #                         logger.error(f"arXiv search failed: {response.status}")
-#                         raise SearchError(query, "arXiv", f"HTTP {response.status}")
 #                         
-#         except aiohttp.ClientError as e:
-#             logger.error(f"arXiv network error: {e}")
-#             raise SearchError(query, "arXiv", f"Network error: {str(e)}")
 #         except Exception as e:
 #             logger.error(f"arXiv search error: {e}")
 #             raise SearchError(query, "arXiv", str(e))
@@ -983,17 +960,12 @@ if __name__ == "__main__":
 #                     
 #                     papers.append(paper)
 #                     
-#                 except (KeyError, AttributeError, TypeError) as e:
+#                 except Exception as e:
 #                     logger.warning(f"Failed to parse arXiv entry: {e}")
 #                     continue
-#                 except Exception as e:
-#                     logger.warning(f"Unexpected error parsing arXiv entry: {e}")
-#                     continue
 #                     
-#         except ET.ParseError as e:
-#             logger.error(f"Failed to parse arXiv XML: {e}")
 #         except Exception as e:
-#             logger.error(f"Unexpected error parsing arXiv XML: {e}")
+#             logger.error(f"Failed to parse arXiv XML: {e}")
 #         
 #         return papers
 # 
@@ -1051,12 +1023,8 @@ if __name__ == "__main__":
 #             try:
 #                 with open(self.index_path, 'r') as f:
 #                     return json.load(f)
-#             except json.JSONDecodeError as e:
-#                 logger.warning(f"Failed to parse local index JSON: {e}")
-#             except OSError as e:
-#                 logger.warning(f"Failed to read local index file: {e}")
 #             except Exception as e:
-#                 logger.warning(f"Unexpected error loading local index: {e}")
+#                 logger.warning(f"Failed to load local index: {e}")
 #         return {}
 #     
 #     def build_index(self, pdf_dirs: List[Path]) -> Dict[str, Any]:
@@ -1077,9 +1045,6 @@ if __name__ == "__main__":
 #                     if paper_data:
 #                         index[str(pdf_path)] = paper_data
 #                         stats['files_indexed'] += 1
-#                 except OSError as e:
-#                     logger.warning(f"Failed to read PDF file {pdf_path}: {e}")
-#                     stats['errors'] += 1
 #                 except Exception as e:
 #                     logger.warning(f"Failed to index {pdf_path}: {e}")
 #                     stats['errors'] += 1
@@ -1105,16 +1070,9 @@ if __name__ == "__main__":
 #     
 #     def _save_index(self) -> None:
 #         """Save index to disk."""
-#         try:
-#             self.index_path.parent.mkdir(parents=True, exist_ok=True)
-#             with open(self.index_path, 'w') as f:
-#                 json.dump(self.index, f, indent=2)
-#         except OSError as e:
-#             raise SciTeXIOError(
-#                 f"Failed to save local search index to {self.index_path}",
-#                 context={"path": str(self.index_path), "error": str(e)},
-#                 suggestion="Check file permissions and disk space"
-#             )
+#         self.index_path.parent.mkdir(parents=True, exist_ok=True)
+#         with open(self.index_path, 'w') as f:
+#             json.dump(self.index, f, indent=2)
 # 
 # 
 # class VectorSearchEngine(SearchEngine):
@@ -1142,9 +1100,6 @@ if __name__ == "__main__":
 #         # Lazy load model
 #         if self._model is None:
 #             self._load_model()
-#             # If model loading failed, return empty results
-#             if self._model is None:
-#                 return []
 #         
 #         # Encode query
 #         query_embedding = self._model.encode([query])[0]
@@ -1167,13 +1122,6 @@ if __name__ == "__main__":
 #         """Add papers to vector index."""
 #         if self._model is None:
 #             self._load_model()
-#             # If model loading failed, raise error
-#             if self._model is None:
-#                 raise ScholarError(
-#                     "Cannot add papers to vector index without sentence transformer model",
-#                     context={"model_name": self.model_name},
-#                     suggestion="Install sentence-transformers: pip install sentence-transformers"
-#                 )
 #         
 #         # Create searchable text for each paper
 #         texts = []
@@ -1201,16 +1149,9 @@ if __name__ == "__main__":
 #         try:
 #             from sentence_transformers import SentenceTransformer
 #             self._model = SentenceTransformer(self.model_name)
-#         except ImportError as e:
+#         except ImportError:
 #             logger.warning("sentence-transformers not installed. Vector search disabled.")
 #             self._model = None
-#         except Exception as e:
-#             logger.error(f"Failed to load sentence transformer model: {e}")
-#             raise ScholarError(
-#                 f"Failed to initialize vector search model '{self.model_name}'",
-#                 context={"model": self.model_name, "error": str(e)},
-#                 suggestion="Ensure sentence-transformers is installed and the model name is correct"
-#             )
 #     
 #     def _load_index(self) -> None:
 #         """Load vector index from disk."""
@@ -1220,35 +1161,18 @@ if __name__ == "__main__":
 #                     data = pickle.load(f)
 #                     self._papers = data.get('papers', [])
 #                     self._embeddings = data.get('embeddings')
-#             except (pickle.UnpicklingError, EOFError) as e:
-#                 logger.warning(f"Failed to unpickle vector index: {e}")
-#             except OSError as e:
-#                 logger.warning(f"Failed to read vector index file: {e}")
 #             except Exception as e:
-#                 logger.warning(f"Unexpected error loading vector index: {e}")
+#                 logger.warning(f"Failed to load vector index: {e}")
 #     
 #     def _save_index(self) -> None:
 #         """Save vector index to disk."""
-#         try:
-#             self.index_path.parent.mkdir(parents=True, exist_ok=True)
-#             data = {
-#                 'papers': self._papers,
-#                 'embeddings': self._embeddings
-#             }
-#             with open(self.index_path, 'wb') as f:
-#                 pickle.dump(data, f)
-#         except OSError as e:
-#             raise SciTeXIOError(
-#                 f"Failed to save vector search index to {self.index_path}",
-#                 context={"path": str(self.index_path), "error": str(e)},
-#                 suggestion="Check file permissions and disk space"
-#             )
-#         except Exception as e:
-#             raise ScholarError(
-#                 f"Failed to serialize vector index",
-#                 context={"error": str(e)},
-#                 suggestion="Ensure all papers and embeddings are serializable"
-#             )
+#         self.index_path.parent.mkdir(parents=True, exist_ok=True)
+#         data = {
+#             'papers': self._papers,
+#             'embeddings': self._embeddings
+#         }
+#         with open(self.index_path, 'wb') as f:
+#             pickle.dump(data, f)
 # 
 # 
 # class UnifiedSearcher:
@@ -1283,11 +1207,7 @@ if __name__ == "__main__":
 #             elif source == 'vector':
 #                 self._engines[source] = VectorSearchEngine()
 #             else:
-#                 raise ScholarError(
-#                     f"Unknown search source: {source}",
-#                     context={"source": source, "available_sources": ['semantic_scholar', 'pubmed', 'arxiv', 'local', 'vector']},
-#                     suggestion="Use one of the available sources: semantic_scholar, pubmed, arxiv, local, vector"
-#                 )
+#                 raise ValueError(f"Unknown source: {source}")
 #         return self._engines[source]
 #     
 #     async def search(self,
@@ -1327,9 +1247,6 @@ if __name__ == "__main__":
 #                 engine = self._get_engine(source)
 #                 task = engine.search(query, limit, **kwargs)
 #                 tasks.append(task)
-#             except ScholarError:
-#                 # Re-raise ScholarError as it already has proper context
-#                 raise
 #             except Exception as e:
 #                 logger.debug(f"Failed to initialize {source} engine: {e}")
 #         

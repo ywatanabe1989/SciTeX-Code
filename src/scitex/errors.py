@@ -254,6 +254,17 @@ class TranslatorError(ScholarError):
         )
 
 
+class AuthenticationError(ScholarError):
+    """Raised when authentication fails."""
+
+    def __init__(self, provider: str, reason: str):
+        super().__init__(
+            f"Authentication failed for {provider}: {reason}",
+            context={"provider": provider, "reason": reason},
+            suggestion="Check your credentials and authentication settings",
+        )
+
+
 """Plotting Errors"""
 
 
@@ -529,6 +540,7 @@ __all__ = [
     "PDFExtractionError",
     "BibTeXEnrichmentError",
     "TranslatorError",
+    "AuthenticationError",
     # Plotting
     "PlottingError",
     "FigureNotFoundError",

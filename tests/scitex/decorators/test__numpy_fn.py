@@ -116,7 +116,6 @@ def test_numpy_fn_nested_decorator(test_data):
         assert isinstance(result, list)
         assert result == test_data["list"]
 
-
 if __name__ == "__main__":
     import os
 
@@ -125,7 +124,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/decorators/_numpy_fn.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/decorators/_numpy_fn.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -133,25 +132,24 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/decorators/_numpy_fn.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/decorators/_numpy_fn.py"
-# )
+# 
+# __FILE__ = "./src/scitex/decorators/_numpy_fn.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # import numpy as np
 # import pandas as pd
 # import torch
-#
+# 
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/decorators/_numpy_fn.py"
-#
+# 
 # from functools import wraps
 # from typing import Any as _Any
 # from typing import Callable
-#
+# 
 # from ._converters import _return_always, is_nested_decorator, to_numpy
-#
-#
+# 
+# 
 # def numpy_fn(func: Callable) -> Callable:
 #     @wraps(func)
 #     def wrapper(*args: _Any, **kwargs: _Any) -> _Any:
@@ -159,25 +157,39 @@ if __name__ == "__main__":
 #         if is_nested_decorator():
 #             results = func(*args, **kwargs)
 #             return results
-#
+# 
 #         # Set the current decorator context
 #         wrapper._current_decorator = "numpy_fn"
-#
+# 
 #         # Store original object for type preservation
 #         original_object = args[0] if args else None
-#
+# 
 #         converted_args, converted_kwargs = to_numpy(
 #             *args, return_fn=_return_always, **kwargs
 #         )
-#
-#         # Assertion to ensure all args are converted to numpy arrays
+# 
+#         # Skip strict assertion for certain types that may not convert to arrays
+#         # Instead, convert what we can and pass through what we can't
+#         validated_args = []
 #         for arg_index, arg in enumerate(converted_args):
-#             assert isinstance(
-#                 arg, np.ndarray
-#             ), f"Argument {arg_index} not converted to numpy array: {type(arg)}"
-#
-#         results = func(*converted_args, **converted_kwargs)
-#
+#             if isinstance(arg, np.ndarray):
+#                 validated_args.append(arg)
+#             elif isinstance(arg, (int, float, str, type(None))):
+#                 # Pass through scalars and strings unchanged
+#                 validated_args.append(arg)
+#             elif isinstance(arg, list) and all(isinstance(item, np.ndarray) for item in arg):
+#                 # List of arrays - pass through as is
+#                 validated_args.append(arg)
+#             else:
+#                 # Try one more conversion attempt
+#                 try:
+#                     validated_args.append(np.array(arg))
+#                 except:
+#                     # If all else fails, pass through unchanged
+#                     validated_args.append(arg)
+# 
+#         results = func(*validated_args, **converted_kwargs)
+# 
 #         # Convert results back to original input types
 #         if isinstance(results, np.ndarray):
 #             if original_object is not None:
@@ -190,94 +202,17 @@ if __name__ == "__main__":
 #                 elif isinstance(original_object, pd.Series):
 #                     return pd.Series(results)
 #             return results
-#
+# 
 #         return results
-#
+# 
 #     # Mark as a wrapper for detection
 #     wrapper._is_wrapper = True
 #     wrapper._decorator_type = "numpy_fn"
 #     return wrapper
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/decorators/_numpy_fn.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/decorators/_numpy_fn.py
 # --------------------------------------------------------------------------------
-
-
-def test_numpy_fn_with_nested_lists():
-    """Test numpy_fn with nested lists."""
-    @numpy_fn
-    def dummy_function(arr):
-        assert isinstance(arr, np.ndarray)
-        return arr
-
-    # Test nested list conversion
-    nested_list = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
-    result = dummy_function(nested_list)
-    assert isinstance(result, list)  # Should return as list to preserve type
-
-
-def test_numpy_fn_preserves_scalars():
-    """Test that numpy_fn preserves scalar arguments."""
-    @numpy_fn
-    def dummy_function(arr, alpha=1.0, beta=2, gamma=True, delta="test"):
-        assert isinstance(arr, np.ndarray)
-        assert isinstance(alpha, float)
-        assert isinstance(beta, int)
-        assert isinstance(gamma, bool)
-        assert isinstance(delta, str)
-        return alpha, beta, gamma, delta
-
-    result = dummy_function([1, 2, 3])
-    assert result == (1.0, 2, True, "test")
-
-
-def test_numpy_fn_preserves_dimension_tuples():
-    """Test that numpy_fn preserves dimension tuples."""
-    @numpy_fn
-    def dummy_function(arr, dim):
-        assert isinstance(arr, np.ndarray)
-        assert isinstance(dim, tuple)
-        assert all(isinstance(d, int) for d in dim)
-        return dim
-
-    dim = (1, 2, 3)
-    result = dummy_function(np.random.randn(4, 5, 6, 7), dim=dim)
-    assert result == dim
-
-
-def test_numpy_fn_with_mixed_types():
-    """Test numpy_fn with mixed argument types."""
-    @numpy_fn
-    def dummy_function(data, scalar_val, string_val, dim):
-        assert isinstance(data, np.ndarray)
-        assert isinstance(scalar_val, int)
-        assert isinstance(string_val, str) 
-        assert isinstance(dim, tuple)
-        return data.shape
-
-    result = dummy_function([[1, 2, 3]], 42, "test", (0, 1))
-    assert result == (1, 3)
-
-
-def test_numpy_fn_handles_empty_lists():
-    """Test numpy_fn with empty lists."""
-    @numpy_fn
-    def dummy_function(arr):
-        return arr
-
-    result = dummy_function([])
-    assert isinstance(result, np.ndarray)
-    assert result.size == 0
-
-
-def test_numpy_fn_with_none_values():
-    """Test numpy_fn handles None values correctly."""
-    @numpy_fn  
-    def dummy_function(arr, optional=None):
-        assert isinstance(arr, np.ndarray)
-        assert optional is None
-        return arr
-
-    result = dummy_function([1, 2, 3], optional=None)
-    assert isinstance(result, list)

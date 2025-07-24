@@ -255,14 +255,21 @@ class TestDeepSeek:
                 with pytest.raises(Exception, match="Stream error"):
                     list(deepseek_ai._api_call_stream())
 
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_DeepSeek.py
+# --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-08 20:33:49 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/ai/_gen_ai/_DeepSeek.py
-#
+# 
 # """
 # 1. Functionality:
 #    - Implements DeepSeek Code LLM API interface
@@ -274,35 +281,34 @@ if __name__ == "__main__":
 #    - DEEPSEEK_API_KEY environment variable
 #    - requests library
 # """
-#
+# 
 # """Imports"""
 # import json
 # import os
 # import sys
 # from typing import Dict, Generator, List, Optional
-#
+# 
 # import scitex
 # import requests
-#
+# 
 # from ._BaseGenAI import BaseGenAI
-#
+# 
 # """Warnings"""
 # # scitex.pd.ignore_SettingWithCopyWarning()
 # # warnings.simplefilter("ignore", UserWarning)
 # # with warnings.catch_warnings():
 # #     warnings.simplefilter("ignore", UserWarning)
-#
+# 
 # """Parameters"""
 # # from scitex.io import load_configs
 # # CONFIG = load_configs()
-#
+# 
 # """Functions & Classes"""
-# """Imports"""
-# from ._BaseGenAI import BaseGenAI
 # from openai import OpenAI as _OpenAI
-#
+# 
 # """Functions & Classes"""
-#
+# 
+# 
 # class DeepSeek(BaseGenAI):
 #     def __init__(
 #         self,
@@ -327,13 +333,13 @@ if __name__ == "__main__":
 #             chat_history=chat_history,
 #             max_tokens=max_tokens,
 #         )
-#
+# 
 #     def _init_client(self):
 #         # client = _OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com")
 #         client = _OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com/beta")
-#
+# 
 #         return client
-#
+# 
 #     def _api_call_static(self):
 #         kwargs = dict(
 #             model=self.model,
@@ -343,15 +349,15 @@ if __name__ == "__main__":
 #             temperature=self.temperature,
 #             max_tokens=self.max_tokens,
 #         )
-#
+# 
 #         output = self.client.chat.completions.create(**kwargs)
 #         self.input_tokens += output.usage.prompt_tokens
 #         self.output_tokens += output.usage.completion_tokens
-#
+# 
 #         out_text = output.choices[0].message.content
-#
+# 
 #         return out_text
-#
+# 
 #     def _api_call_stream(self):
 #         kwargs = dict(
 #             model=self.model,
@@ -362,10 +368,10 @@ if __name__ == "__main__":
 #             seed=self.seed,
 #             temperature=self.temperature,
 #         )
-#
+# 
 #         stream = self.client.chat.completions.create(**kwargs)
 #         buffer = ""
-#
+# 
 #         for chunk in stream:
 #             if chunk:
 #                 try:
@@ -376,28 +382,29 @@ if __name__ == "__main__":
 #                     self.output_tokens += chunk.usage.completion_tokens
 #                 except:
 #                     pass
-#
+# 
 #                 try:
 #                     current_text = chunk.choices[0].delta.content
 #                     if current_text:
 #                         buffer += current_text
-#                         if any(char in '.!?\n ' for char in current_text):
+#                         if any(char in ".!?\n " for char in current_text):
 #                             yield buffer
 #                             buffer = ""
 #                 except Exception as e:
 #                     pass
-#
+# 
 #         if buffer:
 #             yield buffer
-#
-# if __name__ == '__main__':
+# 
+# 
+# if __name__ == "__main__":
 #     # -----------------------------------
 #     # Initiatialization of scitex format
 #     # -----------------------------------
 #     import sys
-#
+# 
 #     import matplotlib.pyplot as plt
-#
+# 
 #     # Configurations
 #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
 #         sys,
@@ -406,7 +413,7 @@ if __name__ == "__main__":
 #         agg=True,
 #         # sdir_suffix="",
 #     )
-#
+# 
 #     # # Argument parser
 #     # script_mode = scitex.gen.is_script()
 #     # import argparse
@@ -415,12 +422,20 @@ if __name__ == "__main__":
 #     # parser.add_argument('--flag', '-f', action='store_true', default=False, help='(default: %%(default)s)')
 #     # args = parser.parse_args()
 #     # scitex.gen.print_block(args, c='yellow')
-#
+# 
 #     # -----------------------------------
 #     # Main
 #     # -----------------------------------
+#     def main():
+#         # Example usage
+#         client = DeepSeek()
+#         prompt = "Hello, how can I help you?"
+#         response = client.complete(prompt)
+#         print(response)
+#         return 0
+#     
 #     exit_status = main()
-#
+# 
 #     # -----------------------------------
 #     # Cleanup scitex format
 #     # -----------------------------------
@@ -431,11 +446,9 @@ if __name__ == "__main__":
 #         message="",
 #         exit_status=exit_status,
 #     )
-#
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/_gen_ai/_DeepSeek.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/ai/_gen_ai/_DeepSeek.py
 # --------------------------------------------------------------------------------
-
-# EOF

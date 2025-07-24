@@ -124,6 +124,7 @@ pytest-xdist
 pytest-timeout
 pytest-mock
 pytest-env
+pytest-asyncio
 black
 isort
 flake8
@@ -169,3 +170,4 @@ pebble
 
 impact-factor
 PyMuPDF
+scholarly

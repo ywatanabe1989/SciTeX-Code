@@ -505,7 +505,6 @@ class TestPapers:
         assert keys[0] == "smith2024machin"
         assert keys[1] == "smith2024machina"
 
-
 if __name__ == "__main__":
     import os
 
@@ -648,7 +647,7 @@ if __name__ == "__main__":
 #             raise ScholarError(f"BibTeX file not found: {bibtex_path}")
 #         
 #         # Use scitex.io to load the file
-#         from ...io import load
+#         from scitex.io import load
 #         entries = load(str(bibtex_path))
 #         logger.info(f"Loaded {len(entries)} entries from {bibtex_path}")
 #         
@@ -674,8 +673,18 @@ if __name__ == "__main__":
 #             Papers instance
 #         """
 #         # Parse BibTeX content directly
-#         from ...io import loads
-#         entries = loads(bibtex_content)
+#         # Write to temp file and load
+#         import tempfile
+#         with tempfile.NamedTemporaryFile(mode='w', suffix='.bib', delete=False) as f:
+#             f.write(bibtex_content)
+#             temp_path = f.name
+#         
+#         try:
+#             from scitex.io import load
+#             entries = load(temp_path)
+#         finally:
+#             import os
+#             os.unlink(temp_path)
 #         logger.info(f"Parsed {len(entries)} entries from BibTeX content")
 #         
 #         # Convert entries to Paper objects
@@ -849,11 +858,14 @@ if __name__ == "__main__":
 #                year_max: Optional[int] = None,
 #                min_citations: Optional[int] = None,
 #                max_citations: Optional[int] = None,
+#                citation_count_min: Optional[int] = None,  # Alias for min_citations
 #                impact_factor_min: Optional[float] = None,
 #                open_access_only: bool = False,
 #                journals: Optional[List[str]] = None,
 #                authors: Optional[List[str]] = None,
 #                keywords: Optional[List[str]] = None,
+#                title_keywords: Optional[List[str]] = None,
+#                source: Optional[Union[str, List[str]]] = None,
 #                has_pdf: Optional[bool] = None) -> 'Papers':
 #         """
 #         Filter papers by various criteria.
@@ -861,6 +873,10 @@ if __name__ == "__main__":
 #         Returns new Papers with filtered results.
 #         """
 #         filtered = []
+#         
+#         # Handle citation_count_min as alias for min_citations
+#         if citation_count_min is not None:
+#             min_citations = citation_count_min
 #         
 #         for paper in self._papers:
 #             # Year filters
@@ -925,6 +941,22 @@ if __name__ == "__main__":
 #                     for keyword in keywords
 #                 )
 #                 if not keyword_match:
+#                     continue
+#             
+#             # Title keywords filter
+#             if title_keywords and paper.title:
+#                 title_lower = paper.title.lower()
+#                 title_match = any(
+#                     keyword.lower() in title_lower
+#                     for keyword in title_keywords
+#                 )
+#                 if not title_match:
+#                     continue
+#             
+#             # Source filter
+#             if source:
+#                 sources = [source] if isinstance(source, str) else source
+#                 if paper.source not in sources:
 #                     continue
 #             
 #             filtered.append(paper)
@@ -1213,7 +1245,7 @@ if __name__ == "__main__":
 #             return self._df_cache
 #         
 #         # Import JCR year dynamically to include in column names
-#         from ._UnifiedEnricher import JCR_YEAR
+#         from ._MetadataEnricher import JCR_YEAR
 #         
 #         data = []
 #         for paper in self._papers:
@@ -1328,6 +1360,56 @@ if __name__ == "__main__":
 #                 actual_format=format
 #             )
 #     
+#     def download_pdfs(self, 
+#                      scholar=None, 
+#                      download_dir: Optional[Union[str, Path]] = None,
+#                      force: bool = False,
+#                      max_workers: int = 4,
+#                      show_progress: bool = True,
+#                      acknowledge_ethical_usage: Optional[bool] = None,
+#                      **kwargs) -> Dict[str, Any]:
+#         """
+#         Download PDFs for papers in this collection.
+#         
+#         Args:
+#             scholar: Scholar instance to use for downloading. If None, creates a new instance.
+#             download_dir: Directory to save PDFs (default: uses scholar's workspace)
+#             force: Force re-download even if files exist
+#             max_workers: Maximum concurrent downloads
+#             show_progress: Show download progress
+#             acknowledge_ethical_usage: Acknowledge ethical usage terms for Sci-Hub (default: from config)
+#             **kwargs: Additional arguments passed to downloader
+#             
+#         Returns:
+#             Dictionary with download results:
+#                 - 'successful': Number of successful downloads
+#                 - 'failed': Number of failed downloads
+#                 - 'results': List of detailed results
+#                 - 'downloaded_files': Dict mapping DOIs to file paths
+#             
+#         Examples:
+#             >>> papers = scholar.search("deep learning")
+#             >>> # Using existing scholar instance
+#             >>> results = papers.download_pdfs(scholar)
+#             >>> print(f"Downloaded {results['successful']} PDFs")
+#             
+#             >>> # Or create new scholar instance automatically
+#             >>> results = papers.download_pdfs(download_dir="./my_pdfs")
+#         """
+#         if scholar is None:
+#             from ._Scholar import Scholar
+#             scholar = Scholar()
+#         
+#         return scholar.download_pdfs(
+#             self, 
+#             download_dir=download_dir,
+#             force=force,
+#             max_workers=max_workers,
+#             show_progress=show_progress,
+#             acknowledge_ethical_usage=acknowledge_ethical_usage,
+#             **kwargs
+#         )
+#     
 #     def _to_bibtex_entries(self, include_enriched: bool) -> List[Dict[str, Any]]:
 #         """Convert collection to BibTeX entries format for scitex.io."""
 #         entries = []
@@ -1413,7 +1495,7 @@ if __name__ == "__main__":
 #         # Enriched metadata
 #         if include_enriched:
 #             # Get JCR year dynamically from enrichment module
-#             from ._UnifiedEnricher import JCR_YEAR
+#             from ._MetadataEnricher import JCR_YEAR
 #             
 #             if paper.impact_factor is not None and paper.impact_factor > 0:
 #                 fields[f'JCR_{JCR_YEAR}_impact_factor'] = str(paper.impact_factor)
