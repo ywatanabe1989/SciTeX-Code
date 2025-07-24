@@ -287,7 +287,7 @@ class Scholar:
         """
         # Use the UnifiedSearcher with 'local' source
         papers = self._run_async(
-            self._searcher.search(query, sources=["local"], limit=limit)
+            self._searcher.search_async(query, sources=["local"], limit=limit)
         )
         return Papers(papers)
 

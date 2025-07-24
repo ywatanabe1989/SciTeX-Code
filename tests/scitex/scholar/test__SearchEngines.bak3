@@ -37,7 +37,7 @@ class TestSearchEngine:
         """Test that base search raises error."""
         engine = SearchEngine("test")
         with pytest.raises(ScholarError) as exc_info:
-            await engine.search_async("test query")
+            await engine.search("test query")
         assert "Search method not implemented" in str(exc_info.value)
     
     @pytest.mark.asyncio
@@ -112,7 +112,7 @@ class TestSemanticScholarEngine:
             
             mock_session.get.return_value.__aenter__.return_value = mock_response_obj
             
-            papers = await engine.search_async("test query", limit=10)
+            papers = await engine.search("test query", limit=10)
             
             assert len(papers) == 2
             assert papers[0].title == "Test Paper 1"
@@ -132,10 +132,10 @@ class TestSemanticScholarEngine:
             "citationCount": 10
         }
         
-        with patch.object(engine, '_fetch_paper_by_id_async') as mock_fetch:
+        with patch.object(engine, '_fetch_paper_by_id') as mock_fetch:
             mock_fetch.return_value = engine._parse_semantic_scholar_paper(mock_paper_data)
             
-            papers = await engine.search_async("CorpusId:123456")
+            papers = await engine.search("CorpusId:123456")
             
             assert len(papers) == 1
             assert papers[0].title == "Test Paper"
@@ -156,7 +156,7 @@ class TestSemanticScholarEngine:
             
             mock_session.get.return_value.__aenter__.return_value = mock_response_obj
             
-            await engine.search_async("test", year_min=2020, year_max=2023)
+            await engine.search("test", year_min=2020, year_max=2023)
             
             # Check that params were set correctly
             call_args = mock_session.get.call_args
@@ -233,7 +233,7 @@ class TestPubMedEngine:
             # Set up the mock to return different responses for each call
             mock_session.get.return_value.__aenter__.side_effect = [search_resp, fetch_resp]
             
-            papers = await engine.search_async("test query", limit=10)
+            papers = await engine.search("test query", limit=10)
             
             assert len(papers) >= 1
             assert papers[0].title == "Test Paper 1"
@@ -279,7 +279,7 @@ class TestArxivEngine:
             
             mock_session.get.return_value.__aenter__.return_value = mock_response
             
-            papers = await engine.search_async("test query", limit=10)
+            papers = await engine.search("test query", limit=10)
             
             assert len(papers) >= 1
             assert papers[0].title == "Test Paper"
@@ -329,7 +329,7 @@ class TestLocalSearchEngine:
         """Test basic local search."""
         engine = LocalSearchEngine(index_path=temp_index)
         
-        papers = await engine.search_async("machine learning", limit=10)
+        papers = await engine.search("machine learning", limit=10)
         
         assert len(papers) >= 1
         assert any("machine learning" in p.title.lower() for p in papers)
@@ -354,7 +354,7 @@ class TestVectorSearchEngine:
         engine._model = None
         engine._embeddings = None
         
-        papers = await engine.search_async("test query")
+        papers = await engine.search("test query")
         assert papers == []
 
 
@@ -408,7 +408,7 @@ class TestUnifiedSearcher:
         searcher._engines['arxiv'] = mock_arxiv
         
         # Search
-        papers = await searcher.search_async(
+        papers = await searcher.search(
             "test query",
             sources=['pubmed', 'arxiv'],
             limit=10
@@ -1245,7 +1245,7 @@ if __name__ == "__main__":
 #         for source in sources:
 #             try:
 #                 engine = self._get_engine(source)
-#                 task = engine.search_async(query, limit, **kwargs)
+#                 task = engine.search(query, limit, **kwargs)
 #                 tasks.append(task)
 #             except Exception as e:
 #                 logger.debug(f"Failed to initialize {source} engine: {e}")
@@ -1323,7 +1323,7 @@ if __name__ == "__main__":
 #     Async convenience function for searching papers.
 #     """
 #     searcher = UnifiedSearcher(email=email, semantic_scholar_api_key=semantic_scholar_api_key)
-#     return await searcher.search_async(query, sources, limit, **kwargs)
+#     return await searcher.search(query, sources, limit, **kwargs)
 # 
 # 
 # def search_sync(query: str,
@@ -1373,7 +1373,7 @@ if __name__ == "__main__":
 #     'VectorSearchEngine',
 #     'UnifiedSearcher',
 #     'get_scholar_dir',
-#     'search_async',
+#     'search',
 #     'search_sync',
 #     'build_index'
 # ]

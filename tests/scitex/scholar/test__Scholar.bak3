@@ -161,7 +161,7 @@ class TestScholar:
             )
         ])
         
-        with patch.object(scholar._searcher, 'search_async', 
+        with patch.object(scholar._searcher, 'search', 
                          return_value=mock_papers) as mock_search:
             results = scholar.search("test query", limit=10)
             
@@ -188,7 +188,7 @@ class TestScholar:
             )
         ])
         
-        with patch.object(scholar._searcher, 'search_async', 
+        with patch.object(scholar._searcher, 'search', 
                          return_value=mock_papers) as mock_search:
             results = scholar.search("machine learning", sources=["semantic_scholar"], limit=10)
             
@@ -225,7 +225,7 @@ class TestScholar:
                 return mock_papers
             return []
         
-        with patch.object(scholar._searcher, 'search_async', side_effect=mock_search):
+        with patch.object(scholar._searcher, 'search', side_effect=mock_search):
             results = scholar.search_local("Local")
             assert len(results) == 2
             assert all(isinstance(p, Paper) for p in results)
@@ -311,7 +311,7 @@ class TestScholar:
                 "10.1234/test2": None
             }
         
-        with patch.object(scholar._pdf_downloader, 'batch_download_async', mock_batch_download):
+        with patch.object(scholar._pdf_downloader, 'batch_download', mock_batch_download):
             results = scholar.download_pdfs(papers, download_dir=tmp_path)
             
             assert results['successful'] == 1
@@ -338,7 +338,7 @@ class TestScholar:
                 kwargs['progress_callback'](1, 1, "10.1234/test")
             return {"10.1234/test": tmp_path / "test.pdf"}
         
-        with patch.object(scholar._pdf_downloader, 'batch_download_async', mock_batch_download):
+        with patch.object(scholar._pdf_downloader, 'batch_download', mock_batch_download):
             results = scholar.download_pdfs(
                 papers, 
                 download_dir=tmp_path,
@@ -373,7 +373,7 @@ class TestScholar:
             )
         ])
         
-        with patch.object(scholar._searcher, 'search_async', return_value=mock_papers):
+        with patch.object(scholar._searcher, 'search', return_value=mock_papers):
             with patch.object(scholar._enricher, 'enrich_all', return_value=mock_papers):
                 result = scholar.search("test query")
                 assert isinstance(result, Papers)
@@ -557,7 +557,7 @@ class TestScholarIntegration:
             )
         ]
         
-        with patch.object(scholar._searcher, 'search_async', return_value=mock_papers):
+        with patch.object(scholar._searcher, 'search', return_value=mock_papers):
             # Search
             papers = scholar.search("deep learning")
             assert len(papers) == 2
@@ -571,7 +571,7 @@ class TestScholarIntegration:
             async def mock_download(identifiers, **kwargs):
                 return {id: tmp_path / f"{id.replace('/', '_')}.pdf" for id in identifiers}
             
-            with patch.object(scholar._pdf_downloader, 'batch_download_async', mock_download):
+            with patch.object(scholar._pdf_downloader, 'batch_download', mock_download):
                 results = scholar.download_pdfs(enriched)
                 assert results['successful'] == 2
             
