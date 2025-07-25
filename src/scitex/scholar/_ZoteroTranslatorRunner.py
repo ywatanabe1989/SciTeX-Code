@@ -603,7 +603,7 @@ window.doc = document;
         Returns:
             List of PDF URLs found
         """
-        result = await self.run_translator(url)
+        result = await self.run_translator_async(url)
         
         pdf_urls = []
         for item in result.get('items', []):
@@ -633,7 +633,7 @@ window.doc = document;
         
         async def extract_with_limit_async(url: str) -> Tuple[str, Dict]:
             async with semaphore:
-                result = await self.run_translator(url)
+                result = await self.run_translator_async(url)
                 return url, result
                 
         results = await asyncio.gather(

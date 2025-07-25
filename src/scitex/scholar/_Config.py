@@ -145,6 +145,11 @@ class ScholarConfig:
     )
     user_agent: str = "SciTeX-Scholar/1.0"  # HTTP User-Agent for API requests
     
+    # OpenURL resolver for institutional access
+    openurl_resolver: str = field(
+        default="https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
+    )
+    
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""
         return {
@@ -167,6 +172,7 @@ class ScholarConfig:
             "use_lean_library": self.use_lean_library,
             "lean_library_browser_profile": self.lean_library_browser_profile,
             "user_agent": self.user_agent,
+            "openurl_resolver": self.openurl_resolver,
         }
     
     @classmethod

@@ -29,30 +29,59 @@ Notes:
 Timestamp: 2025-0725-05:46
 
 ## Agent: 56d58ff0-68e9-11f0-b211-00155d8208d6
-Role: Progress Update Specialist
+Role: Zotero Integration Documentation Specialist
 Status: completed ✅
-Task: Create comprehensive progress update for SciTeX project
+Task: Document and fix Zotero translator usage from Python
 Notes:
-- ✅ ANALYZED: Current project state from git status and recent commits
-- ✅ REVIEWED: Recent accomplishments and bulletin board entries
-- ✅ CREATED: Comprehensive progress update document
-- 📊 KEY FINDINGS:
-  * Production readiness improvements (cleanup, CI/CD)
-  * Essential notebooks successfully addressing user crisis
-  * Scholar module enhanced with Lean Library integration
-  * Test infrastructure improved (75% pass rate)
-  * Performance optimizations (3-5x speedup)
-- ✅ DOCUMENTED: Current status, metrics, and next steps
-- 📋 DELIVERABLES:
-  * PROGRESS_UPDATE_2025-07-25.md with full status
-  * Clear action items for immediate deployment
-  * Risk mitigation strategies identified
-- 🎯 READY FOR:
-  * Documentation deployment to Read the Docs
-  * Version 2.0.0 release preparation
-  * Community engagement with working examples
-@mentions: Progress update complete - project ready for next phase
-Timestamp: 2025-0725-10:48
+- ✅ FIXED: Async method naming inconsistency in ZoteroTranslatorRunner
+  * Fixed `run_translator` → `run_translator_async` in extract_pdf_urls_async
+- ✅ CREATED: Comprehensive documentation for Zotero translator usage
+  * Complete guide: docs/from_agents/zotero_translator_guide.md
+  * Working examples in .dev/: zotero_translator_example.py, simple_zotero_example.py
+  * Minimal implementation example: zotero_minimal_example.py
+  * Test workflow: test_zotero_workflow.py
+- ✅ EXPLAINED: How Zotero JS translators work in Python
+  * Browser automation with Playwright
+  * Zotero shim injection for JS environment
+  * URL matching to specific translators
+  * PDF URL extraction from results
+- 📊 KEY CONCEPTS:
+  * 600+ community-maintained translators
+  * Handle complex dynamic websites
+  * Extract full metadata, not just PDFs
+  * Respect site structure and rate limits
+- 🎯 INTEGRATION: Already implemented in Scholar module
+  * _ZoteroTranslatorRunner.py provides full functionality
+  * Used automatically in PDFDownloader strategies
+  * Supports batch extraction and caching
+@mentions: Zotero translator documentation complete - usage clarified
+Timestamp: 2025-0725-11:32
+
+## Agent: 56d58ff0-68e9-11f0-b211-00155d8208d6
+Role: OpenURL Resolver Integration Specialist
+Status: completed ✅
+Task: Integrate OpenURL resolver into Scholar module
+Notes:
+- ✅ INTEGRATED: OpenURL resolver as PDF download strategy
+  * Added to PDFDownloader with full async support
+  * Positioned after Lean Library, before Zotero translators
+  * Works with institutional authentication
+- ✅ IMPLEMENTED: Complete resolver workflow
+  * DOI → OpenURL → Institutional landing page → PDF
+  * Uses Playwright for authenticated navigation
+  * Falls back to direct patterns if translator fails
+- ✅ TESTED: University of Melbourne resolver
+  * Successfully downloaded AI epilepsy paper (83MB)
+  * Confirmed full paper, not reporting summary
+- 📊 ARCHITECTURE:
+  * _OpenURLResolver.py handles resolution
+  * _try_openurl_resolver_async in PDFDownloader
+  * ScholarConfig.openurl_resolver for configuration
+- 🎯 USAGE: Set openurl_resolver in config
+  * Default: University of Melbourne resolver
+  * Works with any OpenURL-compliant resolver
+@mentions: OpenURL resolver fully integrated - institutional access working
+Timestamp: 2025-0725-11:24
 
 ## Agent: 390290b0-68a6-11f0-b4ec-00155d8208d6
 Role: Essential Notebooks Creator

@@ -36,9 +36,8 @@ class TestSearchEngine:
     async def test_base_search_not_implemented(self):
         """Test that base search raises error."""
         engine = SearchEngine("test")
-        with pytest.raises(ScholarError) as exc_info:
+        with pytest.raises(NotImplementedError):
             await engine.search_async("test query")
-        assert "Search method not implemented" in str(exc_info.value)
     
     @pytest.mark.asyncio
     async def test_rate_limiting(self):

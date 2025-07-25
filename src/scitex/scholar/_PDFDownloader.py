@@ -39,6 +39,7 @@ from ._ProgressTracker import create_progress_tracker
 from ._utils import normalize_filename
 from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
 from ._LeanLibraryAuthenticator import LeanLibraryAuthenticator
+from ._OpenURLResolver import OpenURLResolver
 # BrowserAutomation removed - using direct playwright calls
 # OpenAthensURLTransformer removed - not needed for basic functionality
 
@@ -86,6 +87,7 @@ class PDFDownloader:
         use_openathens: bool = False,
         openathens_config: Optional[Dict[str, Any]] = None,
         use_lean_library: bool = True,
+        openurl_resolver: Optional[str] = None,
         timeout: int = 30,
         max_retries: int = 3,
         max_concurrent: int = 3,
@@ -102,10 +104,13 @@ class PDFDownloader:
             use_playwright: Enable Playwright for JS sites
             use_openathens: Enable OpenAthens authentication
             openathens_config: OpenAthens configuration dict
+            use_lean_library: Enable Lean Library browser extension
+            openurl_resolver: OpenURL resolver URL (e.g., University of Melbourne)
             timeout: Download timeout in seconds
             max_retries: Maximum retry attempts
             max_concurrent: Maximum concurrent downloads
             acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
+            debug_mode: Enable debug logging
         """
         self.download_dir = Path(download_dir or "./pdfs")
         self.use_translators = use_translators
@@ -187,6 +192,15 @@ class PDFDownloader:
             except Exception as e:
                 logger.warning(f"Failed to initialize Lean Library: {e}")
                 self.use_lean_library = False
+        
+        # Initialize OpenURL resolver
+        self.openurl_resolver = None
+        if openurl_resolver:
+            try:
+                self.openurl_resolver = OpenURLResolver(openurl_resolver)
+                logger.info(f"OpenURL resolver initialized: {openurl_resolver}")
+            except Exception as e:
+                logger.warning(f"Could not initialize OpenURL resolver: {e}")
 
         # Track downloads to avoid duplicates
         self._active_downloads: Set[str] = set()
@@ -342,6 +356,7 @@ class PDFDownloader:
         else:
             strategies = [
                 ("Lean Library", self._try_lean_library_async),  # Primary - browser extension
+                ("OpenURL Resolver", self._try_openurl_resolver_async),  # Institutional access
                 ("Zotero translators", self._try_zotero_translator_async),  # Most reliable for non-auth
                 ("Direct patterns", self._try_direct_patterns_async),
                 ("Playwright", self._try_playwright_async),
@@ -360,7 +375,7 @@ class PDFDownloader:
 
             try:
                 # Pass auth_session to strategies that can use it
-                if name in ["Zotero translators", "Direct patterns", "Playwright", "OpenAthens"]:
+                if name in ["Zotero translators", "Direct patterns", "Playwright", "OpenAthens", "OpenURL Resolver"]:
                     pdf_path = await strategy(doi, url, output_path, auth_session)
                 else:
                     # Sci-Hub doesn't need auth
@@ -439,6 +454,8 @@ class PDFDownloader:
             return self.use_scihub
         elif strategy == "Playwright":
             return self.use_playwright
+        elif strategy == "OpenURL Resolver":
+            return self.openurl_resolver is not None
         return True
 
     async def _try_direct_patterns_async(
@@ -534,6 +551,82 @@ class PDFDownloader:
                 if await self._download_file_async(pdf_url, output_path, referer=url):
                     return output_path
 
+        return None
+
+    async def _try_openurl_resolver_async(
+        self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
+    ) -> Optional[Path]:
+        """Try download using OpenURL resolver + Zotero translators."""
+        if not self.openurl_resolver:
+            return None
+            
+        try:
+            logger.info(f"Using OpenURL resolver for {doi}")
+            
+            # Create metadata for resolver
+            metadata = {
+                "doi": doi,
+                "url": url
+            }
+            
+            # Get resolver results
+            result = await self.openurl_resolver.resolve_async(metadata)
+            if not result or not result.get('full_text_urls'):
+                logger.warning("OpenURL resolver found no full-text URLs")
+                return None
+            
+            logger.info(f"OpenURL resolver found {len(result['full_text_urls'])} URLs")
+            
+            # Try each resolved URL
+            for resolved_url in result['full_text_urls']:
+                logger.debug(f"Trying resolved URL: {resolved_url}")
+                
+                # Use Playwright to navigate to the resolved URL with auth
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=not self.debug_mode)
+                    context = await browser.new_context()
+                    
+                    # Add auth cookies if available
+                    if auth_session and auth_session.get('cookies'):
+                        await context.add_cookies(auth_session['cookies'])
+                        logger.debug(f"Added {len(auth_session['cookies'])} auth cookies")
+                    
+                    page = await context.new_page()
+                    
+                    try:
+                        # Navigate to resolved URL
+                        await page.goto(resolved_url, wait_until="domcontentloaded")
+                        await page.wait_for_timeout(3000)
+                        
+                        # Current URL after redirects
+                        final_url = page.url
+                        logger.info(f"Resolved to: {final_url}")
+                        
+                        # Try Zotero translator on the resolved page
+                        if self.zotero_translator_runner:
+                            translator = self.zotero_translator_runner.find_translator_for_url(final_url)
+                            if translator:
+                                logger.info(f"Using translator: {translator['label']}")
+                                
+                                # Extract PDF URLs using translator
+                                pdf_urls = await self._extract_pdf_urls_from_page_async(page, final_url)
+                                
+                                for pdf_url in pdf_urls:
+                                    if await self._download_file_async(pdf_url, output_path, referer=final_url):
+                                        return output_path
+                        
+                        # Try direct patterns as fallback
+                        pdf_urls = self._get_publisher_pdf_urls(final_url, doi)
+                        for pdf_url in pdf_urls:
+                            if await self._download_file_async(pdf_url, output_path, referer=final_url):
+                                return output_path
+                                
+                    finally:
+                        await browser.close()
+                        
+        except Exception as e:
+            logger.error(f"OpenURL resolver strategy failed: {e}")
+            
         return None
 
     async def _try_scihub_async(
@@ -1395,6 +1488,59 @@ class PDFDownloader:
                 await browser.close()
                 
         return False
+    
+    async def _extract_pdf_urls_from_page_async(self, page, url: str) -> List[str]:
+        """Extract PDF URLs from a page using various methods."""
+        pdf_urls = []
+        
+        try:
+            # Method 1: Look for direct PDF links
+            pdf_links = await page.query_selector_all('a[href*=".pdf"], a[href*="/pdf/"]')
+            for link in pdf_links:
+                href = await link.get_attribute('href')
+                if href:
+                    if href.startswith('http'):
+                        pdf_urls.append(href)
+                    else:
+                        # Make absolute URL
+                        from urllib.parse import urljoin
+                        pdf_urls.append(urljoin(url, href))
+            
+            # Method 2: Look for download buttons
+            download_buttons = await page.query_selector_all(
+                'a:has-text("Download PDF"), button:has-text("Download PDF"), '
+                'a:has-text("PDF"), a:has-text("Full Text PDF")'
+            )
+            for button in download_buttons:
+                href = await button.get_attribute('href')
+                if href and href not in pdf_urls:
+                    if href.startswith('http'):
+                        pdf_urls.append(href)
+                    else:
+                        from urllib.parse import urljoin
+                        pdf_urls.append(urljoin(url, href))
+            
+            # Method 3: Try to run Zotero translator if available
+            if self.zotero_translator_runner:
+                try:
+                    # Inject translator script and extract URLs
+                    translator_urls = await self.zotero_translator_runner.extract_pdf_urls_from_page(page, url)
+                    pdf_urls.extend(translator_urls)
+                except Exception as e:
+                    logger.debug(f"Translator extraction failed: {e}")
+                    
+        except Exception as e:
+            logger.debug(f"PDF URL extraction failed: {e}")
+            
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_urls = []
+        for url in pdf_urls:
+            if url not in seen:
+                seen.add(url)
+                unique_urls.append(url)
+                
+        return unique_urls
     
     async def _run_translator_with_auth_async(
         self,
