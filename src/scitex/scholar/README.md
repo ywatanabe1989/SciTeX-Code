@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-24 20:04:40
+!-- Timestamp: 2025-07-25 10:32:45
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->

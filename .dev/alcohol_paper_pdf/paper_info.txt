@@ -1,5 +1,0 @@
-Title: Suppression of binge alcohol drinking by an inhibitory neuronal ensemble in the mouse medial orbitofrontal cortex
-DOI: 10.1038/s41593-025-01970-x
-Journal: Nature Neuroscience
-Year: 2025
-URL: https://doi.org/10.1038/s41593-025-01970-x

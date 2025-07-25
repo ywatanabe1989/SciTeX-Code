@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-25 00:06:09 (ywatanabe)"
+# Timestamp: "2025-07-25 10:33:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/dev.py
 # ----------------------------------------
 import os
