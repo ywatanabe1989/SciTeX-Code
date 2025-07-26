@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_MetadataEnricher.py"
+    "./src/scitex/scholar/core/_MetadataEnricher.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -29,8 +29,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from ..errors import EnrichmentError, warn_performance
-from ._Paper import Paper
+from ...errors import EnrichmentError, warn_performance
+from .._Paper import Paper
 
 logger = logging.getLogger(__name__)
 

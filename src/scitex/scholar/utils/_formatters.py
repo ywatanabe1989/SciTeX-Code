@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_utils.py"
+    "./src/scitex/scholar/utils/_formatters.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -27,8 +27,8 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-from ._Paper import Paper
-from ._Papers import Papers
+from .._Paper import Paper
+from .._Papers import Papers
 
 logger = logging.getLogger(__name__)
 

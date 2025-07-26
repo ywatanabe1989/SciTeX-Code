@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_PDFDownloader.py"
+    "./src/scitex/scholar/download/_PDFDownloader.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -33,13 +33,14 @@ from urllib.parse import quote, urljoin, urlparse
 import aiohttp
 from playwright.async_api import async_playwright
 
-from ..errors import PDFDownloadError, ScholarError, warn_performance
-from ._ethical_usage import ETHICAL_USAGE_MESSAGE, check_ethical_usage
-from ._ProgressTracker import create_progress_tracker
-from ._utils import normalize_filename
+from ...errors import PDFDownloadError, ScholarError, warn_performance
+from ..utils._ethical_usage import ETHICAL_USAGE_MESSAGE, check_ethical_usage
+from ..utils._progress_tracker import create_progress_tracker
+from ..utils._formatters import normalize_filename
 from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
-from ._LeanLibraryAuthenticator import LeanLibraryAuthenticator
-from ._OpenURLResolver import OpenURLResolver
+from ..auth._LeanLibraryAuthentication import LeanLibraryAuthenticator
+from ..core._OpenURLResolver import OpenURLResolver
+from ..core._ResolverLinkFinder import ResolverLinkFinder, find_and_click_resolver_link
 # BrowserAutomation removed - using direct playwright calls
 # OpenAthensURLTransformer removed - not needed for basic functionality
 
@@ -598,9 +599,23 @@ class PDFDownloader:
                         await page.goto(resolved_url, wait_until="domcontentloaded")
                         await page.wait_for_timeout(3000)
                         
-                        # Current URL after redirects
-                        final_url = page.url
-                        logger.info(f"Resolved to: {final_url}")
+                        # Phase 2.5-2.6: Use robust resolver link finder
+                        logger.info("Using prioritized resolver link finder...")
+                        
+                        # Use the new robust link finder
+                        final_url_after_click = await find_and_click_resolver_link(page, doi)
+                        
+                        if final_url_after_click:
+                            logger.info(f"Successfully navigated to: {final_url_after_click}")
+                            final_url = final_url_after_click
+                        else:
+                            logger.warning("Resolver link finder failed, staying on current page")
+                            final_url = page.url
+                        
+                        # Phase 2.7: Handle cookie consent at final destination
+                        logger.info("Handling cookie consent if present...")
+                        await self._handle_cookie_consent_async(page)
+                        await page.wait_for_timeout(2000)
                         
                         # Try Zotero translator on the resolved page
                         if self.zotero_translator_runner:

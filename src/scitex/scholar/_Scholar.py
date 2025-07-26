@@ -36,13 +36,14 @@ from ..errors import (
 )
 from ..io import load
 from ._Config import ScholarConfig
-from ._DOIResolver import BatchDOIResolver, DOIResolver
-from ._MetadataEnricher import MetadataEnricher
+from .core._DOIResolver import BatchDOIResolver, DOIResolver
+from .core._MetadataEnricher import MetadataEnricher
 from ._Paper import Paper
 from ._Papers import Papers
-from ._PDFDownloader import PDFDownloader
+from .download._PDFDownloader import PDFDownloader
 # SmartPDFDownloader removed - using PDFDownloader directly
-from ._SearchEngines import UnifiedSearcher, get_scholar_dir
+from .search._UnifiedSearcher import UnifiedSearcher
+from .utils._paths import get_scholar_dir
 
 logger = logging.getLogger(__name__)
 

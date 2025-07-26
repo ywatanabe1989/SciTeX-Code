@@ -16,7 +16,7 @@ from typing import Optional, Dict, Any, List
 from urllib.parse import urlencode, quote
 import aiohttp
 
-from ..errors import ScholarError
+from ...errors import ScholarError
 
 logger = logging.getLogger(__name__)
 

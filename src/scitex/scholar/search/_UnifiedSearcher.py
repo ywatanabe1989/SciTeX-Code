@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_search_unified.py"
+    "./src/scitex/scholar/search/_UnifiedSearcher.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -31,8 +31,9 @@ import aiohttp
 import xml.etree.ElementTree as ET
 from urllib.parse import quote_plus
 
-from ._Paper import Paper
-from ..errors import SearchError
+from .._Paper import Paper
+from ...errors import SearchError
+from ..utils._paths import get_scholar_dir
 
 logger = logging.getLogger(__name__)
 
@@ -1208,12 +1209,7 @@ class UnifiedSearcher:
         self.engines['vector'].add_papers(papers)
 
 
-# Convenience functions
-def get_scholar_dir() -> Path:
-    """Get SciTeX scholar directory."""
-    scholar_dir = Path.home() / ".scitex" / "scholar"
-    scholar_dir.mkdir(parents=True, exist_ok=True)
-    return scholar_dir
+# Convenience functions - get_scholar_dir moved to utils._paths
 
 
 async def search_async(query: str,

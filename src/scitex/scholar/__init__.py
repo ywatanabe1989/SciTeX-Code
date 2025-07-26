@@ -41,7 +41,7 @@ from ._Papers import Papers
 PaperCollection = Papers
 
 # Import utility functions
-from ._utils import (
+from .utils._formatters import (
     papers_to_bibtex,
     papers_to_ris,
     papers_to_json,
@@ -49,7 +49,7 @@ from ._utils import (
 )
 
 # Import enrichment functionality
-from ._MetadataEnricher import (
+from .core._MetadataEnricher import (
     MetadataEnricher,
     _enrich_papers_with_all,
     _enrich_papers_with_impact_factors,
@@ -57,7 +57,7 @@ from ._MetadataEnricher import (
 )
 
 # PDF download functionality
-from ._PDFDownloader import (
+from .download._PDFDownloader import (
     PDFDownloader,
     download_pdf_async,
     download_pdfs_async,

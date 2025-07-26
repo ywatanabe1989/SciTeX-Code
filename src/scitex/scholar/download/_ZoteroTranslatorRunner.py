@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_ZoteroTranslatorRunner.py"
+    "./src/scitex/scholar/download/_ZoteroTranslatorRunner.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -28,7 +28,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from playwright.async_api import async_playwright, Page
 
-from ..errors import TranslatorError
+from ...errors import TranslatorError
 
 logger = logging.getLogger(__name__)
 

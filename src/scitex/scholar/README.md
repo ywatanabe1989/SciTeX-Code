@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-25 10:32:45
+!-- Timestamp: 2025-07-25 13:30:42
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -704,5 +704,67 @@ MIT
 ## Contact
 
 Yusuke Watanabe (ywatanabe@scitex.ai)
+
+## Let's debug one by one; try to proceed by Phase 2.6
+
+## PDF Downloading Workflow
+  Phase 1: Preparation ✓
+  1. Query → DOI: 
+     "Addressing artifactual bias in large, automated MRI analyses of brain development" -> DOI 10.1038/s41593-025-01990-7 for the paper ✓
+  2. OpenAthens Authentication:
+    - Session file exists as a plain JSON file ✓
+      ~/.scitex/scholar/openathens_sessions/session.json
+    - Not expired (5+ hours left) ✓
+    - Valid session (https://my.openathens.net/?passiveLogin=false redirects to research zone https://my.openathens.net/app/research) ✓
+      - If not valid, manual login to OpenAthens
+  3. Resolver URL: Constructed the University of Melbourne OpenURL resolver link ✓
+  https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&rft.atitle=Addressing+artifactual+bias+in+large%2C+automated+MRI+analyses+of+brain+development&rft.jtitle=Nature+Neuroscience&rft.date=2025&rft.doi=10.1038%2Fs41593-025-01990-7&rft.au=Safia+Elyounssi ✓
+
+  Phase 2: Execution
+  4. Navigate to the resolver URL with authenticated browser
+  5. Search for publisher access links on resolver pages with
+  # NOTE; I am not sure how we make this reliable
+  patterns like:
+    - "Available from Nature"
+    - "View full text at"
+    - Direct publisher domain links
+  6. Click the link and properly wait for navigation to complete
+   using:
+    - asyncio.gather to handle click + wait simultaneously
+    - wait_for_load_state('networkidle') with 30s timeout
+    - Additional 3s wait for JavaScript redirects
+    - Logging of intermediate redirects
+  7. Handle cookie consent popups at the final destination
+  8. Use Zotero translators to find PDF URL
+   - Check for appropriate translator and extracts PDF URLs
+   - Run the appropriate translator
+  9. Download the PDF
+
+## TODO
+- [ ] Add retry logic with exponential backoff
+- [ ] Take screenshots on failure for debugging
+
+- [ ] To generalize,
+  - [ ] Add support for authentication methods other than OpenAthens (e.g., EZproxy, Shibboleth)
+  - [ ] Add the corresponding Resolver URL (user should specify as every university has its own unique OpenURL resolver address)
+
+# SciTeX Automated PDF Downloading Workflow (detailed with HOW)
+
+| Step                                               | What (Objective)              | How (Implementation)                                                                                                                                                                                                                   |
+|----------------------------------------------------|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Phase 1: Preparation (Search & Authentication)** |                               |                                                                                                                                                                                                                                        |
+| 1                                                  | Query to DOI                  | The user provides a query (e.g., paper title). The scholar.search() function calls academic APIs to find the paper's metadata, including its DOI.                                                                                      |
+| 2                                                  | Verify OpenAthens Session     | Before downloading, the system checks for a valid, cached OpenAthens session to avoid a new login.                                                                                                                                     |
+| 2.1                                                | Check for Session File        | Look for the session file in the cache directory (e.g., ~/.scitex/scholar/openathens_sessions/session.json).                                                                                                                           |
+| 2.2                                                | Read Session Data             | The file is read as a plain JSON file; no encoding or decoding is required.                                                                                                                                                            |
+| 2.3                                                | Check Expiry                  | Read the timestamp from the JSON file and confirm it has not expired (e.g., less than 8 hours old).                                                                                                                                    |
+| 2.4                                                | Live Verification             | Launch a headless browser with the cached cookies and navigate to https://my.openathens.net/?passiveLogin=false. If this redirects to an authenticated page like https://my.openathens.net/app/research, the session is valid.         |
+| 3                                                  | Trigger Manual Authentication | If no valid session exists, launch a visible browser window to https://my.openathens.net/ for the user to log in manually. The script waits for a successful redirect and then saves the new session cookies to the session.json file. |
+| **Phase 2: Execution (Download per DOI)**          |                               |                                                                                                                                                                                                                                        |
+| 4                                                  | Construct Resolver URL        | For each DOI, construct the university-specific OpenURL resolver link. For UniMelb, this is https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?...&id=doi:{DOI}.                                                                        |
+| 5                                                  | Navigate to Resolver          | Launch a headless browser, load the valid OpenAthens cookies into the context, and navigate to the constructed resolver URL.                                                                                                           |
+| 6                                                  | Access Full Text              | On the resolver page, programmatically find and click the "View full text at..." link. The authenticated browser is then redirected to the full-access article page on the publisher's website.                                        |
+| 7                                                  | Discover PDF URL              | On the publisher's page, inject and run the appropriate Zotero JavaScript translator (.js file) using the _ZoteroTranslatorRunner.py module. The translator parses the page to find the direct URL to the full-text PDF.               |
+| 8                                                  | Download and Save             | Use the direct PDF link from the translator to download the file within the same authenticated browser session. Save the file to the user's local storage.                                                                             |
 
 <!-- EOF -->

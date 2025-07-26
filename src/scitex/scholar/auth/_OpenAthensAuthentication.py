@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-24 12:40:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_OpenAthensAuthenticator.py
+# Timestamp: "2025-07-26 14:16:00 (ywatanabe)"
+# File: ./src/scitex/scholar/auth/_OpenAthensAuthentication.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_OpenAthensAuthenticator.py"
+    "./src/scitex/scholar/auth/_OpenAthensAuthentication.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -32,9 +32,9 @@ from urllib.parse import urljoin, urlparse
 import aiohttp
 from playwright.async_api import async_playwright, Page, Browser
 
-from ..errors import ScholarError, SciTeXWarning
+from ._BaseAuthenticationProvider import BaseAuthenticationProvider
+from ...errors import ScholarError, SciTeXWarning
 import warnings
-# BrowserAutomation removed - not needed
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class OpenAthensError(ScholarError):
     pass
 
 
-class OpenAthensAuthenticator:
+class OpenAthensAuthentication(BaseAuthenticationProvider):
     """
     Handles OpenAthens authentication for institutional access.
     
@@ -77,6 +77,8 @@ class OpenAthensAuthenticator:
             Uses the unified MyAthens interface at https://my.openathens.net/
             Authentication is done manually in the browser.
         """
+        # Initialize base class
+        super().__init__(config={})
         self.email = email
         self.myathens_url = "https://my.openathens.net/?passiveLogin=false"
         self.cache_dir = Path(cache_dir or Path.home() / ".scitex" / "scholar" / "openathens_sessions")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-23 15:51:01 (ywatanabe)"
+# Timestamp: "2025-07-26 13:39:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_DOIResolver.py
 # ----------------------------------------
 import os

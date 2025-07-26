@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-01-25 03:00:00 (ywatanabe)"
-# File: ./src/scitex/scholar/_LeanLibraryAuthenticator.py
+# File: ./src/scitex/scholar/auth/_LeanLibraryAuthentication.py
 # ----------------------------------------
 
 """
@@ -20,7 +20,7 @@ import platform
 
 from playwright.async_api import async_playwright, Page, BrowserContext
 
-from ..errors import ScholarError
+from ...errors import ScholarError
 
 logger = logging.getLogger(__name__)
 

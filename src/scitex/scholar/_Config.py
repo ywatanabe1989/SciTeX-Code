@@ -150,6 +150,12 @@ class ScholarConfig:
         default="https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
     )
     
+    def __post_init__(self):
+        """Post-initialization processing."""
+        # Expand paths if they contain ~ or environment variables
+        if self.pdf_dir and isinstance(self.pdf_dir, str):
+            self.pdf_dir = str(Path(self.pdf_dir).expanduser())
+    
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""
         return {
