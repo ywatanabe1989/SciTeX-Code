@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 12:22:46 (ywatanabe)"
+# Timestamp: "2025-07-27 15:19:37 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,8 +11,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""
-OpenAthens authentication for institutional access to academic papers.
+"""OpenAthens authentication for institutional access to academic papers.
 
 This module provides authentication through OpenAthens single sign-on
 to enable legal PDF downloads via institutional subscriptions.
@@ -31,7 +30,7 @@ from playwright.async_api import Browser, Page, async_playwright
 from scitex.logging import getLogger
 
 from ...errors import ScholarError
-from ..utils._CookieAutoAcceptor import CookieAutoAcceptor
+from ..browser._BrowserMixin import BrowserMixin
 from ._BaseAuthenticator import BaseAuthenticator
 from ._CacheManager import CacheManager
 
@@ -44,9 +43,8 @@ class OpenAthensError(ScholarError):
     pass
 
 
-class OpenAthensAuthenticator(BaseAuthenticator):
-    """
-    Handles OpenAthens authentication for institutional access.
+class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
+    """Handles OpenAthens authentication for institutional access.
 
     OpenAthens is a single sign-on system used by many universities
     and institutions to provide seamless access to academic resources.
@@ -64,8 +62,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         timeout: int = 300,
         debug_mode: bool = False,
     ):
-        """
-        Initialize OpenAthens authenticator.
+        """Initialize OpenAthens authenticator.
 
         Args:
             email: Institutional email for identification
@@ -73,13 +70,16 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             timeout: Authentication timeout in seconds
             debug_mode: Enable debug logging
         """
+        BaseAuthenticator.__init__(
+            self, config={"email": email, "debug_mode": debug_mode}
+        )
+        BrowserMixin.__init__(self)
 
-        super().__init__(config={"email": email, "debug_mode": debug_mode})
         self.email = email
         self.myathens_url = "https://my.openathens.net/?passiveLogin=false"
         self.timeout = timeout
         self.debug_mode = debug_mode
-        self.cookie_acceptor = CookieAutoAcceptor()
+        self.headless = False  # Always show browser for authentication
 
         # Cache management
         self.cache_manager = CacheManager(
@@ -94,8 +94,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         self._session_expiry: Optional[datetime] = None
 
     async def authenticate(self, force: bool = False, **kwargs) -> dict:
-        """
-        Authenticate with OpenAthens and return session data.
+        """Authenticate with OpenAthens and return session data.
 
         Args:
             force: Force re-authentication even if session exists
@@ -109,10 +108,14 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             logger.success(
                 f"Using existing OpenAthens session{self._format_expiry_info()}"
             )
+            return {
+                "cookies": self._full_cookies,
+                "simple_cookies": self._cookies,
+                "expiry": self._session_expiry,
+            }
 
         # Use file-based lock to prevent concurrent authentication
         lock_file = self.cache_manager.lock_file
-        # lock_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Try to acquire lock with timeout
         max_wait = 300  # 5 minutes max wait
@@ -130,7 +133,6 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             except (IOError, OSError):
                 if lock_fd:
                     lock_fd.close()
-
                 # Check if another process authenticated
                 await self._load_session_cache()
                 if await self.is_authenticated():
@@ -140,7 +142,6 @@ class OpenAthensAuthenticator(BaseAuthenticator):
                         "simple_cookies": self._cookies,
                         "expiry": self._session_expiry,
                     }
-
                 logger.debug("Waiting for authentication lock...")
                 await asyncio.sleep(2)
 
@@ -153,7 +154,6 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             # Double-check session after acquiring lock
             await self._load_session_cache()
             if not force and await self.is_authenticated():
-                # logger.info("Using session authenticated by another process")
                 logger.success(
                     f"Using session authenticated by another process{self._format_expiry_info()}"
                 )
@@ -169,8 +169,8 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
             # Perform authentication by user interaction
             async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=False)
-                context = await browser.new_context()
+                # Use BrowserMixin to create context with cookie auto-acceptance
+                browser, context = await self.create_browser_context(p)
                 page = await context.new_page()
 
                 # Navigate to MyAthens
@@ -179,8 +179,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
                     self.myathens_url, wait_until="domcontentloaded"
                 )
 
-                # Auto-accept cookies
-                await self.cookie_acceptor.accept_cookies(page)
+                # Check if cookie banner still exists (should be auto-accepted)
                 if await self.cookie_acceptor.check_cookie_banner_exists(page):
                     print(
                         "\nCookie banner detected - please accept cookies manually before proceeding"
@@ -218,13 +217,11 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
                     # Save session
                     await self._save_session_cache()
-
                     logger.success(
                         f"OpenAthens authentication successful{self._format_expiry_info()}"
                     )
 
                     await browser.close()
-
                     return {
                         "cookies": self._full_cookies,
                         "simple_cookies": self._cookies,
@@ -245,10 +242,8 @@ class OpenAthensAuthenticator(BaseAuthenticator):
                     pass
                 logger.debug("Released authentication lock")
 
-    # async def is_authenticated(self, verify_live: bool = False) -> bool:
     async def is_authenticated(self, verify_live: bool = True) -> bool:
-        """
-        Check if we have a valid authenticated session.
+        """Check if we have a valid authenticated session.
 
         Args:
             verify_live: If True, performs a live check against OpenAthens
@@ -273,6 +268,55 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
         return True
 
+    async def _verify_authentication_live(self) -> bool:
+        """Verify authentication by checking access to MyAthens account page."""
+        try:
+            async with async_playwright() as p:
+                # Use BrowserMixin with headless mode for verification
+                self.headless = True
+                browser, context = await self.create_browser_context(p)
+
+                # Add cookies
+                if self._full_cookies:
+                    await context.add_cookies(self._full_cookies)
+
+                page = await context.new_page()
+
+                # Navigate to MyAthens account page
+                response = await page.goto(
+                    "https://my.openathens.net/account",
+                    wait_until="domcontentloaded",
+                    timeout=15000,
+                )
+
+                current_url = page.url
+
+                # Check if we're on authenticated page
+                if "my.openathens.net" in current_url and any(
+                    path in current_url
+                    for path in ["/account", "/app", "/library"]
+                ):
+                    await browser.close()
+                    logger.success(
+                        f"Verified live authentication at {current_url}"
+                    )
+                    return True
+
+                # Check if redirected to login
+                if "login" in current_url or "signin" in current_url:
+                    await browser.close()
+                    return False
+
+                await browser.close()
+                return False
+
+        except Exception as e:
+            logger.error(f"Authentication verification failed: {e}")
+            return False
+        finally:
+            # Reset headless to False for actual authentication
+            self.headless = False
+
     async def get_auth_headers(self) -> Dict[str, str]:
         """Get authentication headers (OpenAthens uses cookies, not headers)."""
         return {}
@@ -290,10 +334,6 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         self._session_expiry = None
 
         # Clear cache
-        cache_name = "default"
-        if self.email and "@" in self.email:
-            cache_name = self.email.split("@")[1].replace(".", "_")
-
         if self.cache_manager.cache_file.exists():
             self.cache_manager.cache_file.unlink()
 
@@ -341,18 +381,16 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             if any(url_indicators):
                 try:
                     has_logout_button = await page.evaluate(
-                        """
-                        () => {
-                            const links = document.querySelectorAll('a, button');
-                            for (const link of links) {
-                                const text = link.textContent.toLowerCase();
-                                if (text.includes('logout') || text.includes('sign out')) {
-                                    return true;
-                                }
+                        """() => {
+                        const links = document.querySelectorAll('a, button');
+                        for (const link of links) {
+                            const text = link.textContent.toLowerCase();
+                            if (text.includes('logout') || text.includes('sign out')) {
+                                return true;
                             }
-                            return false;
                         }
-                    """
+                        return false;
+                    }"""
                     )
                 except:
                     pass
@@ -372,54 +410,8 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         logger.fail("\n✗ Login timeout - please try again")
         return False
 
-    async def _verify_authentication_live(self) -> bool:
-        """Verify authentication by checking access to MyAthens account page."""
-        try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                context = await browser.new_context()
-
-                # Add cookies
-                if self._full_cookies:
-                    await context.add_cookies(self._full_cookies)
-
-                page = await context.new_page()
-
-                # Navigate to MyAthens account page
-                response = await page.goto(
-                    "https://my.openathens.net/account",
-                    wait_until="domcontentloaded",
-                    timeout=15000,
-                )
-
-                current_url = page.url
-
-                # Check if we're on authenticated page
-                if "my.openathens.net" in current_url and any(
-                    path in current_url
-                    for path in ["/account", "/app", "/library"]
-                ):
-                    await browser.close()
-                    logger.success(
-                        f"Verified live authentication at {current_url}"
-                    )
-                    return True
-
-                # Check if redirected to login
-                if "login" in current_url or "signin" in current_url:
-                    await browser.close()
-                    return False
-
-                await browser.close()
-                return False
-
-        except Exception as e:
-            logger.error(f"Authentication verification failed: {e}")
-            return False
-
     async def _save_session_cache(self):
         """Save session cookies to cache."""
-
         cache_data = {
             "cookies": self._cookies,
             "full_cookies": self._full_cookies,
@@ -467,9 +459,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
                 expiry_str = cache_data.get("expiry")
                 if expiry_str:
                     self._session_expiry = datetime.fromisoformat(expiry_str)
-                # logger.success(
-                #     f"Loaded session from cache ({self.cache_manager.cache_file}): {len(self._cookies)} cookies"
-                # )
+
                 logger.success(
                     f"Loaded session from cache ({self.cache_manager.cache_file}): "
                     f"{len(self._cookies)} cookies{self._format_expiry_info()}"
@@ -498,11 +488,9 @@ async def main():
     parser.add_argument(
         "--force", action="store_true", help="Force re-authentication"
     )
-
     args = parser.parse_args()
 
     auth = OpenAthensAuthenticator(email=args.email)
-
     result = await auth.authenticate(force=args.force)
 
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-23 10:35:00 (ywatanabe)"
+# Timestamp: "2025-07-27 19:28:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Paper.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/scholar/_Paper.py"
@@ -10,19 +11,17 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""
-Paper class for SciTeX Scholar module.
+"""Paper class for SciTeX Scholar module.
 
 Represents a scientific paper with comprehensive metadata and methods.
 """
 
-import re
-import json
 import logging
-from pathlib import Path
-from typing import List, Dict, Any, Optional, Union
+import re
 from datetime import datetime
 from difflib import SequenceMatcher
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from ..errors import ScholarError
 
@@ -30,94 +29,93 @@ logger = logging.getLogger(__name__)
 
 
 class Paper:
-    """
-    Represents a scientific paper with comprehensive metadata.
-    
+    """Represents a scientific paper with comprehensive metadata.
+
     This class consolidates functionality from _paper.py, _paper_enhanced.py,
     and includes enrichment capabilities.
     """
-    
-    def __init__(self, 
-                 title: str,
-                 authors: List[str],
-                 abstract: str,
-                 source: str,
-                 year: Optional[Union[int, str]] = None,
-                 doi: Optional[str] = None,
-                 pmid: Optional[str] = None,
-                 arxiv_id: Optional[str] = None,
-                 journal: Optional[str] = None,
-                 keywords: Optional[List[str]] = None,
-                 citation_count: Optional[int] = None,
-                 pdf_url: Optional[str] = None,
-                 pdf_path: Optional[Path] = None,
-                 impact_factor: Optional[float] = None,
-                 journal_quartile: Optional[str] = None,
-                 journal_rank: Optional[int] = None,
-                 h_index: Optional[int] = None,
-                 metadata: Optional[Dict[str, Any]] = None):
-        """Initialize paper with comprehensive metadata."""
-        self.title = title
-        self.authors = authors
-        self.abstract = abstract
-        self.source = source
-        self.year = str(year) if year else None
-        self.doi = doi
-        self.pmid = pmid
-        self.arxiv_id = arxiv_id
-        self.journal = journal
-        self.keywords = keywords or []
-        self.citation_count = citation_count
-        self.pdf_url = pdf_url
-        self.pdf_path = Path(pdf_path) if pdf_path else None
-        
-        # Enriched metadata
-        self.impact_factor = impact_factor
-        self.journal_quartile = journal_quartile
-        self.journal_rank = journal_rank
-        self.h_index = h_index
-        
+
+    def __init__(
+        self,
+        # Core identifiers (most important first)
+        doi: Optional[str] = None,
+        title: Optional[str] = None,
+        authors: Optional[List[str]] = None,
+        # Publication details
+        journal: Optional[str] = None,
+        year: Optional[Union[int, str]] = None,
+        abstract: Optional[str] = None,
+        # Alternative identifiers
+        pmid: Optional[str] = None,
+        arxiv_id: Optional[str] = None,
         # Additional metadata
-        self.metadata = metadata or {}
-        
-        # Track data sources
-        self.citation_count_source = self.metadata.get('citation_count_source', None)
-        self.impact_factor_source = self.metadata.get('impact_factor_source', None)
-        self.quartile_source = self.metadata.get('quartile_source', None)
-        
-        # Track reasons for N/A values
-        self.impact_factor_na_reason = self.metadata.get('impact_factor_na_reason', None)
-        self.citation_count_na_reason = self.metadata.get('citation_count_na_reason', None)
-        self.journal_quartile_na_reason = self.metadata.get('journal_quartile_na_reason', None)
-        self.h_index_na_reason = self.metadata.get('h_index_na_reason', None)
-        
-        # Track all sources where this paper was found (for deduplication)
-        self.all_sources = self.metadata.get('all_sources', [source] if source else [])
-        if self.all_sources and source not in self.all_sources:
-            self.all_sources.append(source)
-        
+        keywords: Optional[List[str]] = None,
+        citation_count: Optional[int] = None,
+        impact_factor: Optional[float] = None,
+        journal_quartile: Optional[str] = None,
+        # File references
+        pdf_url: Optional[str] = None,
+        pdf_path: Optional[Path] = None,
+        # Extension point
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
+        """Initialize paper with comprehensive metadata."""
+        # Extension point
+        self._additional_metadata = metadata or {}
+
+        # Helper method for setting field with source tracking
+        def _set_field_with_source(field_name: str, value: Any) -> None:
+            setattr(self, field_name, value)
+            source_key = f"{field_name}_source"
+            setattr(
+                self,
+                source_key,
+                self._additional_metadata.get(source_key, None),
+            )
+
+        # Core identifiers
+        _set_field_with_source("doi", doi)
+        _set_field_with_source("title", title)
+        _set_field_with_source("authors", authors)
+
+        # Publication details
+        _set_field_with_source("journal", journal)
+        self.year = str(year) if year else None
+        self.year_source = self._additional_metadata.get("year_source", None)
+        _set_field_with_source("abstract", abstract)
+
+        # Alternative identifiers
+        _set_field_with_source("pmid", pmid)
+        _set_field_with_source("arxiv_id", arxiv_id)
+
+        # Additional metadata
+        self.keywords = keywords or []
+        self.keywords_source = self._additional_metadata.get(
+            "keywords_source", None
+        )
+        _set_field_with_source("citation_count", citation_count)
+        _set_field_with_source("impact_factor", impact_factor)
+        _set_field_with_source("journal_quartile", journal_quartile)
+
+        # File references
+        _set_field_with_source("pdf_url", pdf_url)
+        self.pdf_path = Path(pdf_path) if pdf_path else None
+
         # Computed properties
         self._bibtex_key = None
         self._formatted_authors = None
-    
-    def __str__(self) -> str:
-        """String representation of the paper."""
-        authors_str = self.authors[0] if self.authors else "Unknown"
-        if len(self.authors) > 1:
-            authors_str += " et al."
-        
-        year_str = f" ({self.year})" if self.year else ""
-        journal_str = f" - {self.journal}" if self.journal else ""
-        
-        return f"{authors_str}{year_str}. {self.title}{journal_str}"
-    
-    def __repr__(self) -> str:
-        """Developer-friendly representation."""
-        return f"Paper(title='{self.title[:50]}...', authors={len(self.authors)}, year={self.year})"
-    
+
+    def update_field_with_source(
+        self, field_name: str, value: Any, source: str
+    ) -> None:
+        """Update field and track its source."""
+        setattr(self, field_name, value)
+        setattr(self, f"{field_name}_source", source)
+        self._additional_metadata[f"{field_name}_source"] = source
+
     def get_identifier(self) -> str:
-        """
-        Get unique identifier for the paper.
+        """Get unique identifier for the paper.
+
         Priority: DOI > PMID > arXiv ID > title-based hash
         """
         if self.doi:
@@ -129,23 +127,42 @@ class Paper:
         else:
             # Create deterministic hash from title and first author
             import hashlib
+
             text = f"{self.title}_{self.authors[0] if self.authors else 'unknown'}"
             return f"hash:{hashlib.md5(text.encode()).hexdigest()[:12]}"
-    
+
+    def __str__(self) -> str:
+        """String representation of the paper."""
+        authors_str = self.authors[0] if self.authors else "Unknown"
+        if self.authors and len(self.authors) > 1:
+            authors_str += " et al."
+        year_str = f" ({self.year})" if self.year else ""
+        journal_str = f" - {self.journal}" if self.journal else ""
+        return f"{authors_str}{year_str}. {self.title}{journal_str}"
+
+    def __repr__(self) -> str:
+        """Developer-friendly representation."""
+        title_str = (
+            self.title[:50] + "..."
+            if self.title and len(self.title) > 50
+            else self.title or "No title"
+        )
+        first_author = self.authors[0] if self.authors else None
+        return f"Paper(title='{title_str}', first_author='{first_author}', year={self.year})"
+
     def _to_bibtex(self, include_enriched: bool = True) -> str:
-        """
-        Convert paper to BibTeX format.
-        
+        """Convert paper to BibTeX format.
+
         Args:
             include_enriched: Include enriched metadata (impact factor, etc.)
-            
+
         Returns:
             BibTeX formatted string
         """
         # Generate BibTeX key if not cached
         if not self._bibtex_key:
             self._generate_bibtex_key()
-        
+
         # Determine entry type
         if self.arxiv_id:
             entry_type = "misc"
@@ -153,242 +170,336 @@ class Paper:
             entry_type = "article"
         else:
             entry_type = "misc"
-        
+
         # Build BibTeX entry
         lines = [f"@{entry_type}{{{self._bibtex_key},"]
-        
+
         # Required fields
-        lines.append(f'  title = {{{self._escape_bibtex(self.title)}}},')
-        lines.append(f'  author = {{{self._format_authors_bibtex()}}},')
-        
+        if self.title:
+            lines.append(f"  title = {{{self._escape_bibtex(self.title)}}},")
+        if self.authors:
+            lines.append(f"  author = {{{self._format_authors_bibtex()}}},")
+
         # Optional fields
         if self.year:
-            lines.append(f'  year = {{{self.year}}},')
-        
+            lines.append(f"  year = {{{self.year}}},")
         if self.journal:
-            lines.append(f'  journal = {{{self._escape_bibtex(self.journal)}}},')
-        
+            lines.append(
+                f"  journal = {{{self._escape_bibtex(self.journal)}}},"
+            )
         if self.doi:
-            lines.append(f'  doi = {{{self.doi}}},')
-        
+            lines.append(f"  doi = {{{self.doi}}},")
         if self.arxiv_id:
-            lines.append(f'  eprint = {{{self.arxiv_id}}},')
-            lines.append('  archivePrefix = {arXiv},')
-        
+            lines.append(f"  eprint = {{{self.arxiv_id}}},")
+            lines.append("  archivePrefix = {arXiv},")
         if self.abstract:
             abstract_escaped = self._escape_bibtex(self.abstract)
-            lines.append(f'  abstract = {{{abstract_escaped}}},')
-        
+            lines.append(f"  abstract = {{{abstract_escaped}}},")
         if self.keywords:
             keywords_str = ", ".join(self.keywords)
-            lines.append(f'  keywords = {{{keywords_str}}},')
-        
+            lines.append(f"  keywords = {{{keywords_str}}},")
+
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
             from ._MetadataEnricher import JCR_YEAR
-            
+
             if self.impact_factor is not None:
                 # Only add if it's a real value (not 0.0)
                 if self.impact_factor > 0:
-                    lines.append(f'  JCR_{JCR_YEAR}_impact_factor = {{{self.impact_factor}}},')
+                    lines.append(
+                        f"  JCR_{JCR_YEAR}_impact_factor = {{{self.impact_factor}}},"
+                    )
                     if self.impact_factor_source:
-                        lines.append(f'  impact_factor_source = {{{self.impact_factor_source}}},')
-            
-            if self.journal_quartile and self.journal_quartile != 'Unknown':
-                lines.append(f'  JCR_{JCR_YEAR}_quartile = {{{self.journal_quartile}}},')
+                        lines.append(
+                            f"  impact_factor_source = {{{self.impact_factor_source}}},"
+                        )
+
+            if self.journal_quartile and self.journal_quartile != "Unknown":
+                lines.append(
+                    f"  JCR_{JCR_YEAR}_quartile = {{{self.journal_quartile}}},"
+                )
                 if self.quartile_source:
-                    lines.append(f'  quartile_source = {{{self.quartile_source}}},')
-            
+                    lines.append(
+                        f"  quartile_source = {{{self.quartile_source}}},"
+                    )
+
             if self.citation_count is not None:
-                lines.append(f'  citation_count = {{{self.citation_count}}},')
+                lines.append(f"  citation_count = {{{self.citation_count}}},")
                 # Add citation source if available
                 if self.citation_count_source:
-                    lines.append(f'  citation_count_source = {{{self.citation_count_source}}},')
-        
+                    lines.append(
+                        f"  citation_count_source = {{{self.citation_count_source}}},"
+                    )
+
         # Add note about SciTeX with timestamp
         from datetime import datetime
+
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        lines.append(f'  note = {{Generated by SciTeX Scholar ({timestamp})}}')
-        
-        lines.append('}')
-        
-        return '\n'.join(lines)
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert paper to dictionary format."""
-        return {
-            'title': self.title,
-            'authors': self.authors,
-            'abstract': self.abstract,
-            'year': self.year,
-            'journal': self.journal,
-            'doi': self.doi,
-            'pmid': self.pmid,
-            'arxiv_id': self.arxiv_id,
-            'keywords': self.keywords,
-            'citation_count': self.citation_count,
-            'citation_count_source': self.citation_count_source,
-            'citation_count_na_reason': self.citation_count_na_reason,
-            'impact_factor': self.impact_factor,
-            'impact_factor_source': self.impact_factor_source,
-            'impact_factor_na_reason': self.impact_factor_na_reason,
-            'journal_quartile': self.journal_quartile,
-            'journal_quartile_na_reason': self.journal_quartile_na_reason,
-            'journal_rank': self.journal_rank,
-            'h_index': self.h_index,
-            'h_index_na_reason': self.h_index_na_reason,
-            'pdf_url': self.pdf_url,
-            'pdf_path': str(self.pdf_path) if self.pdf_path else None,
-            'source': self.source,
-            'metadata': self.metadata
-        }
-    
-    def similarity_score(self, other: 'Paper') -> float:
-        """
-        Calculate similarity score with another paper.
-        
-        Returns:
-            Score between 0 and 1 (1 = identical)
-        """
-        # If both have DOIs and they match, they're the same paper
-        if self.doi and other.doi and self.doi == other.doi:
-            return 1.0
-        
-        # Title similarity (40% weight)
-        if self.title and other.title:
-            title_sim = SequenceMatcher(None, 
-                                       self.title.lower(), 
-                                       other.title.lower()).ratio() * 0.4
-        else:
-            title_sim = 0
-        
-        # Author similarity (20% weight)
-        if self.authors and other.authors:
-            # Check first author match
-            author_sim = 0.2 if self.authors[0].lower() == other.authors[0].lower() else 0
-        else:
-            author_sim = 0
-        
-        # Abstract similarity (30% weight)
-        if self.abstract and other.abstract:
-            abstract_sim = SequenceMatcher(None,
-                                         self.abstract[:200].lower(),
-                                         other.abstract[:200].lower()).ratio() * 0.3
-        else:
-            abstract_sim = 0
-        
-        # Year similarity (10% weight)
-        if self.year and other.year:
-            year_diff = abs(int(self.year) - int(other.year))
-            year_sim = max(0, 1 - year_diff / 10) * 0.1
-        else:
-            year_sim = 0
-        
-        return title_sim + author_sim + abstract_sim + year_sim
-    
+        lines.append(f"  note = {{Generated by SciTeX Scholar ({timestamp})}}")
+
+        lines.append("}")
+        return "\n".join(lines)
+
     def _generate_bibtex_key(self) -> None:
         """Generate BibTeX citation key."""
         # Get first author last name
         if self.authors:
             first_author = self.authors[0]
             # Handle "Last, First" format
-            if ',' in first_author:
-                last_name = first_author.split(',')[0].strip()
+            if "," in first_author:
+                last_name = first_author.split(",")[0].strip()
             else:
                 # Handle "First Last" format
                 last_name = first_author.split()[-1]
-            
-            last_name = re.sub(r'[^a-zA-Z]', '', last_name).lower()
+            last_name = re.sub(r"[^a-zA-Z]", "", last_name).lower()
         else:
             last_name = "unknown"
-        
+
         # Get year
         year = self.year or "0000"
-        
+
         # Get first significant word from title
-        title_words = re.findall(r'\b\w+\b', self.title.lower())
-        # Skip common words
-        stop_words = {'a', 'an', 'the', 'of', 'in', 'on', 'at', 'to', 'for', 
-                     'and', 'or', 'but', 'with', 'by', 'from'}
-        significant_words = [w for w in title_words if w not in stop_words and len(w) > 3]
-        
-        if significant_words:
-            title_part = significant_words[0][:6]
+        if self.title:
+            title_words = re.findall(r"\b\w+\b", self.title.lower())
+            # Skip common words
+            stop_words = {
+                "a",
+                "an",
+                "the",
+                "of",
+                "in",
+                "on",
+                "at",
+                "to",
+                "for",
+                "and",
+                "or",
+                "but",
+                "with",
+                "by",
+                "from",
+            }
+            significant_words = [
+                w for w in title_words if w not in stop_words and len(w) > 3
+            ]
+            if significant_words:
+                title_part = significant_words[0][:6]
+            else:
+                title_part = title_words[0][:6] if title_words else "paper"
         else:
-            title_part = title_words[0][:6] if title_words else "paper"
-        
+            title_part = "paper"
+
         self._bibtex_key = f"{last_name}{year}{title_part}"
-    
+
     def _format_authors_bibtex(self) -> str:
         """Format authors for BibTeX."""
-        if not self._formatted_authors:
+        if not self._formatted_authors and self.authors:
             self._formatted_authors = " and ".join(self.authors)
-        return self._formatted_authors
-    
+        return self._formatted_authors or ""
+
     def _escape_bibtex(self, text: str) -> str:
         """Escape special characters for BibTeX."""
+        if not text:
+            return ""
         # Handle special characters
         replacements = {
-            '\\': r'\\',
-            '{': r'\{',
-            '}': r'\}',
-            '_': r'\_',
-            '&': r'\&',
-            '%': r'\%',
-            '$': r'\$',
-            '#': r'\#',
-            '~': r'\textasciitilde{}',
-            '^': r'\textasciicircum{}'
+            "\\": r"\\",
+            "{": r"\{",
+            "}": r"\}",
+            "_": r"\_",
+            "&": r"\&",
+            "%": r"\%",
+            "$": r"\$",
+            "#": r"\#",
+            "~": r"\textasciitilde{}",
+            "^": r"\textasciicircum{}",
         }
-        
         for old, new in replacements.items():
             text = text.replace(old, new)
-        
         return text
-    
-    def save(self, output_path: Union[str, Path], format: Optional[str] = None) -> None:
+
+    # def to_dict(self) -> Dict[str, Any]:
+    #     """Convert paper to dictionary format."""
+    #     base_dict = {
+    #         "title": self.title,
+    #         "title_source": self.title_source,
+    #         "authors": self.authors,
+    #         "authors_source": self.authors_source,
+    #         "abstract": self.abstract,
+    #         "abstract_source": self.abstract_source,
+    #         "year": self.year,
+    #         "year_source": self.year_source,
+    #         "journal": self.journal,
+    #         "journal_source": self.journal_source,
+    #         "doi": self.doi,
+    #         "doi_source": self.doi_source,
+    #         "pmid": self.pmid,
+    #         "pmid_source": self.pmid_source,
+    #         "arxiv_id": self.arxiv_id,
+    #         "arxiv_id_source": self.arxiv_id_source,
+    #         "keywords": self.keywords,
+    #         "keywords_source": self.keywords_source,
+    #         "citation_count": self.citation_count,
+    #         "citation_count_source": self.citation_count_source,
+    #         "impact_factor": self.impact_factor,
+    #         "impact_factor_source": self.impact_factor_source,
+    #         "journal_quartile": self.journal_quartile,
+    #         "journal_quartile_source": self.quartile_source,
+    #         "journal_rank": self.journal_rank,
+    #         "journal_rank_source": self.journal_rank_source,
+    #         "pdf_url": self.pdf_url,
+    #         "pdf_path": str(self.pdf_path) if self.pdf_path else None,
+    #     }
+    #     # Merge with additional metadata
+    #     return {**self._additional_metadata, **base_dict}
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert paper to dictionary format."""
+        base_dict = {
+            "doi": self.doi,
+            "doi_source": getattr(self, "doi_source", None),
+            "title": self.title,
+            "title_source": getattr(self, "title_source", None),
+            "authors": self.authors,
+            "authors_source": getattr(self, "authors_source", None),
+            "journal": self.journal,
+            "journal_source": getattr(self, "journal_source", None),
+            "year": self.year,
+            "year_source": getattr(self, "year_source", None),
+            "abstract": self.abstract,
+            "abstract_source": getattr(self, "abstract_source", None),
+            "pmid": self.pmid,
+            "pmid_source": getattr(self, "pmid_source", None),
+            "arxiv_id": self.arxiv_id,
+            "arxiv_id_source": getattr(self, "arxiv_id_source", None),
+            "keywords": self.keywords,
+            "keywords_source": getattr(self, "keywords_source", None),
+            "citation_count": self.citation_count,
+            "citation_count_source": getattr(
+                self, "citation_count_source", None
+            ),
+            "impact_factor": self.impact_factor,
+            "impact_factor_source": getattr(
+                self, "impact_factor_source", None
+            ),
+            "journal_quartile": self.journal_quartile,
+            "journal_quartile_source": getattr(
+                self, "journal_quartile_source", None
+            ),
+            "pdf_url": self.pdf_url,
+            "pdf_url_source": getattr(self, "pdf_url_source", None),
+            "pdf_path": str(self.pdf_path) if self.pdf_path else None,
+        }
+
+        return {**self._additional_metadata, **base_dict}
+
+    @property
+    def metadata(self) -> Dict[str, Any]:
+        """Get comprehensive metadata dictionary including all paper attributes."""
+        return self.to_dict()
+
+    def similarity_score(self, other: "Paper") -> float:
+        """Calculate similarity score with another paper.
+
+        Returns:
+            Score between 0 and 1 (1 = identical)
         """
-        Save single paper to file.
-        
+        # If both have DOIs and they match, they're the same paper
+        if self.doi and other.doi and self.doi == other.doi:
+            return 1.0
+
+        # Title similarity (40% weight)
+        if self.title and other.title:
+            title_sim = (
+                SequenceMatcher(
+                    None, self.title.lower(), other.title.lower()
+                ).ratio()
+                * 0.4
+            )
+        else:
+            title_sim = 0
+
+        # Author similarity (20% weight)
+        if self.authors and other.authors:
+            # Check first author match
+            author_sim = (
+                0.2
+                if self.authors[0].lower() == other.authors[0].lower()
+                else 0
+            )
+        else:
+            author_sim = 0
+
+        # Abstract similarity (30% weight)
+        if self.abstract and other.abstract:
+            abstract_sim = (
+                SequenceMatcher(
+                    None,
+                    self.abstract[:200].lower(),
+                    other.abstract[:200].lower(),
+                ).ratio()
+                * 0.3
+            )
+        else:
+            abstract_sim = 0
+
+        # Year similarity (10% weight)
+        if self.year and other.year:
+            year_diff = abs(int(self.year) - int(other.year))
+            year_sim = max(0, 1 - year_diff / 10) * 0.1
+        else:
+            year_sim = 0
+
+        return title_sim + author_sim + abstract_sim + year_sim
+
+    def save(
+        self, output_path: Union[str, Path], format: Optional[str] = None
+    ) -> None:
+        """Save single paper to file.
+
         Simple save method - just writes the file without extra features.
         For symlinks, verbose output, etc., use scitex.io.save() instead.
-        
+
         Args:
             output_path: Output file path
             format: Output format ('bibtex', 'json'). Auto-detected from extension if None.
         """
         output_path = Path(output_path)
-        
+
         # Auto-detect format from extension
         if format is None:
             ext = output_path.suffix.lower()
-            if ext in ['.bib', '.bibtex']:
-                format = 'bibtex'
-            elif ext == '.json':
-                format = 'json'
+            if ext in [".bib", ".bibtex"]:
+                format = "bibtex"
+            elif ext == ".json":
+                format = "json"
             else:
-                format = 'bibtex'
-        
+                format = "bibtex"
+
         # Ensure parent directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         if format.lower() == "bibtex":
             # Write BibTeX content
-            with open(output_path, 'w', encoding='utf-8') as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 f.write(f"% BibTeX entry\n")
-                f.write(f"% Generated by SciTeX Scholar on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                f.write(
+                    f"% Generated by SciTeX Scholar on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                )
                 f.write(self._to_bibtex())
-        
+
         elif format.lower() == "json":
             # Write JSON
             import json
-            with open(output_path, 'w', encoding='utf-8') as f:
+
+            with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(self.to_dict(), f, indent=2, ensure_ascii=False)
-        
+
         else:
             raise ValueError(f"Unsupported format for Paper: {format}")
 
 
 # Export all classes and functions
-__all__ = ['Paper']
+__all__ = ["Paper"]
+
+# EOF
