@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-26 14:04:00 (ywatanabe)"
-# File: ./src/scitex/scholar/auth/_BaseAuthenticationProvider.py
-# ----------------------------------------
-import os
-__FILE__ = (
-    "./src/scitex/scholar/auth/_BaseAuthenticationProvider.py"
-)
-__DIR__ = os.path.dirname(__FILE__)
+# File: ./src/scitex/scholar/auth/_BaseAuthenticator.py
 # ----------------------------------------
 
 """
-Abstract base class for authentication providers.
+Abstract base class for authenticators.
 
-This module provides the base interface that all authentication providers
+This module provides the base interface that all authenticators
 (OpenAthens, Lean Library, etc.) must implement.
 """
 
@@ -29,7 +23,7 @@ from ...errors import AuthenticationError
 logger = logging.getLogger(__name__)
 
 """Classes"""
-class BaseAuthenticationProvider(ABC):
+class BaseAuthenticator(ABC):
     """
     Abstract base class for authentication providers.
     
@@ -42,7 +36,7 @@ class BaseAuthenticationProvider(ABC):
         Initialize authentication provider.
         
         Args:
-            config: Provider-specific configuration
+            config: Authenticator-specific configuration
         """
         self.config = config or {}
         self.name = self.__class__.__name__.replace("Authentication", "")
@@ -61,15 +55,15 @@ class BaseAuthenticationProvider(ABC):
         pass
         
     @abstractmethod
-    async def authenticate(self, **kwargs) -> bool:
+    async def authenticate(self, **kwargs) -> dict:
         """
-        Perform authentication.
+        Perform authentication and return session data.
         
         Args:
-            **kwargs: Provider-specific authentication parameters
+            **kwargs: Authenticator-specific authentication parameters
             
         Returns:
-            True if authentication successful, False otherwise
+            Dictionary containing session data (e.g., cookies, tokens)
         """
         pass
         
@@ -110,10 +104,10 @@ class BaseAuthenticationProvider(ABC):
         
     def __str__(self) -> str:
         """String representation of provider."""
-        return f"{self.name}AuthenticationProvider"
+        return f"{self.name}Authenticator"
         
     def __repr__(self) -> str:
         """Detailed representation of provider."""
-        return f"<{self.name}AuthenticationProvider(config={self.config})>"
+        return f"<{self.name}Authenticator(config={self.config})>"
 
 # EOF
