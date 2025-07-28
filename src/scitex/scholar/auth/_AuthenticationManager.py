@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 12:09:16 (ywatanabe)"
+# Timestamp: "2025-07-29 01:40:10 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/scholar/auth/_AuthenticationManager.py"
@@ -62,6 +63,8 @@ class AuthenticationManager:
             provider.email = self.email
 
         self.providers[name] = provider
+        if not self.active_provider:
+            self.active_provider = name
         logger.info(f"Registered authentication provider: {name}")
 
     def set_active_provider(self, name: str) -> None:
@@ -93,7 +96,8 @@ class AuthenticationManager:
             return self.providers.get(self.active_provider)
         return None
 
-    async def is_authenticated(self, verify_live: bool = False) -> bool:
+    # async def is_authenticated(self, verify_live: bool = False) -> bool:
+    async def is_authenticated(self, verify_live: bool = True) -> bool:
         """
         Check if authenticated with any provider.
 

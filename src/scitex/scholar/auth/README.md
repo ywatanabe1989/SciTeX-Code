@@ -1,43 +1,93 @@
 <!-- ---
-!-- Timestamp: 2025-07-27 15:23:39
+!-- Timestamp: 2025-07-28 20:54:42
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/README.md
 !-- --- -->
 
+# Authentication Module
 
-## Usage
+Institutional authentication for academic paper access via university subscriptions.
 
-#### OpenAthens
-``` bash
+## Overview
+
+This module provides authentication through various institutional systems:
+
+1. **OpenAthens** - Single sign-on system (fully implemented)
+2. **EZProxy** - Library proxy server (placeholder)  
+3. **Shibboleth** - Federated identity management (placeholder)
+
+## Quick Start
+
+### Command Line
+
+```bash
 python -m scitex.scholar.auth._OpenAthensAuthenticator --email user@university.edu
 ```
 
-#### Abstracted
-``` python
-from scitex.scholar.auth import (
-    AuthenticationManager,
-    OpenAthensAuthenticator,
-)
+### AuthenticationManager
 
-# Create manager
-auth_manager= AuthenticationManager()
+```python
+from scitex.scholar.auth import AuthenticationManager, OpenAthensAuthenticator
 
-auth_manager.register_provider("openathens", OpenAthensAuthenticator(
-    email="user@university.edu"
-))
-
-# Set active provider
-auth_manager.set_active_provider("openathens")
+# Setup authentication manager
+auth_manager = AuthenticationManager(email="user@university.edu")
+auth_manager.register_provider("openathens", 
+    OpenAthensAuthenticator(email="user@university.edu"))
 
 # Authenticate
 await auth_manager.authenticate()
 
-# Get auth data
+# Get session data
 cookies = await auth_manager.get_auth_cookies()
 headers = await auth_manager.get_auth_headers()
 
 # Check status
-is_auth = await auth_manager.is_authenticated()
+is_authenticated = await auth_manager.is_authenticated()
+```
+
+### AuthenticatedBrowserMixin
+
+```python
+from scitex.scholar.auth import AuthenticatedBrowserMixin
+
+class MyAuthenticatedBrowser(AuthenticatedBrowserMixin):
+    def __init__(self, auth_manager=None):
+        AuthenticatedBrowserMixin.__init__(self, auth_manager)
+        self.headless=False
+    
+    async def my_method(self, url):
+        # Get authenticated browser context
+        browser, context = await self.get_authenticated_browser_context()
+        
+        try:
+            page = await context.new_page()
+            # Use authenticated page
+            await page.goto(url)
+            # ... your logic using the authenticated browser tab
+        finally:
+            await self.cleanup_browser_context()
+
+authenticated_browser = MyAuthenticatedBrowser()
+# await MyBrowser().my_method("https://google.com")
+```
+
+## Session Management
+
+- Sessions are cached per user
+- File locking prevents concurrent authentication
+- Automatic session validation and renewal
+- Secure storage with appropriate permissions
+
+## Architecture
+
+```
+AuthenticationManager
+├── OpenAthensAuthenticator (implemented)
+├── EZProxyAuthenticator (placeholder)
+└── ShibbolethAuthenticator (placeholder)
+
+AuthenticatedBrowserMixin
+└── Provides authenticated browser contexts for download strategies
 ```
 
 <!-- EOF -->
