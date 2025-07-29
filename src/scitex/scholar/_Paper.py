@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 19:28:23 (ywatanabe)"
+# Timestamp: "2025-07-28 17:10:48 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Paper.py
 # ----------------------------------------
 from __future__ import annotations
@@ -60,50 +60,55 @@ class Paper:
         metadata: Optional[Dict[str, Any]] = None,
     ):
         """Initialize paper with comprehensive metadata."""
+
         # Extension point
         self._additional_metadata = metadata or {}
 
-        # Helper method for setting field with source tracking
-        def _set_field_with_source(field_name: str, value: Any) -> None:
-            setattr(self, field_name, value)
-            source_key = f"{field_name}_source"
-            setattr(
-                self,
-                source_key,
-                self._additional_metadata.get(source_key, None),
-            )
-
         # Core identifiers
-        _set_field_with_source("doi", doi)
-        _set_field_with_source("title", title)
-        _set_field_with_source("authors", authors)
+        self._set_field_with_source("doi", doi)
+        self._set_field_with_source("title", title)
+        self._set_field_with_source("authors", authors)
 
         # Publication details
-        _set_field_with_source("journal", journal)
-        self.year = str(year) if year else None
-        self.year_source = self._additional_metadata.get("year_source", None)
-        _set_field_with_source("abstract", abstract)
+        self._set_field_with_source("journal", journal)
+        self._set_field_with_source("year", year)
+        # self.year = str(year) if year else None
+        # self.year_source = self._additional_metadata.get("year_source", None)
+        self._set_field_with_source("abstract", abstract)
 
         # Alternative identifiers
-        _set_field_with_source("pmid", pmid)
-        _set_field_with_source("arxiv_id", arxiv_id)
+        self._set_field_with_source("pmid", pmid)
+        self._set_field_with_source("arxiv_id", arxiv_id)
 
         # Additional metadata
-        self.keywords = keywords or []
-        self.keywords_source = self._additional_metadata.get(
-            "keywords_source", None
-        )
-        _set_field_with_source("citation_count", citation_count)
-        _set_field_with_source("impact_factor", impact_factor)
-        _set_field_with_source("journal_quartile", journal_quartile)
+        self._set_field_with_source("keywords", keywords)
+        self._set_field_with_source("citation_count", citation_count)
+        self._set_field_with_source("impact_factor", impact_factor)
+        self._set_field_with_source("journal_quartile", journal_quartile)
 
         # File references
-        _set_field_with_source("pdf_url", pdf_url)
-        self.pdf_path = Path(pdf_path) if pdf_path else None
+        self._set_field_with_source("pdf_url", pdf_url)
+        self._set_field_with_source("pdf_path", pdf_path)
 
         # Computed properties
         self._bibtex_key = None
         self._formatted_authors = None
+
+    def _set_field_with_source(self, field_name: str, value: Any) -> None:
+        """Set field value and track its source from metadata."""
+        # Handle type conversions
+        if field_name == "year" and value:
+            value = str(value)
+        elif field_name == "keywords" and value is None:
+            value = []
+        elif field_name == "pdf_path" and value:
+            value = Path(value)
+
+        setattr(self, field_name, value)
+        source_key = f"{field_name}_source"
+        setattr(
+            self, source_key, self._additional_metadata.get(source_key, None)
+        )
 
     def update_field_with_source(
         self, field_name: str, value: Any, source: str
@@ -319,41 +324,6 @@ class Paper:
             text = text.replace(old, new)
         return text
 
-    # def to_dict(self) -> Dict[str, Any]:
-    #     """Convert paper to dictionary format."""
-    #     base_dict = {
-    #         "title": self.title,
-    #         "title_source": self.title_source,
-    #         "authors": self.authors,
-    #         "authors_source": self.authors_source,
-    #         "abstract": self.abstract,
-    #         "abstract_source": self.abstract_source,
-    #         "year": self.year,
-    #         "year_source": self.year_source,
-    #         "journal": self.journal,
-    #         "journal_source": self.journal_source,
-    #         "doi": self.doi,
-    #         "doi_source": self.doi_source,
-    #         "pmid": self.pmid,
-    #         "pmid_source": self.pmid_source,
-    #         "arxiv_id": self.arxiv_id,
-    #         "arxiv_id_source": self.arxiv_id_source,
-    #         "keywords": self.keywords,
-    #         "keywords_source": self.keywords_source,
-    #         "citation_count": self.citation_count,
-    #         "citation_count_source": self.citation_count_source,
-    #         "impact_factor": self.impact_factor,
-    #         "impact_factor_source": self.impact_factor_source,
-    #         "journal_quartile": self.journal_quartile,
-    #         "journal_quartile_source": self.quartile_source,
-    #         "journal_rank": self.journal_rank,
-    #         "journal_rank_source": self.journal_rank_source,
-    #         "pdf_url": self.pdf_url,
-    #         "pdf_path": str(self.pdf_path) if self.pdf_path else None,
-    #     }
-    #     # Merge with additional metadata
-    #     return {**self._additional_metadata, **base_dict}
-    def to_dict(self) -> Dict[str, Any]:
         """Convert paper to dictionary format."""
         base_dict = {
             "doi": self.doi,

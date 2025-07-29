@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-24 17:32:04 (ywatanabe)"
+# Timestamp: "2025-07-28 17:13:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Papers.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/scholar/_Papers.py"
@@ -886,7 +887,7 @@ class Papers:
                 "impact_factor_source": paper.impact_factor_source or "N/A",
                 # f'JCR_{JCR_YEAR}_quartile': paper.journal_quartile or 'N/A',
                 "quartile": (
-                    paper.journal_quartile 
+                    paper.journal_quartile
                     if paper.journal_quartile
                     else f"N/A ({getattr(paper, 'journal_quartile_na_reason', 'Not enriched')})"
                 ),
@@ -897,7 +898,11 @@ class Papers:
                 "source": paper.source,
                 "has_pdf": bool(paper.pdf_url or paper.pdf_path),
                 "pdf_path": str(paper.pdf_path) if paper.pdf_path else "N/A",
-                "pdf_source": paper.pdf_source if hasattr(paper, "pdf_source") and paper.pdf_source else "N/A",
+                "pdf_source": (
+                    paper.pdf_source
+                    if hasattr(paper, "pdf_source") and paper.pdf_source
+                    else "N/A"
+                ),
                 "keywords": paper.keywords if paper.keywords else [],
                 "abstract": paper.abstract or "N/A",
             }
@@ -909,10 +914,10 @@ class Papers:
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert collection to dictionary format.
-        
+
         Returns:
             Dictionary with metadata and papers list
-            
+
         Examples:
             >>> papers_dict = papers.to_dict()
             >>> print(papers_dict['metadata']['total'])
@@ -923,14 +928,16 @@ class Papers:
         return {
             "metadata": {
                 "total": len(self._papers),
-                "sources": dict(self.summary['sources']) if self._papers else {},
-                "years": self.summary['years'],
-                "has_citations": self.summary['has_citations'],
-                "has_impact_factors": self.summary['has_impact_factors'],
-                "has_pdfs": self.summary['has_pdfs'],
+                "sources": (
+                    dict(self.summary["sources"]) if self._papers else {}
+                ),
+                "years": self.summary["years"],
+                "has_citations": self.summary["has_citations"],
+                "has_impact_factors": self.summary["has_impact_factors"],
+                "has_pdfs": self.summary["has_pdfs"],
                 "enriched": self._enriched,
             },
-            "papers": [paper.to_dict() for paper in self._papers]
+            "papers": [paper.to_dict() for paper in self._papers],
         }
 
     def save(
@@ -1031,7 +1038,6 @@ class Papers:
         force: bool = False,
         max_workers: int = 4,
         show_progress: bool = True,
-        acknowledge_ethical_usage: Optional[bool] = None,
         **kwargs,
     ) -> Dict[str, Any]:
         """
@@ -1043,7 +1049,6 @@ class Papers:
             force: Force re-download even if files exist
             max_workers: Maximum concurrent downloads
             show_progress: Show download progress
-            acknowledge_ethical_usage: Acknowledge ethical usage terms for Sci-Hub (default: from config)
             **kwargs: Additional arguments passed to downloader
 
         Returns:
@@ -1073,7 +1078,6 @@ class Papers:
             force=force,
             max_workers=max_workers,
             show_progress=show_progress,
-            acknowledge_ethical_usage=acknowledge_ethical_usage,
             **kwargs,
         )
 
@@ -1389,9 +1393,6 @@ class Papers:
             bibtex_entries.append(paper._to_bibtex(include_enriched))
 
         return "\n\n".join(bibtex_entries)
-
-
-# PaperEnricher functionality has been moved to enrichment.py
 
 
 # Export all classes and functions
