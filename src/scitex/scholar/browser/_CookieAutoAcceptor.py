@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 15:21:52 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/_CookieAutoAcceptor_v02_with_injection.py
+# Timestamp: "2025-07-30 08:27:03 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/_CookieAutoAcceptor.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/browser/_CookieAutoAcceptor_v02_with_injection.py"
+    "./src/scitex/scholar/browser/_CookieAutoAcceptor.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import json
 
 import asyncio
+
+import json
 import logging
 
 from playwright.async_api import Page
@@ -138,5 +139,20 @@ class CookieAutoAcceptor:
             ).first.is_visible()
         except:
             return False
+
+
+# # Usage
+# ### Cookie Auto-Acceptance
+# ```python
+# from scitex.scholar.browser import CookieAutoAcceptor
+
+# acceptor = CookieAutoAcceptor()
+
+# # Inject into browser context
+# await acceptor.inject_auto_acceptor(context)
+
+# # Manual acceptance on page
+# success = await acceptor.accept_cookies(page)
+# ```
 
 # EOF

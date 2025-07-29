@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 08:27:46 (ywatanabe)"
+# Timestamp: "2025-07-30 08:04:03 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,9 +24,6 @@ from typing import Any, Dict, List, Optional
 
 from ...errors import AuthenticationError
 from ._BaseAuthenticator import BaseAuthenticator
-from ._EZProxyAuthenticator import EZProxyAuthenticator
-from ._OpenAthensAuthenticator import OpenAthensAuthenticator
-from ._ShibbolethAuthenticator import ShibbolethAuthenticator
 
 """Logger"""
 logger = logging.getLogger(__name__)
@@ -42,34 +39,17 @@ class AuthenticationManager:
     (OpenAthens, Lean Library, etc.) and provides a unified interface.
     """
 
-    def __init__(
-        self,
-        email_openathens: Optional[str] = None,
-        email_ezproxy: Optional[str] = None,
-        email_shibboleth: Optional[str] = None,
-    ):
+    def __init__(self, email: Optional[str] = None):
         """Initialize the authentication manager.
 
         Args:
             email: User's institutional email for authentication
         """
+        self.email = email
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
-        if email_openathens:
-            self._register_provider(
-                "openathens", OpenAthensAuthenticator(email=email_openathens)
-            )
-        if email_ezproxy:
-            self._register_provider(
-                "ezproxy", EZProxyAuthenticator(email=email_ezproxy)
-            )
-        if email_shibboleth:
-            self._register_provider(
-                "shibboleth", ShibbolethAuthenticator(email=email_shibboleth)
-            )
-
-    def _register_provider(
+    def register_provider(
         self, name: str, provider: BaseAuthenticator
     ) -> None:
         """Register an authentication provider with email context."""
@@ -77,6 +57,10 @@ class AuthenticationManager:
             raise TypeError(
                 f"Provider must inherit from BaseAuthenticator, got {type(provider)}"
             )
+
+        # Pass email to provider if it supports it
+        if hasattr(provider, "email") and self.email:
+            provider.email = self.email
 
         self.providers[name] = provider
         if not self.active_provider:
@@ -111,18 +95,6 @@ class AuthenticationManager:
         if self.active_provider:
             return self.providers.get(self.active_provider)
         return None
-
-    async def ensure_authenticated(
-        self,
-        provider_name: Optional[str] = None,
-        verify_live: bool = True,
-        **kwargs,
-    ) -> bool:
-        if await self.is_authenticated(verify_live=verify_live):
-            return True
-        if await self.authenticate(provier_name=provider_name, **kwargs):
-            return True
-        raise AuthenticationError("Not authenticated")
 
     async def is_authenticated(self, verify_live: bool = True) -> bool:
         """

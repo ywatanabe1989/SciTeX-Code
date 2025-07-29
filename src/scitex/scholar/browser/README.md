@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-28 20:44:34
+!-- Timestamp: 2025-07-30 08:26:51
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/README.md
 !-- --- -->
@@ -100,18 +100,6 @@ await browser.close_all_pages()
 
 ```
 
-### Cookie Auto-Acceptance
-```python
-from scitex.scholar.browser import CookieAutoAcceptor
-
-acceptor = CookieAutoAcceptor()
-
-# Inject into browser context
-await acceptor.inject_auto_acceptor(context)
-
-# Manual acceptance on page
-success = await acceptor.accept_cookies(page)
-```
 
 ## Methods
 

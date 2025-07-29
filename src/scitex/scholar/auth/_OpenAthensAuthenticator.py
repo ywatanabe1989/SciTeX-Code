@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 15:19:37 (ywatanabe)"
+# Timestamp: "2025-07-30 08:04:19 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -154,7 +154,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             # Double-check session after acquiring lock
             await self._load_session_cache()
             if not force and await self.is_authenticated():
-                logger.success(
+                logger.info(
                     f"Using session authenticated by another process{self._format_expiry_info()}"
                 )
                 return {
@@ -297,7 +297,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
                     for path in ["/account", "/app", "/library"]
                 ):
                     await browser.close()
-                    logger.success(
+                    logger.info(
                         f"Verified live authentication at {current_url}"
                     )
                     return True
@@ -460,7 +460,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
                 if expiry_str:
                     self._session_expiry = datetime.fromisoformat(expiry_str)
 
-                logger.success(
+                logger.info(
                     f"Loaded session from cache ({self.cache_manager.cache_file}): "
                     f"{len(self._cookies)} cookies{self._format_expiry_info()}"
                 )

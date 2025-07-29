@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 07:31:02 (ywatanabe)"
+# Timestamp: "2025-07-28 20:50:34 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/_BrowserMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -14,7 +14,6 @@ __DIR__ = os.path.dirname(__FILE__)
 import aiohttp
 from playwright.async_api import Browser, async_playwright
 
-from ._CaptchaHandler import CaptchaHandler
 from ._CookieAutoAcceptor import CookieAutoAcceptor
 
 
@@ -26,7 +25,6 @@ class BrowserMixin:
 
     def __init__(self):
         self.cookie_acceptor = CookieAutoAcceptor()
-        self.captcha_handler = CaptchaHandler()
         self.headless = True
         self.contexts = []
         self.pages = []

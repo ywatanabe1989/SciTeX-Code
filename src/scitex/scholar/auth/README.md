@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-28 20:54:42
+!-- Timestamp: 2025-07-30 08:22:41
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/README.md
 !-- --- -->
@@ -27,15 +27,16 @@ python -m scitex.scholar.auth._OpenAthensAuthenticator --email user@university.e
 ### AuthenticationManager
 
 ```python
-from scitex.scholar.auth import AuthenticationManager, OpenAthensAuthenticator
+import os
+from scitex.scholar.auth import AuthenticationManager
 
 # Setup authentication manager
-auth_manager = AuthenticationManager(email="user@university.edu")
-auth_manager.register_provider("openathens", 
-    OpenAthensAuthenticator(email="user@university.edu"))
+auth_manager = AuthenticationManager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
 
 # Authenticate
-await auth_manager.authenticate()
+# await auth_manager.is_authenticated()
+# await auth_manager.authenticate()
+await auth_manager.ensure_authenticated()
 
 # Get session data
 cookies = await auth_manager.get_auth_cookies()
