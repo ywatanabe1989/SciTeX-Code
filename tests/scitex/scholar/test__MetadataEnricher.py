@@ -27,7 +27,7 @@ import pytest
 
 from scitex.errors import EnrichmentError
 from scitex.scholar import Paper, Papers
-from scitex.scholar._MetadataEnricher import (
+from scitex.scholar.enrichment._MetadataEnricher import (
     MetadataEnricher,
     _enrich_papers_with_all,
     _enrich_papers_with_citations,

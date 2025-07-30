@@ -13,11 +13,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 import json
 
-from scitex.scholar._SearchEngines import (
-    SearchEngine, SemanticScholarEngine, PubMedEngine, 
-    ArxivEngine, LocalSearchEngine, VectorSearchEngine,
-    UnifiedSearcher, get_scholar_dir
+from scitex.scholar.search._UnifiedSearcher import (
+    UnifiedSearcher, SearchEngine, SemanticScholarEngine,
+    PubMedEngine, ArxivEngine, LocalSearchEngine, 
+    VectorSearchEngine
 )
+from scitex.scholar.utils._paths import get_scholar_dir
 from scitex.scholar import Paper
 from scitex.errors import SearchError, ScholarError
 
