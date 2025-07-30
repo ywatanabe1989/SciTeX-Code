@@ -16,7 +16,7 @@ CrossRef DOI source implementation.
 
 This module provides DOI resolution through the CrossRef API.
 """
-import logging
+from scitex import logging
 from typing import Any, Dict, List, Optional
 
 import requests

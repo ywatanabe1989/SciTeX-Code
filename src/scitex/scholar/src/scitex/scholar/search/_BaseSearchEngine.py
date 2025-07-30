@@ -18,7 +18,7 @@ This module provides the base interface that all search engines
 """
 
 """Imports"""
-import logging
+from scitex import logging
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any
 

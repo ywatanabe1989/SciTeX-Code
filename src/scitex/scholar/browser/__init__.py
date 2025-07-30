@@ -13,5 +13,14 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from ._BrowserMixin import BrowserMixin
 from ._BrowserManager import BrowserManager
+from ._ProxyBrowserManager import ProxyBrowserManager
+from ._ZenRowsBrowserManager import ZenRowsBrowserManager
+
+__all__ = [
+    "BrowserMixin",
+    "BrowserManager", 
+    "ProxyBrowserManager",
+    "ZenRowsBrowserManager",
+]
 
 # EOF

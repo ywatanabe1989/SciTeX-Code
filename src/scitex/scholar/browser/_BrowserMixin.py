@@ -24,12 +24,24 @@ class BrowserMixin:
     _shared_browser = None
     _shared_playwright = None
 
-    def __init__(self):
+    def __init__(self, browser_backend: str = "local", zenrows_api_key: str = None, proxy_country: str = "us"):
+        """Initialize browser mixin.
+        
+        Args:
+            browser_backend: "local" or "zenrows"
+            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
+            proxy_country: Country code for ZenRows proxy
+        """
         self.cookie_acceptor = CookieAutoAcceptor()
         self.captcha_handler = CaptchaHandler()
         self.headless = True
         self.contexts = []
         self.pages = []
+        
+        # ZenRows configuration
+        self.browser_backend = browser_backend or os.getenv("SCITEX_SCHOLAR_BROWSER_BACKEND", "local")
+        self.zenrows_api_key = zenrows_api_key or os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
+        self.proxy_country = proxy_country or os.getenv("SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY", "us")
 
     def visible(self):
         """Set browser to visible mode (flag only, browser recreated on next use)."""
@@ -81,12 +93,31 @@ class BrowserMixin:
             if self._shared_playwright is None:
                 self._shared_playwright = await async_playwright().start()
 
-            self._shared_browser = (
-                await self._shared_playwright.chromium.launch(
-                    headless=self.headless,
-                    args=["--no-sandbox", "--disable-dev-shm-usage"],
+            if self.browser_backend == "zenrows":
+                # Use ZenRows Scraping Browser
+                if not self.zenrows_api_key:
+                    raise ValueError("ZenRows API key required for zenrows backend")
+                
+                # Build connection URL
+                connection_url = (
+                    f"wss://browser.zenrows.com"
+                    f"?apikey={self.zenrows_api_key}"
+                    f"&proxy_country={self.proxy_country}"
                 )
-            )
+                
+                # Connect to remote browser
+                self._shared_browser = await self._shared_playwright.chromium.connect_over_cdp(
+                    connection_url,
+                    timeout=120000  # 2 minutes for remote connection
+                )
+            else:
+                # Local browser
+                self._shared_browser = (
+                    await self._shared_playwright.chromium.launch(
+                        headless=self.headless,
+                        args=["--no-sandbox", "--disable-dev-shm-usage"],
+                    )
+                )
 
         return self._shared_browser
 

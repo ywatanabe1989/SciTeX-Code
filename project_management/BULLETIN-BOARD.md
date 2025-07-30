@@ -6,6 +6,59 @@
 
 # Bulletin Board - Agent Communication
 
+## Agent: 59cac716-6d7b-11f0-87b5-00155dff97a1
+Role: Scholar Module Refactoring Specialist
+Status: completed ✅
+Task: Refactor scholar module - remove obsolete files and fix imports
+Notes:
+- ✅ REMOVED: 7 obsolete files using safe_rm.sh
+  * auth: _LeanLibraryAuthentication.py, _ZenRowsRemoteAuthenticator.py, _CacheManager.py
+  * browser: _TwoCaptchaHandler.py, _ZenRowsScrapingBrowser.py
+  * open_url: _OpenURLResolverWithScrapingBrowser.py, _OpenURLResolverWithZenRowsBrowser.py
+- ✅ FIXED: All import dependencies
+  * Integrated CacheManager functionality into authenticators
+  * Fixed EZProxyAuthenticator, OpenAthensAuthenticator, ShibbolethAuthenticator
+  * Updated PDFDownloader to remove LeanLibrary dependency
+- ✅ FIXED: OpenURL resolver timeout issue
+  * Increased SAML redirect timeout from 1.5-3s to 15s
+  * Addresses timeout errors with Nature and Science publishers
+- ✅ VERIFIED: No regressions - all imports working correctly
+- 📊 RESULT: Cleaner codebase with 75% fewer files in auth/browser/open_url
+- 🎯 IMPACT: Better maintainability and clearer module structure
+@mentions: Scholar module refactoring complete - codebase simplified
+Timestamp: 2025-0731-06:34
+
+## Agent: ab606e2e-6d75-11f0-b425-00155dff97a1
+Role: ZenRows Local Stealth Browser Integration Specialist
+Status: completed ✅
+Task: Implement local browser with ZenRows proxy for stealth benefits
+Notes:
+- ✅ IMPLEMENTED: Automatic ZenRows stealth when API key is present
+  * No flags needed - just set SCITEX_SCHOLAR_ZENROWS_API_KEY
+  * Local browser automatically uses ZenRows proxy
+  * Full browser control for SSO/2FA authentication
+  * Anti-bot bypass with residential IPs
+- ✅ CREATED: ZenRowsStealthyLocal browser class
+  * Routes local Playwright through ZenRows proxy
+  * Maintains session for authenticated access
+  * Supports manual login workflows
+- ✅ SIMPLIFIED: API for end users
+  * Scholar automatically uses stealth when key present
+  * OpenURLResolver auto-detects and uses stealth
+  * PDFDownloader integrates stealth seamlessly
+- ✅ FIXED: Import and initialization issues
+  * Fixed syntax error in PDFDownloader
+  * Fixed ZenRowsStealthyLocal inheritance
+  * Removed unnecessary configuration flags
+- ✅ CREATED: Multiple examples
+  * university_sso_zenrows_download.py - Full SSO workflow
+  * simple_openurl_test.py - Basic OpenURL testing
+  * ipython_openurl_test.py - Quick IPython snippets
+- 📊 RESULT: "Just works" implementation - set API key and go!
+- 🎯 USER FEEDBACK: "No need remote authentication" - focus on local
+@mentions: ZenRows local stealth fully integrated and simplified
+Timestamp: 2025-0731-05:15
+
 ## Agent: 36bbe758-6d28-11f0-a5e5-00155dff97a1
 Role: ZenRows Cookie Transfer Mechanism Specialist  
 Status: completed ✅

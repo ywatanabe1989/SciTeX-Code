@@ -32,7 +32,7 @@ from scitex import logging
 from ...errors import ScholarError
 from ..browser._BrowserMixin import BrowserMixin
 from ._BaseAuthenticator import BaseAuthenticator
-from ._CacheManager import CacheManager
+# from ._CacheManager import CacheManager  # Removed - functionality integrated
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +61,9 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         cache_dir: Optional[Path] = None,
         timeout: int = 300,
         debug_mode: bool = False,
+        browser_backend: str = "local",
+        zenrows_api_key: Optional[str] = None,
+        proxy_country: str = "us",
     ):
         """Initialize OpenAthens authenticator.
 
@@ -69,11 +72,14 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             cache_dir: Directory for session cache
             timeout: Authentication timeout in seconds
             debug_mode: Enable debug logging
+            browser_backend: Browser backend - "local" or "zenrows"
+            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
+            proxy_country: Country code for ZenRows proxy
         """
         BaseAuthenticator.__init__(
             self, config={"email": email, "debug_mode": debug_mode}
         )
-        BrowserMixin.__init__(self)
+        BrowserMixin.__init__(self, browser_backend, zenrows_api_key, proxy_country)
 
         self.email = email
         self.myathens_url = "https://my.openathens.net/?passiveLogin=false"
@@ -81,12 +87,18 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         self.debug_mode = debug_mode
         self.headless = False  # Always show browser for authentication
 
-        # Cache management
-        self.cache_manager = CacheManager(
-            provider="openathens",
-            email=email,
-            cache_dir=cache_dir,
-        )
+        # Cache management (integrated directly)
+        import hashlib
+        base_dir = cache_dir or Path.home() / ".scitex" / "scholar"
+        email_hash = hashlib.md5(email.lower().encode()).hexdigest()[:8]
+        identifier = f"user_{email_hash}"
+        
+        self.cache_dir = base_dir / identifier
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(self.cache_dir, 0o700)
+        
+        self.cache_file = self.cache_dir / "openathens_session.json"
+        self.lock_file = self.cache_dir / f"openathens_{identifier}_auth.lock"
 
         # Session management
         self._cookies: Dict[str, str] = {}
@@ -117,7 +129,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             }
 
         # Use file-based lock to prevent concurrent authentication
-        lock_file = self.cache_manager.lock_file
+        lock_file = self.lock_file
 
         # Try to acquire lock with timeout
         max_wait = 300  # 5 minutes max wait
@@ -261,6 +273,10 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         Returns:
             True if authenticated, False otherwise
         """
+        # Load session from cache if not already loaded
+        if not self._cookies and not self._session_expiry:
+            await self._load_session_cache()
+        
         # First do quick local checks
         if not self._cookies or not self._session_expiry:
             logger.debug("No cookies or session expiry found")
@@ -347,8 +363,8 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         self._session_expiry = None
 
         # Clear cache
-        if self.cache_manager.cache_file.exists():
-            self.cache_manager.cache_file.unlink()
+        if self.cache_file.exists():
+            self.cache_file.unlink()
 
         logger.info("Logged out from OpenAthens")
 
@@ -437,22 +453,22 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             "version": 2,
         }
 
-        with open(self.cache_manager.cache_file, "w") as f:
+        with open(self.cache_file, "w") as f:
             json.dump(cache_data, f, indent=2)
 
-        os.chmod(self.cache_manager.cache_file, 0o600)
-        logger.success(f"Session saved to: {self.cache_manager.cache_file}")
+        os.chmod(self.cache_file, 0o600)
+        logger.success(f"Session saved to: {self.cache_file}")
 
     async def _load_session_cache(self):
         """Load session cookies from cache."""
-        if not self.cache_manager.cache_file.exists():
+        if not self.cache_file.exists():
             logger.debug(
-                f"No session cache found at {self.cache_manager.cache_file}"
+                f"No session cache found at {self.cache_file}"
             )
             return
 
         try:
-            with open(self.cache_manager.cache_file, "r") as f:
+            with open(self.cache_file, "r") as f:
                 cache_data = json.load(f)
 
             # Skip encrypted files
@@ -474,7 +490,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
                     self._session_expiry = datetime.fromisoformat(expiry_str)
 
                 logger.info(
-                    f"Loaded session from cache ({self.cache_manager.cache_file}): "
+                    f"Loaded session from cache ({self.cache_file}): "
                     f"{len(self._cookies)} cookies{self._format_expiry_info()}"
                 )
         except Exception as e:

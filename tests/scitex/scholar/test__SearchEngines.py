@@ -488,7 +488,7 @@ if __name__ == "__main__":
 # """
 # 
 # import asyncio
-# import logging
+# from scitex import logging
 # import json
 # import pickle
 # from pathlib import Path

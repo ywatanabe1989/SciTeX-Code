@@ -783,7 +783,7 @@ if __name__ == "__main__":
 # """
 # 
 # import asyncio
-# import logging
+# from scitex import logging
 # from difflib import SequenceMatcher
 # from functools import lru_cache
 # from pathlib import Path

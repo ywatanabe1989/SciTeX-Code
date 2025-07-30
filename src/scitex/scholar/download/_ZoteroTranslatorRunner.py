@@ -19,7 +19,7 @@ handling the complex JavaScript environment they expect.
 
 import asyncio
 import json
-import logging
+from scitex import logging
 import re
 import subprocess
 import tempfile

@@ -24,7 +24,7 @@ Prerequisites:
 """
 
 import functools
-import logging
+from scitex import logging
 import re
 import warnings
 from typing import Dict, Optional, Tuple, Union, Callable, Any

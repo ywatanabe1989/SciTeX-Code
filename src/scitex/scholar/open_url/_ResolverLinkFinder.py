@@ -19,7 +19,7 @@ Priority order:
 3. Text Patterns - Good fallback
 """
 
-import logging
+from scitex import logging
 import re
 from typing import List, Optional
 from urllib.parse import urlparse

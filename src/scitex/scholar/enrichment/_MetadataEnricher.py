@@ -15,7 +15,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 This module orchestrates enrichment using specialized enrichers."""
 
-import logging
+from scitex import logging
 from typing import Any, Dict, List, Optional
 
 from ...errors import EnrichmentError, warn_performance

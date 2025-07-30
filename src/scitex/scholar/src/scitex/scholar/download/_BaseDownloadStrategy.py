@@ -18,7 +18,7 @@ This module provides the base interface that all download strategies
 """
 
 """Imports"""
-import logging
+from scitex import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Optional, Callable

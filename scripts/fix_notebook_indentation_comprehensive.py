@@ -15,7 +15,7 @@ import json
 import re
 import ast
 from pathlib import Path
-import logging
+from scitex import logging
 from typing import List, Dict, Tuple, Optional
 import argparse
 import shutil

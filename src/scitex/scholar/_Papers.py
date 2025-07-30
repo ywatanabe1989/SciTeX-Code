@@ -18,7 +18,7 @@ A collection of papers with analysis and export capabilities.
 """
 
 import json
-import logging
+from scitex import logging
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -282,7 +282,7 @@ class Papers:
             for field_name in fields:
                 if "quartile" in field_name and "JCR" in field_name:
                     paper.journal_quartile = fields[field_name]
-                    paper.quartile_source = fields.get(
+                    paper.metadata["quartile_source"] = fields.get(
                         "quartile_source", "bibtex"
                     )
                     break
@@ -801,9 +801,9 @@ class Papers:
 
         # Keep quartile source from the paper that had it
         if base_paper.journal_quartile is not None:
-            merged.quartile_source = base_paper.quartile_source
+            merged.metadata["quartile_source"] = base_paper.metadata.get("quartile_source")
         elif other_paper.journal_quartile is not None:
-            merged.quartile_source = other_paper.quartile_source
+            merged.metadata["quartile_source"] = other_paper.metadata.get("quartile_source")
 
         return merged
 
@@ -859,7 +859,7 @@ class Papers:
             return self._df_cache
 
         # Import JCR year dynamically to include in column names
-        from ._MetadataEnricher import JCR_YEAR
+        from .core._MetadataEnricher import JCR_YEAR
 
         data = []
         for paper in self._papers:
@@ -891,7 +891,7 @@ class Papers:
                     if paper.journal_quartile
                     else f"N/A ({getattr(paper, 'journal_quartile_na_reason', 'Not enriched')})"
                 ),
-                "quartile_source": paper.quartile_source or "N/A",
+                "quartile_source": paper.metadata.get("quartile_source", "N/A"),
                 "doi": paper.doi or "N/A",
                 "pmid": paper.pmid or "N/A",
                 "arxiv_id": paper.arxiv_id or "N/A",
@@ -1187,8 +1187,8 @@ class Papers:
 
             if paper.journal_quartile and paper.journal_quartile != "Unknown":
                 fields[f"JCR_{JCR_YEAR}_quartile"] = paper.journal_quartile
-                if hasattr(paper, "quartile_source") and paper.quartile_source:
-                    fields["quartile_source"] = paper.quartile_source
+                if paper.metadata.get("quartile_source"):
+                    fields["quartile_source"] = paper.metadata.get("quartile_source")
 
             if paper.citation_count is not None:
                 fields["citation_count"] = str(paper.citation_count)

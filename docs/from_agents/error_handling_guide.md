@@ -270,7 +270,7 @@ class SpecificError(MyModuleError):
 ## Integration with Logging
 
 ```python
-import logging
+from scitex import logging
 from scitex import errors
 
 logger = logging.getLogger(__name__)

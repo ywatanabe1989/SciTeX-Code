@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """DOI-first enricher that adds DOIs before other enrichment."""
 
-import logging
+from scitex import logging
 from typing import List
 
 from .._Paper import Paper

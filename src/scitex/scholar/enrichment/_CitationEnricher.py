@@ -14,7 +14,7 @@ __DIR__ = os.path.dirname(__FILE__)
 """Citation count enricher using CrossRef and Semantic Scholar."""
 
 import asyncio
-import logging
+from scitex import logging
 from typing import List, Optional
 
 import aiohttp

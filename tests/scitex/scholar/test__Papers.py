@@ -535,7 +535,7 @@ if __name__ == "__main__":
 # 
 # import re
 # import json
-# import logging
+# from scitex import logging
 # from pathlib import Path
 # from typing import List, Dict, Any, Optional, Union, Iterator
 # from datetime import datetime

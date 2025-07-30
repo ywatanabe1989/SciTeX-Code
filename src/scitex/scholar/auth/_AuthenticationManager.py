@@ -19,7 +19,7 @@ interface for authentication operations.
 """
 
 """Imports"""
-import logging
+from scitex import logging
 from typing import Any, Dict, List, Optional
 
 from ...errors import AuthenticationError
@@ -47,18 +47,29 @@ class AuthenticationManager:
         email_openathens: Optional[str] = None,
         email_ezproxy: Optional[str] = None,
         email_shibboleth: Optional[str] = None,
+        browser_backend: str = "local",
+        zenrows_api_key: Optional[str] = None,
+        proxy_country: str = "us",
     ):
         """Initialize the authentication manager.
 
         Args:
             email: User's institutional email for authentication
+            browser_backend: Browser backend - "local" or "zenrows"
+            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
+            proxy_country: Country code for ZenRows proxy
         """
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
         if email_openathens:
             self._register_provider(
-                "openathens", OpenAthensAuthenticator(email=email_openathens)
+                "openathens", OpenAthensAuthenticator(
+                    email=email_openathens,
+                    browser_backend=browser_backend,
+                    zenrows_api_key=zenrows_api_key,
+                    proxy_country=proxy_country,
+                )
             )
         if email_ezproxy:
             self._register_provider(

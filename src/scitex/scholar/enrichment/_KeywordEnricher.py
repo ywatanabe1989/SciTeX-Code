@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Keyword enricher using DOI sources."""
 
-import logging
+from scitex import logging
 from typing import List, Optional
 
 from .._Paper import Paper

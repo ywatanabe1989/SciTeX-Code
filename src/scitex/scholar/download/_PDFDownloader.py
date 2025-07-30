@@ -18,13 +18,13 @@ PDF downloader for SciTeX Scholar.
 This module provides comprehensive PDF download functionality:
 1. Direct publisher patterns (fastest)
 2. Zotero translator support (most reliable)
-3. Sci-Hub fallback (for paywalled content)
+3. ZenRows anti-bot bypass (for protected sites)
 4. Web scraping with Playwright (last resort)
 """
 
 import asyncio
 import hashlib
-import logging
+from scitex import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
@@ -34,13 +34,13 @@ import aiohttp
 from playwright.async_api import async_playwright
 
 from ...errors import PDFDownloadError, ScholarError, warn_performance
-from ..utils._ethical_usage import ETHICAL_USAGE_MESSAGE, check_ethical_usage
 from ..utils._progress_tracker import create_progress_tracker
 from ..utils._formatters import normalize_filename
 from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
-from ..auth._LeanLibraryAuthentication import LeanLibraryAuthenticator
-from ..core._OpenURLResolver import OpenURLResolver
-from ..core._ResolverLinkFinder import ResolverLinkFinder, find_and_click_resolver_link
+from ._ZenRowsDownloadStrategy import ZenRowsDownloadStrategy
+# from ..auth._LeanLibraryAuthentication import LeanLibraryAuthenticator  # Removed - obsolete
+from ..open_url._OpenURLResolver import OpenURLResolver
+from ..open_url._ResolverLinkFinder import ResolverLinkFinder, find_and_click_resolver_link
 # BrowserAutomation removed - using direct playwright calls
 # OpenAthensURLTransformer removed - not needed for basic functionality
 
@@ -53,9 +53,9 @@ class PDFDownloader:
 
     Download priority:
     1. Check local cache
-    2. Try direct publisher patterns
-    3. Use Zotero translators if available
-    4. Try Sci-Hub (with ethical acknowledgment)
+    2. Try ZenRows (anti-bot bypass)
+    3. Try direct publisher patterns
+    4. Use Zotero translators if available
     5. Use Playwright for JavaScript sites
 
     Features:
@@ -63,18 +63,9 @@ class PDFDownloader:
     - Smart caching and deduplication
     - Automatic retry with exponential backoff
     - Publisher-specific optimizations
-    - Ethical usage acknowledgment for Sci-Hub
+    - Anti-bot bypass with ZenRows
     """
 
-    # Sci-Hub mirrors (updated regularly)
-    SCIHUB_MIRRORS = [
-        "https://sci-hub.se",
-        "https://sci-hub.st",
-        "https://sci-hub.ru",
-        "https://sci-hub.ren",
-        "https://sci-hub.tw",
-        "https://sci-hub.ee",
-    ]
 
     # Class-level authenticator cache for multiprocessing
     _openathens_authenticator_cache = {}
@@ -83,16 +74,15 @@ class PDFDownloader:
         self,
         download_dir: Optional[Path] = None,
         use_translators: bool = True,
-        use_scihub: bool = True,
         use_playwright: bool = True,
         use_openathens: bool = False,
         openathens_config: Optional[Dict[str, Any]] = None,
         use_lean_library: bool = True,
         openurl_resolver: Optional[str] = None,
+        zenrows_api_key: Optional[str] = None,
         timeout: int = 30,
         max_retries: int = 3,
         max_concurrent: int = 3,
-        acknowledge_ethical_usage: Optional[bool] = None,
         debug_mode: bool = False,
     ):
         """
@@ -101,21 +91,19 @@ class PDFDownloader:
         Args:
             download_dir: Default download directory
             use_translators: Enable Zotero translator support
-            use_scihub: Enable Sci-Hub fallback
             use_playwright: Enable Playwright for JS sites
             use_openathens: Enable OpenAthens authentication
             openathens_config: OpenAthens configuration dict
             use_lean_library: Enable Lean Library browser extension
             openurl_resolver: OpenURL resolver URL (e.g., University of Melbourne)
+            zenrows_api_key: ZenRows API key (auto-enables stealth when provided)
             timeout: Download timeout in seconds
             max_retries: Maximum retry attempts
             max_concurrent: Maximum concurrent downloads
-            acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
             debug_mode: Enable debug logging
         """
         self.download_dir = Path(download_dir or "./pdfs")
         self.use_translators = use_translators
-        self.use_scihub = use_scihub
         self.use_playwright = use_playwright
         self.use_openathens = use_openathens
         self.timeout = timeout
@@ -142,7 +130,7 @@ class PDFDownloader:
         self.openathens_authenticator = None
         if use_openathens and openathens_config:
             try:
-                from ._OpenAthensAuthenticator import OpenAthensAuthenticator
+                from ..auth._OpenAthensAuthenticator import OpenAthensAuthenticator
 
                 # Use email as cache key (or 'default' if no email)
                 cache_key = openathens_config.get("email", "default")
@@ -188,30 +176,67 @@ class PDFDownloader:
         self.lean_library_authenticator = None
         if self.use_lean_library:
             try:
-                self.lean_library_authenticator = LeanLibraryAuthenticator()
+                # self.lean_library_authenticator = LeanLibraryAuthenticator()  # Removed - obsolete
+                self.lean_library_authenticator = None
                 logger.info("Lean Library authenticator initialized")
             except Exception as e:
                 logger.warning(f"Failed to initialize Lean Library: {e}")
                 self.use_lean_library = False
         
+        # Get ZenRows API key from parameter or environment
+        self.zenrows_api_key = zenrows_api_key or os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
+        
+        # Auto-enable ZenRows if API key is present
+        self.use_zenrows = bool(self.zenrows_api_key)
+        
         # Initialize OpenURL resolver
         self.openurl_resolver = None
+        
         if openurl_resolver:
             try:
-                self.openurl_resolver = OpenURLResolver(openurl_resolver)
-                logger.info(f"OpenURL resolver initialized: {openurl_resolver}")
+                if self.use_zenrows:
+                    # Import ZenRows version only when needed
+                    from ..open_url._OpenURLResolverWithZenRows import OpenURLResolverWithZenRows
+                    self.openurl_resolver = OpenURLResolverWithZenRows(
+                        None,  # auth_manager will be set later if needed
+                        openurl_resolver,
+                        zenrows_api_key=self.zenrows_api_key,
+                        use_zenrows=True
+                    )
+                    logger.info(f"ZenRows-enhanced OpenURL resolver initialized: {openurl_resolver}")
+                else:
+                    self.openurl_resolver = OpenURLResolver(openurl_resolver)
+                    logger.info(f"OpenURL resolver initialized: {openurl_resolver}")
             except Exception as e:
                 logger.warning(f"Could not initialize OpenURL resolver: {e}")
 
+        # Initialize ZenRows strategy if API key present
+        self.zenrows_strategy = None
+        if self.use_zenrows:
+            self.zenrows_strategy = ZenRowsDownloadStrategy(api_key=self.zenrows_api_key)
+            logger.info("ZenRows download strategy initialized")
+            
+        # Initialize ZenRows stealthy browser automatically when API key is present
+        self.zenrows_stealth_browser = None
+        if self.use_zenrows:
+            try:
+                from ..browser._ZenRowsStealthyLocal import ZenRowsStealthyLocal
+                self.zenrows_stealth_browser = ZenRowsStealthyLocal(
+                    headless=not debug_mode,
+                    zenrows_api_key=self.zenrows_api_key,
+                    use_residential=True
+                )
+                logger.info("ZenRows stealthy browser initialized with anti-bot protection")
+            except Exception as e:
+                logger.warning(f"Failed to initialize ZenRows stealth browser: {e}")
+                self.zenrows_stealth_browser = None
+        
         # Track downloads to avoid duplicates
         self._active_downloads: Set[str] = set()
         self._download_cache: Dict[str, Path] = {}
         self._download_methods: Dict[str, str] = (
             {}
         )  # Track which method succeeded
-
-        # Ethical usage for Sci-Hub
-        self._ethical_acknowledged = acknowledge_ethical_usage
 
     async def download_pdf_async(
         self,
@@ -349,19 +374,19 @@ class PDFDownloader:
         # If we have OpenAthens authentication, use it as the primary strategy
         if auth_session and self.use_openathens and self.openathens_authenticator:
             strategies = [
-                ("Lean Library", self._try_lean_library_async),  # Primary - browser extension
+                ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                ("Lean Library", self._try_lean_library_async),  # Browser extension
                 ("OpenAthens", self._try_openathens_async),  # Use OpenAthens authenticator's method
                 ("Direct patterns", self._try_direct_patterns_async),  # Fallback
-                ("Sci-Hub", self._try_scihub_async),  # Last resort
             ]
         else:
             strategies = [
-                ("Lean Library", self._try_lean_library_async),  # Primary - browser extension
+                ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                ("Lean Library", self._try_lean_library_async),  # Browser extension
                 ("OpenURL Resolver", self._try_openurl_resolver_async),  # Institutional access
                 ("Zotero translators", self._try_zotero_translator_async),  # Most reliable for non-auth
                 ("Direct patterns", self._try_direct_patterns_async),
                 ("Playwright", self._try_playwright_async),
-                ("Sci-Hub", self._try_scihub_async),  # Last resort
             ]
 
         for name, strategy in strategies:
@@ -376,10 +401,10 @@ class PDFDownloader:
 
             try:
                 # Pass auth_session to strategies that can use it
-                if name in ["Zotero translators", "Direct patterns", "Playwright", "OpenAthens", "OpenURL Resolver"]:
+                if name in ["ZenRows", "Zotero translators", "Direct patterns", "Playwright", "OpenAthens", "OpenURL Resolver"]:
                     pdf_path = await strategy(doi, url, output_path, auth_session)
                 else:
-                    # Sci-Hub doesn't need auth
+                    # Lean Library doesn't need auth_session parameter
                     pdf_path = await strategy(doi, url, output_path)
                     
                 if pdf_path:
@@ -405,7 +430,7 @@ class PDFDownloader:
                 # Reload session cache in case another process authenticated
                 await self.openathens_authenticator._load_session_cache()
                 
-                if await self.openathens_authenticator.is_authenticated_async():
+                if await self.openathens_authenticator.is_authenticated():
                     # Get cookies from authenticator
                     cookies = []
                     if hasattr(self.openathens_authenticator, '_full_cookies') and self.openathens_authenticator._full_cookies:
@@ -441,7 +466,9 @@ class PDFDownloader:
 
     def _should_use_strategy(self, strategy: str) -> bool:
         """Check if strategy should be used."""
-        if strategy == "OpenAthens":
+        if strategy == "ZenRows":
+            return self.zenrows_strategy is not None
+        elif strategy == "OpenAthens":
             return (
                 self.use_openathens
                 and self.openathens_authenticator is not None
@@ -451,8 +478,6 @@ class PDFDownloader:
                 self.use_translators
                 and self.zotero_translator_runner is not None
             )
-        elif strategy == "Sci-Hub":
-            return self.use_scihub
         elif strategy == "Playwright":
             return self.use_playwright
         elif strategy == "OpenURL Resolver":
@@ -644,78 +669,42 @@ class PDFDownloader:
             
         return None
 
-    async def _try_scihub_async(
-        self, doi: str, url: str, output_path: Path
+    async def _try_zenrows_async(
+        self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict] = None
     ) -> Optional[Path]:
-        """Try download using Sci-Hub."""
-        # Check ethical acknowledgment
-        if not self._ethical_acknowledged:
-            self._ethical_acknowledged = check_ethical_usage(
-                self._ethical_acknowledged
-            )
-            if not self._ethical_acknowledged:
-                logger.info(
-                    "Sci-Hub download skipped (ethical usage not acknowledged)"
-                )
-                return None
-
-        # Try each Sci-Hub mirror
-        for mirror in self.SCIHUB_MIRRORS:
-            try:
-                # Sci-Hub accepts DOIs directly
-                scihub_url = f"{mirror}/{doi}"
-
-                # Get the PDF URL from Sci-Hub
-                pdf_url = await self._get_scihub_pdf_url_async(scihub_url)
-                if pdf_url:
-                    logger.info(f"Found PDF on Sci-Hub: {mirror}")
-                    if await self._download_file_async(pdf_url, output_path):
-                        return output_path
-
-            except Exception as e:
-                logger.debug(f"Sci-Hub mirror {mirror} failed: {e}")
-                continue
-
-        return None
-
-    async def _get_scihub_pdf_url_async(self, scihub_url: str) -> Optional[str]:
-        """Extract PDF URL from Sci-Hub page."""
+        """Try download using ZenRows for anti-bot bypass."""
+        if not self.zenrows_strategy:
+            logger.debug("ZenRows strategy not initialized")
+            return None
+            
+        # Check if ZenRows can handle this URL
+        if not await self.zenrows_strategy.can_download(url, {"doi": doi}):
+            logger.debug(f"ZenRows cannot handle URL: {url}")
+            return None
+            
+        logger.info(f"Attempting ZenRows download for {doi}")
+        
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    scihub_url,
-                    timeout=aiohttp.ClientTimeout(total=self.timeout),
-                    headers={"User-Agent": "Mozilla/5.0"},
-                ) as response:
-                    if response.status != 200:
-                        return None
-
-                    html = await response.text()
-
-                    # Look for PDF embed/iframe
-                    patterns = [
-                        r'<iframe.*?src=["\']([^"\']*\.pdf[^"\']*)["\']',
-                        r'<embed.*?src=["\']([^"\']*\.pdf[^"\']*)["\']',
-                        r'<iframe.*?src=["\']([^"\']*)["\'].*?pdf',
-                        r'window\.location\.href\s*=\s*["\']([^"\']*\.pdf[^"\']*)["\']',
-                    ]
-
-                    for pattern in patterns:
-                        match = re.search(pattern, html, re.IGNORECASE)
-                        if match:
-                            pdf_url = match.group(1)
-                            # Make absolute URL
-                            if not pdf_url.startswith("http"):
-                                if pdf_url.startswith("//"):
-                                    pdf_url = "https:" + pdf_url
-                                else:
-                                    pdf_url = urljoin(scihub_url, pdf_url)
-                            return pdf_url
-
+            # Use ZenRows strategy
+            pdf_path = await self.zenrows_strategy.download(
+                url=url,
+                output_path=output_path,
+                metadata={"doi": doi},
+                session_data=auth_session
+            )
+            
+            if pdf_path and pdf_path.exists():
+                logger.info(f"ZenRows download successful: {pdf_path}")
+                self._download_methods[doi] = "zenrows"
+                return pdf_path
+            else:
+                logger.warning("ZenRows download returned no file")
+                return None
+                
         except Exception as e:
-            logger.debug(f"Failed to get Sci-Hub PDF URL: {e}")
+            logger.error(f"ZenRows download failed: {e}")
+            return None
 
-        return None
 
     async def _handle_cookie_consent_async(self, page) -> None:
         """Handle cookie consent popups that block content."""
@@ -762,12 +751,29 @@ class PDFDownloader:
     async def _try_playwright_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download using Playwright for JS-heavy sites with optional authentication."""
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=not self.debug_mode)
-            context = await browser.new_context()
+        """Try download using Playwright for JS-heavy sites with optional authentication.
+        
+        If ZenRows stealth browser is available, uses that for anti-bot protection.
+        """
+        # Use ZenRows stealth browser if available
+        if self.zenrows_stealth_browser:
+            logger.info("Using ZenRows stealthy browser with anti-bot protection")
+            try:
+                browser = await self.zenrows_stealth_browser.get_browser()
+                context = await self.zenrows_stealth_browser.new_context()
+            except Exception as e:
+                logger.warning(f"Failed to use ZenRows stealth browser: {e}, falling back to regular browser")
+                # Fallback to regular browser
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=not self.debug_mode)
+                    context = await browser.new_context()
+        else:
+            # Regular Playwright browser
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=not self.debug_mode)
+                context = await browser.new_context()
             
-            # Set up context with user agent
+            # Set up context with user agent (already done by stealth browser)
             await context.set_extra_http_headers({
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             })

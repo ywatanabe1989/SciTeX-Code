@@ -18,7 +18,7 @@ This module provides search functionality for Semantic Scholar API.
 
 """Imports"""
 import asyncio
-import logging
+from scitex import logging
 from typing import List, Optional, Dict, Any
 import aiohttp
 

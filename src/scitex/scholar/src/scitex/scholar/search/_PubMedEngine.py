@@ -18,7 +18,7 @@ This module provides search functionality for PubMed/MEDLINE database.
 
 """Imports"""
 import asyncio
-import logging
+from scitex import logging
 import xml.etree.ElementTree as ET
 from typing import List, Optional, Dict, Any
 from urllib.parse import quote_plus

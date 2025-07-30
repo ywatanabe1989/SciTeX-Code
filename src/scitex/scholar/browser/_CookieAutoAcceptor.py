@@ -14,7 +14,7 @@ __DIR__ = os.path.dirname(__FILE__)
 import asyncio
 
 import json
-import logging
+from scitex import logging
 
 from playwright.async_api import Page
 

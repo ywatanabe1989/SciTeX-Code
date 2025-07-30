@@ -12,7 +12,7 @@ This module provides the base interface that all authenticators
 """
 
 """Imports"""
-import logging
+from scitex import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple

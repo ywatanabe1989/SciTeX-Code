@@ -18,7 +18,7 @@ This module provides authentication through Shibboleth single sign-on
 to enable legal PDF downloads via institutional subscriptions.
 """
 
-import logging
+from scitex import logging
 import warnings
 from datetime import datetime
 from pathlib import Path
@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 
 from ...errors import ScholarError, SciTeXWarning
 from ._BaseAuthenticator import BaseAuthenticator
-from ._CacheManager import CacheManager
+# from ._CacheManager import CacheManager  # Removed - not needed for placeholder
 
 logger = logging.getLogger(__name__)
 
@@ -94,11 +94,12 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         self.timeout = timeout
         self.debug_mode = debug_mode
 
-        self.cache_manager = CacheManager(
-            provider="shibboleth",
-            email=username,
-            cache_dir=cache_dir,
-        )
+        # self.cache_manager = CacheManager(
+        #     provider="shibboleth",
+        #     email=username,
+        #     cache_dir=cache_dir,
+        # )
+        self.cache_dir = cache_dir or Path.home() / ".scitex" / "scholar" / "shibboleth"
 
         # Session management
         self._cookies: Dict[str, str] = {}

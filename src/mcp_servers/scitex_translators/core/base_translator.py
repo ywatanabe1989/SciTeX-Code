@@ -12,7 +12,7 @@ import ast
 import re
 from abc import ABC, abstractmethod
 from typing import Dict, List, Tuple, Optional, Any
-import logging
+from scitex import logging
 
 logger = logging.getLogger(__name__)
 

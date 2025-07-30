@@ -11,7 +11,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-import logging
+from scitex import logging
 
 import aiohttp
 from playwright.async_api import Browser, BrowserContext

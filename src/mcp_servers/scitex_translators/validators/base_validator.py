@@ -12,7 +12,7 @@ import ast
 import re
 from typing import List, Dict, Tuple, Optional, Any
 from dataclasses import dataclass
-import logging
+from scitex import logging
 
 logger = logging.getLogger(__name__)
 

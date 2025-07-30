@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Simplified enrichment pipeline that starts with DOI resolution."""
 
-import logging
+from scitex import logging
 from typing import List, Optional
 
 from .._Paper import Paper

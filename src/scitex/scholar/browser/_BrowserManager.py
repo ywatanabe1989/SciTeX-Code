@@ -11,18 +11,82 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from playwright.async_api import Browser, BrowserContext, Page
+from playwright.async_api import Browser, BrowserContext, Page, async_playwright
+from typing import Optional, Literal
 
+from scitex import logging
 from ._BrowserMixin import BrowserMixin
 from ._StealthManager import StealthManager
 
+logger = logging.getLogger(__name__)
+
+BrowserBackend = Literal["local", "zenrows"]
+
 
 class BrowserManager(BrowserMixin):
-    def __init__(self, auth_manager=None):
+    def __init__(
+        self, 
+        auth_manager=None,
+        backend: BrowserBackend = "local",
+        zenrows_api_key: Optional[str] = None,
+        proxy_country: str = "us",
+    ):
+        """Initialize browser manager with backend selection.
+        
+        Args:
+            auth_manager: Authentication manager instance
+            backend: Browser backend - "local" or "zenrows"
+            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
+            proxy_country: Country code for ZenRows proxy
+        """
         super().__init__()
         self.auth_manager = auth_manager
         self.stealth_manager = StealthManager()
+        self.backend = backend
+        self.zenrows_api_key = zenrows_api_key or os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
+        self.proxy_country = proxy_country
         # self._authenticated_context = None
+        
+        if backend == "zenrows" and not self.zenrows_api_key:
+            raise ValueError("ZenRows API key required for zenrows backend")
+        
+        logger.info(f"Initialized BrowserManager with {backend} backend")
+    
+    async def get_browser(self) -> Browser:
+        """Get browser instance - either local or ZenRows remote."""
+        if self.backend == "zenrows":
+            # Use ZenRows Scraping Browser
+            if (
+                self._shared_browser is None
+                or not self._shared_browser.is_connected()
+            ):
+                if self._shared_playwright is None:
+                    self._shared_playwright = await async_playwright().start()
+                
+                # Build ZenRows connection URL
+                connection_url = (
+                    f"wss://browser.zenrows.com"
+                    f"?apikey={self.zenrows_api_key}"
+                    f"&proxy_country={self.proxy_country}"
+                )
+                
+                logger.info(f"Connecting to ZenRows Scraping Browser ({self.proxy_country})...")
+                
+                try:
+                    # Connect to remote browser via CDP
+                    self._shared_browser = await self._shared_playwright.chromium.connect_over_cdp(
+                        connection_url,
+                        timeout=120000  # 2 minutes for remote connection
+                    )
+                    logger.info("✅ Connected to ZenRows Scraping Browser")
+                except Exception as e:
+                    logger.error(f"Failed to connect to ZenRows: {e}")
+                    raise
+            
+            return self._shared_browser
+        else:
+            # Use local browser (default behavior from parent)
+            return await super().get_browser()
 
     async def get_authenticated_context(
         self,

@@ -1,183 +1,248 @@
-# How to Use OpenAthens Authentication in SciTeX Scholar
+# How to Use OpenAthens Authentication in SciTeX
 
-OpenAthens authentication allows you to legally download paywalled academic papers through your institutional subscriptions.
+This guide explains how to use OpenAthens authentication to access paywalled academic papers through your institutional subscription.
 
-## Quick Start
+## What is OpenAthens?
+
+OpenAthens is a single sign-on (SSO) system widely used by academic institutions to provide access to subscription-based journals and databases. It allows you to use your institutional credentials to access paywalled content.
+
+## Prerequisites
+
+1. Valid institutional credentials (username/password)
+2. Your institution must have OpenAthens enabled
+3. SciTeX installed with scholar module
+
+## Basic Usage
+
+### 1. Simple Download with OpenAthens
 
 ```python
-from scitex.scholar import Scholar
+from scitex.scholar import Papers
 
-# Initialize Scholar and configure OpenAthens
-scholar = Scholar()
-scholar.configure_openathens(
-    org_id="your-institution.edu",  # Your institution's ID
-    idp_url="https://go.openathens.net/redirector/your-institution.edu"  # OpenAthens redirector URL
-)
+# Initialize with your institutional credentials
+papers = Papers()
+papers.config.openathens_username = "your_username@institution.edu"
+papers.config.openathens_password = "your_password"
 
-# Authenticate - this will open a browser for manual login
-await scholar.authenticate_openathens()
-
-# After successful login, download PDFs through your institutional access
-papers = await scholar.search("deep learning", limit=5)
-for paper in papers:
-    pdf_path = await scholar.download_pdf(paper)
-    if pdf_path:
-        print(f"Downloaded: {pdf_path}")
+# Download a paper by DOI
+paper = papers.fetch_one("10.1038/s41586-019-1234-z")
 ```
 
-## Configuration Options
+### 2. Batch Download with Session Persistence
 
-### 1. Environment Variables (Recommended)
+```python
+from scitex.scholar import Papers
 
-Set these environment variables for configuration:
+# Configure OpenAthens
+papers = Papers()
+papers.config.openathens_username = "your_username@institution.edu"
+papers.config.openathens_password = "your_password"
+papers.config.browser_persistent = True  # Keep browser session alive
 
-```bash
-export SCITEX_SCHOLAR_OPENATHENS_ENABLED=true
-export SCITEX_SCHOLAR_OPENATHENS_ORG_ID=your-institution.edu
-export SCITEX_SCHOLAR_OPENATHENS_IDP_URL=https://go.openathens.net/redirector/your-institution.edu
+# Download multiple papers
+dois = [
+    "10.1038/s41586-021-03551-x",
+    "10.1126/science.abc1234",
+    "10.1016/j.cell.2021.01.001"
+]
+
+for doi in dois:
+    paper = papers.fetch_one(doi)
+    if paper.pdf_path:
+        print(f"Downloaded: {paper.title}")
 ```
 
-**Note**: Username and password are not needed - authentication is done manually in the browser.
+### 3. Using Configuration File
 
-### 2. YAML Configuration
-
-Add to your `scholar_config.yaml`:
+Create a `scholar_config.yaml`:
 
 ```yaml
-openathens_enabled: true
-openathens_org_id: your-institution.edu
-openathens_idp_url: https://your-institution-idp-url.com
-# Don't store credentials in files - use environment variables instead
+# OpenAthens credentials
+openathens_username: "your_username@institution.edu"
+openathens_password: "your_password"
+
+# Browser settings
+browser_headless: false  # Show browser for debugging
+browser_persistent: true  # Keep session alive
+browser_timeout: 60000  # 60 seconds timeout
+
+# Download settings
+download_dir: "./downloaded_papers"
 ```
 
-### 3. Direct Configuration
+Then use it:
 
 ```python
-scholar.configure_openathens(
-    org_id="your-institution.edu",
-    idp_url="https://your-institution-idp-url.com",
-    save_to_env=True  # Save configuration to environment
-)
+from scitex.scholar import Papers
+
+papers = Papers(config_path="scholar_config.yaml")
+paper = papers.fetch_one("10.1038/nature12373")
 ```
 
-## Download Strategy Order
+## Advanced Features
 
-When OpenAthens is enabled, the PDF download strategies are tried in this order:
+### 1. Handling Different Authentication Flows
 
-1. **Direct patterns** - Open access papers
-2. **OpenAthens** - Your institutional access
-3. **Zotero translators** - Publisher-specific handlers
-4. **Sci-Hub** - If ethical usage acknowledged
-5. **Playwright** - Browser automation fallback
+OpenAthens can redirect through various authentication systems:
 
-## Testing Your Setup
+```python
+from scitex.scholar import Papers
 
-Run the test script:
+papers = Papers()
+papers.config.openathens_username = "username"
+papers.config.openathens_password = "password"
 
-```bash
-# Set your credentials (username MUST be institutional email)
-export SCITEX_SCHOLAR_OPENATHENS_USERNAME=your.name@your-institution.edu
-export SCITEX_SCHOLAR_OPENATHENS_PASSWORD=your-password
+# The system automatically handles:
+# - Direct OpenAthens login
+# - Shibboleth redirects
+# - EZProxy authentication
+# - Custom institutional portals
 
-# Run the test
-python test_openathens.py
+paper = papers.fetch_one("10.1038/s41586-020-2832-5")
 ```
 
-Or use the quick test:
+### 2. Debugging Authentication Issues
 
-```bash
-python quick_test_openathens.py your.email@institution.edu your-password
+Enable verbose logging to troubleshoot:
+
+```python
+from scitex.scholar import Papers
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+papers = Papers()
+papers.config.openathens_username = "username"
+papers.config.openathens_password = "password"
+papers.config.browser_headless = False  # Watch the browser
+
+paper = papers.fetch_one("10.1038/nature12373")
 ```
 
-## How It Works
+### 3. Session Management
 
-1. **Manual Login**: A browser opens to MyAthens where you log in manually
-2. **Session Capture**: The system captures your authenticated session
-3. **Browser-Based Downloads**: PDFs are downloaded through the authenticated browser
+Reuse authentication sessions for efficiency:
 
-Key features:
-- Handles cookie consent popups automatically
-- Works with different publisher authentication flows
-- Maintains session for multiple downloads
-- No need to provide credentials to the script
+```python
+from scitex.scholar import Papers
 
-## Authentication Flow
+papers = Papers()
+papers.config.openathens_username = "username"
+papers.config.openathens_password = "password"
+papers.config.browser_persistent = True
+papers.config.session_dir = "./openathens_sessions"  # Save sessions
 
-OpenAthens (via MyAthens) uses a two-step authentication process:
+# First download authenticates
+paper1 = papers.fetch_one("10.1038/s41586-021-03551-x")
 
-1. **Institution Discovery**: 
-   - Enter your institutional email (e.g., `john.doe@university.edu`)
-   - Your institution will appear as a button (e.g., "University of Example")
-   - The system will automatically click your institution button
+# Subsequent downloads reuse the session
+paper2 = papers.fetch_one("10.1126/science.abc5678")
+paper3 = papers.fetch_one("10.1016/j.cell.2021.02.001")
 
-2. **Credentials**: 
-   - You'll be redirected to your institution's login page
-   - The system enters your credentials automatically
-
-**Note**: The process is fully automated. The system enters your email, waits for your institution button to appear, clicks it, and then enters your credentials on the institution's login page.
-
-## Supported Institutions
-
-OpenAthens is used by many universities worldwide. Common configurations:
-- OpenAthens redirector format: `https://go.openathens.net/redirector/{org-id}`
-- Many institutions redirect to: `https://my.openathens.net/` for authentication
-- Some use direct IdP URLs specific to their institution
-
-To add support for your institution, you need:
-1. Your institution's OpenAthens organization ID
-2. Your institution's identity provider (IdP) URL or OpenAthens redirector URL
-3. Your institutional login credentials
+# Close browser when done
+papers.close()
+```
 
 ## Troubleshooting
 
-### Authentication Fails
-- Verify your credentials are correct
-- Check if your institution uses multi-factor authentication (MFA)
-- Ensure your institution has OpenAthens access
+### Common Issues
 
-### PDFs Still Not Downloading
-- Some publishers may require additional steps
-- Check if the paper is actually available through your subscription
-- Try accessing the paper through your library website first
+1. **Login fails immediately**
+   - Check credentials are correct
+   - Verify your institution uses OpenAthens (not all do)
+   - Try logging in manually at https://login.openathens.net
 
-### Session Expires
-- Sessions typically last 8 hours
-- Re-authenticate with `await scholar.authenticate_openathens(force=True)`
+2. **Browser times out**
+   - Increase timeout: `papers.config.browser_timeout = 120000`
+   - Check your internet connection
+   - Some institutions have slow authentication servers
+
+3. **Downloads fail after login**
+   - Your institution may not have access to that specific journal
+   - The paper might be too new (embargo period)
+   - Try accessing the paper manually through your library website
+
+4. **Session expires quickly**
+   - Enable persistent browser: `papers.config.browser_persistent = True`
+   - Save sessions: `papers.config.session_dir = "./sessions"`
+
+### Debug Mode
+
+For detailed debugging:
+
+```python
+from scitex.scholar import Papers
+
+papers = Papers()
+papers.config.openathens_username = "username"
+papers.config.openathens_password = "password"
+papers.config.browser_headless = False  # See browser
+papers.config.browser_devtools = True   # Open DevTools
+papers.config.debug = True               # Verbose logging
+
+paper = papers.fetch_one("10.1038/nature12373")
+```
+
+## Best Practices
+
+1. **Store credentials securely**
+   ```python
+   import os
+   from scitex.scholar import Papers
+   
+   papers = Papers()
+   papers.config.openathens_username = os.environ.get("OPENATHENS_USER")
+   papers.config.openathens_password = os.environ.get("OPENATHENS_PASS")
+   ```
+
+2. **Handle failures gracefully**
+   ```python
+   paper = papers.fetch_one(doi)
+   if paper.pdf_path:
+       print(f"Success: {paper.title}")
+   else:
+       print(f"Failed: {doi} - {paper.download_status}")
+   ```
+
+3. **Respect rate limits**
+   ```python
+   import time
+   
+   for doi in dois:
+       paper = papers.fetch_one(doi)
+       time.sleep(2)  # Wait between downloads
+   ```
+
+4. **Clean up resources**
+   ```python
+   try:
+       # Download papers
+       papers = Papers()
+       # ... download code ...
+   finally:
+       papers.close()  # Always close browser
+   ```
+
+## Supported Institutions
+
+OpenAthens is supported by thousands of institutions worldwide. Common examples:
+- Universities (Harvard, MIT, Oxford, etc.)
+- Research institutions (NIH, Max Planck, CERN)
+- Hospitals and medical centers
+- Government agencies
+
+To check if your institution is supported, try logging in at:
+https://login.openathens.net
 
 ## Security Notes
 
-- Credentials are masked in all displays
-- Sessions are cached locally in `~/.scitex/openathens_cache/`
-- Use environment variables or secure credential storage
-- Never commit credentials to version control
+- Credentials are only used for authentication, never stored permanently
+- Browser sessions are isolated and cleaned up after use
+- All downloads go through official publisher websites
+- No circumvention of access controls - only access what your institution subscribes to
 
-## Example: Batch Download
+## See Also
 
-```python
-import asyncio
-from scitex.scholar import Scholar
-
-async def download_papers():
-    # Configure and authenticate
-    scholar = Scholar()
-    scholar.configure_openathens(
-        org_id="your-institution.edu",
-        idp_url="https://your-institution-idp-url.com"
-    )
-    await scholar.authenticate_openathens()
-    
-    # List of DOIs to download
-    dois = [
-        "10.1146/annurev-neuro-111020-103314",
-        "10.1038/s41586-020-2314-9",
-        "10.1126/science.abc1234"
-    ]
-    
-    # Download all papers
-    results = await scholar.download_pdfs(dois)
-    print(f"Downloaded {results['successful']} papers")
-    print(f"Failed: {results['failed']}")
-
-# Run the async function
-asyncio.run(download_papers())
-```
+- [ZenRows Integration Guide](../ZENROWS_QUICK_START.md) - For enhanced anti-bot bypassing
+- [Scholar Module Documentation](./scholar_module.md) - Complete API reference
+- [Authentication Troubleshooting](./auth_troubleshooting.md) - Detailed debugging guide

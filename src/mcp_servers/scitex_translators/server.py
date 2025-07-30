@@ -9,7 +9,7 @@ Provides a single server with pluggable module translators.
 """
 
 import asyncio
-import logging
+from scitex import logging
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
 import sys

@@ -384,7 +384,7 @@ if __name__ == "__main__":
 # for scientific papers, supporting various extraction modes and formats.
 # """
 # 
-# import logging
+# from scitex import logging
 # import re
 # from pathlib import Path
 # from typing import Dict, List, Any, Optional, Tuple

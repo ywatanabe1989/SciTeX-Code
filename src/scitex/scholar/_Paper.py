@@ -16,7 +16,7 @@ __DIR__ = os.path.dirname(__FILE__)
 Represents a scientific paper with comprehensive metadata and methods.
 """
 
-import logging
+from scitex import logging
 import re
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -53,9 +53,13 @@ class Paper:
         citation_count: Optional[int] = None,
         impact_factor: Optional[float] = None,
         journal_quartile: Optional[str] = None,
-        # File references
+        # URLs
+        url: Optional[str] = None,
         pdf_url: Optional[str] = None,
+        # File references
         pdf_path: Optional[Path] = None,
+        # Source information
+        source: Optional[str] = None,
         # Extension point
         metadata: Optional[Dict[str, Any]] = None,
     ):
@@ -86,9 +90,15 @@ class Paper:
         self._set_field_with_source("impact_factor", impact_factor)
         self._set_field_with_source("journal_quartile", journal_quartile)
 
-        # File references
+        # URLs
+        self._set_field_with_source("url", url)
         self._set_field_with_source("pdf_url", pdf_url)
+        
+        # File references
         self._set_field_with_source("pdf_path", pdf_path)
+
+        # Source information
+        self._set_field_with_source("source", source)
 
         # Computed properties
         self._bibtex_key = None
@@ -224,9 +234,10 @@ class Paper:
                 lines.append(
                     f"  JCR_{JCR_YEAR}_quartile = {{{self.journal_quartile}}},"
                 )
-                if self.quartile_source:
+                quartile_source = self.metadata.get("quartile_source")
+                if quartile_source:
                     lines.append(
-                        f"  quartile_source = {{{self.quartile_source}}},"
+                        f"  quartile_source = {{{quartile_source}}},"
                     )
 
             if self.citation_count is not None:
@@ -363,10 +374,40 @@ class Paper:
 
         return {**self._additional_metadata, **base_dict}
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert paper to dictionary format."""
+        return {
+            # Core identifiers
+            "doi": self.doi,
+            "title": self.title,
+            "authors": self.authors,
+            # Publication details
+            "journal": self.journal,
+            "year": self.year,
+            "abstract": self.abstract,
+            # Alternative identifiers
+            "pmid": self.pmid,
+            "arxiv_id": self.arxiv_id,
+            # Additional metadata
+            "keywords": self.keywords,
+            "citation_count": self.citation_count,
+            "impact_factor": self.impact_factor,
+            "journal_quartile": self.journal_quartile,
+            # URLs
+            "url": self.url,
+            "pdf_url": self.pdf_url,
+            # File references
+            "pdf_path": str(self.pdf_path) if self.pdf_path else None,
+            # Source information
+            "source": self.source,
+            # Extension metadata
+            **self._additional_metadata
+        }
+
     @property
     def metadata(self) -> Dict[str, Any]:
-        """Get comprehensive metadata dictionary including all paper attributes."""
-        return self.to_dict()
+        """Get additional metadata dictionary."""
+        return self._additional_metadata
 
     def similarity_score(self, other: "Paper") -> float:
         """Calculate similarity score with another paper.

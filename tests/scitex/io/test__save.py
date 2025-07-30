@@ -422,7 +422,7 @@ def test_save_figure_with_csv_export():
 def test_save_error_handling(caplog):
     """Test error handling in save function."""
     from scitex.io import save
-    import logging
+    from scitex import logging
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Test with None object - should log error
@@ -746,7 +746,7 @@ if __name__ == "__main__":
 # 
 # """Imports"""
 # import inspect
-# import logging
+# from scitex import logging
 # import os as _os
 # from typing import Any
 # 

@@ -21,7 +21,7 @@ PubMed DOI source implementation.
 This module provides DOI resolution through the PubMed/NCBI E-utilities API.
 """
 
-import logging
+from scitex import logging
 import xml.etree.ElementTree as ET
 from typing import List
 from typing import Optional

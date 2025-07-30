@@ -21,7 +21,7 @@ This module consolidates:
 """
 
 import asyncio
-import logging
+from scitex import logging
 import json
 import pickle
 from pathlib import Path
@@ -206,13 +206,13 @@ class SemanticScholarEngine(SearchEngine):
                 title=data.get('title', ''),
                 authors=authors,
                 abstract=data.get('abstract', '') or (data.get('tldr', {}) or {}).get('text', ''),
-                source='semantic_scholar',
                 year=data.get('year'),
                 doi=doi,
                 journal=journal,
                 keywords=data.get('fieldsOfStudy', []),
                 citation_count=data.get('citationCount', 0),
                 pdf_url=pdf_url,
+                source="semantic_scholar",
                 metadata={
                     'semantic_scholar_paper_id': data.get('paperId'),
                     'fields_of_study': data.get('fieldsOfStudy', []),
@@ -387,12 +387,12 @@ class PubMedEngine(SearchEngine):
                         title=title,
                         authors=authors,
                         abstract=abstract,
-                        source='pubmed',
                         year=year,
                         doi=doi,
                         pmid=pmid,
                         journal=journal,
-                        keywords=keywords
+                        keywords=keywords,
+                        source="pubmed"
                     )
                     
                     papers.append(paper)
@@ -496,11 +496,11 @@ class ArxivEngine(SearchEngine):
                         title=title,
                         authors=authors,
                         abstract=abstract,
-                        source='arxiv',
                         year=year,
                         arxiv_id=arxiv_id,
                         keywords=keywords,
-                        pdf_url=pdf_url
+                        pdf_url=pdf_url,
+                        source="arxiv"
                     )
                     
                     papers.append(paper)
@@ -644,12 +644,12 @@ class CrossRefEngine(SearchEngine):
                     title=title,
                     authors=authors,
                     abstract=abstract,
-                    source='crossref',
                     year=year,
                     doi=doi,
                     journal=journal,
                     keywords=keywords,
                     citation_count=citation_count,
+                    source="crossref",
                     metadata={
                         'citation_count_source': 'CrossRef',
                         'url': url,
@@ -823,11 +823,11 @@ class GoogleScholarEngine(SearchEngine):
                         title=title,
                         authors=authors,
                         abstract=abstract or "Abstract not available from Google Scholar search",
-                        source='google_scholar',
                         year=year,
                         journal=journal,
                         doi=doi,
                         citation_count=citation_count,
+                        source="google_scholar",
                         metadata={
                             'google_scholar_url': url,
                             'google_scholar_id': result.get('author_id', ''),
@@ -902,10 +902,10 @@ class LocalSearchEngine(SearchEngine):
                     title=paper_data.get('title', 'Unknown Title'),
                     authors=paper_data.get('authors', []),
                     abstract=paper_data.get('abstract', ''),
-                    source='local',
                     year=paper_data.get('year'),
                     keywords=paper_data.get('keywords', []),
-                    pdf_path=Path(paper_data.get('pdf_path', ''))
+                    pdf_path=Path(paper_data.get('pdf_path', '')),
+                    source="local"
                 )
                 scored_papers.append((score, paper))
         

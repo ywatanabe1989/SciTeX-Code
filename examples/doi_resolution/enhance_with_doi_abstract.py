@@ -3,7 +3,7 @@
 
 import sys
 import time
-import logging
+from scitex import logging
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 

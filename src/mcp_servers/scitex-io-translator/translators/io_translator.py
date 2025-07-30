@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 import re
 import ast
 from typing import Dict, List, Tuple, Any
-import logging
+from scitex import logging
 
 logger = logging.getLogger(__name__)
 

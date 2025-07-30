@@ -21,7 +21,7 @@ OpenAlex DOI source implementation.
 This module provides DOI resolution through the OpenAlex API.
 """
 
-import logging
+from scitex import logging
 from typing import List
 from typing import Optional
 from tenacity import retry

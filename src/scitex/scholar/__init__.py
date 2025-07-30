@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-23 15:49:17 (ywatanabe)"
+# Timestamp: "2025-07-31 00:29:39 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__init__.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/scholar/__init__.py"
@@ -49,7 +50,7 @@ from .utils._formatters import (
 )
 
 # Import enrichment functionality
-from .core._MetadataEnricher import (
+from .enrichment._MetadataEnricher import (
     MetadataEnricher,
     _enrich_papers_with_all,
     _enrich_papers_with_impact_factors,
@@ -78,10 +79,10 @@ def download_pdfs(
 ):
     """
     Download PDFs for DOIs using default Scholar instance.
-    
+
     This is a convenience function that creates a Scholar instance if needed.
     For more control, use Scholar().download_pdfs() directly.
-    
+
     Args:
         dois: DOI strings (list or single string) or Papers/Paper objects
         download_dir: Directory to save PDFs
@@ -90,10 +91,10 @@ def download_pdfs(
         show_progress: Show download progress
         acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
         **kwargs: Additional arguments
-        
+
     Returns:
         Dictionary with download results
-        
+
     Examples:
         >>> import scitex as stx
         >>> stx.scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
@@ -138,12 +139,12 @@ __all__ = [
 
     # Enrichment
     'MetadataEnricher',
-    
+
     # PDF download functionality
     'PDFDownloader',
     'download_pdf_async',
     'download_pdfs_async',
-    
+
     # Browser-based functionality
 ]
 
@@ -151,7 +152,7 @@ __all__ = [
 def __getattr__(name):
     """Provide backward compatibility with deprecation warnings."""
     import warnings
-    
+
     # Handle special IPython attributes
     if name in ['__custom_documentations__', '__wrapped__']:
         raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

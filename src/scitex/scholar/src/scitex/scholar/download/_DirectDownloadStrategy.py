@@ -17,7 +17,7 @@ This module implements direct HTTP/HTTPS downloads for open-access PDFs.
 """
 
 """Imports"""
-import logging
+from scitex import logging
 import aiohttp
 import asyncio
 from pathlib import Path

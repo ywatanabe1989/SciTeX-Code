@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import asyncio
-import logging
+from scitex import logging
 import random
 
 from playwright.async_api import Browser, BrowserContext, Page

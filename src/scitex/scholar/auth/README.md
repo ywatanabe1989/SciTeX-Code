@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-30 08:22:41
+!-- Timestamp: 2025-07-30 23:48:10
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/README.md
 !-- --- -->
@@ -46,31 +46,31 @@ headers = await auth_manager.get_auth_headers()
 is_authenticated = await auth_manager.is_authenticated()
 ```
 
-### AuthenticatedBrowserMixin
-
-```python
-from scitex.scholar.auth import AuthenticatedBrowserMixin
-
-class MyAuthenticatedBrowser(AuthenticatedBrowserMixin):
-    def __init__(self, auth_manager=None):
-        AuthenticatedBrowserMixin.__init__(self, auth_manager)
-        self.headless=False
-    
-    async def my_method(self, url):
-        # Get authenticated browser context
-        browser, context = await self.get_authenticated_browser_context()
-        
-        try:
-            page = await context.new_page()
-            # Use authenticated page
-            await page.goto(url)
-            # ... your logic using the authenticated browser tab
-        finally:
-            await self.cleanup_browser_context()
-
-authenticated_browser = MyAuthenticatedBrowser()
-# await MyBrowser().my_method("https://google.com")
-```
+<!-- ### AuthenticatedBrowserMixin
+ !-- 
+ !-- ```python
+ !-- from scitex.scholar.auth import AuthenticatedBrowserMixin
+ !-- 
+ !-- class MyAuthenticatedBrowser(AuthenticatedBrowserMixin):
+ !--     def __init__(self, auth_manager=None):
+ !--         AuthenticatedBrowserMixin.__init__(self, auth_manager)
+ !--         self.headless=False
+ !--     
+ !--     async def my_method(self, url):
+ !--         # Get authenticated browser context
+ !--         browser, context = await self.get_authenticated_browser_context()
+ !--         
+ !--         try:
+ !--             page = await context.new_page()
+ !--             # Use authenticated page
+ !--             await page.goto(url)
+ !--             # ... your logic using the authenticated browser tab
+ !--         finally:
+ !--             await self.cleanup_browser_context()
+ !-- 
+ !-- authenticated_browser = MyAuthenticatedBrowser()
+ !-- # await MyBrowser().my_method("https://google.com")
+ !-- ``` -->
 
 ## Session Management
 

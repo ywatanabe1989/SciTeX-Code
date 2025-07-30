@@ -1,79 +1,67 @@
+# Timestamp: "2025-07-31 00:49:10 (ywatanabe)"
+# File: ./src/scitex/scholar/config/default_config.yaml
 # SciTeX Scholar Default Configuration
-# 
 # This file shows all available configuration options with their default values.
-# To use custom configuration:
-#   1. Copy this file to one of these locations:
-#      - ~/.scitex/scholar/config.yaml (recommended)
-#      - ./scholar_config.yaml (project-specific)
-#      - Set SCITEX_SCHOLAR_CONFIG environment variable to your config path
-#   2. Modify the values as needed
-#   3. Remove or comment out any settings you want to keep as default
-#
-# Note: API keys and sensitive data should be set via environment variables
-# or in your personal config file, not committed to version control.
 
 # ============================================================================
 # API AUTHENTICATION
 # ============================================================================
 
-# Semantic Scholar API key (get free key at: https://www.semanticscholar.org/product/api)
-# Can also set via: SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY
-semantic_scholar_api_key: null
+# Semantic Scholar API key
+semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
 
-# CrossRef API key (optional - for higher rate limits)
-# Can also set via: SCITEX_SCHOLAR_CROSSREF_API_KEY
-crossref_api_key: null
+# CrossRef API key
+crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
 
-# Email for PubMed API access (required for PubMed searches)
-# Can also set via: SCITEX_SCHOLAR_PUBMED_EMAIL
-pubmed_email: "research@example.com"
+# Email for PubMed API access
+pubmed_email: ${SCITEX_SCHOLAR_PUBMED_EMAIL:-"research@example.com"}
 
 # Email for CrossRef API access
-# Can also set via: SCITEX_SCHOLAR_CROSSREF_EMAIL
-crossref_email: "research@example.com"
+crossref_email: ${SCITEX_SCHOLAR_CROSSREF_EMAIL:-"research@example.com"}
 
 # ============================================================================
 # FEATURE SETTINGS
 # ============================================================================
 
 # Automatically enrich papers with impact factors and citation counts
-# Can also set via: SCITEX_SCHOLAR_AUTO_ENRICH
-enable_auto_enrich: true
+enable_auto_enrich: ${SCITEX_SCHOLAR_AUTO_ENRICH:-true}
+
+# Use impact_factor package for journal metrics
+use_impact_factor_package: ${SCITEX_SCHOLAR_USE_IMPACT_FACTOR_PACKAGE:-true}
 
 # Automatically download open-access PDFs during search
-# Can also set via: SCITEX_SCHOLAR_AUTO_DOWNLOAD
-enable_auto_download: false
-
-# Acknowledge ethical usage terms for Sci-Hub access
-# Can also set via: SCITEX_SCHOLAR_ACKNOWLEDGE_SCIHUB_ETHICAL_USAGE
-acknowledge_scihub_ethical_usage: false
+enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
 
 # ============================================================================
-# OPENATHENS AUTHENTICATION (Institutional Access)
+# OPENATHENS AUTHENTICATION
 # ============================================================================
 
-# Enable OpenAthens authentication for paywalled papers
-# Can also set via: SCITEX_SCHOLAR_OPENATHENS_ENABLED
-openathens_enabled: false
+# Enable OpenAthens authentication
+openathens_enabled: ${SCITEX_SCHOLAR_OPENATHENS_ENABLED:-false}
 
-# Your institutional email address
-# Can also set via: SCITEX_SCHOLAR_OPENATHENS_EMAIL
-openathens_email: null
+# OpenAthens organization ID
+openathens_org_id: ${SCITEX_SCHOLAR_OPENATHENS_ORG_ID:-null}
 
-# Organization ID (deprecated - not needed for MyAthens)
-# Can also set via: SCITEX_SCHOLAR_OPENATHENS_ORG_ID
-openathens_org_id: null
+# OpenAthens IDP URL
+openathens_idp_url: ${SCITEX_SCHOLAR_OPENATHENS_IDP_URL:-null}
 
-# Identity Provider URL (deprecated - not needed for MyAthens)
-# Can also set via: SCITEX_SCHOLAR_OPENATHENS_IDP_URL
-openathens_idp_url: null
+# OpenAthens email
+openathens_email: ${SCITEX_SCHOLAR_OPENATHENS_EMAIL:-null}
+
+# OpenAthens username
+openathens_username: ${SCITEX_SCHOLAR_OPENATHENS_USERNAME:-null}
+
+# OpenAthens password
+openathens_password: ${SCITEX_SCHOLAR_OPENATHENS_PASSWORD:-null}
+
+# OpenAthens institution name
+openathens_institution_name: ${SCITEX_SCHOLAR_OPENATHENS_INSTITUTION_NAME:-null}
 
 # ============================================================================
 # SEARCH CONFIGURATION
 # ============================================================================
 
-# Default sources to search (can override per search)
-# Available: ["pubmed", "semantic_scholar", "google_scholar", "crossref", "arxiv"]
+# Default sources to search
 default_search_sources:
   - pubmed
   - semantic_scholar
@@ -89,8 +77,7 @@ default_search_limit: 20
 # ============================================================================
 
 # Directory for storing downloaded PDFs
-# Can also set via: SCITEX_SCHOLAR_PDF_DIR
-pdf_dir: "~/.scitex/scholar/pdfs"
+pdf_dir: ${SCITEX_SCHOLAR_PDF_DIR:-"~/.scitex/scholar/pdfs"}
 
 # Enable PDF text extraction features
 enable_pdf_extraction: true
@@ -100,7 +87,6 @@ enable_pdf_extraction: true
 # ============================================================================
 
 # Maximum number of parallel API requests
-# Be respectful to API providers - don't set too high
 max_parallel_requests: 3
 
 # Request timeout in seconds
@@ -110,19 +96,19 @@ request_timeout: 30
 cache_size: 1000
 
 # Google Scholar timeout in seconds
-# Can also set via: SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT
-google_scholar_timeout: 10
+google_scholar_timeout: ${SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT:-10}
 
 # ============================================================================
 # ADVANCED SETTINGS
 # ============================================================================
 
-# SSL certificate verification (disable only for debugging)
+# SSL certificate verification
 verify_ssl: true
 
+# Debug mode
+debug_mode: ${SCITEX_SCHOLAR_DEBUG_MODE:-false}
+
 # User agent string for API requests
-# This identifies your software to API providers (format: name/version)
-# Note: This is NOT the package version - it's just an HTTP identifier
 user_agent: "SciTeX-Scholar/1.0"
 
 # ============================================================================
@@ -130,22 +116,54 @@ user_agent: "SciTeX-Scholar/1.0"
 # ============================================================================
 
 # Enable Lean Library browser extension support
-# Lean Library provides automatic institutional access via browser extension
-# It's used by many universities (Harvard, Stanford, Yale, etc.)
-# Can also set via: SCITEX_SCHOLAR_USE_LEAN_LIBRARY
-use_lean_library: true
+use_lean_library: ${SCITEX_SCHOLAR_USE_LEAN_LIBRARY:-true}
 
-# Optional: Specify browser profile path if auto-detection fails
-# Usually not needed - the system will find Chrome/Edge/Chromium automatically
-# Can also set via: SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE
-# lean_library_browser_profile: "/path/to/browser/profile"
+# Browser profile path
+lean_library_browser_profile: ${SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE:-null}
 
 # ============================================================================
-# LOGGING
+# INSTITUTIONAL ACCESS
 # ============================================================================
 
-# Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-# log_level: "INFO"
+# OpenURL resolver for institutional access
+openurl_resolver: ${SCITEX_SCHOLAR_OPENURL_RESOLVER_URL:-"https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"}
 
-# Log file path (null for console only)
-# log_file: null
+# ============================================================================
+# ZENROWS PROXY CONFIGURATION
+# ============================================================================
+
+# ZenRows API key for web scraping
+zenrows_api_key: ${SCITEX_SCHOLAR_ZENROWS_API_KEY:-null}
+
+# ZenRows proxy credentials
+zenrows_proxy_username: ${SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME:-null}
+zenrows_proxy_password: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD:-null}
+
+# ZenRows proxy server settings
+zenrows_proxy_domain: ${SCITEX_SCHOLAR_ZENROWS_PROXY_DOMAIN:-"superproxy.zenrows.com"}
+zenrows_proxy_port: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PORT:-"1337"}
+
+# ============================================================================
+# ZOTERO INTEGRATION
+# ============================================================================
+
+# Zotero library ID
+zotero_library_id: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID:-null}
+
+# Zotero API key
+zotero_api_key: ${SCITEX_SCHOLAR_ZOTERO_API_KEY:-null}
+
+# Library type: "user" or "group"
+zotero_library_type: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE:-"user"}
+
+# ============================================================================
+# 2CAPTCHA INTEGRATION
+# ============================================================================
+
+# 2Captcha API key for solving CAPTCHAs
+twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}
+
+# Enable automatic CAPTCHA solving
+enable_captcha_solving: ${SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING:-true}
+
+# EOF

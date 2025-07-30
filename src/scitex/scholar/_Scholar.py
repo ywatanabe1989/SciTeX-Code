@@ -141,10 +141,6 @@ class Scholar:
             }
 
         # Use PDFDownloader directly
-        # Check if ZenRows API key is available
-        zenrows_api_key = os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
-        use_zenrows = bool(zenrows_api_key)
-
         self._pdf_downloader = PDFDownloader(
             download_dir=(
                 Path(self.config.pdf_dir).expanduser()
@@ -156,8 +152,7 @@ class Scholar:
             use_openathens=self.config.openathens_enabled,
             openathens_config=openathens_config,
             use_lean_library=self.config.use_lean_library,
-            use_zenrows=use_zenrows,
-            zenrows_api_key=zenrows_api_key,
+            zenrows_api_key=self.config.zenrows_api_key,  # Auto-enables if present
             timeout=30,
             max_retries=3,
             max_concurrent=self.config.max_parallel_requests,

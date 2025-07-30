@@ -18,7 +18,7 @@ Note: Use of Sci-Hub may have legal and ethical implications.
 """
 
 """Imports"""
-import logging
+from scitex import logging
 import asyncio
 from pathlib import Path
 from typing import Optional, Callable, List

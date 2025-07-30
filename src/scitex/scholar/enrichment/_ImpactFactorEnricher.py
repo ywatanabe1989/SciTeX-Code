@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Impact factor enricher using impact_factor package."""
 
-import logging
+from scitex import logging
 from functools import lru_cache
 from typing import Dict, List, Optional
 

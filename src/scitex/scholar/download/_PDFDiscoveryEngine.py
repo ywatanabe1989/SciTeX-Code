@@ -17,7 +17,7 @@ focusing on finding PDF URLs on publisher websites.
 
 import asyncio
 import json
-import logging
+from scitex import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 from urllib.parse import urljoin, urlparse

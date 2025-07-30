@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 20:50:43 (ywatanabe)"
+# Timestamp: "2025-07-31 00:31:37 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -21,7 +21,6 @@ This module orchestrates DOI resolution across multiple sources
 """
 
 import asyncio
-import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import lru_cache
@@ -30,6 +29,8 @@ from typing import Dict, List, Optional, Type
 import requests
 from tenacity import AsyncRetrying, stop_after_attempt, wait_exponential
 from tqdm import tqdm
+
+from scitex import logging
 
 from .sources import (
     ArXivSource,
@@ -281,7 +282,7 @@ class DOIResolver:
                 )
 
                 if doi:
-                    logger.info(f"Found DOI via {source.name}: {doi}")
+                    logger.success(f"Found DOI via {source.name}: {doi}")
                     return doi
 
         return None
@@ -645,7 +646,18 @@ async def main():
     args = parser.parse_args()
 
     # Initialize resolver
-    resolver = DOIResolver(email=args.email, sources=args.sources)
+    # If email is provided, use it for all sources
+    email_kwargs = {}
+    if args.email:
+        email_kwargs = {
+            'email_crossref': args.email,
+            'email_pubmed': args.email,
+            'email_openalex': args.email,
+            'email_semantic_scholar': args.email,
+            'email_arxiv': args.email
+        }
+    
+    resolver = DOIResolver(sources=args.sources, **email_kwargs)
 
     # Resolve DOI
     print(f"Searching for: {args.title}")

@@ -19,7 +19,7 @@ This approach:
 """
 
 import asyncio
-import logging
+from scitex import logging
 from pathlib import Path
 from typing import List, Dict, Optional, Any
 from urllib.parse import urlparse
