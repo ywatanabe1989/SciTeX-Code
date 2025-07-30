@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-24 18:54:51 (ywatanabe)"
+# Timestamp: "2025-07-31 00:28:20 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Scholar.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/scholar/_Scholar.py"
@@ -21,11 +22,12 @@ This is the main entry point for all scholar functionality, providing:
 """
 
 import asyncio
-import logging
 import re
 import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+from scitex import logging
 
 # PDF extraction is now handled by scitex.io
 from ..errors import (
@@ -36,11 +38,12 @@ from ..errors import (
 )
 from ..io import load
 from ._Config import ScholarConfig
-from .core._DOIResolver import BatchDOIResolver, DOIResolver
-from .core._MetadataEnricher import MetadataEnricher
 from ._Paper import Paper
 from ._Papers import Papers
+from .doi._DOIResolver import DOIResolver
 from .download._PDFDownloader import PDFDownloader
+from .enrichment._MetadataEnricher import MetadataEnricher
+
 # SmartPDFDownloader removed - using PDFDownloader directly
 from .search._UnifiedSearcher import UnifiedSearcher
 from .utils._paths import get_scholar_dir
@@ -111,20 +114,6 @@ class Scholar:
             self.workspace_dir = get_scholar_dir()
         self.workspace_dir.mkdir(parents=True, exist_ok=True)
 
-        # # Warn if citations enabled but no API key
-        # if (
-        #     self.config.enable_auto_enrich
-        #     and not self.config.semantic_scholar_api_key
-        # ):
-        #     warnings.warn(
-        #         "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY not found. "
-        #         "Citation counts will use CrossRef (works without key). "
-        #         "For additional citation sources, get a free API key at: "
-        #         "https://www.semanticscholar.org/product/api",
-        #         SciTeXWarning,
-        #         stacklevel=2,
-        #     )
-
         # Initialize components
         self._searcher = UnifiedSearcher(
             email=self.config.pubmed_email,
@@ -136,8 +125,7 @@ class Scholar:
         self._enricher = MetadataEnricher(
             semantic_scholar_api_key=self.config.semantic_scholar_api_key,
             crossref_api_key=self.config.crossref_api_key,
-            email=self.config.crossref_email,
-            use_impact_factor_package=True,  # Always use impact_factor package when available
+            email_crossref=self.config.crossref_email,
         )
 
         # Prepare OpenAthens config if enabled
@@ -145,29 +133,41 @@ class Scholar:
         if self.config.openathens_enabled:
             openathens_config = {
                 "email": self.config.openathens_email,
-                "debug_mode": self.config.debug_mode if hasattr(self.config, 'debug_mode') else False,
+                "debug_mode": (
+                    self.config.debug_mode
+                    if hasattr(self.config, "debug_mode")
+                    else False
+                ),
             }
 
         # Use PDFDownloader directly
+        # Check if ZenRows API key is available
+        zenrows_api_key = os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
+        use_zenrows = bool(zenrows_api_key)
+
         self._pdf_downloader = PDFDownloader(
-            download_dir=Path(self.config.pdf_dir).expanduser() if self.config.pdf_dir else None,
+            download_dir=(
+                Path(self.config.pdf_dir).expanduser()
+                if self.config.pdf_dir
+                else None
+            ),
             use_translators=True,
-            use_scihub=self.config.acknowledge_scihub_ethical_usage,
             use_playwright=True,
             use_openathens=self.config.openathens_enabled,
             openathens_config=openathens_config,
             use_lean_library=self.config.use_lean_library,
+            use_zenrows=use_zenrows,
+            zenrows_api_key=zenrows_api_key,
             timeout=30,
             max_retries=3,
             max_concurrent=self.config.max_parallel_requests,
-            debug_mode=self.config.debug_mode
+            debug_mode=self.config.debug_mode,
         )
 
         # Initialize DOI resolver
-        self._doi_resolver = DOIResolver(email=self.config.crossref_email)
-        self._batch_resolver = BatchDOIResolver(
-            email=self.config.crossref_email,
-            max_workers=self.config.max_parallel_requests,
+        self._doi_resolver = DOIResolver(
+            email_crossref=self.config.crossref_email,
+            email_pubmed=self.config.pubmed_email
         )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
@@ -414,48 +414,62 @@ class Scholar:
             try:
                 # First try a quick local check
                 is_authenticated = self._run_async(
-                    self._pdf_downloader.openathens_authenticator.is_authenticated_async(verify_live=False)
+                    self._pdf_downloader.openathens_authenticator.is_authenticated(
+                        verify_live=False
+                    )
                 )
-                
+
                 if is_authenticated:
                     logger.info("Using existing OpenAthens session")
                 else:
                     # If not authenticated locally, try to authenticate
                     # This will load cached sessions if available
                     auth_success = self.authenticate_openathens(force=False)
-                    
+
                     if not auth_success:
                         # Only show the authentication UI if we really need to authenticate
                         print("\n" + "=" * 60)
                         print("🔒 OpenAthens Authentication Required")
                         print("=" * 60)
-                        print("\nAuthentication is required to download PDFs from your institution.")
+                        print(
+                            "\nAuthentication is required to download PDFs from your institution."
+                        )
                         print("Opening browser for login...")
                         print("\n• You'll need your institutional credentials")
                         print("• You may need to complete 2FA")
                         print("\n🌐 Opening browser for authentication...")
-                        
+
                         # Now try with UI
-                        auth_success = self.authenticate_openathens(force=False)
-                        
+                        auth_success = self.authenticate_openathens(
+                            force=False
+                        )
+
                         if auth_success:
-                            print("\n✅ Authentication successful! Proceeding with downloads...\n")
+                            print(
+                                "\n✅ Authentication successful! Proceeding with downloads...\n"
+                            )
                             # Continue with download after successful auth
                         else:
-                            print("\n❌ Authentication failed or was cancelled.")
+                            print(
+                                "\n❌ Authentication failed or was cancelled."
+                            )
                             return {
                                 "successful": 0,
                                 "failed": len(dois),
                                 "results": [
                                     {
-                                        "doi": doi if isinstance(doi, str) else doi.doi,
+                                        "doi": (
+                                            doi
+                                            if isinstance(doi, str)
+                                            else doi.doi
+                                        ),
                                         "success": False,
                                         "error": "OpenAthens authentication failed",
-                                        "method": None
+                                        "method": None,
                                     }
                                     for doi in dois
                                 ],
-                                "summary": {"auth_failed": True}
+                                "summary": {"auth_failed": True},
                             }
             except KeyboardInterrupt:
                 print("\n\n❌ Authentication cancelled by user.")
@@ -467,11 +481,11 @@ class Scholar:
                             "doi": doi if isinstance(doi, str) else doi.doi,
                             "success": False,
                             "error": "Authentication cancelled by user",
-                            "method": None
+                            "method": None,
                         }
                         for doi in dois
                     ],
-                    "summary": {"cancelled": True}
+                    "summary": {"cancelled": True},
                 }
             except Exception as e:
                 logger.warning(f"OpenAthens authentication check failed: {e}")
@@ -515,7 +529,9 @@ class Scholar:
                 import concurrent.futures
 
                 with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(asyncio.run, download_batch_async())
+                    future = executor.submit(
+                        asyncio.run, download_batch_async()
+                    )
                     results = future.result()
             else:
                 results = loop.run_until_complete(download_batch_async())
@@ -540,9 +556,9 @@ class Scholar:
             for identifier, result in results.items():
                 if result:
                     # Extract path and method from detailed result
-                    path = result['path']
-                    method = result['method']
-                    
+                    path = result["path"]
+                    method = result["method"]
+
                     # Create a minimal Paper object with the DOI and PDF path
                     paper = Paper(
                         title=f"Paper with DOI: {identifier}",
@@ -551,7 +567,6 @@ class Scholar:
                         year=None,
                         journal=None,
                         doi=identifier,
-                        source="direct_download",
                     )
                     paper.pdf_path = path
                     paper.pdf_source = method  # Actual method used
@@ -561,9 +576,9 @@ class Scholar:
             for identifier, result in results.items():
                 if result and identifier in identifier_to_paper:
                     # Extract path and method from detailed result
-                    path = result['path']
-                    method = result['method']
-                    
+                    path = result["path"]
+                    method = result["method"]
+
                     paper = identifier_to_paper[identifier]
                     paper.pdf_path = path  # Update PDF path
                     paper.pdf_source = method  # Actual method used
@@ -1096,27 +1111,29 @@ class Scholar:
         # Reinitialize PDF downloader with OpenAthens
         openathens_config = {
             "email": self.config.openathens_email,
-            "debug_mode": self.config.debug_mode if hasattr(self.config, 'debug_mode') else False,
+            "debug_mode": (
+                self.config.debug_mode
+                if hasattr(self.config, "debug_mode")
+                else False
+            ),
         }
 
         # Update to use PDFDownloader with new configuration
         self._pdf_downloader = PDFDownloader(
-            download_dir=Path(self.config.pdf_dir).expanduser() if self.config.pdf_dir else None,
+            download_dir=(
+                Path(self.config.pdf_dir).expanduser()
+                if self.config.pdf_dir
+                else None
+            ),
             use_translators=True,
-            use_scihub=self.config.acknowledge_scihub_ethical_usage,
             use_playwright=True,
             use_openathens=True,  # OpenAthens is now configured
-            openathens_config={
-                "org_id": org_id,
-                "idp_url": idp_url,
-                "email": self.config.openathens_email,
-                "debug_mode": self.config.debug_mode if hasattr(self.config, 'debug_mode') else False,
-            },
+            openathens_config=openathens_config,
             use_lean_library=self.config.use_lean_library,
             timeout=30,
             max_retries=3,
             max_concurrent=self.config.max_parallel_requests,
-            debug_mode=self.config.debug_mode
+            debug_mode=self.config.debug_mode,
         )
 
         logger.info("OpenAthens configured")
@@ -1152,7 +1169,7 @@ class Scholar:
             raise ScholarError("OpenAthens authenticator not initialized")
 
         return (
-            await self._pdf_downloader.openathens_authenticator.authenticate_async(
+            await self._pdf_downloader.openathens_authenticator.authenticate(
                 force=force
             )
         )
@@ -1160,42 +1177,44 @@ class Scholar:
     def is_openathens_authenticated(self) -> bool:
         """
         Check if OpenAthens is authenticated (sync version).
-        
+
         Returns:
             True if authenticated and session is valid
         """
         return self._run_async(self.is_openathens_authenticated_async())
-    
+
     async def is_openathens_authenticated_async(self) -> bool:
         """
         Check if OpenAthens is authenticated (async version).
-        
+
         Returns:
             True if authenticated and session is valid
         """
         if not self.config.openathens_enabled:
             return False
-            
+
         if not self._pdf_downloader.openathens_authenticator:
             return False
-            
-        return await self._pdf_downloader.openathens_authenticator.is_authenticated_async()
-    
+
+        return (
+            await self._pdf_downloader.openathens_authenticator.is_authenticated_async()
+        )
+
     def ensure_authenticated(self, force: bool = False) -> bool:
         """
         Ensure OpenAthens is authenticated, opening browser if needed.
-        
+
         This is a convenience method that:
         1. Checks if already authenticated
         2. If not, automatically opens browser for authentication
         3. Returns True if authenticated (either already or after login)
-        
+
         Args:
             force: Force re-authentication even if already logged in
-            
+
         Returns:
             True if authenticated successfully
-            
+
         Example:
             >>> scholar = Scholar(openathens_enabled=True)
             >>> if scholar.ensure_authenticated():
@@ -1204,27 +1223,27 @@ class Scholar:
         """
         if not self.config.openathens_enabled:
             return True  # No auth needed
-            
+
         # Check current status
         if not force and self.is_openathens_authenticated():
             logger.info("Already authenticated with OpenAthens")
             return True
-            
+
         # Need to authenticate
         print("\n" + "=" * 60)
         print("🔐 OpenAthens Authentication Required")
         print("=" * 60)
         print("\nOpening browser for authentication...")
         print("Please log in with your institutional credentials.\n")
-        
+
         # Authenticate
         success = self.authenticate_openathens(force=force)
-        
+
         if success:
             print("\n✅ Authentication successful!")
         else:
             print("\n❌ Authentication failed!")
-            
+
         return success
 
     def get_library_stats(self) -> Dict[str, Any]:
@@ -1439,9 +1458,6 @@ class Scholar:
         print(
             f"  • Auto-download PDFs: {'✓ Enabled' if self.config.enable_auto_download else '✗ Disabled'}"
         )
-        print(
-            f"  • Sci-Hub access: {'✓ Acknowledged' if self.config.acknowledge_scihub_ethical_usage else '✗ Requires acknowledgment'}"
-        )
 
         # OpenAthens status
         if self.config.openathens_enabled:
@@ -1477,6 +1493,7 @@ class Scholar:
             loop = asyncio.get_running_loop()
             # We're in an async context, create a task
             import concurrent.futures
+
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(asyncio.run, coro)
                 return future.result()
