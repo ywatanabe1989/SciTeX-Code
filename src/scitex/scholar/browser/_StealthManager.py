@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 07:45:41 (ywatanabe)"
+# Timestamp: "2025-07-30 09:28:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/_StealthManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -42,7 +42,7 @@ class StealthManager:
     def get_random_viewport(self) -> dict:
         return random.choice(self.viewports)
 
-    async def human_delay(self, min_ms: int = 500, max_ms: int = 2000):
+    async def human_delay(self, min_ms: int = 1000, max_ms: int = 3000):
         delay = random.randint(min_ms, max_ms)
         await asyncio.sleep(delay / 1000)
 

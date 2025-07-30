@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 08:04:19 (ywatanabe)"
+# Timestamp: "2025-07-30 09:49:26 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -92,6 +92,8 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         self._cookies: Dict[str, str] = {}
         self._full_cookies: List[Dict[str, Any]] = []
         self._session_expiry: Optional[datetime] = None
+        self._last_live_verified_at = None
+        self._live_verification_cache_seconds = 300  # 5 minutes
 
     async def authenticate(self, force: bool = False, **kwargs) -> dict:
         """Authenticate with OpenAthens and return session data.
@@ -242,6 +244,14 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
                     pass
                 logger.debug("Released authentication lock")
 
+    def _recently_live_verified(self) -> bool:
+        """Check if live verification was done recently."""
+        if self._last_live_verified_at is None:
+            return False
+
+        elapsed = time.time() - self._last_live_verified_at
+        return elapsed < self._live_verification_cache_seconds
+
     async def is_authenticated(self, verify_live: bool = True) -> bool:
         """Check if we have a valid authenticated session.
 
@@ -270,6 +280,9 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
 
     async def _verify_authentication_live(self) -> bool:
         """Verify authentication by checking access to MyAthens account page."""
+        if self._recently_live_verified():
+            return True
+
         try:
             async with async_playwright() as p:
                 # Use BrowserMixin with headless mode for verification

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-30 09:15:33
+!-- Timestamp: 2025-07-30 11:23:37
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/README.md
 !-- --- -->
@@ -17,12 +17,13 @@ from scitex.scholar.auth import AuthenticationManager
 import os
 import logging
 
-# Instanciate OpenURLResolver wiimporthentication manager
-auth_manager = AuthenticationManager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUimport Instanciate OpenURLResolver wiimporthentiimport manager
+auth_manager =importnticimportanager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
 resolver = OpenURLResolver(auth_manager, os.getenv("SCITEX_SCHOLAR_OPENURL_RESOLVER_URL"))
 
-# Make browser visible to see what's happening
-browser = resolver.browser.visible()
+# # Make browser visible to see what's happening
+# browser = resolver.browser.visible()
 
 # DOIs to resolve
 dois = [
@@ -33,7 +34,12 @@ dois = [
     "10.1073/pnas.0408942102", # Not working; unusual traffic detected
 ]
 
-result = resolver._resolve_single(doi=dois[1])
+# result_0 = resolver._resolve_single(doi=dois[0])
+# result_1 = resolver._resolve_single(doi=dois[1])
+# result_2 = resolver._resolve_single(doi=dois[2])
+# result_3 = resolver._resolve_single(doi=dois[3])
+# result_4 = resolver._resolve_single(doi=dois[4])
+
 results = resolver.resolve(dois)
 ```
 

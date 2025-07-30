@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-29 01:06:19 (ywatanabe)"
+# Timestamp: "2025-07-30 09:48:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticatedBrowserMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -28,41 +28,6 @@ class AuthenticatedBrowserMixin(BrowserMixin):
         super().__init__()
         self.auth_manager = auth_manager
         self._authenticated_context = None
-
-    #     self._auth_verified = False
-
-    # async def _ensure_authentication(self):
-    #     """Ensure authentication is verified and handle if needed."""
-    #     if self._auth_verified:
-    #         return
-
-    #     if not self.auth_manager:
-    #         self._auth_verified = True
-    #         return
-
-    #     # Check if already authenticated
-    #     if await self.auth_manager.is_authenticated(verify_live=False):
-    #         logger.info("Using existing authentication session")
-    #         self._auth_verified = True
-    #         return
-
-    #     # Need to authenticate
-    #     print(f"\n{'='*50}")
-    #     print("AUTHENTICATION REQUIRED")
-    #     print(f"{'='*50}")
-    #     print("Institutional access authentication needed.")
-    #     print("Opening authentication interface...")
-    #     print(f"{'='*50}\n")
-
-    #     try:
-    #         result = await self.auth_manager.authenticate()
-    #         if result:
-    #             logger.info("Authentication successful")
-    #             self._auth_verified = True
-    #         else:
-    #             logger.warning("Authentication failed")
-    #     except Exception as e:
-    #         logger.error(f"Authentication error: {e}")
 
     async def get_authenticated_browser_context(
         self, **context_options

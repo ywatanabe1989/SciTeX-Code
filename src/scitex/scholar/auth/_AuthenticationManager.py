@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 08:27:46 (ywatanabe)"
+# Timestamp: "2025-07-30 10:49:34 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -120,7 +120,7 @@ class AuthenticationManager:
     ) -> bool:
         if await self.is_authenticated(verify_live=verify_live):
             return True
-        if await self.authenticate(provier_name=provider_name, **kwargs):
+        if await self.authenticate(provider_name=provider_name, **kwargs):
             return True
         raise AuthenticationError("Not authenticated")
 
