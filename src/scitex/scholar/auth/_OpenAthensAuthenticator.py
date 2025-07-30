@@ -27,14 +27,14 @@ from typing import Any, Dict, List, Optional
 
 from playwright.async_api import Browser, Page, async_playwright
 
-from scitex.logging import getLogger
+from scitex import logging
 
 from ...errors import ScholarError
 from ..browser._BrowserMixin import BrowserMixin
 from ._BaseAuthenticator import BaseAuthenticator
 from ._CacheManager import CacheManager
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class OpenAthensError(ScholarError):

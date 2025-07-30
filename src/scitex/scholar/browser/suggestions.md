@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-30 20:33:10
+!-- Timestamp: 2025-07-30 21:13:07
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/suggestions.md
 !-- --- -->
@@ -234,5 +234,202 @@ Fast and Lightweight: You avoid launching a local browser, which saves system re
 Protects Your IP: Even your validation checks are routed through the ZenRows proxy network, preventing your IP from being flagged for suspicious activity.
 
 Reliable: It's a true end-to-end test that confirms your cookies are accepted by the live OpenAthens server.
+
+You're looking at the setup instructions for ZenRows' Scraping Browser product. This is another powerful tool they offer, but it works differently than the API-based "intercept-and-proxy" approach we just discussed.
+
+Let's clarify the difference, as it's key to choosing the right tool for your project.
+
+## ZenRows Scraping Browser vs. The API
+Universal Scraper API (Our Hybrid Approach): You send a URL and your cookies to the API. ZenRows handles everything on its backend and sends you back the clean HTML. You never directly interact with their browser.
+
+Scraping Browser (Shown in Your Image): You use Playwright's connectOverCDP method to connect your local script to a browser running on ZenRows' cloud servers. You get direct, remote control over one of their pre-warmed, stealth-configured browsers. You can send it commands just like a local Playwright instance (page.goto(), page.click(), etc.).
+
+## So, is the Scraping Browser a good fit?
+For your primary goal—automating OpenAthens login and downloading—the Hybrid API approach is still the better and simpler solution.
+
+Here’s the critical limitation of the Scraping Browser for your use case:
+
+The remote browser is a clean slate. It does not have the authentication cookies that your local AuthenticationManager creates and caches on your machine.
+
+To use the Scraping Browser, you would have to:
+
+Connect to the remote browser.
+
+Run your entire OpenAthensAuthenticator login flow from scratch inside their remote browser to create a new session.
+
+This is more complex and less efficient than simply performing the login locally (which you've already perfected) and then transferring the resulting cookies to the API for the final step.
+
+## Final Recommendation
+For Institutional Downloads (Paywalled Content):
+Stick with the Hybrid API approach. Use your local Playwright script to handle the OpenAthens login and then pass the final publisher URL and your authentication cookies to the Universal Scraper API using the custom_cookies and session_id parameters.
+
+For Other Difficult Scraping Tasks (Non-Authenticated):
+The Scraping Browser is an excellent tool if you need to scrape a public website that has strong anti-bot measures but doesn't require a login. It gives you the power of a managed, stealthy browser without needing the API.
+
+
+Residential Proxies
+
+Generator or Credentials selector
+
+
+
+Generator
+
+CredentialsYour proxy credentials have been automatically generated. We won't store your password for security reasons, and it can't be recovered. Please save it securely for future access or change it now.
+
+I've Copied My Password
+
+Proxy URL
+
+
+
+
+
+Premium IPs
+
+
+
+Auto-rotate
+
+Proxy Username
+
+
+
+Proxy Password
+
+
+
+Proxy Domain
+
+
+
+Proxy Port
+
+
+
+World Region
+
+
+
+
+
+Global
+
+Africa
+
+Asia Pacific
+
+Europe
+
+Middle East
+
+North America
+
+South America
+
+Country
+
+
+
+
+
+Protocol
+
+HTTP
+
+HTTPS
+
+Sticky TTL
+
+
+
+None
+
+30 sec
+
+1 min
+
+30 min
+
+1 hour
+
+1 day
+
+cURL example
+
+
+
+
+
+Show thinking
+This screenshot shows you the credentials and configuration panel for the Residential Proxies product. This is exactly what you need to integrate ZenRows' IP rotation directly into your existing SciTeX-Code Playwright script.
+
+Here's a breakdown of what these settings mean and how to use them.
+
+## Key Settings Explained
+Proxy Credentials (URL, Username, Password, Port): These are the login details for the proxy server. Your script will pass these to Playwright so it knows where to send its traffic.
+
+World Region / Country: This allows you to control the geographic location of your IP addresses. For your use case, Global is a perfect default.
+
+Sticky TTL (Time-to-Live): This is the most important setting for your project. It controls session persistence.
+
+Auto-rotate (or None): Every new request your browser makes gets a different IP address. This is bad for your login workflow, as a website will see you jumping between locations and will likely invalidate your session.
+
+A set duration (e.g., 1 min, 30 min): ZenRows will assign you a single IP address and "stick" to it for all your requests during that time. This is what you need.
+
+Recommendation: Set a Sticky TTL of at least 1 minute (or 30 minutes to be safe). This ensures that the entire multi-step process for a single paper (OpenURL -> SSO Redirects -> Publisher Page) happens from a single, consistent IP address, preserving your authenticated session.
+
+## How to Implement in Your BrowserManager
+You'll use these credentials in the launch options when you start Playwright. This single change will route all of that browser's traffic through the ZenRows proxy network.
+
+Here is how you would modify your get_browser method in src/scitex/scholar/browser/_BrowserMixin.py:
+
+Python
+
+# src/scitex/scholar/browser/_BrowserMixin.py
+
+# ... inside your BrowserMixin class ...
+
+async def get_browser(self) -> Browser:
+    """Get or create a browser instance that uses ZenRows Residential Proxies."""
+    if (
+        self._shared_browser is None
+        or self._shared_browser.is_connected() is False
+    ):
+        if self._shared_playwright is None:
+            self._shared_playwright = await async_playwright().start()
+
+        # --- ZENROWS PROXY CONFIGURATION ---
+        # Get these credentials from your ZenRows dashboard
+        proxy_server = "http://YOUR_PROXY_DOMAIN:YOUR_PROXY_PORT"
+        proxy_username = "YOUR_PROXY_USERNAME"
+        proxy_password = "YOUR_PROXY_PASSWORD"
+        
+        proxy_settings = {
+            "server": proxy_server,
+            "username": proxy_username,
+            "password": proxy_password,
+        }
+        # ------------------------------------
+
+        self._shared_browser = (
+            await self._shared_playwright.chromium.launch(
+                headless=self.headless,
+                proxy=proxy_settings,  # <-- This is the key change
+                args=["--no-sandbox", "--disable-dev-shm-usage"],
+            )
+        )
+    return self._shared_browser
+
+## Your Final Workflow
+By making this change, you've created a very powerful and reliable system:
+
+Configure Proxies: You set a Sticky TTL in the ZenRows dashboard and add the credentials to your BrowserManager.
+
+Authenticate Locally: Your script runs the OpenAthensAuthenticator, which now operates through a rotating residential IP.
+
+Navigate and Download: Your OpenURLResolver navigates through the library portal. When it finally reaches the publisher's website, the request comes from a trusted residential IP and is far less likely to be blocked or see a CAPTCHA.
+
+This approach solves the IP blocking problem directly, elegantly integrating a professional proxy service into the robust browser automation framework you've already built.
 
 <!-- EOF -->
