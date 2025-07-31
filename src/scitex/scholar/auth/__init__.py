@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-28 18:05:15 (ywatanabe)"
+# Timestamp: "2025-07-31 17:24:25 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/__init__.py
 # ----------------------------------------
 from __future__ import annotations

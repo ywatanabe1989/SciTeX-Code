@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "started_at": "2025-08-01T03:19:35.322130",
+  "last_updated": "2025-08-01T03:19:47.639334",
+  "completed": false,
+  "resolver_url": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41",
+  "dois": {
+    "10.1038/s41586-020-2649-2": {
+      "status": "failed",
+      "result": {
+        "final_url": null,
+        "resolver_url": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1038/s41586-020-2649-2",
+        "access_type": "error",
+        "success": false
+      },
+      "timestamp": "2025-08-01T03:19:47.638229",
+      "retry_count": 1
+    },
+    "10.1126/science.abb7431": {
+      "status": "failed",
+      "result": {
+        "final_url": null,
+        "resolver_url": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1126/science.abb7431",
+        "access_type": "error",
+        "success": false
+      },
+      "timestamp": "2025-08-01T03:19:47.639099",
+      "retry_count": 1
+    }
+  },
+  "statistics": {
+    "total": 5,
+    "processed": 2,
+    "resolved": 0,
+    "failed": 2,
+    "no_access": 0,
+    "errors": 0
+  }
+}

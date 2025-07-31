@@ -18,6 +18,7 @@ including DOIs, citation counts, impact factors, and abstracts from various sour
 
 from ._MetadataEnricher import (
     MetadataEnricher,
+    JCR_YEAR,
     _enrich_papers_with_all,
     _enrich_papers_with_citations,
     _enrich_papers_with_impact_factors,
@@ -25,6 +26,7 @@ from ._MetadataEnricher import (
 
 __all__ = [
     "MetadataEnricher",
+    "JCR_YEAR",
     "_enrich_papers_with_all",
     "_enrich_papers_with_citations",
     "_enrich_papers_with_impact_factors",

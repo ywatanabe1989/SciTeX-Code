@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-29 01:15:04 (ywatanabe)"
+# Timestamp: "2025-07-31 18:35:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,16 +11,16 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from ._BrowserMixin import BrowserMixin
-from ._BrowserManager import BrowserManager
-from ._ProxyBrowserManager import ProxyBrowserManager
-from ._ZenRowsBrowserManager import ZenRowsBrowserManager
+from .local._BrowserManager import BrowserManager
+from .local._ZenRowsBrowserManager import ZenRowsBrowserManager
+from .remote._ZenRowsRemoteBrowserManager import ZenRowsRemoteBrowserManager
+from .remote._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
 __all__ = [
-    "BrowserMixin",
-    "BrowserManager", 
-    "ProxyBrowserManager",
+    "BrowserManager",
     "ZenRowsBrowserManager",
+    "ZenRowsRemoteBrowserManager",
+    "ZenRowsAPIBrowser",
 ]
 
 # EOF

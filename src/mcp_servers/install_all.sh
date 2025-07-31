@@ -84,6 +84,7 @@ SERVERS=(
     "scitex-utils"
     "scitex-data"
     "scitex-project"
+    "scitex-scholar"
 )
 
 # Function to check if server directory exists

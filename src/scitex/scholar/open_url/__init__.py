@@ -14,11 +14,13 @@ __DIR__ = os.path.dirname(__FILE__)
 from ._OpenURLResolver import OpenURLResolver
 from ._OpenURLResolverWithZenRows import OpenURLResolverWithZenRows
 from ._ZenRowsOpenURLResolver import ZenRowsOpenURLResolver
+from ._ResumableOpenURLResolver import ResumableOpenURLResolver
 
 __all__ = [
     "OpenURLResolver",
     "OpenURLResolverWithZenRows",  # API-based ZenRows integration
     "ZenRowsOpenURLResolver",       # Browser-based ZenRows integration
+    "ResumableOpenURLResolver",     # Resumable resolver with progress tracking
 ]
 
 # EOF

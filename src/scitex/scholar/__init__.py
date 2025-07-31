@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 00:29:39 (ywatanabe)"
+# Timestamp: "2025-08-01 01:44:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,6 +37,8 @@ from ._Config import ScholarConfig
 # Import core classes for advanced users
 from ._Paper import Paper
 from ._Papers import Papers
+
+from .doi._resolve_dois import resolve_dois
 
 # Backward compatibility alias
 PaperCollection = Papers
@@ -126,6 +128,8 @@ __all__ = [
     'enrich_bibtex',
     'download_pdfs',  # NEW: Module-level convenience function
 
+    "resolve_dois",
+
     # Core classes
     'Paper',
     'Papers',
@@ -146,6 +150,37 @@ __all__ = [
     'download_pdfs_async',
 
     # Browser-based functionality
+    
+    # Authentication
+    'AuthenticationManager',
+    'OpenAthensAuthenticator',
+    'ShibbolethAuthenticator',
+    'EZProxyAuthenticator',
+    
+    # Resolution
+    'DOIResolver',
+    'OpenURLResolver',
+    'ResumableOpenURLResolver',
+    'ResumableDOIResolver',
+    
+    # Enrichment
+    'PaperEnricher',
+    'ResumableMetadataEnricher',
+    'JCR_YEAR',
+    
+    # Validation
+    'PDFValidator',
+    'ValidationResult',
+    
+    # Database
+    'PaperDatabase',
+    'DatabaseEntry',
+    'DatabaseIndex',
+    
+    # Semantic Search
+    'SemanticSearchEngine',
+    'VectorDatabase',
+    'Embedder',
 ]
 
 # For backward compatibility, provide access to old functions with deprecation warnings
@@ -203,6 +238,25 @@ def __getattr__(name):
         suggestion=f"Available attributes: Scholar, Paper, Papers, search, enrich_bibtex"
     )
 
+
+# Import new modules
+from .auth import (
+    AuthenticationManager,
+    OpenAthensAuthenticator,
+    ShibbolethAuthenticator,
+    EZProxyAuthenticator,
+)
+from .doi import DOIResolver
+from .open_url import OpenURLResolver, ResumableOpenURLResolver
+from .enrichment import (
+    PaperEnricher,
+    ResumableMetadataEnricher,
+    JCR_YEAR,
+)
+from .resolve_dois import ResumableDOIResolver
+from .validation import PDFValidator, ValidationResult
+from .database import PaperDatabase, DatabaseEntry, DatabaseIndex
+from .search import SemanticSearchEngine, VectorDatabase, Embedder
 
 # Module docstring for help()
 def _module_docstring():

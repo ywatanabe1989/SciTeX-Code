@@ -25,6 +25,38 @@ from ._EnricherPipeline import EnricherPipeline
 logger = logging.getLogger(__name__)
 
 
+def _get_jcr_year():
+    """Dynamically determine JCR data year from impact_factor package files."""
+    try:
+        import glob
+        import re
+        import impact_factor
+        
+        # Look for data files in impact_factor package
+        package_dir = os.path.dirname(impact_factor.__file__)
+        data_files = glob.glob(os.path.join(package_dir, 'data', '*.pkl'))
+        
+        # Extract years from filenames
+        years = []
+        for f in data_files:
+            match = re.search(r'(\d{4})', os.path.basename(f))
+            if match:
+                years.append(int(match.group(1)))
+        
+        # Return the most recent year
+        if years:
+            return max(years)
+    except Exception:
+        pass
+    
+    # Fallback to hardcoded year
+    return 2024
+
+
+# JCR data year - dynamically determined from impact_factor package
+JCR_YEAR = _get_jcr_year()
+
+
 class MetadataEnricher:
     """Metadata enricher for scientific papers.
 

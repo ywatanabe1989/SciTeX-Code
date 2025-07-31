@@ -1,0 +1,71 @@
+[
+  {
+    "name": "Basic Browser",
+    "timestamp": "2025-07-31T11:26:28.446616",
+    "success": true,
+    "error": null,
+    "publisher_link_found": true,
+    "final_url": "https://sso.unimelb.edu.au/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml?SAMLRequest=jZJbb9swDIX%2FiqB3W74lToQ4RdqgWIB2Cxq3D30pFJtujMqUJ8q97NfPdhq0G7BibwLEc3jIj4uz10azZ7BUG8x46AecARamrPEx47f5pTfjjJzCUmmDkHE0%2FGy5INXoVq46d8Ab%2BNkBObYiAut6lwuD1DVgd2Cf6wJub64yfnCuJSmENo81%2BqYFVO4ASD6CE4OZiIQqSHRYN6D3PpSdrzqhlUgmScjZuu9Q95ox5MmMyPh%2FCVTbDh7jPO7NVMOf6SzCw0fPh1DA61NyQKgqe7emX9P7INbTwW6MwtmlsQWMw2W8UpqAs826f85SKKdJWe4ncVIqNZvMqyDdQxxDFM6ruK8i6mCDw75cxqMgmnhB6sVhHoQymso48edpes%2FZ1hpnCqPPazwuuo8ojaKaJKoGSLpC7lbXVzLyA7k%2FFpH8ludbb%2Ftjl3N2dwIWDcB6hEhyZPK1Vfvelx8JyjGv%2FaT%2FWq5OiPnyf4A24FSpnPKo%2FQfYhfgU43RV3%2Fu%2Bm%2FXW6Lp4YyutzcuFBeX62wu5WB4lf97e8jc%3D&RelayState=%2Fsaml%2F2%2Fsso%2Funimelb.edu.au%2Fo%2F71685714%2Fc%2Foafed%3FSAMLRequest%3DfZJLT8MwEIT%252FSuR7Y8cJDbWaSoEitRKPqi0cuCDH2baWHDt4HR7%252FnjQFUS6cd3Zm59NOUTamFWUXDnYNrx1giD4aY1EMg4J03gonUaOwsgEUQYlNeXcreMxE611wyhkSlYjgg3b22lnsGvAb8G9aweP6tiCHEFoUlMo%252BJAaD8KbBx8o1dLNYrm%252Fo0Y%252FT1cNmS6J5f4C28mj1u2jcXtvYtdAPDmAxthDo8T7KKaKjndUNmCqGuotlRx3Nk%252FHlRZ5kVFEnd1CTaDkvyEs%252BUZJNJrtLmbKcpZypKkt5XWVyUjGV8l6G2MHSYpA2FIQzfjFi%252BShNtiwRfCzS7JlEq%252B%252FWV9rW2u7%252FR1SdRCgW2%252B1qdOr4BB6Hfr2AzKbHImII9mfo%252F7eVP7zJ7AcS1gNfVBqsglp7UGGAPKVnCae4Vtz3lsv5yhmtPqPSGPd%252B7UEGKEhC6Oy08vctZl8%253D%26RelayState%3Dcookie%253A1753925194_ad1a",
+    "duration": 9.308791
+  },
+  {
+    "name": "Stealth Arguments",
+    "timestamp": "2025-07-31T11:26:37.755640",
+    "success": true,
+    "error": null,
+    "publisher_link_found": true,
+    "final_url": "https://sso.unimelb.edu.au/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml?SAMLRequest=jZLRT9swEMb%2FFcvviZM0TTurKeqo0CrBVtHAAy%2FIdS40mnMOPocBfz1JSjU2aWhvlnzfd9%2Fd7xZnz41hT%2BCotpjzOIw4A9S2rPEh5zfFRTDnjLzCUhmLkHO0%2FGy5INWYVq46f8BreOyAPFsRgfO9y7lF6hpwO3BPtYab68ucH7xvSQph7EONoW0BlT8AUojgxWAmEqE0iQ7rBsw%2BhLILVSeMEuk0jTlb9x3qXjOGPJkR2fAvgWrbwWOcx7%2FYaviznUO4%2F93zPhbw%2FDM9IFSVu13Ta3YXTUw22I1ROLuwTsM4XM4rZQg426z7ZzqrsrSMZlWVpvNSz%2FcwnURJpfdTmOsvZV9F1MEGh335nCdRMg2iWTCJiyiWSSbTLEzi%2BI6zrbPeamu%2B1nhcdB9RWkU1SVQNkPRa7lZXlzIJI7k%2FFpH8VhTbYPtjV3B2ewKWDMB6hEhyZPK5Vfvelx8JyjGv%2B6D%2FXK5OiPnyf4A24FWpvAqo%2FQfYhfgQ43RV3%2Fu%2Bm%2FXWmlq%2FsJUx9te5A%2BX724u5WB4lf97e8g0%3D&RelayState=%2Fsaml%2F2%2Fsso%2Funimelb.edu.au%2Fo%2F71685714%2Fc%2Foafed%3FSAMLRequest%3DfZJBb4JAEIX%252FCtm7LFABsxESq000sa0R20MvzbKMusmyS3cW2%252F77ItTUXjzPm%252FfmfZkp8lo1bNa6o97CRwvovK9aaWT9ICOt1cxwlMg0rwGZE6yYPa5Z5AesscYZYRTxZohgnTR6bjS2NdgC7EkKeNmuM3J0rkFGKe9CfFAIJwnWF6amxXK1faBnv4hunosd8RbdAVLzs9XfojIHqX3TQDc4gkZfg6Pn%252B2hEEQ1ttaxBlT5Urc9bamgaJpM4DcdUUMP3UBFvtcjIO5RlnIx5HI3TKAjKSQUiAS6CfboPwiROOxliCyuNjmuXkSiI4lGQju7CXRCyKGHj%252BI14m9%252FW91JXUh9uIyoHEbLlbrcZDR1fwWLfrxOQfHouwvpge4X%252Bti2%252F8Cb5BRJWPV8UErSASloQroc8pVcJQ1zDnjrL1WJjlBTf3kwp8zm3wB1kJCQ0H1b%252Bv0X%252BAw%253D%253D%26RelayState%3Dcookie%253A1753925205_1a71",
+    "duration": 11.633805
+  },
+  {
+    "name": "Custom User Agent",
+    "timestamp": "2025-07-31T11:26:49.389697",
+    "success": true,
+    "error": null,
+    "publisher_link_found": true,
+    "final_url": "https://sso.unimelb.edu.au/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml?SAMLRequest=jZJdb5swFIb%2FiuV7MDiQMCukyhpVi9RtUUN70ZvKmJPGmrGZj%2Bna%2FvoBWbRu0qpd%2B7wfPs9ZXjy3hjyBR%2B1sSdM4oQSsco22jyW9ra6ighIM0jbSOAsltY5erJYoW9OJdR%2BO9ga%2B94CBrBHBh8Hl0lnsW%2FB78E9awe3NdUmPIXQoGDPuUdvYdWBlOILF2EJgoxnjTCpkvdUtmDqGpo9lz4xkWZ6llGyGBD1oppJnM0QX%2FyWQXTd6TP8JL%2B4wvrneW3j4nfmQMnj%2Blh0tHA7%2BboOv8%2FtkZuaj3VSFkivnFUyfK%2BlBGgRKtpuS1hIUJCorFo3KOM%2BLomg4B1Xz7ENR5%2FNhCrGHrR33FUrKE55HySKapVWSCj4X%2BSJepLN7SnbeBaec%2BajtadFDReEkahRWtoAiKLFff74WPE5EfRpC8amqdtHu676i5O4MjI%2FABoQWxcTkfavuVy49ERRTX%2F9G%2F75cnhHT1f8AbSHIRgYZYfcPsEv2psb5qr4MudvNzhmtXsjaGPfj0oMMw%2B2llK1Okj9vb%2FUT&RelayState=%2Fsaml%2F2%2Fsso%2Funimelb.edu.au%2Fo%2F71685714%2Fc%2Foafed%3FSAMLRequest%3DfZLBbsIwEER%252FJfKdOAkNIRaJRKESSLRFhPbQS2WcBSw5dup1aPv3DUlR6YXzzs7sPO0EeaVqNm3cUW%252FgowF03lelNLJukJHGamY4SmSaV4DMCVZMH1cs8gNWW%252BOMMIp4U0SwTho9MxqbCmwB9iQFvGxWGTk6VyOjlLchPiiEkwTrC1PRYrHcPNCzX0TXz8WWePP2AKn52epvUZmD1L6poR0cQaOvwdHzfTSiiIY2Wlagdj6Ujc8bamgSjsZxEt5RQQ3fQ0m85Twj70EswnSYiDgOeRmPR0Epxvs0TUQaR2LM01aG2MBSo%252BPaZSQKongQJINhuA1CFo1YnLwRb%252F3b%252Bl7qUurDbUS7XoRssd2uB33HV7DY9WsFJJ%252Bci7Au2F6hv23LL7xJfoGEZccXhQQtoJQWhOsgT%252BhVQh9Xs6fWcjlfGyXFtzdVynzOLHAHGQkJzfuV%252F2%252BR%252FwA%253D%26RelayState%3Dcookie%253A1753925217_dfd0",
+    "duration": 11.633086
+  },
+  {
+    "name": "Full Stealth",
+    "timestamp": "2025-07-31T11:27:01.022985",
+    "success": true,
+    "error": null,
+    "publisher_link_found": true,
+    "final_url": "https://sso.unimelb.edu.au/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml?SAMLRequest=jZJdT9swFIb%2FiuX7xE4ams5qijoqtEpsq2jgghvkOCfUmmNnPg4Dfv2SdNUYEmiS7%2Bz3w%2Bc5y%2FOn1pBH8KidLWgSc0rAKldr%2B1DQm%2FIyWlCCQdpaGmehoNbR89USZWs6se7DwV7Dzx4wkDUi%2BDC4XDiLfQt%2BD%2F5RK7i5viroIYQOBWPGPWgbuw6sDAewGFsIbDRjKZMKWW91C6aKoe5j2TMjWXaWJZRshgQ9aKaSJzNEF78RyK4bPab%2FhGfXjHeu9xbu%2F2beJwyefmQHC03jbzf4Mr%2FjMzMf7aYqlFw6r2D6XEEbaRAo2W4KWkGWKL5QdVZXmVTDUYumzue5rHiT82FQW8QetnacVyhoytOziOfRLCl5ItJc8E9xMpvdUbLzLjjlzGdtj4MeKgonUaOwsgUUQYn9%2BuuVSGMuquMjFF%2FKchftvu9LSm5PwNIR2IDQopiYfGzV%2FcmlR4Ji6utf6T%2BWyxNiuvofoC0EWcsgI%2BzeAbtkr2qcturbkLvd7JzR6pmsjXG%2FLjzIMOxeQtnqKPl391a%2FAQ%3D%3D&RelayState=%2Fsaml%2F2%2Fsso%2Funimelb.edu.au%2Fo%2F71685714%2Fc%2Foafed%3FSAMLRequest%3DfZLNbsIwEIRfJfKd2AmkoRZBSqESSLRFQHvopTLOBiw5dup1%252BvP2TUJR6YXzzs7sfNoJikrXPG%252F80WzgvQH0wVelDfJ%252BkJHGGW4FKuRGVIDcS77NH1Y8DhmvnfVWWk2CHBGcV9bMrMGmArcF96EkPG9WGTl6XyOnVLQhIWiEDwUulLai28Vyc087v5iun7Y7EszbA5QRndXforYHZUJbQzs4gsHQgKfdfTSmiJY2RlWg9yEUTSgaamka3YyTNBpRSa0ooSDBcp6RN5aOgA1lOpJxylgixb5gshwnopQiuS33rQyxgaVBL4zPSMziZMDSwTDasYjHKWfjVxKsf1vfKVMoc7iOaH8SIV%252FsduvBqeMLOOz7tQIynXRFeB%252FsLtBftxVn3mR6hoRFzxelAiOhUA6k7yFP6EXCKa7mj63lcr62WsnvINfafs4cCA8ZiQidnlb%252Bv8X0Bw%253D%253D%26RelayState%3Dcookie%253A1753925228_1d79",
+    "duration": 11.350957
+  },
+  {
+    "name": "JavaScript Stealth",
+    "timestamp": "2025-07-31T11:27:12.374122",
+    "success": true,
+    "error": null,
+    "publisher_link_found": false,
+    "final_url": null
+  },
+  {
+    "name": "Headful Browser",
+    "timestamp": "2025-07-31T11:27:16.544629",
+    "success": true,
+    "error": null,
+    "publisher_link_found": true,
+    "final_url": "https://sso.unimelb.edu.au/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml?SAMLRequest=jZJBb9swDIX%2FiqB7LFt2YkeIU6QNigXotqBxe%2BiloB2mMSpLnih37X79bGfBugErdhMgvsdHflxcvDaavaCj2pqcR0HIGZrK7mvzlPO74nqScUYezB60NZhzY%2FnFckHQ6FatOn80t%2FitQ%2FJsRYTO9y5X1lDXoNuhe6krvLu9yfnR%2B5aUENo%2B1SawLRrwRzQUGPRiMBNSQEWiM3WDugxw3wXQCQ0imSYRZ%2Bu%2BQ91rxpBnMyIb%2FCWAth08xnn8mz0Mf7ZzBh9%2F93yMBL4%2BJ0eDh4O7X9OP2UMY69lgN0bh7Nq6Csfhcn4ATcjZZp1zgBKiLA2naZkmcTKfx7KU8%2F6VzbJYhtBXEXW4McO%2BfM5lKKeTMJ3EURFGSqZKJkGYpQ%2BcbZ31trL6sjanRfcRlQWqSRlokJSv1G71%2BUbJIFTlqYjUp6LYTrZfdwVn92dgcgDWIzSkRiYfW7W%2F%2BvITQTXmde%2F0H8vhjJgv%2Fwdogx724GFC7T%2FALsS7GOer%2BtL33ay3VtfVG1tpbb9fOQTf317ExfIk%2BfP2lj8B&RelayState=%2Fsaml%2F2%2Fsso%2Funimelb.edu.au%2Fo%2F71685714%2Fc%2Foafed%3FSAMLRequest%3DfZLBbsIwEER%252FJfKdOHGAUIsgUagEEm0RoT30UjnOApYcO%252FU6tP37hlBUeuG8szM7TztGUemaTxt%252FMBv4aAB98FVpg7wbZKRxhluBCrkRFSD3kufTxxVnYcRrZ72VVpNgigjOK2tm1mBTgcvBHZWEl80qIwfva%252BSUijYkBI1wVOBCaSuaL5abB3ryY3T9nG9JMG8PUEacrP4Wtd0rE9oa2sEBDIYGPD3dRxlFtLQxqgJdhFA2oWiopWk8HA3SuE8ltWIHJQmW84y8D3d3IhmUwHYsSaUoIpaCFIO0PxoWJYtlK0NsYGnQC%252BMzwiI26EVpL4m3UcxZylnyRoL1b%252Bt7ZUpl9rcRFWcR8sV2u%252B6dO76Cw65fKyCT8akI74LdFfrbtuLCm0wukLDs%252BKJUYCSUyoH0HeQxvUo4x9X8qbVcztdWK%252FkdTLW2nzMHwkNGYkIn55X%252FbzH5AQ%253D%253D%26RelayState%3Dcookie%253A1753925243_049f",
+    "duration": 10.758706
+  },
+  {
+    "name": "Human-like Delays",
+    "timestamp": "2025-07-31T11:27:27.303500",
+    "success": true,
+    "error": null,
+    "publisher_link_found": false,
+    "final_url": null
+  },
+  {
+    "name": "Scholar Module (Current Implementation)",
+    "timestamp": "2025-07-31T11:27:36.601272",
+    "success": false,
+    "error": "ScholarConfig.__init__() got an unexpected keyword argument 'enable_zenrows'",
+    "publisher_link_found": false,
+    "final_url": null
+  }
+]

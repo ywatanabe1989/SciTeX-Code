@@ -217,22 +217,26 @@ class Paper:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from ._MetadataEnricher import JCR_YEAR
+            from .enrichment._MetadataEnricher import JCR_YEAR
 
             if self.impact_factor is not None:
                 # Only add if it's a real value (not 0.0)
                 if self.impact_factor > 0:
                     lines.append(
-                        f"  JCR_{JCR_YEAR}_impact_factor = {{{self.impact_factor}}},"
+                        f"  impact_factor = {{{self.impact_factor}}},"
                     )
-                    if self.impact_factor_source:
-                        lines.append(
-                            f"  impact_factor_source = {{{self.impact_factor_source}}},"
-                        )
+                    # Add impact factor source as JCR_YEAR
+                    lines.append(
+                        f"  impact_factor_source = {{JCR_{JCR_YEAR}}},"
+                    )
 
             if self.journal_quartile and self.journal_quartile != "Unknown":
                 lines.append(
-                    f"  JCR_{JCR_YEAR}_quartile = {{{self.journal_quartile}}},"
+                    f"  journal_quartile = {{{self.journal_quartile}}},"
+                )
+                # Add quartile source
+                lines.append(
+                    f"  quartile_source = {{JCR_{JCR_YEAR}}},"
                 )
                 quartile_source = self.metadata.get("quartile_source")
                 if quartile_source:

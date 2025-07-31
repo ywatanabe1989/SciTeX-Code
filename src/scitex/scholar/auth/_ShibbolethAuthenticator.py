@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 12:22:27 (ywatanabe)"
+# Timestamp: "2025-07-31 20:03:40 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_ShibbolethAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,15 +18,17 @@ This module provides authentication through Shibboleth single sign-on
 to enable legal PDF downloads via institutional subscriptions.
 """
 
-from scitex import logging
 import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
+from scitex import logging
+
 from ...errors import ScholarError, SciTeXWarning
 from ._BaseAuthenticator import BaseAuthenticator
+
 # from ._CacheManager import CacheManager  # Removed - not needed for placeholder
 
 logger = logging.getLogger(__name__)
@@ -64,6 +66,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         cache_dir: Optional[Path] = None,
         timeout: int = 120,
         debug_mode: bool = False,
+        **kwargs,
     ):
         """
         Initialize Shibboleth authenticator.
@@ -99,7 +102,9 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         #     email=username,
         #     cache_dir=cache_dir,
         # )
-        self.cache_dir = cache_dir or Path.home() / ".scitex" / "scholar" / "shibboleth"
+        self.cache_dir = (
+            cache_dir or Path.home() / ".scitex" / "scholar" / "shibboleth"
+        )
 
         # Session management
         self._cookies: Dict[str, str] = {}

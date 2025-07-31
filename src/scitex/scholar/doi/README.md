@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-27 18:45:14
+!-- Timestamp: 2025-08-01 01:51:28
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/README.md
 !-- --- -->
@@ -62,17 +62,7 @@ title_to_doi("Deep learning")
 ### Command Line
 
 ```bash
-# Basic usage
-python -m scitex.scholar.doi._DOIResolver "Deep learning in neural networks: An overview"
-
-# With year
-python -m scitex.scholar.doi._DOIResolver "Deep learning in neural networks: An overview" --year 2015
-
-# Specify sources
-python -m scitex.scholar.doi._DOIResolver "Nature of consciousness" --sources crossref pubmed
-
-# Get abstract
-python -m scitex.scholar.doi._DOIResolver "Nature of consciousness" --abstract
+python -m scitex.scholar.resolve_dois --title "Attention is All You Need"
 ```
 
 ### Python API

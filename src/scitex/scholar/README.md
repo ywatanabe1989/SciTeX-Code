@@ -1,8 +1,9 @@
 <!-- ---
-!-- Timestamp: 2025-07-25 13:30:42
+!-- Timestamp: 2025-08-01 01:57:32
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
+
 
 # SciTeX Scholar
 

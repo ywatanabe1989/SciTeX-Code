@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "started_at": "2025-08-01T02:38:12.301526",
+  "last_updated": "2025-08-01T02:38:14.674119",
+  "completed": true,
+  "papers": {
+    "quantification of phase-amplitude coupling in neuronal oscillations: comparison of phase-locking value, mean vector length, modulation index, and generalized-linear-modeling-cross-frequency-coupling_2019_mareike j. h{\\\"u}lsemann": {
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations: Comparison of Phase-Locking Value, Mean Vector Length, Modulation Index, and Generalized-Linear-Modeling-Cross-Frequency-Coupling",
+      "doi": "10.3389/fnins.2019.00573",
+      "status": "resolved",
+      "timestamp": "2025-08-01T02:38:13.587911"
+    },
+    "the functional role of cross-frequency coupling_2010_r. canolty": {
+      "title": "The functional role of cross-frequency coupling",
+      "doi": "10.1016/j.tics.2010.09.001",
+      "status": "resolved",
+      "timestamp": "2025-08-01T02:38:14.249008"
+    },
+    "discriminating valid from spurious indices of phase-amplitude coupling_2016_o. jensen": {
+      "title": "Discriminating Valid from Spurious Indices of Phase-Amplitude Coupling",
+      "doi": "10.1523/eneuro.0334-16.2016",
+      "status": "resolved",
+      "timestamp": "2025-08-01T02:38:14.673512"
+    }
+  },
+  "statistics": {
+    "total": 3,
+    "processed": 3,
+    "resolved": 3,
+    "failed": 0,
+    "skipped": 0,
+    "rate_limited": 0
+  },
+  "rate_limit_info": {
+    "last_request_time": 1753979894.2496102,
+    "requests_in_window": 3,
+    "window_start": 1753979892.3044813
+  },
+  "completed_at": "2025-08-01T02:38:14.674108",
+  "duration_seconds": 2.372570514678955
+}

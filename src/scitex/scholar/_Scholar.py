@@ -724,19 +724,6 @@ class Scholar:
 
         return collection
 
-    def enrich_bibtex(self, *args, **kwargs) -> Papers:
-        """
-        Backward compatibility alias for enrich_bibtex.
-
-        .. deprecated::
-            Use enrich_bibtex() instead.
-        """
-        warnings.warn(
-            "enrich_bibtex() is deprecated, use enrich_bibtex() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.enrich_bibtex(*args, **kwargs)
 
     def _bibtex_entry_to_paper(self, entry: Dict[str, Any]) -> Optional[Paper]:
         """
@@ -878,10 +865,29 @@ class Scholar:
                 "Using batch processing for efficient DOI resolution..."
             )
 
-            # Process all papers in batch
-            enhanced_data = self._batch_resolver.enhance_papers_parallel(
-                papers_to_update, show_progress=True
-            )
+            # Extract titles and years for batch resolution
+            titles = []
+            years = []
+            for paper in papers_to_update:
+                if not paper.doi:  # Only resolve if DOI is missing
+                    titles.append(paper.title)
+                    years.append(paper.year)
+            
+            # Batch resolve DOIs
+            if titles:
+                doi_results = self._doi_resolver.batch_resolve(
+                    titles=titles, 
+                    years=years,
+                    show_progress=True
+                )
+                
+                # Update papers with resolved DOIs
+                for paper in papers_to_update:
+                    if not paper.doi and paper.title in doi_results:
+                        resolved_doi = doi_results[paper.title]
+                        if resolved_doi:
+                            paper.doi = resolved_doi
+                            logger.info(f"  ✓ Found DOI for: {paper.title[:50]}... -> {resolved_doi}")
 
             # Update URLs if needed
             for paper in papers_to_update:
@@ -894,6 +900,13 @@ class Scholar:
                     logger.info(
                         f"  ✓ Updated URL to DOI link for: {paper.title[:50]}..."
                     )
+                
+                # Fetch abstracts if needed
+                if paper.doi and fetch_abstracts and not paper.abstract:
+                    abstract = self._doi_resolver.get_abstract(paper.doi)
+                    if abstract:
+                        paper.abstract = abstract
+                        logger.info(f"  ✓ Found abstract for: {paper.title[:50]}...")
 
         else:
             # Single paper - use regular resolver

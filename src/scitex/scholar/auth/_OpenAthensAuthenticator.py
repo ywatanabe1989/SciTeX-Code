@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 09:49:26 (ywatanabe)"
+# Timestamp: "2025-07-31 20:21:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -30,9 +30,8 @@ from playwright.async_api import Browser, Page, async_playwright
 from scitex import logging
 
 from ...errors import ScholarError
-from ..browser._BrowserMixin import BrowserMixin
+from ..browser.local._BrowserMixin import BrowserMixin
 from ._BaseAuthenticator import BaseAuthenticator
-# from ._CacheManager import CacheManager  # Removed - functionality integrated
 
 logger = logging.getLogger(__name__)
 
@@ -57,12 +56,10 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
 
     def __init__(
         self,
-        email: Optional[str] = None,
+        email: Optional[str] = os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"),
         cache_dir: Optional[Path] = None,
         timeout: int = 300,
         debug_mode: bool = False,
-        browser_backend: str = "local",
-        zenrows_api_key: Optional[str] = None,
         proxy_country: str = "us",
     ):
         """Initialize OpenAthens authenticator.
@@ -72,31 +69,32 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             cache_dir: Directory for session cache
             timeout: Authentication timeout in seconds
             debug_mode: Enable debug logging
-            browser_backend: Browser backend - "local" or "zenrows"
-            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
-            proxy_country: Country code for ZenRows proxy
         """
         BaseAuthenticator.__init__(
             self, config={"email": email, "debug_mode": debug_mode}
         )
-        BrowserMixin.__init__(self, browser_backend, zenrows_api_key, proxy_country)
+        # Always show browser for manual authentication
+        BrowserMixin.__init__(
+            self,
+            headless=False,
+        )
 
         self.email = email
         self.myathens_url = "https://my.openathens.net/?passiveLogin=false"
         self.timeout = timeout
         self.debug_mode = debug_mode
-        self.headless = False  # Always show browser for authentication
 
         # Cache management (integrated directly)
         import hashlib
+
         base_dir = cache_dir or Path.home() / ".scitex" / "scholar"
         email_hash = hashlib.md5(email.lower().encode()).hexdigest()[:8]
         identifier = f"user_{email_hash}"
-        
+
         self.cache_dir = base_dir / identifier
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         os.chmod(self.cache_dir, 0o700)
-        
+
         self.cache_file = self.cache_dir / "openathens_session.json"
         self.lock_file = self.cache_dir / f"openathens_{identifier}_auth.lock"
 
@@ -276,7 +274,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
         # Load session from cache if not already loaded
         if not self._cookies and not self._session_expiry:
             await self._load_session_cache()
-        
+
         # First do quick local checks
         if not self._cookies or not self._session_expiry:
             logger.debug("No cookies or session expiry found")
@@ -290,6 +288,8 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
 
         # If live verification requested, do actual check
         if verify_live:
+            if self._recently_live_verified():
+                return True
             return await self._verify_authentication_live()
 
         return True
@@ -326,7 +326,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
                     for path in ["/account", "/app", "/library"]
                 ):
                     await browser.close()
-                    logger.info(
+                    logger.success(
                         f"Verified live authentication at {current_url}"
                     )
                     return True
@@ -356,14 +356,14 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
             raise OpenAthensError("Not authenticated")
         return self._full_cookies
 
-    async def logout(self) -> None:
+    async def logout(self, clear_cache=False) -> None:
         """Log out and clear authentication state."""
         self._cookies = {}
         self._full_cookies = []
         self._session_expiry = None
 
         # Clear cache
-        if self.cache_file.exists():
+        if self.cache_file.exists() and clear_cache:
             self.cache_file.unlink()
 
         logger.info("Logged out from OpenAthens")
@@ -462,9 +462,7 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
     async def _load_session_cache(self):
         """Load session cookies from cache."""
         if not self.cache_file.exists():
-            logger.debug(
-                f"No session cache found at {self.cache_file}"
-            )
+            logger.debug(f"No session cache found at {self.cache_file}")
             return
 
         try:
@@ -512,20 +510,15 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
 async def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="OpenAthens Authentication")
-    parser.add_argument("--email", required=True, help="Institutional email")
-    parser.add_argument(
-        "--force", action="store_true", help="Force re-authentication"
-    )
-    args = parser.parse_args()
-
-    auth = OpenAthensAuthenticator(email=args.email)
-    result = await auth.authenticate(force=args.force)
+    auth = OpenAthensAuthenticator()
+    result = await auth.authenticate(force=False)
 
 
 if __name__ == "__main__":
     import asyncio
 
     asyncio.run(main())
+
+# python -m scitex.scholar.auth._OpenAthensAuthenticator
 
 # EOF

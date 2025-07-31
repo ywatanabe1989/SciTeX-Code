@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 12:23:52 (ywatanabe)"
+# Timestamp: "2025-07-31 20:03:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_EZProxyAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,14 +18,16 @@ This module provides authentication through EZProxy systems
 to enable legal PDF downloads via institutional subscriptions.
 """
 
-from scitex import logging
 import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from scitex import logging
+
 from ...errors import ScholarError, SciTeXWarning
 from ._BaseAuthenticator import BaseAuthenticator
+
 # from ._CacheManager import CacheManager  # Removed - not needed for placeholder
 
 logger = logging.getLogger(__name__)
@@ -61,6 +63,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
         cache_dir: Optional[Path] = None,
         timeout: int = 60,
         debug_mode: bool = False,
+        **kwargs,
     ):
         """
         Initialize EZProxy authenticator.
@@ -94,7 +97,9 @@ class EZProxyAuthenticator(BaseAuthenticator):
         #     email=username,
         #     cache_dir=cache_dir,
         # )
-        self.cache_dir = cache_dir or Path.home() / ".scitex" / "scholar" / "ezproxy"
+        self.cache_dir = (
+            cache_dir or Path.home() / ".scitex" / "scholar" / "ezproxy"
+        )
 
         # Session management
         self._cookies: Dict[str, str] = {}

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-31 05:26:03
+!-- Timestamp: 2025-07-31 23:43:15
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/README.md
 !-- --- -->
@@ -123,13 +123,13 @@ resolver = OpenURLResolver(
 
 # DOIs to resolve
 dois = [
-    "10.1002/hipo.22488",
     "10.1038/nature12373",
     "10.1016/j.neuron.2018.01.048",
     "10.1126/science.1172133",
     "10.1073/pnas.0608765104",
 ]
 
+#    "10.1002/hipo.22488",
 # # Resolve single DOI
 # result = resolver._resolve_single(doi=dois[0])
 

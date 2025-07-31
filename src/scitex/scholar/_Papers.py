@@ -1176,19 +1176,17 @@ class Papers:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from ._MetadataEnricher import JCR_YEAR
+            from .enrichment._MetadataEnricher import JCR_YEAR
 
             if paper.impact_factor is not None and paper.impact_factor > 0:
-                fields[f"JCR_{JCR_YEAR}_impact_factor"] = str(
-                    paper.impact_factor
-                )
-                if paper.impact_factor_source:
-                    fields["impact_factor_source"] = paper.impact_factor_source
+                fields["impact_factor"] = str(paper.impact_factor)
+                # Add impact factor source as JCR_YEAR
+                fields["impact_factor_source"] = f"JCR_{JCR_YEAR}"
 
             if paper.journal_quartile and paper.journal_quartile != "Unknown":
-                fields[f"JCR_{JCR_YEAR}_quartile"] = paper.journal_quartile
-                if paper.metadata.get("quartile_source"):
-                    fields["quartile_source"] = paper.metadata.get("quartile_source")
+                fields["journal_quartile"] = paper.journal_quartile
+                # Add quartile source as JCR_YEAR
+                fields["quartile_source"] = f"JCR_{JCR_YEAR}"
 
             if paper.citation_count is not None:
                 fields["citation_count"] = str(paper.citation_count)

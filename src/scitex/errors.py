@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-12 10:18:39 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/errors.py
+# Timestamp: "2025-07-31 19:05:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/errors.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/errors.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/errors.py"
 
 """
 1. Functionality:
@@ -257,7 +256,7 @@ class TranslatorError(ScholarError):
 class AuthenticationError(ScholarError):
     """Raised when authentication fails."""
 
-    def __init__(self, provider: str, reason: str):
+    def __init__(self, provider: str, reason: str = ""):
         super().__init__(
             f"Authentication failed for {provider}: {reason}",
             context={"provider": provider, "reason": reason},

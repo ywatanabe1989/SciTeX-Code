@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 09:48:31 (ywatanabe)"
+# Timestamp: "2025-07-31 19:43:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticatedBrowserMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,12 +11,12 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from scitex import logging
-
 import aiohttp
 from playwright.async_api import Browser, BrowserContext
 
-from ..browser._BrowserMixin import BrowserMixin
+from scitex import logging
+
+from ..browser.local._BrowserMixin import BrowserMixin
 
 logger = logging.getLogger(__name__)
 

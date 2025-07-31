@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 10:49:34 (ywatanabe)"
+# Timestamp: "2025-08-01 01:36:06 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,9 +18,10 @@ This module manages different authentication methods and provides a unified
 interface for authentication operations.
 """
 
-"""Imports"""
-from scitex import logging
+
 from typing import Any, Dict, List, Optional
+
+from scitex import logging
 
 from ...errors import AuthenticationError
 from ._BaseAuthenticator import BaseAuthenticator
@@ -28,10 +29,7 @@ from ._EZProxyAuthenticator import EZProxyAuthenticator
 from ._OpenAthensAuthenticator import OpenAthensAuthenticator
 from ._ShibbolethAuthenticator import ShibbolethAuthenticator
 
-"""Logger"""
 logger = logging.getLogger(__name__)
-
-"""Classes"""
 
 
 class AuthenticationManager:
@@ -44,32 +42,39 @@ class AuthenticationManager:
 
     def __init__(
         self,
-        email_openathens: Optional[str] = None,
-        email_ezproxy: Optional[str] = None,
-        email_shibboleth: Optional[str] = None,
-        browser_backend: str = "local",
-        zenrows_api_key: Optional[str] = None,
-        proxy_country: str = "us",
+        email_openathens: Optional[str] = os.getenv(
+            "SCITEX_SCHOLAR_OPENATHENS_EMAIL"
+        ),
+        email_ezproxy: Optional[str] = os.getenv(
+            "SCITEX_SCHOLAR_EZPROXY_EMAIL"
+        ),
+        email_shibboleth: Optional[str] = os.getenv(
+            "SCITEX_SCHOLAR_SHIBBOLETH_EMAIL"
+        ),
     ):
         """Initialize the authentication manager.
 
         Args:
-            email: User's institutional email for authentication
-            browser_backend: Browser backend - "local" or "zenrows"
-            zenrows_api_key: API key for ZenRows (required if backend="zenrows")
-            proxy_country: Country code for ZenRows proxy
+            email_openathens: User's institutional email for OpenAthens authentication
+            email_ezproxy: User's institutional email for EZProxy authentication
+            email_shibboleth: User's institutional email for Shibboleth authentication
         """
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
+        if not any([email_openathens, email_ezproxy, email_shibboleth]):
+            logger.warning(
+                "No authentication provider configured. "
+                "Set SCITEX_SCHOLAR_OPENATHENS_EMAIL or other provider email."
+            )
+            return
+
         if email_openathens:
             self._register_provider(
-                "openathens", OpenAthensAuthenticator(
+                "openathens",
+                OpenAthensAuthenticator(
                     email=email_openathens,
-                    browser_backend=browser_backend,
-                    zenrows_api_key=zenrows_api_key,
-                    proxy_country=proxy_country,
-                )
+                ),
             )
         if email_ezproxy:
             self._register_provider(
@@ -90,9 +95,10 @@ class AuthenticationManager:
             )
 
         self.providers[name] = provider
+        logger.info(f"Registered authentication provider: {name}")
+
         if not self.active_provider:
             self.active_provider = name
-        logger.info(f"Registered authentication provider: {name}")
 
     def set_active_provider(self, name: str) -> None:
         """
@@ -247,5 +253,53 @@ class AuthenticationManager:
             List of provider names
         """
         return list(self.providers.keys())
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        import os
+
+        import aiohttp
+        from yarl import URL
+
+        auth_manager = AuthenticationManager(
+            email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"),
+        )
+
+        providers = auth_manager.list_providers()
+        print(f"Available providers: {providers}")
+
+        try:
+            is_authenticated = await auth_manager.ensure_authenticated()
+            print(f"Authentication ensured: {is_authenticated}")
+
+            headers = await auth_manager.get_auth_headers()
+            cookies = await auth_manager.get_auth_cookies()
+            print(f"Got {len(headers)} headers and {len(cookies)} cookies")
+
+            jar = aiohttp.CookieJar()
+            for cookie in cookies:
+                domain = cookie.get("domain", "").lstrip(".")
+                url = URL(f"https://{domain}")
+                jar.update_cookies(
+                    {cookie["name"]: cookie["value"]}, response_url=url
+                )
+
+            async with aiohttp.ClientSession(
+                cookie_jar=jar, headers=headers
+            ) as session:
+                test_url = "https://my.openathens.net/account"
+                async with session.get(test_url, timeout=10) as response:
+                    print(f"Test access: {test_url} -> {response.status}")
+
+        finally:
+            await auth_manager.logout()
+            print("Logged out from all providers")
+
+    asyncio.run(main())
+
+# python -m scitex.scholar.auth._AuthenticationManager
 
 # EOF

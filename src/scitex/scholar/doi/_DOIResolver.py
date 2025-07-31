@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 00:31:37 (ywatanabe)"
+# Timestamp: "2025-08-01 01:36:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -62,11 +62,13 @@ class DOIResolver:
     def __init__(
         self,
         config: Optional[Any] = None,
-        email_crossref: str = None,
-        email_pubmed: str = None,
-        email_openalex: str = None,
-        email_semantic_scholar: str = None,
-        email_arxiv: str = None,
+        email_crossref: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
+        email_pubmed: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
+        email_openalex: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
+        email_semantic_scholar: str = os.getenv(
+            "SCITEX_SCHOLAR_CROSSREF_EMAIL"
+        ),
+        email_arxiv: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
         sources: Optional[List[str]] = None,
     ):
         """Initialize resolver with specified sources.
@@ -85,37 +87,16 @@ class DOIResolver:
 
         if config:
             self.email_crossref = getattr(
-                config,
-                "crossref_email",
-                email_crossref
-                or os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL", default_email),
+                config, "crossref_email", email_crossref
             )
-            self.email_pubmed = getattr(
-                config,
-                "pubmed_email",
-                email_pubmed
-                or os.getenv("SCITEX_SCHOLAR_PUBMED_EMAIL", default_email),
-            )
+            self.email_pubmed = getattr(config, "pubmed_email", email_pubmed)
             self.email_openalex = getattr(
-                config,
-                "openalex_email",
-                email_openalex
-                or os.getenv("SCITEX_SCHOLAR_OPENALEX_EMAIL", default_email),
+                config, "openalex_email", email_openalex
             )
             self.email_semantic_scholar = getattr(
-                config,
-                "semantic_scholar_email",
-                email_semantic_scholar
-                or os.getenv(
-                    "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_EMAIL", default_email
-                ),
+                config, "semantic_scholar_email", email_semantic_scholar
             )
-            self.email_arxiv = getattr(
-                config,
-                "arxiv_email",
-                email_arxiv
-                or os.getenv("SCITEX_SCHOLAR_ARXIV_EMAIL", default_email),
-            )
+            self.email_arxiv = getattr(config, "arxiv_email", email_arxiv)
         else:
             self.email_crossref = email_crossref or os.getenv(
                 "SCITEX_SCHOLAR_CROSSREF_EMAIL", default_email
@@ -201,6 +182,7 @@ class DOIResolver:
     #             )
 
     #     return None
+
     async def title_to_doi_async(
         self,
         title: str,
@@ -263,6 +245,7 @@ class DOIResolver:
     #     except Exception as e:
     #         logger.debug(f"Error searching {source.name}: {e}")
     #         return None
+
     async def _search_source_async(
         self,
         source: BaseDOISource,
@@ -624,66 +607,22 @@ class DOIResolver:
         return None
 
 
-async def main():
-    import argparse
-
-    parser = argparse.ArgumentParser(description="DOI Resolver")
-    parser.add_argument("title", help="Paper title to resolve")
-    parser.add_argument("--year", type=int, help="Publication year")
-    parser.add_argument(
-        "--email", default="research@example.com", help="Email for API access"
-    )
-    parser.add_argument(
-        "--sources",
-        nargs="+",
-        choices=["crossref", "pubmed", "openalex", "semantic_scholar"],
-        help="Sources to use",
-    )
-    parser.add_argument(
-        "--abstract", action="store_true", help="Also fetch abstract"
-    )
-
-    args = parser.parse_args()
-
-    # Initialize resolver
-    # If email is provided, use it for all sources
-    email_kwargs = {}
-    if args.email:
-        email_kwargs = {
-            'email_crossref': args.email,
-            'email_pubmed': args.email,
-            'email_openalex': args.email,
-            'email_semantic_scholar': args.email,
-            'email_arxiv': args.email
-        }
-    
-    resolver = DOIResolver(sources=args.sources, **email_kwargs)
-
-    # Resolve DOI
-    print(f"Searching for: {args.title}")
-    if args.year:
-        print(f"Year: {args.year}")
-
-    doi = resolver.title_to_doi(args.title, year=args.year)
-
-    if doi:
-        print(f"\nFound DOI: {doi}")
-        print(f"URL: https://doi.org/{doi}")
-
-        # Get abstract if requested
-        if args.abstract:
-            abstract = resolver.get_abstract(doi)
-            if abstract:
-                print(f"\nAbstract:\n{abstract}")
-            else:
-                print("\nNo abstract found")
-    else:
-        print("\nNo DOI found")
-
-
 if __name__ == "__main__":
     import asyncio
 
+    async def main():
+        resolver = DOIResolver()
+        title = "Attention is All You Need"
+        doi = await resolver.title_to_doi_async(title)
+        if doi:
+            print(f"\nFound DOI: {doi}")
+            print(f"URL: https://doi.org/{doi}")
+        else:
+            print("\nNo DOI found")
+
     asyncio.run(main())
+
+
+# python -m scitex.scholar.doi._DOIResolver
 
 # EOF

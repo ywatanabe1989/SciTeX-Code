@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-30 23:02:37 (ywatanabe)"
+# Timestamp: "2025-07-31 21:01:05 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,15 +11,15 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
+import asyncio
 import random
 from typing import List, Union
 
 from scitex import logging
 
-"""OpenURL resolver for finding full-text access through institutional libraries.
-Based on University of Melbourne library recommendation."""
+"""OpenURL resolver for finding full-text access through institutional libraries."""
 
-import asyncio
+
 from typing import Any, Dict, Optional
 from urllib.parse import urlencode
 
@@ -65,11 +65,15 @@ class OpenURLResolver:
     ]
 
     def __init__(
-        self, 
-        auth_manager, 
-        resolver_url,
-        zenrows_api_key: Optional[str] = None,
-        proxy_country: str = "us",
+        self,
+        auth_manager,
+        resolver_url=os.getenv("SCITEX_SCHOLAR_OPENURL_RESOLVER_URL"),
+        zenrows_api_key: Optional[str] = os.getenv(
+            "SCITEX_SCHOLAR_ZENROWS_API_KEY"
+        ),
+        proxy_country: Optional[str] = os.getenv(
+            "SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY", "us"
+        ),
     ):
         """Initialize OpenURL resolver.
 
@@ -82,45 +86,33 @@ class OpenURLResolver:
         """
         self.auth_manager = auth_manager
         self.resolver_url = resolver_url
-        
-        # Get ZenRows API key from parameter or environment
-        zenrows_key = zenrows_api_key or os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
-        
-        # Auto-select backend based on API key presence
-        if zenrows_key:
-            # Check if we should use the local stealth browser
-            use_local_stealth = os.getenv("SCITEX_SCHOLAR_ZENROWS_USE_LOCAL_BROWSER", "true").lower() == "true"
-            
-            if use_local_stealth:
-                # Initialize local browser with ZenRows stealth proxy
-                logger.info("Using local browser with ZenRows stealth proxy")
-                from ..browser._ZenRowsStealthyLocal import ZenRowsStealthyLocal
-                self.browser = ZenRowsStealthyLocal(
-                    headless=False,  # Show browser for manual auth
-                    zenrows_api_key=zenrows_key,
-                    use_residential=True,
-                    country=proxy_country
-                )
-                self.use_stealth_browser = True
-            else:
-                # Use remote ZenRows browser
-                logger.info("Using ZenRows remote browser")
-                self.browser = BrowserManager(
-                    auth_manager,
-                    backend="zenrows",
-                    zenrows_api_key=zenrows_key,
-                    proxy_country=proxy_country,
-                )
-                self.use_stealth_browser = False
+        self.zenrows_api_key = zenrows_api_key
+
+        # Prioritize ZenRows stealth when API key present
+        if self.zenrows_api_key:
+            logger.info(
+                "Using ZenRows stealth browser for anti-bot protection"
+            )
+            from ..browser.local._ZenRowsBrowserManager import (
+                ZenRowsBrowserManager,
+            )
+
+            self.browser = ZenRowsBrowserManager(
+                auth_manager=auth_manager,
+                headless=False,  # Show for manual auth
+                proxy_username=os.getenv(
+                    "SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME"
+                ),
+                proxy_password=os.getenv(
+                    "SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD"
+                ),
+            )
+            self.use_zenrows = True
         else:
             # Standard local browser
-            logger.info("Using standard local browser")
-            self.browser = BrowserManager(
-                auth_manager,
-                backend="local"
-            )
-            self.use_stealth_browser = False
-            
+            self.browser = BrowserManager(auth_manager, backend="local")
+            self.use_zenrows = False
+
         self.timeout = 30
         self._link_finder = ResolverLinkFinder()
 
@@ -254,35 +246,26 @@ class OpenURLResolver:
 
         self.__init__(self.auth_manager, self.resolver_url)
 
-        if not self.resolver_url:
-            logger.warning("No OpenURL resolver URL configured")
-            return None
         if not doi:
             logger.warning("DOI is required for reliable resolution")
 
         # Create fresh context for each resolution
-        if self.use_stealth_browser:
-            # Using ZenRowsStealthyLocal - need to pass auth cookies
+        if self.use_zenrows:
             browser = await self.browser.get_browser()
-            
-            # Get authentication cookies from auth_manager
             cookies = None
-            if self.auth_manager:
-                try:
-                    # Check if authenticated
-                    if await self.auth_manager.is_authenticated():
-                        cookies = await self.auth_manager.get_auth_cookies()
-                        logger.info(f"Retrieved {len(cookies)} authentication cookies")
-                    else:
-                        logger.warning("Not authenticated - no cookies to transfer")
-                except Exception as e:
-                    logger.warning(f"Could not retrieve auth cookies: {e}")
-            
-            # Create context with cookies
-            context = await self.browser.new_context(cookies=cookies)
+            if (
+                self.auth_manager
+                and await self.auth_manager.is_authenticated()
+            ):
+                cookies = await self.auth_manager.get_auth_cookies()
+                logger.info(f"Retrieved {len(cookies)} authentication cookies")
+
+            # Use standard browser context creation for ZenRows
+            context = await browser.new_context()
+            if cookies:
+                await context.add_cookies(cookies)
             page = await context.new_page()
         else:
-            # Using standard BrowserManager
             browser, context = await self.browser.get_authenticated_context()
             page = await context.new_page()
 
@@ -300,13 +283,15 @@ class OpenURLResolver:
             await page.goto(
                 openurl, wait_until="domcontentloaded", timeout=30000
             )
-            
+
             # Apply stealth behaviors if using standard browser
-            if not self.use_stealth_browser and hasattr(self.browser, 'stealth_manager'):
+            if not self.use_zenrows and hasattr(
+                self.browser, "stealth_manager"
+            ):
                 await self.browser.stealth_manager.human_delay()
                 await self.browser.stealth_manager.human_mouse_move(page)
                 await self.browser.stealth_manager.human_scroll(page)
-            
+
             await page.wait_for_timeout(2000)
 
             current_url = page.url
@@ -464,6 +449,7 @@ class OpenURLResolver:
 
     def _resolve_single(self, **kwargs) -> str:
         """Synchronous wrapper for _resolve_single_async."""
+        import asyncio
         try:
             # Try to get existing loop
             loop = asyncio.get_running_loop()
@@ -547,25 +533,29 @@ class OpenURLResolver:
     def _validate_final_url(self, doi, result):
         if result and result.get("success"):
             final_url = result.get("final_url", "")
-            
+
             # Check if we reached a publisher URL
             if self._is_publisher_url(final_url, doi=doi):
                 logger.success(f"{doi}: {final_url}")
                 result["resolved_url"] = final_url
                 return True
-            
+
             # Also accept Elsevier linking hub as success
             elif "linkinghub.elsevier.com" in final_url:
                 logger.success(f"{doi}: {final_url} (Elsevier linking hub)")
                 result["resolved_url"] = final_url
                 return True
-            
+
             # If we have a URL but it's not a publisher, still mark as partial success
-            elif final_url and "chrome-error" not in final_url and "openathens" not in final_url.lower():
+            elif (
+                final_url
+                and "chrome-error" not in final_url
+                and "openathens" not in final_url.lower()
+            ):
                 logger.info(f"{doi}: Reached {final_url}")
                 result["resolved_url"] = final_url
                 return True
-        
+
         # Only mark as failed if no URL or error/auth page
         final_url = result.get("final_url") if result else "N/A"
         logger.fail(f"{doi}: Failed - {final_url}")
@@ -577,9 +567,9 @@ class OpenURLResolver:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.use_stealth_browser and hasattr(self.browser, 'cleanup'):
+        if self.use_zenrows and hasattr(self.browser, "cleanup"):
             await self.browser.cleanup()
-        elif hasattr(self.browser, 'cleanup_authenticated_context'):
+        elif hasattr(self.browser, "cleanup_authenticated_context"):
             await self.browser.cleanup_authenticated_context()
 
 
@@ -606,41 +596,44 @@ async def try_openurl_resolver_async(
     return None
 
 
-async def main():
-    """Test the resolver with different articles."""
-    from scitex import logging
-
-    from ..auth import AuthenticationManager
-
-    logging.basicConfig(level=logging.DEBUG)
-    auth_manager = AuthenticationManager()
-    resolver_url = "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
-
-    async with OpenURLResolver(auth_manager, resolver_url) as resolver:
-        print("\n=== Test 1: Article with access ===")
-        result = await resolver._resolve_single_async(
-            doi="10.1002/hipo.22488",
-            title="Hippocampal sharp wave-ripple: A cognitive biomarker for episodic memory and planning",
-            authors=["Buzsáki, György"],
-            journal="Hippocampus",
-            year=2015,
-            volume=25,
-            issue=10,
-            pages="1073-1188",
-        )
-        print(f"Result: {result}")
-
-        print("\n=== Test 2: Article without access ===")
-        result = await resolver._resolve_single_async(
-            doi="10.1038/s41593-025-01990-7",
-            title="Addressing artifactual bias in large, automated MRI analyses of brain development",
-            journal="Nature Neuroscience",
-            year=2025,
-        )
-        print(f"Result: {result}")
-
-
 if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        """Test the resolver with different articles."""
+        # from scitex import logging
+        # logging.basicConfig(level=logging.DEBUG)
+        from ..auth import AuthenticationManager
+
+        auth_manager = AuthenticationManager()
+        # resolver_url = "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
+
+        async with OpenURLResolver(auth_manager) as resolver:
+            print("\n=== Test 1: Article with access ===")
+            result = await resolver._resolve_single_async(
+                doi="10.1002/hipo.22488",
+                title="Hippocampal sharp wave-ripple: A cognitive biomarker for episodic memory and planning",
+                authors=["Buzsáki, György"],
+                journal="Hippocampus",
+                year=2015,
+                volume=25,
+                issue=10,
+                pages="1073-1188",
+            )
+            print(f"Result: {result}")
+
+            print("\n=== Test 2: Article without access ===")
+            result = await resolver._resolve_single_async(
+                doi="10.1038/s41593-025-01990-7",
+                title="Addressing artifactual bias in large, automated MRI analyses of brain development",
+                journal="Nature Neuroscience",
+                year=2025,
+            )
+            print(f"Result: {result}")
+
     asyncio.run(main())
+
+
+# python -m scitex.scholar.open_url._OpenURLResolver
 
 # EOF
