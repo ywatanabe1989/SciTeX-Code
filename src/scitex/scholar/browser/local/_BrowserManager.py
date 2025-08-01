@@ -41,7 +41,7 @@ class BrowserManager(BrowserMixin):
     async def get_authenticated_context(
         self,
     ) -> tuple[Browser, BrowserContext]:
-        """Get browser context with authentication cookies pre-loaded."""
+        """Get browser context with authentication cookies and extensions loaded."""
 
         if self.auth_manager is None:
             raise ValueError(
@@ -53,22 +53,27 @@ class BrowserManager(BrowserMixin):
         # Use browser with Chrome profile for extension support
         browser = await self.get_browser_with_profile()
 
-        # Create context with stealth options and auth cookies
-        context_options = {}
-        if self.auth_manager and await self.auth_manager.is_authenticated():
-            try:
-                auth_session = await self.auth_manager.authenticate()
-                if auth_session and "cookies" in auth_session:
-                    context_options["storage_state"] = {
-                        "cookies": auth_session["cookies"]
-                    }
-            except Exception as e:
-                logger.warning(f"Failed to get auth session: {e}")
+        # With persistent context, we already have the profile and extensions loaded
+        if hasattr(self, '_shared_context') and self._shared_context:
+            context = self._shared_context
+            logger.info("Using persistent context with profile and extensions")
+        else:
+            # Fallback to regular context creation if persistent context not available
+            logger.warning("Falling back to regular context creation")
+            context_options = {}
+            if self.auth_manager and await self.auth_manager.is_authenticated():
+                try:
+                    auth_session = await self.auth_manager.authenticate()
+                    if auth_session and "cookies" in auth_session:
+                        context_options["storage_state"] = {
+                            "cookies": auth_session["cookies"]
+                        }
+                except Exception as e:
+                    logger.warning(f"Failed to get auth session: {e}")
 
-        # Create stealth context with Chrome profile data
-        context = await self._create_stealth_context(
-            browser, **context_options
-        )
+            context = await self._create_stealth_context(
+                browser, **context_options
+            )
 
         return browser, context
 
@@ -143,9 +148,12 @@ class BrowserManager(BrowserMixin):
                 "--window-size=1920,1080",
             ]
 
-            # Choose between user-data-dir or load-extension (not both)
+            # IMPORTANT: Use launch_persistent_context for profile + extensions
+            # This ensures both authentication cookies AND extensions are active
+            logger.info("Using launch_persistent_context for profile and authentication")
+            
             if extension_dirs:
-                # Use explicit extension loading
+                # Load extensions explicitly with persistent context
                 stealth_args.extend(
                     [
                         f"--load-extension={','.join(extension_dirs)}",
@@ -153,29 +161,21 @@ class BrowserManager(BrowserMixin):
                     ]
                 )
                 logger.info(
-                    f"Loading {len(extension_dirs)} extensions explicitly"
-                )
-
-                # Use regular launch with explicit extensions
-                self._shared_browser = (
-                    await self._shared_playwright.chromium.launch(
-                        headless=self.headless,
-                        args=stealth_args,
-                    )
+                    f"Loading {len(extension_dirs)} extensions explicitly WITH profile"
                 )
             else:
-                # Fallback to user-data-dir if no extensions found
-                stealth_args.append(
-                    f"--user-data-dir={self.extension_manager.profile_dir}"
-                )
-                logger.info("Using user-data-dir for profile")
+                logger.info("No extensions found to load explicitly")
 
-                self._shared_browser = (
-                    await self._shared_playwright.chromium.launch(
-                        headless=self.headless,
-                        args=stealth_args,
-                    )
+            # Launch persistent context with BOTH profile AND extensions
+            self._shared_context = (
+                await self._shared_playwright.chromium.launch_persistent_context(
+                    user_data_dir=str(self.extension_manager.profile_dir),
+                    headless=self.headless,
+                    args=stealth_args,
                 )
+            )
+            # Get browser from the persistent context
+            self._shared_browser = self._shared_context.browser
         return self._shared_browser
 
     async def has_lean_library_pdf_button(self, page, url):
