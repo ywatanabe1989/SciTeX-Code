@@ -393,6 +393,7 @@ class JavaScriptInjectionPDFDetector:
                 result.detection_method = "translator-enhanced"
                 
                 # Use translator info to enhance generic detection
+                translator_label = translator['label']
                 publisher_enhanced_result = await page.evaluate(f'''
                     () => {{
                         try {{
@@ -405,7 +406,7 @@ class JavaScriptInjectionPDFDetector:
                                 }};
                             }}
                             
-                            console.log("[PDF-Detector] Using {translator['label']} enhanced detection");
+                            console.log("[PDF-Detector] Using {translator_label} enhanced detection");
                             
                             // Reset detection state
                             window.Zotero._pdfUrls = [];
@@ -414,7 +415,7 @@ class JavaScriptInjectionPDFDetector:
                             const pdfUrls = window.Zotero.Utilities.detectPDFUrls(document);
                             
                             // Add publisher-specific patterns based on translator
-                            const publisherName = "{translator['label']}";
+                            const publisherName = "{translator_label}";
                             let additionalSelectors = [];
                             
                             if (publisherName.includes("Atypon")) {{
