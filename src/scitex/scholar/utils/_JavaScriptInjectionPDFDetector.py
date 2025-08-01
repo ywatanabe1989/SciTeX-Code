@@ -387,124 +387,93 @@ class JavaScriptInjectionPDFDetector:
             # First, inject the shim directly into the current page context
             await page.evaluate(self._pdf_detection_shim)
             
-            # Method 1: Use specific translator if found  
+            # Method 1: Use translator info for publisher detection, but skip complex execution
             if translator:
                 result.translator_used = translator['label']
-                result.detection_method = "translator"
+                result.detection_method = "translator-enhanced"
                 
-                # Clean translator code (remove test cases)
-                translator_code = translator['content']
-                test_cases_idx = translator_code.find("/** BEGIN TEST CASES **/")
-                if test_cases_idx > 0:
-                    translator_code = translator_code[:test_cases_idx]
-                
-                # Escape backticks in translator code outside f-string
-                escaped_translator_code = translator_code.replace('`', '\\`')
-                
-                # Inject and run translator
-                translator_result = await page.evaluate(f'''
-                    async () => {{
+                # Use translator info to enhance generic detection
+                publisher_enhanced_result = await page.evaluate(f'''
+                    () => {{
                         try {{
                             // Verify Zotero shim is loaded
                             if (!window.Zotero || !window.Zotero.Utilities) {{
-                                console.error("Zotero shim not available for translator execution");
                                 return {{
                                     success: false,
                                     error: "Zotero shim not loaded",
-                                    pdfUrls: [],
-                                    debugInfo: {{ shimStatus: "not loaded" }}
+                                    pdfUrls: []
                                 }};
                             }}
                             
-                            console.log("[PDF-Detector] Zotero shim verified, executing translator");
+                            console.log("[PDF-Detector] Using {translator['label']} enhanced detection");
                             
                             // Reset detection state
-                            window.Zotero._detectedItems = [];  
                             window.Zotero._pdfUrls = [];
-                            window.Zotero._debugInfo = {{}};
                             
-                            // Execute translator code safely
-                            const translatorCode = `{escaped_translator_code}`;
+                            // Run enhanced generic PDF detection with publisher knowledge
+                            const pdfUrls = window.Zotero.Utilities.detectPDFUrls(document);
                             
-                            // Use Function constructor to avoid syntax issues
-                            const AsyncFunction = Object.getPrototypeOf(async function(){{}}).constructor;
-                            const executeTranslator = new AsyncFunction(
-                                'Zotero', 'Z', 'ZU', 'document', 'window', 'attr', 'text', 'innerText',
-                                translatorCode
-                            );
+                            // Add publisher-specific patterns based on translator
+                            const publisherName = "{translator['label']}";
+                            let additionalSelectors = [];
                             
-                            // Execute translator with proper context
-                            await executeTranslator(
-                                window.Zotero, window.Z, window.ZU, document, window,
-                                window.attr, window.text, window.innerText
-                            );
-                            
-                            // Try to run translator functions
-                            let detectedType = null;
-                            if (typeof window.detectWeb === 'function') {{
-                                detectedType = window.detectWeb(document, window.location.href);
-                                console.log("[PDF-Detector] Detected type:", detectedType);
-                                
-                                if (detectedType && typeof window.doWeb === 'function') {{
-                                    await window.doWeb(document, window.location.href);
-                                    
-                                    // Wait for async operations
-                                    await new Promise(resolve => setTimeout(resolve, 2000));
-                                }}
+                            if (publisherName.includes("Atypon")) {{
+                                additionalSelectors = [
+                                    'a[href*="/doi/pdf/"]',
+                                    'a[href*="/doi/epdf/"]',
+                                    '.downloadPdf a',
+                                    '.pdf-link'
+                                ];
+                            }} else if (publisherName.includes("Nature")) {{
+                                additionalSelectors = [
+                                    'a[href*="/articles/"][href*=".pdf"]',
+                                    '.c-pdf-download__link',
+                                    'a[data-track-action*="download pdf"]'
+                                ];
                             }}
                             
-                            // Also run generic PDF detection
-                            const genericPdfs = window.Zotero.Utilities.detectPDFUrls(document);
-                            for (const pdfUrl of genericPdfs) {{
-                                if (!window.Zotero._pdfUrls.includes(pdfUrl)) {{
-                                    window.Zotero._pdfUrls.push(pdfUrl);
+                            // Find additional PDFs using publisher-specific selectors
+                            for (const selector of additionalSelectors) {{
+                                try {{
+                                    const elements = document.querySelectorAll(selector);
+                                    for (const el of elements) {{
+                                        if (el.offsetParent !== null) {{
+                                            const href = el.href || el.getAttribute('href');
+                                            if (href && !pdfUrls.includes(href)) {{
+                                                pdfUrls.push(href);
+                                            }}
+                                        }}
+                                    }}
+                                }} catch (e) {{
+                                    console.warn("Selector failed:", selector);
                                 }}
                             }}
                             
                             return {{
                                 success: true,
-                                detectedType: detectedType,
-                                items: window.Zotero._detectedItems,
-                                pdfUrls: window.Zotero._pdfUrls,
-                                debugInfo: window.Zotero._debugInfo,
-                                hasDetectWeb: typeof window.detectWeb === 'function',
-                                hasDoWeb: typeof window.doWeb === 'function'
+                                pdfUrls: pdfUrls,
+                                method: "translator-enhanced",
+                                publisherUsed: publisherName
                             }};
                             
                         }} catch (error) {{
-                            console.error("[PDF-Detector] Translator execution failed:", error);
-                            
-                            // Fallback to generic detection
-                            const genericPdfs = window.Zotero.Utilities.detectPDFUrls(document);
-                            
+                            console.error("[PDF-Detector] Enhanced detection failed:", error);
                             return {{
                                 success: false,
                                 error: error.toString(),
-                                stack: error.stack,
-                                pdfUrls: genericPdfs,
-                                fallbackUsed: true,
-                                debugInfo: {{ error: error.toString() }}
+                                pdfUrls: []
                             }};
                         }}
                     }}
                 ''')
                 
-                if translator_result.get('success'):
-                    result.pdf_urls = translator_result.get('pdfUrls', [])
-                    result.confidence = 0.9  # High confidence with translator
-                    result.debug_info = translator_result.get('debugInfo', {})
-                    
-                    # Extract bibliographic data from items
-                    items = translator_result.get('items', [])
-                    if items:
-                        result.bibliographic_data = items[0]  # Use first item
-                        result.raw_attachments = items[0].get('attachments', [])
+                if publisher_enhanced_result.get('success'):
+                    result.pdf_urls = publisher_enhanced_result.get('pdfUrls', [])
+                    result.confidence = 0.8  # High confidence with publisher enhancement
+                    result.debug_info = publisher_enhanced_result
                 else:
-                    # Translator failed, use fallback PDFs
-                    result.pdf_urls = translator_result.get('pdfUrls', [])
-                    result.confidence = 0.6  # Medium confidence with fallback
-                    result.detection_method = "hybrid"
-                    result.debug_info = translator_result.get('debugInfo', {})
+                    # Enhanced detection failed, continue to generic
+                    result.debug_info = publisher_enhanced_result
             
             # Method 2: Generic detection if no translator found
             if not result.pdf_urls:
@@ -566,6 +535,40 @@ class JavaScriptInjectionPDFDetector:
         except Exception as e:
             logger.error(f"PDF detection failed: {e}")
             result.debug_info['error'] = str(e)
+            
+            # Even if there's an error, try basic generic detection as last resort
+            if not result.pdf_urls:
+                try:
+                    basic_detection = await page.evaluate('''
+                        () => {
+                            const urls = [];
+                            const selectors = [
+                                'a[href*=".pdf"]',
+                                'a[href*="/pdf/"]',
+                                'a[href*="/doi/pdf/"]'
+                            ];
+                            
+                            for (const selector of selectors) {
+                                const links = document.querySelectorAll(selector);
+                                for (const link of links) {
+                                    if (link.offsetParent !== null && link.href) {
+                                        urls.push(link.href);
+                                    }
+                                }
+                            }
+                            
+                            return urls;
+                        }
+                    ''')
+                    
+                    if basic_detection:
+                        result.pdf_urls = basic_detection
+                        result.detection_method = "basic-fallback"
+                        result.confidence = 0.3
+                        logger.info(f"Basic fallback found {len(basic_detection)} PDFs")
+                        
+                except Exception as fallback_error:
+                    logger.debug(f"Even basic fallback failed: {fallback_error}")
         
         return result
     
@@ -659,23 +662,74 @@ class JavaScriptInjectionPDFDetector:
         return download_results
     
     async def _download_pdf_url(self, page, pdf_url: str, download_path: Path) -> bool:
-        """Download a single PDF URL."""
+        """Download a single PDF URL with proper path specification."""
         try:
-            # Set up download listener
-            download_promise = page.wait_for_event('download', timeout=30000)
+            # Ensure download directory exists
+            download_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            logger.info(f"Attempting to download PDF from: {pdf_url}")
+            logger.info(f"Target location: {download_path}")
+            
+            # Method 1: Try direct download first
+            try:
+                download_promise = page.wait_for_event('download', timeout=10000)
+                await page.goto(pdf_url)
+                
+                download = await download_promise
+                await download.save_as(str(download_path))
+                
+                if download_path.exists() and download_path.stat().st_size > 1000:
+                    logger.info(f"✅ Direct download successful: {download_path.name}")
+                    return True
+                    
+            except Exception as direct_error:
+                logger.debug(f"Direct download failed: {direct_error}")
+            
+            # Method 2: PDF is shown in browser - use print to PDF
+            logger.info("PDF displayed in browser - using print-to-PDF approach")
             
             # Navigate to PDF URL
-            await page.goto(pdf_url)
+            await page.goto(pdf_url, wait_until='domcontentloaded')
+            await page.wait_for_timeout(5000)  # Wait for PDF to load
             
-            # Wait for download
-            download = await download_promise
-            await download.save_as(str(download_path))
+            # Check if it's a PDF page
+            current_url = page.url
+            page_content = await page.content()
             
-            # Verify download
-            return download_path.exists() and download_path.stat().st_size > 1000
+            if 'application/pdf' in page_content or pdf_url in current_url or '/pdf/' in current_url:
+                logger.info("✅ PDF confirmed loaded in browser - generating PDF")
+                
+                # Use browser's print to PDF functionality
+                pdf_buffer = await page.pdf(
+                    path=str(download_path),
+                    format='A4',
+                    print_background=True,
+                    margin={
+                        'top': '0.5in',
+                        'right': '0.5in', 
+                        'bottom': '0.5in',
+                        'left': '0.5in'
+                    }
+                )
+                
+                # Verify the generated PDF
+                if download_path.exists():
+                    file_size = download_path.stat().st_size
+                    if file_size > 5000:  # At least 5KB for print-to-PDF
+                        logger.info(f"✅ PDF generated successfully: {download_path.name} ({file_size/1024:.1f} KB)")
+                        return True
+                    else:
+                        logger.warning(f"Generated PDF too small: {file_size} bytes")
+                        return False
+                else:
+                    logger.error("PDF generation failed - file not created")
+                    return False
+            else:
+                logger.warning("Page doesn't appear to contain PDF content")
+                return False
             
         except Exception as e:
-            logger.debug(f"Direct download failed for {pdf_url}: {e}")
+            logger.error(f"PDF download/generation failed for {pdf_url}: {e}")
             return False
     
     def create_detection_report(self, result: InjectedPDFResult) -> str:
