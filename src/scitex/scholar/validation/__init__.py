@@ -15,10 +15,13 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from ._PDFValidator import PDFValidator
 from ._ValidationResult import ValidationResult
+from ._PreflightChecker import PreflightChecker, run_preflight_checks
 
 __all__ = [
     "PDFValidator",
     "ValidationResult",
+    "PreflightChecker",
+    "run_preflight_checks",
 ]
 
 # EOF

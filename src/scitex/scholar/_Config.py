@@ -186,6 +186,26 @@ class ScholarConfig:
         )
     )
 
+    # EZProxy configuration
+    ezproxy_enabled: bool = field(
+        default_factory=lambda: os.getenv(
+            "SCITEX_SCHOLAR_EZPROXY_ENABLED", "false"
+        ).lower()
+        == "true"
+    )
+    ezproxy_url: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_EZPROXY_URL")
+    )
+    ezproxy_username: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_EZPROXY_USERNAME")
+    )
+    ezproxy_password: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_EZPROXY_PASSWORD")
+    )
+    ezproxy_institution: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_EZPROXY_INSTITUTION")
+    )
+
     # ZenRows proxy configuration
     zenrows_api_key: Optional[str] = field(
         default_factory=lambda: os.getenv("SCITEX_SCHOLAR_ZENROWS_API_KEY")
@@ -233,6 +253,29 @@ class ScholarConfig:
             "SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING", "true"
         ).lower()
         == "true"
+    )
+    
+    # Shibboleth authentication
+    shibboleth_enabled: bool = field(
+        default_factory=lambda: os.getenv(
+            "SCITEX_SCHOLAR_SHIBBOLETH_ENABLED", "false"
+        ).lower()
+        == "true"
+    )
+    shibboleth_institution: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_SHIBBOLETH_INSTITUTION")
+    )
+    shibboleth_idp_url: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_SHIBBOLETH_IDP_URL")
+    )
+    shibboleth_username: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_SHIBBOLETH_USERNAME")
+    )
+    shibboleth_password: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_SHIBBOLETH_PASSWORD")
+    )
+    shibboleth_entity_id: Optional[str] = field(
+        default_factory=lambda: os.getenv("SCITEX_SCHOLAR_SHIBBOLETH_ENTITY_ID")
     )
     
     # Browser backend configuration
@@ -296,6 +339,12 @@ class ScholarConfig:
             "zotero_library_type": self.zotero_library_type,
             "twocaptcha_api_key": self.twocaptcha_api_key,
             "enable_captcha_solving": self.enable_captcha_solving,
+            "shibboleth_enabled": self.shibboleth_enabled,
+            "shibboleth_institution": self.shibboleth_institution,
+            "shibboleth_idp_url": self.shibboleth_idp_url,
+            "shibboleth_username": self.shibboleth_username,
+            "shibboleth_password": self.shibboleth_password,
+            "shibboleth_entity_id": self.shibboleth_entity_id,
         }
 
     @classmethod
@@ -404,6 +453,12 @@ class ScholarConfig:
             "SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE": "Zotero library type (default: user)",
             "SCITEX_SCHOLAR_2CAPTCHA_API_KEY": "2Captcha API key for solving CAPTCHAs",
             "SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING": "Enable automatic CAPTCHA solving (default: true)",
+            "SCITEX_SCHOLAR_SHIBBOLETH_ENABLED": "Enable Shibboleth authentication (default: false)",
+            "SCITEX_SCHOLAR_SHIBBOLETH_INSTITUTION": "Institution name for Shibboleth",
+            "SCITEX_SCHOLAR_SHIBBOLETH_IDP_URL": "Identity Provider URL for Shibboleth",
+            "SCITEX_SCHOLAR_SHIBBOLETH_USERNAME": "Username for Shibboleth authentication",
+            "SCITEX_SCHOLAR_SHIBBOLETH_PASSWORD": "Password for Shibboleth authentication",
+            "SCITEX_SCHOLAR_SHIBBOLETH_ENTITY_ID": "Entity ID for Shibboleth",
         }
 
         output = ["Environment Variables for SciTeX Scholar:"]
@@ -449,6 +504,12 @@ class ScholarConfig:
             "zotero_library_id": "SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID",
             "zotero_api_key": "SCITEX_SCHOLAR_ZOTERO_API_KEY",
             "zotero_library_type": "SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE",
+            "shibboleth_enabled": "SCITEX_SCHOLAR_SHIBBOLETH_ENABLED",
+            "shibboleth_institution": "SCITEX_SCHOLAR_SHIBBOLETH_INSTITUTION",
+            "shibboleth_idp_url": "SCITEX_SCHOLAR_SHIBBOLETH_IDP_URL",
+            "shibboleth_username": "SCITEX_SCHOLAR_SHIBBOLETH_USERNAME",
+            "shibboleth_password": "SCITEX_SCHOLAR_SHIBBOLETH_PASSWORD",
+            "shibboleth_entity_id": "SCITEX_SCHOLAR_SHIBBOLETH_ENTITY_ID",
         }
 
         config_dict = self.to_dict()

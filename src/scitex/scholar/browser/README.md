@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-31 18:41:27
+!-- Timestamp: 2025-08-01 12:15:04
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/README.md
 !-- --- -->
@@ -44,5 +44,12 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+## Browser extentions
+- [Lean Library](https://chromewebstore.google.com/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa?hl=en)
+- [Zotero Connector](https://chromewebstore.google.com/detail/zotero-connector/ekhagklcjbdpajgpjgmbionohlpdbjgc?hl=en)
+- [Accept all cookies](https://chromewebstore.google.com/detail/accept-all-cookies/ofpnikijgfhlmmjlpkfaifhhdonchhoi?hl=en)
+- [Captcha Solver](https://chromewebstore.google.com/detail/captcha-solver-auto-recog/ifibfemgeogfhoebkmokieepdoobkbpo?hl=en)
+  - $SCITEX_SCHOLAR_2CAPTCHA_API_KEY
 
 <!-- EOF -->

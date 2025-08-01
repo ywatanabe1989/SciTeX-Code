@@ -36,7 +36,7 @@ from datetime import datetime
 from scitex import logging
 from scitex.scholar import Scholar
 from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.resolve_dois import ResumableDOIResolver
+from scitex.scholar.resolve_dois import BatchDOIResolver
 from scitex.scholar.open_url import ResumableOpenURLResolver
 
 logger = logging.getLogger(__name__)
@@ -93,7 +93,7 @@ async def main():
     logger.info("\n🔍 Step 4: Resolving DOIs from titles")
     
     doi_progress_file = OUTPUT_DIR / f"doi_resolution_{timestamp}.progress.json"
-    doi_resolver = ResumableDOIResolver(progress_file=doi_progress_file)
+    doi_resolver = BatchDOIResolver(progress_file=doi_progress_file)
     
     # Extract papers without DOIs
     papers_for_doi = []

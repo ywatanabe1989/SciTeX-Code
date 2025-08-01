@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 01:44:11 (ywatanabe)"
+# Timestamp: "2025-08-01 18:24:55 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -38,7 +38,7 @@ from ._Config import ScholarConfig
 from ._Paper import Paper
 from ._Papers import Papers
 
-from .doi._resolve_dois import resolve_dois
+# DOI resolver is available via: python -m scitex.scholar.resolve_dois
 
 # Backward compatibility alias
 PaperCollection = Papers
@@ -114,7 +114,7 @@ def download_pdfs(
     )
 
 # Version
-__version__ = "2.0.0"
+__version__ = "0.1.0"
 
 # What users see with "from scitex.scholar import *"
 __all__ = [
@@ -150,93 +150,92 @@ __all__ = [
     'download_pdfs_async',
 
     # Browser-based functionality
-    
+
     # Authentication
     'AuthenticationManager',
     'OpenAthensAuthenticator',
     'ShibbolethAuthenticator',
     'EZProxyAuthenticator',
-    
+
     # Resolution
     'DOIResolver',
     'OpenURLResolver',
     'ResumableOpenURLResolver',
-    'ResumableDOIResolver',
-    
+    # 'BatchDOIResolver',
+
     # Enrichment
-    'PaperEnricher',
-    'ResumableMetadataEnricher',
+    'MetadataEnricher',
     'JCR_YEAR',
-    
+
     # Validation
     'PDFValidator',
     'ValidationResult',
-    
-    # Database
-    'PaperDatabase',
-    'DatabaseEntry',
-    'DatabaseIndex',
-    
+
+    # # Database
+    # 'PaperDatabase',
+    # 'DatabaseEntry',
+    # 'DatabaseIndex',
+
     # Semantic Search
-    'SemanticSearchEngine',
-    'VectorDatabase',
-    'Embedder',
+    # 'SemanticSearchEngine',
+    # 'VectorDatabase',
+    # 'Embedder',
 ]
 
-# For backward compatibility, provide access to old functions with deprecation warnings
-def __getattr__(name):
-    """Provide backward compatibility with deprecation warnings."""
-    import warnings
+# # For backward compatibility, provide access to old functions with deprecation warnings
+# def __getattr__(name):
+#     """Provide backward compatibility with deprecation warnings."""
+#     import warnings
 
-    # Handle special IPython attributes
-    if name in ['__custom_documentations__', '__wrapped__']:
-        raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+#     # Handle special IPython attributes
+#     if name in ['__custom_documentations__', '__wrapped__']:
+#         raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
-    # Map old names to new functionality
-    compatibility_map = {
-        'search_sync': 'search',
-        'build_index': 'Scholar()._index_local_pdfs',
-        'get_scholar_dir': 'Scholar().workspace_dir',
-        'LocalSearchEngine': 'Scholar',
-        'VectorSearchEngine': 'Scholar',
-        'PDFDownloader': 'Scholar',
-        'search_papers': 'search',
-        'SemanticScholarPaper': 'Paper',
-        'PaperMetadata': 'Paper',
-        'PaperAcquisition': 'Scholar',
-        'SemanticScholarClient': 'Scholar',
-        'JournalMetrics': 'Scholar',
-        'PaperEnrichmentService': 'Scholar',
-        'generate_enriched_bibliography': 'Papers.save'
-    }
+#     # Map old names to new functionality
+#     compatibility_map = {
+#         'search_sync': 'search',
+#         'build_index': 'Scholar()._index_local_pdfs',
+#         'get_scholar_dir': 'Scholar().workspace_dir',
+#         'LocalSearchEngine': 'Scholar',
+#         'VectorSearchEngine': 'Scholar',
+#         'PDFDownloader': 'Scholar',
+#         'search_papers': 'search',
+#         'SemanticScholarPaper': 'Paper',
+#         'PaperMetadata': 'Paper',
+#         'PaperAcquisition': 'Scholar',
+#         'SemanticScholarClient': 'Scholar',
+#         'JournalMetrics': 'Scholar',
+#         'PaperEnrichmentService': 'Scholar',
+#         'generate_enriched_bibliography': 'Papers.save'
+#     }
 
-    if name in compatibility_map:
-        warnings.warn(
-            f"{name} is deprecated. Use {compatibility_map[name]} instead.",
-            DeprecationWarning,
-            stacklevel=2
-        )
+#     if name in compatibility_map:
+#         warnings.warn(
+#             f"{name} is deprecated. Use {compatibility_map[name]} instead.",
+#             DeprecationWarning,
+#             stacklevel=2
+#         )
 
-        # Return the Scholar class for most cases
-        if name in ['search_sync', 'search_papers']:
-            return search
-        elif name == 'build_index':
-            def build_index(paths, **kwargs):
-                scholar = Scholar()
-                stats = {}
-                for path in paths:
-                    stats.update(scholar._index_local_pdfs(path))
-                return stats
-            return build_index
-        else:
-            return Scholar
+#         # Return the Scholar class for most cases
+#         if name in ['search_sync', 'search_papers']:
+#             return search
+#         elif name == 'build_index':
+#             def build_index(paths, **kwargs):
+#                 scholar = Scholar()
+#                 stats = {}
+#                 for path in paths:
+#                     stats.update(scholar._index_local_pdfs(path))
+#                 return stats
+#             return build_index
+#         else:
+#             return Scholar
 
-    from ..errors import ScholarError
-    raise ScholarError(
-        f"Module attribute not found: '{name}'",
-        context={"module": __name__, "attribute": name},
-        suggestion=f"Available attributes: Scholar, Paper, Papers, search, enrich_bibtex"
-    )
+#     from ..errors import ScholarError
+#     raise ScholarError(
+#         f"Module attribute not found: '{name}'",
+#         context={"module": __name__, "attribute": name},
+#         suggestion=f"Available attributes: Scholar, Paper, Papers, search, enrich_bibtex"
+#     )
 
 
 # Import new modules
@@ -249,14 +248,13 @@ from .auth import (
 from .doi import DOIResolver
 from .open_url import OpenURLResolver, ResumableOpenURLResolver
 from .enrichment import (
-    PaperEnricher,
-    ResumableMetadataEnricher,
+    MetadataEnricher,
     JCR_YEAR,
 )
-from .resolve_dois import ResumableDOIResolver
+# from .command_line import resolve_dois
 from .validation import PDFValidator, ValidationResult
-from .database import PaperDatabase, DatabaseEntry, DatabaseIndex
-from .search import SemanticSearchEngine, VectorDatabase, Embedder
+# from .database import PaperDatabase, DatabaseEntry, DatabaseIndex
+# from .search import SemanticSearchEngine, VectorDatabase, Embedder
 
 # Module docstring for help()
 def _module_docstring():

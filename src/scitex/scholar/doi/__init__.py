@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 01:41:27 (ywatanabe)"
+# Timestamp: "2025-08-01 18:14:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -14,11 +14,13 @@ __DIR__ = os.path.dirname(__FILE__)
 """DOI resolution module for Scholar."""
 
 from ._DOIResolver import DOIResolver
-from ._resolve_dois import resolve_dois
+from ._BatchDOIResolver import BatchDOIResolver
+from ._resolve_dois_from_bibtex import BibTeXDOIResolver
 
 __all__ = [
     "DOIResolver",
-    "resolve_dois",
+    "BatchDOIResolver",
+    "BibTeXDOIResolver",
 ]
 
 # EOF

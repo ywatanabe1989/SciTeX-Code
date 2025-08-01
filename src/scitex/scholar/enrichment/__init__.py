@@ -23,9 +23,11 @@ from ._MetadataEnricher import (
     _enrich_papers_with_citations,
     _enrich_papers_with_impact_factors,
 )
+from ._BibTeXEnricher import BibTeXEnricher
 
 __all__ = [
     "MetadataEnricher",
+    "BibTeXEnricher",
     "JCR_YEAR",
     "_enrich_papers_with_all",
     "_enrich_papers_with_citations",

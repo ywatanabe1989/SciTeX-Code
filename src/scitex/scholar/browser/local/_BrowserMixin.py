@@ -66,11 +66,45 @@ class BrowserMixin:
             if self._shared_playwright is None:
                 self._shared_playwright = await async_playwright().start()
 
-            # Launch a local browser
+            # Enhanced stealth launch arguments
+            stealth_args = [
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-blink-features=AutomationControlled",
+                "--disable-web-security",
+                "--disable-features=VizDisplayCompositor",
+                "--disable-background-networking",
+                "--disable-sync",
+                "--disable-translate",
+                "--disable-default-apps",
+                "--disable-extensions-except=*",  # Allow extensions to load
+                "--load-extension=*",  # Load extensions
+                "--no-first-run",
+                "--no-default-browser-check",
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding",
+                "--disable-field-trial-config",
+                "--disable-client-side-phishing-detection",
+                "--disable-component-update",
+                "--disable-plugins-discovery",
+                "--disable-hang-monitor",
+                "--disable-prompt-on-repost",
+                "--disable-domain-reliability",
+                "--disable-infobars",
+                "--disable-notifications",
+                "--disable-popup-blocking",
+                "--window-size=1920,1080",
+            ]
+
+            # Use standard headless mode
+            headless_mode = self.headless
+
+            # Launch a local browser with stealth settings
             self._shared_browser = (
                 await self._shared_playwright.chromium.launch(
-                    headless=self.headless,
-                    args=["--no-sandbox", "--disable-dev-shm-usage"],
+                    headless=headless_mode,
+                    args=stealth_args,
                 )
             )
         return self._shared_browser

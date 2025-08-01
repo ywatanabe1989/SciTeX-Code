@@ -1,0 +1,84 @@
+
+# Instructions for downloading Hu-2019-FIN.pdf:
+
+1. Navigate to OpenURL:
+   URL: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?url_ver=Z39.88-2004&rft_id=info:doi/10.3389/fnins.2019.00573&svc_id=fulltext
+
+2. Wait for page to load and look for:
+   - "Full Text" or "PDF" links
+   - Download buttons
+   - Direct PDF viewer
+
+3. Save PDF as: downloaded_papers/Hu-2019-FIN.pdf
+
+4. If authentication is required:
+   - The browser should have stored OpenAthens cookies
+   - Look for institutional login options
+
+
+# Instructions for downloading Friston-2020-NAB.pdf:
+
+1. Navigate to OpenURL:
+   URL: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?url_ver=Z39.88-2004&rft_id=info:doi/10.1016/j.neubiorev.2020.07.005&svc_id=fulltext
+
+2. Wait for page to load and look for:
+   - "Full Text" or "PDF" links
+   - Download buttons
+   - Direct PDF viewer
+
+3. Save PDF as: downloaded_papers/Friston-2020-NAB.pdf
+
+4. If authentication is required:
+   - The browser should have stored OpenAthens cookies
+   - Look for institutional login options
+
+
+# Instructions for downloading Canolty-2010-TIC.pdf:
+
+1. Navigate to OpenURL:
+   URL: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?url_ver=Z39.88-2004&rft_id=info:doi/10.1016/j.tics.2010.09.001&svc_id=fulltext
+
+2. Wait for page to load and look for:
+   - "Full Text" or "PDF" links
+   - Download buttons
+   - Direct PDF viewer
+
+3. Save PDF as: downloaded_papers/Canolty-2010-TIC.pdf
+
+4. If authentication is required:
+   - The browser should have stored OpenAthens cookies
+   - Look for institutional login options
+
+
+# Instructions for downloading Aru-2014-COI.pdf:
+
+1. Navigate to OpenURL:
+   URL: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?url_ver=Z39.88-2004&rft_id=info:doi/10.1101/005926&svc_id=fulltext
+
+2. Wait for page to load and look for:
+   - "Full Text" or "PDF" links
+   - Download buttons
+   - Direct PDF viewer
+
+3. Save PDF as: downloaded_papers/Aru-2014-COI.pdf
+
+4. If authentication is required:
+   - The browser should have stored OpenAthens cookies
+   - Look for institutional login options
+
+
+# Instructions for downloading Tort-2010-JON.pdf:
+
+1. Navigate to OpenURL:
+   URL: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?url_ver=Z39.88-2004&rft_id=info:doi/10.1152/jn.00106.2010&svc_id=fulltext
+
+2. Wait for page to load and look for:
+   - "Full Text" or "PDF" links
+   - Download buttons
+   - Direct PDF viewer
+
+3. Save PDF as: downloaded_papers/Tort-2010-JON.pdf
+
+4. If authentication is required:
+   - The browser should have stored OpenAthens cookies
+   - Look for institutional login options

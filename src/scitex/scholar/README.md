@@ -544,7 +544,51 @@ await scholar.authenticate_openathens(force=True)
 
 See `docs/HOW_TO_USE_OPENATHENS.md` for setup instructions and `docs/OPENATHENS_SECURITY.md` for security details.
 
-#### 5. Local PDF Library Management
+#### 6. EZProxy Institutional Access
+
+EZProxy provides access to paywalled papers through your library's proxy server:
+
+```python
+# Configure EZProxy
+scholar.configure_ezproxy(
+    proxy_url="https://ezproxy.library.edu",  # Your library's EZProxy URL
+    username="your_username",                 # Your library username
+    institution="Your University"
+)
+
+# Or via environment variables
+export SCITEX_SCHOLAR_EZPROXY_ENABLED="true"
+export SCITEX_SCHOLAR_EZPROXY_URL="https://ezproxy.library.edu"
+export SCITEX_SCHOLAR_EZPROXY_USERNAME="your_username"
+```
+
+**Authentication:**
+```python
+# Check if authenticated
+if not scholar.is_ezproxy_authenticated():
+    # Authenticate (opens browser for login)
+    scholar.authenticate_ezproxy()
+    # Enter credentials in browser
+    # Session saved for ~8 hours
+```
+
+**Download papers:**
+```python
+# EZProxy will be used automatically for downloads
+papers = scholar.search("machine learning", limit=10)
+downloaded = scholar.download_pdfs(papers)
+
+print(f"Downloaded {len(downloaded)} papers via EZProxy")
+```
+
+**Supported features:**
+- Username/password authentication
+- SSO/SAML redirect handling
+- Session persistence (~8 hours)
+- URL transformation through proxy
+- Works with most academic publishers
+
+#### 7. Local PDF Library Management
 
 ```python
 # Index your existing PDF collection
@@ -681,9 +725,17 @@ export SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT=10
 - Consider manual searches through the web interface
 - See the `scholarly` documentation for proxy setup instructions
 
+## Recent Improvements (2025-08-01)
+- ✅ Pre-flight checks for system validation before downloads
+- ✅ Smart retry logic with exponential backoff and strategy rotation
+- ✅ Enhanced error diagnostics with publisher-specific solutions
+- ✅ Statistical validation framework for research validity
+- ✅ Effect size calculations with confidence intervals
+
 ## TODO
-- [ ] Add support for EZproxy
-- [ ] Add support for Shibboleth
+- [x] Add support for EZproxy authentication (✅ Completed)
+- [x] Add support for Shibboleth authentication (✅ Completed)
+- [x] Add support for more OpenURL resolvers (✅ Completed - 50+ institutions)
 
 ## Citation
 
@@ -742,12 +794,13 @@ Yusuke Watanabe (ywatanabe@scitex.ai)
   9. Download the PDF
 
 ## TODO
-- [ ] Add retry logic with exponential backoff
-- [ ] Take screenshots on failure for debugging
-
-- [ ] To generalize,
-  - [ ] Add support for authentication methods other than OpenAthens (e.g., EZproxy, Shibboleth)
-  - [ ] Add the corresponding Resolver URL (user should specify as every university has its own unique OpenURL resolver address)
+- [x] Add retry logic with exponential backoff (✅ Implemented in `utils/_retry_handler.py`)
+- [x] Enhanced error diagnostics with actionable solutions (✅ Implemented in `utils/_error_diagnostics.py`)
+- [x] Take screenshots on failure for debugging (✅ Implemented in `utils/_screenshot_capturer.py`)
+- [x] Add support for authentication methods:
+  - [x] EZproxy (✅ Implemented in `auth/_EZProxyAuthenticator.py`)
+  - [ ] Shibboleth  
+- [ ] Add support for more OpenURL resolvers (currently supports University of Melbourne)
 
 # SciTeX Automated PDF Downloading Workflow (detailed with HOW)
 

@@ -93,6 +93,33 @@ scitex.gen.close(config, info)
 
 ## 🆕 What's New in v2.0
 
+### 🔬 Scientific Validity Enhancements (August 2025)
+
+#### Statistical Validation Framework
+SciTeX now ensures proper statistical practices with comprehensive validation:
+- **Assumption Checking**: Automatic normality and homoscedasticity tests before analysis
+- **Effect Size Calculations**: Cohen's d, Hedges' g, eta-squared, odds ratios with CIs
+- **Sample Size Validation**: Power recommendations for adequate statistical power
+- **Intelligent Test Selection**: Suggests appropriate tests based on data characteristics
+
+```python
+from scitex.stats import StatisticalValidator, EffectSizeCalculator
+
+# Check assumptions before t-test
+is_normal, p, stats = StatisticalValidator.check_normality(data)
+is_homo, p, stats = StatisticalValidator.check_homoscedasticity(group1, group2)
+
+# Calculate effect size with confidence intervals
+effect = EffectSizeCalculator.cohens_d(treatment, control)
+print(f"Effect: {effect['d']:.3f} ({effect['interpretation']})")
+```
+
+#### Scholar Module Reliability Improvements
+Enhanced PDF download workflow with enterprise-grade reliability:
+- **Pre-flight Checks**: System validation before attempting downloads
+- **Smart Retry Logic**: Exponential backoff with strategy rotation
+- **Enhanced Diagnostics**: Publisher-specific error solutions
+
 ### 📚 Scholar Module with Enhanced Search Capabilities
 
 The Scholar module now supports **5 search engines** including the newly added **CrossRef**:
@@ -119,7 +146,7 @@ papers = scholar.search(
 Features:
 - Automatic enrichment with 2024 JCR impact factors
 - YAML configuration support
-- PDF download with institutional access (OpenAthens - now fully working!)
+- PDF download with institutional access (OpenAthens, EZProxy & Shibboleth - fully working!)
 - Unified API across all search engines
 
 ### 🤖 MCP Servers for AI-Assisted Development

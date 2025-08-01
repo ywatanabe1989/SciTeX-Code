@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-01 04:00:51
+!-- Timestamp: 2025-08-01 21:15:10
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -53,22 +53,32 @@ Planned workflow is:
 1. Manual Login to OpenAthens (Unimelb)
    - `scitex.scholar.auth`
    - `python -m scitex.scholar.authenticate openathens`
+
 2. Keep the authentication info to cookies
    - `scitex.scholar.auth`
    - [ ] Cookie is stored at: `` (find the actual json file here)
    - [ ] Especially, in the cookifile, which entry is important?
+
 3. Use AI2 products to get related articles as bib file
    - e.g., `./src/scitex/scholar/docs/papers.bib`
+
+### !!! IMPORTANT: THIS IS THE MOST CRITICAL TASK NOW!!!
 4. Resolve DOIs from piece of information such as title in a resumable manner
-   - `scitex.scholar.resolve_dois`
+   - `python -m scitex.scholar.resolve_dois --title ...`
+   - `python -m scitex.scholar.resolve_dois --bibtex /path/to/bibtex-file.bib`
+   - `python -m scitex.scholar.resolve_dois --bibtex src/scitex/scholar/docs/papers.bib --resume`
+     - I think this should be more intuitively work for resumablly
    - Resume to handle rate limit
    - Progress and ETA should be shown like rsync
    - Performance enhancement by reducing overlaps, optimizing retry logics
+     - [ ] All the 75 entires are resolved their dois
+
 5. Resolve publisher url using OpenURL for OpenAthens (Unimelb) in a resumable manner
    - `scitex.scholar.open_url.OpenURLResolver`
    - We wanted to use ZenRows but it seems difficult to pass auth info to remote browsers
    - For local version, it seems ZenRows functionality like stealth access are limited
    - Progress and ETA should be shown like rsync
+
 6. Enrich the bib file to add metadata in a resumable manner
    - `python -m scitex.scholar.enrich_bibtex /path/to/bibtex-file.bib`
    - `scitex.scholar.Papers.from_bibtex`
@@ -77,17 +87,14 @@ Planned workflow is:
    - [ ] Enriching metadata using google scholar and crawl4ai might be also another method
    - Progress and ETA should be shown like rsync
    - [ ] `./src/scitex/scholar/docs/papers-enriched.bib`
+   - [ ] `./src/scitex/scholar/docs/papers-enriched.csv`
      - [ ] All the 75 entires are enriched
    - All metadata should have their source explicitly in the bib files
      - `title` should have `title_source` as well
      - In the same way, `xxxx` should have `xxxx_source` all the time
+
 7. Download PDFs using AI agents (you, Claude) in an exploratory manner
    - Claude Code
-   - Crawl4ai MCP server
-     - # Pull and run the latest release candidate
-     - docker pull unclecode/crawl4ai:0.7.0
-     - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:0.7.0
-     - Visit the playground at http://localhost:11235/playground
    - Cookie acceptance
    - Captcha handling
    - Zotero translators
@@ -96,16 +103,52 @@ Planned workflow is:
    - Skip unsolvable problems and work on other entries, while escalating to the user
      - [ ] PDF files for all the 75 entries are downloaded
      - [ ] Open undownloaded papers urls (dois) as tabs on a browser will be beneficial for user to download using zotero connector
+
 8. Confirm downloaded PDFs are the main contents
    - Extract sections
+
 9. Organize everything in a database
+
 10. Allow for semantic vector search
 
 Environment variables are available at:
 `/home/ywatanabe/.dotfiles/.bash.d/secrets/000_ENV_UNIMELB.src`
 `/home/ywatanabe/.dotfiles/.bash.d/secrets/001_ENV_SCITEX.src`
 
-
 Python env is in the current directory. Do not change directory as bash handles python environments based on working directory.
+
+## Browser extentions
+- [Lean Library](https://chromewebstore.google.com/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa?hl=en)
+- [Zotero Connector](https://chromewebstore.google.com/detail/zotero-connector/ekhagklcjbdpajgpjgmbionohlpdbjgc?hl=en)
+- [Accept all cookies](https://chromewebstore.google.com/detail/accept-all-cookies/ofpnikijgfhlmmjlpkfaifhhdonchhoi?hl=en)
+- [Captcha Solver](https://chromewebstore.google.com/detail/captcha-solver-auto-recog/ifibfemgeogfhoebkmokieepdoobkbpo?hl=en)
+  - $SCITEX_SCHOLAR_2CAPTCHA_API_KEY
+
+
+## About Crawl4ai MCP Server (Now, it seems not working)
+   - Crawl4ai MCP server
+     - # Pull and run the latest release candidate
+     <!-- - # Latest version of Crawl4ai MCP server does not work
+      !-- - docker pull unclecode/crawl4ai:latest
+      !-- - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:latest
+      !-- - docker rm -f crawl4ai -->
+     - docker pull unclecode/crawl4ai:0.6.0rc1-r2
+     - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:0.6.0rc1-r2
+ │   - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g --user "$(id -u):$(id -g)" -v                        │
+     - Visit the playground at http://localhost:11235/playground
+
+● The c4ai-sse MCP server is working - it's responding to HTTP requests.
+  The issue might be with how the MCP client is configured to connect to
+  it. Since you're running the crawl4ai Docker container on Windows and
+  accessing it from WSL2, the MCP configuration might need to use the
+  Windows host IP (10.255.255.254) instead of localhost.
+
+  The server is accessible at http://localhost:11235 from WSL2, so it's not
+   a networking issue between WSL2 and Windows.
+  
+  NOTE: The crawl4ai container uses port 11235 (not 11234 as sometimes 
+  reported in GitHub issues). Verified with: docker ps | grep crawl4ai
+  
+  Maybe it should be http://127.0.0.1:11235 from wsl2 or we need to explicitly resolve windows ip
 
 <!-- EOF -->

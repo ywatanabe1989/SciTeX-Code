@@ -13,12 +13,18 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from .local._BrowserManager import BrowserManager
 from .local._ZenRowsBrowserManager import ZenRowsBrowserManager
+from .local._ChromeExtensionManager import ChromeExtensionManager
+from .local._SeleniumBrowserManager import SeleniumBrowserManager
+from .local._HybridBrowserManager import HybridBrowserManager
 from .remote._ZenRowsRemoteBrowserManager import ZenRowsRemoteBrowserManager
 from .remote._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
 __all__ = [
     "BrowserManager",
     "ZenRowsBrowserManager",
+    "ChromeExtensionManager",
+    "SeleniumBrowserManager",
+    "HybridBrowserManager",
     "ZenRowsRemoteBrowserManager",
     "ZenRowsAPIBrowser",
 ]

@@ -125,9 +125,15 @@ class PDFDownloader:
             self.zotero_translator_runner = None
 
         # Initialize OpenAthens authenticator with singleton pattern for multiprocessing
-        # TODO: Future authentication methods (EZProxy, Lean Library, Shibboleth)
-        # will be added here following the same pattern
+        # Initialize authenticators
         self.openathens_authenticator = None
+        self.ezproxy_authenticator = None
+        self.shibboleth_authenticator = None
+        
+        # Config will be set by Scholar after initialization
+        self._config = None
+        
+        # OpenAthens authentication
         if use_openathens and openathens_config:
             try:
                 from ..auth._OpenAthensAuthenticator import OpenAthensAuthenticator
@@ -237,6 +243,37 @@ class PDFDownloader:
         self._download_methods: Dict[str, str] = (
             {}
         )  # Track which method succeeded
+
+    @property
+    def config(self):
+        """Get config."""
+        return self._config
+        
+    @config.setter
+    def config(self, value):
+        """Set config and initialize authentication methods if enabled."""
+        self._config = value
+        
+        # Initialize EZProxy if config enables it
+        if value and getattr(value, 'ezproxy_enabled', False):
+            try:
+                from ..auth import EZProxyAuthenticator
+                self.ezproxy_authenticator = EZProxyAuthenticator(
+                    proxy_url=getattr(value, 'ezproxy_url', None),
+                    username=getattr(value, 'ezproxy_username', None),
+                    password=getattr(value, 'ezproxy_password', None),
+                    institution=getattr(value, 'ezproxy_institution', None),
+                    timeout=self.timeout,
+                    debug_mode=self.debug_mode,
+                )
+                logger.info("EZProxy authenticator initialized from config")
+            except Exception as e:
+                logger.warning(f"Failed to initialize EZProxy: {e}")
+                self.ezproxy_authenticator = None
+                
+        # Initialize Shibboleth if config enables it
+        if value and getattr(value, 'shibboleth_enabled', False):
+            self._init_shibboleth()
 
     async def download_pdf_async(
         self,
@@ -371,15 +408,42 @@ class PDFDownloader:
             logger.info("No authentication available, proceeding without auth")
 
         # Step 2: Try discovery strategies WITH authentication
-        # If we have OpenAthens authentication, use it as the primary strategy
-        if auth_session and self.use_openathens and self.openathens_authenticator:
-            strategies = [
-                ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
-                ("Lean Library", self._try_lean_library_async),  # Browser extension
-                ("OpenAthens", self._try_openathens_async),  # Use OpenAthens authenticator's method
-                ("Direct patterns", self._try_direct_patterns_async),  # Fallback
-            ]
+        # Build strategy list based on available authenticators
+        if auth_session:
+            if self.use_openathens and self.openathens_authenticator:
+                # OpenAthens authenticated strategies
+                strategies = [
+                    ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                    ("Lean Library", self._try_lean_library_async),  # Browser extension
+                    ("OpenAthens", self._try_openathens_async),  # Use OpenAthens authenticator's method
+                    ("Direct patterns", self._try_direct_patterns_async),  # Fallback
+                ]
+            elif self.ezproxy_authenticator:
+                # EZProxy authenticated strategies
+                strategies = [
+                    ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                    ("EZProxy", self._try_ezproxy_async),  # Use EZProxy authenticator
+                    ("Direct patterns", self._try_direct_patterns_async),  # Fallback
+                ]
+            elif self.shibboleth_authenticator:
+                # Shibboleth authenticated strategies
+                strategies = [
+                    ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                    ("Shibboleth", self._try_shibboleth_async),  # Use Shibboleth authenticator
+                    ("Direct patterns", self._try_direct_patterns_async),  # Fallback
+                ]
+            else:
+                # Other auth session strategies
+                strategies = [
+                    ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
+                    ("Lean Library", self._try_lean_library_async),  # Browser extension
+                    ("OpenURL Resolver", self._try_openurl_resolver_async),  # Institutional access
+                    ("Zotero translators", self._try_zotero_translator_async),  # Most reliable for non-auth
+                    ("Direct patterns", self._try_direct_patterns_async),
+                    ("Playwright", self._try_playwright_async),
+                ]
         else:
+            # No authentication strategies
             strategies = [
                 ("ZenRows", self._try_zenrows_async),  # Primary - anti-bot bypass
                 ("Lean Library", self._try_lean_library_async),  # Browser extension
@@ -424,6 +488,40 @@ class PDFDownloader:
         Returns session data with cookies/headers if authenticated,
         None otherwise.
         """
+        # Check EZProxy if available (higher priority)
+        if self.ezproxy_authenticator:
+            try:
+                if await self.ezproxy_authenticator.is_authenticated():
+                    cookies = await self.ezproxy_authenticator.get_auth_cookies()
+                    return {
+                        'cookies': cookies,
+                        'headers': await self.ezproxy_authenticator.get_auth_headers(),
+                        'context': {
+                            'provider': 'EZProxy',
+                            'username': getattr(self.ezproxy_authenticator, 'username', None),
+                            'proxy_url': getattr(self.ezproxy_authenticator, 'proxy_url', None)
+                        }
+                    }
+            except Exception as e:
+                logger.debug(f"Failed to get EZProxy session: {e}")
+        
+        # Check Shibboleth if available (higher priority than OpenAthens)
+        if self.shibboleth_authenticator:
+            try:
+                if await self.shibboleth_authenticator.is_authenticated():
+                    cookies = await self.shibboleth_authenticator.get_auth_cookies()
+                    return {
+                        'cookies': cookies,
+                        'headers': await self.shibboleth_authenticator.get_auth_headers(),
+                        'context': {
+                            'provider': 'Shibboleth',
+                            'institution': getattr(self.shibboleth_authenticator, 'institution', None),
+                            'username': getattr(self.shibboleth_authenticator, 'username', None)
+                        }
+                    }
+            except Exception as e:
+                logger.debug(f"Failed to get Shibboleth session: {e}")
+        
         # Check OpenAthens if available
         if self.use_openathens and self.openathens_authenticator:
             try:
@@ -458,10 +556,6 @@ class PDFDownloader:
             except Exception as e:
                 logger.debug(f"Failed to get OpenAthens session: {e}")
         
-        # Future: Check other authentication providers here
-        # if self.use_ezproxy and self.ezproxy_authenticator:
-        #     ...
-        
         return None
 
     def _should_use_strategy(self, strategy: str) -> bool:
@@ -473,6 +567,10 @@ class PDFDownloader:
                 self.use_openathens
                 and self.openathens_authenticator is not None
             )
+        elif strategy == "EZProxy":
+            return self.ezproxy_authenticator is not None
+        elif strategy == "Shibboleth":
+            return self.shibboleth_authenticator is not None
         elif strategy == "Zotero translators":
             return (
                 self.use_translators
@@ -550,6 +648,70 @@ class PDFDownloader:
             return result
         except Exception as e:
             logger.error(f"OpenAthens download failed: {e}")
+            return None
+    
+    async def _try_ezproxy_async(
+        self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
+    ) -> Optional[Path]:
+        """Try download using EZProxy authenticated access."""
+        if not self.ezproxy_authenticator:
+            return None
+            
+        try:
+            # Import strategy only when needed
+            from ._EZProxyDownloadStrategy import EZProxyDownloadStrategy
+            
+            strategy = EZProxyDownloadStrategy(
+                ezproxy_authenticator=self.ezproxy_authenticator,
+                timeout=self.timeout
+            )
+            
+            logger.info(f"Trying EZProxy download for {url}")
+            
+            # Use the strategy to download
+            success = await strategy.download(url, output_path)
+            
+            if success and output_path.exists():
+                logger.info(f"Successfully downloaded via EZProxy: {output_path}")
+                self._download_methods[str(output_path)] = "EZProxy"
+                return output_path
+            else:
+                return None
+                
+        except Exception as e:
+            logger.error(f"EZProxy download failed: {e}")
+            return None
+    
+    async def _try_shibboleth_async(
+        self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
+    ) -> Optional[Path]:
+        """Try download using Shibboleth authenticated access."""
+        if not self.shibboleth_authenticator:
+            return None
+            
+        try:
+            # Import strategy only when needed
+            from ._ShibbolethDownloadStrategy import ShibbolethDownloadStrategy
+            
+            strategy = ShibbolethDownloadStrategy(
+                shibboleth_authenticator=self.shibboleth_authenticator,
+                timeout=self.timeout
+            )
+            
+            logger.info(f"Trying Shibboleth download for {url}")
+            
+            # Use the strategy to download
+            success = await strategy.download(url, output_path)
+            
+            if success and output_path.exists():
+                logger.info(f"Successfully downloaded via Shibboleth: {output_path}")
+                self._download_methods[str(output_path)] = "Shibboleth"
+                return output_path
+            else:
+                return None
+                
+        except Exception as e:
+            logger.error(f"Shibboleth download failed: {e}")
             return None
 
     async def _try_zotero_translator_async(
@@ -1702,6 +1864,29 @@ class PDFDownloader:
                 await browser.close()
         
         return None
+
+    def _init_shibboleth(self) -> None:
+        """Initialize Shibboleth authenticator from config."""
+        if not self._config:
+            logger.warning("Cannot initialize Shibboleth: no config set")
+            return
+            
+        try:
+            from ..auth import ShibbolethAuthenticator
+            
+            self.shibboleth_authenticator = ShibbolethAuthenticator(
+                institution=getattr(self._config, 'shibboleth_institution', None),
+                idp_url=getattr(self._config, 'shibboleth_idp_url', None),
+                username=getattr(self._config, 'shibboleth_username', None),
+                password=getattr(self._config, 'shibboleth_password', None),
+                entity_id=getattr(self._config, 'shibboleth_entity_id', None),
+                timeout=self.timeout,
+                debug_mode=self.debug_mode,
+            )
+            logger.info("Shibboleth authenticator initialized from config")
+        except Exception as e:
+            logger.warning(f"Failed to initialize Shibboleth: {e}")
+            self.shibboleth_authenticator = None
 
 
 # Convenience functions

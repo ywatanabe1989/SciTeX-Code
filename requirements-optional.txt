@@ -1,0 +1,28 @@
+# Optional dependencies for SciTeX
+# Install with: pip install -r requirements-optional.txt
+# Or install specific feature sets as shown below
+
+# Machine Learning Features
+# pip install scitex[ml]
+imbalanced-learn>=0.11.0  # For data resampling (undersample/oversample)
+pytorch-optimizer>=3.0.0  # Additional optimizers (Ranger, etc.)
+
+# PDF Processing Features  
+# pip install scitex[pdf]
+PyPDF2>=3.0.0            # Basic PDF reading
+pdfplumber>=0.10.0       # Advanced PDF text extraction
+PyMuPDF>=1.23.0          # Recommended PDF processor (fitz)
+
+# Signal Processing Features
+# pip install scitex[signal]
+wavelets-pytorch>=1.0.0  # Wavelet transforms for spectrograms
+
+# File Type Detection
+# pip install scitex[files]
+python-magic>=0.4.0      # File type detection
+
+# All optional dependencies
+# pip install scitex[all]
+
+# Note: Core functionality works without these packages.
+# They are only needed for specific features as indicated above.

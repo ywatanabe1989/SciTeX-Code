@@ -128,36 +128,8 @@ class Scholar:
             email_crossref=self.config.crossref_email,
         )
 
-        # Prepare OpenAthens config if enabled
-        openathens_config = None
-        if self.config.openathens_enabled:
-            openathens_config = {
-                "email": self.config.openathens_email,
-                "debug_mode": (
-                    self.config.debug_mode
-                    if hasattr(self.config, "debug_mode")
-                    else False
-                ),
-            }
-
-        # Use PDFDownloader directly
-        self._pdf_downloader = PDFDownloader(
-            download_dir=(
-                Path(self.config.pdf_dir).expanduser()
-                if self.config.pdf_dir
-                else None
-            ),
-            use_translators=True,
-            use_playwright=True,
-            use_openathens=self.config.openathens_enabled,
-            openathens_config=openathens_config,
-            use_lean_library=self.config.use_lean_library,
-            zenrows_api_key=self.config.zenrows_api_key,  # Auto-enables if present
-            timeout=30,
-            max_retries=3,
-            max_concurrent=self.config.max_parallel_requests,
-            debug_mode=self.config.debug_mode,
-        )
+        # Initialize PDF downloader
+        self._initialize_pdf_downloader()
 
         # Initialize DOI resolver
         self._doi_resolver = DOIResolver(
@@ -1414,6 +1386,42 @@ class Scholar:
 
         return results
 
+    def _initialize_pdf_downloader(self):
+        """Initialize or reinitialize the PDF downloader with current configuration."""
+        # Prepare OpenAthens config if enabled
+        openathens_config = None
+        if self.config.openathens_enabled:
+            openathens_config = {
+                "email": self.config.openathens_email,
+                "debug_mode": (
+                    self.config.debug_mode
+                    if hasattr(self.config, "debug_mode")
+                    else False
+                ),
+            }
+
+        # Initialize PDFDownloader with config
+        self._pdf_downloader = PDFDownloader(
+            download_dir=(
+                Path(self.config.pdf_dir).expanduser()
+                if self.config.pdf_dir
+                else None
+            ),
+            use_translators=True,
+            use_playwright=True,
+            use_openathens=self.config.openathens_enabled,
+            openathens_config=openathens_config,
+            use_lean_library=self.config.use_lean_library,
+            zenrows_api_key=self.config.zenrows_api_key,  # Auto-enables if present
+            timeout=30,
+            max_retries=3,
+            max_concurrent=self.config.max_parallel_requests,
+            debug_mode=self.config.debug_mode,
+        )
+        
+        # Pass config to downloader for EZProxy support
+        self._pdf_downloader.config = self.config
+
     def _print_config_summary(self):
         """Print configuration summary on initialization."""
         print("\n" + "=" * 60)
@@ -1481,6 +1489,21 @@ class Scholar:
                 print(f"    - IdP URL: {self.config.openathens_idp_url}")
         else:
             print(f"  • OpenAthens: ✗ Disabled")
+            
+        # Shibboleth status
+        if self.config.shibboleth_enabled:
+            print(
+                f"  • Shibboleth: ✓ Enabled ({self.config.shibboleth_institution or 'No institution set'})"
+            )
+            if self.config.shibboleth_username:
+                masked_user = mask_sensitive(
+                    self.config.shibboleth_username, 3
+                )
+                print(f"    - Username: {masked_user}")
+            if self.config.shibboleth_idp_url:
+                print(f"    - IdP URL: {self.config.shibboleth_idp_url}")
+        else:
+            print(f"  • Shibboleth: ✗ Disabled")
 
         # Settings
         print("\n📁 Settings:")
@@ -1493,6 +1516,218 @@ class Scholar:
         print("\n💡 Tip: Configure with environment variables or YAML file")
         print("  See: stx.scholar.ScholarConfig.show_env_vars()")
         print("=" * 60 + "\n")
+    
+    def configure_ezproxy(
+        self,
+        proxy_url: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        institution: Optional[str] = None,
+        save_to_env: bool = False
+    ):
+        """
+        Configure EZProxy authentication.
+        
+        Args:
+            proxy_url: EZProxy server URL (e.g., 'https://ezproxy.library.edu')
+            username: Username for authentication
+            password: Password for authentication  
+            institution: Institution name
+            save_to_env: Save configuration to environment variables
+            
+        Example:
+            scholar.configure_ezproxy(
+                proxy_url="https://ezproxy.myuni.edu",
+                username="johndoe",
+                institution="My University"
+            )
+        """
+        import getpass
+        
+        # Update configuration
+        self.config.ezproxy_enabled = True
+        
+        if proxy_url:
+            self.config.ezproxy_url = proxy_url
+        elif not self.config.ezproxy_url:
+            self.config.ezproxy_url = input("EZProxy URL: ")
+            
+        if username:
+            self.config.ezproxy_username = username
+        elif not self.config.ezproxy_username:
+            self.config.ezproxy_username = input("EZProxy username: ")
+            
+        if password:
+            self.config.ezproxy_password = password
+            
+        if institution:
+            self.config.ezproxy_institution = institution
+            
+        # Save to environment if requested
+        if save_to_env:
+            env_vars = {
+                "SCITEX_SCHOLAR_EZPROXY_ENABLED": "true",
+                "SCITEX_SCHOLAR_EZPROXY_URL": self.config.ezproxy_url,
+                "SCITEX_SCHOLAR_EZPROXY_USERNAME": self.config.ezproxy_username,
+            }
+            if self.config.ezproxy_institution:
+                env_vars["SCITEX_SCHOLAR_EZPROXY_INSTITUTION"] = self.config.ezproxy_institution
+                
+            print("\nAdd these to your environment:")
+            for key, value in env_vars.items():
+                if value:
+                    print(f'export {key}="{value}"')
+                    
+        # Reinitialize PDF downloader with EZProxy
+        self._initialize_pdf_downloader()
+        
+        logger.info(f"EZProxy configured for {self.config.ezproxy_url}")
+        
+    async def authenticate_ezproxy_async(self, force: bool = False) -> bool:
+        """
+        Authenticate with EZProxy (async).
+        
+        Args:
+            force: Force re-authentication even if session exists
+            
+        Returns:
+            True if authentication successful
+        """
+        if not self.config.ezproxy_enabled:
+            raise ScholarError(
+                "EZProxy not configured. Call configure_ezproxy() first."
+            )
+            
+        if not self._pdf_downloader.ezproxy_authenticator:
+            raise ScholarError("EZProxy authenticator not initialized")
+            
+        result = await self._pdf_downloader.ezproxy_authenticator.authenticate(force=force)
+        return bool(result)
+        
+    def authenticate_ezproxy(self, force: bool = False) -> bool:
+        """
+        Authenticate with EZProxy (sync).
+        
+        Args:
+            force: Force re-authentication even if session exists
+            
+        Returns:
+            True if authentication successful
+        """
+        return self._run_async(self.authenticate_ezproxy_async(force))
+        
+    async def is_ezproxy_authenticated_async(self) -> bool:
+        """
+        Check if EZProxy is authenticated (async).
+        
+        Returns:
+            True if authenticated and session is valid
+        """
+        if not self._pdf_downloader.ezproxy_authenticator:
+            return False
+        return await self._pdf_downloader.ezproxy_authenticator.is_authenticated()
+        
+    def is_ezproxy_authenticated(self) -> bool:
+        """
+        Check if EZProxy is authenticated (sync).
+        
+        Returns:
+            True if authenticated and session is valid
+        """
+        return self._run_async(self.is_ezproxy_authenticated_async())
+        
+    def configure_shibboleth(
+        self, 
+        institution: Optional[str] = None,
+        idp_url: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        entity_id: Optional[str] = None
+    ) -> None:
+        """
+        Configure Shibboleth authentication.
+        
+        Args:
+            institution: Institution name (e.g., 'University of Example')
+            idp_url: Identity Provider URL
+            username: Username for authentication
+            password: Password for authentication
+            entity_id: Entity ID for the institution
+        """
+        # Update config with provided values
+        if institution:
+            self.config.shibboleth_institution = institution
+        if idp_url:
+            self.config.shibboleth_idp_url = idp_url
+        if username:
+            self.config.shibboleth_username = username
+        if password:
+            self.config.shibboleth_password = password
+        if entity_id:
+            self.config.shibboleth_entity_id = entity_id
+            
+        # Enable Shibboleth
+        self.config.shibboleth_enabled = True
+        
+        # Reinitialize downloader with new config
+        self._initialize_pdf_downloader()
+        
+        # Initialize Shibboleth in downloader
+        if hasattr(self._pdf_downloader, '_init_shibboleth'):
+            self._pdf_downloader._init_shibboleth()
+            
+    async def authenticate_shibboleth_async(self, force: bool = False) -> bool:
+        """
+        Authenticate with Shibboleth (async).
+        
+        Args:
+            force: Force re-authentication even if session exists
+            
+        Returns:
+            True if authentication successful
+        """
+        if not self._pdf_downloader.shibboleth_authenticator:
+            # Initialize Shibboleth if not already done
+            if hasattr(self._pdf_downloader, '_init_shibboleth'):
+                self._pdf_downloader._init_shibboleth()
+            
+        if not self._pdf_downloader.shibboleth_authenticator:
+            raise ValueError("Shibboleth not configured. Call configure_shibboleth() first.")
+            
+        result = await self._pdf_downloader.shibboleth_authenticator.authenticate(force=force)
+        return bool(result.get("cookies"))
+        
+    def authenticate_shibboleth(self, force: bool = False) -> bool:
+        """
+        Authenticate with Shibboleth (sync).
+        
+        Args:
+            force: Force re-authentication even if session exists
+            
+        Returns:
+            True if authentication successful
+        """
+        return self._run_async(self.authenticate_shibboleth_async(force))
+        
+    async def is_shibboleth_authenticated_async(self) -> bool:
+        """
+        Check if Shibboleth is authenticated (async).
+        
+        Returns:
+            True if authenticated and session is valid
+        """
+        if not self._pdf_downloader.shibboleth_authenticator:
+            return False
+        return await self._pdf_downloader.shibboleth_authenticator.is_authenticated()
+        
+    def is_shibboleth_authenticated(self) -> bool:
+        """
+        Check if Shibboleth is authenticated (sync).
+        
+        Returns:
+            True if authenticated and session is valid
+        """
+        return self._run_async(self.is_shibboleth_authenticated_async())
 
     def _run_async(self, coro):
         """Run async coroutine in sync context."""

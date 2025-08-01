@@ -190,7 +190,7 @@ class DOIResolver:
         authors: Optional[List[str]] = None,
         sources: Optional[List[str]] = None,
     ) -> Optional[str]:
-        """Resolve DOI from title using concurrent requests.
+        """Resolve DOI from title - tries sources sequentially, stops after first success.
 
         Args:
             title: Paper title
@@ -206,22 +206,26 @@ class DOIResolver:
 
         sources_list = sources or self.sources
 
-        # Create tasks for all sources
-        tasks = []
+        # Try sources sequentially - stop after first success
         for source_name in sources_list:
             source = self._get_source(source_name)
-            if source:
-                tasks.append(
-                    self._search_source_async(source, title, year, authors)
-                )
-
-        # Run all searches concurrently
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Return first successful result
-        for result in results:
-            if isinstance(result, str) and result:
-                return result
+            if not source:
+                continue
+                
+            try:
+                # Try this source
+                doi = await self._search_source_async(source, title, year, authors)
+                
+                if doi:
+                    # Success! Return immediately, no need to try other sources
+                    return doi
+                    
+            except Exception as e:
+                logger.debug(f"Error searching {source_name}: {e}")
+                continue
+                
+            # Small delay between sources to be polite
+            await asyncio.sleep(0.1)
 
         return None
 

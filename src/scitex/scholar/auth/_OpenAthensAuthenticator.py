@@ -506,6 +506,81 @@ class OpenAthensAuthenticator(BaseAuthenticator, BrowserMixin):
 
         return f" (expires in {hours}h {minutes}m)"
 
+    async def download_with_auth_async(self, url: str, output_path: Path) -> Optional[Path]:
+        """Download a file using authenticated session.
+        
+        Args:
+            url: URL to download from
+            output_path: Path to save the downloaded file
+            
+        Returns:
+            Path to the downloaded file if successful, None otherwise
+        """
+        from pathlib import Path
+        import aiofiles
+        import httpx
+        
+        try:
+            # Ensure we're authenticated
+            if not await self.is_authenticated():
+                logger.warning("Not authenticated - attempting to authenticate")
+                auth_result = await self.authenticate()
+                if not auth_result:
+                    logger.error("Failed to authenticate for download")
+                    return None
+            
+            # Get auth cookies
+            cookies = await self.get_auth_cookies()
+            cookie_dict = {}
+            for cookie in cookies:
+                cookie_dict[cookie['name']] = cookie['value']
+            
+            # Get auth headers
+            headers = await self.get_auth_headers()
+            headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1'
+            })
+            
+            logger.info(f"Downloading {url} with OpenAthens authentication")
+            
+            # Create output directory if needed
+            output_path = Path(output_path)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Download with authentication
+            async with httpx.AsyncClient(
+                cookies=cookie_dict,
+                headers=headers,
+                follow_redirects=True,
+                timeout=30.0
+            ) as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                
+                # Check if it's a PDF
+                content_type = response.headers.get('content-type', '')
+                if 'pdf' not in content_type.lower() and not url.endswith('.pdf'):
+                    logger.warning(f"Response may not be a PDF. Content-Type: {content_type}")
+                
+                # Save the file
+                async with aiofiles.open(output_path, 'wb') as f:
+                    await f.write(response.content)
+                
+                logger.success(f"Downloaded to {output_path}")
+                return output_path
+                
+        except httpx.HTTPStatusError as e:
+            logger.error(f"HTTP error during download: {e.response.status_code} - {e.response.text[:200]}")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to download with OpenAthens auth: {e}")
+            return None
+
 
 async def main():
     import argparse

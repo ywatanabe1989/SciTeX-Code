@@ -66,10 +66,10 @@ class SemanticScholarSource(BaseDOISource):
 
     @retry(
         stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=2, min=10, max=120),
+        wait=wait_exponential(multiplier=1.5, min=2, max=60),
         retry=retry_if_exception(is_rate_limited),
         before_sleep=lambda retry_state: logger.info(
-            f"Rate limited, retrying in {retry_state.next_action.sleep} seconds..."
+            f"Rate limited, retrying in {retry_state.next_action.sleep:.1f} seconds..."
         ),
     )
     def search(
@@ -141,10 +141,10 @@ class SemanticScholarSource(BaseDOISource):
 
     @retry(
         stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=2, min=10, max=120),
+        wait=wait_exponential(multiplier=1.5, min=2, max=60),
         retry=retry_if_exception(is_rate_limited),
         before_sleep=lambda retry_state: logger.info(
-            f"Rate limited, retrying in {retry_state.next_action.sleep} seconds..."
+            f"Rate limited, retrying in {retry_state.next_action.sleep:.1f} seconds..."
         ),
     )
     def get_metadata(

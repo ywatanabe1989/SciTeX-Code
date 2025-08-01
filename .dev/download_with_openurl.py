@@ -1,81 +1,131 @@
 #!/usr/bin/env python3
-"""Download paper using OpenURL resolver with OpenAthens."""
+"""Download PDFs using OpenURL resolver for institutional access."""
 
+import json
 import os
+import sys
+import asyncio
 from pathlib import Path
-from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.open_url import OpenURLResolver
-from scitex.scholar.download import PDFDownloader
 
-def download_paper_with_openurl():
-    """Download paper using OpenURL resolver."""
+# Add the src directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from scitex import logging
+
+logger = logging.getLogger(__name__)
+
+
+async def download_papers_with_dois():
+    """Download papers that have DOIs using OpenURL."""
     
-    # Paper details
-    doi = "10.1016/j.neubiorev.2020.07.005"
-    output_dir = Path("pdfs")
-    output_dir.mkdir(exist_ok=True)
+    # Load merged data with DOIs
+    with open('papers_merged_download_data.json') as f:
+        papers = json.load(f)
     
-    print("Setting up authentication...")
-    auth_manager = AuthenticationManager()
+    # Load DOI resolution data if available
+    doi_files = list(Path('.').glob('doi_resolution_*.json'))
+    doi_map = {}
     
-    # Check if we have OpenAthens credentials
-    if auth_manager.has_openathens_credentials():
-        print("OpenAthens credentials found")
-    else:
-        print("No OpenAthens credentials found - manual login may be required")
+    for doi_file in doi_files:
+        try:
+            with open(doi_file) as f:
+                data = json.load(f)
+                if 'papers' in data:
+                    for key, info in data['papers'].items():
+                        if info.get('status') == 'resolved' and 'doi' in info:
+                            doi_map[info['title'].lower()] = info['doi']
+        except:
+            continue
     
-    print(f"\nResolving DOI {doi} via OpenURL...")
+    print(f"Loaded {len(doi_map)} resolved DOIs")
     
-    # Use OpenURL resolver
-    resolver = OpenURLResolver(auth_manager)
+    # Find papers to download
+    papers_to_download = []
     
-    # Build OpenURL for the paper
-    result = resolver._resolve_single(
-        doi=doi,
-        title="Generative models, linguistic communication and active inference",
-        authors=["Friston, Karl J.", "Parr, Thomas", "Yufik, Yan", "Sajid, Noor", "Price, Catherine J.", "Holmes, Emma"],
-        journal="Neuroscience & Biobehavioral Reviews",
-        year=2020,
-        volume=118,
-        pages="42-64"
+    for paper in papers[:20]:  # First 20 papers
+        # Check if we need to download
+        pdf_path = Path('downloaded_papers') / paper['filename']
+        if pdf_path.exists():
+            continue
+        
+        # Try to find DOI
+        doi = None
+        if paper.get('doi'):
+            doi = paper['doi']
+        elif paper['title'].lower() in doi_map:
+            doi = doi_map[paper['title'].lower()]
+        
+        if doi:
+            papers_to_download.append({
+                'title': paper['title'],
+                'doi': doi,
+                'filename': paper['filename'],
+                'index': paper['index']
+            })
+    
+    print(f"\nFound {len(papers_to_download)} papers with DOIs to download")
+    
+    # Create download URLs using OpenURL
+    openurl_base = os.getenv(
+        "SCITEX_SCHOLAR_OPENURL_RESOLVER_URL",
+        "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
     )
     
-    if result and result.get("success"):
-        final_url = result.get("final_url")
-        print(f"\n✅ OpenURL resolved to: {final_url}")
-        print(f"Access type: {result.get('access_type')}")
+    # Create browser script to open tabs
+    browser_script = []
+    browser_script.append("#!/bin/bash")
+    browser_script.append("# Open papers in browser tabs for manual download")
+    browser_script.append("")
+    
+    for paper in papers_to_download[:10]:  # First 10
+        print(f"\n{'='*60}")
+        print(f"Paper {paper['index']}: {paper['title']}")
+        print(f"DOI: {paper['doi']}")
+        print(f"Target: {paper['filename']}")
         
-        # Try to download the PDF if we reached a publisher page
-        if "sciencedirect.com" in final_url or "elsevier.com" in final_url:
-            print("\nAttempting to download PDF...")
-            
-            # Use PDFDownloader with the resolved URL
-            downloader = PDFDownloader(auth_manager=auth_manager)
-            
-            # Create a Paper object with the resolved URL
-            from scitex.scholar import Paper
-            paper = Paper(
-                doi=doi,
-                title="Generative models, linguistic communication and active inference",
-                url=final_url
-            )
-            
-            # Download the PDF
-            success = downloader.download_pdf(
-                paper=paper,
-                output_dir=str(output_dir)
-            )
-            
-            if success and paper.pdf_path:
-                print(f"\n✅ PDF downloaded successfully to: {paper.pdf_path}")
-            else:
-                print("\n❌ Failed to download PDF")
-                print("Manual download may be required from the browser")
-    else:
-        print(f"\n❌ OpenURL resolution failed")
-        if result:
-            print(f"Access type: {result.get('access_type')}")
-            print(f"Resolver URL: {result.get('resolver_url')}")
+        # Create OpenURL
+        openurl = f"{openurl_base}?url_ver=Z39.88-2004&rft_id=info:doi/{paper['doi']}&svc_id=fulltext"
+        print(f"OpenURL: {openurl}")
+        
+        browser_script.append(f"# Paper {paper['index']}: {paper['title'][:50]}...")
+        browser_script.append(f"xdg-open '{openurl}'")
+        browser_script.append("sleep 2  # Wait between tabs")
+        browser_script.append("")
+    
+    # Save browser script
+    script_path = Path('.dev/open_papers_in_browser.sh')
+    with open(script_path, 'w') as f:
+        f.write('\n'.join(browser_script))
+    
+    script_path.chmod(0o755)
+    print(f"\n{'='*60}")
+    print(f"Created browser script: {script_path}")
+    print("Run this script to open papers in browser tabs:")
+    print(f"  ./{script_path}")
+    
+    # Also create a download status report
+    report = {
+        'total_papers': len(papers),
+        'already_downloaded': len([p for p in papers if (Path('downloaded_papers') / p['filename']).exists()]),
+        'papers_with_dois': len([p for p in papers if p.get('doi') or p['title'].lower() in doi_map]),
+        'papers_to_download': len(papers_to_download),
+        'download_urls': [
+            {
+                'index': p['index'],
+                'title': p['title'],
+                'doi': p['doi'],
+                'filename': p['filename'],
+                'openurl': f"{openurl_base}?url_ver=Z39.88-2004&rft_id=info:doi/{p['doi']}&svc_id=fulltext"
+            }
+            for p in papers_to_download[:10]
+        ]
+    }
+    
+    with open('.dev/download_status_report.json', 'w') as f:
+        json.dump(report, f, indent=2)
+    
+    print(f"\nSaved download status report: .dev/download_status_report.json")
+
 
 if __name__ == "__main__":
-    download_paper_with_openurl()
+    asyncio.run(download_papers_with_dois())

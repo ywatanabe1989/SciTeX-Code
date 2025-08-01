@@ -64,10 +64,19 @@ export SCITEX_OUTPUT_DIR=./my_outputs
 
 ## Implementation Steps
 1. ✅ Create enhanced environment detection module
-2. ⬜ Update `scitex.io._save.py` to use new detection
-3. ⬜ Add configuration parameters
-4. ⬜ Update documentation and examples
-5. ⬜ Test in all environments
+2. ✅ Update `scitex.io._save.py` to use new detection
+3. ✅ Add configuration parameters
+4. ✅ Update documentation and examples
+5. ✅ Test in all environments
+
+## Status: ✅ COMPLETED (2025-08-01)
+
+The feature has been fully implemented:
+- Enhanced environment detection in `_detect_environment.py`
+- Notebook path detection in `_get_notebook_path.py`
+- Save function updated to use `{notebook}_out/` pattern
+- Works correctly for scripts, notebooks, and other environments
+- Tested and verified working
 
 ## Alternative Approaches
 1. **Always use current directory** - simpler but breaks existing workflows
