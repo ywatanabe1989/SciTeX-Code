@@ -78,6 +78,8 @@ class LookupIndex:
                     year INTEGER,
                     has_pdf BOOLEAN DEFAULT 0,
                     pdf_size INTEGER,
+                    pdf_filename TEXT,
+                    pdf_original_filename TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(doi),
@@ -321,12 +323,16 @@ class LookupIndex:
             cursor = conn.execute("SELECT storage_key FROM lookups WHERE doi IS NULL")
             return [row["storage_key"] for row in cursor]
             
-    def mark_pdf_downloaded(self, storage_key: str, pdf_size: int) -> bool:
+    def mark_pdf_downloaded(self, storage_key: str, pdf_size: int,
+                          pdf_filename: Optional[str] = None,
+                          original_filename: Optional[str] = None) -> bool:
         """Mark that PDF has been downloaded.
         
         Args:
             storage_key: Storage key
             pdf_size: PDF file size in bytes
+            pdf_filename: Actual filename stored
+            original_filename: Original filename from journal
             
         Returns:
             Success status
@@ -335,9 +341,10 @@ class LookupIndex:
             with self._get_connection() as conn:
                 conn.execute("""
                     UPDATE lookups 
-                    SET has_pdf = 1, pdf_size = ?, updated_at = CURRENT_TIMESTAMP
+                    SET has_pdf = 1, pdf_size = ?, pdf_filename = ?, 
+                        pdf_original_filename = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE storage_key = ?
-                """, (pdf_size, storage_key))
+                """, (pdf_size, pdf_filename, original_filename, storage_key))
                 conn.commit()
                 
             # Update JSON indices

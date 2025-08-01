@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 21:46:49 (ywatanabe)"
+# Timestamp: "2025-08-02 02:50:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,6 +15,7 @@ from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from scitex import logging
 
+from .._BrowserConfig import BrowserConfiguration, BrowserMode, get_browser_config
 from ._BrowserMixin import BrowserMixin
 from ._ChromeExtensionManager import ChromeExtensionManager
 from .utils._StealthManager import StealthManager
@@ -23,20 +24,285 @@ logger = logging.getLogger(__name__)
 
 
 class BrowserManager(BrowserMixin):
-    """Manages a local browser instance with stealth enhancements."""
+    """Manages a local browser instance with stealth enhancements and invisible mode."""
 
     def __init__(
         self,
         auth_manager=None,
         headless: bool = True,
         profile_name: str = "scholar_default",
+        invisible: bool = False,
+        viewport_size: tuple = None,
+        window_position: tuple = None,
+        config: BrowserConfiguration = None,
     ):
-        super().__init__(headless=headless)
+        """
+        Initialize BrowserManager with invisible browser capabilities.
+
+        Args:
+            auth_manager: Authentication manager instance
+            headless: Whether to run in headless mode
+            profile_name: Chrome profile name for extensions
+            invisible: Enable invisible mode (1x1 pixel window + dimension spoofing)
+            viewport_size: Custom viewport size (width, height). Defaults to (1920, 1080) or (1, 1) for invisible
+            window_position: Window position (x, y). Only applies to visible windows
+            config: BrowserConfiguration instance (overrides other parameters if provided)
+        """
+        # Use centralized config if provided, otherwise use individual parameters
+        if config:
+            self.config = config
+            super().__init__(headless=config.headless)
+            self.invisible = config.invisible
+            self.viewport_size = config.viewport_size
+            self.window_position = config.window_position
+            self.profile_name = config.profile_name
+            logger.info(f"🔧 Using centralized browser config: {config}")
+        else:
+            # Legacy parameter-based initialization
+            super().__init__(headless=headless)
+            self.invisible = invisible
+            self.viewport_size = viewport_size
+            self.window_position = window_position
+            self.profile_name = profile_name
+
+            # Set default viewport based on invisible mode
+            if self.invisible:
+                self.viewport_size = self.viewport_size or (
+                    1,
+                    1,
+                )  # 1x1 pixel for invisibility
+                self.headless = (
+                    False  # Must be visible to bypass bot detection
+                )
+                logger.info(
+                    "🎭 Invisible mode enabled: 1x1 pixel window with dimension spoofing"
+                )
+            else:
+                self.viewport_size = self.viewport_size or (
+                    1920,
+                    1080,
+                )  # Standard desktop size
+
+            # Create config object for consistency
+            self.config = BrowserConfiguration(
+                mode=BrowserMode.INVISIBLE if invisible else BrowserMode.DEBUG,
+                headless=self.headless,
+                invisible=self.invisible,
+                viewport_size=self.viewport_size,
+                window_position=self.window_position,
+                capture_screenshots=False,
+                profile_name=self.profile_name,
+            )
+
         self.auth_manager = auth_manager
         if auth_manager is None:
             logger.warn(f"auth_manager not passed")
-        self.extension_manager = ChromeExtensionManager(profile_name)
+
+        self.extension_manager = ChromeExtensionManager(self.profile_name)
         self.stealth_manager = StealthManager()
+
+    def _get_dimension_spoofing_script(self) -> str:
+        """
+        Generate comprehensive JavaScript dimension spoofing script for invisible browser mode.
+
+        This creates a dual-layer window configuration:
+        - Physical window: 1x1 pixel (invisible to user)
+        - Reported dimensions: 1920x1080 (natural desktop size for bot detection)
+
+        The script is bulletproof and handles all dimension-related APIs that
+        bot detectors commonly check.
+        """
+        if not self.invisible:
+            return ""
+
+        return """
+            (() => {
+                // Target dimensions to report to JavaScript (natural desktop)
+                const TARGET_WINDOW_WIDTH = 1920;
+                const TARGET_WINDOW_HEIGHT = 1080;
+                const TARGET_SCREEN_WIDTH = 1920;
+                const TARGET_SCREEN_HEIGHT = 1080;
+                const TARGET_AVAILABLE_WIDTH = 1920;
+                const TARGET_AVAILABLE_HEIGHT = 1040; // Account for taskbar
+
+                console.log('🎭 [Dimension Spoofing] Initializing comprehensive window spoofing...');
+
+                // === WINDOW DIMENSIONS ===
+                // Override all window size properties
+                Object.defineProperty(window, 'innerWidth', {
+                    get: () => TARGET_WINDOW_WIDTH,
+                    configurable: true
+                });
+
+                Object.defineProperty(window, 'innerHeight', {
+                    get: () => TARGET_WINDOW_HEIGHT,
+                    configurable: true
+                });
+
+                Object.defineProperty(window, 'outerWidth', {
+                    get: () => TARGET_WINDOW_WIDTH,
+                    configurable: true
+                });
+
+                Object.defineProperty(window, 'outerHeight', {
+                    get: () => TARGET_WINDOW_HEIGHT + 100, // Account for browser chrome
+                    configurable: true
+                });
+
+                // Override client dimensions (commonly checked by bot detectors)
+                if (document.documentElement) {
+                    Object.defineProperty(document.documentElement, 'clientWidth', {
+                        get: () => TARGET_WINDOW_WIDTH,
+                        configurable: true
+                    });
+
+                    Object.defineProperty(document.documentElement, 'clientHeight', {
+                        get: () => TARGET_WINDOW_HEIGHT,
+                        configurable: true
+                    });
+                }
+
+                // === SCREEN DIMENSIONS ===
+                // Override all screen properties
+                Object.defineProperty(window.screen, 'width', {
+                    get: () => TARGET_SCREEN_WIDTH,
+                    configurable: true
+                });
+
+                Object.defineProperty(window.screen, 'height', {
+                    get: () => TARGET_SCREEN_HEIGHT,
+                    configurable: true
+                });
+
+                Object.defineProperty(window.screen, 'availWidth', {
+                    get: () => TARGET_AVAILABLE_WIDTH,
+                    configurable: true
+                });
+
+                Object.defineProperty(window.screen, 'availHeight', {
+                    get: () => TARGET_AVAILABLE_HEIGHT,
+                    configurable: true
+                });
+
+                // === VIEWPORT AND VISUAL DIMENSIONS ===
+                // Override visual viewport (modern API)
+                if (window.visualViewport) {
+                    Object.defineProperty(window.visualViewport, 'width', {
+                        get: () => TARGET_WINDOW_WIDTH,
+                        configurable: true
+                    });
+
+                    Object.defineProperty(window.visualViewport, 'height', {
+                        get: () => TARGET_WINDOW_HEIGHT,
+                        configurable: true
+                    });
+                }
+
+                // === DOCUMENT DIMENSIONS ===
+                // Override document element dimensions (wait for DOM to be ready)
+                const overrideDocumentDimensions = () => {
+                    if (document.documentElement) {
+                        Object.defineProperty(document.documentElement, 'clientWidth', {
+                            get: () => TARGET_WINDOW_WIDTH,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.documentElement, 'clientHeight', {
+                            get: () => TARGET_WINDOW_HEIGHT,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.documentElement, 'offsetWidth', {
+                            get: () => TARGET_WINDOW_WIDTH,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.documentElement, 'offsetHeight', {
+                            get: () => TARGET_WINDOW_HEIGHT,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.documentElement, 'scrollWidth', {
+                            get: () => TARGET_WINDOW_WIDTH,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.documentElement, 'scrollHeight', {
+                            get: () => TARGET_WINDOW_HEIGHT,
+                            configurable: true
+                        });
+                    }
+
+                    if (document.body) {
+                        Object.defineProperty(document.body, 'clientWidth', {
+                            get: () => TARGET_WINDOW_WIDTH,
+                            configurable: true
+                        });
+
+                        Object.defineProperty(document.body, 'clientHeight', {
+                            get: () => TARGET_WINDOW_HEIGHT,
+                            configurable: true
+                        });
+                    }
+                };
+
+                // Apply immediately if DOM is ready, otherwise wait
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', overrideDocumentDimensions);
+                } else {
+                    overrideDocumentDimensions();
+                }
+
+                // === MEDIA QUERIES ===
+                // Override matchMedia for responsive design queries
+                const originalMatchMedia = window.matchMedia;
+                window.matchMedia = function(query) {
+                    const result = originalMatchMedia.call(this, query);
+
+                    // Override common responsive breakpoints based on our spoofed dimensions
+                    if (query.includes('max-width')) {
+                        const maxWidth = parseInt(query.match(/max-width:\\s*(\d+)px/)?.[1] || '0');
+                        if (maxWidth < TARGET_WINDOW_WIDTH) {
+                            Object.defineProperty(result, 'matches', { get: () => false });
+                        }
+                    }
+
+                    if (query.includes('min-width')) {
+                        const minWidth = parseInt(query.match(/min-width:\\s*(\d+)px/)?.[1] || '0');
+                        if (minWidth <= TARGET_WINDOW_WIDTH) {
+                            Object.defineProperty(result, 'matches', { get: () => true });
+                        }
+                    }
+
+                    return result;
+                };
+
+                // === EVENT HANDLING ===
+                // Override resize events to maintain consistency
+                const originalAddEventListener = window.addEventListener;
+                window.addEventListener = function(type, listener, options) {
+                    if (type === 'resize') {
+                        // Intercept resize events and provide spoofed dimensions
+                        const wrappedListener = function(event) {
+                            // Create a mock resize event with spoofed dimensions
+                            const mockEvent = new Event('resize');
+                            Object.defineProperty(mockEvent, 'target', {
+                                value: {
+                                    innerWidth: TARGET_WINDOW_WIDTH,
+                                    innerHeight: TARGET_WINDOW_HEIGHT
+                                }
+                            });
+                            return listener.call(this, mockEvent);
+                        };
+                        return originalAddEventListener.call(this, type, wrappedListener, options);
+                    }
+                    return originalAddEventListener.call(this, type, listener, options);
+                };
+
+                console.log('🎭 [Dimension Spoofing] Complete! Physical: 1x1px, Reported: 1920x1080px');
+                console.log('🤖 [Bot Detection] Window dimensions appear natural to detection systems');
+            })();
+        """
 
     async def get_authenticated_context(
         self,
@@ -54,14 +320,19 @@ class BrowserManager(BrowserMixin):
         browser = await self.get_browser_with_profile()
 
         # With persistent context, we already have the profile and extensions loaded
-        if hasattr(self, '_shared_context') and self._shared_context:
+        if hasattr(self, "_shared_context") and self._shared_context:
             context = self._shared_context
-            logger.info("Using persistent context with profile and extensions")
+            logger.success(
+                "Using persistent context with profile and extensions"
+            )
         else:
             # Fallback to regular context creation if persistent context not available
             logger.warning("Falling back to regular context creation")
             context_options = {}
-            if self.auth_manager and await self.auth_manager.is_authenticated():
+            if (
+                self.auth_manager
+                and await self.auth_manager.is_authenticated()
+            ):
                 try:
                     auth_session = await self.auth_manager.authenticate()
                     if auth_session and "cookies" in auth_session:
@@ -80,11 +351,32 @@ class BrowserManager(BrowserMixin):
     async def _create_stealth_context(
         self, browser: Browser, **context_options
     ) -> BrowserContext:
-        """Creates a new browser context with stealth options applied."""
+        """Creates a new browser context with stealth options and invisible mode applied."""
         stealth_options = self.stealth_manager.get_stealth_options()
+
+        # Apply viewport size for invisible mode
+        if self.invisible or self.viewport_size:
+            viewport_config = {
+                "width": self.viewport_size[0],
+                "height": self.viewport_size[1],
+            }
+            stealth_options["viewport"] = viewport_config
+            logger.info(
+                f"🖥️  Viewport set to: {self.viewport_size[0]}x{self.viewport_size[1]}"
+            )
+
         merged_options = {**stealth_options, **context_options}
         context = await browser.new_context(**merged_options)
+
+        # Apply stealth script
         await context.add_init_script(self.stealth_manager.get_init_script())
+
+        # Apply dimension spoofing for invisible mode
+        dimension_spoof_script = self._get_dimension_spoofing_script()
+        if dimension_spoof_script:
+            await context.add_init_script(dimension_spoof_script)
+            logger.info("🎭 Dimension spoofing script injected")
+
         await self.cookie_acceptor.inject_auto_acceptor(context)
         return context
 
@@ -118,7 +410,7 @@ class BrowserManager(BrowserMixin):
                                 f"Found extension: {ext_dir.name} -> {latest_version}"
                             )
 
-            # Enhanced stealth launch arguments
+            # Enhanced stealth launch arguments with invisible mode support
             stealth_args = [
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
@@ -145,13 +437,45 @@ class BrowserManager(BrowserMixin):
                 "--disable-infobars",
                 "--disable-notifications",
                 "--disable-popup-blocking",
-                "--window-size=1920,1080",
             ]
+
+            # Apply window size and position based on mode
+            if self.invisible:
+                # 1x1 window for complete invisibility
+                stealth_args.extend(
+                    ["--window-size=1,1", "--window-position=0,0"]
+                )
+                logger.info(
+                    "🎭 Invisible mode: Window set to 1x1 at position 0,0"
+                )
+            else:
+                # Standard window or custom size
+                if self.viewport_size:
+                    stealth_args.append(
+                        f"--window-size={self.viewport_size[0]},{self.viewport_size[1]}"
+                    )
+                else:
+                    stealth_args.append("--window-size=1920,1080")
+
+                # Apply custom window position if specified
+                if self.window_position:
+                    stealth_args.append(
+                        f"--window-position={self.window_position[0]},{self.window_position[1]}"
+                    )
+                    logger.info(
+                        f"📐 Window positioned at: {self.window_position[0]},{self.window_position[1]}"
+                    )
+
+            logger.info(
+                f"🖥️ Browser window configuration: {'Invisible (1x1)' if self.invisible else f'{self.viewport_size[0]}x{self.viewport_size[1]}'}"
+            )
 
             # IMPORTANT: Use launch_persistent_context for profile + extensions
             # This ensures both authentication cookies AND extensions are active
-            logger.info("Using launch_persistent_context for profile and authentication")
-            
+            logger.info(
+                "Using launch_persistent_context for profile and authentication"
+            )
+
             if extension_dirs:
                 # Load extensions explicitly with persistent context
                 stealth_args.extend(
@@ -163,17 +487,40 @@ class BrowserManager(BrowserMixin):
                 logger.info(
                     f"Loading {len(extension_dirs)} extensions explicitly WITH profile"
                 )
+                # Fixme: Can we check if they are loaded actually afterwards? We would like to log it with logegr.success(f"Loaded ...")
             else:
                 logger.info("No extensions found to load explicitly")
 
-            # Launch persistent context with BOTH profile AND extensions
-            self._shared_context = (
-                await self._shared_playwright.chromium.launch_persistent_context(
-                    user_data_dir=str(self.extension_manager.profile_dir),
-                    headless=self.headless,
-                    args=stealth_args,
+            # Launch persistent context with BOTH profile AND extensions + invisible mode
+            launch_options = {
+                "user_data_dir": str(self.extension_manager.profile_dir),
+                "headless": self.headless,
+                "args": stealth_args,
+            }
+
+            # Apply invisible mode viewport settings to persistent context
+            if self.invisible or self.viewport_size:
+                launch_options["viewport"] = {
+                    "width": self.viewport_size[0],
+                    "height": self.viewport_size[1],
+                }
+                logger.info(
+                    f"🎭 Persistent context viewport: {self.viewport_size[0]}x{self.viewport_size[1]}"
                 )
+
+            self._shared_context = await self._shared_playwright.chromium.launch_persistent_context(
+                **launch_options
             )
+
+            # Apply dimension spoofing to persistent context
+            dimension_spoof_script = self._get_dimension_spoofing_script()
+            if dimension_spoof_script:
+                await self._shared_context.add_init_script(
+                    dimension_spoof_script
+                )
+                logger.info(
+                    "🎭 Dimension spoofing applied to persistent context"
+                )
             # Get browser from the persistent context
             self._shared_browser = self._shared_context.browser
         return self._shared_browser
@@ -216,6 +563,30 @@ class BrowserManager(BrowserMixin):
         return await self.extension_manager.check_lean_library_active(
             page, url
         )
+
+    def get_page(self):
+        """Get a new page with proper context management."""
+
+        class PageManager:
+            def __init__(self, browser_manager):
+                self.browser_manager = browser_manager
+                self.context = None
+                self.page = None
+
+            async def __aenter__(self):
+                self.context = (
+                    await self.browser_manager.get_authenticated_context()
+                )
+                self.page = await self.context.new_page()
+                return self.page
+
+            async def __aexit__(self, exc_type, exc_val, exc_tb):
+                if self.page:
+                    await self.page.close()
+                if self.context:
+                    await self.context.close()
+
+        return PageManager(self)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 21:01:05 (ywatanabe)"
+# Timestamp: "2025-08-02 02:51:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -27,6 +27,11 @@ from playwright.async_api import Page
 
 from ...errors import ScholarError
 from ..browser import BrowserManager
+from ..browser._BrowserConfig import (
+    BrowserConfiguration,
+    BrowserMode,
+    get_browser_config,
+)
 from ._ResolverLinkFinder import ResolverLinkFinder
 
 logger = logging.getLogger(__name__)
@@ -68,12 +73,12 @@ class OpenURLResolver:
         self,
         auth_manager,
         resolver_url=os.getenv("SCITEX_SCHOLAR_OPENURL_RESOLVER_URL"),
-        zenrows_api_key: Optional[str] = os.getenv(
-            "SCITEX_SCHOLAR_ZENROWS_API_KEY"
-        ),
-        proxy_country: Optional[str] = os.getenv(
-            "SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY", "us"
-        ),
+        # Browser configuration - can use individual params or centralized config
+        browser_mode: Optional[BrowserMode] = None,
+        invisible: bool = False,
+        viewport_size: tuple = None,
+        capture_screenshots: bool = False,
+        config: Optional[BrowserConfiguration] = None,
     ):
         """Initialize OpenURL resolver.
 
@@ -81,44 +86,92 @@ class OpenURLResolver:
             auth_manager: Authentication manager for institutional access
             resolver_url: Base URL of institutional OpenURL resolver
                          (Details can be seen at https://www.zotero.org/openurl_resolvers)
-            zenrows_api_key: API key for ZenRows (auto-enables stealth browser)
-            proxy_country: Country code for ZenRows proxy
+            browser_mode: Standardized browser mode (INVISIBLE, AUTH, DEBUG, TEST)
+            invisible: Enable invisible mode (legacy parameter)
+            viewport_size: Custom viewport size (legacy parameter)
+            capture_screenshots: Enable screenshot capture
+            config: Complete browser configuration (overrides other parameters)
         """
         self.auth_manager = auth_manager
         self.resolver_url = resolver_url
-        self.zenrows_api_key = zenrows_api_key
 
-        # Prioritize ZenRows stealth when API key present
-        if self.zenrows_api_key:
+        # Determine browser configuration using centralized system
+        if config:
+            self.browser_config = config
+            logger.info(f"🔧 Using provided browser config: {config}")
+        elif browser_mode:
+            self.browser_config = get_browser_config(
+                mode=browser_mode, capture_screenshots=capture_screenshots
+            )
             logger.info(
-                "Using ZenRows stealth browser for anti-bot protection"
+                f"🔧 Using centralized config for mode: {browser_mode.value}"
             )
-            from ..browser.local._ZenRowsBrowserManager import (
-                ZenRowsBrowserManager,
+        else:
+            # Legacy parameter-based configuration
+            mode = BrowserMode.INVISIBLE if invisible else BrowserMode.DEBUG
+            self.browser_config = get_browser_config(
+                mode=mode, capture_screenshots=capture_screenshots
+            )
+            # Override with legacy parameters if provided
+            if viewport_size:
+                self.browser_config.viewport_size = viewport_size
+            logger.info(
+                f"🔧 Using legacy config converted to: {self.browser_config}"
             )
 
-            self.browser = ZenRowsBrowserManager(
-                auth_manager=auth_manager,
-                headless=False,  # Show for manual auth
-                proxy_username=os.getenv(
-                    "SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME"
-                ),
-                proxy_password=os.getenv(
-                    "SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD"
-                ),
-            )
-            self.use_zenrows = True
-        else:
-            # Standard local browser
-            self.browser = BrowserManager(
-                headless=True,
-                profile_name='scholar_default',
-                auth_manager=auth_manager
-            )
-            self.use_zenrows = False
+        # Extract commonly used properties for backward compatibility
+        self.invisible = self.browser_config.invisible
+        self.viewport_size = self.browser_config.viewport_size
+        self.capture_screenshots = self.browser_config.capture_screenshots
+
+        # Standard local browser with centralized configuration
+        logger.info(
+            f"🔧 Creating BrowserManager with centralized config: {self.browser_config}"
+        )
+        self.browser = BrowserManager(
+            auth_manager=auth_manager, config=self.browser_config
+        )
 
         self.timeout = 30
         self._link_finder = ResolverLinkFinder()
+
+        # Screenshot capture setup using centralized path system
+        if self.capture_screenshots:
+            from datetime import datetime
+
+            from ..utils._scholar_paths import scholar_paths
+
+            self.screenshot_dir = (
+                scholar_paths.get_screenshots_dir() / "openurl"
+            )
+            self.screenshot_dir.mkdir(parents=True, exist_ok=True)
+            self.session_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    async def _capture_checkpoint_screenshot(
+        self, page, stage: str, doi: str = ""
+    ) -> Optional[str]:
+        """Capture screenshot at checkpoint for debugging."""
+        if not self.capture_screenshots:
+            return None
+
+        try:
+            from datetime import datetime
+
+            timestamp = datetime.now().strftime("%H%M%S")
+            doi_safe = (
+                doi.replace("/", "-").replace(".", "_") if doi else "unknown"
+            )
+            screenshot_name = f"openurl_{stage}_{doi_safe}_{timestamp}.png"
+            screenshot_path = self.screenshot_dir / screenshot_name
+
+            await page.screenshot(path=str(screenshot_path), full_page=True)
+            logger.info(
+                f"📸 Screenshot captured: {stage} -> {screenshot_name}"
+            )
+            return str(screenshot_path)
+        except Exception as e:
+            logger.warning(f"📸 Screenshot capture failed at {stage}: {e}")
+            return None
 
     def build_openurl(
         self,
@@ -237,22 +290,23 @@ class OpenURLResolver:
 
     async def _find_and_click_publisher_go_button(self, page, doi=""):
         """Find and click the appropriate publisher GO button on the OpenURL resolver page.
-        
+
         This method implements our proven GO button detection and clicking logic
         that successfully worked for Science.org and Nature.com access.
         """
         try:
             logger.info("Looking for publisher GO buttons on resolver page...")
-            
+
             # Get all GO buttons with context information
-            go_buttons = await page.evaluate('''() => {
+            go_buttons = await page.evaluate(
+                """() => {
                 const goButtons = Array.from(document.querySelectorAll('input[value="Go"], button[value="Go"], input[value="GO"], button[value="GO"]'));
                 return goButtons.map((btn, index) => {
                     const parentRow = btn.closest('tr') || btn.parentElement;
                     const rowText = parentRow ? parentRow.textContent.trim() : '';
-                    
+
                     // Check for publisher indicators in the row text
-                    const isScience = rowText.toLowerCase().includes('american association') || 
+                    const isScience = rowText.toLowerCase().includes('american association') ||
                                     rowText.toLowerCase().includes('aaas') ||
                                     rowText.toLowerCase().includes('science');
                     const isNature = rowText.toLowerCase().includes('nature') ||
@@ -260,7 +314,7 @@ class OpenURLResolver:
                     const isWiley = rowText.toLowerCase().includes('wiley');
                     const isElsevier = rowText.toLowerCase().includes('elsevier') ||
                                      rowText.toLowerCase().includes('sciencedirect');
-                    
+
                     return {
                         index: index,
                         globalIndex: Array.from(document.querySelectorAll('input, button, a, [onclick]')).indexOf(btn),
@@ -273,52 +327,64 @@ class OpenURLResolver:
                         isPublisher: isScience || isNature || isWiley || isElsevier
                     };
                 });
-            }''')
-            
+            }"""
+            )
+
             if not go_buttons:
                 logger.warning("No GO buttons found on resolver page")
                 return {"success": False, "reason": "no_go_buttons"}
-            
+
             logger.info(f"Found {len(go_buttons)} GO buttons")
             for btn in go_buttons:
-                logger.debug(f"GO button {btn['index']}: {btn['rowText'][:50]}... (Publisher: {btn['isPublisher']})")
-            
+                logger.debug(
+                    f"GO button {btn['index']}: {btn['rowText'][:50]}... (Publisher: {btn['isPublisher']})"
+                )
+
             # Find the most appropriate publisher button
             target_button = None
-            
+
             # Priority order: Science > Nature > Other publishers
             for btn in go_buttons:
                 if btn["isScience"]:
                     target_button = btn
-                    logger.info(f"Selected Science/AAAS GO button: {btn['rowText'][:50]}...")
+                    logger.info(
+                        f"Selected Science/AAAS GO button: {btn['rowText'][:50]}..."
+                    )
                     break
                 elif btn["isNature"]:
                     target_button = btn
-                    logger.info(f"Selected Nature GO button: {btn['rowText'][:50]}...")
+                    logger.info(
+                        f"Selected Nature GO button: {btn['rowText'][:50]}..."
+                    )
                     break
                 elif btn["isPublisher"]:
                     target_button = btn
-                    logger.info(f"Selected publisher GO button: {btn['rowText'][:50]}...")
+                    logger.info(
+                        f"Selected publisher GO button: {btn['rowText'][:50]}..."
+                    )
                     break
-            
+
             # Fallback: if no publisher buttons, try the first few GO buttons (might be direct access)
             if not target_button and go_buttons:
                 target_button = go_buttons[0]
-                logger.info(f"Using fallback GO button: {target_button['rowText'][:50]}...")
-            
+                logger.info(
+                    f"Using fallback GO button: {target_button['rowText'][:50]}..."
+                )
+
             if not target_button:
                 logger.warning("No suitable GO button found")
                 return {"success": False, "reason": "no_suitable_button"}
-            
+
             # Click the selected GO button and handle popup
             logger.info("Clicking GO button and waiting for popup...")
-            
+
             try:
                 # Set up popup listener before clicking
-                popup_promise = page.wait_for_event('popup', timeout=30000)
-                
+                popup_promise = page.wait_for_event("popup", timeout=30000)
+
                 # Click the button using its global index for reliability
-                click_result = await page.evaluate(f'''() => {{
+                click_result = await page.evaluate(
+                    f"""() => {{
                     const allElements = Array.from(document.querySelectorAll('input, button, a, [onclick]'));
                     const targetButton = allElements[{target_button['globalIndex']}];
                     if (targetButton && (targetButton.value === 'Go' || targetButton.value === 'GO')) {{
@@ -327,84 +393,95 @@ class OpenURLResolver:
                         return 'clicked';
                     }}
                     return 'not-found';
-                }}''')
-                
-                if click_result != 'clicked':
+                }}"""
+                )
+
+                if click_result != "clicked":
                     logger.warning("Failed to click GO button")
                     return {"success": False, "reason": "click_failed"}
-                
+
                 # Wait for popup
                 popup = await popup_promise
                 logger.info("Publisher popup opened successfully")
-                
+
                 # Wait for popup to load
-                await popup.wait_for_load_state('domcontentloaded', timeout=30000)
+                await popup.wait_for_load_state(
+                    "domcontentloaded", timeout=30000
+                )
                 await popup.wait_for_timeout(5000)  # Allow time for redirects
-                
+
                 final_url = popup.url
                 popup_title = await popup.title()
-                
+
                 logger.info(f"Successfully accessed: {popup_title}")
                 logger.info(f"Final URL: {final_url}")
-                
+
                 # Verify we reached a publisher URL
                 if self._is_publisher_url(final_url, doi):
-                    logger.success(f"Successfully reached publisher: {final_url}")
-                    
+                    logger.success(
+                        f"Successfully reached publisher: {final_url}"
+                    )
+
                     result = {
                         "final_url": final_url,
                         "resolver_url": page.url,
                         "access_type": "publisher_go_button",
                         "success": True,
                         "publisher_detected": True,
-                        "popup_page": popup  # Keep popup open for potential PDF download
+                        "popup_page": popup,  # Keep popup open for potential PDF download
                     }
-                    
+
                     # Don't close popup immediately - let caller decide
                     # await popup.close()
                     return result
                 else:
                     logger.info(f"Reached non-publisher URL: {final_url}")
-                    
+
                     result = {
                         "final_url": final_url,
                         "resolver_url": page.url,
                         "access_type": "go_button_redirect",
                         "success": True,
                         "publisher_detected": False,
-                        "popup_page": popup  # Keep popup open for potential PDF download
+                        "popup_page": popup,  # Keep popup open for potential PDF download
                     }
-                    
+
                     # Don't close popup immediately - let caller decide
                     # await popup.close()
                     return result
-                
+
             except Exception as popup_error:
                 logger.warning(f"Popup handling failed: {popup_error}")
-                return {"success": False, "reason": f"popup_error: {popup_error}"}
-                
+                return {
+                    "success": False,
+                    "reason": f"popup_error: {popup_error}",
+                }
+
         except Exception as e:
             logger.error(f"GO button detection failed: {e}")
             return {"success": False, "reason": f"detection_error: {e}"}
 
-    async def _download_pdf_from_publisher_page(self, popup, filename, download_dir="downloads"):
+    async def _download_pdf_from_publisher_page(
+        self, popup, filename, download_dir="downloads"
+    ):
         """Download PDF from publisher page after successful GO button access.
-        
+
         This method implements our proven PDF download logic that works
         with various publisher sites including Science.org and Nature.com.
         """
         from pathlib import Path
-        
+
         try:
             download_path = Path(download_dir)
             download_path.mkdir(exist_ok=True)
-            
+
             logger.info("Looking for PDF download links on publisher page...")
-            
+
             # Find PDF download links
-            pdf_links = await popup.evaluate('''() => {
+            pdf_links = await popup.evaluate(
+                """() => {
                 const allLinks = Array.from(document.querySelectorAll('a, button, input'));
-                return allLinks.filter(el => 
+                return allLinks.filter(el =>
                     el.textContent.toLowerCase().includes('pdf') ||
                     el.textContent.toLowerCase().includes('download') ||
                     el.href?.includes('pdf') ||
@@ -417,75 +494,95 @@ class OpenURLResolver:
                     id: el.id,
                     trackAction: el.getAttribute('data-track-action') || 'none'
                 }));
-            }''')
-            
+            }"""
+            )
+
             if not pdf_links:
                 logger.warning("No PDF links found on publisher page")
                 return {"success": False, "reason": "no_pdf_links"}
-            
+
             logger.info(f"Found {len(pdf_links)} potential PDF links")
             for i, link in enumerate(pdf_links):
-                logger.debug(f"PDF link {i}: {link['text'][:30]}... | {link['href'][:50]}...")
-            
+                logger.debug(
+                    f"PDF link {i}: {link['text'][:30]}... | {link['href'][:50]}..."
+                )
+
             # Find the best PDF download link
             main_pdf_link = None
-            
+
             # Priority order: direct download > PDF with download > PDF view
             for link in pdf_links:
-                if 'download pdf' in link["text"].lower():
+                if "download pdf" in link["text"].lower():
                     main_pdf_link = link
                     break
-                elif link["href"] != 'no-href' and link["href"].endswith('.pdf'):
+                elif link["href"] != "no-href" and link["href"].endswith(
+                    ".pdf"
+                ):
                     main_pdf_link = link
                     break
-                elif 'pdf' in link["text"].lower() and 'view' not in link["text"].lower():
+                elif (
+                    "pdf" in link["text"].lower()
+                    and "view" not in link["text"].lower()
+                ):
                     main_pdf_link = link
                     break
-            
+
             if not main_pdf_link:
-                main_pdf_link = pdf_links[0]  # Fallback to first PDF-related link
-            
+                main_pdf_link = pdf_links[
+                    0
+                ]  # Fallback to first PDF-related link
+
             logger.info(f"Selected PDF link: {main_pdf_link['text'][:40]}...")
-            
+
             # Set up download path
             file_path = download_path / filename
-            
+
             # Configure download headers
-            await popup.set_extra_http_headers({
-                'Accept': 'application/pdf,application/octet-stream,*/*'
-            })
-            
+            await popup.set_extra_http_headers(
+                {"Accept": "application/pdf,application/octet-stream,*/*"}
+            )
+
             # Try download methods
             pdf_downloaded = False
-            
+
             # Method 1: Direct URL navigation
-            if main_pdf_link["href"] != 'no-href' and 'pdf' in main_pdf_link["href"].lower():
+            if (
+                main_pdf_link["href"] != "no-href"
+                and "pdf" in main_pdf_link["href"].lower()
+            ):
                 try:
                     logger.info("Attempting direct PDF URL download...")
-                    download_promise = popup.wait_for_event('download', timeout=30000)
+                    download_promise = popup.wait_for_event(
+                        "download", timeout=30000
+                    )
                     await popup.goto(main_pdf_link["href"])
-                    
+
                     download = await download_promise
                     await download.save_as(str(file_path))
-                    
+
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
-                        logger.success(f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)")
+                        logger.success(
+                            f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)"
+                        )
                         pdf_downloaded = True
-                    
+
                 except Exception as e:
                     logger.debug(f"Direct download failed: {e}")
-            
+
             # Method 2: Click-based download
             if not pdf_downloaded:
                 try:
                     logger.info("Attempting click-based PDF download...")
-                    download_promise = popup.wait_for_event('download', timeout=30000)
-                    
+                    download_promise = popup.wait_for_event(
+                        "download", timeout=30000
+                    )
+
                     # Click the first PDF link
-                    await popup.evaluate('''() => {
+                    await popup.evaluate(
+                        """() => {
                         const allLinks = Array.from(document.querySelectorAll('a, button, input'));
-                        const pdfLinks = allLinks.filter(el => 
+                        const pdfLinks = allLinks.filter(el =>
                             el.textContent.toLowerCase().includes('pdf') ||
                             el.textContent.toLowerCase().includes('download') ||
                             el.href?.includes('pdf')
@@ -495,40 +592,54 @@ class OpenURLResolver:
                             return 'clicked';
                         }
                         return 'no-link';
-                    }''')
-                    
+                    }"""
+                    )
+
                     download = await download_promise
                     await download.save_as(str(file_path))
-                    
+
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
-                        logger.success(f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)")
+                        logger.success(
+                            f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)"
+                        )
                         pdf_downloaded = True
-                        
+
                 except Exception as e:
                     logger.debug(f"Click-based download failed: {e}")
-            
+
             if pdf_downloaded:
                 return {
                     "success": True,
                     "filename": filename,
                     "path": str(file_path),
-                    "size_mb": file_path.stat().st_size / (1024 * 1024) if file_path.exists() else 0
+                    "size_mb": (
+                        file_path.stat().st_size / (1024 * 1024)
+                        if file_path.exists()
+                        else 0
+                    ),
                 }
             else:
                 logger.warning("All PDF download methods failed")
                 # Take screenshot for debugging
-                screenshot_path = download_path / f"pdf_download_failed_{filename.replace('.pdf', '.png')}"
-                await popup.screenshot(path=str(screenshot_path), full_page=True)
-                logger.info(f"Screenshot saved for debugging: {screenshot_path}")
-                
+                screenshot_path = (
+                    download_path
+                    / f"pdf_download_failed_{filename.replace('.pdf', '.png')}"
+                )
+                await popup.screenshot(
+                    path=str(screenshot_path), full_page=True
+                )
+                logger.info(
+                    f"Screenshot saved for debugging: {screenshot_path}"
+                )
+
                 return {
                     "success": False,
                     "reason": "download_failed",
                     "screenshot": str(screenshot_path),
-                    "available_links": [link["text"] for link in pdf_links]
+                    "available_links": [link["text"] for link in pdf_links],
                 }
-                
+
         except Exception as e:
             logger.error(f"PDF download failed: {e}")
             return {"success": False, "reason": f"error: {e}"}
@@ -545,40 +656,29 @@ class OpenURLResolver:
         doi: str = "",
         pmid: str = "",
         filename: str = None,
-        download_dir: str = "downloads"
+        download_dir: str = "downloads",
     ) -> Dict[str, Any]:
         """Resolve paper access and download PDF in one operation.
-        
+
         This method combines our GO button resolution with PDF download
         to provide a complete paper acquisition workflow.
         """
         if not filename:
             # Generate filename from metadata
-            first_author = authors[0].split(",")[0].strip() if authors else "Unknown"
+            first_author = (
+                authors[0].split(",")[0].strip() if authors else "Unknown"
+            )
             filename = f"{first_author}-{year}-{journal.replace(' ', '')}-{title[:30].replace(' ', '_')}.pdf"
             # Clean filename
-            filename = "".join(c for c in filename if c.isalnum() or c in ".-_").strip()
-        
-        logger.info(f"Starting resolve and download for: {filename}")
-        
-        # Create fresh context for this operation
-        if self.use_zenrows:
-            browser = await self.browser.get_browser()
-            cookies = None
-            if (
-                self.auth_manager
-                and await self.auth_manager.is_authenticated()
-            ):
-                cookies = await self.auth_manager.get_auth_cookies()
-                logger.info(f"Retrieved {len(cookies)} authentication cookies")
+            filename = "".join(
+                c for c in filename if c.isalnum() or c in ".-_"
+            ).strip()
 
-            context = await browser.new_context()
-            if cookies:
-                await context.add_cookies(cookies)
-            page = await context.new_page()
-        else:
-            browser, context = await self.browser.get_authenticated_context()
-            page = await context.new_page()
+        logger.info(f"Starting resolve and download for: {filename}")
+
+        # Create fresh context for this operation
+        browser, context = await self.browser.get_authenticated_context()
+        page = await context.new_page()
 
         try:
             # Build OpenURL
@@ -594,57 +694,66 @@ class OpenURLResolver:
             await page.wait_for_timeout(2000)
 
             # Try GO button method
-            go_button_result = await self._find_and_click_publisher_go_button(page, doi)
-            
-            if go_button_result["success"] and "popup_page" in go_button_result:
+            go_button_result = await self._find_and_click_publisher_go_button(
+                page, doi
+            )
+
+            if (
+                go_button_result["success"]
+                and "popup_page" in go_button_result
+            ):
                 popup = go_button_result["popup_page"]
-                
-                logger.info("Successfully accessed publisher page, attempting PDF download...")
-                
+
+                logger.info(
+                    "Successfully accessed publisher page, attempting PDF download..."
+                )
+
                 # Try to download PDF
                 download_result = await self._download_pdf_from_publisher_page(
                     popup, filename, download_dir
                 )
-                
+
                 # Close popup
                 try:
                     await popup.close()
                 except:
                     pass
-                
+
                 # Combine results
                 final_result = {
                     **go_button_result,
                     "pdf_download": download_result,
-                    "filename": filename
+                    "filename": filename,
                 }
-                
+
                 # Remove popup reference
                 if "popup_page" in final_result:
                     del final_result["popup_page"]
-                
+
                 if download_result["success"]:
                     logger.success(f"Successfully downloaded PDF: {filename}")
                 else:
-                    logger.warning(f"Paper accessed but PDF download failed: {download_result.get('reason', 'unknown')}")
-                
+                    logger.warning(
+                        f"Paper accessed but PDF download failed: {download_result.get('reason', 'unknown')}"
+                    )
+
                 return final_result
-            
+
             else:
                 logger.warning("Could not access publisher page via GO button")
                 return {
                     "success": False,
                     "reason": "go_button_failed",
                     "go_button_result": go_button_result,
-                    "filename": filename
+                    "filename": filename,
                 }
-        
+
         except Exception as e:
             logger.error(f"Resolve and download failed: {e}")
             return {
                 "success": False,
                 "reason": f"error: {e}",
-                "filename": filename
+                "filename": filename,
             }
         finally:
             await context.close()
@@ -662,30 +771,15 @@ class OpenURLResolver:
         pmid: str = "",
     ) -> Optional[Dict[str, Any]]:
 
-        self.__init__(self.auth_manager, self.resolver_url)
+        # Note: Removed self.__init__ call that was creating second BrowserManager
+        # This was causing configuration inconsistency - the resolver is already initialized
 
         if not doi:
             logger.warning("DOI is required for reliable resolution")
 
         # Create fresh context for each resolution
-        if self.use_zenrows:
-            browser = await self.browser.get_browser()
-            cookies = None
-            if (
-                self.auth_manager
-                and await self.auth_manager.is_authenticated()
-            ):
-                cookies = await self.auth_manager.get_auth_cookies()
-                logger.info(f"Retrieved {len(cookies)} authentication cookies")
-
-            # Use standard browser context creation for ZenRows
-            context = await browser.new_context()
-            if cookies:
-                await context.add_cookies(cookies)
-            page = await context.new_page()
-        else:
-            browser, context = await self.browser.get_authenticated_context()
-            page = await context.new_page()
+        browser, context = await self.browser.get_authenticated_context()
+        page = await context.new_page()
 
         openurl = self.build_openurl(
             title, authors, journal, year, volume, issue, pages, doi, pmid
@@ -702,15 +796,23 @@ class OpenURLResolver:
                 openurl, wait_until="domcontentloaded", timeout=30000
             )
 
+            # Checkpoint 1: After loading OpenURL resolver page
+            await self._capture_checkpoint_screenshot(
+                page, "01_openurl_loaded", doi
+            )
+
             # Apply stealth behaviors if using standard browser
-            if not self.use_zenrows and hasattr(
-                self.browser, "stealth_manager"
-            ):
+            if hasattr(self.browser, "stealth_manager"):
                 await self.browser.stealth_manager.human_delay()
                 await self.browser.stealth_manager.human_mouse_move(page)
                 await self.browser.stealth_manager.human_scroll(page)
 
             await page.wait_for_timeout(2000)
+
+            # Checkpoint 2: After stealth behaviors applied
+            await self._capture_checkpoint_screenshot(
+                page, "02_stealth_applied", doi
+            )
 
             current_url = page.url
             if self._is_publisher_url(current_url, doi):
@@ -733,7 +835,7 @@ class OpenURLResolver:
                     "No electronic access",
                 ]
             ):
-                logger.info("Resolver indicates no access available")
+                logger.warn("Resolver indicates no access available")
                 return {
                     "final_url": None,
                     "resolver_url": current_url,
@@ -742,9 +844,11 @@ class OpenURLResolver:
                 }
 
             logger.info("Looking for full-text link on resolver page...")
-            
+
             # First try our GO button method
-            go_button_result = await self._find_and_click_publisher_go_button(page, doi)
+            go_button_result = await self._find_and_click_publisher_go_button(
+                page, doi
+            )
             if go_button_result["success"]:
                 # Clean up popup if it exists
                 if "popup_page" in go_button_result:
@@ -756,7 +860,7 @@ class OpenURLResolver:
                     # Remove popup reference from result
                     del go_button_result["popup_page"]
                 return go_button_result
-            
+
             # Fallback to original link finder method
             link_result = await self._link_finder.find_link(page, doi)
 
@@ -884,6 +988,7 @@ class OpenURLResolver:
     def _resolve_single(self, **kwargs) -> str:
         """Synchronous wrapper for _resolve_single_async."""
         import asyncio
+
         try:
             # Try to get existing loop
             loop = asyncio.get_running_loop()
@@ -1001,9 +1106,7 @@ class OpenURLResolver:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.use_zenrows and hasattr(self.browser, "cleanup"):
-            await self.browser.cleanup()
-        elif hasattr(self.browser, "cleanup_authenticated_context"):
+        if hasattr(self.browser, "cleanup_authenticated_context"):
             await self.browser.cleanup_authenticated_context()
 
 

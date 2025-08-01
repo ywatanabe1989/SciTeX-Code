@@ -16,13 +16,13 @@ __DIR__ = os.path.dirname(__FILE__)
 from ._PaperDatabase import PaperDatabase
 from ._DatabaseEntry import DatabaseEntry
 from ._DatabaseIndex import DatabaseIndex
-from ._ScholarDatabaseIntegration import ScholarDatabaseIntegration
+# from ._ScholarDatabaseIntegration import ScholarDatabaseIntegration
 
 __all__ = [
     "PaperDatabase",
     "DatabaseEntry",
     "DatabaseIndex",
-    "ScholarDatabaseIntegration",
+    # "ScholarDatabaseIntegration",
 ]
 
 

@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """
-Direct PDF Downloader
+Direct PDF Downloader with Screenshot Integration
 
 Simple approach: Jump directly to the PDF URL with authenticated browser
 and save the PDF response directly, bypassing browser PDF viewer complexity.
+
+Enhanced with automatic screenshot capture for debugging and verification.
 """
 
 import asyncio
 from pathlib import Path
 from typing import List, Tuple, Optional
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +23,52 @@ class DirectPDFDownloader:
     
     This bypasses the complexity of extracting PDFs from browser viewers by
     directly navigating to the PDF URL and capturing the response.
+    
+    Enhanced with automatic screenshot capture for debugging and verification.
     """
     
-    def __init__(self):
-        pass
+    def __init__(self, capture_screenshots: bool = True):
+        """
+        Initialize DirectPDFDownloader with screenshot capabilities.
+        
+        Args:
+            capture_screenshots: Whether to automatically capture screenshots during downloads
+        """
+        self.capture_screenshots = capture_screenshots
+    
+    async def _capture_download_screenshot(self, page, download_path: Path, stage: str) -> Optional[str]:
+        """
+        Capture screenshot during PDF download process.
+        
+        Args:
+            page: Playwright page object
+            download_path: Path where PDF is being downloaded
+            stage: Stage of download (e.g., 'before_navigation', 'after_navigation', 'error')
+        
+        Returns:
+            Path to screenshot file if successful, None otherwise
+        """
+        if not self.capture_screenshots:
+            return None
+        
+        try:
+            # Generate screenshot filename based on PDF name and stage
+            timestamp = datetime.now().strftime("%H%M%S")
+            pdf_name = download_path.stem
+            screenshot_name = f"{pdf_name}_{stage}_{timestamp}.png"
+            screenshot_path = download_path.parent / screenshot_name
+            
+            # Capture screenshot - use full page for maximum information
+            await page.screenshot(path=str(screenshot_path), full_page=True)
+            
+            screenshot_size = screenshot_path.stat().st_size / 1024  # KB
+            logger.info(f"📸 Screenshot captured: {screenshot_name} ({screenshot_size:.1f} KB)")
+            
+            return str(screenshot_path)
+            
+        except Exception as e:
+            logger.warning(f"Failed to capture screenshot at {stage}: {e}")
+            return None
     
     async def download_pdf_direct(self, 
                                  page, 
@@ -48,6 +93,9 @@ class DirectPDFDownloader:
             
             logger.info(f"🎯 Jumping directly to PDF URL: {pdf_url}")
             logger.info(f"📥 Target path: {download_path}")
+            
+            # Capture initial screenshot before navigation
+            await self._capture_download_screenshot(page, download_path, "before_navigation")
             
             # Method 1: Try to capture PDF response directly
             pdf_content = None
@@ -75,8 +123,13 @@ class DirectPDFDownloader:
                 await page.goto(pdf_url, wait_until='domcontentloaded', timeout=timeout)
                 await page.wait_for_timeout(3000)  # Wait for response handler
                 
+                # Capture screenshot after navigation
+                await self._capture_download_screenshot(page, download_path, "after_navigation")
+                
             except Exception as nav_error:
                 logger.debug(f"Navigation completed with: {nav_error}")
+                # Capture error screenshot
+                await self._capture_download_screenshot(page, download_path, "navigation_error")
             
             # Remove response handler
             try:
@@ -96,6 +149,9 @@ class DirectPDFDownloader:
                     
                     logger.info(f"✅ PDF saved successfully: {download_path.name}")
                     logger.info(f"📊 File size: {size_mb:.2f} MB ({file_size:,} bytes)")
+                    
+                    # Capture success screenshot
+                    await self._capture_download_screenshot(page, download_path, "download_success")
                     
                     return True, None
                 else:
@@ -134,6 +190,10 @@ class DirectPDFDownloader:
                     file_size = download_path.stat().st_size
                     size_mb = file_size / (1024 * 1024)
                     logger.info(f"✅ Fallback download successful: {size_mb:.2f} MB")
+                    
+                    # Capture fallback success screenshot
+                    await self._capture_download_screenshot(page, download_path, "fallback_success")
+                    
                     return True, None
                     
             except Exception as fallback_error:

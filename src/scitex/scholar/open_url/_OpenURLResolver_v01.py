@@ -325,7 +325,7 @@ class OpenURLResolver:
                     "No electronic access",
                 ]
             ):
-                logger.info("Resolver indicates no access available")
+                logger.warn("Resolver indicates no access available")
                 return {
                     "final_url": None,
                     "resolver_url": current_url,

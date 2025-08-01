@@ -23,6 +23,7 @@ from typing import Dict, List, Optional, Union
 from scitex import logging
 from .lookup import get_default_lookup
 from ._Paper import Paper
+from .storage import EnhancedStorageManager
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,9 @@ class ScholarAPI:
         # Set base paths
         scitex_dir = Path(os.getenv("SCITEX_DIR", Path.home() / ".scitex"))
         self.base_dir = scitex_dir / "scholar" / "library" / library_name
-        self.storage_dir = self.base_dir / "storage"
+        
+        # Use enhanced storage manager
+        self.storage = EnhancedStorageManager(self.base_dir)
         
     def get_paper_by_doi(self, doi: str) -> Optional[Paper]:
         """Get paper by DOI.
@@ -108,9 +111,15 @@ class ScholarAPI:
         Returns:
             Paper object if found
         """
-        paper_dir = self.storage_dir / "by_key" / storage_key
+        # Try enhanced storage first
+        paper_dir = self.storage.storage_dir / storage_key
         metadata_path = paper_dir / "metadata.json"
         
+        # Fall back to old structure if needed
+        if not metadata_path.exists():
+            paper_dir = self.storage.storage_dir / "by_key" / storage_key
+            metadata_path = paper_dir / "metadata.json"
+            
         if not metadata_path.exists():
             logger.warning(f"Metadata not found for key: {storage_key}")
             return None
@@ -119,11 +128,18 @@ class ScholarAPI:
             with open(metadata_path, 'r') as f:
                 data = json.load(f)
                 
-            # Check if PDF exists
-            pdf_path = paper_dir / "paper.pdf"
-            if pdf_path.exists():
-                data["pdf_path"] = pdf_path
-                
+            # Check for PDF with actual filename
+            pdf_info = self.storage.get_pdf_info(storage_key)
+            if pdf_info:
+                pdf_path = paper_dir / pdf_info["filename"]
+                if pdf_path.exists():
+                    data["pdf_path"] = pdf_path
+            else:
+                # Fall back to checking for any PDF
+                pdfs = list(paper_dir.glob("*.pdf"))
+                if pdfs:
+                    data["pdf_path"] = pdfs[0]
+                    
             return Paper(**data)
             
         except Exception as e:
@@ -159,8 +175,18 @@ class ScholarAPI:
         if not storage_key:
             return None
             
-        pdf_path = self.storage_dir / "by_key" / storage_key / "paper.pdf"
-        return pdf_path if pdf_path.exists() else None
+        # Use enhanced storage to find actual PDF
+        pdf_info = self.storage.get_pdf_info(storage_key)
+        if pdf_info:
+            pdf_path = self.storage.storage_dir / storage_key / pdf_info["filename"]
+            return pdf_path if pdf_path.exists() else None
+            
+        # Fall back to old structure
+        pdfs = self.storage.list_pdfs(storage_key)
+        if pdfs:
+            return self.storage.storage_dir / storage_key / pdfs[0]
+            
+        return None
         
     def get_papers_needing_pdf(self) -> List[Paper]:
         """Get list of papers without PDFs."""
@@ -196,12 +222,15 @@ class ScholarAPI:
         Returns:
             Success status
         """
-        # Check if PDF exists
-        pdf_path = self.storage_dir / "by_key" / storage_key / "paper.pdf"
-        has_pdf = pdf_path.exists()
-        pdf_size = pdf_path.stat().st_size if has_pdf else None
+        # Get PDF info from enhanced storage
+        pdf_info = self.storage.get_pdf_info(storage_key)
+        has_pdf = pdf_info is not None
+        pdf_size = pdf_info["size_bytes"] if pdf_info else None
+        pdf_filename = pdf_info["filename"] if pdf_info else None
+        original_filename = pdf_info["original_filename"] if pdf_info else None
         
-        return self.lookup.add_entry(
+        # Update basic entry
+        success = self.lookup.add_entry(
             storage_key=storage_key,
             doi=paper.doi,
             title=paper.title,
@@ -211,14 +240,28 @@ class ScholarAPI:
             pdf_size=pdf_size
         )
         
+        # Update PDF details if available
+        if has_pdf and success:
+            self.lookup.mark_pdf_downloaded(
+                storage_key=storage_key,
+                pdf_size=pdf_size,
+                pdf_filename=pdf_filename,
+                original_filename=original_filename
+            )
+            
+        return success
+        
     def get_statistics(self) -> Dict:
         """Get comprehensive statistics."""
         lookup_stats = self.lookup.get_statistics()
         
-        # Add storage statistics
-        if self.storage_dir.exists():
-            storage_size = sum(f.stat().st_size for f in self.storage_dir.rglob("*") if f.is_file())
-            lookup_stats["storage_size_mb"] = storage_size / 1024 / 1024
+        # Add enhanced storage statistics
+        storage_stats = self.storage.get_storage_stats()
+        lookup_stats.update({
+            "storage_size_mb": storage_stats.get("total_size_mb", 0),
+            "pdfs_with_original_names": storage_stats.get("pdfs_with_original_names", 0),
+            "human_readable_links": storage_stats.get("human_readable_links", 0)
+        })
             
         return lookup_stats
 

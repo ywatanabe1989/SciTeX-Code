@@ -63,8 +63,8 @@ class BaseDOISource(ABC):
 
         return None
 
-    def _is_title_match(self, title1: str, title2: str, threshold: float = 0.8) -> bool:
-        """Check if two titles match."""
+    def _is_title_match(self, title1: str, title2: str, threshold: float = 0.6) -> bool:
+        """Check if two titles match with improved algorithm."""
         # Normalize titles
         def normalize(s: str) -> str:
             import string
@@ -82,10 +82,24 @@ class BaseDOISource(ABC):
         # Exact match
         if t1 == t2:
             return True
+        
+        # Remove common stop words that don't contribute to matching
+        stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
+        
+        def remove_stop_words(text: str) -> str:
+            words = text.split()
+            return ' '.join([w for w in words if w not in stop_words])
+        
+        t1_filtered = remove_stop_words(t1)
+        t2_filtered = remove_stop_words(t2)
+        
+        # Try without stop words first
+        if t1_filtered == t2_filtered:
+            return True
             
-        # Calculate simple similarity
-        words1 = set(t1.split())
-        words2 = set(t2.split())
+        # Calculate Jaccard similarity on filtered words
+        words1 = set(t1_filtered.split())
+        words2 = set(t2_filtered.split())
         
         if not words1 or not words2:
             return False
@@ -94,6 +108,8 @@ class BaseDOISource(ABC):
         union = words1 | words2
         
         jaccard = len(intersection) / len(union)
+        
+        # Lower threshold (0.6 instead of 0.8) for more flexible matching
         return jaccard >= threshold
 
 # EOF

@@ -40,7 +40,8 @@ class ScreenshotCapturer:
                           Defaults to ~/.scitex/scholar/debug_screenshots
         """
         if screenshot_dir is None:
-            screenshot_dir = Path.home() / ".scitex" / "scholar" / "debug_screenshots"
+            from ._scholar_paths import scholar_paths
+            screenshot_dir = scholar_paths.get_screenshots_dir() / "debug"
         
         self.screenshot_dir = Path(screenshot_dir)
         self.screenshot_dir.mkdir(parents=True, exist_ok=True)

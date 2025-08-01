@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-01 21:15:10
+!-- Timestamp: 2025-08-02 03:38:10
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -62,7 +62,6 @@ Planned workflow is:
 3. Use AI2 products to get related articles as bib file
    - e.g., `./src/scitex/scholar/docs/papers.bib`
 
-### !!! IMPORTANT: THIS IS THE MOST CRITICAL TASK NOW!!!
 4. Resolve DOIs from piece of information such as title in a resumable manner
    - `python -m scitex.scholar.resolve_dois --title ...`
    - `python -m scitex.scholar.resolve_dois --bibtex /path/to/bibtex-file.bib`
@@ -79,6 +78,7 @@ Planned workflow is:
    - For local version, it seems ZenRows functionality like stealth access are limited
    - Progress and ETA should be shown like rsync
 
+### !!! IMPORTANT: Maybe this step is not fully incorporated yet!!!
 6. Enrich the bib file to add metadata in a resumable manner
    - `python -m scitex.scholar.enrich_bibtex /path/to/bibtex-file.bib`
    - `scitex.scholar.Papers.from_bibtex`
@@ -93,6 +93,7 @@ Planned workflow is:
      - `title` should have `title_source` as well
      - In the same way, `xxxx` should have `xxxx_source` all the time
 
+### YES, now this step, the largest challenge, is handled well !!!
 7. Download PDFs using AI agents (you, Claude) in an exploratory manner
    - Claude Code
    - Cookie acceptance
@@ -104,10 +105,24 @@ Planned workflow is:
      - [ ] PDF files for all the 75 entries are downloaded
      - [ ] Open undownloaded papers urls (dois) as tabs on a browser will be beneficial for user to download using zotero connector
 
+# this is not implemented yet
 8. Confirm downloaded PDFs are the main contents
    - Extract sections
 
+# Now this is implemented
 9. Organize everything in a database
+
+   ```
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/<original-name-from-the-journal>.pdf
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/attachments/<original-name-from-the-journal>.pdf
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/attachments/<original-name-from-the-journal>.pdf
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/metadata.json
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/screenshots/<timestamp>-description.jpg
+   ~/.scitex/scholar/library/<project>/8-DIGITS-ID/screenshots/<timestamp>-description.jpg   
+   ~/.scitex/scholar/library/<project-human-readable>/AUTHOR-YEAR-JOURNAL -> .../8-DIGITS-ID
+   ```
+
+   
 
 10. Allow for semantic vector search
 

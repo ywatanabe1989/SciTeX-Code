@@ -218,14 +218,14 @@ class DOIResolver:
                 
                 if doi:
                     # Success! Return immediately, no need to try other sources
-                    return doi
+                    return {"doi": doi, "source": source_name}
                     
             except Exception as e:
                 logger.debug(f"Error searching {source_name}: {e}")
                 continue
                 
             # Small delay between sources to be polite
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1.0)  # 1 second between sources
 
         return None
 
@@ -257,22 +257,23 @@ class DOIResolver:
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
     ) -> Optional[str]:
-        """Search single source asynchronously with retry."""
-        async for attempt in AsyncRetrying(
-            stop=stop_after_attempt(3),
-            wait=wait_exponential(multiplier=1, min=2, max=30),
-        ):
-            with attempt:
-                loop = asyncio.get_event_loop()
-                doi = await loop.run_in_executor(
-                    None, source.search, title, year, authors
-                )
+        """Search single source asynchronously - sources handle their own retries."""
+        try:
+            loop = asyncio.get_event_loop()
+            doi = await loop.run_in_executor(
+                None, source.search, title, year, authors
+            )
 
-                if doi:
-                    logger.success(f"Found DOI via {source.name}: {doi}")
-                    return doi
-
-        return None
+            if doi:
+                logger.info(f"Found DOI via {source.name}: {doi}")
+                return doi
+            else:
+                logger.debug(f"No DOI found via {source.name}")
+                return None
+                
+        except Exception as e:
+            logger.debug(f"Error searching {source.name}: {e}")
+            return None
 
     # @lru_cache(maxsize=1000)
     # def title_to_doi(

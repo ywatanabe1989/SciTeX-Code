@@ -20,12 +20,14 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import logging
 
+from ._PDFClassifier import PDFClassifier
+
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class InjectedPDFResult:
-    """Result from JavaScript-injected PDF detection."""
+    """Result from JavaScript-injected PDF detection with enhanced classification."""
     pdf_urls: List[str]
     bibliographic_data: Dict[str, Any]
     translator_used: str
@@ -33,6 +35,11 @@ class InjectedPDFResult:
     detection_method: str  # 'translator', 'generic', 'hybrid'
     raw_attachments: List[Dict[str, Any]]
     debug_info: Dict[str, Any]
+    
+    # Enhanced classification results
+    main_pdfs: List[str] = None
+    supplementary_pdfs: List[str] = None
+    pdf_classification: Dict[str, Any] = None
 
 
 class JavaScriptInjectionPDFDetector:
@@ -45,7 +52,7 @@ class JavaScriptInjectionPDFDetector:
     
     def __init__(self, translator_dir: Optional[Path] = None):
         """
-        Initialize the JavaScript injection PDF detector.
+        Initialize the JavaScript injection PDF detector with classification capabilities.
         
         Args:
             translator_dir: Path to Zotero translators directory
@@ -53,6 +60,9 @@ class JavaScriptInjectionPDFDetector:
         self.translator_dir = translator_dir or (
             Path(__file__).parent.parent / "zotero_translators"
         )
+        
+        # Initialize PDF classifier for proper main vs supplementary classification
+        self.pdf_classifier = PDFClassifier()
         
         # Load available translators
         self._translators = self._load_translators()
@@ -368,7 +378,7 @@ class JavaScriptInjectionPDFDetector:
         Returns:
             InjectedPDFResult with detected PDFs and metadata
         """
-        current_url = url or await page.url()
+        current_url = url or page.url
         
         # Find appropriate translator
         translator = self.find_best_translator(current_url)
@@ -394,6 +404,9 @@ class JavaScriptInjectionPDFDetector:
                 
                 # Use translator info to enhance generic detection
                 translator_label = translator['label']
+                # Safely escape the translator label for JavaScript
+                js_safe_translator_label = translator_label.replace('"', '\\"').replace("'", "\\'")
+                
                 publisher_enhanced_result = await page.evaluate(f'''
                     () => {{
                         try {{
@@ -415,7 +428,7 @@ class JavaScriptInjectionPDFDetector:
                             const pdfUrls = window.Zotero.Utilities.detectPDFUrls(document);
                             
                             // Add publisher-specific patterns based on translator
-                            const publisherName = "{translator_label}";
+                            const publisherName = "{js_safe_translator_label}";
                             let additionalSelectors = [];
                             
                             if (publisherName.includes("Atypon")) {{
@@ -524,12 +537,28 @@ class JavaScriptInjectionPDFDetector:
                 result.debug_info = generic_result
             
             # Enhance URLs to absolute
-            base_url = await page.url()
+            base_url = page.url
             result.pdf_urls = self._resolve_relative_urls(result.pdf_urls, base_url)
             
             # Remove duplicates and filter
             result.pdf_urls = list(dict.fromkeys(result.pdf_urls))  # Remove duplicates
             result.pdf_urls = [url for url in result.pdf_urls if self._is_valid_pdf_url(url)]
+            
+            # Apply enhanced PDF classification
+            if result.pdf_urls:
+                classification_result = self.pdf_classifier.classify_pdf_list(result.pdf_urls)
+                
+                # Extract classified URLs
+                result.main_pdfs = [pdf['url'] for pdf in classification_result['main_pdfs']]
+                result.supplementary_pdfs = [pdf['url'] for pdf in classification_result['supplementary_pdfs']]
+                result.pdf_classification = classification_result
+                
+                logger.info(f"📊 PDF Classification: {len(result.main_pdfs)} main, {len(result.supplementary_pdfs)} supplementary")
+                
+                # Log the best main PDF if found
+                if result.main_pdfs:
+                    best_main = classification_result['main_pdfs'][0]
+                    logger.info(f"🎯 Best main PDF: {best_main['url'][:60]}... (confidence: {best_main['confidence']:.2f})")
             
             logger.info(f"Detected {len(result.pdf_urls)} PDF URLs using {result.detection_method}")
             
