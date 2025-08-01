@@ -685,8 +685,8 @@ class JavaScriptInjectionPDFDetector:
             except Exception as direct_error:
                 logger.debug(f"Direct download failed: {direct_error}")
             
-            # Method 2: PDF is shown in browser - use print to PDF
-            logger.info("PDF displayed in browser - using print-to-PDF approach")
+            # Method 2: PDF is shown in browser - extract the actual PDF file
+            logger.info("PDF displayed in browser - extracting original PDF file")
             
             # Navigate to PDF URL
             await page.goto(pdf_url, wait_until='domcontentloaded')
@@ -694,39 +694,139 @@ class JavaScriptInjectionPDFDetector:
             
             # Check if it's a PDF page
             current_url = page.url
-            page_content = await page.content()
             
-            if 'application/pdf' in page_content or pdf_url in current_url or '/pdf/' in current_url:
-                logger.info("✅ PDF confirmed loaded in browser - generating PDF")
+            # Method 2a: Try to extract PDF source from browser
+            try:
+                logger.info("Attempting to extract original PDF data from browser")
                 
-                # Use browser's print to PDF functionality
-                pdf_buffer = await page.pdf(
-                    path=str(download_path),
-                    format='A4',
-                    print_background=True,
-                    margin={
-                        'top': '0.5in',
-                        'right': '0.5in', 
-                        'bottom': '0.5in',
-                        'left': '0.5in'
+                # Get the PDF data from the browser's PDF viewer
+                pdf_data = await page.evaluate('''
+                    async () => {
+                        try {
+                            // Check if there's an embed or object with PDF
+                            const pdfEmbed = document.querySelector('embed[type="application/pdf"]');
+                            const pdfObject = document.querySelector('object[type="application/pdf"]');
+                            
+                            if (pdfEmbed && pdfEmbed.src) {
+                                return { method: 'embed', url: pdfEmbed.src };
+                            } else if (pdfObject && pdfObject.data) {
+                                return { method: 'object', url: pdfObject.data };
+                            }
+                            
+                            // For Chrome's built-in PDF viewer, try to get the PDF URL
+                            if (window.location.href.includes('/pdf/')) {
+                                return { method: 'direct', url: window.location.href };
+                            }
+                            
+                            return { method: 'none', url: null };
+                        } catch (e) {
+                            return { error: e.toString() };
+                        }
                     }
-                )
+                ''')
                 
-                # Verify the generated PDF
-                if download_path.exists():
-                    file_size = download_path.stat().st_size
-                    if file_size > 5000:  # At least 5KB for print-to-PDF
-                        logger.info(f"✅ PDF generated successfully: {download_path.name} ({file_size/1024:.1f} KB)")
+                if pdf_data.get('url'):
+                    # Use CDP (Chrome DevTools Protocol) to download the actual PDF
+                    logger.info(f"Found PDF source: {pdf_data['method']} - {pdf_data['url'][:60]}...")
+                    
+                    # Create a new page to fetch the PDF directly
+                    pdf_page = await page.context.new_page()
+                    
+                    # Set up response handler to capture PDF data
+                    pdf_content = None
+                    
+                    async def handle_response(response):
+                        nonlocal pdf_content
+                        if response.url == pdf_data['url'] and 'application/pdf' in response.headers.get('content-type', ''):
+                            try:
+                                pdf_content = await response.body()
+                                logger.info(f"Captured PDF content: {len(pdf_content)} bytes")
+                            except Exception as e:
+                                logger.warning(f"Failed to capture PDF content: {e}")
+                    
+                    pdf_page.on('response', handle_response)
+                    
+                    # Navigate to the PDF URL to trigger the response
+                    await pdf_page.goto(pdf_data['url'])
+                    await pdf_page.wait_for_timeout(3000)
+                    
+                    # If we captured the PDF content, save it
+                    if pdf_content and len(pdf_content) > 10000:  # At least 10KB
+                        with open(download_path, 'wb') as f:
+                            f.write(pdf_content)
+                        
+                        logger.info(f"✅ Original PDF saved: {download_path.name} ({len(pdf_content)/1024:.1f} KB)")
+                        await pdf_page.close()
+                        return True
+                    
+                    await pdf_page.close()
+                    
+            except Exception as extract_error:
+                logger.debug(f"PDF extraction failed: {extract_error}")
+            
+            # Method 2b: Fallback - try right-click save functionality
+            try:
+                logger.info("Trying right-click save approach")
+                
+                # Simulate right-click and save
+                await page.keyboard.press('Control+S')
+                await page.wait_for_timeout(2000)
+                
+                # This method depends on browser's save dialog, which is tricky to automate
+                # For now, let's use a different approach
+                
+            except Exception as save_error:
+                logger.debug(f"Right-click save failed: {save_error}")
+            
+            # Method 2c: HTTP fetch the PDF directly using the same session
+            try:
+                logger.info("Attempting direct HTTP fetch of PDF")
+                
+                # Get cookies from the browser context
+                cookies = await page.context.cookies()
+                
+                # Use Python requests with the same cookies to download
+                import requests
+                
+                session = requests.Session()
+                
+                # Add cookies to the session
+                for cookie in cookies:
+                    session.cookies.set(
+                        cookie['name'], 
+                        cookie['value'], 
+                        domain=cookie['domain'],
+                        path=cookie.get('path', '/')
+                    )
+                
+                # Add headers to mimic browser
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'application/pdf,application/octet-stream,*/*',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Referer': current_url
+                }
+                
+                # Fetch the PDF
+                response = session.get(pdf_url, headers=headers, timeout=30)
+                
+                if response.status_code == 200 and 'application/pdf' in response.headers.get('content-type', ''):
+                    with open(download_path, 'wb') as f:
+                        f.write(response.content)
+                    
+                    file_size = len(response.content)
+                    if file_size > 10000:  # At least 10KB
+                        logger.info(f"✅ Original PDF downloaded via HTTP: {download_path.name} ({file_size/1024:.1f} KB)")
                         return True
                     else:
-                        logger.warning(f"Generated PDF too small: {file_size} bytes")
-                        return False
-                else:
-                    logger.error("PDF generation failed - file not created")
-                    return False
-            else:
-                logger.warning("Page doesn't appear to contain PDF content")
-                return False
+                        logger.warning(f"Downloaded PDF too small: {file_size} bytes")
+                
+            except Exception as http_error:
+                logger.debug(f"HTTP fetch failed: {http_error}")
+            
+            # If all methods failed, inform user
+            logger.warning("All PDF extraction methods failed - original PDF not captured")
+            return False
             
         except Exception as e:
             logger.error(f"PDF download/generation failed for {pdf_url}: {e}")
