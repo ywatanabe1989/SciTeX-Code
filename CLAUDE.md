@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-03 04:49:10
+!-- Timestamp: 2025-08-03 05:00:05
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -198,5 +198,6 @@ logger = getLoger(__name__)
 
 ## Use Puppeteer and Crawl4ai MCP servers
 You can work with browsers
+When work with browsers, use logs and screenshorts with timestamps. This enables us to review what was happning in a sequential manner and check timing issues.
 
 <!-- EOF -->

@@ -1,0 +1,59 @@
+# Timestamp: "2025-08-02 19:49:56 (ywatanabe)"
+# File: ./src/scitex/scholar/config/default.yaml
+
+# ----------------------------------------
+# feature
+# ----------------------------------------
+scholar_dir: ${SCITEX_DIR:-"~/.scitex"}  
+debug_mode: ${SCITEX_SCHOLAR_DEBUG_MODE:-false}
+enable_auto_enrich: ${SCITEX_SCHOLAR_AUTO_ENRICH:-true}
+enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
+default_search_sources:
+- pubmed
+- semantic_scholar
+- google_scholar
+- crossref
+- arxiv
+default_search_limit: 20
+max_workers: 3
+verify_ssl: true
+
+# ----------------------------------------
+# api
+# ----------------------------------------
+semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
+crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
+twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}  
+# zotero_library_id: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID:-null}
+# zotero_api_key: ${SCITEX_SCHOLAR_ZOTERO_API_KEY:-null}
+# zotero_library_type: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE:-"user"}
+# zenrows_api_key: ${SCITEX_SCHOLAR_ZENROWS_API_KEY:-null}
+
+# ----------------------------------------
+# auth:
+# ----------------------------------------
+# Search Engine
+pubmed_email: ${SCITEX_SCHOLAR_PUBMED_EMAIL:-null}
+crossref_email: ${SCITEX_SCHOLAR_CROSSREF_EMAIL:-null}
+# Auth
+openathens_email: ${SCITEX_SCHOLAR_OPENATHENS_EMAIL:-null}
+ezproxy_email: ${SCITEX_SCHOLAR_EZPROXY_EMAIL:-null}
+shibboleth_email: ${SCITEX_SCHOLAR_SHIBBOLETH_EMAIL:-null}  
+openurl_resolver_url: ${SCITEX_SCHOLAR_OPENURL_RESOLVER_URL:-null}  
+
+# ----------------------------------------
+# browser:
+# ----------------------------------------
+# browser_backend: ${SCITEX_SCHOLAR_BROWSER_BACKEND:-"local"}
+# use_lean_library: ${SCITEX_SCHOLAR_USE_LEAN_LIBRARY:-true}
+# lean_library_browser_profile: ${SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE:-null}
+# user_agent: "SciTeX-Scholar/1.0"
+# zenrows_proxy_username: ${SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME:-null}
+# zenrows_proxy_password: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD:-null}
+# zenrows_proxy_domain: ${SCITEX_SCHOLAR_ZENROWS_PROXY_DOMAIN:-"superproxy.zenrows.com"}
+# zenrows_proxy_port: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PORT:-"1337"}
+# zenrows_proxy_country: ${SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY:-"us"}
+# enable_captcha_solving: ${SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING:-true}
+# google_scholar_timeout: ${SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT:-10}
+
+# EOF
