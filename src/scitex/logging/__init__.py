@@ -105,9 +105,10 @@ def configure_logging(level=logging.INFO):
 # Auto-configure logging on import
 configure_logging()
 
-# Re-export logging functions
+# Re-export logging functions to maintain compatibility with standard logging
 getLogger = logging.getLogger
 basicConfig = logging.basicConfig
+disable = logging.disable  # Add disable method for standard logging compatibility
 DEBUG = logging.DEBUG
 INFO = logging.INFO
 WARNING = logging.WARNING
@@ -118,6 +119,7 @@ CRITICAL = logging.CRITICAL
 __all__ = [
     'getLogger',
     'basicConfig',
+    'disable',  # Standard logging compatibility
     'configure_logging',
     'DEBUG',
     'INFO',

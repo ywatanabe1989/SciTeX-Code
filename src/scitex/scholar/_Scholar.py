@@ -106,35 +106,19 @@ class Scholar:
         else:
             raise TypeError(f"Invalid config type: {type(config)}")
 
-        # Set workspace directory
-        if self.config.pdf_dir:
-            self.workspace_dir = Path(self.config.pdf_dir)
-        else:
-            self.workspace_dir = get_scholar_dir()
-        self.workspace_dir.mkdir(parents=True, exist_ok=True)
+        # Set workspace directory using path manager
+        self.workspace_dir = self.config.path_manager.workspace_dir
+        
+        # Initialize components with config system
+        self._searcher = UnifiedSearcher(config=self.config)
 
-        # Initialize components
-        self._searcher = UnifiedSearcher(
-            email=self.config.pubmed_email,
-            semantic_scholar_api_key=self.config.semantic_scholar_api_key,
-            crossref_api_key=self.config.crossref_api_key,
-            google_scholar_timeout=self.config.google_scholar_timeout,
-        )
-
-        self._enricher = MetadataEnricher(
-            semantic_scholar_api_key=self.config.semantic_scholar_api_key,
-            crossref_api_key=self.config.crossref_api_key,
-            email_crossref=self.config.crossref_email,
-        )
+        self._enricher = MetadataEnricher(config=self.config)
 
         # Initialize PDF downloader
         self._initialize_pdf_downloader()
 
-        # Initialize DOI resolver
-        self._doi_resolver = DOIResolver(
-            email_crossref=self.config.crossref_email,
-            email_pubmed=self.config.pubmed_email,
-        )
+        # Initialize DOI resolver with config
+        self._doi_resolver = DOIResolver(config=self.config)
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
 

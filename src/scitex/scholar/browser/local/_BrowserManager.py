@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-02 12:42:15 (ywatanabe)"
+# Timestamp: "2025-08-03 05:09:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -52,15 +52,19 @@ class BrowserManager(BrowserMixin):
         # Use centralized config if provided, otherwise use individual parameters
         if config:
             self.config = config
-            super().__init__(headless=config.headless)
+            mode = "stealth" if config.headless else "interactive"
+            super().__init__(mode=mode)
+            self.headless = config.headless
             self.spoof_dimension = config.invisible
             self.viewport_size = config.viewport_size
             self.window_position = config.window_position
             self.profile_name = config.profile_name
             logger.info(f"🔧 Using centralized browser config: {config}")
         else:
-            # Legacy parameter-based initialization
-            super().__init__(headless=headless)
+            # Legacy parameter-based initialization - store parameters for use in init_browser
+            mode = "stealth" if headless else "interactive"
+            super().__init__(mode=mode)
+            self.headless = headless
             self.spoof_dimension = spoof_dimension
             self.viewport_size = viewport_size
             self.window_position = window_position
@@ -471,7 +475,5 @@ if __name__ == "__main__":
     asyncio.run(main())
 
 # python -m scitex.scholar.browser.local._BrowserManager
-
-# WebDriver preresent (failed) # why?
 
 # EOF
