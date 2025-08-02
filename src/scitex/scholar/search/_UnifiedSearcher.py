@@ -1077,15 +1077,33 @@ class UnifiedSearcher:
     """
     
     def __init__(self, 
+                 config=None,
                  email: Optional[str] = None,
                  semantic_scholar_api_key: Optional[str] = None,
                  crossref_api_key: Optional[str] = None,
                  google_scholar_timeout: int = 10):
         """Initialize unified searcher with all engines."""
-        self.email = email
-        self.semantic_scholar_api_key = semantic_scholar_api_key
-        self.crossref_api_key = crossref_api_key
-        self.google_scholar_timeout = google_scholar_timeout
+        
+        # Handle config parameter
+        if config is not None:
+            from ..config import ScholarConfig
+            if not isinstance(config, ScholarConfig):
+                raise TypeError("config must be a ScholarConfig instance")
+            self.config = config
+            
+            # Use config resolution for parameters
+            self.email = self.config.resolve("pubmed_email", email, "research@example.com")
+            self.semantic_scholar_api_key = self.config.resolve("semantic_scholar_api_key", semantic_scholar_api_key, None)
+            self.crossref_api_key = self.config.resolve("crossref_api_key", crossref_api_key, None)
+            self.google_scholar_timeout = google_scholar_timeout  # No config key for this yet
+        else:
+            # Fallback to direct parameters
+            self.config = None
+            self.email = email
+            self.semantic_scholar_api_key = semantic_scholar_api_key
+            self.crossref_api_key = crossref_api_key
+            self.google_scholar_timeout = google_scholar_timeout
+            
         self._engines = {}  # Lazy-loaded engines
     
     @property

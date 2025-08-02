@@ -24,7 +24,7 @@ import aiohttp
 
 from scitex import logging
 from ..auth import AuthenticationManager
-from ..browser.local import LocalBrowserManager
+from ..browser.local import BrowserManager
 from ..config import ScholarConfig
 from ..open_url import DOIToURLResolver
 from ..utils._screenshot_capturer import ScreenshotCapturer
@@ -94,9 +94,10 @@ class DirectDownloadAgent(DownloadAgent):
 class BrowserDownloadAgent(DownloadAgent):
     """Browser-based download with JavaScript handling."""
     
-    def __init__(self, browser_manager: LocalBrowserManager):
+    def __init__(self, browser_manager: BrowserManager, screenshot_capturer=None):
         super().__init__("BrowserDownload", priority=8)
         self.browser_manager = browser_manager
+        self.screenshot_capturer = screenshot_capturer
         
     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
         """Download PDF using browser automation."""
@@ -115,8 +116,16 @@ class BrowserDownloadAgent(DownloadAgent):
             # Navigate to URL
             await page.goto(url, wait_until='networkidle', timeout=60000)
             
+            # Capture initial page screenshot
+            if self.screenshot_capturer:
+                await self.screenshot_capturer(paper, url, "initial_page", page)
+            
             # Wait for page to stabilize
             await page.wait_for_timeout(3000)
+            
+            # Capture page after stabilization
+            if self.screenshot_capturer:
+                await self.screenshot_capturer(paper, url, "after_stabilization", page)
             
             # Try to find and click PDF download button
             download_selectors = [
@@ -143,8 +152,15 @@ class BrowserDownloadAgent(DownloadAgent):
                         # Save the download
                         await download.save_as(output_path)
                         
+                        # Capture screenshot after download attempt
+                        if self.screenshot_capturer:
+                            await self.screenshot_capturer(paper, url, "after_download_attempt", page)
+                        
                         # Verify it's a PDF
                         if output_path.exists() and output_path.read_bytes().startswith(b'%PDF'):
+                            # Capture success screenshot
+                            if self.screenshot_capturer:
+                                await self.screenshot_capturer(paper, url, "download_successful", page)
                             logger.success(f"Browser download successful: {output_path.name}")
                             return True
                             
@@ -155,6 +171,10 @@ class BrowserDownloadAgent(DownloadAgent):
             # Check for embedded PDF
             pdf_frames = await page.query_selector_all('iframe[src*="pdf"], embed[type="application/pdf"]')
             if pdf_frames:
+                # Capture screenshot when PDF frame detected
+                if self.screenshot_capturer:
+                    await self.screenshot_capturer(paper, url, "pdf_frame_detected", page)
+                
                 frame_src = await pdf_frames[0].get_attribute('src')
                 if frame_src:
                     # Try direct download of embedded PDF
@@ -162,6 +182,10 @@ class BrowserDownloadAgent(DownloadAgent):
                         frame_src = f"{urlparse(url).scheme}://{urlparse(url).netloc}{frame_src}"
                     
                     return await DirectDownloadAgent().download(paper, frame_src, output_path)
+            
+            # If no PDF found, capture final state
+            if self.screenshot_capturer:
+                await self.screenshot_capturer(paper, url, "no_pdf_found", page)
                     
         except Exception as e:
             logger.error(f"Browser download error: {e}")
@@ -222,16 +246,17 @@ class SmartPDFDownloader:
         """
         self.config = config or ScholarConfig()
         
-        # Initialize components
-        self.browser_manager = LocalBrowserManager(headless=True)
+        # Initialize components with config
+        self.browser_manager = BrowserManager(headless=True)
         self.auth_manager = AuthenticationManager(config=self.config)
         self.url_resolver = DOIToURLResolver(config=self.config)
-        self.screenshot_capturer = ScreenshotCapturer(enabled=True)
+        # Initialize with path manager for proper directory structure
+        self.path_manager = self.config.path_manager
         
-        # Initialize download agents
+        # Initialize download agents with screenshot capability
         self.agents = [
             DirectDownloadAgent(),
-            BrowserDownloadAgent(self.browser_manager),
+            BrowserDownloadAgent(self.browser_manager, self.capture_systematic_screenshot),
             AuthenticatedDownloadAgent(self.auth_manager, self.config)
         ]
         
@@ -286,6 +311,64 @@ class SmartPDFDownloader:
         filename = f"{first_author}-{year}-{journal}.pdf"
         return self.download_dir / filename
         
+    async def capture_systematic_screenshot(self, paper: Paper, url: str, description: str, page: Optional[Page] = None):
+        """
+        Capture systematic screenshots during download process.
+        
+        Args:
+            paper: Paper object
+            url: Current URL
+            description: Stage description (e.g., "initial_page", "after_auth", "pdf_found", "captcha_detected")
+            page: Existing page object (if None, creates new browser)
+        """
+        try:
+            # Get paper storage paths
+            paper_info = {
+                'title': paper.title,
+                'authors': getattr(paper, 'authors', []),
+                'year': getattr(paper, 'year', None),
+                'doi': getattr(paper, 'doi', None),
+                'journal': getattr(paper, 'journal', None),
+                'url': url
+            }
+            
+            storage_paths = self.path_manager.get_paper_storage_paths(paper_info, "papers")
+            screenshots_dir = storage_paths["storage_path"] / "screenshots"
+            screenshots_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate timestamp and filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{timestamp}-{description}.png"
+            screenshot_path = screenshots_dir / filename
+            
+            if page:
+                # Use existing page
+                await page.screenshot(
+                    path=str(screenshot_path),
+                    full_page=True,
+                    timeout=10000
+                )
+                logger.info(f"Screenshot captured: {description} -> {screenshot_path}")
+            else:
+                # Create new browser for screenshot
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=True)
+                    new_page = await browser.new_page()
+                    
+                    try:
+                        await new_page.goto(url, wait_until='networkidle', timeout=30000)
+                        await new_page.screenshot(
+                            path=str(screenshot_path),
+                            full_page=True,
+                            timeout=10000
+                        )
+                        logger.info(f"Screenshot captured: {description} -> {screenshot_path}")
+                    finally:
+                        await browser.close()
+                        
+        except Exception as e:
+            logger.debug(f"Failed to capture systematic screenshot for {description}: {e}")
+
     async def download_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
         """
         Download a single paper using multiple strategies.
@@ -372,25 +455,85 @@ class SmartPDFDownloader:
         }
         self._save_progress()
         
-        # Capture screenshot for debugging
+        # Capture screenshot for debugging using proper directory structure
         if urls:
+            await self._capture_failure_screenshot(paper, urls[0], "download_failed")
+                    
+        return False, None
+    
+    async def _capture_failure_screenshot(self, paper: Paper, url: str, description: str):
+        """
+        Capture screenshot for failed download using proper directory structure.
+        
+        Args:
+            paper: Paper object
+            url: URL that failed
+            description: Description of the failure (e.g., "download_failed", "auth_required")
+        """
+        try:
+            # Get paper storage paths for screenshots
+            paper_info = {
+                'title': paper.title,
+                'authors': getattr(paper, 'authors', []),
+                'year': getattr(paper, 'year', None),
+                'doi': getattr(paper, 'doi', None),
+                'journal': getattr(paper, 'journal', None),
+                'url': url
+            }
+            
+            # Use "screenshots" as collection name for failed downloads
+            storage_paths = self.path_manager.get_paper_storage_paths(paper_info, "screenshots")
+            screenshots_dir = storage_paths["storage_path"] / "screenshots"
+            screenshots_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate timestamp and filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{timestamp}-{description}.png"
+            screenshot_path = screenshots_dir / filename
+            
+            # Capture screenshot using browser
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
                 page = await browser.new_page()
                 
                 try:
-                    await page.goto(urls[0], wait_until='networkidle', timeout=30000)
-                    screenshot_path = await self.screenshot_capturer.capture_on_failure(
-                        page,
-                        {'url': urls[0], 'paper': paper.title},
-                        identifier=paper_id.replace('/', '_')
+                    logger.info(f"Capturing screenshot for failed download: {url}")
+                    await page.goto(url, wait_until='networkidle', timeout=30000)
+                    
+                    # Take full page screenshot
+                    await page.screenshot(
+                        path=str(screenshot_path),
+                        full_page=True,
+                        timeout=10000
                     )
-                    if screenshot_path:
-                        logger.info(f"Screenshot saved: {screenshot_path}")
+                    
+                    # Save page info alongside screenshot
+                    info_file = screenshot_path.with_suffix(".txt")
+                    page_info = {
+                        'url': url,
+                        'paper_title': paper.title,
+                        'paper_doi': getattr(paper, 'doi', None),
+                        'timestamp': timestamp,
+                        'description': description,
+                        'page_title': await page.title(),
+                        'page_url': page.url,
+                        'user_agent': await page.evaluate('navigator.userAgent')
+                    }
+                    
+                    with open(info_file, 'w', encoding='utf-8') as f:
+                        for key, value in page_info.items():
+                            f.write(f"{key}: {value}\n")
+                    
+                    logger.success(f"Screenshot saved: {screenshot_path}")
+                    logger.info(f"Page info saved: {info_file}")
+                    
+                except Exception as e:
+                    logger.warning(f"Failed to capture screenshot: {e}")
                 finally:
                     await browser.close()
                     
-        return False, None
+        except Exception as e:
+            logger.error(f"Error in screenshot capture system: {e}")
         
     async def download_batch(
         self,

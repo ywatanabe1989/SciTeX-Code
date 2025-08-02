@@ -57,18 +57,16 @@ class BibTeXEnricher:
         """
         self.config = config or ScholarConfig()
 
-        # Initialize search engines
-        self.crossref = CrossRefSearchEngine()
-        self.pubmed = PubMedSearchEngine()
-        self.semantic_scholar = SemanticScholarSearchEngine()
+        # Initialize search engines with config
+        self.crossref = CrossRefSearchEngine(config=self.config)
+        self.pubmed = PubMedSearchEngine(config=self.config)
+        self.semantic_scholar = SemanticScholarSearchEngine(config=self.config)
 
         # DOI resolver for entries without DOI
-        self.doi_resolver = DOIResolver()
+        self.doi_resolver = DOIResolver(config=self.config)
 
-        # Cache directory
-        self.cache_dir = (
-            Path.home() / ".scitex" / "scholar" / "enrichment_cache"
-        )
+        # Cache directory using path manager
+        self.cache_dir = self.config.path_manager.get_cache_dir("enrichment")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         # Progress tracking
@@ -342,9 +340,9 @@ class BibTeXEnricher:
         bibtex_path = Path(bibtex_path)
         output_path = output_path or bibtex_path
 
-        # Setup progress tracking
+        # Setup progress tracking using workspace logs
         self.progress_file = (
-            self.cache_dir / f"{bibtex_path.stem}_progress.json"
+            self.config.path_manager.get_workspace_logs_dir() / f"enrichment_{bibtex_path.stem}_progress.json"
         )
         if resume:
             self.progress = self._load_progress()

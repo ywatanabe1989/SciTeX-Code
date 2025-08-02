@@ -19,6 +19,7 @@ import aiohttp
 from .._BaseSearchEngine import BaseSearchEngine
 from ..._Paper import Paper
 from ....errors import SearchError
+from ...config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -26,19 +27,31 @@ logger = logging.getLogger(__name__)
 class SemanticScholarSearchEngine(BaseSearchEngine):
     """Semantic Scholar search engine using their Graph API."""
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, config: Optional[ScholarConfig] = None, api_key: Optional[str] = None):
         """Initialize Semantic Scholar search engine.
         
         Parameters
         ----------
+        config : ScholarConfig, optional
+            Scholar configuration object
         api_key : str, optional
             API key for Semantic Scholar (enables higher rate limits)
+            Uses sophisticated config resolution: direct → config → env → default
         """
+        self.config = config or ScholarConfig()
+        
+        # Use sophisticated config resolution: direct → config → env → default
+        self.api_key = self.config.resolve(
+            key="semantic_scholar_api_key",
+            direct_val=api_key,
+            default=None,
+            type=str
+        )
+        
         # Faster rate limit with API key
-        rate_limit = 0.1 if api_key else 1.0
+        rate_limit = 0.1 if self.api_key else 1.0
         super().__init__(name="semantic_scholar", rate_limit=rate_limit)
         
-        self.api_key = api_key
         self.base_url = "https://api.semanticscholar.org/graph/v1"
     
     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -240,6 +253,36 @@ class SemanticScholarSearchEngine(BaseSearchEngine):
         except Exception as e:
             logger.warning(f"Failed to parse Semantic Scholar paper: {e}")
             return None
+
+
+async def main():
+    """Test function for SemanticScholarSearchEngine."""
+    from scitex.scholar.config import ScholarConfig
+    
+    config = ScholarConfig()
+    engine = SemanticScholarSearchEngine(config=config)
+    
+    print("Testing Semantic Scholar search engine...")
+    print(f"API Key: {'Set' if engine.api_key else 'Not set'}")
+    print(f"Rate limit: {engine.rate_limit}s")
+    
+    try:
+        papers = await engine.search_async("neural networks", limit=5)
+        print(f"Found {len(papers)} papers:")
+        for i, paper in enumerate(papers, 1):
+            print(f"{i}. {paper.title}")
+            print(f"   Authors: {', '.join(paper.authors[:3])}")
+            print(f"   Year: {paper.year}")
+            print(f"   Citations: {paper.citation_count}")
+            print(f"   DOI: {paper.doi}")
+            print()
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 
 
 # EOF

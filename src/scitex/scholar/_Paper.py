@@ -53,6 +53,8 @@ class Paper:
         citation_count: Optional[int] = None,
         impact_factor: Optional[float] = None,
         journal_quartile: Optional[str] = None,
+        journal_rank: Optional[int] = None,
+        h_index: Optional[int] = None,
         # URLs
         url: Optional[str] = None,
         pdf_url: Optional[str] = None,
@@ -89,6 +91,8 @@ class Paper:
         self._set_field_with_source("citation_count", citation_count)
         self._set_field_with_source("impact_factor", impact_factor)
         self._set_field_with_source("journal_quartile", journal_quartile)
+        self._set_field_with_source("journal_rank", journal_rank)
+        self._set_field_with_source("h_index", h_index)
 
         # URLs
         self._set_field_with_source("url", url)

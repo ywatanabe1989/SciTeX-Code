@@ -20,6 +20,7 @@ import aiohttp
 from .._BaseSearchEngine import BaseSearchEngine
 from ..._Paper import Paper
 from ....errors import SearchError
+from ...config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,16 @@ logger = logging.getLogger(__name__)
 class ArxivSearchEngine(BaseSearchEngine):
     """arXiv search engine using the arXiv API."""
     
-    def __init__(self):
-        """Initialize arXiv search engine."""
+    def __init__(self, config: Optional[ScholarConfig] = None):
+        """Initialize arXiv search engine.
+        
+        Parameters
+        ----------
+        config : ScholarConfig, optional
+            Scholar configuration object
+        """
         super().__init__(name="arxiv", rate_limit=0.5)
+        self.config = config or ScholarConfig()
         self.base_url = "http://export.arxiv.org/api/query"
     
     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -163,6 +171,34 @@ class ArxivSearchEngine(BaseSearchEngine):
             logger.error(f"Failed to parse arXiv XML: {e}")
         
         return papers
+
+
+async def main():
+    """Test function for ArxivSearchEngine."""
+    from scitex.scholar.config import ScholarConfig
+    
+    config = ScholarConfig()
+    engine = ArxivSearchEngine(config=config)
+    
+    print("Testing arXiv search engine...")
+    
+    try:
+        papers = await engine.search_async("quantum computing", limit=5)
+        print(f"Found {len(papers)} papers:")
+        for i, paper in enumerate(papers, 1):
+            print(f"{i}. {paper.title}")
+            print(f"   Authors: {', '.join(paper.authors[:3])}")
+            print(f"   Year: {paper.year}")
+            print(f"   DOI: {paper.doi}")
+            print(f"   Keywords: {', '.join(paper.keywords[:3])}")
+            print()
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 
 
 # EOF

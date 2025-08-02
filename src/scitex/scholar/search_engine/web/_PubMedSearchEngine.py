@@ -21,6 +21,7 @@ import aiohttp
 from .._BaseSearchEngine import BaseSearchEngine
 from ..._Paper import Paper
 from ....errors import SearchError
+from ...config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -28,16 +29,29 @@ logger = logging.getLogger(__name__)
 class PubMedSearchEngine(BaseSearchEngine):
     """PubMed search engine using NCBI E-utilities."""
     
-    def __init__(self, email: Optional[str] = None):
+    def __init__(self, config: Optional[ScholarConfig] = None, email: Optional[str] = None):
         """Initialize PubMed search engine.
         
         Parameters
         ----------
+        config : ScholarConfig, optional
+            Scholar configuration object
         email : str, optional
             Email address for NCBI E-utilities (required by NCBI policy)
+            Uses sophisticated config resolution: direct → config → env → default
         """
         super().__init__(name="pubmed", rate_limit=0.4)  # NCBI rate limit
-        self.email = email or "research@example.com"
+        
+        self.config = config or ScholarConfig()
+        
+        # Use sophisticated config resolution: direct → config → env → default
+        self.email = self.config.resolve(
+            key="pubmed_email",
+            direct_val=email,
+            default="research@example.com",
+            type=str
+        )
+        
         self.base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
     
     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -243,6 +257,34 @@ class PubMedSearchEngine(BaseSearchEngine):
             logger.error(f"Failed to parse PubMed XML: {e}")
         
         return papers
+
+
+async def main():
+    """Test function for PubMedSearchEngine."""
+    from scitex.scholar.config import ScholarConfig
+    
+    config = ScholarConfig()
+    engine = PubMedSearchEngine(config=config)
+    
+    print("Testing PubMed search engine...")
+    print(f"Email: {engine.email}")
+    
+    try:
+        papers = await engine.search_async("machine learning", limit=5)
+        print(f"Found {len(papers)} papers:")
+        for i, paper in enumerate(papers, 1):
+            print(f"{i}. {paper.title}")
+            print(f"   Authors: {', '.join(paper.authors[:3])}")
+            print(f"   Year: {paper.year}")
+            print(f"   DOI: {paper.doi}")
+            print()
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 
 
 # EOF

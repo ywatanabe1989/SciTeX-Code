@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-03 05:00:05
+!-- Timestamp: 2025-08-03 05:48:00
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -48,6 +48,8 @@ Use `./scitex_repo/src/scitex/errors.py
 Now we are facing challenges with automating literature search, which is one of the modules for automatic scientific research project, SciTeX (https://scitex.ai).
 
 Scholar related temporal files, including auth cookies and cache files, should be placed under `~/.scitex/scholar` (= "$SCITEX_DIR/scholar")
+
+--- WE NEED TO HANDLE NEWLY IMPLEMENTED CONFIG LOGIC THROUGHOUT THE CODEBASE.SO, PLEASE CHECK ONE BY ONE. ESPECIALLY EACHFILE SHOULD HAVE MAIN TO CHECK EASILY ---
 
 Planned workflow is:
 1. Manual Login to OpenAthens (Unimelb)
@@ -199,5 +201,22 @@ logger = getLoger(__name__)
 ## Use Puppeteer and Crawl4ai MCP servers
 You can work with browsers
 When work with browsers, use logs and screenshorts with timestamps. This enables us to review what was happning in a sequential manner and check timing issues.
+
+## PDF download workflow
+BrowserManager + Authenticator + Chrome extensions (stealth + auth info))
+-> Part of metadata such as title
+-> DOI 
+-> OpenURL
+-> Final URL
+-> Find PDF URLS using zetero translators
+-> Download PDFs
+-> Organize PDFs based on expected structure
+
+## PDF downloaders
+Which downloaders should we keep...? ~/proj/scitex_repo/src/scitex/scholar/download/
+We need cleanup using safe_rm.sh
+
+## No need metadata
+we do not need journal_rank and h_index
 
 <!-- EOF -->

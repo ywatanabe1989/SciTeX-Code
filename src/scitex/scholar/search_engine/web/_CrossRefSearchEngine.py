@@ -20,6 +20,7 @@ import aiohttp
 from .._BaseSearchEngine import BaseSearchEngine
 from ..._Paper import Paper
 from ....errors import SearchError
+from ...config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +28,26 @@ logger = logging.getLogger(__name__)
 class CrossRefSearchEngine(BaseSearchEngine):
     """CrossRef search engine for academic papers."""
     
-    def __init__(self, api_key: Optional[str] = None, email: Optional[str] = None):
+    def __init__(self, config: Optional[ScholarConfig] = None, api_key: Optional[str] = None, email: Optional[str] = None):
         super().__init__(name="crossref", rate_limit=0.5)
-        self.api_key = api_key
-        self.email = email or "research@example.com"
+        
+        self.config = config or ScholarConfig()
+        
+        # Use sophisticated config resolution: direct → config → env → default
+        self.api_key = self.config.resolve(
+            key="crossref_api_key",
+            direct_val=api_key,
+            default=None,
+            type=str
+        )
+        
+        self.email = self.config.resolve(
+            key="crossref_email", 
+            direct_val=email,
+            default="research@example.com",
+            type=str
+        )
+        
         self.base_url = "https://api.crossref.org/works"
         
     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -175,5 +192,36 @@ class CrossRefSearchEngine(BaseSearchEngine):
                 continue
         
         return papers
+
+
+async def main():
+    """Test function for CrossRefSearchEngine."""
+    from scitex.scholar.config import ScholarConfig
+    
+    config = ScholarConfig()
+    engine = CrossRefSearchEngine(config=config)
+    
+    print("Testing CrossRef search engine...")
+    print(f"Email: {engine.email}")
+    print(f"API Key: {'Set' if engine.api_key else 'Not set'}")
+    
+    try:
+        papers = await engine.search_async("deep learning", limit=5)
+        print(f"Found {len(papers)} papers:")
+        for i, paper in enumerate(papers, 1):
+            print(f"{i}. {paper.title}")
+            print(f"   Authors: {', '.join(paper.authors[:3])}")
+            print(f"   Year: {paper.year}")
+            print(f"   DOI: {paper.doi}")
+            print(f"   Citations: {paper.citation_count}")
+            print()
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+
 
 # EOF

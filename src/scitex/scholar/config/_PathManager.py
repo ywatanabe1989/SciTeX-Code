@@ -408,10 +408,8 @@ class PathManager:
         # Sanitize inputs
         collection_name = self._sanitize_collection_name(collection_name)
 
-        # Generate unique ID
-        unique_id = self._generate_paper_id(
-            paper_info.get("url", ""), paper_info.get("title", "")
-        )
+        # Generate unique ID using DOI if available, otherwise metadata
+        unique_id = self._generate_paper_id(paper_info)
 
         # Create storage path
         collection_dir = self.get_collection_dir(collection_name)
@@ -480,12 +478,54 @@ class PathManager:
         config_name = self._sanitize_filename(config_name)
         return self.config_dir / f"{config_name}.yaml"
 
-    def _generate_paper_id(self, url: str, title: str) -> str:
-        """Generate unique paper ID with validation."""
-        content = f"{url}:{title}"
-        hash_obj = hashlib.md5(content.encode())
+    def _generate_paper_id(self, paper_info: Dict) -> str:
+        """
+        Generate unique 8-digit paper ID using deterministic strategy.
+        
+        Priority:
+        1. If DOI exists: Use DOI for consistent identification
+        2. If no DOI: Use title + first author + year for deterministic hash
+        
+        Args:
+            paper_info: Dictionary containing paper metadata
+            
+        Returns:
+            8-character uppercase hexadecimal string
+        """
+        doi = paper_info.get("doi", "").strip()
+        
+        if doi:
+            # Use DOI for consistent identification across systems
+            # Remove common DOI prefixes and normalize
+            clean_doi = doi.replace("https://doi.org/", "").replace("http://dx.doi.org/", "")
+            content = f"DOI:{clean_doi}"
+            logger.debug(f"Generating ID from DOI: {clean_doi}")
+        else:
+            # Use deterministic metadata combination
+            title = paper_info.get("title", "").strip().lower()
+            authors = paper_info.get("authors", [])
+            year = paper_info.get("year", "")
+            
+            # Get first author's last name
+            first_author = "unknown"
+            if authors and len(authors) > 0:
+                author_parts = str(authors[0]).strip().split()
+                if author_parts:
+                    # Take last part as last name
+                    first_author = author_parts[-1].lower()
+            
+            # Clean title (remove common words and normalize)
+            title_clean = re.sub(r'\b(the|and|of|in|on|at|to|for|with|by)\b', '', title)
+            title_clean = re.sub(r'[^\w\s]', '', title_clean)  # Remove punctuation
+            title_clean = re.sub(r'\s+', ' ', title_clean).strip()  # Normalize spaces
+            
+            content = f"META:{title_clean}:{first_author}:{year}"
+            logger.debug(f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}...")
+        
+        # Generate hash and take first 8 characters
+        hash_obj = hashlib.md5(content.encode('utf-8'))
         paper_id = hash_obj.hexdigest()[:8].upper()
-
+        
         # Ensure it's a valid directory name
         return self._sanitize_filename(paper_id)
 

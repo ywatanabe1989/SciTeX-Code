@@ -33,6 +33,7 @@ from playwright.async_api import Browser, Page, async_playwright
 
 from scitex import logging
 
+from ..auth import AuthenticationManager
 from ..browser.local import BrowserManager
 from ..config import ScholarConfig
 from ._OpenURLResolver import OpenURLResolver
@@ -52,7 +53,13 @@ class DOIToURLResolver:
             config: Scholar configuration (uses default if not provided)
         """
         self.config = config or ScholarConfig()
-        self.openurl_resolver = OpenURLResolver(config=self.config)
+        
+        # Initialize auth manager for OpenURL resolver
+        auth_manager = AuthenticationManager(config=self.config)
+        self.openurl_resolver = OpenURLResolver(auth_manager=auth_manager)
+        
+        # Initialize path manager for screenshots
+        self.path_manager = self.config.path_manager
 
         # Cache for resolved URLs
         self.cache_dir = Path.home() / ".scitex" / "scholar" / "url_cache"
@@ -62,6 +69,76 @@ class DOIToURLResolver:
 
         # Track failures for adaptive behavior
         self.failures = {}
+
+    async def _capture_workflow_screenshot(self, doi: str, url: str, stage: str, page: Optional[Page] = None):
+        """
+        Capture systematic screenshots during DOI resolution workflow.
+        
+        Args:
+            doi: DOI being resolved
+            url: Current URL
+            stage: Workflow stage (e.g., "doi_redirect", "openurl_result", "publisher_page", "access_check")
+            page: Existing page object (if None, creates new browser)
+        """
+        try:
+            # Create paper info from DOI for directory structure
+            paper_info = {
+                'title': f"DOI_Resolution_{doi.replace('/', '_')}",
+                'authors': [],
+                'year': None,
+                'doi': doi,
+                'journal': None,
+                'url': url
+            }
+            
+            storage_paths = self.path_manager.get_paper_storage_paths(paper_info, "doi_resolution")
+            screenshots_dir = storage_paths["storage_path"] / "screenshots"
+            screenshots_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate timestamp and filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            safe_doi = doi.replace('/', '_').replace(':', '_')
+            filename = f"{timestamp}-{stage}-{safe_doi}.png"
+            screenshot_path = screenshots_dir / filename
+            
+            if page:
+                # Use existing page
+                await page.screenshot(
+                    path=str(screenshot_path),
+                    full_page=True,
+                    timeout=10000
+                )
+                logger.info(f"DOI workflow screenshot: {stage} -> {screenshot_path}")
+            else:
+                # Create new browser for screenshot
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=True)
+                    new_page = await browser.new_page()
+                    
+                    try:
+                        await new_page.goto(url, wait_until='networkidle', timeout=30000)
+                        await new_page.screenshot(
+                            path=str(screenshot_path),
+                            full_page=True,
+                            timeout=10000
+                        )
+                        
+                        # Save page info
+                        info_file = screenshot_path.with_suffix(".txt")
+                        with open(info_file, 'w', encoding='utf-8') as f:
+                            f.write(f"DOI: {doi}\n")
+                            f.write(f"URL: {url}\n")
+                            f.write(f"Stage: {stage}\n")
+                            f.write(f"Timestamp: {timestamp}\n")
+                            f.write(f"Page Title: {await new_page.title()}\n")
+                            f.write(f"Final URL: {new_page.url}\n")
+                        
+                        logger.info(f"DOI workflow screenshot: {stage} -> {screenshot_path}")
+                    finally:
+                        await browser.close()
+                        
+        except Exception as e:
+            logger.debug(f"Failed to capture DOI workflow screenshot for {stage}: {e}")
 
     def _load_cache(self) -> Dict[str, Dict[str, any]]:
         """Load URL cache from disk."""
@@ -189,11 +266,20 @@ class DOIToURLResolver:
 
         try:
             # Try OpenURL resolver first if configured
-            if use_openurl and self.config.university_openurl:
+            openurl_resolver_url = self.config.resolve("openurl_resolver_url", None, None, type=str)
+            if use_openurl and openurl_resolver_url:
                 logger.info(f"Trying OpenURL resolver for {doi}")
+                
+                # Capture screenshot of initial DOI URL
+                doi_url = f"https://doi.org/{doi}"
+                await self._capture_workflow_screenshot(doi, doi_url, "01_initial_doi")
+                
                 openurl_result = await self._try_openurl(doi)
                 if openurl_result:
                     result = openurl_result
+                    # Capture screenshot of OpenURL result
+                    if result.get('url'):
+                        await self._capture_workflow_screenshot(doi, result['url'], "02_openurl_resolved")
 
             # Try direct publisher URLs
             if not result:
@@ -201,6 +287,9 @@ class DOIToURLResolver:
                 direct_result = await self._try_direct_urls(doi, verify_access)
                 if direct_result:
                     result = direct_result
+                    # Capture screenshot of direct URL result
+                    if result.get('url'):
+                        await self._capture_workflow_screenshot(doi, result['url'], "03_direct_publisher")
 
             # Cache successful result
             if result:
@@ -227,7 +316,8 @@ class DOIToURLResolver:
                 "req_dat": "format=pdf",
             }
 
-            openurl = f"{self.config.university_openurl}?{urlencode(params)}"
+            openurl_resolver_url = self.config.resolve("openurl_resolver_url", None, None, type=str)
+            openurl = f"{openurl_resolver_url}?{urlencode(params)}"
 
             # Use the OpenURL resolver to navigate
             async with async_playwright() as p:
