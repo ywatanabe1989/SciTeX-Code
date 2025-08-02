@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 18:24:55 (ywatanabe)"
+# Timestamp: "2025-08-02 17:12:59 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -32,7 +32,7 @@ Quick Start:
 from ._Scholar import Scholar, search, search_quick, enrich_bibtex
 
 # Import configuration
-from ._Config import ScholarConfig
+from .config import ScholarConfig
 
 # Import core classes for advanced users
 from ._Paper import Paper
@@ -153,9 +153,9 @@ __all__ = [
 
     # Authentication
     'AuthenticationManager',
-    'OpenAthensAuthenticator',
-    'ShibbolethAuthenticator',
-    'EZProxyAuthenticator',
+    # 'OpenAthensAuthenticator',
+    # 'ShibbolethAuthenticator',
+    # 'EZProxyAuthenticator',
 
     # Resolution
     'DOIResolver',
@@ -241,9 +241,9 @@ __all__ = [
 # Import new modules
 from .auth import (
     AuthenticationManager,
-    OpenAthensAuthenticator,
-    ShibbolethAuthenticator,
-    EZProxyAuthenticator,
+    # OpenAthensAuthenticator,
+    # ShibbolethAuthenticator,
+    # EZProxyAuthenticator,
 )
 from .doi import DOIResolver
 from .open_url import OpenURLResolver, ResumableOpenURLResolver

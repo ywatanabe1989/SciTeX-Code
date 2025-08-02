@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 17:24:25 (ywatanabe)"
+# Timestamp: "2025-08-02 17:12:30 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,20 +12,20 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Authentication module for Scholar."""
 
-from ._AuthenticatedBrowserMixin import AuthenticatedBrowserMixin
+# from ._AuthenticatedBrowserMixin import AuthenticatedBrowserMixin
 from ._AuthenticationManager import AuthenticationManager
-from ._BaseAuthenticator import BaseAuthenticator
-from ._OpenAthensAuthenticator import OpenAthensAuthenticator
-from ._EZProxyAuthenticator import EZProxyAuthenticator
-from ._ShibbolethAuthenticator import ShibbolethAuthenticator
+# from ._BaseAuthenticator import BaseAuthenticator
+# from ._OpenAthensAuthenticator import OpenAthensAuthenticator
+# from ._EZProxyAuthenticator import EZProxyAuthenticator
+# from ._ShibbolethAuthenticator import ShibbolethAuthenticator
 
 __all__ = [
-    "AuthenticatedBrowserMixin",
+    # "AuthenticatedBrowserMixin",
     "AuthenticationManager",
-    "BaseAuthenticator",
-    "OpenAthensAuthenticator",
-    "EZProxyAuthenticator",
-    "ShibbolethAuthenticator",
+    # "BaseAuthenticator",
+    # "OpenAthensAuthenticator",
+    # "EZProxyAuthenticator",
+    # "ShibbolethAuthenticator",
 ]
 
 # EOF

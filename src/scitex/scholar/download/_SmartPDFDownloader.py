@@ -25,7 +25,7 @@ import aiohttp
 from scitex import logging
 from ..auth import AuthenticationManager
 from ..browser.local import LocalBrowserManager
-from ..config._Config import ScholarConfig
+from ..config import ScholarConfig
 from ..open_url import DOIToURLResolver
 from ..utils._screenshot_capturer import ScreenshotCapturer
 from ._PDFDownloader import PDFDownloader

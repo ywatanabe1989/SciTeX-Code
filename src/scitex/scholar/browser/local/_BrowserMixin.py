@@ -19,16 +19,28 @@ from .utils._CookieAutoAcceptor import CookieAutoAcceptor
 
 
 class BrowserMixin:
-    """Mixin for local browser-based strategies with common functionality."""
+    """Mixin for local browser-based strategies with common functionality.
+    
+    Browser Modes:
+    - interactive: For human interaction (authentication, debugging) - 1280x720 viewport
+    - stealth: For automated operations (scraping, downloading) - 1x1 viewport
+    
+    Note: Always runs browser in visible system mode (never truly headless)
+    but uses viewport sizing to control interaction vs stealth behavior.
+    """
 
     _shared_browser = None
     _shared_playwright = None
 
-    def __init__(self, headless: bool = True):
-        """Initialize browser mixin."""
+    def __init__(self, mode: str = "stealth"):
+        """Initialize browser mixin.
+        
+        Args:
+            mode: Browser mode - 'interactive' or 'stealth'
+        """
         self.cookie_acceptor = CookieAutoAcceptor()
         self.captcha_handler = CaptchaHandler()
-        self.headless = headless
+        self.mode = mode
         self.contexts = []
         self.pages = []
 
@@ -58,7 +70,7 @@ class BrowserMixin:
             cls._shared_playwright = None
 
     async def get_browser(self) -> Browser:
-        """Get or create a local browser instance with the current visibility setting."""
+        """Get or create a local browser instance with the current mode setting."""
         if (
             self._shared_browser is None
             or self._shared_browser.is_connected() is False
@@ -97,13 +109,11 @@ class BrowserMixin:
                 "--window-size=1920,1080",
             ]
 
-            # Use standard headless mode
-            headless_mode = self.headless
-
-            # Launch a local browser with stealth settings
+            # Always run in visible mode (never headless)
+            # This is safer for bot detection while providing flexibility via viewport sizing
             self._shared_browser = (
                 await self._shared_playwright.chromium.launch(
-                    headless=headless_mode,
+                    headless=False,
                     args=stealth_args,
                 )
             )
@@ -140,8 +150,18 @@ class BrowserMixin:
     ):
         """Create browser context with cookie auto-acceptance."""
         browser = await playwright_instance.chromium.launch(
-            headless=self.headless
+            headless=False  # Always visible but with viewport control
         )
+        
+        # Smart viewport sizing based on mode
+        if "viewport" not in context_options:
+            if self.mode == "stealth":
+                # For stealth mode: use minimal viewport to avoid detection
+                context_options["viewport"] = {"width": 1, "height": 1}
+            else:  # interactive mode
+                # For interactive mode: use human-friendly size
+                context_options["viewport"] = {"width": 1280, "height": 720}
+            
         context = await browser.new_context(**context_options)
         await self.cookie_acceptor.inject_auto_acceptor(context)
         return browser, context
@@ -178,35 +198,35 @@ class BrowserMixin:
             )
         return False
 
-    def visible(self):
-        """Set browser to visible mode (flag only, browser recreated on next use)."""
-        if self.headless is False:
+    def interactive(self):
+        """Set browser to interactive mode (human-friendly viewport)."""
+        if self.mode == "interactive":
             return self
-        self.headless = False
+        self.mode = "interactive"
         self._shared_browser = None
         return self
 
-    def invisible(self):
-        """Set browser to headless mode (flag only, browser recreated on next use)."""
-        if self.headless is True:
+    def stealth(self):
+        """Set browser to stealth mode (minimal viewport for bot detection avoidance)."""
+        if self.mode == "stealth":
             return self
-        self.headless = True
+        self.mode = "stealth"
         self._shared_browser = None
         return self
 
     async def show(self):
-        """Switch browser to visible mode and recreate all existing pages at current URLs."""
-        if not self.headless:
+        """Switch browser to interactive mode and recreate all existing pages at current URLs."""
+        if self.mode == "interactive":
             return self
-        self.headless = False
+        self.mode = "interactive"
         await self._restart_contexts()
         return self
 
     async def hide(self):
-        """Switch browser to headless mode and recreate all existing pages at current URLs."""
-        if self.headless:
+        """Switch browser to stealth mode and recreate all existing pages at current URLs."""
+        if self.mode == "stealth":
             return self
-        self.headless = True
+        self.mode = "stealth"
         await self._restart_contexts()
         return self
 
@@ -239,12 +259,12 @@ if __name__ == "__main__":
         # Usage
         browser = MyBrowser()
 
-        # Visible mode with tab management
-        browser.visible()  # Flag Only
+        # Interactive mode with tab management
+        browser.interactive()  # Human-friendly viewport
         content1 = await browser.scrape("https://example.com")
 
-        # Switch to headless mode
-        browser.invisible()  # Flag Only
+        # Switch to stealth mode
+        browser.stealth()  # Minimal viewport for bot detection avoidance
         content2 = await browser.scrape("https://example.com")
         content3 = await browser.scrape("https://google.com")
 
@@ -252,8 +272,8 @@ if __name__ == "__main__":
         print(f"Open tabs: {len(browser.pages)}")
 
         #
-        await browser.show()  # Make visible
-        await browser.hide()  # Make headless
+        await browser.show()  # Make interactive (1280x720)
+        await browser.hide()  # Make stealth (1x1)
 
         # Access specific pages
         first_page = browser.pages[0]

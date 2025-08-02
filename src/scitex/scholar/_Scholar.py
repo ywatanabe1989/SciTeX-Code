@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 00:28:20 (ywatanabe)"
+# Timestamp: "2025-08-02 20:08:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -23,7 +23,6 @@ This is the main entry point for all scholar functionality, providing:
 
 import asyncio
 import re
-import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -37,9 +36,9 @@ from ..errors import (
     SciTeXWarning,
 )
 from ..io import load
-from ._Config import ScholarConfig
 from ._Paper import Paper
 from ._Papers import Papers
+from .config import ScholarConfig
 from .doi._DOIResolver import DOIResolver
 from .download._PDFDownloader import PDFDownloader
 from .enrichment._MetadataEnricher import MetadataEnricher
@@ -134,7 +133,7 @@ class Scholar:
         # Initialize DOI resolver
         self._doi_resolver = DOIResolver(
             email_crossref=self.config.crossref_email,
-            email_pubmed=self.config.pubmed_email
+            email_pubmed=self.config.pubmed_email,
         )
 
         logger.info(f"Scholar initialized (workspace: {self.workspace_dir})")
@@ -696,7 +695,6 @@ class Scholar:
 
         return collection
 
-
     def _bibtex_entry_to_paper(self, entry: Dict[str, Any]) -> Optional[Paper]:
         """
         Convert a parsed BibTeX entry to a Paper object.
@@ -844,22 +842,22 @@ class Scholar:
                 if not paper.doi:  # Only resolve if DOI is missing
                     titles.append(paper.title)
                     years.append(paper.year)
-            
+
             # Batch resolve DOIs
             if titles:
                 doi_results = self._doi_resolver.batch_resolve(
-                    titles=titles, 
-                    years=years,
-                    show_progress=True
+                    titles=titles, years=years, show_progress=True
                 )
-                
+
                 # Update papers with resolved DOIs
                 for paper in papers_to_update:
                     if not paper.doi and paper.title in doi_results:
                         resolved_doi = doi_results[paper.title]
                         if resolved_doi:
                             paper.doi = resolved_doi
-                            logger.info(f"  ✓ Found DOI for: {paper.title[:50]}... -> {resolved_doi}")
+                            logger.info(
+                                f"  ✓ Found DOI for: {paper.title[:50]}... -> {resolved_doi}"
+                            )
 
             # Update URLs if needed
             for paper in papers_to_update:
@@ -872,13 +870,15 @@ class Scholar:
                     logger.info(
                         f"  ✓ Updated URL to DOI link for: {paper.title[:50]}..."
                     )
-                
+
                 # Fetch abstracts if needed
                 if paper.doi and fetch_abstracts and not paper.abstract:
                     abstract = self._doi_resolver.get_abstract(paper.doi)
                     if abstract:
                         paper.abstract = abstract
-                        logger.info(f"  ✓ Found abstract for: {paper.title[:50]}...")
+                        logger.info(
+                            f"  ✓ Found abstract for: {paper.title[:50]}..."
+                        )
 
         else:
             # Single paper - use regular resolver
@@ -1418,7 +1418,7 @@ class Scholar:
             max_concurrent=self.config.max_parallel_requests,
             debug_mode=self.config.debug_mode,
         )
-        
+
         # Pass config to downloader for EZProxy support
         self._pdf_downloader.config = self.config
 
@@ -1489,7 +1489,7 @@ class Scholar:
                 print(f"    - IdP URL: {self.config.openathens_idp_url}")
         else:
             print(f"  • OpenAthens: ✗ Disabled")
-            
+
         # Shibboleth status
         if self.config.shibboleth_enabled:
             print(
@@ -1516,25 +1516,25 @@ class Scholar:
         print("\n💡 Tip: Configure with environment variables or YAML file")
         print("  See: stx.scholar.ScholarConfig.show_env_vars()")
         print("=" * 60 + "\n")
-    
+
     def configure_ezproxy(
         self,
         proxy_url: Optional[str] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
         institution: Optional[str] = None,
-        save_to_env: bool = False
+        save_to_env: bool = False,
     ):
         """
         Configure EZProxy authentication.
-        
+
         Args:
             proxy_url: EZProxy server URL (e.g., 'https://ezproxy.library.edu')
             username: Username for authentication
-            password: Password for authentication  
+            password: Password for authentication
             institution: Institution name
             save_to_env: Save configuration to environment variables
-            
+
         Example:
             scholar.configure_ezproxy(
                 proxy_url="https://ezproxy.myuni.edu",
@@ -1543,26 +1543,26 @@ class Scholar:
             )
         """
         import getpass
-        
+
         # Update configuration
         self.config.ezproxy_enabled = True
-        
+
         if proxy_url:
             self.config.ezproxy_url = proxy_url
         elif not self.config.ezproxy_url:
             self.config.ezproxy_url = input("EZProxy URL: ")
-            
+
         if username:
             self.config.ezproxy_username = username
         elif not self.config.ezproxy_username:
             self.config.ezproxy_username = input("EZProxy username: ")
-            
+
         if password:
             self.config.ezproxy_password = password
-            
+
         if institution:
             self.config.ezproxy_institution = institution
-            
+
         # Save to environment if requested
         if save_to_env:
             env_vars = {
@@ -1571,25 +1571,27 @@ class Scholar:
                 "SCITEX_SCHOLAR_EZPROXY_USERNAME": self.config.ezproxy_username,
             }
             if self.config.ezproxy_institution:
-                env_vars["SCITEX_SCHOLAR_EZPROXY_INSTITUTION"] = self.config.ezproxy_institution
-                
+                env_vars["SCITEX_SCHOLAR_EZPROXY_INSTITUTION"] = (
+                    self.config.ezproxy_institution
+                )
+
             print("\nAdd these to your environment:")
             for key, value in env_vars.items():
                 if value:
                     print(f'export {key}="{value}"')
-                    
+
         # Reinitialize PDF downloader with EZProxy
         self._initialize_pdf_downloader()
-        
+
         logger.info(f"EZProxy configured for {self.config.ezproxy_url}")
-        
+
     async def authenticate_ezproxy_async(self, force: bool = False) -> bool:
         """
         Authenticate with EZProxy (async).
-        
+
         Args:
             force: Force re-authentication even if session exists
-            
+
         Returns:
             True if authentication successful
         """
@@ -1597,56 +1599,60 @@ class Scholar:
             raise ScholarError(
                 "EZProxy not configured. Call configure_ezproxy() first."
             )
-            
+
         if not self._pdf_downloader.ezproxy_authenticator:
             raise ScholarError("EZProxy authenticator not initialized")
-            
-        result = await self._pdf_downloader.ezproxy_authenticator.authenticate(force=force)
+
+        result = await self._pdf_downloader.ezproxy_authenticator.authenticate(
+            force=force
+        )
         return bool(result)
-        
+
     def authenticate_ezproxy(self, force: bool = False) -> bool:
         """
         Authenticate with EZProxy (sync).
-        
+
         Args:
             force: Force re-authentication even if session exists
-            
+
         Returns:
             True if authentication successful
         """
         return self._run_async(self.authenticate_ezproxy_async(force))
-        
+
     async def is_ezproxy_authenticated_async(self) -> bool:
         """
         Check if EZProxy is authenticated (async).
-        
+
         Returns:
             True if authenticated and session is valid
         """
         if not self._pdf_downloader.ezproxy_authenticator:
             return False
-        return await self._pdf_downloader.ezproxy_authenticator.is_authenticated()
-        
+        return (
+            await self._pdf_downloader.ezproxy_authenticator.is_authenticated()
+        )
+
     def is_ezproxy_authenticated(self) -> bool:
         """
         Check if EZProxy is authenticated (sync).
-        
+
         Returns:
             True if authenticated and session is valid
         """
         return self._run_async(self.is_ezproxy_authenticated_async())
-        
+
     def configure_shibboleth(
-        self, 
+        self,
         institution: Optional[str] = None,
         idp_url: Optional[str] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
-        entity_id: Optional[str] = None
+        entity_id: Optional[str] = None,
     ) -> None:
         """
         Configure Shibboleth authentication.
-        
+
         Args:
             institution: Institution name (e.g., 'University of Example')
             idp_url: Identity Provider URL
@@ -1665,65 +1671,73 @@ class Scholar:
             self.config.shibboleth_password = password
         if entity_id:
             self.config.shibboleth_entity_id = entity_id
-            
+
         # Enable Shibboleth
         self.config.shibboleth_enabled = True
-        
+
         # Reinitialize downloader with new config
         self._initialize_pdf_downloader()
-        
+
         # Initialize Shibboleth in downloader
-        if hasattr(self._pdf_downloader, '_init_shibboleth'):
+        if hasattr(self._pdf_downloader, "_init_shibboleth"):
             self._pdf_downloader._init_shibboleth()
-            
+
     async def authenticate_shibboleth_async(self, force: bool = False) -> bool:
         """
         Authenticate with Shibboleth (async).
-        
+
         Args:
             force: Force re-authentication even if session exists
-            
+
         Returns:
             True if authentication successful
         """
         if not self._pdf_downloader.shibboleth_authenticator:
             # Initialize Shibboleth if not already done
-            if hasattr(self._pdf_downloader, '_init_shibboleth'):
+            if hasattr(self._pdf_downloader, "_init_shibboleth"):
                 self._pdf_downloader._init_shibboleth()
-            
+
         if not self._pdf_downloader.shibboleth_authenticator:
-            raise ValueError("Shibboleth not configured. Call configure_shibboleth() first.")
-            
-        result = await self._pdf_downloader.shibboleth_authenticator.authenticate(force=force)
+            raise ValueError(
+                "Shibboleth not configured. Call configure_shibboleth() first."
+            )
+
+        result = (
+            await self._pdf_downloader.shibboleth_authenticator.authenticate(
+                force=force
+            )
+        )
         return bool(result.get("cookies"))
-        
+
     def authenticate_shibboleth(self, force: bool = False) -> bool:
         """
         Authenticate with Shibboleth (sync).
-        
+
         Args:
             force: Force re-authentication even if session exists
-            
+
         Returns:
             True if authentication successful
         """
         return self._run_async(self.authenticate_shibboleth_async(force))
-        
+
     async def is_shibboleth_authenticated_async(self) -> bool:
         """
         Check if Shibboleth is authenticated (async).
-        
+
         Returns:
             True if authenticated and session is valid
         """
         if not self._pdf_downloader.shibboleth_authenticator:
             return False
-        return await self._pdf_downloader.shibboleth_authenticator.is_authenticated()
-        
+        return (
+            await self._pdf_downloader.shibboleth_authenticator.is_authenticated()
+        )
+
     def is_shibboleth_authenticated(self) -> bool:
         """
         Check if Shibboleth is authenticated (sync).
-        
+
         Returns:
             True if authenticated and session is valid
         """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 01:36:58 (ywatanabe)"
+# Timestamp: "2025-08-02 18:40:35 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -61,7 +61,6 @@ class DOIResolver:
 
     def __init__(
         self,
-        config: Optional[Any] = None,
         email_crossref: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
         email_pubmed: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
         email_openalex: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
@@ -70,49 +69,45 @@ class DOIResolver:
         ),
         email_arxiv: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
         sources: Optional[List[str]] = None,
+        config: Optional[Any] = None,
     ):
         """Initialize resolver with specified sources.
 
         Args:
-            config: ScholarConfig object (takes precedence over individual params)
             email_crossref: Email for CrossRef API
             email_pubmed: Email for PubMed API
             email_openalex: Email for OpenAlex API
             email_semantic_scholar: Email for Semantic Scholar API
             email_arxiv: Email for ArXiv API
             sources: List of source names to use (default: all available)
+            config: ScholarConfig object
         """
+        if config is None:
+            from ..config import ScholarConfig
+
+            config = ScholarConfig()
+
+        self.config = config
+
+        # Direct params override config
+        self.email_crossref = config.resolve(
+            "crossref_email", email_crossref, "research@example.com"
+        )
+        self.email_pubmed = config.resolve(
+            "pubmed_email", email_pubmed, "research@example.com"
+        )
+        self.email_openalex = config.resolve(
+            "openalex_email", email_openalex, "research@example.com"
+        )
+        self.email_semantic_scholar = config.resolve(
+            "semantic_scholar_email", email_semantic_scholar, "research@example.com"
+        )
+        self.email_arxiv = config.resolve(
+            "arxiv_email", email_arxiv, "research@example.com"
+        )
+
         # Default fallback
         default_email = "research@example.com"
-
-        if config:
-            self.email_crossref = getattr(
-                config, "crossref_email", email_crossref
-            )
-            self.email_pubmed = getattr(config, "pubmed_email", email_pubmed)
-            self.email_openalex = getattr(
-                config, "openalex_email", email_openalex
-            )
-            self.email_semantic_scholar = getattr(
-                config, "semantic_scholar_email", email_semantic_scholar
-            )
-            self.email_arxiv = getattr(config, "arxiv_email", email_arxiv)
-        else:
-            self.email_crossref = email_crossref or os.getenv(
-                "SCITEX_SCHOLAR_CROSSREF_EMAIL", default_email
-            )
-            self.email_pubmed = email_pubmed or os.getenv(
-                "SCITEX_SCHOLAR_PUBMED_EMAIL", default_email
-            )
-            self.email_openalex = email_openalex or os.getenv(
-                "SCITEX_SCHOLAR_OPENALEX_EMAIL", default_email
-            )
-            self.email_semantic_scholar = email_semantic_scholar or os.getenv(
-                "SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_EMAIL", default_email
-            )
-            self.email_arxiv = email_arxiv or os.getenv(
-                "SCITEX_SCHOLAR_ARXIV_EMAIL", default_email
-            )
 
         self.sources = sources or self.DEFAULT_SOURCES
         self._source_instances: Dict[str, BaseDOISource] = {}
@@ -211,19 +206,21 @@ class DOIResolver:
             source = self._get_source(source_name)
             if not source:
                 continue
-                
+
             try:
                 # Try this source
-                doi = await self._search_source_async(source, title, year, authors)
-                
+                doi = await self._search_source_async(
+                    source, title, year, authors
+                )
+
                 if doi:
                     # Success! Return immediately, no need to try other sources
                     return {"doi": doi, "source": source_name}
-                    
+
             except Exception as e:
                 logger.debug(f"Error searching {source_name}: {e}")
                 continue
-                
+
             # Small delay between sources to be polite
             await asyncio.sleep(1.0)  # 1 second between sources
 
@@ -270,7 +267,7 @@ class DOIResolver:
             else:
                 logger.debug(f"No DOI found via {source.name}")
                 return None
-                
+
         except Exception as e:
             logger.debug(f"Error searching {source.name}: {e}")
             return None

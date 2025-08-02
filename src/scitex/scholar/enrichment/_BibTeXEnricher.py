@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 17:57:33 (ywatanabe)"
+# Timestamp: "2025-08-02 20:09:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/enrichment/_BibTeXEnricher.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,7 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 # Time-stamp: "2025-08-01 13:25:00"
 # Author: Claude
 
@@ -33,7 +34,7 @@ from bibtexparser.customization import convert_to_unicode
 
 from scitex import logging
 
-from .._Config import ScholarConfig
+from ..config import ScholarConfig
 from ..doi import DOIResolver
 from ..search_engine import (
     CrossRefSearchEngine,

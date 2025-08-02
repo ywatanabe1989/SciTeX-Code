@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 20:57:16 (ywatanabe)"
+# Timestamp: "2025-08-03 02:29:42 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional
 from scitex import logging
 
 from ...errors import AuthenticationError
+from ..config import ScholarConfig
 from ._BaseAuthenticator import BaseAuthenticator
 from ._EZProxyAuthenticator import EZProxyAuthenticator
 from ._OpenAthensAuthenticator import OpenAthensAuthenticator
@@ -51,14 +52,21 @@ class AuthenticationManager:
         email_shibboleth: Optional[str] = os.getenv(
             "SCITEX_SCHOLAR_SHIBBOLETH_EMAIL"
         ),
+        config: Optional[ScholarConfig] = None,
     ):
         """Initialize the authentication manager.
 
         Args:
             email_openathens: User's institutional email for OpenAthens authentication
             email_ezproxy: User's institutional email for EZProxy authentication
-            email_shibboleth: User's institutional email for Shibboleth authentication
+            email_shibboleth: User's institutional email for Shibboleth authentication  
+            config: ScholarConfig instance (creates new if None)
         """
+        # Initialize config
+        if config is None:
+            config = ScholarConfig()
+        self.config = config
+        
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
@@ -69,21 +77,35 @@ class AuthenticationManager:
             )
             return
 
-        if email_openathens:
-            self._register_provider(
-                "openathens",
-                OpenAthensAuthenticator(
-                    email=email_openathens,
-                ),
-            )
-        if email_ezproxy:
-            self._register_provider(
-                "ezproxy", EZProxyAuthenticator(email=email_ezproxy)
-            )
-        if email_shibboleth:
-            self._register_provider(
-                "shibboleth", ShibbolethAuthenticator(email=email_shibboleth)
-            )
+        for email, provider_str, provider_authenticator in [
+            (email_openathens, "openathens", OpenAthensAuthenticator),
+            (email_ezproxy, "ezproxy", EZProxyAuthenticator),
+            (email_shibboleth, "shibboleth", ShibbolethAuthenticator),
+        ]:
+            if email:
+                self._register_provider(
+                    provider_str,
+                    provider_authenticator(
+                        email=email,
+                        config=self.config,
+                    ),
+                )
+
+        # if email_openathens:
+        #     self._register_provider(
+        #         "openathens",
+        #         OpenAthensAuthenticator(
+        #             email=email_openathens,
+        #         ),
+        #     )
+        # if email_ezproxy:
+        #     self._register_provider(
+        #         "ezproxy", EZProxyAuthenticator(email=email_ezproxy)
+        #     )
+        # if email_shibboleth:
+        #     self._register_provider(
+        #         "shibboleth", ShibbolethAuthenticator(email=email_shibboleth)
+        #     )
 
     def _register_provider(
         self, name: str, provider: BaseAuthenticator
@@ -93,23 +115,13 @@ class AuthenticationManager:
             raise TypeError(
                 f"Provider must inherit from BaseAuthenticator, got {type(provider)}"
             )
-
         self.providers[name] = provider
-        logger.info(f"Registered authentication provider: {name}")
-
         if not self.active_provider:
             self.active_provider = name
+        logger.info(f"Registered authentication provider: {name}")
 
     def set_active_provider(self, name: str) -> None:
-        """
-        Set the active authentication provider.
-
-        Args:
-            name: Name of the provider to activate
-
-        Raises:
-            ValueError: If provider not found
-        """
+        """Set the active authentication provider."""
         if name not in self.providers:
             raise ValueError(
                 f"Provider '{name}' not found. "
@@ -119,15 +131,13 @@ class AuthenticationManager:
         logger.info(f"Set active authentication provider: {name}")
 
     def get_active_provider(self) -> Optional[BaseAuthenticator]:
-        """
-        Get the currently active provider.
-
-        Returns:
-            Active authentication provider or None
-        """
+        """Get the currently active provider."""
         if self.active_provider:
             return self.providers.get(self.active_provider)
-        return None
+        else:
+            raise ValueError(
+                f"Active provider not found. Please set active provider"
+            )
 
     async def ensure_authenticated(
         self,
@@ -139,18 +149,10 @@ class AuthenticationManager:
             return True
         if await self.authenticate(provider_name=provider_name, **kwargs):
             return True
-        raise AuthenticationError("Not authenticated")
+        raise AuthenticationError("Authentication not ensured")
 
     async def is_authenticated(self, verify_live: bool = True) -> bool:
-        """
-        Check if authenticated with any provider.
-
-        Args:
-            verify_live: If True, verify with actual request
-
-        Returns:
-            True if authenticated with any provider
-        """
+        """Check if authenticated with any provider."""
         # Check active provider first
         if self.active_provider:
             provider = self.providers[self.active_provider]
@@ -164,23 +166,13 @@ class AuthenticationManager:
                     self.active_provider = name
                     return True
 
+        logger.info("Not authenticated.")
         return False
 
     async def authenticate(
         self, provider_name: Optional[str] = None, **kwargs
     ) -> dict:
-        """Authenticate with specified or active provider.
-
-        Args:
-            provider_name: Name of provider to use (uses active if None)
-            **kwargs: Authentication parameters
-
-        Returns:
-            Authentication result dictionary
-
-        Raises:
-            AuthenticationError: If no provider available or auth fails
-        """
+        """Authenticate with specified or active provider."""
         if provider_name:
             if provider_name not in self.providers:
                 raise AuthenticationError(
@@ -195,18 +187,11 @@ class AuthenticationManager:
         result = await provider.authenticate(**kwargs)
         if result and provider_name:
             self.active_provider = provider_name
+            logger.success(f"Authentication succeeded by {provider_name}.")
         return result
 
     async def get_auth_headers(self) -> Dict[str, str]:
-        """
-        Get authentication headers from active provider.
-
-        Returns:
-            Dictionary of headers
-
-        Raises:
-            AuthenticationError: If not authenticated
-        """
+        """Get authentication headers from active provider."""
         provider = self.get_active_provider()
         if not provider:
             raise AuthenticationError("No active authentication provider")
@@ -217,15 +202,7 @@ class AuthenticationManager:
         return await provider.get_auth_headers()
 
     async def get_auth_cookies(self) -> List[Dict[str, Any]]:
-        """
-        Get authentication cookies from active provider.
-
-        Returns:
-            List of cookie dictionaries
-
-        Raises:
-            AuthenticationError: If not authenticated
-        """
+        """Get authentication cookies from active provider."""
         provider = self.get_active_provider()
         if not provider:
             raise AuthenticationError("No active authentication provider")
@@ -240,18 +217,14 @@ class AuthenticationManager:
         for provider in self.providers.values():
             try:
                 await provider.logout()
+                logger.success(f"Logged out from {provider}")
             except Exception as e:
                 logger.warning(f"Error logging out from {provider}: {e}")
 
         self.active_provider = None
 
     def list_providers(self) -> List[str]:
-        """
-        List all registered providers.
-
-        Returns:
-            List of provider names
-        """
+        """List all registered providers."""
         return list(self.providers.keys())
 
 

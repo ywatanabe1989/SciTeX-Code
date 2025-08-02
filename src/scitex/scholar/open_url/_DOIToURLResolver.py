@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-01 17:51:28 (ywatanabe)"
+# Timestamp: "2025-08-02 20:09:03 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/_DOIToURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -33,8 +33,8 @@ from playwright.async_api import Browser, Page, async_playwright
 
 from scitex import logging
 
-from .._Config import ScholarConfig
 from ..browser.local import BrowserManager
+from ..config import ScholarConfig
 from ._OpenURLResolver import OpenURLResolver
 from .KNOWN_RESOLVERS import KNOWN_RESOLVERS
 

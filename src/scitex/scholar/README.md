@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-01 01:57:32
+!-- Timestamp: 2025-08-03 04:06:11
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -35,6 +35,8 @@ A comprehensive Python library for scientific literature management with automat
 ## Installation
 
 ```bash
+sudo apt update && sudo apt install -y tesseract-ocr
+
 # Install SciTeX
 pip install -e ~/proj/scitex_repo
 
@@ -44,6 +46,8 @@ pip install PyMuPDF       # For PDF text extraction
 pip install sentence-transformers  # For vector similarity search
 pip install selenium webdriver-manager  # For PDF downloading from Sci-Hub
 pip install scholarly     # For Google Scholar search (Note: may be rate-limited)
+pip install pytesseract
+pip install pyautogui
 
 git clone git@github.com:zotero/translators.git zotero_translators
 

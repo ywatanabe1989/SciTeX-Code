@@ -21,8 +21,9 @@ from datetime import datetime, timedelta
 from playwright.async_api import Page, BrowserContext
 
 from scitex import logging
+from scitex.logging import getLogger
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 class BaseSSOAutomator(ABC):
@@ -32,7 +33,7 @@ class BaseSSOAutomator(ABC):
         self,
         username: Optional[str] = None,
         password: Optional[str] = None,
-        headless: bool = True,
+        mode: str = "interactive",  # Use interactive mode for SSO authentication
         persistent_session: bool = True,
         session_expiry_days: int = 7,
     ):
@@ -41,13 +42,13 @@ class BaseSSOAutomator(ABC):
         Args:
             username: Username for authentication
             password: Password for authentication
-            headless: Whether to run browser in headless mode
+            mode: Browser mode - 'interactive' for human interaction, 'stealth' for automated
             persistent_session: Whether to save sessions
             session_expiry_days: How long sessions remain valid
         """
         self.username = username
         self.password = password
-        self.headless = headless
+        self.mode = mode
         self.persistent_session = persistent_session
         self.session_expiry_days = session_expiry_days
         
@@ -171,5 +172,146 @@ class BaseSSOAutomator(ABC):
         except Exception as e:
             self.logger.error(f"Failed to restore session: {e}")
             return False
+
+    async def notify_user_async(self, event_type: str, **kwargs) -> None:
+        """Send notification to user about SSO events.
+        
+        Args:
+            event_type: Type of event (2fa_required, authentication_success, etc.)
+            **kwargs: Additional context for the notification
+        """
+        try:
+            import os
+            from scitex import notify
+            
+            # Get SciTeX email configuration
+            from_email = os.environ.get("SCITEX_EMAIL_AGENT", "agent@scitex.ai")
+            to_email = os.environ.get("SCITEX_EMAIL_YWATANABE", "ywatanabe@scitex.ai")
+            
+            # Generate notification content based on event type
+            subject, message, priority = self._generate_notification_content(event_type, **kwargs)
+            
+            # Send notification
+            await notify.send_async(
+                from_email=from_email,
+                to_email=to_email,
+                subject=subject,
+                message=message,
+                priority=priority
+            )
+            
+            self.logger.success(f"User notification sent: {event_type}")
+            
+        except Exception as e:
+            self.logger.debug(f"Failed to send user notification: {e}")
+            # Don't fail SSO process if notification fails
+
+    def _generate_notification_content(self, event_type: str, **kwargs) -> tuple[str, str, str]:
+        """Generate notification content based on event type.
+        
+        Args:
+            event_type: Type of event
+            **kwargs: Additional context
+            
+        Returns:
+            Tuple of (subject, message, priority)
+        """
+        institution = self.get_institution_name()
+        
+        if event_type == "2fa_required":
+            subject = f"SciTeX Scholar: 2FA Required - {institution}"
+            message = f"""
+{institution} SSO Authentication
+
+A two-factor authentication request has been triggered.
+
+Action Required:
+- Check your registered device for the authentication prompt
+- Approve the request to complete login
+- Authentication will continue automatically once approved
+
+System: SciTeX Scholar Module
+Institution: {institution}
+Status: Awaiting 2FA approval
+Timeout: {kwargs.get('timeout', 'Unknown')} seconds
+
+This is an automated notification from the SciTeX Scholar authentication system.
+            """.strip()
+            priority = "high"
+            
+        elif event_type == "authentication_success":
+            subject = f"SciTeX Scholar: Authentication Successful - {institution}"
+            message = f"""
+{institution} SSO Authentication Complete
+
+Your authentication has been completed successfully.
+
+Details:
+- Institution: {institution}
+- Session expires: {kwargs.get('expires_at', 'Unknown')}
+- Cookies saved: {kwargs.get('cookie_count', 'Unknown')}
+
+System: SciTeX Scholar Module
+Status: Authenticated
+
+You can now access institutional resources through SciTeX Scholar.
+            """.strip()
+            priority = "normal"
+            
+        elif event_type == "authentication_failed":
+            subject = f"SciTeX Scholar: Authentication Failed - {institution}"
+            message = f"""
+{institution} SSO Authentication Failed
+
+Authentication was not completed successfully.
+
+Details:
+- Institution: {institution}
+- Error: {kwargs.get('error', 'Unknown error')}
+- Retry available: Yes
+
+System: SciTeX Scholar Module
+Status: Authentication failed
+
+Please check your credentials and try again.
+            """.strip()
+            priority = "high"
+            
+        elif event_type == "session_expired":
+            subject = f"SciTeX Scholar: Session Expired - {institution}"
+            message = f"""
+{institution} SSO Session Expired
+
+Your authentication session has expired and will need to be renewed.
+
+Details:
+- Institution: {institution}
+- Expired at: {kwargs.get('expired_at', 'Unknown')}
+- Auto-renewal: {kwargs.get('auto_renewal', 'Disabled')}
+
+System: SciTeX Scholar Module
+Status: Session expired
+
+Authentication will be required for the next access.
+            """.strip()
+            priority = "normal"
+            
+        else:
+            # Generic notification
+            subject = f"SciTeX Scholar: {event_type.replace('_', ' ').title()} - {institution}"
+            message = f"""
+{institution} SSO Notification
+
+Event: {event_type.replace('_', ' ').title()}
+Institution: {institution}
+Context: {kwargs}
+
+System: SciTeX Scholar Module
+
+This is an automated notification from the SciTeX Scholar authentication system.
+            """.strip()
+            priority = "normal"
+            
+        return subject, message, priority
 
 # EOF

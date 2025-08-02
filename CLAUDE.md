@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-02 03:38:10
+!-- Timestamp: 2025-08-03 04:49:10
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -165,5 +165,38 @@ Python env is in the current directory. Do not change directory as bash handles 
   reported in GitHub issues). Verified with: docker ps | grep crawl4ai
   
   Maybe it should be http://127.0.0.1:11235 from wsl2 or we need to explicitly resolve windows ip
+
+Expert software engineer that helps review my code based on best practices
+Expert software engineer that monitor codebase not to introduce regressions
+Expert software engineer that solves path management from newly introduced config manager
+
+
+## File versioning
+When a file needs update, please handle versioning like this:
+/path/to/file.py (<- this is only the used script)
+/path/to/file_v01-<description>.py
+/path/to/file_v02-<description>.py
+By following this convention, do not create similar names of files as I cannot understand which files are used in the end.
+This convension is good as we do not need to edit related code like import/export statements.
+Especially, description would be show problem in the version, like xxx-not-working or yyy-not-implemented.
+Since the codebase is not optimized for the config, we need to develop them to accept newly developed config manager
+Also, some paths or parameters will be not included in the current config schema. in that case, please ask user how to handle them individually.
+I hope this new config system will enhance the codebase to be more consistent and maintainable
+
+## Smaller chunks of functions
+I do not like long scripts, functions.
+Please organize codebase in appropriate size of scripts, classes, and functions with clean separation of concepts. one chunk of code should have one responsibility.
+
+## Do not use emoji but use scitex.logging
+Especially success is in green and i can get the large picture from logs they are colored.
+Also, do not use emoji as they are not my cup of tea.
+The usage would be like:
+``` python
+from scitex.logging import getLoger
+logger = getLoger(__name__)
+```
+
+## Use Puppeteer and Crawl4ai MCP servers
+You can work with browsers
 
 <!-- EOF -->
