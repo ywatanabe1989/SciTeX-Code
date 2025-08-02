@@ -178,7 +178,6 @@ def test_split_double_extension():
     assert fname == 'archive.tar'
     assert ext == '.gz'
 
-
 if __name__ == "__main__":
     import os
 
@@ -187,15 +186,16 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/path/_split.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_split.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-02 16:18:06 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/path/_split.py
-#
+# 
 # import os
-#
+# 
+# 
 # def split(fpath):
 #     """Split a file path to (1) the directory path, (2) the file name, and (3) the file extention
 #     Example:
@@ -208,9 +208,10 @@ if __name__ == "__main__":
 #     base = os.path.basename(fpath)
 #     fname, ext = os.path.splitext(base)
 #     return dirname, fname, ext
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/path/_split.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_split.py
 # --------------------------------------------------------------------------------

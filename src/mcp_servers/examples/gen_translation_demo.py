@@ -159,7 +159,7 @@ import json
 import random
 import numpy as np
 from datetime import datetime
-import logging
+from scitex import logging
 
 # Manual experiment setup
 def setup_experiment(config_path):

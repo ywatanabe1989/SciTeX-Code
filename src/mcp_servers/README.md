@@ -7,6 +7,8 @@ Model Context Protocol (MCP) servers providing bidirectional translation between
 - **⚡ Module-Specific Servers**: Specialized translation for IO, plotting, statistics, and data processing
 - **📊 Code Analysis**: Validate SciTeX compliance and suggest improvements
 - **🔧 Configuration Management**: Extract hardcoded values to YAML configs automatically
+- **🧪 Developer Support**: Test generation, performance optimization, migration assistance
+- **📚 Interactive Learning**: Tutorials, concept explanations, and best practices
 
 ---
 
@@ -38,19 +40,22 @@ def main(args):
     return 0
 ```
 
-### Available Translation Servers
+### Available MCP Servers
 
 | Server | Module | Capabilities |
 |--------|--------|-------------|
+| **Translation Servers** | | |
 | scitex-io-translator | io | File I/O operations, path management, config extraction |
 | scitex-plt | plt | Matplotlib enhancements, legend handling, data tracking |
 | scitex-stats | stats | Statistical operations and analysis |
 | scitex-pd | pd | Pandas operations and data manipulation |
 | scitex-dsp | dsp | Signal processing workflows |
 | scitex-torch | torch | PyTorch utilities and neural networks |
-| scitex-framework | gen | Template generation and boilerplate conversion |
+| **Development Support** | | |
 | scitex-analyzer | - | Code analysis and compliance validation |
+| scitex-developer | - | **Comprehensive developer support (test generation, performance, migration)** |
 | scitex-config | - | Configuration management and extraction |
+| scitex-framework | gen | Template generation and boilerplate conversion |
 
 ---
 
@@ -77,6 +82,9 @@ def main(args):
    "Translate this matplotlib code to SciTeX format"
    "Convert my SciTeX script back to standard Python for sharing"
    "Validate this code for SciTeX compliance"
+   "Generate tests for my data processing script"
+   "Create a performance optimization plan"
+   "Help me migrate to the latest SciTeX version"
    ```
 
 ### Configuration
@@ -96,10 +104,19 @@ Copy and modify `mcp_config_example.json` to your Claude Desktop settings:
 
 ## Advanced Features
 
+### Translation & Analysis
 - **Smart Path Conversion**: Automatic relative/absolute path handling
 - **Config Extraction**: Detect and extract hardcoded values to YAML
 - **Round-trip Validation**: Ensure translation accuracy
 - **Compliance Checking**: Validate against SciTeX guidelines
+
+### Developer Support (scitex-developer)
+- **Test Generation**: Create comprehensive test suites with pytest/unittest
+- **Performance Analysis**: Profile scripts and identify bottlenecks
+- **Migration Assistance**: Automated help for version upgrades
+- **Code Quality**: Measure complexity, maintainability, and security
+- **Interactive Learning**: Custom tutorials and concept explanations
+- **Refactoring Support**: Best practices and pattern suggestions
 
 ---
 

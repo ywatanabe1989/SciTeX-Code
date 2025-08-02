@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 import re
 from pathlib import Path
 from typing import List, Tuple
-import logging
+from scitex import logging
 
 logger = logging.getLogger(__name__)
 

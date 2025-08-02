@@ -18,7 +18,7 @@ returning structured data that can be used by other SciTeX modules.
 """
 
 import re
-import logging
+from scitex import logging
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 

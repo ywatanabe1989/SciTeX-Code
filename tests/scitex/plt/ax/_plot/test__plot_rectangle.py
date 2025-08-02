@@ -121,7 +121,6 @@ class TestMainFunctionality:
         actual_spath = os.path.join(ACTUAL_SAVE_DIR, spath)
         assert os.path.exists(actual_spath), f"Failed to save figure to {spath}"
 
-
 if __name__ == "__main__":
     import os
 
@@ -130,7 +129,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_rectangle.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_rectangle.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -138,20 +137,70 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/ax/_plot/_plot_rectangle.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/ax/_plot/_plot_rectangle.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/ax/_plot/_plot_rectangle.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # from matplotlib.patches import Rectangle
-#
-#
+# 
+# 
 # def plot_rectangle(ax, xx, yy, ww, hh, **kwargs):
+#     """Add a rectangle patch to an axes.
+# 
+#     Convenience function for adding rectangular patches to plots, useful for
+#     highlighting regions, creating box annotations, or drawing geometric shapes.
+# 
+#     Parameters
+#     ----------
+#     ax : matplotlib.axes.Axes
+#         The axes to add the rectangle to.
+#     xx : float
+#         X-coordinate of the rectangle's bottom-left corner.
+#     yy : float
+#         Y-coordinate of the rectangle's bottom-left corner.
+#     ww : float
+#         Width of the rectangle.
+#     hh : float
+#         Height of the rectangle.
+#     **kwargs : dict
+#         Additional keyword arguments passed to matplotlib.patches.Rectangle.
+#         Common options include:
+#         - facecolor/fc : fill color
+#         - edgecolor/ec : edge color
+#         - linewidth/lw : edge line width
+#         - alpha : transparency (0-1)
+#         - linestyle/ls : edge line style
+# 
+#     Returns
+#     -------
+#     matplotlib.axes.Axes
+#         The axes with the rectangle added.
+# 
+#     Examples
+#     --------
+#     >>> fig, ax = plt.subplots()
+#     >>> ax.plot([0, 10], [0, 10])
+#     >>> # Highlight a region
+#     >>> plot_rectangle(ax, 2, 3, 4, 3, facecolor='yellow', alpha=0.3)
+# 
+#     >>> # Draw a box annotation
+#     >>> plot_rectangle(ax, 5, 5, 2, 2, facecolor='none', edgecolor='red', linewidth=2)
+# 
+#     >>> # Create a filled rectangle
+#     >>> plot_rectangle(ax, 0, 0, 1, 1, facecolor='blue', edgecolor='black')
+# 
+#     See Also
+#     --------
+#     matplotlib.patches.Rectangle : The underlying Rectangle class
+#     matplotlib.axes.Axes.add_patch : Method used to add the patch
+#     """
 #     ax.add_patch(Rectangle((xx, yy), ww, hh, **kwargs))
 #     return ax
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_rectangle.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_rectangle.py
 # --------------------------------------------------------------------------------

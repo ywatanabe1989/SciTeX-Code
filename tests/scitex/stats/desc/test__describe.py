@@ -314,15 +314,15 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/stats/desc/_describe.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/stats/desc/_describe.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-12-05 09:20:53 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/stats/desc/_describe.py
-#
+# 
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/stats/desc/_describe.py"
-#
+# 
 # """
 # Functionality:
 #     - Computes descriptive statistics on PyTorch tensors
@@ -333,12 +333,12 @@ if __name__ == "__main__":
 # Prerequisites:
 #     - PyTorch, NumPy
 # """
-#
+# 
 # from typing import List, Optional, Tuple, Union
-#
+# 
 # import numpy as np
 # import torch
-#
+# 
 # from ...decorators import batch_fn, torch_fn
 # from ._nan import (
 #     nancount,
@@ -354,27 +354,27 @@ if __name__ == "__main__":
 #     nanvar,
 # )
 # from ._real import kurtosis, mean, q25, q50, q75, skewness, std
-#
-#
+# 
+# 
 # def verify_non_leakage(
 #     x: torch.Tensor,
 #     dim: Optional[Union[int, Tuple[int, ...]]] = None,
 # ):
 #     """
 #     Verifies that statistics computation doesn't leak information across samples.
-#
+# 
 #     Parameters
 #     ----------
 #     x : torch.Tensor
 #         Input tensor
 #     dim : Optional[Union[int, Tuple[int, ...]]]
 #         Dimension(s) used for computation
-#
+# 
 #     Returns
 #     -------
 #     bool
 #         True if verification passes
-#
+# 
 #     Raises
 #     ------
 #     AssertionError
@@ -382,16 +382,16 @@ if __name__ == "__main__":
 #     """
 #     # Full calculation
 #     described, _ = describe(x, dim=(1, 2))
-#
+# 
 #     # Compute statistics on first sample
 #     x_first = x[:1]
 #     described_first, _ = describe(x_first, dim=dim)
-#
+# 
 #     # Verify shapes match
 #     assert (
 #         described_first.shape == described[:1].shape
 #     ), f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
-#
+# 
 #     # Verify values match
 #     torch.testing.assert_close(
 #         described_first,
@@ -400,12 +400,12 @@ if __name__ == "__main__":
 #         atol=1e-8,
 #         msg="Statistics leak information across samples",
 #     )
-#
+# 
 #     return True
-#
-#
-# @torch_fn
+# 
+# 
 # @batch_fn
+# @torch_fn
 # def describe(
 #     x: torch.Tensor,
 #     axis: int = -1,
@@ -425,7 +425,7 @@ if __name__ == "__main__":
 # ) -> Tuple[torch.Tensor, List[str]]:
 #     """
 #     Computes various descriptive statistics.
-#
+# 
 #     Parameters
 #     ----------
 #     x : torch.Tensor
@@ -440,7 +440,7 @@ if __name__ == "__main__":
 #         Statistical functions to compute
 #     device : torch.device, optional
 #         Device to use for computation
-#
+# 
 #     Returns
 #     -------
 #     Tuple[torch.Tensor, List[str]]
@@ -448,7 +448,7 @@ if __name__ == "__main__":
 #     """
 #     dim = axis if dim is None else dim
 #     dim = (dim,) if isinstance(dim, int) else tuple(dim)
-#
+# 
 #     func_names = funcs
 #     func_candidates = {
 #         "mean": mean,
@@ -473,35 +473,39 @@ if __name__ == "__main__":
 #         # "nanargmin": nanargmin,
 #         # "nanargmax": nanargmax,
 #     }
-#
+# 
 #     if funcs == "all":
 #         _funcs = list(func_candidates.values())
 #         func_names = list(func_candidates.keys())
 #     else:
 #         _funcs = [func_candidates[ff] for ff in func_names]
-#
+# 
 #     calculated = [ff(x, dim=dim, keepdims=keepdims) for ff in _funcs]
 #     return torch.stack(calculated, dim=-1), func_names
-#
-#
+# 
+# 
 # if __name__ == "__main__":
 #     from scitex.stats.desc._describe import describe, verify_non_leakage
-#
+# 
 #     # x = np.random.rand(4, 3, 2)
 #     # x = np.random.rand(390, 250, 16, 100, 100)
 #     # print(scitex.stats.desc.nankurtosis(x, dim=(1,2)).shape)
-#
+# 
 #     x = np.random.rand(10, 250, 16, 100, 100)
-#
+# 
 #     described, _ = describe(x[:10], dim=(-2, -1), batch_size=1)
 #     # verify_non_leakage(x, dim=(1, 2))
 #     # # print(describe(x, dim=(1, 2), keepdims=False)[0].shape)
 #     # # print(describe(x, funcs="all", dim=(1, 2), keepdims=False)[0].shape)
-#
-#
+# 
+# 
 # """
 # python ./scitex_repo/src/scitex/stats/desc/_describe.py
 # python -m src.scitex.stats.desc._describe
 # """
-#
+# 
 # # EOF
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/stats/desc/_describe.py
+# --------------------------------------------------------------------------------

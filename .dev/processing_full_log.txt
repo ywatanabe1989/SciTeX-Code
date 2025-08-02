@@ -1,0 +1,4933 @@
+================================================================================
+SEQUENTIAL PAPER PROCESSING
+================================================================================
+INFO: Loaded 75 BibTeX entries from /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/docs/papers.bib
+INFO: Loaded 75 entries from /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/docs/papers.bib
+INFO: Created Papers with 75 papers from file
+
+Total papers in BibTeX: 75
+Resuming from paper 4 (already processed 3 papers)
+
+--------------------------------------------------------------------------------
+Processing paper 4/75: Aru2014UntanglingCCD
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Aru2014UntanglingCCD
+Title: Untangling cross-frequency coupling in neuroscience...
+Authors: ['Juhan Aru', 'Jaan Aru']
+Journal: Current Opinion in Neurobiology
+Year: 2014
+Volume: 31
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/005926
+✓ Found DOI: 10.1101/005926 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: DEAVXVJ3
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/DEAVXVJ3
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: JuhanAru-2014-CON -> ../pac_research/DEAVXVJ3
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: DEAVXVJ3
+- DOI: 10.1101/005926
+- PDF: No
+- Enriched fields: 0
+- Human-readable: JuhanAru-2014-CON
+
+Structure:
+library/
+├── pac_research/
+│   └── DEAVXVJ3/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── JuhanAru-2014-CON -> ../pac_research/DEAVXVJ3
+
+
+--------------------------------------------------------------------------------
+Processing paper 5/75: Tort2010MeasuringPCE
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Tort2010MeasuringPCE
+Title: Measuring phase-amplitude coupling between neuronal oscillat...
+Authors: ['A. Tort', 'Robert W. Komorowski']
+Journal: Journal of neurophysiology
+Year: 2010
+Volume: 104 2
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1152/jn.00106.2010
+✓ Found DOI: 10.1152/jn.00106.2010 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 169VZA4C
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/169VZA4C
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ATort-2010-J -> ../pac_research/169VZA4C
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 169VZA4C
+- DOI: 10.1152/jn.00106.2010
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ATort-2010-J
+
+Structure:
+library/
+├── pac_research/
+│   └── 169VZA4C/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ATort-2010-J -> ../pac_research/169VZA4C
+
+
+--------------------------------------------------------------------------------
+Processing paper 6/75: PintoOrellana2023StatisticalIFF
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: PintoOrellana2023StatisticalIFF
+Title: Statistical Inference for Modulation Index in Phase-Amplitud...
+Authors: ['Marco Pinto-Orellana', 'H. Ombao']
+Journal: None
+Year: 2023
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: EGBQJPOJ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/EGBQJPOJ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MarcoPintoOrellana-2023-Unknown -> ../pac_research/EGBQJPOJ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: EGBQJPOJ
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MarcoPintoOrellana-2023-Unknown
+
+Structure:
+library/
+├── pac_research/
+│   └── EGBQJPOJ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MarcoPintoOrellana-2023-Unknown -> ../pac_research/EGBQJPOJ
+
+
+--------------------------------------------------------------------------------
+Processing paper 7/75: Wodeyar2023DifferentMTG
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Wodeyar2023DifferentMTG
+Title: Different Methods to Estimate the Phase of Neural Rhythms Ag...
+Authors: ['Anirudh Wodeyar', 'François A Marshall']
+Journal: eNeuro
+Year: 2023
+Volume: 10
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2023.01.05.522914
+✓ Found DOI: 10.1101/2023.01.05.522914 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 5P4H54L0
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/5P4H54L0
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AnirudhWodeyar-2023-eNeuro -> ../pac_research/5P4H54L0
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 5P4H54L0
+- DOI: 10.1101/2023.01.05.522914
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AnirudhWodeyar-2023-eNeuro
+
+Structure:
+library/
+├── pac_research/
+│   └── 5P4H54L0/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AnirudhWodeyar-2023-eNeuro -> ../pac_research/5P4H54L0
+
+
+--------------------------------------------------------------------------------
+Processing paper 8/75: Formoso2021ModellingBCH
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Formoso2021ModellingBCH
+Title: Modelling Brain Connectivity Networks by Graph Embedding for...
+Authors: ['M. Formoso', 'A. Ortiz']
+Journal: ArXiv
+Year: 2021
+Volume: abs/2104.05497
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1007/978-3-030-88163-4_9
+✓ Found DOI: 10.1007/978-3-030-88163-4_9 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: CL99VJQT
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/CL99VJQT
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MFormoso-2021-A -> ../pac_research/CL99VJQT
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: CL99VJQT
+- DOI: 10.1007/978-3-030-88163-4_9
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MFormoso-2021-A
+
+Structure:
+library/
+├── pac_research/
+│   └── CL99VJQT/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MFormoso-2021-A -> ../pac_research/CL99VJQT
+
+
+--------------------------------------------------------------------------------
+Processing paper 9/75: Yin2021EstimatingPAI
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Yin2021EstimatingPAI
+Title: Estimating Phase Amplitude Coupling between Neural Oscillati...
+Authors: ['Liyong Yin', 'Fan Tian']
+Journal: Entropy
+Year: 2021
+Volume: 23
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3390/e23081070
+✓ Found DOI: 10.3390/e23081070 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 8Q51Y06P
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/8Q51Y06P
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: LiyongYin-2021-E -> ../pac_research/8Q51Y06P
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 8Q51Y06P
+- DOI: 10.3390/e23081070
+- PDF: No
+- Enriched fields: 0
+- Human-readable: LiyongYin-2021-E
+
+Structure:
+library/
+├── pac_research/
+│   └── 8Q51Y06P/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── LiyongYin-2021-E -> ../pac_research/8Q51Y06P
+
+
+--------------------------------------------------------------------------------
+Processing paper 10/75: Dvok2014TowardAPJ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Dvok2014TowardAPJ
+Title: Toward a proper estimation of phase–amplitude coupling in ne...
+Authors: ["Dino Dvoř{\\'a}k", 'A. Fenton']
+Journal: Journal of Neuroscience Methods
+Year: 2014
+Volume: 225
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.jneumeth.2014.01.002
+✓ Found DOI: 10.1016/j.jneumeth.2014.01.002 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: G4NQN04Z
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/G4NQN04Z
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DinoDvořak-2014-JNM -> ../pac_research/G4NQN04Z
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: G4NQN04Z
+- DOI: 10.1016/j.jneumeth.2014.01.002
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DinoDvořak-2014-JNM
+
+Structure:
+library/
+├── pac_research/
+│   └── G4NQN04Z/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DinoDvořak-2014-JNM -> ../pac_research/G4NQN04Z
+
+
+--------------------------------------------------------------------------------
+Processing paper 11/75: Munia2019TimeFrequencyBPK
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Munia2019TimeFrequencyBPK
+Title: Time-Frequency Based Phase-Amplitude Coupling Measure For Ne...
+Authors: ['T. T. Munia', 'Selin Aviyente']
+Journal: Scientific Reports
+Year: 2019
+Volume: 9
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1038/s41598-019-48870-2
+✓ Found DOI: 10.1038/s41598-019-48870-2 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: ESQSUIDA
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/ESQSUIDA
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TTMunia-2019-SR -> ../pac_research/ESQSUIDA
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: ESQSUIDA
+- DOI: 10.1038/s41598-019-48870-2
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TTMunia-2019-SR
+
+Structure:
+library/
+├── pac_research/
+│   └── ESQSUIDA/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TTMunia-2019-SR -> ../pac_research/ESQSUIDA
+
+
+--------------------------------------------------------------------------------
+Processing paper 12/75: Sheng2024EffectOPL
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Sheng2024EffectOPL
+Title: Effect of Phase Clustering Bias on Phase-Amplitude Coupling ...
+Authors: ['Tingyu Sheng', 'Qiansheng Feng']
+Journal: Journal of integrative neuroscience
+Year: 2024
+Volume: 23 2
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.31083/j.jin2302033
+✓ Found DOI: 10.31083/j.jin2302033 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: PVW54X0Q
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/PVW54X0Q
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TingyuSheng-2024-J -> ../pac_research/PVW54X0Q
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: PVW54X0Q
+- DOI: 10.31083/j.jin2302033
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TingyuSheng-2024-J
+
+Structure:
+library/
+├── pac_research/
+│   └── PVW54X0Q/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TingyuSheng-2024-J -> ../pac_research/PVW54X0Q
+
+
+--------------------------------------------------------------------------------
+Processing paper 13/75: Scherer2022DirectMIM
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Scherer2022DirectMIM
+Title: Direct modulation index: A measure of phase amplitude coupli...
+Authors: ['Maximilian Scherer', 'Tianlu Wang']
+Journal: Human Brain Mapping
+Year: 2022
+Volume: 44
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2022.02.07.479380
+✓ Found DOI: 10.1101/2022.02.07.479380 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: CGCCDVYZ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/CGCCDVYZ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MaximilianScherer-2022-HBM -> ../pac_research/CGCCDVYZ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: CGCCDVYZ
+- DOI: 10.1101/2022.02.07.479380
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MaximilianScherer-2022-HBM
+
+Structure:
+library/
+├── pac_research/
+│   └── CGCCDVYZ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MaximilianScherer-2022-HBM -> ../pac_research/CGCCDVYZ
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 10
+Total processed: 13/75 (17.3%)
+DOIs found: 12 (92.3%)
+PDFs found: 1 (7.7%)
+Errors: 0
+Batch time: 15.2s (avg 1.5s/paper)
+
+Estimated time remaining: 1.6 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 14/75: Bergmann2018PhaseAmplitudeCAN
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Bergmann2018PhaseAmplitudeCAN
+Title: Phase-Amplitude Coupling: A General Mechanism for Memory Pro...
+Authors: ['T. Bergmann', 'J. Born']
+Journal: Neuron
+Year: 2018
+Volume: 97
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.neuron.2017.12.023
+✓ Found DOI: 10.1016/j.neuron.2017.12.023 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 23F54KPN
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/23F54KPN
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TBergmann-2018-N -> ../pac_research/23F54KPN
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 23F54KPN
+- DOI: 10.1016/j.neuron.2017.12.023
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TBergmann-2018-N
+
+Structure:
+library/
+├── pac_research/
+│   └── 23F54KPN/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TBergmann-2018-N -> ../pac_research/23F54KPN
+
+
+--------------------------------------------------------------------------------
+Processing paper 15/75: Cox2020AnalyzingHSO
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Cox2020AnalyzingHSO
+Title: Analyzing human sleep EEG: A methodological primer with code...
+Authors: ['Roy Cox', 'J. Fell']
+Journal: Sleep medicine reviews
+Year: 2020
+Volume: 54
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.smrv.2020.101353
+✓ Found DOI: 10.1016/j.smrv.2020.101353 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 8J9R6D7C
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/8J9R6D7C
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RoyCox-2020-S -> ../pac_research/8J9R6D7C
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 8J9R6D7C
+- DOI: 10.1016/j.smrv.2020.101353
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RoyCox-2020-S
+
+Structure:
+library/
+├── pac_research/
+│   └── 8J9R6D7C/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RoyCox-2020-S -> ../pac_research/8J9R6D7C
+
+
+--------------------------------------------------------------------------------
+Processing paper 16/75: Gwon2021AlphaAHP
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Gwon2021AlphaAHP
+Title: Alpha and high gamma phase amplitude coupling during motor i...
+Authors: ['Dae-Cheol Gwon', 'M. Ahn']
+Journal: NeuroImage
+Year: 2021
+Volume: 240
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.neuroimage.2021.118403
+✓ Found DOI: 10.1016/j.neuroimage.2021.118403 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 9LE1UWE1
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/9LE1UWE1
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DaeCheolGwon-2021-N -> ../pac_research/9LE1UWE1
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 9LE1UWE1
+- DOI: 10.1016/j.neuroimage.2021.118403
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DaeCheolGwon-2021-N
+
+Structure:
+library/
+├── pac_research/
+│   └── 9LE1UWE1/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DaeCheolGwon-2021-N -> ../pac_research/9LE1UWE1
+
+
+--------------------------------------------------------------------------------
+Processing paper 17/75: Rakowska2021LongTEQ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Rakowska2021LongTEQ
+Title: Long term effects of cueing procedural memory reactivation d...
+Authors: ['Martyna Rakowska', 'Mahmoud E. A. Abdellahi']
+Journal: Neuroimage
+Year: 2021
+Volume: 244
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.neuroimage.2021.118573
+✓ Found DOI: 10.1016/j.neuroimage.2021.118573 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: UMAA0FKK
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/UMAA0FKK
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MartynaRakowska-2021-N -> ../pac_research/UMAA0FKK
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: UMAA0FKK
+- DOI: 10.1016/j.neuroimage.2021.118573
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MartynaRakowska-2021-N
+
+Structure:
+library/
+├── pac_research/
+│   └── UMAA0FKK/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MartynaRakowska-2021-N -> ../pac_research/UMAA0FKK
+
+
+--------------------------------------------------------------------------------
+Processing paper 18/75: Jensen2016DiscriminatingVFR
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Jensen2016DiscriminatingVFR
+Title: Discriminating Valid from Spurious Indices of Phase-Amplitud...
+Authors: ['O. Jensen', 'E. Spaak']
+Journal: eNeuro
+Year: 2016
+Volume: 3
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1523/eneuro.0334-16.2016
+✓ Found DOI: 10.1523/eneuro.0334-16.2016 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: UTZWZ013
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/UTZWZ013
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: OJensen-2016-eNeuro -> ../pac_research/UTZWZ013
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: UTZWZ013
+- DOI: 10.1523/eneuro.0334-16.2016
+- PDF: No
+- Enriched fields: 0
+- Human-readable: OJensen-2016-eNeuro
+
+Structure:
+library/
+├── pac_research/
+│   └── UTZWZ013/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── OJensen-2016-eNeuro -> ../pac_research/UTZWZ013
+
+
+--------------------------------------------------------------------------------
+Processing paper 19/75: Ebrahimvand2025CrossFrequencyCRS
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Ebrahimvand2025CrossFrequencyCRS
+Title: Cross‐Frequency Couplings Reveal Mice Visual Cortex Selectiv...
+Authors: ['Zahra Ebrahimvand', 'M. Daliri']
+Journal: Brain and Behavior
+Year: 2025
+Volume: 15
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1002/brb3.70360
+✓ Found DOI: 10.1002/brb3.70360 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 916QRQC2
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/916QRQC2
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ZahraEbrahimvand-2025-BB -> ../pac_research/916QRQC2
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 916QRQC2
+- DOI: 10.1002/brb3.70360
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ZahraEbrahimvand-2025-BB
+
+Structure:
+library/
+├── pac_research/
+│   └── 916QRQC2/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ZahraEbrahimvand-2025-BB -> ../pac_research/916QRQC2
+
+
+--------------------------------------------------------------------------------
+Processing paper 20/75: Ahn2022TheFIT
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Ahn2022TheFIT
+Title: The Functional Interactions between Cortical Regions through...
+Authors: ['Ji-Seon Ahn', 'Jaeseok Heo']
+Journal: Brain Sciences
+Year: 2022
+Volume: 12
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3390/brainsci12020274
+✓ Found DOI: 10.3390/brainsci12020274 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: E2B3QFON
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/E2B3QFON
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: JiSeonAhn-2022-BS -> ../pac_research/E2B3QFON
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: E2B3QFON
+- DOI: 10.3390/brainsci12020274
+- PDF: No
+- Enriched fields: 0
+- Human-readable: JiSeonAhn-2022-BS
+
+Structure:
+library/
+├── pac_research/
+│   └── E2B3QFON/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── JiSeonAhn-2022-BS -> ../pac_research/E2B3QFON
+
+
+--------------------------------------------------------------------------------
+Processing paper 21/75: GallegoMolina2021ComplexNMU
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: GallegoMolina2021ComplexNMU
+Title: Complex network modelling of EEG band coupling in dyslexia: ...
+Authors: ['N. Gallego-Molina', "Andr{\\'e}s Ortiz"]
+Journal: Knowledge-Based Systems
+Year: 2021
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: D8XYPAOW
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/D8XYPAOW
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: NGallegoMolina-2021-KS -> ../pac_research/D8XYPAOW
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: D8XYPAOW
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: NGallegoMolina-2021-KS
+
+Structure:
+library/
+├── pac_research/
+│   └── D8XYPAOW/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── NGallegoMolina-2021-KS -> ../pac_research/D8XYPAOW
+
+
+--------------------------------------------------------------------------------
+Processing paper 22/75: Voytek2010ShiftsIGV
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Voytek2010ShiftsIGV
+Title: Shifts in Gamma Phase–Amplitude Coupling Frequency from Thet...
+Authors: ['Bradley Voytek', 'R. Canolty']
+Journal: Frontiers in Human Neuroscience
+Year: 2010
+Volume: 4
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnhum.2010.00191
+✓ Found DOI: 10.3389/fnhum.2010.00191 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: DZ0YTB5A
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/DZ0YTB5A
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: BradleyVoytek-2010-FHN -> ../pac_research/DZ0YTB5A
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: DZ0YTB5A
+- DOI: 10.3389/fnhum.2010.00191
+- PDF: No
+- Enriched fields: 0
+- Human-readable: BradleyVoytek-2010-FHN
+
+Structure:
+library/
+├── pac_research/
+│   └── DZ0YTB5A/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── BradleyVoytek-2010-FHN -> ../pac_research/DZ0YTB5A
+
+
+--------------------------------------------------------------------------------
+Processing paper 23/75: Kovach2017TheBAW
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Kovach2017TheBAW
+Title: The bispectrum and its relationship to phase-amplitude coupl...
+Authors: ['Christopher K. Kovach', 'H. Oya']
+Journal: NeuroImage
+Year: 2017
+Volume: 173
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: ZWLHGGES
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/ZWLHGGES
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ChristopherKKovach-2017-N -> ../pac_research/ZWLHGGES
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: ZWLHGGES
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ChristopherKKovach-2017-N
+
+Structure:
+library/
+├── pac_research/
+│   └── ZWLHGGES/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ChristopherKKovach-2017-N -> ../pac_research/ZWLHGGES
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 20
+Total processed: 23/75 (30.7%)
+DOIs found: 20 (87.0%)
+PDFs found: 1 (4.3%)
+Errors: 0
+Batch time: 21.9s (avg 2.2s/paper)
+
+Estimated time remaining: 1.9 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 24/75: Seymour2017TheDOX
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Seymour2017TheDOX
+Title: The Detection of Phase Amplitude Coupling during Sensory Pro...
+Authors: ['Robert A. Seymour', 'Gina Rippon']
+Journal: Frontiers in Neuroscience
+Year: 2017
+Volume: 11
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/163006
+✓ Found DOI: 10.1101/163006 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: L45B0SXC
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/L45B0SXC
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RobertASeymour-2017-FN -> ../pac_research/L45B0SXC
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: L45B0SXC
+- DOI: 10.1101/163006
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RobertASeymour-2017-FN
+
+Structure:
+library/
+├── pac_research/
+│   └── L45B0SXC/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RobertASeymour-2017-FN -> ../pac_research/L45B0SXC
+
+
+--------------------------------------------------------------------------------
+Processing paper 25/75: Li2021MeasuringPCY
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Li2021MeasuringPCY
+Title: Measuring Phase-Amplitude Coupling Based on the Jensen-Shann...
+Authors: ['Zhaohui Li', 'Xiaochen Bai']
+Journal: IEEE Transactions on Neural Systems and Rehabilitation Engineering
+Year: 2021
+Volume: 29
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/tnsre.2021.3095510
+✓ Found DOI: 10.1109/tnsre.2021.3095510 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: TRCZ2DUE
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/TRCZ2DUE
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ZhaohuiLi-2021-ITNSRE -> ../pac_research/TRCZ2DUE
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: TRCZ2DUE
+- DOI: 10.1109/tnsre.2021.3095510
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ZhaohuiLi-2021-ITNSRE
+
+Structure:
+library/
+├── pac_research/
+│   └── TRCZ2DUE/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ZhaohuiLi-2021-ITNSRE -> ../pac_research/TRCZ2DUE
+
+
+--------------------------------------------------------------------------------
+Processing paper 26/75: Cohen2009OscillatoryAAZ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Cohen2009OscillatoryAAZ
+Title: Oscillatory Activity and Phase–Amplitude Coupling in the Hum...
+Authors: ['Michael X. Cohen', 'C. Elger']
+Journal: Journal of Cognitive Neuroscience
+Year: 2009
+Volume: 21
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: JRSQ6JWI
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/JRSQ6JWI
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MichaelXCohen-2009-JCN -> ../pac_research/JRSQ6JWI
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: JRSQ6JWI
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MichaelXCohen-2009-JCN
+
+Structure:
+library/
+├── pac_research/
+│   └── JRSQ6JWI/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MichaelXCohen-2009-JCN -> ../pac_research/JRSQ6JWI
+
+
+--------------------------------------------------------------------------------
+Processing paper 27/75: Cox2019HeterogeneousPOAA
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Cox2019HeterogeneousPOAA
+Title: Heterogeneous profiles of coupled sleep oscillations in huma...
+Authors: ['Roy Cox', 'Theodor R{\\"u}ber']
+Journal: Neuroimage
+Year: 2019
+Volume: 202
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/589978
+✓ Found DOI: 10.1101/589978 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 7BWCWYRQ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/7BWCWYRQ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RoyCox-2019-N -> ../pac_research/7BWCWYRQ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 7BWCWYRQ
+- DOI: 10.1101/589978
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RoyCox-2019-N
+
+Structure:
+library/
+├── pac_research/
+│   └── 7BWCWYRQ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RoyCox-2019-N -> ../pac_research/7BWCWYRQ
+
+
+--------------------------------------------------------------------------------
+Processing paper 28/75: Munia2021MultivariateAOAB
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Munia2021MultivariateAOAB
+Title: Multivariate Analysis of Bivariate Phase-Amplitude Coupling ...
+Authors: ['T. T. Munia', 'Selin Aviyente']
+Journal: IEEE transactions on neural systems and rehabilitation engineering : a publication of the IEEE Engineering in Medicine and Biology Society
+Year: 2021
+Volume: 29
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/tnsre.2021.3092890
+✓ Found DOI: 10.1109/tnsre.2021.3092890 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: S60GTIAK
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/S60GTIAK
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TTMunia-2021-IIEMBS -> ../pac_research/S60GTIAK
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: S60GTIAK
+- DOI: 10.1109/tnsre.2021.3092890
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TTMunia-2021-IIEMBS
+
+Structure:
+library/
+├── pac_research/
+│   └── S60GTIAK/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TTMunia-2021-IIEMBS -> ../pac_research/S60GTIAK
+
+
+--------------------------------------------------------------------------------
+Processing paper 29/75: Meij2012PhaseAmplitudeCIAC
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Meij2012PhaseAmplitudeCIAC
+Title: Phase–Amplitude Coupling in Human Electrocorticography Is Sp...
+Authors: ['Roemer van der Meij', 'M. Kahana']
+Journal: The Journal of Neuroscience
+Year: 2012
+Volume: 32
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1523/jneurosci.4816-11.2012
+✓ Found DOI: 10.1523/jneurosci.4816-11.2012 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: ENDJ4PU1
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/ENDJ4PU1
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RoemervanderMeij-2012-TJN -> ../pac_research/ENDJ4PU1
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: ENDJ4PU1
+- DOI: 10.1523/jneurosci.4816-11.2012
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RoemervanderMeij-2012-TJN
+
+Structure:
+library/
+├── pac_research/
+│   └── ENDJ4PU1/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RoemervanderMeij-2012-TJN -> ../pac_research/ENDJ4PU1
+
+
+--------------------------------------------------------------------------------
+Processing paper 30/75: RojasLbano2014TheOBAD
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: RojasLbano2014TheOBAD
+Title: The olfactory bulb theta rhythm follows all frequencies of d...
+Authors: ["Daniel Rojas-L{\\'i}bano", 'Donald E. Frederick']
+Journal: Frontiers in Behavioral Neuroscience
+Year: 2014
+Volume: 8
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnbeh.2014.00214
+✓ Found DOI: 10.3389/fnbeh.2014.00214 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 4I285J9K
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/4I285J9K
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DanielRojasLibano-2014-FBN -> ../pac_research/4I285J9K
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 4I285J9K
+- DOI: 10.3389/fnbeh.2014.00214
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DanielRojasLibano-2014-FBN
+
+Structure:
+library/
+├── pac_research/
+│   └── 4I285J9K/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DanielRojasLibano-2014-FBN -> ../pac_research/4I285J9K
+
+
+--------------------------------------------------------------------------------
+Processing paper 31/75: Mikutta2019PhaseamplitudeCOAE
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Mikutta2019PhaseamplitudeCOAE
+Title: Phase‐amplitude coupling of sleep slow oscillatory and spind...
+Authors: ['C. Mikutta', 'B. Feige']
+Journal: Journal of Sleep Research
+Year: 2019
+Volume: 28
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1111/jsr.12835
+✓ Found DOI: 10.1111/jsr.12835 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 7VURDHWG
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/7VURDHWG
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: CMikutta-2019-JSR -> ../pac_research/7VURDHWG
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 7VURDHWG
+- DOI: 10.1111/jsr.12835
+- PDF: No
+- Enriched fields: 0
+- Human-readable: CMikutta-2019-JSR
+
+Structure:
+library/
+├── pac_research/
+│   └── 7VURDHWG/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── CMikutta-2019-JSR -> ../pac_research/7VURDHWG
+
+
+--------------------------------------------------------------------------------
+Processing paper 32/75: GarcaRosales2020PhaseamplitudeCPAF
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: GarcaRosales2020PhaseamplitudeCPAF
+Title: Phase-amplitude coupling profiles differ in frontal and audi...
+Authors: ["Francisco Garc{\\'i}a-Rosales", "Luciana L{\\'o}pez-Jury"]
+Journal: bioRxiv
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1111/ejn.14986/v1/review2
+✓ Found DOI: 10.1111/ejn.14986/v1/review2 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 6U7FUJ1E
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/6U7FUJ1E
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: FranciscoGarciaRosales-2020-bioRxiv -> ../pac_research/6U7FUJ1E
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 6U7FUJ1E
+- DOI: 10.1111/ejn.14986/v1/review2
+- PDF: No
+- Enriched fields: 0
+- Human-readable: FranciscoGarciaRosales-2020-bioRxiv
+
+Structure:
+library/
+├── pac_research/
+│   └── 6U7FUJ1E/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── FranciscoGarciaRosales-2020-bioRxiv -> ../pac_research/6U7FUJ1E
+
+
+--------------------------------------------------------------------------------
+Processing paper 33/75: Zhang2017TemporalspatialCOAG
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Zhang2017TemporalspatialCOAG
+Title: Temporal-spatial characteristics of phase-amplitude coupling...
+Authors: ['Ruihua Zhang', 'Ye Ren']
+Journal: Clinical Neurophysiology
+Year: 2017
+Volume: 128
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.clinph.2017.05.020
+✓ Found DOI: 10.1016/j.clinph.2017.05.020 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: O9OHBGT1
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/O9OHBGT1
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RuihuaZhang-2017-CN -> ../pac_research/O9OHBGT1
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: O9OHBGT1
+- DOI: 10.1016/j.clinph.2017.05.020
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RuihuaZhang-2017-CN
+
+Structure:
+library/
+├── pac_research/
+│   └── O9OHBGT1/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RuihuaZhang-2017-CN -> ../pac_research/O9OHBGT1
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 30
+Total processed: 33/75 (44.0%)
+DOIs found: 29 (87.9%)
+PDFs found: 1 (3.0%)
+Errors: 0
+Batch time: 16.3s (avg 1.6s/paper)
+
+Estimated time remaining: 1.1 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 34/75: Combrisson2020TensorpacAOAH
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Combrisson2020TensorpacAOAH
+Title: Tensorpac: An open-source Python toolbox for tensor-based ph...
+Authors: ['Etienne Combrisson', 'T. Nest']
+Journal: PLoS Computational Biology
+Year: 2020
+Volume: 16
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2020.04.17.045997
+✓ Found DOI: 10.1101/2020.04.17.045997 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: M4Z18LCT
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/M4Z18LCT
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: EtienneCombrisson-2020-PCB -> ../pac_research/M4Z18LCT
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: M4Z18LCT
+- DOI: 10.1101/2020.04.17.045997
+- PDF: No
+- Enriched fields: 0
+- Human-readable: EtienneCombrisson-2020-PCB
+
+Structure:
+library/
+├── pac_research/
+│   └── M4Z18LCT/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── EtienneCombrisson-2020-PCB -> ../pac_research/M4Z18LCT
+
+
+--------------------------------------------------------------------------------
+Processing paper 35/75: Onslow2014ACCAI
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Onslow2014ACCAI
+Title: A Canonical Circuit for Generating Phase-Amplitude Coupling...
+Authors: ['Angela C. E. Onslow', 'Matthew W. Jones']
+Journal: PLoS ONE
+Year: 2014
+Volume: 9
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1371/journal.pone.0102591
+✓ Found DOI: 10.1371/journal.pone.0102591 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: K9Z19ZGU
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/K9Z19ZGU
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AngelaCEOnslow-2014-PO -> ../pac_research/K9Z19ZGU
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: K9Z19ZGU
+- DOI: 10.1371/journal.pone.0102591
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AngelaCEOnslow-2014-PO
+
+Structure:
+library/
+├── pac_research/
+│   └── K9Z19ZGU/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AngelaCEOnslow-2014-PO -> ../pac_research/K9Z19ZGU
+
+
+--------------------------------------------------------------------------------
+Processing paper 36/75: Kesebir2019CFCDIAJ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Kesebir2019CFCDIAJ
+Title: CFC delta-beta is related with mixed features and response t...
+Authors: ['S. Kesebir', 'R. M. Demirer']
+Journal: Heliyon
+Year: 2019
+Volume: 5
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1016/j.heliyon.2019.e01898
+✓ Found DOI: 10.1016/j.heliyon.2019.e01898 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: SWH44R7W
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/SWH44R7W
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: SKesebir-2019-H -> ../pac_research/SWH44R7W
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: SWH44R7W
+- DOI: 10.1016/j.heliyon.2019.e01898
+- PDF: No
+- Enriched fields: 0
+- Human-readable: SKesebir-2019-H
+
+Structure:
+library/
+├── pac_research/
+│   └── SWH44R7W/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── SKesebir-2019-H -> ../pac_research/SWH44R7W
+
+
+--------------------------------------------------------------------------------
+Processing paper 37/75: Ohki2019TimingOPAK
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Ohki2019TimingOPAK
+Title: Timing of phase‐amplitude coupling is essential for neuronal...
+Authors: ['Takefumi Ohki', 'T. Matsuda']
+Journal: Brain and Behavior
+Year: 2019
+Volume: 10
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1002/brb3.1635/v1/review1
+✓ Found DOI: 10.1002/brb3.1635/v1/review1 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 0E64GDFI
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/0E64GDFI
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TakefumiOhki-2019-BB -> ../pac_research/0E64GDFI
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 0E64GDFI
+- DOI: 10.1002/brb3.1635/v1/review1
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TakefumiOhki-2019-BB
+
+Structure:
+library/
+├── pac_research/
+│   └── 0E64GDFI/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TakefumiOhki-2019-BB -> ../pac_research/0E64GDFI
+
+
+--------------------------------------------------------------------------------
+Processing paper 38/75: FitzGerald2013CrossfrequencyCWAL
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: FitzGerald2013CrossfrequencyCWAL
+Title: Cross-frequency coupling within and between the human thalam...
+Authors: ['Thomas H. B. FitzGerald', "A. Valent{\\'i}n"]
+Journal: Frontiers in Human Neuroscience
+Year: 2013
+Volume: 7
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnhum.2013.00084
+✓ Found DOI: 10.3389/fnhum.2013.00084 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: FYISQFCZ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/FYISQFCZ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ThomasHBFitzGerald-2013-FHN -> ../pac_research/FYISQFCZ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: FYISQFCZ
+- DOI: 10.3389/fnhum.2013.00084
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ThomasHBFitzGerald-2013-FHN
+
+Structure:
+library/
+├── pac_research/
+│   └── FYISQFCZ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ThomasHBFitzGerald-2013-FHN -> ../pac_research/FYISQFCZ
+
+
+--------------------------------------------------------------------------------
+Processing paper 39/75: Zhang2023VariationalPCAM
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Zhang2023VariationalPCAM
+Title: Variational Phase-Amplitude Coupling Characterizes Signature...
+Authors: ['Chu Zhang', 'C. Yeh']
+Journal: IEEE Journal of Biomedical and Health Informatics
+Year: 2023
+Volume: 27
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/jbhi.2023.3243275
+✓ Found DOI: 10.1109/jbhi.2023.3243275 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 3SXPLPI7
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/3SXPLPI7
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ChuZhang-2023-IJBHI -> ../pac_research/3SXPLPI7
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 3SXPLPI7
+- DOI: 10.1109/jbhi.2023.3243275
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ChuZhang-2023-IJBHI
+
+Structure:
+library/
+├── pac_research/
+│   └── 3SXPLPI7/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ChuZhang-2023-IJBHI -> ../pac_research/3SXPLPI7
+
+
+--------------------------------------------------------------------------------
+Processing paper 40/75: Sotero2016TopologyCAAN
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Sotero2016TopologyCAAN
+Title: Topology, Cross-Frequency, and Same-Frequency Band Interacti...
+Authors: ['R. Sotero']
+Journal: PLoS Computational Biology
+Year: 2016
+Volume: 12
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1371/journal.pcbi.1005180
+✓ Found DOI: 10.1371/journal.pcbi.1005180 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: ZSVORJID
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/ZSVORJID
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RSotero-2016-PCB -> ../pac_research/ZSVORJID
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: ZSVORJID
+- DOI: 10.1371/journal.pcbi.1005180
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RSotero-2016-PCB
+
+Structure:
+library/
+├── pac_research/
+│   └── ZSVORJID/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RSotero-2016-PCB -> ../pac_research/ZSVORJID
+
+
+--------------------------------------------------------------------------------
+Processing paper 41/75: Sotero2015ModelingTGAO
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Sotero2015ModelingTGAO
+Title: Modeling the Generation of Phase-Amplitude Coupling in Corti...
+Authors: ['R. Sotero']
+Journal: BioMed Research International
+Year: 2015
+Volume: 2015
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1155/2015/915606
+✓ Found DOI: 10.1155/2015/915606 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: FZB26D6I
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/FZB26D6I
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RSotero-2015-BRI -> ../pac_research/FZB26D6I
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: FZB26D6I
+- DOI: 10.1155/2015/915606
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RSotero-2015-BRI
+
+Structure:
+library/
+├── pac_research/
+│   └── FZB26D6I/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RSotero-2015-BRI -> ../pac_research/FZB26D6I
+
+
+--------------------------------------------------------------------------------
+Processing paper 42/75: Mgevand2018PhaseRIAP
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Mgevand2018PhaseRIAP
+Title: Phase resetting in human auditory cortex to visual speech...
+Authors: ["P. M{\\'e}gevand", 'M. Mercier']
+Journal: bioRxiv
+Year: 2018
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/405597
+✓ Found DOI: 10.1101/405597 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 8LMRY8I4
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/8LMRY8I4
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: PMegevand-2018-bioRxiv -> ../pac_research/8LMRY8I4
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 8LMRY8I4
+- DOI: 10.1101/405597
+- PDF: No
+- Enriched fields: 0
+- Human-readable: PMegevand-2018-bioRxiv
+
+Structure:
+library/
+├── pac_research/
+│   └── 8LMRY8I4/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── PMegevand-2018-bioRxiv -> ../pac_research/8LMRY8I4
+
+
+--------------------------------------------------------------------------------
+Processing paper 43/75: Wang2021CrossregionalPAAQ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Wang2021CrossregionalPAAQ
+Title: Cross‐regional phase amplitude coupling supports the encodin...
+Authors: ['David X. Wang', 'Kelsey Schmitt']
+Journal: Hippocampus
+Year: 2021
+Volume: 31
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1002/hipo.23309
+✓ Found DOI: 10.1002/hipo.23309 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: YGWEUZP7
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/YGWEUZP7
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DavidXWang-2021-H -> ../pac_research/YGWEUZP7
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: YGWEUZP7
+- DOI: 10.1002/hipo.23309
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DavidXWang-2021-H
+
+Structure:
+library/
+├── pac_research/
+│   └── YGWEUZP7/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DavidXWang-2021-H -> ../pac_research/YGWEUZP7
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 40
+Total processed: 43/75 (57.3%)
+DOIs found: 39 (90.7%)
+PDFs found: 1 (2.3%)
+Errors: 0
+Batch time: 13.7s (avg 1.4s/paper)
+
+Estimated time remaining: 0.7 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 44/75: Radiske2020CrossFrequencyPCAR
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Radiske2020CrossFrequencyPCAR
+Title: Cross-Frequency Phase-Amplitude Coupling between Hippocampal...
+Authors: ['Andressa Radiske', 'M. C. Gonzalez']
+Journal: The Journal of Neuroscience
+Year: 2020
+Volume: 40
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1523/jneurosci.0259-20.2020
+✓ Found DOI: 10.1523/jneurosci.0259-20.2020 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 83YK4RJ7
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/83YK4RJ7
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AndressaRadiske-2020-TJN -> ../pac_research/83YK4RJ7
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 83YK4RJ7
+- DOI: 10.1523/jneurosci.0259-20.2020
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AndressaRadiske-2020-TJN
+
+Structure:
+library/
+├── pac_research/
+│   └── 83YK4RJ7/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AndressaRadiske-2020-TJN -> ../pac_research/83YK4RJ7
+
+
+--------------------------------------------------------------------------------
+Processing paper 45/75: Mariscal2021EEGPCAS
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Mariscal2021EEGPCAS
+Title: EEG Phase-Amplitude Coupling Strength and Phase Preference: ...
+Authors: ['Michael G. Mariscal', 'A. Levin']
+Journal: eNeuro
+Year: 2021
+Volume: 8
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1523/eneuro.0264-20.2021
+✓ Found DOI: 10.1523/eneuro.0264-20.2021 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 7825WTNJ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/7825WTNJ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MichaelGMariscal-2021-eNeuro -> ../pac_research/7825WTNJ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 7825WTNJ
+- DOI: 10.1523/eneuro.0264-20.2021
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MichaelGMariscal-2021-eNeuro
+
+Structure:
+library/
+├── pac_research/
+│   └── 7825WTNJ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MichaelGMariscal-2021-eNeuro -> ../pac_research/7825WTNJ
+
+
+--------------------------------------------------------------------------------
+Processing paper 46/75: Ponzi2023ThetagammaPAAT
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Ponzi2023ThetagammaPAAT
+Title: Theta-gamma phase amplitude coupling in a hippocampal CA1 mi...
+Authors: ['A. Ponzi', 'S. Dura-Bernal']
+Journal: PLOS Computational Biology
+Year: 2023
+Volume: 19
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1371/journal.pcbi.1010942
+✓ Found DOI: 10.1371/journal.pcbi.1010942 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 0RS8MHO7
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/0RS8MHO7
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: APonzi-2023-PCB -> ../pac_research/0RS8MHO7
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 0RS8MHO7
+- DOI: 10.1371/journal.pcbi.1010942
+- PDF: No
+- Enriched fields: 0
+- Human-readable: APonzi-2023-PCB
+
+Structure:
+library/
+├── pac_research/
+│   └── 0RS8MHO7/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── APonzi-2023-PCB -> ../pac_research/0RS8MHO7
+
+
+--------------------------------------------------------------------------------
+Processing paper 47/75: Sacks2021PhaseAmplitudeCMAU
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Sacks2021PhaseAmplitudeCMAU
+Title: Phase–Amplitude Coupling, Mental Health and Cognition: Impli...
+Authors: ['D. Sacks', 'P. Schwenn']
+Journal: Frontiers in Human Neuroscience
+Year: 2021
+Volume: 15
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnhum.2021.622313
+✓ Found DOI: 10.3389/fnhum.2021.622313 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 5PM9FDSZ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/5PM9FDSZ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DSacks-2021-FHN -> ../pac_research/5PM9FDSZ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 5PM9FDSZ
+- DOI: 10.3389/fnhum.2021.622313
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DSacks-2021-FHN
+
+Structure:
+library/
+├── pac_research/
+│   └── 5PM9FDSZ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DSacks-2021-FHN -> ../pac_research/5PM9FDSZ
+
+
+--------------------------------------------------------------------------------
+Processing paper 48/75: Duchet2024HowTDAV
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Duchet2024HowTDAV
+Title: How to design optimal brain stimulation to modulate phase-am...
+Authors: ['Benoit Duchet', 'R. Bogacz']
+Journal: Journal of neural engineering
+Year: 2024
+Volume: 21
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2024.02.12.579897
+✓ Found DOI: 10.1101/2024.02.12.579897 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 7XAOMZ73
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/7XAOMZ73
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: BenoitDuchet-2024-J -> ../pac_research/7XAOMZ73
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 7XAOMZ73
+- DOI: 10.1101/2024.02.12.579897
+- PDF: No
+- Enriched fields: 0
+- Human-readable: BenoitDuchet-2024-J
+
+Structure:
+library/
+├── pac_research/
+│   └── 7XAOMZ73/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── BenoitDuchet-2024-J -> ../pac_research/7XAOMZ73
+
+
+--------------------------------------------------------------------------------
+Processing paper 49/75: Roehri2021PhaseAmplitudeCAAW
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Roehri2021PhaseAmplitudeCAAW
+Title: Phase-Amplitude Coupling and Phase Synchronization Between M...
+Authors: ['N. Roehri', "Lucie Br{\\'e}chet"]
+Journal: Brain Topography
+Year: 2021
+Volume: 35
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2021.09.06.459104
+✓ Found DOI: 10.1101/2021.09.06.459104 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: TNRG35T1
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/TNRG35T1
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: NRoehri-2021-BT -> ../pac_research/TNRG35T1
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: TNRG35T1
+- DOI: 10.1101/2021.09.06.459104
+- PDF: No
+- Enriched fields: 0
+- Human-readable: NRoehri-2021-BT
+
+Structure:
+library/
+├── pac_research/
+│   └── TNRG35T1/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── NRoehri-2021-BT -> ../pac_research/TNRG35T1
+
+
+--------------------------------------------------------------------------------
+Processing paper 50/75: Zhang2023PhaseamplitudeCOAX
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Zhang2023PhaseamplitudeCOAX
+Title: Phase-amplitude coupling of Go/Nogo task-related neuronal os...
+Authors: ['Peng Zhang', 'Chuancai Sun']
+Journal: Sleep
+Year: 2023
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1093/sleep/zsad243
+✓ Found DOI: 10.1093/sleep/zsad243 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: FE5T29EJ
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/FE5T29EJ
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: PengZhang-2023-S -> ../pac_research/FE5T29EJ
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: FE5T29EJ
+- DOI: 10.1093/sleep/zsad243
+- PDF: No
+- Enriched fields: 0
+- Human-readable: PengZhang-2023-S
+
+Structure:
+library/
+├── pac_research/
+│   └── FE5T29EJ/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── PengZhang-2023-S -> ../pac_research/FE5T29EJ
+
+
+--------------------------------------------------------------------------------
+Processing paper 51/75: Liu2022PhaseAmplitudeCBAY
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Liu2022PhaseAmplitudeCBAY
+Title: Phase-Amplitude Coupling Brain Networks in Children with Att...
+Authors: ['Xingping Liu', 'Ling Sun']
+Journal: Clinical EEG and Neuroscience
+Year: 2022
+Volume: 53
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1177/15500594221086195
+✓ Found DOI: 10.1177/15500594221086195 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: K4CFP22A
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/K4CFP22A
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: XingpingLiu-2022-CEN -> ../pac_research/K4CFP22A
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: K4CFP22A
+- DOI: 10.1177/15500594221086195
+- PDF: No
+- Enriched fields: 0
+- Human-readable: XingpingLiu-2022-CEN
+
+Structure:
+library/
+├── pac_research/
+│   └── K4CFP22A/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── XingpingLiu-2022-CEN -> ../pac_research/K4CFP22A
+
+
+--------------------------------------------------------------------------------
+Processing paper 52/75: Thompson2014PhaseamplitudeCAAZ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Thompson2014PhaseamplitudeCAAZ
+Title: Phase-amplitude coupling and infraslow (<1 Hz) frequencies i...
+Authors: ['G. Thompson', 'W. Pan']
+Journal: Frontiers in Integrative Neuroscience
+Year: 2014
+Volume: 8
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnint.2014.00041
+✓ Found DOI: 10.3389/fnint.2014.00041 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: G83M9EGP
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/G83M9EGP
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: GThompson-2014-FIN -> ../pac_research/G83M9EGP
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: G83M9EGP
+- DOI: 10.3389/fnint.2014.00041
+- PDF: No
+- Enriched fields: 0
+- Human-readable: GThompson-2014-FIN
+
+Structure:
+library/
+├── pac_research/
+│   └── G83M9EGP/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── GThompson-2014-FIN -> ../pac_research/G83M9EGP
+
+
+--------------------------------------------------------------------------------
+Processing paper 53/75: Wang2021EEGPCBA
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Wang2021EEGPCBA
+Title: EEG phase-amplitude coupling to stratify encephalopathy seve...
+Authors: ['Xinlong Wang', 'H. Liu']
+Journal: Computer methods and programs in biomedicine
+Year: 2021
+Volume: 214
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: FOKCL98V
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/FOKCL98V
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: XinlongWang-2021-C -> ../pac_research/FOKCL98V
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: FOKCL98V
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: XinlongWang-2021-C
+
+Structure:
+library/
+├── pac_research/
+│   └── FOKCL98V/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── XinlongWang-2021-C -> ../pac_research/FOKCL98V
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 50
+Total processed: 53/75 (70.7%)
+DOIs found: 48 (90.6%)
+PDFs found: 1 (1.9%)
+Errors: 0
+Batch time: 19.2s (avg 1.9s/paper)
+
+Estimated time remaining: 0.7 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 54/75: Jurkiewicz2020AddressingPIBB
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Jurkiewicz2020AddressingPIBB
+Title: Addressing Pitfalls in Phase-Amplitude Coupling Analysis wit...
+Authors: ['G. Jurkiewicz', 'M. Hunt']
+Journal: Neuroinformatics
+Year: 2020
+Volume: 19
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1007/s12021-020-09487-3
+✓ Found DOI: 10.1007/s12021-020-09487-3 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: VDESROC9
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/VDESROC9
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: GJurkiewicz-2020-N -> ../pac_research/VDESROC9
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: VDESROC9
+- DOI: 10.1007/s12021-020-09487-3
+- PDF: No
+- Enriched fields: 0
+- Human-readable: GJurkiewicz-2020-N
+
+Structure:
+library/
+├── pac_research/
+│   └── VDESROC9/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── GJurkiewicz-2020-N -> ../pac_research/VDESROC9
+
+
+--------------------------------------------------------------------------------
+Processing paper 55/75: Wang2021DecreasedPCBC
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Wang2021DecreasedPCBC
+Title: Decreased Phase–Amplitude Coupling Between the mPFC and BLA ...
+Authors: ['Zihe Wang', 'Qi-Lai Cao']
+Journal: Frontiers in Behavioral Neuroscience
+Year: 2021
+Volume: 15
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnbeh.2021.799556
+✓ Found DOI: 10.3389/fnbeh.2021.799556 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: APN2HNCL
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/APN2HNCL
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: ZiheWang-2021-FBN -> ../pac_research/APN2HNCL
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: APN2HNCL
+- DOI: 10.3389/fnbeh.2021.799556
+- PDF: No
+- Enriched fields: 0
+- Human-readable: ZiheWang-2021-FBN
+
+Structure:
+library/
+├── pac_research/
+│   └── APN2HNCL/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── ZiheWang-2021-FBN -> ../pac_research/APN2HNCL
+
+
+--------------------------------------------------------------------------------
+Processing paper 56/75: Huang2021EventRelatedPCBD
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Huang2021EventRelatedPCBD
+Title: Event-Related Phase-Amplitude Coupling During Working Memory...
+Authors: ['Ting Huang', 'Hsien-Ming Ding']
+Journal: IEEE Access
+Year: 2021
+Volume: 9
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/access.2021.3097774
+✓ Found DOI: 10.1109/access.2021.3097774 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: FJTWAYPS
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/FJTWAYPS
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TingHuang-2021-IA -> ../pac_research/FJTWAYPS
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: FJTWAYPS
+- DOI: 10.1109/access.2021.3097774
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TingHuang-2021-IA
+
+Structure:
+library/
+├── pac_research/
+│   └── FJTWAYPS/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TingHuang-2021-IA -> ../pac_research/FJTWAYPS
+
+
+--------------------------------------------------------------------------------
+Processing paper 57/75: Lepage2021MultitaperEOBE
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Lepage2021MultitaperEOBE
+Title: Multitaper estimates of phase-amplitude coupling...
+Authors: ['K. Lepage', 'C. N. Fleming']
+Journal: Journal of Neural Engineering
+Year: 2021
+Volume: 18
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2021.03.02.433586
+✓ Found DOI: 10.1101/2021.03.02.433586 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: XMGGU5U2
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/XMGGU5U2
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: KLepage-2021-JNE -> ../pac_research/XMGGU5U2
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: XMGGU5U2
+- DOI: 10.1101/2021.03.02.433586
+- PDF: No
+- Enriched fields: 0
+- Human-readable: KLepage-2021-JNE
+
+Structure:
+library/
+├── pac_research/
+│   └── XMGGU5U2/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── KLepage-2021-JNE -> ../pac_research/XMGGU5U2
+
+
+--------------------------------------------------------------------------------
+Processing paper 58/75: Munia2021GrangerCBBF
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Munia2021GrangerCBBF
+Title: Granger Causality Based Directional Phase-Amplitude Coupling...
+Authors: ['T. T. Munia', 'Selin Aviyente']
+Journal: ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
+Year: 2021
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/icassp39728.2021.9414004
+✓ Found DOI: 10.1109/icassp39728.2021.9414004 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 1FRKYWBD
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/1FRKYWBD
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TTMunia-2021-IIICASSP -> ../pac_research/1FRKYWBD
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 1FRKYWBD
+- DOI: 10.1109/icassp39728.2021.9414004
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TTMunia-2021-IIICASSP
+
+Structure:
+library/
+├── pac_research/
+│   └── 1FRKYWBD/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TTMunia-2021-IIICASSP -> ../pac_research/1FRKYWBD
+
+
+--------------------------------------------------------------------------------
+Processing paper 59/75: Miao2021SeizureOZBG
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Miao2021SeizureOZBG
+Title: Seizure Onset Zone Identification Based on Phase-Amplitude C...
+Authors: ['Yao Miao', 'Y. Iimura']
+Journal: 2021 43rd Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC)
+Year: 2021
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/embc46164.2021.9630941
+✓ Found DOI: 10.1109/embc46164.2021.9630941 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: MYSFIUAS
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/MYSFIUAS
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: YaoMiao-2021-AICIEMBS -> ../pac_research/MYSFIUAS
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: MYSFIUAS
+- DOI: 10.1109/embc46164.2021.9630941
+- PDF: No
+- Enriched fields: 0
+- Human-readable: YaoMiao-2021-AICIEMBS
+
+Structure:
+library/
+├── pac_research/
+│   └── MYSFIUAS/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── YaoMiao-2021-AICIEMBS -> ../pac_research/MYSFIUAS
+
+
+--------------------------------------------------------------------------------
+Processing paper 60/75: MartnezCancino2020WhatCLBH
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: MartnezCancino2020WhatCLBH
+Title: What Can Local Transfer Entropy Tell Us about Phase-Amplitud...
+Authors: ["Ram{\\'o}n Mart{\\'i}nez-Cancino", 'A. Delorme']
+Journal: Entropy
+Year: 2020
+Volume: 22
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.20944/preprints202010.0006.v1
+✓ Found DOI: 10.20944/preprints202010.0006.v1 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 3PZR8VYA
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/3PZR8VYA
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RamonMartinezCancino-2020-E -> ../pac_research/3PZR8VYA
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 3PZR8VYA
+- DOI: 10.20944/preprints202010.0006.v1
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RamonMartinezCancino-2020-E
+
+Structure:
+library/
+├── pac_research/
+│   └── 3PZR8VYA/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RamonMartinezCancino-2020-E -> ../pac_research/3PZR8VYA
+
+
+--------------------------------------------------------------------------------
+Processing paper 61/75: Sotero2015GenerationOPBI
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Sotero2015GenerationOPBI
+Title: Generation of phase-amplitude coupling of neurophysiological...
+Authors: ['R. Sotero']
+Journal: bioRxiv
+Year: 2015
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: ZMEQMT31
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/ZMEQMT31
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RSotero-2015-bioRxiv -> ../pac_research/ZMEQMT31
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: ZMEQMT31
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RSotero-2015-bioRxiv
+
+Structure:
+library/
+├── pac_research/
+│   └── ZMEQMT31/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RSotero-2015-bioRxiv -> ../pac_research/ZMEQMT31
+
+
+--------------------------------------------------------------------------------
+Processing paper 62/75: Qin2020PhaseamplitudeCIBJ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Qin2020PhaseamplitudeCIBJ
+Title: Phase-amplitude coupling in neuronal oscillator networks...
+Authors: ['Yuzhen Qin', 'Tommaso Menara']
+Journal: arXiv: Neurons and Cognition
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: QOT7S1CE
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/QOT7S1CE
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: YuzhenQin-2020-NC -> ../pac_research/QOT7S1CE
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: QOT7S1CE
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: YuzhenQin-2020-NC
+
+Structure:
+library/
+├── pac_research/
+│   └── QOT7S1CE/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── YuzhenQin-2020-NC -> ../pac_research/QOT7S1CE
+
+
+--------------------------------------------------------------------------------
+Processing paper 63/75: MartnezCancino2020ComputingPABK
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: MartnezCancino2020ComputingPABK
+Title: Computing Phase Amplitude Coupling in EEGLAB: PACTools...
+Authors: ["Ram{\\'o}n Mart{\\'i}nez-Cancino", 'A. Delorme']
+Journal: 2020 IEEE 20th International Conference on Bioinformatics and Bioengineering (BIBE)
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/bibe50027.2020.00070
+✓ Found DOI: 10.1109/bibe50027.2020.00070 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 72GRM01T
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/72GRM01T
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: RamonMartinezCancino-2020-IICBB -> ../pac_research/72GRM01T
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 72GRM01T
+- DOI: 10.1109/bibe50027.2020.00070
+- PDF: No
+- Enriched fields: 0
+- Human-readable: RamonMartinezCancino-2020-IICBB
+
+Structure:
+library/
+├── pac_research/
+│   └── 72GRM01T/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── RamonMartinezCancino-2020-IICBB -> ../pac_research/72GRM01T
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 60
+Total processed: 63/75 (84.0%)
+DOIs found: 56 (88.9%)
+PDFs found: 1 (1.6%)
+Errors: 0
+Batch time: 23.9s (avg 2.4s/paper)
+
+Estimated time remaining: 0.5 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 64/75: Tour2017ParametricEOBL
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Tour2017ParametricEOBL
+Title: Parametric estimation of spectrum driven by an exogenous sig...
+Authors: ["Tom Dupr{\\'e} la Tour", 'Y. Grenier']
+Journal: 2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
+Year: 2017
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/icassp.2017.7952968
+✓ Found DOI: 10.1109/icassp.2017.7952968 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: WGB4E7PM
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/WGB4E7PM
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: TomDuprelaTour-2017-IICASSP -> ../pac_research/WGB4E7PM
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: WGB4E7PM
+- DOI: 10.1109/icassp.2017.7952968
+- PDF: No
+- Enriched fields: 0
+- Human-readable: TomDuprelaTour-2017-IICASSP
+
+Structure:
+library/
+├── pac_research/
+│   └── WGB4E7PM/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── TomDuprelaTour-2017-IICASSP -> ../pac_research/WGB4E7PM
+
+
+--------------------------------------------------------------------------------
+Processing paper 65/75: Cisotto2020REPACREBM
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Cisotto2020REPACREBM
+Title: REPAC: Reliable Estimation of Phase-Amplitude Coupling in Br...
+Authors: ['Giulia Cisotto']
+Journal: ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 4P09RC5K
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/4P09RC5K
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: GiuliaCisotto-2020-IIICASSP -> ../pac_research/4P09RC5K
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 4P09RC5K
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: GiuliaCisotto-2020-IIICASSP
+
+Structure:
+library/
+├── pac_research/
+│   └── 4P09RC5K/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── GiuliaCisotto-2020-IIICASSP -> ../pac_research/4P09RC5K
+
+
+--------------------------------------------------------------------------------
+Processing paper 66/75: Salimpour2020PhasedependentSFBN
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Salimpour2020PhasedependentSFBN
+Title: Phase-dependent Stimulation for Modulating Phase-amplitude C...
+Authors: ['Y. Salimpour', 'A. Nayak']
+Journal: 2020 42nd Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC)
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/embc44109.2020.9175966
+✓ Found DOI: 10.1109/embc44109.2020.9175966 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: HGJBIXZM
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/HGJBIXZM
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: YSalimpour-2020-AICIEMBS -> ../pac_research/HGJBIXZM
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: HGJBIXZM
+- DOI: 10.1109/embc44109.2020.9175966
+- PDF: No
+- Enriched fields: 0
+- Human-readable: YSalimpour-2020-AICIEMBS
+
+Structure:
+library/
+├── pac_research/
+│   └── HGJBIXZM/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── YSalimpour-2020-AICIEMBS -> ../pac_research/HGJBIXZM
+
+
+--------------------------------------------------------------------------------
+Processing paper 67/75: Zandvoort2020UnderstandingPCBO
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Zandvoort2020UnderstandingPCBO
+Title: Understanding phase-amplitude coupling from bispectral analy...
+Authors: ['Coen S. Zandvoort', 'G. Nolte']
+Journal: bioRxiv
+Year: 2020
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2020.03.20.000745
+✓ Found DOI: 10.1101/2020.03.20.000745 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: MOKYXMEC
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/MOKYXMEC
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: CoenSZandvoort-2020-bioRxiv -> ../pac_research/MOKYXMEC
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: MOKYXMEC
+- DOI: 10.1101/2020.03.20.000745
+- PDF: No
+- Enriched fields: 0
+- Human-readable: CoenSZandvoort-2020-bioRxiv
+
+Structure:
+library/
+├── pac_research/
+│   └── MOKYXMEC/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── CoenSZandvoort-2020-bioRxiv -> ../pac_research/MOKYXMEC
+
+
+--------------------------------------------------------------------------------
+Processing paper 68/75: Hawasli2016InfluenceOWBP
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Hawasli2016InfluenceOWBP
+Title: Influence of White and Gray Matter Connections on Endogenous...
+Authors: ['Ammar H. Hawasli', 'DoHyun Kim']
+Journal: Frontiers in Human Neuroscience
+Year: 2016
+Volume: 10
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.3389/fnhum.2016.00330
+✓ Found DOI: 10.3389/fnhum.2016.00330 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 7C5LQ31F
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/7C5LQ31F
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AmmarHHawasli-2016-FHN -> ../pac_research/7C5LQ31F
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 7C5LQ31F
+- DOI: 10.3389/fnhum.2016.00330
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AmmarHHawasli-2016-FHN
+
+Structure:
+library/
+├── pac_research/
+│   └── 7C5LQ31F/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AmmarHHawasli-2016-FHN -> ../pac_research/7C5LQ31F
+
+
+--------------------------------------------------------------------------------
+Processing paper 69/75: Marimpis2021DyconnmapDCBQ
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Marimpis2021DyconnmapDCBQ
+Title: Dyconnmap: Dynamic connectome mapping—A neuroimaging python ...
+Authors: ['Avraam D. Marimpis', 'S. Dimitriadis']
+Journal: Human Brain Mapping
+Year: 2021
+Volume: 42
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1002/hbm.25589
+✓ Found DOI: 10.1002/hbm.25589 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: K6ANWV9R
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/K6ANWV9R
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AvraamDMarimpis-2021-HBM -> ../pac_research/K6ANWV9R
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: K6ANWV9R
+- DOI: 10.1002/hbm.25589
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AvraamDMarimpis-2021-HBM
+
+Structure:
+library/
+├── pac_research/
+│   └── K6ANWV9R/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AvraamDMarimpis-2021-HBM -> ../pac_research/K6ANWV9R
+
+
+--------------------------------------------------------------------------------
+Processing paper 70/75: Lemkhenter2020BoostingGIBR
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Lemkhenter2020BoostingGIBR
+Title: Boosting Generalization in Bio-signal Classification by Lear...
+Authors: ['Abdelhak Lemkhenter', 'Paolo Favaro']
+Journal: Pattern Recognition
+Year: 2020
+Volume: 12544
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+✗ No DOI found
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Skipping enrichment (no DOI)
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 25H52YNC
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/25H52YNC
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AbdelhakLemkhenter-2020-PR -> ../pac_research/25H52YNC
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 25H52YNC
+- DOI: Not found
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AbdelhakLemkhenter-2020-PR
+
+Structure:
+library/
+├── pac_research/
+│   └── 25H52YNC/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AbdelhakLemkhenter-2020-PR -> ../pac_research/25H52YNC
+
+
+--------------------------------------------------------------------------------
+Processing paper 71/75: Lee2017ImplicitAOBS
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Lee2017ImplicitAOBS
+Title: Implicit Analysis of Perceptual Multimedia Experience Based ...
+Authors: ['Jong-Seok Lee', 'Seong-eun Moon']
+Journal: IEEE Transactions on Multimedia
+Year: 2017
+Volume: 19
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/tmm.2016.2614880
+✓ Found DOI: 10.1109/tmm.2016.2614880 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 5BKP614N
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/5BKP614N
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: JongSeokLee-2017-ITM -> ../pac_research/5BKP614N
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 5BKP614N
+- DOI: 10.1109/tmm.2016.2614880
+- PDF: No
+- Enriched fields: 0
+- Human-readable: JongSeokLee-2017-ITM
+
+Structure:
+library/
+├── pac_research/
+│   └── 5BKP614N/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── JongSeokLee-2017-ITM -> ../pac_research/5BKP614N
+
+
+--------------------------------------------------------------------------------
+Processing paper 72/75: Peck2022PhaseAmplitudeCIBT
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Peck2022PhaseAmplitudeCIBT
+Title: Phase-Amplitude Coupling in Autism Spectrum Disorder: Result...
+Authors: ['Fleming C. Peck', 'A. Naples']
+Journal: None
+Year: 2022
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/2022.09.25.22279830
+✓ Found DOI: 10.1101/2022.09.25.22279830 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: C5QMVBDX
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/C5QMVBDX
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: FlemingCPeck-2022-Unknown -> ../pac_research/C5QMVBDX
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: C5QMVBDX
+- DOI: 10.1101/2022.09.25.22279830
+- PDF: No
+- Enriched fields: 0
+- Human-readable: FlemingCPeck-2022-Unknown
+
+Structure:
+library/
+├── pac_research/
+│   └── C5QMVBDX/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── FlemingCPeck-2022-Unknown -> ../pac_research/C5QMVBDX
+
+
+--------------------------------------------------------------------------------
+Processing paper 73/75: Perley2022AMIBU
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Perley2022AMIBU
+Title: A Mutual Information Measure of Phase-Amplitude Coupling usi...
+Authors: ['Andrew S. Perley', 'Todd P. Coleman']
+Journal: 2022 44th Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC)
+Year: 2022
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1109/embc48229.2022.9871816
+✓ Found DOI: 10.1109/embc48229.2022.9871816 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: DSM0RE6J
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/DSM0RE6J
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: AndrewSPerley-2022-AICIEMBS -> ../pac_research/DSM0RE6J
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: DSM0RE6J
+- DOI: 10.1109/embc48229.2022.9871816
+- PDF: No
+- Enriched fields: 0
+- Human-readable: AndrewSPerley-2022-AICIEMBS
+
+Structure:
+library/
+├── pac_research/
+│   └── DSM0RE6J/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── AndrewSPerley-2022-AICIEMBS -> ../pac_research/DSM0RE6J
+
+
+========================================
+BATCH PROGRESS REPORT
+========================================
+Papers processed in this session: 70
+Total processed: 73/75 (97.3%)
+DOIs found: 64 (87.7%)
+PDFs found: 1 (1.4%)
+Errors: 0
+Batch time: 23.9s (avg 2.4s/paper)
+
+Estimated time remaining: 0.1 minutes
+
+Pausing for 5 seconds to avoid rate limits...
+
+--------------------------------------------------------------------------------
+Processing paper 74/75: Thengone2016PhaseAmplitudeCIBV
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Thengone2016PhaseAmplitudeCIBV
+Title: Phase-Amplitude Coupling in Spontaneous Mouse Behavior...
+Authors: ['Daniel T Thengone', 'K. Gagnidze']
+Journal: PLoS ONE
+Year: 2016
+Volume: 11
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1371/journal.pone.0162262
+✓ Found DOI: 10.1371/journal.pone.0162262 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: 725MCQ2I
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/725MCQ2I
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: DanielTThengone-2016-PO -> ../pac_research/725MCQ2I
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: 725MCQ2I
+- DOI: 10.1371/journal.pone.0162262
+- PDF: No
+- Enriched fields: 0
+- Human-readable: DanielTThengone-2016-PO
+
+Structure:
+library/
+├── pac_research/
+│   └── 725MCQ2I/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── DanielTThengone-2016-PO -> ../pac_research/725MCQ2I
+
+
+--------------------------------------------------------------------------------
+Processing paper 75/75: Siems2018DissociatedCPBW
+--------------------------------------------------------------------------------
+================================================================================
+COMPLETE SINGLE PAPER PIPELINE
+================================================================================
+
+1. PAPER INFORMATION
+----------------------------------------
+Key: Siems2018DissociatedCPBW
+Title: Dissociated cortical phase- and amplitude-coupling patterns ...
+Authors: ['M. Siems', 'M. Siegel']
+Journal: bioRxiv
+Year: 2018
+Volume: 
+DOI: None
+
+2. DOI RESOLUTION
+----------------------------------------
+Resolving DOI...
+INFO: Found DOI via CrossRef: 10.1101/485599
+✓ Found DOI: 10.1101/485599 (via crossref)
+
+3. METADATA ENRICHMENT
+----------------------------------------
+Enriching metadata from DOI...
+✗ No enrichment data found
+
+4. STORAGE STRUCTURE
+----------------------------------------
+Storage key: TM40K78A
+Storage directory: /home/ywatanabe/.scitex/scholar/library/pac_research/TM40K78A
+
+5. SAVING METADATA
+----------------------------------------
+Saved metadata with 17 fields
+
+6. PDF HANDLING
+----------------------------------------
+✗ No PDF found
+
+7. HUMAN-READABLE LINK
+----------------------------------------
+Created: MSiems-2018-bioRxiv -> ../pac_research/TM40K78A
+
+8. SUMMARY
+----------------------------------------
+
+Paper processed successfully:
+- Storage key: TM40K78A
+- DOI: 10.1101/485599
+- PDF: No
+- Enriched fields: 0
+- Human-readable: MSiems-2018-bioRxiv
+
+Structure:
+library/
+├── pac_research/
+│   └── TM40K78A/
+│       ├── metadata.json
+│       ├── (no PDF)
+│       ├── attachments/
+│       └── screenshots/
+└── pac_research-human-readable/
+    └── MSiems-2018-bioRxiv -> ../pac_research/TM40K78A
+
+
+================================================================================
+FINAL PROCESSING SUMMARY
+================================================================================
+
+Total papers: 75
+Processed: 75
+DOIs found: 66 (88.0% of processed)
+PDFs found: 1 (1.3% of processed)
+Errors: 0
+Skipped (already processed): 0
+
+Total time: 2.9 minutes
+Average per paper: 2.5 seconds
+
+Final report saved to: .dev/all_papers_results.json
+
+65 papers have DOIs but no PDFs.
+Creating download list...
+Download list saved to: .dev/papers_to_download.txt

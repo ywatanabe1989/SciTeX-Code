@@ -175,7 +175,6 @@ class TestSciTeXPlotConfMat(TestPlotConfMat):
         # Access the underlying matplotlib figure for closing
         plt.close(self.fig._fig_mpl)
 
-
 if __name__ == "__main__":
     import os
 
@@ -184,32 +183,32 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_conf_mat.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_conf_mat.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
-# # Timestamp: "2025-05-02 09:20:23 (ywatanabe)"
-# # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/ax/_plot/_plot_conf_mat.py
+# # Timestamp: "2025-05-18 15:08:16 (ywatanabe)"
+# # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/ax/_plot/_plot_conf_mat.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/ax/_plot/_plot_conf_mat.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/ax/_plot/_plot_conf_mat.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # from typing import List, Optional, Tuple, Union
-#
+# 
 # import matplotlib
 # import matplotlib.pyplot as plt
 # import numpy as np
 # import pandas as pd
 # import seaborn as sns
-#
+# 
 # from ...utils._calc_bacc_from_conf_mat import calc_bacc_from_conf_mat
+# from ...utils import assert_valid_axis
 # from .._style._extend import extend as scitex_plt_extend
-#
-#
+# 
+# 
 # def plot_conf_mat(
 #     axis: plt.Axes,
 #     data: Union[np.ndarray, pd.DataFrame],
@@ -226,11 +225,11 @@ if __name__ == "__main__":
 #     **kwargs,
 # ) -> Union[plt.Axes, Tuple[plt.Axes, float]]:
 #     """Creates a confusion matrix heatmap with optional balanced accuracy.
-#
+# 
 #     Parameters
 #     ----------
-#     axis : plt.Axes
-#         Matplotlib axes to plot on
+#     axis : plt.Axes or scitex.plt._subplots._AxisWrapper.AxisWrapper
+#         Matplotlib axes or scitex axis wrapper to plot on
 #     data : Union[np.ndarray, pd.DataFrame]
 #         Confusion matrix data
 #     x_labels : Optional[List[str]], optional
@@ -253,12 +252,12 @@ if __name__ == "__main__":
 #         Y-axis extension ratio
 #     calc_bacc : bool, optional
 #         Calculate Balanced Accuracy from Confusion Matrix
-#
+# 
 #     Returns
 #     -------
-#     Union[plt.Axes, Tuple[plt.Axes, float]]
+#     Union[plt.Axes, Tuple[plt.Axes, float]] or Union[scitex.plt._subplots._AxisWrapper.AxisWrapper, Tuple[scitex.plt._subplots._AxisWrapper.AxisWrapper, float]]
 #         Axes object and optionally balanced accuracy
-#
+# 
 #     Example
 #     -------
 #     >>> data = np.array([[10, 2, 0], [1, 15, 3], [0, 2, 20]])
@@ -268,17 +267,15 @@ if __name__ == "__main__":
 #     >>> print(f"Balanced Accuracy: {bacc:.3f}")
 #     Balanced Accuracy: 0.889
 #     """
-#
-#     assert isinstance(
-#         axis, matplotlib.axes._axes.Axes
-#     ), "First argument must be a matplotlib axis"
-#
+# 
+#     assert_valid_axis(axis, "First argument must be a matplotlib axis or scitex axis wrapper")
+# 
 #     if not isinstance(data, pd.DataFrame):
 #         data = pd.DataFrame(data)
-#
+# 
 #     bacc_val = calc_bacc_from_conf_mat(data.values)
 #     title = f"{title} (bACC = {bacc_val:.3f})"
-#
+# 
 #     res = sns.heatmap(
 #         data,
 #         ax=axis,
@@ -289,21 +286,21 @@ if __name__ == "__main__":
 #         vmin=0,
 #         **kwargs,
 #     )
-#
+# 
 #     res.invert_yaxis()
-#
+# 
 #     for _, spine in res.spines.items():
 #         spine.set_visible(False)
-#
+# 
 #     axis.set_xlabel("Predicted label")
 #     axis.set_ylabel("True label")
 #     axis.set_title(title)
-#
+# 
 #     if x_labels is not None:
 #         axis.set_xticklabels(x_labels)
 #     if y_labels is not None:
 #         axis.set_yticklabels(y_labels)
-#
+# 
 #     axis = scitex_plt_extend(axis, x_extend_ratio, y_extend_ratio)
 #     if data.shape[0] == data.shape[1]:
 #         axis.set_box_aspect(1)
@@ -317,15 +314,14 @@ if __name__ == "__main__":
 #             rotation=label_rotation_xy[1],
 #             fontdict={"horizontalalignment": "right"},
 #         )
-#
+# 
 #     if calc_bacc:
 #         return axis, bacc_val
 #     else:
 #         return axis, None
-#
+# 
 # # EOF
-# --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_plot/_plot_conf_mat.py
-# --------------------------------------------------------------------------------
 
-# EOF
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_plot/_plot_conf_mat.py
+# --------------------------------------------------------------------------------

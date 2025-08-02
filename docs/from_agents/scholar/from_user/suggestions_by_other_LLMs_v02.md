@@ -19,7 +19,7 @@ pythonimport asyncio
 import aiohttp
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
-import logging
+from scitex import logging
 from datetime import datetime
 import time
 

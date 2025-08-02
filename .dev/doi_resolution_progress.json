@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "started_at": "2025-08-01T12:26:40.492062",
+  "last_updated": "2025-08-01T12:28:14.851832",
+  "completed": false,
+  "papers": {
+    "quantification of phase-amplitude coupling in neuronal oscillations: comparison of phase-locking value, mean vector length, modulation index, and generalized-linear-modeling-cross-frequency-coupling_2019_mareike j. h{\\\"u}lsemann": {
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations: Comparison of Phase-Locking Value, Mean Vector Length, Modulation Index, and Generalized-Linear-Modeling-Cross-Frequency-Coupling",
+      "doi": "10.3389/fnins.2019.00573",
+      "status": "resolved",
+      "timestamp": "2025-08-01T12:27:09.205378"
+    },
+    "generative models, linguistic communication and active inference_2020_karl j. friston": {
+      "title": "Generative models, linguistic communication and active inference",
+      "doi": "10.1016/j.neubiorev.2020.07.005",
+      "status": "resolved",
+      "timestamp": "2025-08-01T12:27:25.014575"
+    },
+    "the functional role of cross-frequency coupling_2010_r. canolty": {
+      "title": "The functional role of cross-frequency coupling",
+      "doi": "10.1016/j.tics.2010.09.001",
+      "status": "resolved",
+      "timestamp": "2025-08-01T12:27:43.194937"
+    },
+    "untangling cross-frequency coupling in neuroscience_2014_juhan aru": {
+      "title": "Untangling cross-frequency coupling in neuroscience",
+      "doi": "10.1101/005926",
+      "status": "resolved",
+      "timestamp": "2025-08-01T12:27:59.037665"
+    },
+    "measuring phase-amplitude coupling between neuronal oscillations of different frequencies._2010_a. tort": {
+      "title": "Measuring phase-amplitude coupling between neuronal oscillations of different frequencies.",
+      "doi": "10.1152/jn.00106.2010",
+      "status": "resolved",
+      "timestamp": "2025-08-01T12:28:14.851532"
+    }
+  },
+  "statistics": {
+    "total": 75,
+    "processed": 5,
+    "resolved": 5,
+    "failed": 0,
+    "skipped": 0,
+    "rate_limited": 0
+  },
+  "rate_limit_info": {
+    "last_request_time": 1754015279.039009,
+    "requests_in_window": 5,
+    "window_start": 1754015200.499317
+  }
+}

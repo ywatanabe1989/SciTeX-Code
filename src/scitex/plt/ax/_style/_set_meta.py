@@ -92,7 +92,13 @@ def set_meta(ax, caption=None, methods=None, stats=None, keywords=None,
     # Add automatic metadata
     import datetime
     metadata['created_timestamp'] = datetime.datetime.now().isoformat()
-    metadata['scitex_version'] = '1.11.0'  # TODO: Get from __version__
+    
+    # Get version dynamically
+    try:
+        import scitex
+        metadata['scitex_version'] = getattr(scitex, '__version__', 'unknown')
+    except ImportError:
+        metadata['scitex_version'] = 'unknown'
     
     # Store metadata in figure for automatic saving
     fig = ax.get_figure()

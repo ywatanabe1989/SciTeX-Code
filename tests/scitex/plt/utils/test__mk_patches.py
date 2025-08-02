@@ -246,7 +246,6 @@ def test_mk_patches_transparency():
     assert patches[0].get_facecolor()[3] == 0.5
     assert patches[1].get_facecolor()[3] == 0.3
 
-
 if __name__ == "__main__":
     import os
 
@@ -255,7 +254,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/utils/_mk_patches.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/utils/_mk_patches.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -263,28 +262,27 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/_mk_patches.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/_mk_patches.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/_mk_patches.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # import matplotlib.patches as mpatches
-#
-#
+# 
+# 
 # def mk_patches(colors, labels):
 #     """
 #     colors = ["red", "blue"]
 #     labels = ["label_1", "label_2"]
 #     ax.legend(handles=scitex.plt.mk_patches(colors, labels))
 #     """
-#
-#     patches = [
-#         mpatches.Patch(color=c, label=l) for c, l in zip(colors, labels)
-#     ]
+# 
+#     patches = [mpatches.Patch(color=c, label=l) for c, l in zip(colors, labels)]
 #     return patches
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/utils/_mk_patches.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/utils/_mk_patches.py
 # --------------------------------------------------------------------------------

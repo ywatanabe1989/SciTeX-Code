@@ -26,7 +26,7 @@ Follow the exmaples below and keep debugginge messages in src, scripts, and test
 
 ### Python
 ```python
-import logging
+from scitex import logging
 
 # Per-module logger
 logger = logging.getLogger(__name__)

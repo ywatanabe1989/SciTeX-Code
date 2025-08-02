@@ -37,6 +37,10 @@
                 "-y",
                 "@modelcontextprotocol/server-sequential-thinking"
             ]
+        },
+        "c4ai-sse": {
+          "type": "sse",
+          "url": "http://127.0.0.1:11235/mcp/sse"
         }
     }
 }

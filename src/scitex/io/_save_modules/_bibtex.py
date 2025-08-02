@@ -17,7 +17,7 @@ This module provides functionality to save data in BibTeX format,
 supporting both individual entries and collections.
 """
 
-import logging
+from scitex import logging
 from typing import List, Dict, Any, Union
 from pathlib import Path
 from datetime import datetime

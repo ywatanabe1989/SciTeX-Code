@@ -480,7 +480,7 @@ metrics = reporter.evaluate(y_true, predictions)
 ### Debug Mode
 Enable detailed logging:
 ```python
-import logging
+from scitex import logging
 logging.getLogger('scitex.nn').setLevel(logging.DEBUG)
 ```
 

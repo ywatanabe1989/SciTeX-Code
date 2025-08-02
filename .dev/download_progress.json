@@ -1,0 +1,39 @@
+{
+  "downloaded": [],
+  "failed": [
+    {
+      "filename": "Hulsemann-2019-FIN.pdf",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6592221/pdf/fnins-13-00573.pdf",
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations"
+    }
+  ],
+  "manual_needed": [],
+  "manual_required": [
+    {
+      "filename": "Hulsemann-2019-FIN.pdf",
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations",
+      "reason": "All automatic download attempts failed"
+    },
+    {
+      "filename": "Canolty-2010-TIC.pdf",
+      "title": "The functional role of cross-frequency coupling",
+      "reason": "All automatic download attempts failed"
+    },
+    {
+      "filename": "Aru-2014-CON.pdf",
+      "title": "Untangling cross-frequency coupling in neuroscience",
+      "reason": "All automatic download attempts failed"
+    },
+    {
+      "filename": "Tort-2010-JON.pdf",
+      "title": "Measuring phase-amplitude coupling between neuronal oscillations",
+      "reason": "All automatic download attempts failed"
+    },
+    {
+      "filename": "Munia-2019-SR.pdf",
+      "title": "Time-Frequency Based Phase-Amplitude Coupling Measure",
+      "reason": "All automatic download attempts failed"
+    }
+  ],
+  "in_progress": []
+}

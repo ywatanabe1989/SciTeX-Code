@@ -519,7 +519,7 @@ for i in range(0, len(prompts), batch_size):
 ### Debug Mode
 Enable verbose logging:
 ```python
-import logging
+from scitex import logging
 logging.getLogger('scitex.ai').setLevel(logging.DEBUG)
 ```
 

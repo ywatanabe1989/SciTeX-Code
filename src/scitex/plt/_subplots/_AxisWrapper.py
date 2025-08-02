@@ -19,10 +19,11 @@ from ._AxisWrapperMixins import (
     MatplotlibPlotMixin,
     SeabornMixin,
     TrackingMixin,
+    UnitAwareMixin,
 )
 
 
-class AxisWrapper(MatplotlibPlotMixin, SeabornMixin, AdjustmentMixin, TrackingMixin):
+class AxisWrapper(MatplotlibPlotMixin, SeabornMixin, AdjustmentMixin, TrackingMixin, UnitAwareMixin):
     def __init__(self, fig_scitex, axis_mpl, track):
         """Initialize the AxisWrapper.
         
@@ -50,6 +51,9 @@ class AxisWrapper(MatplotlibPlotMixin, SeabornMixin, AdjustmentMixin, TrackingMi
         self.track = track
         self.id = 0
         self._counter_part = matplotlib.axes.Axes
+        
+        # Initialize unit awareness
+        UnitAwareMixin.__init__(self)
 
     def get_figure(self, root=True):
         """Get the figure, compatible with matplotlib 3.8+"""

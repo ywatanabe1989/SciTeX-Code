@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-14 15:21:15 (ywatanabe)"
-# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_save.py
+# Timestamp: "2025-07-31 00:12:49 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/io/_save.py"
@@ -29,9 +30,10 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py"
 
 """Imports"""
 import inspect
-import logging
 import os as _os
 from typing import Any
+
+from scitex import logging
 
 from .._sh import sh
 from ..path._clean import clean
@@ -39,13 +41,31 @@ from ..path._getsize import getsize
 from ..str._clean_path import clean_path
 from ..str._color_text import color_text
 from ..str._readable_bytes import readable_bytes
+
 # Import save functions from the new modular structure
-from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
-                            save_html, save_image, save_joblib, save_json,
-                            save_matlab, save_mp4, save_npy, save_npz,
-                            save_pickle, save_pickle_compressed, save_text,
-                            save_torch, save_yaml, save_zarr)
+from ._save_modules import (
+    save_catboost,
+    save_csv,
+    save_excel,
+    save_hdf5,
+    save_html,
+    save_image,
+    save_joblib,
+    save_json,
+    save_matlab,
+    save_mp4,
+    save_npy,
+    save_npz,
+    save_pickle,
+    save_pickle_compressed,
+    save_text,
+    save_torch,
+    save_yaml,
+    save_zarr,
+)
 from ._save_modules._bibtex import save_bibtex
+
+logger = logging.getLogger()
 
 
 def _get_figure_with_data(obj):
@@ -358,7 +378,7 @@ def save(
         _symlink(spath, spath_cwd, symlink_from_cwd, verbose)
 
     except Exception as e:
-        logging.error(
+        logger.error(
             f"Error occurred while saving: {str(e)}\n"
             f"Debug: Initial script_path = {inspect.stack()[1].filename}\n"
             f"Debug: Final spath = {spath}\n"
@@ -389,7 +409,7 @@ def _save(
     # Don't use object's own save method - use consistent handlers
     # This ensures all saves go through the same pipeline and get
     # the yellow confirmation message
-    
+
     # Get file extension
     ext = _os.path.splitext(spath)[1].lower()
 

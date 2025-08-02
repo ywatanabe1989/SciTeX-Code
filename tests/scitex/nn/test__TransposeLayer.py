@@ -416,15 +416,15 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/nn/_TransposeLayer.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/nn/_TransposeLayer.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-03-30 07:26:35 (ywatanabe)"
-#
+# 
 # import torch.nn as nn
-#
-#
+# 
+# 
 # class TransposeLayer(nn.Module):
 #     def __init__(
 #         self,
@@ -434,10 +434,10 @@ if __name__ == "__main__":
 #         super().__init__()
 #         self.axis1 = axis1
 #         self.axis2 = axis2
-#
+# 
 #     def forward(self, x):
 #         return x.transpose(self.axis1, self.axis2)
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/nn/_TransposeLayer.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/nn/_TransposeLayer.py
 # --------------------------------------------------------------------------------

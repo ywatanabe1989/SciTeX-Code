@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "scitex-developer"
+version = "0.2.0"
+description = "Comprehensive Developer Support MCP Server for SciTeX"
+authors = ["SciTeX Development Team"]
+readme = "README.md"
+packages = [{include = "."}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+mcp = "^0.1.0"
+scitex-base = {path = "../scitex-base", develop = true}
+scitex-analyzer = {path = "../scitex-analyzer", develop = true}
+pyyaml = "^6.0"
+networkx = "^3.0"
+
+[tool.poetry.scripts]
+scitex-developer = "server:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

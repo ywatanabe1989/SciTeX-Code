@@ -645,7 +645,36 @@ def test_backwards_compatibility():
             if 'temp_path' in locals() and os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-
 if __name__ == "__main__":
-    # Run tests with detailed output
-    pytest.main([os.path.abspath(__file__), "-v", "-s"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_load_modules/_joblib.py
+# --------------------------------------------------------------------------------
+# #!/usr/bin/env python3
+# # -*- coding: utf-8 -*-
+# # Time-stamp: "2024-11-14 07:55:39 (ywatanabe)"
+# # File: ./scitex_repo/src/scitex/io/_load_modules/_joblib.py
+# 
+# from typing import Any
+# 
+# import joblib
+# 
+# 
+# def _load_joblib(lpath: str, **kwargs) -> Any:
+#     """Load joblib file."""
+#     if not lpath.endswith(".joblib"):
+#         raise ValueError("File must have .joblib extension")
+#     with open(lpath, "rb") as f:
+#         return joblib.load(f, **kwargs)
+# 
+# 
+# # EOF
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_load_modules/_joblib.py
+# --------------------------------------------------------------------------------

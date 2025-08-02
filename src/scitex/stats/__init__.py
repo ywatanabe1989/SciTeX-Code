@@ -15,6 +15,8 @@ from ._additional_tests import (
     f_oneway, kruskal, chi2_contingency, shapiro, pearsonr, spearmanr,
     sem, trim_mean, probplot, norm, t, chi2, nct, multitest, anova, chisquare
 )
+from ._StatisticalValidator import StatisticalValidator
+from ._EffectSizeCalculator import EffectSizeCalculator
 
 __all__ = [
     "anova",
@@ -53,4 +55,6 @@ __all__ = [
     "trim_mean",
     "ttest",
     "ttest_ind",
+    "StatisticalValidator",
+    "EffectSizeCalculator",
 ]

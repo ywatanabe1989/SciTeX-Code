@@ -591,6 +591,25 @@ class TestMaskApiKeyComparison:
             param_result = mask_api_param(key, n=4)
             assert fixed_result == param_result
 
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/str/_mask_api_key.py
+# --------------------------------------------------------------------------------
+# #!./env/bin/python3
+# # -*- coding: utf-8 -*-
+# # Time-stamp: "2024-06-10 20:48:30 (ywatanabe)"
+# # /home/ywatanabe/proj/scitex/src/scitex/gen/_mask_api_key.py
+# 
+# 
+# def mask_api(api_key):
+#     return f"{api_key[:4]}****{api_key[-4:]}"
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/str/_mask_api_key.py
+# --------------------------------------------------------------------------------

@@ -637,7 +637,7 @@ def cleanup_old_backups(directory, days=30):
 ### Debug Mode
 Enable logging:
 ```python
-import logging
+from scitex import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('scitex.db')
 ```
