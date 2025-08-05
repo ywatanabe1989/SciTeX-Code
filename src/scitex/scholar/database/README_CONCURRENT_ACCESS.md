@@ -30,7 +30,7 @@ storage/
 2. **Atomic Operations**
    ```python
    # Safe concurrent write pattern
-   temp_file = f"{file_path}.tmp.{worker_id}"
+   temp_file = f"{file_path}.tmp.{worker_async_id}"
    write_to(temp_file)
    os.rename(temp_file, file_path)  # Atomic on most filesystems
    ```
@@ -42,9 +42,9 @@ storage/
    
    def process_paper(storage_key):
        paper_dir = storage_dir / "by_key" / storage_key
-       # Each worker operates independently
+       # Each worker_async operates independently
        
-   with ProcessPoolExecutor(max_workers=8) as executor:
+   with ProcessPoolExecutor(max_worker_asyncs=8) as executor:
        executor.map(process_paper, all_storage_keys)
    ```
 
@@ -55,7 +55,7 @@ storage/
    - Worker 4: Keys starting with T-Z
 
 5. **Crash Recovery**
-   - If a worker crashes, only one paper affected
+   - If a worker_async crashes, only one paper affected
    - Easy to identify incomplete operations (temp files)
    - Simple cleanup and restart
 
@@ -64,7 +64,7 @@ storage/
 - **Network Filesystem Friendly**: Works well with NFS, Lustre, etc.
 - **No Database Server**: No single point of failure
 - **Bandwidth Efficient**: Workers only access their assigned papers
-- **Cache Friendly**: Each worker's files stay in local cache
+- **Cache Friendly**: Each worker_async's files stay in local cache
 
 ### Database Role
 
@@ -100,4 +100,4 @@ Worker 2: Enriching metadata for batch 2
 # Each updates their own directories
 ```
 
-This architecture scales linearly with the number of workers!
+This architecture scales linearly with the number of worker_asyncs!

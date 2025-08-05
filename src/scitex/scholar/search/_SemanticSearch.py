@@ -113,7 +113,7 @@ class SemanticSearch:
             raise ScholarError("No valid texts found for indexing")
         
         logger.info(f"Encoding {len(texts)} papers...")
-        embeddings = self.model.encode(texts, show_progress_bar=True)
+        embeddings = self.model.encode(texts, show_async_progress_bar=True)
         
         # Build FAISS index
         dimension = embeddings.shape[1]

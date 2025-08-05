@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 02:29:42 (ywatanabe)"
+# Timestamp: "2025-08-05 18:28:12 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -59,14 +59,14 @@ class AuthenticationManager:
         Args:
             email_openathens: User's institutional email for OpenAthens authentication
             email_ezproxy: User's institutional email for EZProxy authentication
-            email_shibboleth: User's institutional email for Shibboleth authentication  
+            email_shibboleth: User's institutional email for Shibboleth authentication
             config: ScholarConfig instance (creates new if None)
         """
         # Initialize config
         if config is None:
             config = ScholarConfig()
         self.config = config
-        
+
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
@@ -91,21 +91,11 @@ class AuthenticationManager:
                     ),
                 )
 
-        # if email_openathens:
-        #     self._register_provider(
-        #         "openathens",
-        #         OpenAthensAuthenticator(
-        #             email=email_openathens,
-        #         ),
-        #     )
-        # if email_ezproxy:
-        #     self._register_provider(
-        #         "ezproxy", EZProxyAuthenticator(email=email_ezproxy)
-        #     )
-        # if email_shibboleth:
-        #     self._register_provider(
-        #         "shibboleth", ShibbolethAuthenticator(email=email_shibboleth)
-        #     )
+        # # This is not possible as __init__ is not async function
+        # try:
+        #     await self.ensure_authenticate_async()
+        # except Exception as e:
+        #     print(e)
 
     def _register_provider(
         self, name: str, provider: BaseAuthenticator
@@ -139,37 +129,39 @@ class AuthenticationManager:
                 f"Active provider not found. Please set active provider"
             )
 
-    async def ensure_authenticated(
+    async def ensure_authenticate_async(
         self,
         provider_name: Optional[str] = None,
         verify_live: bool = True,
         **kwargs,
     ) -> bool:
-        if await self.is_authenticated(verify_live=verify_live):
+        if await self.is_authenticate_async(verify_live=verify_live):
             return True
-        if await self.authenticate(provider_name=provider_name, **kwargs):
+        if await self.authenticate_async(
+            provider_name=provider_name, **kwargs
+        ):
             return True
         raise AuthenticationError("Authentication not ensured")
 
-    async def is_authenticated(self, verify_live: bool = True) -> bool:
-        """Check if authenticated with any provider."""
+    async def is_authenticate_async(self, verify_live: bool = True) -> bool:
+        """Check if authenticate_async with any provider."""
         # Check active provider first
         if self.active_provider:
             provider = self.providers[self.active_provider]
-            if await provider.is_authenticated(verify_live):
+            if await provider.is_authenticate_async(verify_live):
                 return True
 
         # Check all other providers
         for name, provider in self.providers.items():
             if name != self.active_provider:
-                if await provider.is_authenticated(verify_live):
+                if await provider.is_authenticate_async(verify_live):
                     self.active_provider = name
                     return True
 
-        logger.info("Not authenticated.")
+        logger.info("Not authenticate_async.")
         return False
 
-    async def authenticate(
+    async def authenticate_async(
         self, provider_name: Optional[str] = None, **kwargs
     ) -> dict:
         """Authenticate with specified or active provider."""
@@ -184,39 +176,39 @@ class AuthenticationManager:
         else:
             raise AuthenticationError("No authentication provider configured")
 
-        result = await provider.authenticate(**kwargs)
+        result = await provider.authenticate_async(**kwargs)
         if result and provider_name:
             self.active_provider = provider_name
             logger.success(f"Authentication succeeded by {provider_name}.")
         return result
 
-    async def get_auth_headers(self) -> Dict[str, str]:
+    async def get_auth_headers_async(self) -> Dict[str, str]:
         """Get authentication headers from active provider."""
         provider = self.get_active_provider()
         if not provider:
             raise AuthenticationError("No active authentication provider")
 
-        if not await provider.is_authenticated():
-            raise AuthenticationError("Not authenticated")
+        if not await provider.is_authenticate_async():
+            raise AuthenticationError("Not authenticate_async")
 
-        return await provider.get_auth_headers()
+        return await provider.get_auth_headers_async()
 
-    async def get_auth_cookies(self) -> List[Dict[str, Any]]:
+    async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
         """Get authentication cookies from active provider."""
         provider = self.get_active_provider()
         if not provider:
             raise AuthenticationError("No active authentication provider")
 
-        if not await provider.is_authenticated():
-            raise AuthenticationError("Not authenticated")
+        if not await provider.is_authenticate_async():
+            raise AuthenticationError("Not authenticate_async")
 
-        return await provider.get_auth_cookies()
+        return await provider.get_auth_cookies_async()
 
-    async def logout(self) -> None:
+    async def logout_async(self) -> None:
         """Log out from all providers."""
         for provider in self.providers.values():
             try:
-                await provider.logout()
+                await provider.logout_async()
                 logger.success(f"Logged out from {provider}")
             except Exception as e:
                 logger.warning(f"Error logging out from {provider}: {e}")
@@ -237,6 +229,8 @@ if __name__ == "__main__":
         import aiohttp
         from yarl import URL
 
+        from scitex.scholar.auth import AuthenticationManager
+
         auth_manager = AuthenticationManager(
             email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"),
         )
@@ -245,11 +239,13 @@ if __name__ == "__main__":
         print(f"Available providers: {providers}")
 
         try:
-            is_authenticated = await auth_manager.ensure_authenticated()
-            print(f"Authentication ensured: {is_authenticated}")
+            is_authenticate_async = (
+                await auth_manager.ensure_authenticate_async()
+            )
+            print(f"Authentication ensured: {is_authenticate_async}")
 
-            headers = await auth_manager.get_auth_headers()
-            cookies = await auth_manager.get_auth_cookies()
+            headers = await auth_manager.get_auth_headers_async()
+            cookies = await auth_manager.get_auth_cookies_async()
             print(f"Got {len(headers)} headers and {len(cookies)} cookies")
 
             jar = aiohttp.CookieJar()
@@ -268,7 +264,7 @@ if __name__ == "__main__":
                     print(f"Test access: {test_url} -> {response.status}")
 
         finally:
-            await auth_manager.logout()
+            await auth_manager.logout_async()
             print("Logged out from all providers")
 
     asyncio.run(main())

@@ -28,7 +28,7 @@ from typing import Any, Dict, List, Optional
 from scitex import logging
 
 from .._Paper import Paper
-from ..download import SmartPDFDownloader
+from ..download_async import SmartPDFDownloader
 from ..utils import PDFContentValidator, PDFQualityAnalyzer
 from ._DatabaseEntry import DatabaseEntry
 from ._PaperDatabase import PaperDatabase
@@ -70,7 +70,7 @@ class ScholarDatabaseIntegration:
             "dois_resolved": {},
             "urls_resolved": {},
             "metadata_enriched": {},
-            "pdfs_downloaded": {},
+            "pdfs_download_asynced": {},
             "pdfs_validated": {},
             "database_entries": {},
         }
@@ -86,7 +86,7 @@ class ScholarDatabaseIntegration:
     async def process_bibtex_workflow(
         self,
         bibtex_path: Path,
-        download_pdfs: bool = True,
+        download_async_pdf_asyncs: bool = True,
         validate_pdfs: bool = True,
     ) -> Dict[str, Any]:
         """
@@ -94,7 +94,7 @@ class ScholarDatabaseIntegration:
 
         Args:
             bibtex_path: Path to BibTeX file
-            download_pdfs: Whether to download PDFs
+            download_async_pdf_asyncs: Whether to download_async PDFs
             validate_pdfs: Whether to validate PDFs
 
         Returns:
@@ -105,7 +105,7 @@ class ScholarDatabaseIntegration:
         results = {
             "total_entries": 0,
             "database_added": 0,
-            "pdfs_downloaded": 0,
+            "pdfs_download_asynced": 0,
             "pdfs_validated": 0,
             "errors": [],
         }
@@ -131,12 +131,12 @@ class ScholarDatabaseIntegration:
                 results["database_added"] += 1
 
                 # Download PDF if requested
-                if download_pdfs and paper.doi:
-                    pdf_path = await self._download_pdf_for_entry(
+                if download_async_pdf_asyncs and paper.doi:
+                    pdf_path = await self._download_async_pdf_async_for_entry(
                         entry_id, paper
                     )
                     if pdf_path:
-                        results["pdfs_downloaded"] += 1
+                        results["pdfs_download_asynced"] += 1
 
                         # Validate PDF if requested
                         if validate_pdfs:
@@ -207,7 +207,7 @@ class ScholarDatabaseIntegration:
             metadata=metadata,
         )
 
-    async def _download_pdf_for_entry(
+    async def _download_async_pdf_async_for_entry(
         self, entry_id: str, paper: Paper
     ) -> Optional[Path]:
         """Download PDF for database entry."""
@@ -223,8 +223,8 @@ class ScholarDatabaseIntegration:
                 return Path(entry.pdf_path)
 
             # Download PDF
-            downloader = SmartPDFDownloader()
-            success, pdf_path = await downloader.download_single(paper)
+            download_asyncer = SmartPDFDownloader()
+            success, pdf_path = await download_asyncer.download_async_single(paper)
 
             if success and pdf_path:
                 # Move to database directory
@@ -233,13 +233,13 @@ class ScholarDatabaseIntegration:
                 # Update database
                 entry.pdf_path = str(target_path)
                 entry.pdf_hash = self.database._calculate_pdf_hash(target_path)
-                entry.download_date = datetime.now()
+                entry.download_async_date = datetime.now()
                 self.database.update_entry(entry_id, entry)
 
                 return target_path
 
         except Exception as e:
-            logger.error(f"Failed to download PDF for {entry_id}: {e}")
+            logger.error(f"Failed to download_async PDF for {entry_id}: {e}")
 
         return None
 
@@ -320,8 +320,8 @@ class ScholarDatabaseIntegration:
             "metadata_enriched": len(
                 self.workflow_state.get("metadata_enriched", {})
             ),
-            "pdfs_downloaded": len(
-                self.workflow_state.get("pdfs_downloaded", {})
+            "pdfs_download_asynced": len(
+                self.workflow_state.get("pdfs_download_asynced", {})
             ),
             "pdfs_validated": len(
                 self.workflow_state.get("pdfs_validated", {})

@@ -24,16 +24,16 @@ from scitex.scholar.auth import AuthenticationManager
 auth_manager = AuthenticationManager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
 
 # Authenticate
-# await auth_manager.is_authenticated()
-# await auth_manager.authenticate()
-await auth_manager.ensure_authenticated()
+# await auth_manager.is_authenticate_async()
+# await auth_manager.authenticate_async()
+await auth_manager.ensure_authenticate_async()
 
 # Get session data
-cookies = await auth_manager.get_auth_cookies()
-headers = await auth_manager.get_auth_headers()
+cookies = await auth_manager.get_auth_cookies_async()
+headers = await auth_manager.get_auth_headers_async()
 
 # Check status
-is_authenticated = await auth_manager.is_authenticated()
+is_authenticate_async = await auth_manager.is_authenticate_async()
 ```
 ## Session Management
 
@@ -51,7 +51,7 @@ AuthenticationManager
 └── ShibbolethAuthenticator (placeholder)
 
 AuthenticatedBrowserMixin
-└── Provides authenticated browser contexts for download strategies
+└── Provides authenticate_async browser contexts for download_async strategies
 ```
 
 <!-- EOF -->

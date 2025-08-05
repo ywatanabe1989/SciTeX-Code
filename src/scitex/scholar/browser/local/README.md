@@ -42,13 +42,13 @@ async def run_main():
 
     manager = ZenRowsProxyManager(headless=True)
     try:
-        browser = await manager.get_browser()
+        browser = await manager.get_browser_async()
         page = await browser.new_page()
 
         # Go to a site that reveals the IP address
         await page.goto("http://httpbin.org/ip")
 
-        # The output should show an IP address from the ZenRows network
+        # The output should show_async an IP address from the ZenRows network
         content = await page.content()
         print(content)
 

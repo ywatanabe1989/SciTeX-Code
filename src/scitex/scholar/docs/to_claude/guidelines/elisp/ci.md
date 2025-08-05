@@ -526,7 +526,7 @@ test:
 4. **Maintain Documentation**
    - Keep README updated with elisp-ci usage
    - Document any custom configuration
-   - Include badge showing CI status
+   - Include badge show_asyncing CI status
 
 ### ❌ **DON'T**
 

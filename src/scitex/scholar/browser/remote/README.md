@@ -43,7 +43,7 @@
   # Use Scraping Browser for complex sites
   if needs_javascript_interaction:
       manager = ZenRowsRemoteBrowserManager()
-      browser = await manager.get_browser()
+      browser = await manager.get_browser_async()
 
   # Use API Client for simple requests with country needs  
   elif needs_specific_country:

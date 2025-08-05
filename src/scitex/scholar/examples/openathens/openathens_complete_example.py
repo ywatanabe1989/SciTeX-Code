@@ -2,10 +2,10 @@
 """
 Complete OpenAthens Authentication and Download Example
 
-This example shows the proper way to use OpenAthens with SciTeX Scholar:
+This example show_asyncs the proper way to use OpenAthens with SciTeX Scholar:
 1. One-time authentication with 2FA
 2. Session persistence for subsequent runs
-3. PDF downloads using authenticated session
+3. PDF download_asyncs using authenticate_async session
 
 Run this script with:
     python openathens_complete_example.py
@@ -46,19 +46,19 @@ def main():
     scholar = Scholar(
         openathens_enabled=True,
         openathens_email=email,
-        enable_auto_download=True,
+        enable_auto_download_async=True,
         acknowledge_scihub_ethical_usage=True,  # Allow fallback if needed
         pdf_dir="./openathens_pdfs"
     )
     
     # Check authentication status
     print("\n🔐 Checking authentication status...")
-    is_authenticated = scholar.is_openathens_authenticated()
+    is_authenticate_async = scholar.is_openathens_authenticate_async()
     
-    if is_authenticated:
-        print("   ✅ Already authenticated! Using existing session.")
+    if is_authenticate_async:
+        print("   ✅ Already authenticate_async! Using existing session.")
     else:
-        print("   ❌ Not authenticated. Starting authentication process...")
+        print("   ❌ Not authenticate_async. Starting authentication process...")
         print("\n⚠️  IMPORTANT: Manual authentication required!")
         print("   1. A browser window will open")
         print("   2. Select your institution")
@@ -69,7 +69,7 @@ def main():
         input("Press Enter to start authentication...")
         
         try:
-            success = scholar.authenticate_openathens(force=True)
+            success = scholar.authenticate_async_openathens(force=True)
             if success:
                 print("\n✅ Authentication successful! Session saved.")
             else:
@@ -79,8 +79,8 @@ def main():
             print(f"\n❌ Authentication error: {e}")
             return
     
-    # Test downloading papers
-    print("\n📥 Testing PDF downloads...")
+    # Test download_asyncing papers
+    print("\n📥 Testing PDF download_asyncs...")
     
     # High-impact papers that typically require authentication
     test_papers = [
@@ -121,7 +121,7 @@ def main():
             paper = papers[0]
             print(f"     ✓ Found: {paper.title[:50]}...")
             
-            # Check if already downloaded
+            # Check if already download_asynced
             if paper.pdf_path and Path(paper.pdf_path).exists():
                 print(f"     ✓ Already have PDF: {paper.pdf_path}")
                 results.append({"doi": doi, "status": "exists", "path": paper.pdf_path})
@@ -129,7 +129,7 @@ def main():
             
             # Download PDF
             print("     ⬇️  Downloading PDF...")
-            success = paper.download_pdf()
+            success = paper.download_async_pdf_async()
             
             if success and paper.pdf_path:
                 print(f"     ✅ Downloaded successfully!")
@@ -142,7 +142,7 @@ def main():
                 
                 results.append({
                     "doi": doi, 
-                    "status": "downloaded", 
+                    "status": "download_asynced", 
                     "path": paper.pdf_path,
                     "method": method
                 })
@@ -158,12 +158,12 @@ def main():
     print("\n" + "=" * 70)
     print("📊 Download Summary:")
     
-    successful = sum(1 for r in results if r["status"] in ["downloaded", "exists"])
+    successful = sum(1 for r in results if r["status"] in ["download_asynced", "exists"])
     print(f"\n   Total papers: {len(test_papers)}")
     print(f"   Successful: {successful}")
     print(f"   Failed: {len(test_papers) - successful}")
     
-    # Show download methods used
+    # Show download_async methods used
     methods = {}
     for r in results:
         if "method" in r:
@@ -174,7 +174,7 @@ def main():
         for method, count in methods.items():
             print(f"   - {method}: {count}")
     
-    # List downloaded files
+    # List download_asynced files
     pdf_dir = Path("./openathens_pdfs")
     if pdf_dir.exists():
         pdfs = list(pdf_dir.glob("*.pdf"))
@@ -189,11 +189,11 @@ def main():
     # Authentication tips
     print("\n💡 Tips:")
     print("   • OpenAthens sessions expire after ~8 hours")
-    print("   • Re-run this script to re-authenticate when needed")
+    print("   • Re-run this script to re-authenticate_async when needed")
     print("   • Sessions are encrypted and stored locally")
     print("   • Check ~/.scitex/scholar/openathens_sessions/ for session files")
     
-    if not is_authenticated:
+    if not is_authenticate_async:
         print("\n⚠️  Note: This was your first authentication.")
         print("   Next time you run this script, it will use the saved session!")
 

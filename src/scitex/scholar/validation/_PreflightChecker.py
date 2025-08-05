@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Pre-flight checks for Scholar PDF downloads.
+"""Pre-flight checks for Scholar PDF download_asyncs.
 
-This module performs comprehensive checks before attempting downloads
+This module performs comprehensive checks before attempting download_asyncs
 to fail fast with clear error messages and reduce debugging time.
 """
 
@@ -26,16 +26,16 @@ from ...errors import ScholarError, SciTeXWarning
 
 
 class PreflightChecker:
-    """Perform pre-flight checks before PDF downloads."""
+    """Perform pre-flight checks before PDF download_asyncs."""
     
     def __init__(self):
         self.checks_passed = {}
         self.warnings = []
         self.errors = []
     
-    async def run_all_checks(
+    async def run_all_checks_async(
         self,
-        download_dir: Optional[Path] = None,
+        download_async_dir: Optional[Path] = None,
         use_translators: bool = True,
         use_playwright: bool = True,
         use_openathens: bool = False,
@@ -53,15 +53,15 @@ class PreflightChecker:
         self.errors = []
         
         # Run checks
-        await self._check_python_version()
-        await self._check_required_packages()
-        await self._check_optional_features(
+        await self._check_python_version_async()
+        await self._check_required_packages_async()
+        await self._check_optional_features_async(
             use_translators, use_playwright, use_openathens, zenrows_api_key
         )
-        await self._check_download_directory(download_dir)
-        await self._check_network_connectivity()
-        await self._check_authentication_status(use_openathens, zenrows_api_key)
-        await self._check_system_resources()
+        await self._check_download_async_directory_async(download_async_dir)
+        await self._check_network_connectivity_async()
+        await self._check_authentication_status_async(use_openathens, zenrows_api_key)
+        await self._check_system_resources_async()
         
         # Compile results
         all_passed = all(self.checks_passed.values())
@@ -74,7 +74,7 @@ class PreflightChecker:
             'recommendations': self._get_recommendations()
         }
     
-    async def _check_python_version(self):
+    async def _check_python_version_async(self):
         """Check Python version compatibility."""
         version = sys.version_info
         is_compatible = version >= (3, 8)
@@ -89,7 +89,7 @@ class PreflightChecker:
         
         return is_compatible
     
-    async def _check_required_packages(self):
+    async def _check_required_packages_async(self):
         """Check if required packages are installed."""
         required = {
             'aiohttp': aiohttp,
@@ -119,7 +119,7 @@ class PreflightChecker:
         
         return len(missing) == 0
     
-    async def _check_optional_features(
+    async def _check_optional_features_async(
         self,
         use_translators: bool,
         use_playwright: bool,
@@ -180,29 +180,29 @@ class PreflightChecker:
             else:
                 self.checks_passed['zenrows_key_format'] = True
     
-    async def _check_download_directory(self, download_dir: Optional[Path]):
-        """Check download directory permissions."""
-        if download_dir is None:
-            download_dir = Path.home() / '.scitex' / 'scholar' / 'pdfs'
+    async def _check_download_async_directory_async(self, download_async_dir: Optional[Path]):
+        """Check download_async directory permissions."""
+        if download_async_dir is None:
+            download_async_dir = Path.home() / '.scitex' / 'scholar' / 'pdfs'
         
         try:
-            download_dir.mkdir(parents=True, exist_ok=True)
+            download_async_dir.mkdir(parents=True, exist_ok=True)
             
             # Test write permissions
-            test_file = download_dir / '.write_test'
+            test_file = download_async_dir / '.write_test'
             test_file.write_text('test')
             test_file.unlink()
             
-            self.checks_passed['download_directory'] = True
+            self.checks_passed['download_async_directory'] = True
             
             # Check disk space
             import shutil
-            stats = shutil.disk_usage(download_dir)
+            stats = shutil.disk_usage(download_async_dir)
             free_gb = stats.free / (1024**3)
             
             if free_gb < 1:
                 self.warnings.append(
-                    f"Low disk space: {free_gb:.1f} GB free at {download_dir}"
+                    f"Low disk space: {free_gb:.1f} GB free at {download_async_dir}"
                 )
                 self.checks_passed['disk_space'] = False
             else:
@@ -210,11 +210,11 @@ class PreflightChecker:
                 
         except Exception as e:
             self.errors.append(
-                f"Cannot write to download directory {download_dir}: {e}"
+                f"Cannot write to download_async directory {download_async_dir}: {e}"
             )
-            self.checks_passed['download_directory'] = False
+            self.checks_passed['download_async_directory'] = False
     
-    async def _check_network_connectivity(self):
+    async def _check_network_connectivity_async(self):
         """Check network connectivity to key services."""
         test_urls = {
             'internet': 'https://www.google.com',
@@ -245,7 +245,7 @@ class PreflightChecker:
                     )
                     self.checks_passed[f'network_{service}'] = False
     
-    async def _check_authentication_status(
+    async def _check_authentication_status_async(
         self,
         use_openathens: bool,
         zenrows_api_key: Optional[str]
@@ -260,7 +260,7 @@ class PreflightChecker:
             else:
                 self.warnings.append(
                     "OpenAthens enabled but no active sessions found. "
-                    "You may need to authenticate."
+                    "You may need to authenticate_async."
                 )
                 self.checks_passed['openathens_session'] = False
         
@@ -292,7 +292,7 @@ class PreflightChecker:
                 )
                 self.checks_passed['zenrows_credits'] = False
     
-    async def _check_system_resources(self):
+    async def _check_system_resources_async(self):
         """Check system resources."""
         try:
             import psutil
@@ -346,7 +346,7 @@ class PreflightChecker:
         # Translators
         if not self.checks_passed.get('zotero_translators', True):
             recommendations.append(
-                "Download translators: python -m scitex.scholar.download.setup_translators"
+                "Download translators: python -m scitex.scholar.download_async.setup_translators"
             )
         
         # Network
@@ -370,7 +370,7 @@ class PreflightChecker:
         return recommendations
 
 
-async def run_preflight_checks(**kwargs) -> Dict[str, Any]:
+async def run_preflight_checks_async(**kwargs) -> Dict[str, Any]:
     """Convenience function to run pre-flight checks.
     
     Returns:
@@ -380,7 +380,7 @@ async def run_preflight_checks(**kwargs) -> Dict[str, Any]:
         ScholarError: If critical checks fail
     """
     checker = PreflightChecker()
-    results = await checker.run_all_checks(**kwargs)
+    results = await checker.run_all_checks_async(**kwargs)
     
     if not results['all_passed']:
         # Issue warnings for non-critical failures

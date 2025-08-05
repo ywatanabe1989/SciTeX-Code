@@ -74,11 +74,11 @@ class BaseSSOAutomator(ABC):
         pass
         
     @abstractmethod
-    async def perform_login(self, page: Page) -> bool:
+    async def perform_login_async(self, page: Page) -> bool:
         """Perform the login flow."""
         pass
         
-    async def handle_sso_redirect(self, page: Page) -> bool:
+    async def handle_sso_redirect_async(self, page: Page) -> bool:
         """Handle SSO redirect and perform login if needed.
         
         Args:
@@ -98,7 +98,7 @@ class BaseSSOAutomator(ABC):
             
             # Try to restore session first
             if self.persistent_session:
-                if await self._restore_session(page.context):
+                if await self._restore_session_async(page.context):
                     self.logger.info("Restored previous session")
                     # Reload page to apply session
                     await page.reload()
@@ -110,10 +110,10 @@ class BaseSSOAutomator(ABC):
                         
             # Need to login
             self.logger.info("Performing SSO login...")
-            success = await self.perform_login(page)
+            success = await self.perform_login_async(page)
             
             if success and self.persistent_session:
-                await self._save_session(page.context)
+                await self._save_session_async(page.context)
                 
             return success
             
@@ -121,7 +121,7 @@ class BaseSSOAutomator(ABC):
             self.logger.error(f"SSO automation failed: {e}")
             return False
             
-    async def _save_session(self, context: BrowserContext):
+    async def _save_session_async(self, context: BrowserContext):
         """Save browser session."""
         try:
             state = await context.storage_state()
@@ -141,7 +141,7 @@ class BaseSSOAutomator(ABC):
         except Exception as e:
             self.logger.error(f"Failed to save session: {e}")
             
-    async def _restore_session(self, context: BrowserContext) -> bool:
+    async def _restore_session_async(self, context: BrowserContext) -> bool:
         """Restore browser session."""
         try:
             session_file = self._session_dir / f"{self.get_institution_id()}_session.json"
@@ -181,26 +181,28 @@ class BaseSSOAutomator(ABC):
             **kwargs: Additional context for the notification
         """
         try:
+            from ...utils._email import send_email_async
             import os
-            from scitex import notify
             
-            # Get SciTeX email configuration
+            # Get SciTeX email configuration  
             from_email = os.environ.get("SCITEX_EMAIL_AGENT", "agent@scitex.ai")
             to_email = os.environ.get("SCITEX_EMAIL_YWATANABE", "ywatanabe@scitex.ai")
             
             # Generate notification content based on event type
             subject, message, priority = self._generate_notification_content(event_type, **kwargs)
             
-            # Send notification
-            await notify.send_async(
+            # Send notification using the same email system as OpenAthens authenticator
+            success = await send_email_async(
                 from_email=from_email,
                 to_email=to_email,
                 subject=subject,
-                message=message,
-                priority=priority
+                message=message
             )
             
-            self.logger.success(f"User notification sent: {event_type}")
+            if success:
+                self.logger.success(f"User notification sent: {event_type}")
+            else:
+                self.logger.debug(f"Failed to send user notification: {event_type}")
             
         except Exception as e:
             self.logger.debug(f"Failed to send user notification: {e}")

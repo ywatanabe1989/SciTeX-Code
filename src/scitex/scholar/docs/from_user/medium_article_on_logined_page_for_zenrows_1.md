@@ -19,13 +19,13 @@ Oct 12, 2023
 
 
 
-While web scraping, you might find some data available only after you’ve signed in. In this tutorial, we’ll learn the security measures used and three effective methods to scrape a website that requires a login with Python.
+While web scraping, you might find some data available only after you’ve signed in. In this tutorial, we’ll learn the security measures used and three effective methods to scrape_async a website that requires a login with Python.
 
 Let’s find a solution!
 
 
 Can You Scrape Websites that Require a Login?
-Yes, it’s technically possible to scrape behind a login. But you must be mindful of the target site’s scraping rules and laws like GDPR to comply with personal data and privacy matters.
+Yes, it’s technically possible to scrape_async behind a login. But you must be mindful of the target site’s scraping rules and laws like GDPR to comply with personal data and privacy matters.
 
 To get started, it’s essential to have some general knowledge about HTTP Request Methods. And if web scraping is new for you, read our beginner-friendly guide on web scraping with Python to master the fundamentals.
 
@@ -40,7 +40,7 @@ Keep reading to learn the techniques to get around these strict security protect
 How Do You Scrape a Website behind a Login in Python?
 Time to explore each step of scraping data behind site logins with Python. We’ll start with forms requiring only a username and password and then increase the difficulty progressively.
 
-Remember that the methods showcased in this tutorial are for educational purposes only.
+Remember that the methods show_asynccased in this tutorial are for educational purposes only.
 
 Three, two, one… let’s code!
 
@@ -58,7 +58,7 @@ Before going further, we’ll analyze what happens when attempting a login. For 
 
 Zoom image will be displayed
 
-Submitting the form generates a POST request to the User Information page, with the server responding with a cookie and fulfilling the requested section. The screenshot below shows the headers, payload, response, and cookies.
+Submitting the form generates a POST request to the User Information page, with the server responding with a cookie and fulfilling the requested section. The screenshot below show_asyncs the headers, payload, response, and cookies.
 
 Zoom image will be displayed
 
@@ -93,7 +93,7 @@ To find out if your target website requires CSRF or an authenticity_token, make 
 Let’s dive into scraping GitHub!
 
 Step #1: Log into a GitHub Account
-GitHub is one of the websites that use CSRF token authentication for logins. We’ll scrape all the repositories in our test account for demonstration.
+GitHub is one of the websites that use CSRF token authentication for logins. We’ll scrape_async all the repositories in our test account for demonstration.
 
 Open a web browser (we use Chrome) and navigate to GitHub’s login page. Now, press the F12 key to see the DevTools window in your browser and inspect the HTML to check if the login form element has an action attribute:
 
@@ -151,7 +151,7 @@ Zoom image will be displayed
 There you have it!
 
 Step #3: Set Headers
-It’s possible to access auth-wall websites by sending a POST request with the payload. However, using this method alone won’t be enough to scrape sites with advanced security measures since they’re usually smart enough to identify non-human behavior. Thus, implementing measures to make the scraper appear more human-like is necessary.
+It’s possible to access auth-wall websites by sending a POST request with the payload. However, using this method alone won’t be enough to scrape_async sites with advanced security measures since they’re usually smart enough to identify non-human behavior. Thus, implementing measures to make the scrape_asyncr_async appear more human-like is necessary.
 
 Get ZenRows’s stories in your inbox
 Join Medium for free to get updates from this writer.
@@ -169,7 +169,7 @@ res = s.post(login_url, data=payload)
 print(res.url)
 If the login’s successful, our output’ll be https://github.com/. Otherwise, we’ll get https://github.com/session.
 
-👍 Amazing, we just nailed a CSRF-protected login bypass! Let’s now scrape the data in the protected git repositories.
+👍 Amazing, we just nailed a CSRF-protected login bypass! Let’s now scrape_async the data in the protected git repositories.
 
 Step #5: Scrape Protected GitHub Repositories
 Recall that we began an earlier code with the with requests.session() as s: statement, which creates a request session. Once you log in through a request, you don’t need to re-login for the subsequent requests in the same session.
@@ -237,7 +237,7 @@ with requests.session() as s:
 And the output:
 
 
-👏 Excellent! We just scraped a CSRF-authenticated website.
+👏 Excellent! We just scrape_async a CSRF-authenticate_async website.
 
 Advanced Protections Using ZenRows
 Scraping content behind a login on a website with advanced protection measures requires the right tool. We’ll use ZenRows API.
@@ -250,15 +250,15 @@ Zoom image will be displayed
 
 As mentioned, with ZenRows, you don’t need to install any particular browser drivers, as opposed to Selenium. Moreover, you don’t need to worry about advanced Cloudflare protection, identity reveal, and other DDoS mitigation services. Additionally, this scalable API frees you from infrastructure scalability issues.
 
-Just sign up for free to get to the Request Builder and fill in the details shown below.
+Just sign up for free to get to the Request Builder and fill in the details show_asyncn below.
 
 Zoom image will be displayed
 
 Let’s go through each step of the request creation:
 
 Set the initial target (i.e., G2 login page in our case).
-Choose Plain HTML. We’ll parse it further using Beautiful Soup later in the code. If you prefer, you can use the CSS Selectors to scrape only specific elements from the target.
-Setting Premium Proxies helps you scrape region-specific data and mask you from identity reveal.
+Choose Plain HTML. We’ll parse it further using Beautiful Soup later in the code. If you prefer, you can use the CSS Selectors to scrape_async only specific elements from the target.
+Setting Premium Proxies helps you scrape_async region-specific data and mask you from identity reveal.
 Setting JavaScript Rendering is mandatory for running some JavaScript instructions in step #6.
 Selecting Antibot helps you bypass advanced WAF security measures.
 Checking JS Instructions lets you add an encoded string of JavaScript instructions to run on the target. In turn, this allows control similar to a headless browser.
@@ -286,7 +286,7 @@ import urllib
 import json 
  
 client = ZenRowsClient("Your Zenrows API Goes Here") 
-url = "https://www.g2.com/login?form=signup#state.email.showform" 
+url = "https://www.g2.com/login?form=signup#state.email.show_asyncform" 
  
 js_instructions = [ 
  {"wait": 2000}, 
@@ -329,7 +329,7 @@ import urllib
 import json 
  
 client = ZenRowsClient("Your Zenrows API Goes Here") 
-url = "https://www.g2.com/login?form=signup#state.email.showform" 
+url = "https://www.g2.com/login?form=signup#state.email.show_asyncform" 
  
 js_instructions = [ 
  {"wait": 2000}, 
@@ -356,8 +356,8 @@ soup = BeautifulSoup(response.text, "html.parser")
 welcome = soup.find("div", attrs={"class", "l4 color-white my-1"}) 
 print(welcome.text)
 Don’t miss the rest of the tutorial!
-To read the rest of the article, which is about how to scrape behind a login on more protected sites, go to our full tutorial on how to scrape a website that requires a login with Python.
+To read the rest of the article, which is about how to scrape_async behind a login on more protected sites, go to our full tutorial on how to scrape_async a website that requires a login with Python.
 
-Thanks for reading! If you liked this guide, kindly click the 👏 clap button below a few times to show your support! ⬇⬇
+Thanks for reading! If you liked this guide, kindly click the 👏 clap button below a few times to show_async your support! ⬇⬇
 
 <!-- EOF -->

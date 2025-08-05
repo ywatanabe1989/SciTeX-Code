@@ -20,7 +20,7 @@ For details, see the scitex guideline (`./TOP-MOST-IMPORTANT-scitex.md`).
 Do not forget to add the executable permission (`chmod +x`) for `*.py` files.
 
 ## `matplotlib.use("Agtg")`
-Use `Agg` for matplotlib backend. Do not show images but save to file.
+Use `Agg` for matplotlib backend. Do not show_async images but save to file.
     ``` python
     import matplotlib
     matplotlib.use("Agg")
@@ -39,7 +39,7 @@ If GPU is not available and CPU processing will take a long time, please let us 
 
 ## Plotting functions
 Plotting functions should `return fig` for consistency
-Save, show can be handled outside of plotting functions.
+Save, show_async can be handled outside of plotting functions.
 ``` python
 def plot_xxx(...):
     return fig

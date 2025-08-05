@@ -51,7 +51,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
         - Bypassing anti-bot measures on public content
         - High-volume URL resolution
         
-    For authenticated access to paywalled content, use the standard OpenURLResolver
+    For authenticate_async access to paywalled content, use the standard OpenURLResolver
     which handles the full authentication flow through a real browser.
     """
 
@@ -106,7 +106,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
         return cookies
 
-    async def _zenrows_request(
+    async def _zenrows_request_async(
         self, url: str, use_cookies: bool = True, auth_cookies: Optional[Dict[str, str]] = None
     ) -> Optional[Dict[str, Any]]:
         """Make request through ZenRows API with proper cookie handling.
@@ -196,14 +196,14 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
             logger.error(f"ZenRows request error: {e}")
             return None
 
-    async def _get_all_browser_cookies(self) -> Dict[str, str]:
-        """Get all cookies from authenticated browser context."""
+    async def _get_all_browser_cookies_async(self) -> Dict[str, str]:
+        """Get all cookies from authenticate_async browser context."""
         try:
-            if not self.auth_manager or not await self.auth_manager.is_authenticated():
+            if not self.auth_manager or not await self.auth_manager.is_authenticate_async():
                 return {}
             
-            # Get all cookies from the authenticated browser context
-            browser, context = await self.browser.get_authenticated_context()
+            # Get all cookies from the authenticate_async browser context
+            browser, context = await self.browser.get_authenticate_async_context()
             cookies = await context.cookies()
             
             # Convert to simple dict
@@ -233,7 +233,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
             domain = domain[4:]
         return domain
 
-    async def _resolve_single_async_zenrows(
+    async def _resolve_single_async_zenrows_async(
         self,
         title: str = "",
         authors: Optional[list] = None,
@@ -245,7 +245,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
         doi: str = "",
         pmid: str = "",
     ) -> Optional[Dict[str, Any]]:
-        """Resolve using ZenRows with authenticated cookies through OpenURL."""
+        """Resolve using ZenRows with authenticate_async cookies through OpenURL."""
 
         if not self.resolver_url:
             logger.warning("No OpenURL resolver URL configured")
@@ -258,23 +258,23 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
         logger.info(f"Resolving via ZenRows: {openurl}")
 
-        # Get ALL cookies from authenticated browser context
+        # Get ALL cookies from authenticate_async browser context
         auth_cookies_dict = {}
-        if self.use_browser_cookies and self.auth_manager and await self.auth_manager.is_authenticated():
-            logger.info("Getting all cookies from authenticated browser context...")
-            auth_cookies_dict = await self._get_all_browser_cookies()
-        elif self.auth_manager and await self.auth_manager.is_authenticated():
+        if self.use_browser_cookies and self.auth_manager and await self.auth_manager.is_authenticate_async():
+            logger.info("Getting all cookies from authenticate_async browser context...")
+            auth_cookies_dict = await self._get_all_browser_cookies_async()
+        elif self.auth_manager and await self.auth_manager.is_authenticate_async():
             logger.info("Getting OpenAthens cookies...")
             try:
-                auth_cookies_list = await self.auth_manager.get_auth_cookies()
+                auth_cookies_list = await self.auth_manager.get_auth_cookies_async()
                 auth_cookies_dict = {c['name']: c['value'] for c in auth_cookies_list}
                 logger.info(f"Successfully loaded {len(auth_cookies_dict)} auth cookies.")
             except Exception as e:
                 logger.error(f"Failed to get auth cookies: {e}")
 
-        # CORRECT FLOW: Access OpenURL with authenticated cookies via ZenRows
+        # CORRECT FLOW: Access OpenURL with authenticate_async cookies via ZenRows
         # This handles bot detection while maintaining authentication
-        result = await self._zenrows_request(openurl, use_cookies=True, auth_cookies=auth_cookies_dict)
+        result = await self._zenrows_request_async(openurl, use_cookies=True, auth_cookies=auth_cookies_dict)
 
         if not result:
             logger.error("Failed to access OpenURL resolver")
@@ -296,7 +296,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
                     "resolver_url": openurl,
                     "access_type": "resolver_with_links",
                     "success": False,
-                    "note": "Resolver shows links but ZenRows cannot follow interactive elements"
+                    "note": "Resolver show_asyncs links but ZenRows cannot follow interactive elements"
                 }
         
         # Check if we reached publisher directly
@@ -305,10 +305,10 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
             # Check for access
             access_indicators = [
-                "full text", "download pdf", "view pdf", "pdf download",
-                "article pdf", "get pdf", "download article", "read the full",
+                "full text", "download_async pdf", "view pdf", "pdf download_async",
+                "article pdf", "get pdf", "download_async article", "read the full",
                 "access pdf", "open pdf", "full article", "read online",
-                "download full", "view full text", "read full text"
+                "download_async full", "view full text", "read full text"
             ]
             no_access_indicators = [
                 "purchase", "subscribe", "get access", "buy now",
@@ -326,8 +326,8 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
             # More nuanced access detection
             # If we find strong access indicators, we likely have access even if purchase options exist
             strong_access_indicators = [
-                "download pdf", "view pdf", "pdf download", "get pdf",
-                "download article", "access pdf", "open pdf"
+                "download_async pdf", "view pdf", "pdf download_async", "get pdf",
+                "download_async article", "access pdf", "open pdf"
             ]
             critical_no_access = [
                 "preview of subscription content", "access denied",
@@ -374,7 +374,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
                 f"Attempting publisher access with cookies: {publisher_url}"
             )
 
-            publisher_result = await self._zenrows_request(
+            publisher_result = await self._zenrows_request_async(
                 publisher_url, use_cookies=True, auth_cookies=auth_cookies_dict
             )
 
@@ -384,10 +384,10 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
                 # More comprehensive access detection
                 access_indicators = [
-                    "full text", "download pdf", "view pdf", "pdf download",
-                    "article pdf", "get pdf", "download article", "read the full",
+                    "full text", "download_async pdf", "view pdf", "pdf download_async",
+                    "article pdf", "get pdf", "download_async article", "read the full",
                     "access pdf", "open pdf", "full article", "read online",
-                    "download full", "view full text", "read full text"
+                    "download_async full", "view full text", "read full text"
                 ]
                 no_access_indicators = [
                     "purchase", "subscribe", "get access", "buy now",
@@ -404,8 +404,8 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
                 
                 # More nuanced access detection (same logic as above)
                 strong_access_indicators = [
-                    "download pdf", "view pdf", "pdf download", "get pdf",
-                    "download article", "access pdf", "open pdf"
+                    "download_async pdf", "view pdf", "pdf download_async", "get pdf",
+                    "download_async article", "access pdf", "open pdf"
                 ]
                 critical_no_access = [
                     "preview of subscription content", "access denied",
@@ -436,7 +436,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
                 ):
                     suggestion = (
                         "Content appears to require institutional authentication. "
-                        "Consider using browser-based OpenURLResolver for authenticated access."
+                        "Consider using browser-based OpenURLResolver for authenticate_async access."
                     )
                 
                 return {
@@ -472,7 +472,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
         if self.zenrows_api_key:
             logger.info("Using ZenRows for resolution")
-            return await self._resolve_single_async_zenrows(
+            return await self._resolve_single_async_zenrows_async(
                 title, authors, journal, year, volume, issue, pages, doi, pmid
             )
         else:
@@ -491,14 +491,14 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
     def get_access_details(self, content: str, url: str = "", doi: str = "") -> Dict[str, Any]:
         """Analyze page content for detailed access information."""
         access_indicators = [
-            "full text", "download pdf", "view pdf", "pdf download",
-            "article pdf", "get pdf", "download article", "read the full",
+            "full text", "download_async pdf", "view pdf", "pdf download_async",
+            "article pdf", "get pdf", "download_async article", "read the full",
             "access pdf", "open pdf", "full article", "read online",
-            "download full", "view full text", "read full text"
+            "download_async full", "view full text", "read full text"
         ]
         strong_access_indicators = [
-            "download pdf", "view pdf", "pdf download", "get pdf",
-            "download article", "access pdf", "open pdf"
+            "download_async pdf", "view pdf", "pdf download_async", "get pdf",
+            "download_async article", "access pdf", "open pdf"
         ]
         no_access_indicators = [
             "purchase", "subscribe", "get access", "buy now",
@@ -578,14 +578,14 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
         # Create semaphore to limit concurrency
         semaphore = asyncio.Semaphore(concurrency)
 
-        async def worker(doi):
+        async def worker_async(doi):
             async with semaphore:
                 # Add random delay between requests to appear more human
                 await asyncio.sleep(random.uniform(0.5, 2.0))
                 return await self._resolve_single_async(doi=doi)
 
-        # Create tasks using the worker function
-        tasks = [worker(doi) for doi in dois]
+        # Create tasks using the worker_async function
+        tasks = [worker_async(doi) for doi in dois]
         results = await asyncio.gather(*tasks)
 
         logger.info("--- Parallel resolution finished ---")
@@ -659,7 +659,7 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
 
 # Convenience function for testing
-async def test_zenrows_resolver():
+async def test_zenrows_resolver_async():
     """Test the ZenRows-enhanced resolver."""
     from ..auth import AuthenticationManager
     import tempfile
@@ -708,7 +708,7 @@ async def test_zenrows_resolver():
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(test_zenrows_resolver())
+    asyncio.run(test_zenrows_resolver_async())
 
 # python -m scitex.scholar.open_url._OpenURLResolverWithZenRows
 

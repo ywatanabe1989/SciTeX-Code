@@ -108,7 +108,7 @@ class IntelligentGoButtonSelector:
         """Initialize the intelligent Go button selector."""
         self.success_history = {}  # Track historical success rates by publisher
         
-    async def analyze_go_buttons(self, page) -> List[GoButtonCandidate]:
+    async def analyze_go_buttons_async(self, page) -> List[GoButtonCandidate]:
         """
         Analyze all Go buttons on the page and return ranked candidates.
         
@@ -402,7 +402,7 @@ class IntelligentGoButtonSelector:
         
         return best_candidate
     
-    async def intelligent_go_button_selection(self, page) -> Optional[Dict]:
+    async def intelligent_go_button_selection_async(self, page) -> Optional[Dict]:
         """
         Complete intelligent Go button selection workflow.
         
@@ -414,7 +414,7 @@ class IntelligentGoButtonSelector:
         """
         try:
             # Analyze all Go button candidates
-            candidates = await self.analyze_go_buttons(page)
+            candidates = await self.analyze_go_buttons_async(page)
             
             if not candidates:
                 logger.warning("❌ No Go buttons found on page")
@@ -442,7 +442,7 @@ class IntelligentGoButtonSelector:
 
 
 # Convenience function for easy integration
-async def select_most_reliable_go_button(page) -> Optional[Dict]:
+async def select_most_reliable_go_button_async(page) -> Optional[Dict]:
     """
     Convenience function to select the most reliable Go button.
     
@@ -453,7 +453,7 @@ async def select_most_reliable_go_button(page) -> Optional[Dict]:
         Dict with selection results or None if failed
     """
     selector = IntelligentGoButtonSelector()
-    return await selector.intelligent_go_button_selection(page)
+    return await selector.intelligent_go_button_selection_async(page)
 
 
 if __name__ == "__main__":

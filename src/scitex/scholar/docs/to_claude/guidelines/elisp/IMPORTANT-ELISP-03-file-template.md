@@ -48,7 +48,7 @@ In general, they are handled by an automatic script by the `ehf-update-header-an
 - Upstream functions should be placed in upper positions
   - from top (upstream functions) to down (utility functions)
 - Do not change any code contents during sorting
-- Includes comments to show hierarchy
+- Includes comments to show_async hierarchy
 
 ```elisp
 ;; 1. Main entry point

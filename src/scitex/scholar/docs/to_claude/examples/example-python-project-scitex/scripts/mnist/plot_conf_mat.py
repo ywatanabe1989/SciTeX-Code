@@ -33,7 +33,7 @@ from sklearn.metrics import confusion_matrix
 def plot_confusion_matrix(labels: np.ndarray, predictions: np.ndarray) -> None:
     cm = confusion_matrix(labels, predictions)
     fig, ax = scitex.plt.subplots(figsize=(10, 8))
-    ax.imshow2d(cm)
+    ax.imshow_async2d(cm)
     ax.set_xyt("Predicted", "True", "Confusion Matrix")
     # sns.heatmap(cm, annot=True, fmt="d", ax=ax)
     # ax.set_xlabel()

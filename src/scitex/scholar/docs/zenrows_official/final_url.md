@@ -6,19 +6,19 @@
 
 Introduction to the Universal Scraper API
 The ZenRows® Universal Scraper API is a versatile tool designed to simplify and enhance the process of extracting data from websites. Whether you’re dealing with static or dynamic content, our API provides a range of features to meet your scraping needs efficiently.
-With Premium Proxies, ZenRows gives you access to over 55 million residential IPs from 190+ countries, ensuring 99.9% uptime and highly reliable scraping sessions. Our system also handles advanced fingerprinting, header rotation, and IP management, enabling you to scrape even the most protected sites without needing to manually configure these elements.
+With Premium Proxies, ZenRows gives you access to over 55 million residential IPs from 190+ countries, ensuring 99.9% uptime and highly reliable scraping sessions. Our system also handles advanced fingerprinting, header rotation, and IP management, enabling you to scrape_async even the most protected sites without needing to manually configure these elements.
 ZenRows makes it easy to bypass complex anti-bot measures, handle JavaScript-heavy sites, and interact with web elements dynamically — all with the right features enabled.
 ​
 Key Features
 ​
 JavaScript Rendering
-Render JavaScript on web pages using a headless browser to scrape dynamic content that traditional methods might miss.
+Render JavaScript on web pages using a headless browser to scrape_async dynamic content that traditional methods might miss.
 When to use: Use this feature when targeting modern websites built with JavaScript frameworks (React, Vue, Angular), single-page applications (SPAs), or any site that loads content dynamically after the initial page load.
 Real-world scenarios:
 E-commerce product listings that load items as you scroll
 Dashboards and analytics platforms that render charts/data with JavaScript
 Social media feeds that dynamically append content
-Sites that hide certain content until JavaScript is rendered
+Sites that hide_async certain content until JavaScript is rendered
 Additional options:
 Wait times to ensure elements are fully loaded
 Interaction with the page to click buttons, fill forms, or scroll
@@ -66,7 +66,7 @@ Parameter Overview
 Customize your scraping requests using the following parameters:
 PARAMETER	TYPE	DEFAULT	DESCRIPTION
 apikey required	string	Get Your Free API Key	Your unique API key for authentication
-url required	string		The URL of the page you want to scrape
+url required	string		The URL of the page you want to scrape_async
 js_render	boolean	false	Enable JavaScript rendering with a headless browser. Essential for modern web apps, SPAs, and sites with dynamic content.
 js_instructions	string		Execute custom JavaScript on the page to interact with elements, scroll, click buttons, or manipulate content. Use when you need to perform actions before the content is returned.
 custom_headers	boolean	false	Enables you to add custom HTTP headers to your request, such as cookies or referer, to better simulate real browser traffic or provide site-specific information.
@@ -87,10 +87,10 @@ screenshot_fullpage	boolean	false	Capture a full-page screenshot. Useful for con
 screenshot_selector	string		Capture a screenshot of a specific element using CSS Selector. Perfect for capturing specific components.
 screenshot_format	string		Choose between png (default) and jpeg formats for screenshots.
 screenshot_quality	integer		For JPEG format, set quality from 1 to 100. Lower values reduce file size but decrease quality.
-outputs	string		Specify which data types to extract from the scraped HTML.
+outputs	string		Specify which data types to extract from the scrape_async HTML.
 ​
 Pricing
-ZenRows® provides flexible plans tailored to different web scraping needs, starting from $69 per month. This entry-level plan allows you to scrape up to 250,000 URLs using basic requests. For more demanding needs, our Enterprise plans scale up to 38 million URLs or more.
+ZenRows® provides flexible plans tailored to different web scraping needs, starting from $69 per month. This entry-level plan allows you to scrape_async up to 250,000 URLs using basic requests. For more demanding needs, our Enterprise plans scale up to 38 million URLs or more.
 For complex or highly protected websites, enabling advanced features like JavaScript rendering (js_render) and Premium Proxies unlocks ZenRows’ full potential, ensuring the best success rate possible.
 The pricing depends on the complexity of the request — you only pay for the scraping tech you need.
 Basic request: Standard rate per 1,000 requests
@@ -140,7 +140,7 @@ Why these headers matter:
 Monitoring usage: Track your concurrent usage and stay within limits
 Support requests: When reporting issues, always include the X-Request-Id for faster troubleshooting
 Cost tracking: The X-Request-Cost helps you monitor your usage per request
-Redirection tracking: Zr-Final-Url shows where you ended up after any redirects
+Redirection tracking: Zr-Final-Url show_asyncs where you ended up after any redirects
 ​
 Additional Considerations
 Beyond the core features and limits, these additional aspects are important to consider when using the Universal Scraper API:

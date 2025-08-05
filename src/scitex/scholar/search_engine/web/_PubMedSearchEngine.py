@@ -258,6 +258,76 @@ class PubMedSearchEngine(BaseSearchEngine):
         
         return papers
 
+    async def fetch_by_id_async(self, identifier: str) -> Optional[Paper]:
+        """Fetch single paper by PMID from PubMed."""
+        try:
+            # Rate limiting
+            await self._rate_limit_async()
+            
+            # PubMed fetch URL for PMID
+            url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+            params = {
+                'db': 'pubmed',
+                'id': identifier,
+                'retmode': 'xml',
+                'email': self.email
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        xml_data = await response.text()
+                        papers = self._parse_pubmed_response(xml_data)
+                        return papers[0] if papers else None
+                    else:
+                        logger.error(f"PubMed fetch_by_id_async failed: {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"Error fetching paper by ID {identifier}: {e}")
+            return None
+
+    async def get_citation_count_async(self, doi: str) -> Optional[int]:
+        """Get citation count for DOI (PubMed doesn't provide citation counts directly)."""
+        # PubMed doesn't provide citation counts directly
+        # This would require integration with a service like Google Scholar or Web of Science
+        logger.debug("PubMed doesn't provide citation counts directly")
+        return None
+
+    async def resolve_doi_async(self, title: str, year: Optional[int] = None) -> Optional[str]:
+        """Resolve title to DOI using PubMed search."""
+        try:
+            # Search for the paper by title
+            search_query = title
+            if year:
+                search_query += f" {year}[pdat]"
+                
+            papers = await self.search_async(search_query, limit=5)
+            
+            # Look for exact or close title matches
+            title_lower = title.lower().strip()
+            for paper in papers:
+                if paper.doi and paper.title:
+                    paper_title_lower = paper.title.lower().strip()
+                    # Simple matching - could be improved with fuzzy matching
+                    if title_lower in paper_title_lower or paper_title_lower in title_lower:
+                        # If year is specified, prefer papers from that year
+                        if year and paper.year and abs(int(paper.year) - year) <= 1:
+                            return paper.doi
+                        elif not year:
+                            return paper.doi
+            
+            # If no exact match but we have results with DOI, return the first DOI
+            for paper in papers:
+                if paper.doi:
+                    return paper.doi
+                
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error resolving DOI for title '{title}': {e}")
+            return None
+
 
 async def main():
     """Test function for PubMedSearchEngine."""

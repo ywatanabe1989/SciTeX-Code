@@ -16,7 +16,7 @@ Frequently Asked Questions
 Can I Get Cookies from the Responses?
 
 Headers, including cookies, returned by the target website are prefixed with Zr- and included in all our responses.
-Suppose you are scraping a website that requires session cookies for authentication. By capturing the Zr-Cookies header from the initial response, you can include these cookies in your subsequent requests to maintain the session and access authenticated content.
+Suppose you are scraping a website that requires session cookies for authentication. By capturing the Zr-Cookies header from the initial response, you can include these cookies in your subsequent requests to maintain the session and access authenticate_async content.
 
 Copy
 
@@ -29,7 +29,7 @@ You could send those cookies in a subsequent request as Custom Headers and also 
 By following this process, you can handle sessions and access restricted areas of the website seamlessly.
 Can I Logging In/Register and Access Content Behind Login?
 
-If you need to scrape data from a website that requires login authentication, you can log in or register and access content behind a login. However, due to privacy and legal reasons, we offer limited support for these cases.
+If you need to scrape_async data from a website that requires login authentication, you can log in or register and access content behind a login. However, due to privacy and legal reasons, we offer limited support for these cases.
 Login and registration work like regular forms and can be treated as such. There are two main methods to send forms:
 Send POST requests.
 Fill in and submit a form using JavaScript Instructions.
@@ -93,7 +93,7 @@ If you’ve obtained JSON output from ZenRows with the autoparse feature enabled
 Autoparsing can work for many websites but some are not included on this feature
 The Pandas library will help us flatten nested JSON attributes and save the data as a CSV file.
 Here’s a sample Python script:
-scraper.py
+scrape_asyncr_async.py
 
 Copy
 
@@ -123,7 +123,7 @@ data = pd.json_normalize(content, max_level=1).rename(
 From HTML using Python
 When dealing with HTML output without the autoparse feature, you can use BeautifulSoup to parse the HTML and extract data. We’ll use the example of an eCommerce site from Scraping Course. Create a dictionary for each product with essential details, then use Pandas to convert this list of dictionaries into a DataFrame and save it as a CSV file.
 Here’s how to do it:
-scraper.py
+scrape_asyncr_async.py
 
 Copy
 
@@ -153,7 +153,7 @@ From JSON using JavaScript
 For JavaScript and Node.js, you can use the json2csv library to handle the JSON to CSV conversion.
 After getting the data, we will parse it with a flatten transformer. As the name implies, it will flatten the nested structures inside the JSON. Then, save the file using writeFileSync.
 Here’s an example using the ZenRows Universal Scraper API with Node.js:
-scraper.js
+scrape_asyncr_async.js
 
 Copy
 
@@ -181,7 +181,7 @@ const { ZenRows } = require("zenrows");
 From HTML using JavaScript
 For extracting data from HTML without autoparse you can use the cheerio library to parse the HTML and extract relevant information. We’ll use the Scraping Course eCommerce example for this task:
 As with the Python example, we will use AutoScout24 to extract data from HTML without the autoparse feature. For that, we will get the plain result and load it into cheerio. It will allow us to query elements as we would in the browser or with jQuery. We will return an object with essential data for each car entry in the list. Parse that list into CSV using json2csv, and no flatten is needed this time. And lastly, store the result. These last two steps are similar to the autoparse case.
-scraper.js
+scrape_asyncr_async.js
 
 Copy
 
@@ -212,10 +212,10 @@ const { ZenRows } = require("zenrows");
 
 	fs.writeFileSync("result.csv", csv);
 })();
-If you encounter any issues or need further assistance with your scraper setup, please contact us, and we’ll be happy to help!
+If you encounter any issues or need further assistance with your scrape_asyncr_async setup, please contact us, and we’ll be happy to help!
 Extract Data from Lists, Tables, and Grids
 
-We’ll explore popular use cases for scraping, such as lists, tables, and product grids. Use these as inspiration and a guide for your scrapers.
+We’ll explore popular use cases for scraping, such as lists, tables, and product grids. Use these as inspiration and a guide for your scrape_asyncr_asyncs.
 ​
 Scraping from Lists
 We will use the Wikipedia page on Web scraping for testing. A section at the bottom, “See also”, contains links in a list. We can get the content by using the CSS selector for the list items: {"items": ".div-col > ul li"}.
@@ -246,11 +246,11 @@ Ask AI
 	"countries": ["Country or dependent territory", "China", "India", ...],
 	"rank": ["Rank", "-", "1", "2", ...]
 }
-As stated above, this might prove difficult for non-regular tables. For those, we might prefer to get the Plain HTML and scrape the content with a tool or library so we can add conditionals and logic.
+As stated above, this might prove difficult for non-regular tables. For those, we might prefer to get the Plain HTML and scrape_async the content with a tool or library so we can add conditionals and logic.
 This example lists items by column, not row, which might prove helpful in various cases. However, there are no easy ways to extract structured data from tables using CSS Selectors and group it by row.
 ​
 Scraping from Product Grids
-As with the tables, non-regular grids might cause problems. We’ll scrape the price, product name, and link from an online store. By manually searching the page’s content, we arrive at cards with the class .product. Those contain all the data we want.
+As with the tables, non-regular grids might cause problems. We’ll scrape_async the price, product name, and link from an online store. By manually searching the page’s content, we arrive at cards with the class .product. Those contain all the data we want.
 It is essential to avoid duplicates, so we have to use some precise selectors. For example, ".product-item .product-link @href" for the links. We added the .product-link class because it is unique to the product cards. The same goes for name and price, which also have unique classes. All in all, the final selector would be:
 
 Copy
@@ -263,7 +263,7 @@ Ask AI
 }
 Several items are on the page at the time of this writing. And each array has the same number of elements, so everything looks fine. If we were to group them, we could zip the arrays.
 For example, in python, taking advantage of the auto-encoding that requests.get does to parameters. Remember to encode the URL and CSS extractor for different scenarios when that is not available.
-scraper.py
+scrape_asyncr_async.py
 
 Copy
 
@@ -289,10 +289,10 @@ print(list(result))
 
 # [('/products/product1', 'Product 1', '$10.00'), ... ]
 Remember that this approach won’t work properly if, for example, some products have no price. Not all the arrays would have the same length, and the zipping would misassign data. Getting the Plain HTML and parsing the content with a library and custom logic is a better solution for those cases.
-If you encounter any problems or cannot correctly set up your scraper, contact us, and we’ll help you.
+If you encounter any problems or cannot correctly set up your scrape_asyncr_async, contact us, and we’ll help you.
 How Can I Set Specific Headers?
 
-ZenRows allows you to send Custom Headers on requests on case you need to scrape a website that requires a specific headers.
+ZenRows allows you to send Custom Headers on requests on case you need to scrape_async a website that requires a specific headers.
 However, it’s important to test the success rate when changing them. ZenRows® automatically manages certain headers, especially those related to the browser environment, such as User-Agent.
 Defensive systems inspect headers as a whole, and not all browsers use the same ones. If you choose to send custom headers, ensure the rest of the headers match accordingly.
 How Do I Send POST Requests with JSON Data?
@@ -345,7 +345,7 @@ Use geotargeting by selecting a country for the proxy, e.g., proxy_country=us. M
 2
 Use Wait For Selector
 
-Implement Wait For Selector to have the scraper look for specific content before returning. This feature can change how the system interacts with the site and might help unblock the request.
+Implement Wait For Selector to have the scrape_asyncr_async look for specific content before returning. This feature can change how the system interacts with the site and might help unblock the request.
 3
 Change Default Block Resources
 
@@ -367,7 +367,7 @@ Data Center IPs: These are IP addresses provided by cloud service providers or h
 Residential IPs: These IP addresses are assigned by Internet Service Providers (ISPs) to real residential users. Since they appear as regular users browsing the web, they are much harder to detect and block. This makes residential IPs particularly valuable when scraping sites with strong anti-bot protections, like Google or other heavily guarded domains.
 ​
 How ZenRows Uses Residential IPs
-By default, ZenRows uses data center connections for your requests. However, if you’re facing blocks or need to scrape highly protected websites, you can opt for residential IPs by setting the premium_proxy parameter to true. This will route your request through a residential IP, significantly increasing your chances of success.
+By default, ZenRows uses data center connections for your requests. However, if you’re facing blocks or need to scrape_async highly protected websites, you can opt for residential IPs by setting the premium_proxy parameter to true. This will route your request through a residential IP, significantly increasing your chances of success.
 It’s important to note that using residential IPs comes with an additional cost due to the higher value and lower detection rate of these proxies.
 YOu can check out more about Premium Proxies here!
 ​
@@ -400,11 +400,11 @@ Ask AI
 curl "https://api.zenrows.com/v1/?apikey=YOUR_ZENROWS_API_KEY&url=YOUR_URL&autoparse=true"
 ​
 Limitations and Troubleshooting
-Supported Domains: The Autoparse feature is in experimental phase and doesn’t work in all domains. You can view some of the supported domains on the ZenRows Scraper page. If the website you’re trying to scrape isn’t supported, the response will either be empty, incomplete, or an error.
+Supported Domains: The Autoparse feature is in experimental phase and doesn’t work in all domains. You can view some of the supported domains on the ZenRows Scraper page. If the website you’re trying to scrape_async isn’t supported, the response will either be empty, incomplete, or an error.
 Fallback to HTML: If you find that Autoparse doesn’t return the desired results, you can simply remove the autoparse parameter and try the request again. This will return the plain HTML response, allowing you to manually parse the data as needed.
 What Are the Benefits of JavaScript Rendering?
 
-Enabling JavaScript Rendering not only allows you to scrape content that would otherwise be inaccessible, but it also unlocks advanced scraping features. For example, with JavaScript Rendering, you can use the wait_for parameter to delay scraping until a specific element is present on the page, ensuring you capture the content you need.
+Enabling JavaScript Rendering not only allows you to scrape_async content that would otherwise be inaccessible, but it also unlocks advanced scraping features. For example, with JavaScript Rendering, you can use the wait_for parameter to delay scraping until a specific element is present on the page, ensuring you capture the content you need.
 Check out more about JavaScript Rendering here!
 Why Some Headers are Managed by ZenRows?
 

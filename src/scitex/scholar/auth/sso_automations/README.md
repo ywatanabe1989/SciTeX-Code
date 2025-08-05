@@ -16,7 +16,7 @@ This module provides an extensible framework for automating SSO login processes 
 
 - 🔐 **Automated Authentication**: Handles complete SSO login flows including 2FA
 - 🏛️ **Multi-Institution Support**: Extensible architecture for adding new institutions
-- 💾 **Persistent Sessions**: Caches authenticated sessions to minimize login frequency
+- 💾 **Persistent Sessions**: Caches authenticate_async sessions to minimize login frequency
 - 🔍 **Auto-Detection**: Automatically identifies institutions from URLs
 - 🛡️ **Secure Credentials**: Environment-based credential management
 - 🔄 **Session Management**: Automatic session refresh and validation
@@ -27,7 +27,7 @@ This module provides an extensible framework for automating SSO login processes 
 sso_automations/
 ├── __init__.py
 ├── _BaseSSOAutomator.py      # Abstract base class
-├── _SSOAutomatorFactory.py   # Factory for creating automators
+├── _SSOAutomator.py   # Factory for creating automators
 └── _UniversityOfMelbourneSSOAutomator.py  # Example implementation
 ```
 
@@ -105,7 +105,7 @@ class YourInstitutionSSOAutomator(BaseSSOAutomator):
         """Check if URL is your institution's SSO login page."""
         return "your-sso-domain.edu" in url.lower()
     
-    async def perform_login(self, page: Page) -> bool:
+    async def perform_login_async(self, page: Page) -> bool:
         """Implement your institution's login flow."""
         try:
             # Wait for username field
@@ -127,7 +127,7 @@ class YourInstitutionSSOAutomator(BaseSSOAutomator):
             return False
 ```
 
-Then register it in the factory (`_SSOAutomatorFactory.py`):
+Then register it in the factory (`_SSOAutomator.py`):
 
 ```python
 @classmethod
@@ -155,7 +155,7 @@ Sessions are cached to avoid repeated logins:
 
 1. **Credentials**: Never hardcode credentials. Use environment variables or secure credential stores
 2. **Session Files**: Session files contain authentication tokens and should be kept secure
-3. **Headless Mode**: Use `headless=True` in production to hide browser windows
+3. **Headless Mode**: Use `headless=True` in production to hide_async browser windows
 4. **2FA**: Some institutions require manual 2FA approval on first login
 
 ## Troubleshooting
@@ -180,7 +180,7 @@ Sessions are cached to avoid repeated logins:
 
 See `/examples/scholar/` for complete examples:
 - `openathens_working_example.py` - Basic SSO automation
-- `university_sso_zenrows_download.py` - SSO with anti-bot bypass
+- `university_sso_zenrows_download_async.py` - SSO with anti-bot bypass
 - `test_sso_integration.py` - Testing SSO automation
 
 ## Contributing

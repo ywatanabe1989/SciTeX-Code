@@ -13,7 +13,7 @@ cleanup() {
 }
 
 main() {
-    ./scripts/mnist/download.py
+    ./scripts/mnist/download_async.py
     ./scripts/mnist/plot_digits.py
     ./scripts/mnist/plot_umap_space.py
     ./scripts/mnist/clf_svm.py

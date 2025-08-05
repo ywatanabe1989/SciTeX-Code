@@ -3,7 +3,7 @@
 # ---
 # @Author: ywatanabe
 # @Date: 2025-07-24
-# @Description: Progress tracking for Scholar PDF downloads
+# @Description: Progress tracking for Scholar PDF download_asyncs
 # ---
 
 import sys
@@ -15,13 +15,13 @@ import threading
 
 
 class ProgressTracker:
-    """Progress tracker for PDF downloads with method visibility."""
+    """Progress tracker for PDF download_asyncs with method visibility."""
     
-    def __init__(self, total: int, show_progress: bool = True):
+    def __init__(self, total: int, show_async_progress: bool = True):
         self.total = total
         self.completed = 0
         self.failed = 0
-        self.show_progress = show_progress
+        self.show_async_progress = show_async_progress
         self.start_time = time.time()
         self.current_file = ""
         self.current_method = ""
@@ -30,11 +30,11 @@ class ProgressTracker:
         self.terminal_width = shutil.get_terminal_size().columns
         self._last_print_length = 0
         self._lock = threading.Lock()  # Thread safety for concurrent updates
-        self._active_downloads = {}  # Track active downloads per identifier
+        self._active_download_asyncs = {}  # Track active download_asyncs per identifier
         
     def update(self, identifier: str, method: Optional[str] = None, 
                status: Optional[str] = None, completed: Optional[int] = None):
-        """Update progress with current download info."""
+        """Update progress with current download_async info."""
         with self._lock:
             self.current_file = identifier
             
@@ -47,18 +47,18 @@ class ProgressTracker:
                 if identifier not in self.method_attempts:
                     self.method_attempts[identifier] = []
                 self.method_attempts[identifier].append(method)
-                # Track active download
-                self._active_downloads[identifier] = method
+                # Track active download_async
+                self._active_download_asyncs[identifier] = method
                 
             if status:
                 self.paper_status[identifier] = status
                 if status == "failed":
                     self.failed += 1
                 elif status == "success":
-                    # Remove from active downloads
-                    self._active_downloads.pop(identifier, None)
+                    # Remove from active download_asyncs
+                    self._active_download_asyncs.pop(identifier, None)
                     
-            if self.show_progress:
+            if self.show_async_progress:
                 self._print_progress()
     
     def _print_progress(self):
@@ -102,13 +102,13 @@ class ProgressTracker:
         # Print status
         sys.stdout.write(f"{status_line}{clear}\n")
         
-        # Show active downloads (up to 3 concurrent)
+        # Show active download_asyncs (up to 3 concurrent)
         lines_printed = 1
         max_file_len = self.terminal_width - 80
-        max_shown = 3  # Only show up to 3 concurrent downloads
+        max_show_asyncn = 3  # Only show_async up to 3 concurrent download_asyncs
         
-        for idx, (identifier, method) in enumerate(list(self._active_downloads.items())):
-            if idx >= max_shown:
+        for idx, (identifier, method) in enumerate(list(self._active_download_asyncs.items())):
+            if idx >= max_show_asyncn:
                 break
                 
             display_file = identifier
@@ -119,10 +119,10 @@ class ProgressTracker:
             sys.stdout.write(f"{file_line}{clear}\n")
             lines_printed += 1
             
-        # If there are more active downloads, show count
-        if len(self._active_downloads) > max_shown:
-            more_count = len(self._active_downloads) - max_shown
-            sys.stdout.write(f"  ... and {more_count} more downloading in parallel{clear}\n")
+        # If there are more active download_asyncs, show_async count
+        if len(self._active_download_asyncs) > max_show_asyncn:
+            more_count = len(self._active_download_asyncs) - max_show_asyncn
+            sys.stdout.write(f"  ... and {more_count} more download_asyncing in parallel{clear}\n")
             lines_printed += 1
             
         # Clear any remaining lines from previous print
@@ -134,7 +134,7 @@ class ProgressTracker:
     
     def finish(self):
         """Print final summary."""
-        if not self.show_progress:
+        if not self.show_async_progress:
             return
             
         elapsed = time.time() - self.start_time
@@ -149,7 +149,7 @@ class ProgressTracker:
         print(f"\n✓ Download complete: {success}/{self.total} successful")
         
         if self.failed > 0:
-            print(f"✗ Failed downloads: {self.failed}")
+            print(f"✗ Failed download_asyncs: {self.failed}")
             
         print(f"⏱  Total time: {str(timedelta(seconds=int(elapsed)))}")
         
@@ -199,16 +199,16 @@ class SimpleProgressLogger:
         success = self.completed - self.failed
         print(f"\n✓ Download complete: {success}/{self.total} successful")
         if self.failed > 0:
-            print(f"✗ Failed downloads: {self.failed}")
+            print(f"✗ Failed download_asyncs: {self.failed}")
         print(f"⏱  Total time: {str(timedelta(seconds=int(elapsed)))}")
 
 
-def create_progress_tracker(total: int, show_progress: bool = True) -> Any:
+def create_progress_tracker(total: int, show_async_progress: bool = True) -> Any:
     """Create appropriate progress tracker based on environment."""
     # Check if running in terminal
     is_terminal = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
     
-    if show_progress and is_terminal:
-        return ProgressTracker(total, show_progress=True)
+    if show_async_progress and is_terminal:
+        return ProgressTracker(total, show_async_progress=True)
     else:
         return SimpleProgressLogger(total)

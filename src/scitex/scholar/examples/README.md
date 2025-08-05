@@ -41,7 +41,7 @@ This will:
 - Resolve missing DOIs
 - Find publisher URLs via your institutional resolver
 - Enrich with impact factors and citations
-- Create a download queue for step 7
+- Create a download_async queue for step 7
 
 ### Output Files
 
@@ -51,7 +51,7 @@ The example creates these files in `./scholar_output/`:
 - `openurl_resolution_*.progress.json` - URL resolution progress
 - `resolved_urls_*.json` - Mapping of DOIs to publisher URLs
 - `papers_enriched_*.bib` - Final enriched BibTeX
-- `download_queue_*.json` - Ready for PDF download (step 7)
+- `download_async_queue_*.json` - Ready for PDF download_async (step 7)
 
 ### Resumability
 
@@ -66,7 +66,7 @@ Just run the script again - it will resume automatically!
 
 For specific use cases:
 - `openathens/` - Authentication examples
-- `resolve_dois_example.py` - DOI resolution only
+- `resolve_doi_asyncs_example.py` - DOI resolution only
 - `enrich_bibtex_example.py` - Metadata enrichment only
 
 ## Next Steps
@@ -75,8 +75,8 @@ After running the workflow, you'll have:
 - Authenticated session cookies
 - Papers with DOIs and publisher URLs
 - Enriched metadata (impact factors, citations)
-- A download queue JSON file
+- A download_async queue JSON file
 
-This prepares everything for step 7: PDF download using AI agents (Claude Code + crawl4ai).
+This prepares everything for step 7: PDF download_async using AI agents (Claude Code + crawl4ai).
 
 # EOF

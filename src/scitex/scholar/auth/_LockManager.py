@@ -66,7 +66,7 @@ class LockManager:
         start_time = time.time()
         
         while time.time() - start_time < self.max_wait_seconds:
-            if await self._try_acquire_lock():
+            if await self._try_acquire_lock_async():
                 self._is_locked = True
                 logger.info("Acquired authentication lock")
                 return True
@@ -104,7 +104,7 @@ class LockManager:
         """Check if lock is currently held."""
         return self._is_locked
 
-    async def _try_acquire_lock(self) -> bool:
+    async def _try_acquire_lock_async(self) -> bool:
         """Try to acquire lock once.
         
         Returns:

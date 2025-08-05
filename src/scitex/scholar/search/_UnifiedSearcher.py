@@ -119,7 +119,7 @@ class SemanticScholarEngine(SearchEngine):
                         error_msg = await response.text()
                         
                         if response.status == 429:
-                            # Rate limiting - show this to user
+                            # Rate limiting - show_async this to user
                             logger.warning("Semantic Scholar rate limit reached. Please wait a moment or get a free API key at https://www.semanticscholar.org/product/api")
                             raise SearchError(
                                 query=query,

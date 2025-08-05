@@ -22,9 +22,9 @@ from typing import Dict, List, Optional, Union
 
 from scitex import logging
 from .database._StorageIntegratedDB import StorageIntegratedDB
-from .download._BrowserDownloadHelper import BrowserDownloadHelper
-from .download._ScreenshotDownloadHelper import ScreenshotDownloadHelper
-from .doi import DOIResolver
+from .download_async._BrowserDownloadHelper import BrowserDownloadHelper
+from .download_async._ScreenshotDownloadHelper import ScreenshotDownloadHelper
+from .doi._SingleDOIResovler import SingleDOIResolver
 from .open_url import OpenURLResolver
 from ._Paper import Paper
 
@@ -42,7 +42,7 @@ class Scholar:
         """
         self.library = library
         self.db = StorageIntegratedDB(library)
-        self.doi_resolver = DOIResolver()
+        self.doi_resolver = SingleDOIResolver()
         self.openurl_resolver = OpenURLResolver()
         self.browser_helper = BrowserDownloadHelper(library)
         
@@ -88,7 +88,7 @@ class Scholar:
         
     # ========== DOI Resolution ==========
     
-    async def resolve_doi(self, paper_id: int) -> Optional[str]:
+    async def resolve_doi_async(self, paper_id: int) -> Optional[str]:
         """Resolve DOI for a paper.
         
         Args:
@@ -139,7 +139,7 @@ class Scholar:
         
     # ========== PDF Download ==========
     
-    def download_pdf(self, paper_id: int, method: str = "browser") -> Dict:
+    def download_async_pdf_async(self, paper_id: int, method: str = "browser") -> Dict:
         """Download PDF for a paper.
         
         Args:
@@ -176,26 +176,26 @@ class Scholar:
             return {"success": False, "error": "No URLs available"}
             
         if method == "browser":
-            # Create browser download session
-            session_id = self.browser_helper.create_download_session(max_papers=1)
-            self.browser_helper.open_download_helper(session_id)
+            # Create browser download_async session
+            session_id = self.browser_helper.create_download_async_session(max_papers=1)
+            self.browser_helper.open_download_async_helper(session_id)
             return {
                 "success": False,
                 "method": "browser",
                 "session_id": session_id,
-                "message": "Browser helper opened for manual download"
+                "message": "Browser helper opened for manual download_async"
             }
             
         elif method == "screenshot":
-            # Use screenshot download helper
+            # Use screenshot download_async helper
             if not paper.get("storage_key"):
                 return {"success": False, "error": "No storage key"}
                 
-            # Run async download
+            # Run async download_async
             loop = asyncio.new_event_loop()
             helper = ScreenshotDownloadHelper(self.db.storage)
             result = loop.run_until_complete(
-                helper.download_with_screenshots(
+                helper.download_async_with_screenshots(
                     storage_key=paper["storage_key"],
                     urls=urls,
                     headless=False
@@ -353,17 +353,17 @@ if __name__ == "__main__":
     })
     
     # Resolve DOI
-    doi = await scholar.resolve_doi(paper_id)
+    doi = await scholar.resolve_doi_async(paper_id)
     print(f"Resolved DOI: {doi}")
     
     # Download PDF with screenshots
-    result = scholar.download_pdf(paper_id, method="screenshot")
+    result = scholar.download_async_pdf_async(paper_id, method="screenshot")
     if result["success"]:
-        print(f"PDF downloaded: {result['pdf_path']}")
+        print(f"PDF download_asynced: {result['pdf_path']}")
         print(f"Screenshots: {result['screenshots']}")
     else:
         # Fall back to browser helper
-        result = scholar.download_pdf(paper_id, method="browser")
+        result = scholar.download_async_pdf_async(paper_id, method="browser")
         
     # Access stored files
     pdf_path = scholar.get_pdf_path(paper_id)

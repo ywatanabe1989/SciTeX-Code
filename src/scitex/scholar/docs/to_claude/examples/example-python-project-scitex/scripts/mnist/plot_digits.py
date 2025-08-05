@@ -36,7 +36,7 @@ def plot_samples(loader: DataLoader, n_samples: int = 25) -> None:
 
     for idx, ax in enumerate(axes.flat):
         if idx < n_samples:
-            ax.imshow(images[idx].squeeze(), cmap="gray")
+            ax.imshow_async(images[idx].squeeze(), cmap="gray")
             ax.set_title(f"Label: {labels[idx]}")
             # ax.axis("off")
 
@@ -55,7 +55,7 @@ def plot_label_examples(loader: DataLoader) -> None:
 
     for idx, (label, img) in enumerate(sorted(label_examples.items())):
         row, col = idx // 5, idx % 5
-        axes[row, col].imshow(img.squeeze(), cmap="gray")
+        axes[row, col].imshow_async(img.squeeze(), cmap="gray")
         axes[row, col].set_title(f"Digit: {label}")
         # axes[row, col].axis("off")
 

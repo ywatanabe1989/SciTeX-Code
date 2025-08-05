@@ -57,9 +57,9 @@ class PDFClassifier:
         
         # Text patterns that indicate main article
         self.main_text_indicators = [
-            'download pdf',
+            'download_async pdf',
             'full text pdf',
-            'pdf download',
+            'pdf download_async',
             'article pdf',
             'view pdf',
             'pdf version',

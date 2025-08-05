@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 19:18:30 (ywatanabe)"
+# Timestamp: "2025-08-04 04:22:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -20,11 +20,11 @@ from .utils._CookieAutoAcceptor import CookieAutoAcceptor
 
 class BrowserMixin:
     """Mixin for local browser-based strategies with common functionality.
-    
+
     Browser Modes:
     - interactive: For human interaction (authentication, debugging) - 1280x720 viewport
-    - stealth: For automated operations (scraping, downloading) - 1x1 viewport
-    
+    - stealth: For automated operations (scraping, download_asyncing) - 1x1 viewport
+
     Note: Always runs browser in visible system mode (never truly headless)
     but uses viewport sizing to control interaction vs stealth behavior.
     """
@@ -32,12 +32,14 @@ class BrowserMixin:
     _shared_browser = None
     _shared_playwright = None
 
-    def __init__(self, mode: str = "stealth"):
+    def __init__(self, mode):
         """Initialize browser mixin.
-        
+
         Args:
             mode: Browser mode - 'interactive' or 'stealth'
         """
+        assert mode in ["interactive", "stealth"]
+
         self.cookie_acceptor = CookieAutoAcceptor()
         self.captcha_handler = CaptchaHandler()
         self.mode = mode
@@ -45,8 +47,8 @@ class BrowserMixin:
         self.pages = []
 
     @classmethod
-    async def get_shared_browser(cls) -> Browser:
-        """Get or create shared browser instance (deprecated - use get_browser)."""
+    async def get_shared_browser_async(cls) -> Browser:
+        """Get or create shared browser instance (deprecated - use get_browser_async)."""
         if (
             cls._shared_browser is None
             or cls._shared_browser.is_connected() is False
@@ -60,7 +62,7 @@ class BrowserMixin:
         return cls._shared_browser
 
     @classmethod
-    async def cleanup_shared_browser(cls):
+    async def cleanup_shared_browser_async(cls):
         """Clean up shared browser instance (call on app shutdown)."""
         if cls._shared_browser:
             await cls._shared_browser.close()
@@ -69,7 +71,7 @@ class BrowserMixin:
             await cls._shared_playwright.stop()
             cls._shared_playwright = None
 
-    async def get_browser(self) -> Browser:
+    async def get_browser_async(self) -> Browser:
         """Get or create a local browser instance with the current mode setting."""
         if (
             self._shared_browser is None
@@ -89,8 +91,7 @@ class BrowserMixin:
                 "--disable-sync",
                 "--disable-translate",
                 "--disable-default-apps",
-                "--disable-extensions-except=*",  # Allow extensions to load
-                "--load-extension=*",  # Load extensions
+                "--enable-extensions",  # Enable extensions support
                 "--no-first-run",
                 "--no-default-browser-check",
                 "--disable-background-timer-throttling",
@@ -121,9 +122,12 @@ class BrowserMixin:
 
     async def new_page(self, url=None):
         """Create new page/tab and optionally navigate to URL."""
-        browser = await self.get_browser()
+        browser = await self.get_browser_async()
         context = await browser.new_context()
-        await self.cookie_acceptor.inject_auto_acceptor(context)
+        await context.add_init_script(
+            self.cookie_acceptor.get_auto_acceptor_script()
+        )
+        # await self.cookie_acceptor.inject_auto_acceptor_async(context)
         page = await context.new_page()
         self.contexts.append(context)
         self.pages.append(page)
@@ -145,14 +149,16 @@ class BrowserMixin:
         self.contexts.clear()
         self.pages.clear()
 
-    async def create_browser_context(
+    async def create_browser_context_async(
         self, playwright_instance, **context_options
     ):
         """Create browser context with cookie auto-acceptance."""
+        # Use headless mode for stealth, visible for interactive
+        is_headless = self.mode == "stealth"
         browser = await playwright_instance.chromium.launch(
-            headless=False  # Always visible but with viewport control
+            headless=is_headless
         )
-        
+
         # Smart viewport sizing based on mode
         if "viewport" not in context_options:
             if self.mode == "stealth":
@@ -161,12 +167,15 @@ class BrowserMixin:
             else:  # interactive mode
                 # For interactive mode: use human-friendly size
                 context_options["viewport"] = {"width": 1280, "height": 720}
-            
+
         context = await browser.new_context(**context_options)
-        await self.cookie_acceptor.inject_auto_acceptor(context)
+        await context.add_init_script(
+            self.cookie_acceptor.get_auto_acceptor_script()
+        )
+        # await self.cookie_acceptor.inject_auto_acceptor_async(context)
         return browser, context
 
-    async def get_session(self, timeout: int = 30) -> aiohttp.ClientSession:
+    async def get_session_async(self, timeout: int = 30) -> aiohttp.ClientSession:
         """Get or create basic aiohttp session."""
         if (
             not hasattr(self, "_session")
@@ -190,10 +199,10 @@ class BrowserMixin:
             await self._session.close()
             self._session = None
 
-    async def accept_cookies(self, page_index=0, wait_seconds=2):
+    async def accept_cookies_async(self, page_index=0, wait_seconds=2):
         """Manually accept cookies on specific page."""
         if 0 <= page_index < len(self.pages):
-            return await self.cookie_acceptor.accept_cookies(
+            return await self.cookie_acceptor.accept_cookies_async(
                 self.pages[page_index], wait_seconds
             )
         return False
@@ -214,23 +223,23 @@ class BrowserMixin:
         self._shared_browser = None
         return self
 
-    async def show(self):
+    async def show_async(self):
         """Switch browser to interactive mode and recreate all existing pages at current URLs."""
         if self.mode == "interactive":
             return self
         self.mode = "interactive"
-        await self._restart_contexts()
+        await self._restart_contexts_async()
         return self
 
-    async def hide(self):
+    async def hide_async(self):
         """Switch browser to stealth mode and recreate all existing pages at current URLs."""
         if self.mode == "stealth":
             return self
         self.mode = "stealth"
-        await self._restart_contexts()
+        await self._restart_contexts_async()
         return self
 
-    async def _restart_contexts(self):
+    async def _restart_contexts_async(self):
         page_urls = [page.url for page in self.pages]
         await self.close_all_pages()
         self._shared_browser = None
@@ -252,7 +261,7 @@ if __name__ == "__main__":
         from scitex.scholar.browser.local._BrowserMixin import BrowserMixin
 
         class MyBrowser(BrowserMixin):
-            async def scrape(self, url):
+            async def scrape_async(self, url):
                 page = await self.new_page(url)
                 return await page.content()
 
@@ -261,19 +270,19 @@ if __name__ == "__main__":
 
         # Interactive mode with tab management
         browser.interactive()  # Human-friendly viewport
-        content1 = await browser.scrape("https://example.com")
+        content1 = await browser.scrape_async("https://example.com")
 
         # Switch to stealth mode
         browser.stealth()  # Minimal viewport for bot detection avoidance
-        content2 = await browser.scrape("https://example.com")
-        content3 = await browser.scrape("https://google.com")
+        content2 = await browser.scrape_async("https://example.com")
+        content3 = await browser.scrape_async("https://google.com")
 
         # Browser now has 3 tabs open
         print(f"Open tabs: {len(browser.pages)}")
 
         #
-        await browser.show()  # Make interactive (1280x720)
-        await browser.hide()  # Make stealth (1x1)
+        await browser.show_async()  # Make interactive (1280x720)
+        await browser.hide_async()  # Make stealth (1x1)
 
         # Access specific pages
         first_page = browser.pages[0]

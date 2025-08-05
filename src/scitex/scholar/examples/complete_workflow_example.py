@@ -20,7 +20,7 @@ This example demonstrates the full workflow for:
 3. Resolving DOIs (resumable)
 4. Resolving publisher URLs via OpenURL (resumable)
 5. Enriching with metadata (resumable)
-6. Preparing for PDF download
+6. Preparing for PDF download_async
 
 Prerequisites:
 - Set environment variables (see .env.example)
@@ -36,7 +36,7 @@ from datetime import datetime
 from scitex import logging
 from scitex.scholar import Scholar
 from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.resolve_dois import BatchDOIResolver
+from scitex.scholar.resolve_doi_asyncs import BatchDOIResolver
 from scitex.scholar.open_url import ResumableOpenURLResolver
 
 logger = logging.getLogger(__name__)
@@ -64,13 +64,13 @@ async def main():
     
     auth_manager = AuthenticationManager()
     
-    # Check if already authenticated
-    if await auth_manager.is_authenticated():
-        logger.success("✓ Already authenticated with OpenAthens")
+    # Check if already authenticate_async
+    if await auth_manager.is_authenticate_async():
+        logger.success("✓ Already authenticate_async with OpenAthens")
     else:
         logger.info("🔐 Please log in to OpenAthens...")
-        await auth_manager.authenticate()
-        logger.success("✓ Successfully authenticated")
+        await auth_manager.authenticate_async()
+        logger.success("✓ Successfully authenticate_async")
     
     # ========================================
     # Step 3: Load BibTeX from AI2 Products
@@ -209,26 +209,26 @@ async def main():
     for key, value in stats.items():
         logger.info(f"{key}: {value}")
     
-    # Create ready-for-download JSON
-    download_queue = []
+    # Create ready-for-download_async JSON
+    download_async_queue = []
     for paper in enriched_papers:
         if paper.doi and hasattr(paper, 'pdf_url') and paper.pdf_url:
-            download_queue.append({
+            download_async_queue.append({
                 "doi": paper.doi,
                 "title": paper.title,
                 "url": paper.pdf_url,
                 "access_type": getattr(paper, 'access_type', 'unknown')
             })
     
-    download_queue_file = OUTPUT_DIR / f"download_queue_{timestamp}.json"
-    with open(download_queue_file, 'w') as f:
-        json.dump(download_queue, f, indent=2)
+    download_async_queue_file = OUTPUT_DIR / f"download_async_queue_{timestamp}.json"
+    with open(download_async_queue_file, 'w') as f:
+        json.dump(download_async_queue, f, indent=2)
     
     logger.info(f"\n✅ Workflow complete!")
     logger.info(f"📁 Output directory: {OUTPUT_DIR}")
     logger.info(f"📄 Enriched BibTeX: {enriched_file}")
-    logger.info(f"⬇️  Download queue: {download_queue_file} ({len(download_queue)} papers)")
-    logger.info("\n🚀 Ready for Step 7: PDF download with AI agents")
+    logger.info(f"⬇️  Download queue: {download_async_queue_file} ({len(download_async_queue)} papers)")
+    logger.info("\n🚀 Ready for Step 7: PDF download_async with AI agents")
 
 
 if __name__ == "__main__":

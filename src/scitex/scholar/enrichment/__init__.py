@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 16:23:39 (ywatanabe)"
+# Timestamp: "2025-08-05 16:36:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/enrichment/__init__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -19,9 +19,9 @@ including DOIs, citation counts, impact factors, and abstracts from various sour
 from ._MetadataEnricher import (
     MetadataEnricher,
     JCR_YEAR,
-    _enrich_papers_with_all,
-    _enrich_papers_with_citations,
-    _enrich_papers_with_impact_factors,
+    # _enrich_papers_with_all,
+    # _enrich_papers_with_citations,
+    # _enrich_papers_with_impact_factors,
 )
 from ._BibTeXEnricher import BibTeXEnricher
 
@@ -29,9 +29,9 @@ __all__ = [
     "MetadataEnricher",
     "BibTeXEnricher",
     "JCR_YEAR",
-    "_enrich_papers_with_all",
-    "_enrich_papers_with_citations",
-    "_enrich_papers_with_impact_factors",
+    # "_enrich_papers_with_all",
+    # "_enrich_papers_with_citations",
+    # "_enrich_papers_with_impact_factors",
 ]
 
 # EOF

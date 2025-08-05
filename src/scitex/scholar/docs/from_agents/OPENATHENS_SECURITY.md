@@ -64,7 +64,7 @@ rm -rf ~/.scitex/scholar/openathens_sessions/*.enc
 from scitex.scholar import Scholar
 
 scholar = Scholar()
-if await scholar.is_openathens_authenticated():
+if await scholar.is_openathens_authenticate_async():
     print("Session is valid")
 else:
     print("Session expired or not found")
@@ -89,7 +89,7 @@ The following data is encrypted in session files:
 ### "Failed to decrypt session cache"
 - You may be using a different email than when created
 - The salt file may have been deleted or changed
-- Solution: Delete the session file and re-authenticate
+- Solution: Delete the session file and re-authenticate_async
 
 ### "Permission denied" errors
 - Check file permissions: `ls -la ~/.scitex/`

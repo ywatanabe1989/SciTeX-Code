@@ -11,16 +11,16 @@ Here is the suggestion to get everything working.
 The Core Problem: Separating Authentication from Action
 Your agent's critical mistake is that it's running the authentication in one script, and then trying to run the DOI resolution in a separate, second script.
 
-An authenticated session (your login "cookie") only exists for the script that creates it. When the first script finishes, the session is gone. The second script starts fresh, unauthenticated, and immediately hits the login wall, causing it to time out.
+An authenticate_async session (your login "cookie") only exists for the script that creates it. When the first script finishes, the session is gone. The second script starts fresh, unauthenticate_async, and immediately hits the login wall, causing it to time out.
 
-Analogy: It's like buying a concert ticket 🎟️ online, closing your browser, then showing up to the concert gate with nothing in your hand and expecting them to know you bought a ticket. You need to use the ticket (the authenticated session) in the same process where you acquired it.
+Analogy: It's like buying a concert ticket 🎟️ online, closing your browser, then show_asyncing up to the concert gate with nothing in your hand and expecting them to know you bought a ticket. You need to use the ticket (the authenticate_async session) in the same process where you acquired it.
 
 The Solution: One Consolidated Script
 The solution is to use a single script that performs both steps in the correct order:
 
 Authenticate first.
 
-Then, using that same authenticated session, resolve the DOIs.
+Then, using that same authenticate_async session, resolve the DOIs.
 
 Please have your agent delete the other test scripts (check_doi_resolution.py, interactive_auth_and_resolve.py, debug_auth_session.py, etc.) 🗑️.
 
@@ -33,7 +33,7 @@ Python
 """
 A single, consolidated script to perform the full workflow:
 1. Authenticate using a local, visible browser with ZenRows proxy.
-2. Resolve a list of DOIs using the authenticated session.
+2. Resolve a list of DOIs using the authenticate_async session.
 """
 import os
 import asyncio
@@ -58,10 +58,10 @@ async def main():
     # This will open a local browser window. You must complete the login manually.
     # The script will wait until you have successfully logged in.
     logger.info("Starting authentication process...")
-    await auth_manager.ensure_authenticated()
+    await auth_manager.ensure_authenticate_async()
     logger.success("Authentication successful! Session is now active.")
     
-    # 3. Initialize the OpenURL Resolver WITH the authenticated manager
+    # 3. Initialize the OpenURL Resolver WITH the authenticate_async manager
     # It will automatically use the same browser and session.
     resolver = OpenURLResolver(
         auth_manager=auth_manager,
@@ -76,7 +76,7 @@ async def main():
         "10.1073/pnas.0608765104",      # PNAS (often has strong bot detection)
     ]
     
-    # 4. Resolve DOIs using the now-authenticated session
+    # 4. Resolve DOIs using the now-authenticate_async session
     logger.info(f"Attempting to resolve {len(dois_to_resolve)} DOIs...")
     
     # Use the synchronous wrapper for simplicity here

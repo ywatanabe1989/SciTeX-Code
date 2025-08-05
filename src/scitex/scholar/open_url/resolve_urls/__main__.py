@@ -63,7 +63,7 @@ Examples:
   python -m scitex.scholar.open_url.resolve_urls dois.txt --resolver https://unimelb.hosted.exlibrisgroup.com/sfxlcl41
   
   # Authenticate first
-  python -m scitex.scholar.open_url.resolve_urls dois.txt --authenticate
+  python -m scitex.scholar.open_url.resolve_urls dois.txt --authenticate_async
 
 This command will:
 - Load DOIs from text file (one per line) or JSON
@@ -102,7 +102,7 @@ This command will:
     )
     
     parser.add_argument(
-        "--authenticate",
+        "--authenticate_async",
         "-a",
         action="store_true",
         help="Authenticate with OpenAthens before resolution"
@@ -151,7 +151,7 @@ This command will:
     
     try:
         # Run async main
-        asyncio.run(_async_main(args, dois))
+        asyncio.run(_async_main_async(args, dois))
         
     except KeyboardInterrupt:
         logger.warning("\nOpenURL resolution interrupted - progress saved")
@@ -164,20 +164,20 @@ This command will:
         sys.exit(1)
 
 
-async def _async_main(args, dois):
+async def _async_main_async(args, dois):
     """Async main function."""
     # Create auth manager
     auth_manager = AuthenticationManager()
     
     # Authenticate if requested
-    if args.authenticate:
+    if args.authenticate_async:
         logger.info("Authenticating with OpenAthens...")
-        await auth_manager.authenticate()
+        await auth_manager.authenticate_async()
     
     # Check authentication
-    if not await auth_manager.is_authenticated():
-        logger.warning("Not authenticated - some resources may not be accessible")
-        logger.info("Use --authenticate flag to log in with OpenAthens")
+    if not await auth_manager.is_authenticate_async():
+        logger.warning("Not authenticate_async - some resources may not be accessible")
+        logger.info("Use --authenticate_async flag to log in with OpenAthens")
     
     # Create resolver
     progress_file = Path(args.progress) if args.progress else None

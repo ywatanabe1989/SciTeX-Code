@@ -27,7 +27,7 @@ def import_bibtex(args):
         results = loop.run_until_complete(
             integration.process_bibtex_workflow(
                 Path(args.bibtex),
-                download_pdfs=args.download,
+                download_async_pdf_asyncs=args.download_async,
                 validate_pdfs=args.validate
             )
         )
@@ -39,8 +39,8 @@ def import_bibtex(args):
     print(f"  Total entries: {results['total_entries']}")
     print(f"  Added to database: {results['database_added']}")
     
-    if args.download:
-        print(f"  PDFs downloaded: {results['pdfs_downloaded']}")
+    if args.download_async:
+        print(f"  PDFs download_asynced: {results['pdfs_download_asynced']}")
         
     if args.validate:
         print(f"  PDFs validated: {results['pdfs_validated']}")
@@ -90,7 +90,7 @@ def search_papers(args):
             print(f"   Abstract: {entry.abstract[:150]}...")
 
 
-def show_statistics(args):
+def show_async_statistics(args):
     """Show database statistics."""
     integration = ScholarDatabaseIntegration(args.database)
     summary = integration.get_workflow_summary()
@@ -211,7 +211,7 @@ def main():
     # Import command
     import_parser = subparsers.add_parser("import", help="Import papers from BibTeX")
     import_parser.add_argument("bibtex", help="BibTeX file to import")
-    import_parser.add_argument("--download", action="store_true", help="Download PDFs")
+    import_parser.add_argument("--download_async", action="store_true", help="Download PDFs")
     import_parser.add_argument("--validate", action="store_true", help="Validate PDFs")
     import_parser.set_defaults(func=import_bibtex)
     
@@ -228,7 +228,7 @@ def main():
     
     # Statistics command
     stats_parser = subparsers.add_parser("stats", help="Show database statistics")
-    stats_parser.set_defaults(func=show_statistics)
+    stats_parser.set_defaults(func=show_async_statistics)
     
     # Export command
     export_parser = subparsers.add_parser("export", help="Export papers")

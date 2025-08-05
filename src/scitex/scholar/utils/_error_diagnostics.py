@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Enhanced error diagnostics for Scholar PDF downloads.
+"""Enhanced error diagnostics for Scholar PDF download_asyncs.
 
 This module provides detailed error analysis and troubleshooting
-suggestions to help users quickly resolve download issues.
+suggestions to help users quickly resolve download_async issues.
 """
 
 import json
@@ -17,7 +17,7 @@ from ...errors import PDFDownloadError, ScholarError
 
 
 class DownloadErrorDiagnostics:
-    """Analyze download errors and provide actionable diagnostics."""
+    """Analyze download_async errors and provide actionable diagnostics."""
     
     # Common error patterns and their solutions
     ERROR_PATTERNS = {
@@ -41,7 +41,7 @@ class DownloadErrorDiagnostics:
                 "Paper may be behind paywall - check institutional access",
                 "Try accessing from campus network",
                 "Enable cookies and JavaScript in browser",
-                "Some publishers block automated downloads"
+                "Some publishers block automated download_asyncs"
             ]
         },
         
@@ -51,7 +51,7 @@ class DownloadErrorDiagnostics:
             "message": "Rate limit exceeded",
             "solutions": [
                 "Wait a few minutes before retrying",
-                "Reduce concurrent downloads (max_concurrent parameter)",
+                "Reduce concurrent download_asyncs (max_concurrent parameter)",
                 "Use different IP address or proxy",
                 "Add delays between requests"
             ]
@@ -64,7 +64,7 @@ class DownloadErrorDiagnostics:
             "solutions": [
                 "Use ZenRows API with JavaScript rendering",
                 "Enable Playwright with stealth mode",
-                "Try manual download through browser",
+                "Try manual download_async through browser",
                 "Use institutional proxy/VPN"
             ]
         },
@@ -300,7 +300,7 @@ class DownloadErrorDiagnostics:
             },
             "Direct": {
                 "pdf_detection": [
-                    "Direct download couldn't find PDF link",
+                    "Direct download_async couldn't find PDF link",
                     "Page may require JavaScript rendering",
                     "Try Playwright or Zotero translators"
                 ],

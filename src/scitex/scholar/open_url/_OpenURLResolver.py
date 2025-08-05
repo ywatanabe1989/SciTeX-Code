@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-02 02:51:28 (ywatanabe)"
+# Timestamp: "2025-08-03 21:59:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -27,11 +27,7 @@ from playwright.async_api import Page
 
 from ...errors import ScholarError
 from ..browser import BrowserManager
-from ..browser._BrowserConfig import (
-    BrowserConfiguration,
-    BrowserMode,
-    get_browser_config,
-)
+from ..config import ScholarConfig
 from ._ResolverLinkFinder import ResolverLinkFinder
 
 logger = logging.getLogger(__name__)
@@ -72,13 +68,9 @@ class OpenURLResolver:
     def __init__(
         self,
         auth_manager,
-        resolver_url=os.getenv("SCITEX_SCHOLAR_OPENURL_RESOLVER_URL"),
-        # Browser configuration - can use individual params or centralized config
-        browser_mode: Optional[BrowserMode] = None,
-        invisible: bool = False,
-        viewport_size: tuple = None,
-        capture_screenshots: bool = False,
-        config: Optional[BrowserConfiguration] = None,
+        resolver_url: Optional[str] = None,
+        browser_mode: str = "stealth",
+        config: Optional[ScholarConfig] = None,
     ):
         """Initialize OpenURL resolver.
 
@@ -86,68 +78,41 @@ class OpenURLResolver:
             auth_manager: Authentication manager for institutional access
             resolver_url: Base URL of institutional OpenURL resolver
                          (Details can be seen at https://www.zotero.org/openurl_resolvers)
-            browser_mode: Standardized browser mode (INVISIBLE, AUTH, DEBUG, TEST)
-            invisible: Enable invisible mode (legacy parameter)
-            viewport_size: Custom viewport size (legacy parameter)
-            capture_screenshots: Enable screenshot capture
-            config: Complete browser configuration (overrides other parameters)
+            browser_mode: Browser mode ("stealth" or "interactive")
+            config: ScholarConfig instance (creates new if None)
         """
         self.auth_manager = auth_manager
-        self.resolver_url = resolver_url
-
-        # Determine browser configuration using centralized system
-        if config:
-            self.browser_config = config
-            logger.info(f"🔧 Using provided browser config: {config}")
-        elif browser_mode:
-            self.browser_config = get_browser_config(
-                mode=browser_mode, capture_screenshots=capture_screenshots
-            )
-            logger.info(
-                f"🔧 Using centralized config for mode: {browser_mode.value}"
-            )
-        else:
-            # Legacy parameter-based configuration
-            mode = BrowserMode.INVISIBLE if invisible else BrowserMode.DEBUG
-            self.browser_config = get_browser_config(
-                mode=mode, capture_screenshots=capture_screenshots
-            )
-            # Override with legacy parameters if provided
-            if viewport_size:
-                self.browser_config.viewport_size = viewport_size
-            logger.info(
-                f"🔧 Using legacy config converted to: {self.browser_config}"
-            )
-
-        # Extract commonly used properties for backward compatibility
-        self.invisible = self.browser_config.invisible
-        self.viewport_size = self.browser_config.viewport_size
-        self.capture_screenshots = self.browser_config.capture_screenshots
-
-        # Standard local browser with centralized configuration
-        logger.info(
-            f"🔧 Creating BrowserManager with centralized config: {self.browser_config}"
+        
+        # Initialize config
+        if config is None:
+            config = ScholarConfig()
+        self.config = config
+        
+        # Resolve resolver URL from config
+        self.resolver_url = self.config.resolve(
+            "openurl_resolver_url", resolver_url, None, str
         )
+        
+        # Create BrowserManager with simplified configuration
         self.browser = BrowserManager(
-            auth_manager=auth_manager, config=self.browser_config
+            auth_manager=auth_manager, 
+            browser_mode=browser_mode,
+            config=self.config
         )
 
         self.timeout = 30
         self._link_finder = ResolverLinkFinder()
-
-        # Screenshot capture setup using centralized path system
+        
+        # Screenshot capture setup (optional, controlled by config)
+        self.capture_screenshots = self.config.resolve("capture_screenshots", None, False, bool)
         if self.capture_screenshots:
             from datetime import datetime
-
-            from ..utils._scholar_paths import scholar_paths
-
-            self.screenshot_dir = (
-                scholar_paths.get_screenshots_dir() / "openurl"
-            )
+            
+            self.screenshot_dir = self.config.paths.get_screenshots_dir() / "openurl"
             self.screenshot_dir.mkdir(parents=True, exist_ok=True)
             self.session_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    async def _capture_checkpoint_screenshot(
+    async def _capture_checkpoint_screenshot_async(
         self, page, stage: str, doi: str = ""
     ) -> Optional[str]:
         """Capture screenshot at checkpoint for debugging."""
@@ -236,7 +201,7 @@ class OpenURLResolver:
         else:
             return False
 
-    async def _follow_saml_redirect(self, page, saml_url, doi=""):
+    async def _follow_saml_redirect_async(self, page, saml_url, doi=""):
         """Follow SAML/SSO redirect chain until publisher URL is reached."""
         logger.info(f"Following SAML redirect chain starting from: {saml_url}")
 
@@ -288,7 +253,7 @@ class OpenURLResolver:
         logger.info(f"SAML redirect completed at: {final_url}")
         return final_url
 
-    async def _find_and_click_publisher_go_button(self, page, doi=""):
+    async def _find_and_click_publisher_go_button_async(self, page, doi=""):
         """Find and click the appropriate publisher GO button on the OpenURL resolver page.
 
         This method implements our proven GO button detection and clicking logic
@@ -428,7 +393,7 @@ class OpenURLResolver:
                         "access_type": "publisher_go_button",
                         "success": True,
                         "publisher_detected": True,
-                        "popup_page": popup,  # Keep popup open for potential PDF download
+                        "popup_page": popup,  # Keep popup open for potential PDF download_async
                     }
 
                     # Don't close popup immediately - let caller decide
@@ -443,7 +408,7 @@ class OpenURLResolver:
                         "access_type": "go_button_redirect",
                         "success": True,
                         "publisher_detected": False,
-                        "popup_page": popup,  # Keep popup open for potential PDF download
+                        "popup_page": popup,  # Keep popup open for potential PDF download_async
                     }
 
                     # Don't close popup immediately - let caller decide
@@ -461,29 +426,29 @@ class OpenURLResolver:
             logger.error(f"GO button detection failed: {e}")
             return {"success": False, "reason": f"detection_error: {e}"}
 
-    async def _download_pdf_from_publisher_page(
-        self, popup, filename, download_dir="downloads"
+    async def _download_async_pdf_async_from_publisher_page(
+        self, popup, filename, download_async_dir="download_asyncs"
     ):
         """Download PDF from publisher page after successful GO button access.
 
-        This method implements our proven PDF download logic that works
+        This method implements our proven PDF download_async logic that works
         with various publisher sites including Science.org and Nature.com.
         """
         from pathlib import Path
 
         try:
-            download_path = Path(download_dir)
-            download_path.mkdir(exist_ok=True)
+            download_async_path = Path(download_async_dir)
+            download_async_path.mkdir(exist_ok=True)
 
-            logger.info("Looking for PDF download links on publisher page...")
+            logger.info("Looking for PDF download_async links on publisher page...")
 
-            # Find PDF download links
+            # Find PDF download_async links
             pdf_links = await popup.evaluate(
                 """() => {
                 const allLinks = Array.from(document.querySelectorAll('a, button, input'));
                 return allLinks.filter(el =>
                     el.textContent.toLowerCase().includes('pdf') ||
-                    el.textContent.toLowerCase().includes('download') ||
+                    el.textContent.toLowerCase().includes('download_async') ||
                     el.href?.includes('pdf') ||
                     el.getAttribute('data-track-action')?.includes('pdf')
                 ).map(el => ({
@@ -507,12 +472,12 @@ class OpenURLResolver:
                     f"PDF link {i}: {link['text'][:30]}... | {link['href'][:50]}..."
                 )
 
-            # Find the best PDF download link
+            # Find the best PDF download_async link
             main_pdf_link = None
 
-            # Priority order: direct download > PDF with download > PDF view
+            # Priority order: direct download_async > PDF with download_async > PDF view
             for link in pdf_links:
-                if "download pdf" in link["text"].lower():
+                if "download_async pdf" in link["text"].lower():
                     main_pdf_link = link
                     break
                 elif link["href"] != "no-href" and link["href"].endswith(
@@ -534,16 +499,16 @@ class OpenURLResolver:
 
             logger.info(f"Selected PDF link: {main_pdf_link['text'][:40]}...")
 
-            # Set up download path
-            file_path = download_path / filename
+            # Set up download_async path
+            file_path = download_async_path / filename
 
-            # Configure download headers
+            # Configure download_async headers
             await popup.set_extra_http_headers(
                 {"Accept": "application/pdf,application/octet-stream,*/*"}
             )
 
-            # Try download methods
-            pdf_downloaded = False
+            # Try download_async methods
+            pdf_download_asynced = False
 
             # Method 1: Direct URL navigation
             if (
@@ -551,31 +516,31 @@ class OpenURLResolver:
                 and "pdf" in main_pdf_link["href"].lower()
             ):
                 try:
-                    logger.info("Attempting direct PDF URL download...")
-                    download_promise = popup.wait_for_event(
-                        "download", timeout=30000
+                    logger.info("Attempting direct PDF URL download_async...")
+                    download_async_promise = popup.wait_for_event(
+                        "download_async", timeout=30000
                     )
                     await popup.goto(main_pdf_link["href"])
 
-                    download = await download_promise
-                    await download.save_as(str(file_path))
+                    download_async = await download_async_promise
+                    await download_async.save_as(str(file_path))
 
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
                         logger.success(
-                            f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)"
+                            f"PDF download_asynced successfully: {filename} ({size_mb:.1f} MB)"
                         )
-                        pdf_downloaded = True
+                        pdf_download_asynced = True
 
                 except Exception as e:
-                    logger.debug(f"Direct download failed: {e}")
+                    logger.debug(f"Direct download_async failed: {e}")
 
-            # Method 2: Click-based download
-            if not pdf_downloaded:
+            # Method 2: Click-based download_async
+            if not pdf_download_asynced:
                 try:
-                    logger.info("Attempting click-based PDF download...")
-                    download_promise = popup.wait_for_event(
-                        "download", timeout=30000
+                    logger.info("Attempting click-based PDF download_async...")
+                    download_async_promise = popup.wait_for_event(
+                        "download_async", timeout=30000
                     )
 
                     # Click the first PDF link
@@ -584,7 +549,7 @@ class OpenURLResolver:
                         const allLinks = Array.from(document.querySelectorAll('a, button, input'));
                         const pdfLinks = allLinks.filter(el =>
                             el.textContent.toLowerCase().includes('pdf') ||
-                            el.textContent.toLowerCase().includes('download') ||
+                            el.textContent.toLowerCase().includes('download_async') ||
                             el.href?.includes('pdf')
                         );
                         if (pdfLinks.length > 0) {
@@ -595,20 +560,20 @@ class OpenURLResolver:
                     }"""
                     )
 
-                    download = await download_promise
-                    await download.save_as(str(file_path))
+                    download_async = await download_async_promise
+                    await download_async.save_as(str(file_path))
 
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
                         logger.success(
-                            f"PDF downloaded successfully: {filename} ({size_mb:.1f} MB)"
+                            f"PDF download_asynced successfully: {filename} ({size_mb:.1f} MB)"
                         )
-                        pdf_downloaded = True
+                        pdf_download_asynced = True
 
                 except Exception as e:
-                    logger.debug(f"Click-based download failed: {e}")
+                    logger.debug(f"Click-based download_async failed: {e}")
 
-            if pdf_downloaded:
+            if pdf_download_asynced:
                 return {
                     "success": True,
                     "filename": filename,
@@ -620,11 +585,11 @@ class OpenURLResolver:
                     ),
                 }
             else:
-                logger.warning("All PDF download methods failed")
+                logger.warning("All PDF download_async methods failed")
                 # Take screenshot for debugging
                 screenshot_path = (
-                    download_path
-                    / f"pdf_download_failed_{filename.replace('.pdf', '.png')}"
+                    download_async_path
+                    / f"pdf_download_async_failed_{filename.replace('.pdf', '.png')}"
                 )
                 await popup.screenshot(
                     path=str(screenshot_path), full_page=True
@@ -635,16 +600,16 @@ class OpenURLResolver:
 
                 return {
                     "success": False,
-                    "reason": "download_failed",
+                    "reason": "download_async_failed",
                     "screenshot": str(screenshot_path),
                     "available_links": [link["text"] for link in pdf_links],
                 }
 
         except Exception as e:
-            logger.error(f"PDF download failed: {e}")
+            logger.error(f"PDF download_async failed: {e}")
             return {"success": False, "reason": f"error: {e}"}
 
-    async def resolve_and_download_pdf(
+    async def resolve_and_download_async_pdf_async(
         self,
         title: str = "",
         authors: Optional[list] = None,
@@ -656,11 +621,11 @@ class OpenURLResolver:
         doi: str = "",
         pmid: str = "",
         filename: str = None,
-        download_dir: str = "downloads",
+        download_async_dir: str = "download_asyncs",
     ) -> Dict[str, Any]:
-        """Resolve paper access and download PDF in one operation.
+        """Resolve paper access and download_async PDF in one operation.
 
-        This method combines our GO button resolution with PDF download
+        This method combines our GO button resolution with PDF download_async
         to provide a complete paper acquisition workflow.
         """
         if not filename:
@@ -674,10 +639,10 @@ class OpenURLResolver:
                 c for c in filename if c.isalnum() or c in ".-_"
             ).strip()
 
-        logger.info(f"Starting resolve and download for: {filename}")
+        logger.info(f"Starting resolve and download_async for: {filename}")
 
         # Create fresh context for this operation
-        browser, context = await self.browser.get_authenticated_context()
+        browser, context = await self.browser.get_authenticate_async_context()
         page = await context.new_page()
 
         try:
@@ -685,7 +650,7 @@ class OpenURLResolver:
             openurl = self.build_openurl(
                 title, authors, journal, year, volume, issue, pages, doi, pmid
             )
-            logger.info(f"Resolving and downloading via OpenURL: {openurl}")
+            logger.info(f"Resolving and download_asyncing via OpenURL: {openurl}")
 
             # Navigate to OpenURL resolver
             await page.goto(
@@ -694,7 +659,7 @@ class OpenURLResolver:
             await page.wait_for_timeout(2000)
 
             # Try GO button method
-            go_button_result = await self._find_and_click_publisher_go_button(
+            go_button_result = await self._find_and_click_publisher_go_button_async(
                 page, doi
             )
 
@@ -705,12 +670,12 @@ class OpenURLResolver:
                 popup = go_button_result["popup_page"]
 
                 logger.info(
-                    "Successfully accessed publisher page, attempting PDF download..."
+                    "Successfully accessed publisher page, attempting PDF download_async..."
                 )
 
-                # Try to download PDF
-                download_result = await self._download_pdf_from_publisher_page(
-                    popup, filename, download_dir
+                # Try to download_async PDF
+                download_async_result = await self._download_async_pdf_async_from_publisher_page(
+                    popup, filename, download_async_dir
                 )
 
                 # Close popup
@@ -722,7 +687,7 @@ class OpenURLResolver:
                 # Combine results
                 final_result = {
                     **go_button_result,
-                    "pdf_download": download_result,
+                    "pdf_download_async": download_async_result,
                     "filename": filename,
                 }
 
@@ -730,11 +695,11 @@ class OpenURLResolver:
                 if "popup_page" in final_result:
                     del final_result["popup_page"]
 
-                if download_result["success"]:
-                    logger.success(f"Successfully downloaded PDF: {filename}")
+                if download_async_result["success"]:
+                    logger.success(f"Successfully download_asynced PDF: {filename}")
                 else:
                     logger.warning(
-                        f"Paper accessed but PDF download failed: {download_result.get('reason', 'unknown')}"
+                        f"Paper accessed but PDF download_async failed: {download_async_result.get('reason', 'unknown')}"
                     )
 
                 return final_result
@@ -749,7 +714,7 @@ class OpenURLResolver:
                 }
 
         except Exception as e:
-            logger.error(f"Resolve and download failed: {e}")
+            logger.error(f"Resolve and download_async failed: {e}")
             return {
                 "success": False,
                 "reason": f"error: {e}",
@@ -778,7 +743,7 @@ class OpenURLResolver:
             logger.warning("DOI is required for reliable resolution")
 
         # Create fresh context for each resolution
-        browser, context = await self.browser.get_authenticated_context()
+        browser, context = await self.browser.get_authenticate_async_context()
         page = await context.new_page()
 
         openurl = self.build_openurl(
@@ -797,20 +762,20 @@ class OpenURLResolver:
             )
 
             # Checkpoint 1: After loading OpenURL resolver page
-            await self._capture_checkpoint_screenshot(
+            await self._capture_checkpoint_screenshot_async(
                 page, "01_openurl_loaded", doi
             )
 
             # Apply stealth behaviors if using standard browser
             if hasattr(self.browser, "stealth_manager"):
-                await self.browser.stealth_manager.human_delay()
-                await self.browser.stealth_manager.human_mouse_move(page)
-                await self.browser.stealth_manager.human_scroll(page)
+                await self.browser.stealth_manager.human_delay_async()
+                await self.browser.stealth_manager.human_mouse_move_async(page)
+                await self.browser.stealth_manager.human_scroll_async(page)
 
             await page.wait_for_timeout(2000)
 
             # Checkpoint 2: After stealth behaviors applied
-            await self._capture_checkpoint_screenshot(
+            await self._capture_checkpoint_screenshot_async(
                 page, "02_stealth_applied", doi
             )
 
@@ -846,7 +811,7 @@ class OpenURLResolver:
             logger.info("Looking for full-text link on resolver page...")
 
             # First try our GO button method
-            go_button_result = await self._find_and_click_publisher_go_button(
+            go_button_result = await self._find_and_click_publisher_go_button_async(
                 page, doi
             )
             if go_button_result["success"]:
@@ -862,7 +827,7 @@ class OpenURLResolver:
                 return go_button_result
 
             # Fallback to original link finder method
-            link_result = await self._link_finder.find_link(page, doi)
+            link_result = await self._link_finder.find_link_async(page, doi)
 
             if not link_result["success"]:
                 logger.warning(
@@ -895,7 +860,7 @@ class OpenURLResolver:
                         domain in final_url
                         for domain in ["openathens.net", "saml", "shibauth"]
                     ):
-                        final_url = await self._follow_saml_redirect(
+                        final_url = await self._follow_saml_redirect_async(
                             popup, final_url, doi
                         )
 
@@ -921,12 +886,12 @@ class OpenURLResolver:
                 try:
                     new_page_promise = None
 
-                    def handle_page(new_page):
+                    def handle_page_async(new_page):
                         nonlocal new_page_promise
                         new_page_promise = new_page
                         logger.info(f"New page detected: {new_page.url}")
 
-                    context.on("page", handle_page)
+                    context.on("page", handle_page_async)
 
                     await page.goto(
                         link_url, wait_until="domcontentloaded", timeout=30000
@@ -953,7 +918,7 @@ class OpenURLResolver:
                             "institutionlogin",
                         ]
                     ):
-                        final_url = await self._follow_saml_redirect(
+                        final_url = await self._follow_saml_redirect_async(
                             page, final_url, doi
                         )
 
@@ -1031,14 +996,14 @@ class OpenURLResolver:
         # Create semaphore to limit concurrency
         semaphore = asyncio.Semaphore(concurrency)
 
-        async def worker(doi):
+        async def worker_async(doi):
             async with semaphore:
                 # Add random delay between requests to appear more human
                 await asyncio.sleep(random.uniform(0.5, 2.0))
                 return await self._resolve_single_async(doi=doi)
 
-        # Create tasks using the worker function
-        tasks = [worker(doi) for doi in dois]
+        # Create tasks using the worker_async function
+        tasks = [worker_async(doi) for doi in dois]
         results = await asyncio.gather(*tasks)
 
         logger.info("--- Parallel resolution finished ---")
@@ -1106,8 +1071,8 @@ class OpenURLResolver:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if hasattr(self.browser, "cleanup_authenticated_context"):
-            await self.browser.cleanup_authenticated_context()
+        if hasattr(self.browser, "cleanup_authenticate_async_context"):
+            await self.browser.cleanup_authenticate_async_context()
 
 
 async def try_openurl_resolver_async(

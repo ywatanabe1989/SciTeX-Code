@@ -1,0 +1,352 @@
+{
+  "total_papers": 75,
+  "url_doi_recovered": 14,
+  "pubmed_recovered": 7,
+  "corpus_id_recovered": 8,
+  "actually_processed": 26,
+  "processing_errors": 3,
+  "still_unresolved": [
+    {
+      "title": "Generative models, linguistic communication and active inference",
+      "url": "https://api.semanticscholar.org/CorpusId:220603864"
+    },
+    {
+      "title": "The functional role of cross-frequency coupling",
+      "url": "https://www.sciencedirect.com/science/article/pii/S1364661310002068?dgcid=api\\_sd\\_search-api-endpoint"
+    },
+    {
+      "title": "Untangling cross-frequency coupling in neuroscience",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0959438814001640?dgcid=api\\_sd\\_search-api-endpoint"
+    },
+    {
+      "title": "Statistical Inference for Modulation Index in Phase-Amplitude Coupling",
+      "url": "https://api.semanticscholar.org/CorpusId:263829747"
+    },
+    {
+      "title": "Different Methods to Estimate the Phase of Neural Rhythms Agree But Only During Times of Low Uncertainty",
+      "url": "https://api.semanticscholar.org/CorpusId:264098986"
+    },
+    {
+      "title": "Modelling Brain Connectivity Networks by Graph Embedding for Dyslexia Diagnosis",
+      "url": "https://api.semanticscholar.org/CorpusId:233209974"
+    },
+    {
+      "title": "Estimating Phase Amplitude Coupling between Neural Oscillations Based on Permutation and Entropy",
+      "url": "https://api.semanticscholar.org/CorpusId:237322109"
+    },
+    {
+      "title": "Toward a proper estimation of phase–amplitude coupling in neural oscillations",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0165027014000132?dgcid=api\\_sd\\_search-api-endpoint"
+    },
+    {
+      "title": "Time-Frequency Based Phase-Amplitude Coupling Measure For Neuronal Oscillations",
+      "url": "https://api.semanticscholar.org/CorpusId:201651743"
+    },
+    {
+      "title": "Effect of Phase Clustering Bias on Phase-Amplitude Coupling for Emotional EEG.",
+      "url": "https://api.semanticscholar.org/CorpusId:267970715"
+    },
+    {
+      "title": "Phase-Amplitude Coupling: A General Mechanism for Memory Processing and Synaptic Plasticity?",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0896627317311704?dgcid=api\\_sd\\_search-api-endpoint"
+    },
+    {
+      "title": "Analyzing human sleep EEG: A methodological primer with code implementation.",
+      "url": "https://api.semanticscholar.org/CorpusId:220907907"
+    },
+    {
+      "title": "Alpha and high gamma phase amplitude coupling during motor imagery and weighted cross-frequency coupling to extract discriminative cross-frequency patterns",
+      "url": "https://api.semanticscholar.org/CorpusId:235917686"
+    },
+    {
+      "title": "Long term effects of cueing procedural memory reactivation during NREM sleep",
+      "url": "https://api.semanticscholar.org/CorpusId:237541152"
+    },
+    {
+      "title": "Cross‐Frequency Couplings Reveal Mice Visual Cortex Selectivity to Grating Orientations",
+      "url": "https://api.semanticscholar.org/CorpusId:276988304"
+    },
+    {
+      "title": "The Functional Interactions between Cortical Regions through Theta-Gamma Coupling during Resting-State and a Visual Working Memory Task",
+      "url": "https://api.semanticscholar.org/CorpusId:246968436"
+    },
+    {
+      "title": "Complex network modelling of EEG band coupling in dyslexia: An exploratory analysis of auditory processing and diagnosis",
+      "url": "https://api.semanticscholar.org/CorpusId:263786486"
+    },
+    {
+      "title": "Shifts in Gamma Phase–Amplitude Coupling Frequency from Theta to Alpha Over Posterior Cortex During Visual Tasks",
+      "url": "https://api.semanticscholar.org/CorpusId:7724159"
+    },
+    {
+      "title": "The bispectrum and its relationship to phase-amplitude coupling",
+      "url": "https://api.semanticscholar.org/CorpusId:3670544"
+    },
+    {
+      "title": "The Detection of Phase Amplitude Coupling during Sensory Processing",
+      "url": "https://api.semanticscholar.org/CorpusId:19922713"
+    },
+    {
+      "title": "Measuring Phase-Amplitude Coupling Based on the Jensen-Shannon Divergence and Correlation Matrix",
+      "url": "https://api.semanticscholar.org/CorpusId:235776537"
+    },
+    {
+      "title": "Heterogeneous profiles of coupled sleep oscillations in human hippocampus",
+      "url": "https://api.semanticscholar.org/CorpusId:109858184"
+    },
+    {
+      "title": "Multivariate Analysis of Bivariate Phase-Amplitude Coupling in EEG Data Using Tensor Robust PCA",
+      "url": "https://api.semanticscholar.org/CorpusId:235675330"
+    },
+    {
+      "title": "The olfactory bulb theta rhythm follows all frequencies of diaphragmatic respiration in the freely behaving rat",
+      "url": "https://api.semanticscholar.org/CorpusId:17638335"
+    },
+    {
+      "title": "Temporal-spatial characteristics of phase-amplitude coupling in electrocorticogram for human temporal lobe epilepsy",
+      "url": "https://www.sciencedirect.com/science/article/pii/S138824571730216X?dgcid=api\\_sd\\_search-api-endpoint"
+    },
+    {
+      "title": "CFC delta-beta is related with mixed features and response to treatment in bipolar II depression",
+      "url": "https://api.semanticscholar.org/CorpusId:196556378"
+    },
+    {
+      "title": "Timing of phase‐amplitude coupling is essential for neuronal and functional maturation of audiovisual integration in adolescents",
+      "url": "https://api.semanticscholar.org/CorpusId:216596437"
+    },
+    {
+      "title": "Variational Phase-Amplitude Coupling Characterizes Signatures of Anterior Cortex Under Emotional Processing",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=10040734"
+    },
+    {
+      "title": "Topology, Cross-Frequency, and Same-Frequency Band Interactions Shape the Generation of Phase-Amplitude Coupling in a Neural Mass Model of a Cortical Column",
+      "url": "https://api.semanticscholar.org/CorpusId:3626970"
+    },
+    {
+      "title": "Phase resetting in human auditory cortex to visual speech",
+      "url": "https://api.semanticscholar.org/CorpusId:91810493"
+    },
+    {
+      "title": "Theta-gamma phase amplitude coupling in a hippocampal CA1 microcircuit",
+      "url": "https://pdfs.semanticscholar.org/8544/7fef2080fa46fe3f62e148f22c02d97631b9.pdf"
+    },
+    {
+      "title": "Phase-amplitude coupling and infraslow (<1 Hz) frequencies in the rat brain: relationship to resting state fMRI",
+      "url": "https://api.semanticscholar.org/CorpusId:1195192"
+    },
+    {
+      "title": "Event-Related Phase-Amplitude Coupling During Working Memory of Musical Chords",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9488237"
+    },
+    {
+      "title": "Granger Causality Based Directional Phase-Amplitude Coupling Measure",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9414004"
+    },
+    {
+      "title": "Seizure Onset Zone Identification Based on Phase-Amplitude Coupling of Interictal Electrocorticogram",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9630941"
+    },
+    {
+      "title": "What Can Local Transfer Entropy Tell Us about Phase-Amplitude Coupling in Electrophysiological Signals?",
+      "url": "https://pdfs.semanticscholar.org/2f98/b8624c8505473e95ffbceebaae21a3380ad0.pdf"
+    },
+    {
+      "title": "Phase-amplitude coupling in neuronal oscillator networks",
+      "url": "https://arxiv.org/pdf/2012.04217.pdf"
+    },
+    {
+      "title": "Computing Phase Amplitude Coupling in EEGLAB: PACTools",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9288037"
+    },
+    {
+      "title": "REPAC: Reliable Estimation of Phase-Amplitude Coupling in Brain Networks",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9414749"
+    },
+    {
+      "title": "Phase-dependent Stimulation for Modulating Phase-amplitude Coupling: A Computational Modeling Approach",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9175966"
+    },
+    {
+      "title": "Influence of White and Gray Matter Connections on Endogenous Human Cortical Oscillations",
+      "url": "https://api.semanticscholar.org/CorpusId:11725868"
+    },
+    {
+      "title": "Dyconnmap: Dynamic connectome mapping—A neuroimaging python module",
+      "url": "https://api.semanticscholar.org/CorpusId:235796871"
+    },
+    {
+      "title": "Boosting Generalization in Bio-signal Classification by Learning the Phase-Amplitude Coupling",
+      "url": "https://api.semanticscholar.org/CorpusId:221739189"
+    },
+    {
+      "title": "Implicit Analysis of Perceptual Multimedia Experience Based on Physiological Response: A Review",
+      "url": "https://api.semanticscholar.org/CorpusId:25121813"
+    },
+    {
+      "title": "A Mutual Information Measure of Phase-Amplitude Coupling using High Dimensional Sparse Models",
+      "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9871816"
+    },
+    {
+      "title": "Phase-Amplitude Coupling in Spontaneous Mouse Behavior",
+      "url": "https://api.semanticscholar.org/CorpusId:7675931"
+    }
+  ],
+  "successfully_resolved": [
+    {
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations: Comparison of Phase-Locking Value, Mean Vector Length, Modulation Index, and Generalized-Linear-Modeling-Cross-Frequency-Coupling",
+      "doi": "10.3389/fnins.2019.00573",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "Measuring phase-amplitude coupling between neuronal oscillations of different frequencies.",
+      "doi": "10.1152/jn.00106.2010",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "Direct modulation index: A measure of phase amplitude coupling for neurophysiology data",
+      "doi": "10.1002/hbm.26190",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Discriminating Valid from Spurious Indices of Phase-Amplitude Coupling",
+      "doi": "10.1523/ENEURO.0334-16.2016",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Phase–Amplitude Coupling in Human Electrocorticography Is Spatially Distributed and Phase Diverse",
+      "doi": "10.1523/JNEUROSCI.4816-11.2012",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase‐amplitude coupling of sleep slow oscillatory and spindle activity correlates with overnight memory consolidation",
+      "doi": "10.1111/jsr.12835",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase-amplitude coupling profiles differ in frontal and auditory cortices",
+      "doi": "10.1101/2020.05.05.078667",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Tensorpac: An open-source Python toolbox for tensor-based phase-amplitude coupling measurement in electrophysiological brain signals",
+      "doi": "10.1371/journal.pcbi.1008302",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "A Canonical Circuit for Generating Phase-Amplitude Coupling",
+      "doi": "10.1371/journal.pone.0102591",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Cross-frequency coupling within and between the human thalamus and neocortex",
+      "doi": "10.3389/fnhum.2013.00084",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Modeling the Generation of Phase-Amplitude Coupling in Cortical Circuits: From Detailed Networks to Neural Mass Models",
+      "doi": "10.1155/2015/915606",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Cross‐regional phase amplitude coupling supports the encoding of episodic memories",
+      "doi": "10.1002/hipo.23309",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Cross-Frequency Phase-Amplitude Coupling between Hippocampal Theta and Gamma Oscillations during Recall Destabilizes Memory and Renders It Susceptible to Reconsolidation Disruption",
+      "doi": "10.1523/JNEUROSCI.0259-20.2020",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "EEG Phase-Amplitude Coupling Strength and Phase Preference: Association with Age over the First Three Years after Birth",
+      "doi": "10.1523/ENEURO.0264-20.2021",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase–Amplitude Coupling, Mental Health and Cognition: Implications for Adolescence",
+      "doi": "10.3389/fnhum.2021.622313",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "How to design optimal brain stimulation to modulate phase-amplitude coupling?",
+      "doi": "10.1088/1741-2552\\/ad5b1a",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase-Amplitude Coupling and Phase Synchronization Between Medial Temporal, Frontal and Posterior Brain Regions Support Episodic Autobiographical Memory Recall",
+      "doi": "10.1007/s10548-022-00890-4",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase-amplitude coupling of Go/Nogo task-related neuronal oscillation decreases for humans with insufficient sleep.",
+      "doi": "10.1093/sleep/zsad243",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "Phase-Amplitude Coupling Brain Networks in Children with Attention-Deficit/Hyperactivity Disorder",
+      "doi": "10.1177/15500594221086195",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Addressing Pitfalls in Phase-Amplitude Coupling Analysis with an Extended Modulation Index Toolbox",
+      "doi": "10.1007/s12021-020-09487-3",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Decreased Phase–Amplitude Coupling Between the mPFC and BLA During Exploratory Behaviour in Chronic Unpredictable Mild Stress-Induced Depression Model of Rats",
+      "doi": "10.3389/fnbeh.2021.799556",
+      "recovery_method": "pubmed_conversion",
+      "processed": true
+    },
+    {
+      "title": "Multitaper estimates of phase-amplitude coupling",
+      "doi": "10.1088/1741-2552\\/ac1deb",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Parametric estimation of spectrum driven by an exogenous signal",
+      "doi": "10.1109/ICASSP.2017.7952968",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    },
+    {
+      "title": "Understanding phase-amplitude coupling from bispectral analysis",
+      "doi": "10.1101/2020.03.20.000745",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Phase-Amplitude Coupling in Autism Spectrum Disorder: Results from the Autism Biomarkers Consortium for Clinical Trials",
+      "doi": "10.1101/2022.09.25.22279830",
+      "recovery_method": "url_extraction",
+      "processed": true
+    },
+    {
+      "title": "Dissociated cortical phase- and amplitude-coupling patterns in the human brain",
+      "doi": "10.1101/485599",
+      "recovery_method": "corpus_id_resolution",
+      "processed": true
+    }
+  ]
+}

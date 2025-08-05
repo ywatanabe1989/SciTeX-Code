@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smart retry logic for Scholar PDF downloads.
+"""Smart retry logic for Scholar PDF download_asyncs.
 
 This module implements intelligent retry strategies with:
 - Exponential backoff
@@ -68,7 +68,7 @@ class RetryConfig:
             exponential_base: Base for exponential backoff
             jitter: Random jitter factor (0-1)
             timeout_multiplier: Multiply timeout on each retry
-            strategy_rotation: Try different download strategies on retry
+            strategy_rotation: Try different download_async strategies on retry
         """
         self.max_attempts = max_attempts
         self.initial_delay = initial_delay
@@ -209,7 +209,7 @@ def retry_async(
 
 
 class StrategyRotator:
-    """Rotate through different download strategies on retry."""
+    """Rotate through different download_async strategies on retry."""
     
     def __init__(self, strategies: List[str]):
         """Initialize with list of strategy names."""
@@ -241,24 +241,24 @@ class StrategyRotator:
         return None
     
     def reset(self):
-        """Reset for new download attempt."""
+        """Reset for new download_async attempt."""
         self.current_index = 0
         self.failed_strategies.clear()
 
 
 class RetryManager:
-    """Manage retry logic for PDF downloads."""
+    """Manage retry logic for PDF download_asyncs."""
     
     def __init__(self, config: Optional[RetryConfig] = None):
         """Initialize retry manager."""
         self.config = config or RetryConfig()
-        self.download_attempts: Dict[str, int] = {}
+        self.download_async_attempts: Dict[str, int] = {}
         self.strategy_rotators: Dict[str, StrategyRotator] = {}
     
-    async def download_with_retry(
+    async def download_async_with_retry(
         self,
         identifier: str,
-        download_func: Callable,
+        download_async_func: Callable,
         strategies: Optional[List[str]] = None,
         **kwargs
     ) -> Tuple[Optional[Any], Dict[str, Any]]:
@@ -266,9 +266,9 @@ class RetryManager:
         
         Args:
             identifier: DOI or URL
-            download_func: Async download function
+            download_async_func: Async download_async function
             strategies: List of strategy names to rotate through
-            **kwargs: Arguments for download function
+            **kwargs: Arguments for download_async function
             
         Returns:
             Tuple of (result, metadata)
@@ -282,7 +282,7 @@ class RetryManager:
             rotator = None
         
         # Track attempts
-        self.download_attempts[identifier] = 0
+        self.download_async_attempts[identifier] = 0
         
         metadata = {
             'attempts': 0,
@@ -295,7 +295,7 @@ class RetryManager:
         last_error = None
         
         for attempt in range(self.config.max_attempts):
-            self.download_attempts[identifier] = attempt + 1
+            self.download_async_attempts[identifier] = attempt + 1
             metadata['attempts'] = attempt + 1
             
             try:
@@ -314,8 +314,8 @@ class RetryManager:
                         kwargs['timeout'] * self.config.timeout_multiplier
                     )
                 
-                # Attempt download
-                result = await download_func(identifier, **kwargs)
+                # Attempt download_async
+                result = await download_async_func(identifier, **kwargs)
                 
                 # Success
                 metadata['total_time'] = time.time() - start_time

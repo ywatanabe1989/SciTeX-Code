@@ -8,7 +8,7 @@
 
 ## Policy
 - ALWAYS KEEP REPOSITORY CLEAN
-- For this, use `./docs/to_claude/bin/safe_rm.sh` to hide old/unrelated files with timestamp
+- For this, use `./docs/to_claude/bin/safe_rm.sh` to hide_async old/unrelated files with timestamp
 - `rm` command is not allowed
 
 ## Table of Contents

@@ -51,20 +51,20 @@ class BaseAuthenticator(ABC):
         self.name = self.__class__.__name__.replace("Authentication", "")
 
     @abstractmethod
-    async def is_authenticated(self, verify_live: bool = False) -> bool:
+    async def is_authenticate_async(self, verify_live: bool = False) -> bool:
         """
-        Check if currently authenticated.
+        Check if currently authenticate_async.
 
         Args:
             verify_live: If True, verify with actual request instead of just checking session
 
         Returns:
-            True if authenticated, False otherwise
+            True if authenticate_async, False otherwise
         """
         pass
 
     @abstractmethod
-    async def authenticate(self, **kwargs) -> dict:
+    async def authenticate_async(self, **kwargs) -> dict:
         """
         Perform authentication and return session data.
 
@@ -77,17 +77,17 @@ class BaseAuthenticator(ABC):
         pass
 
     @abstractmethod
-    async def get_auth_headers(self) -> Dict[str, str]:
+    async def get_auth_headers_async(self) -> Dict[str, str]:
         """
         Get authentication headers for requests.
 
         Returns:
-            Dictionary of headers to include in authenticated requests
+            Dictionary of headers to include in authenticate_async requests
         """
         pass
 
     @abstractmethod
-    async def get_auth_cookies(self) -> List[Dict[str, Any]]:
+    async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
         """
         Get authentication cookies for requests.
 
@@ -97,12 +97,12 @@ class BaseAuthenticator(ABC):
         pass
 
     @abstractmethod
-    async def logout(self) -> None:
+    async def logout_async(self) -> None:
         """Log out and clear authentication state."""
         pass
 
     @abstractmethod
-    async def get_session_info(self) -> Dict[str, Any]:
+    async def get_session_info_async(self) -> Dict[str, Any]:
         """
         Get information about current session.
 
@@ -137,29 +137,29 @@ if __name__ == "__main__":
         )
         
         try:
-            # Check if already authenticated
-            is_auth = await auth.is_authenticated()
-            print(f"Initially authenticated: {is_auth}")
+            # Check if already authenticate_async
+            is_auth = await auth.is_authenticate_async()
+            print(f"Initially authenticate_async: {is_auth}")
             
             if not is_auth:
                 # Perform authentication
                 print("Authenticating...")
-                success = await auth.authenticate()
+                success = await auth.authenticate_async()
                 print(f"Authentication successful: {success}")
             
             # Get authentication headers/cookies for requests
-            headers = await auth.get_auth_headers()
-            cookies = await auth.get_auth_cookies()
+            headers = await auth.get_auth_headers_async()
+            cookies = await auth.get_auth_cookies_async()
             print(f"Auth headers: {list(headers.keys())}")
             print(f"Auth cookies: {list(cookies.keys())}")
             
             # Get session info
-            session_info = await auth.get_session_info()
+            session_info = await auth.get_session_info_async()
             print(f"Session info: {session_info}")
             
         finally:
             # Always cleanup
-            await auth.logout()
+            await auth.logout_async()
             print("Logged out successfully")
     
     # Run the example

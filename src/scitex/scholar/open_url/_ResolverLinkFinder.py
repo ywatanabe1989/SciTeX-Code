@@ -130,18 +130,18 @@ class ResolverLinkFinder:
         prefix = match.group(1)
         return self.DOI_TO_DOMAIN.get(prefix, [])
 
-    async def find_link(self, page, doi: str) -> dict:
+    async def find_link_async(self, page, doi: str) -> dict:
         """Find the best full-text link using prioritized strategies."""
         logger.info(f"Finding resolver link for DOI: {doi}")
 
         # Strategy 1: Link Target (Most Reliable)
-        link_url = await self._find_by_domain(page, doi)
+        link_url = await self._find_by_domain_async(page, doi)
         if link_url:
             logger.info("✓ Found link using domain matching (Strategy 1)")
             return {"success": True, "url": link_url, "method": "domain"}
 
         # Strategy 2: Page Structure with scoring
-        link_url = await self._find_by_structure(page, doi)
+        link_url = await self._find_by_structure_async(page, doi)
         if link_url:
             logger.info("✓ Found link using page structure (Strategy 2)")
             return {"success": True, "url": link_url, "method": "structure"}
@@ -149,7 +149,7 @@ class ResolverLinkFinder:
         logger.warning("✗ No suitable links found")
         return {"success": False, "url": None, "method": None}
 
-    async def _find_by_domain(self, page: Page, doi: str) -> Optional[str]:
+    async def _find_by_domain_async(self, page: Page, doi: str) -> Optional[str]:
         """Strategy 1: Find link by expected publisher domain."""
         expected_domains = self.get_expected_domains(doi)
         if not expected_domains:
@@ -189,7 +189,7 @@ class ResolverLinkFinder:
 
         return None
 
-    async def _find_by_structure(self, page, doi: str):
+    async def _find_by_structure_async(self, page, doi: str):
         """Find link by page structure with publisher prioritization."""
         potential_links = []
         expected_domains = self.get_expected_domains(doi)
@@ -251,7 +251,7 @@ class ResolverLinkFinder:
         )
         return best_link["href"]
 
-    async def _find_by_text(self, page: Page) -> Optional[str]:
+    async def _find_by_text_async(self, page: Page) -> Optional[str]:
         """Strategy 3: Find link by text patterns."""
         for pattern in self.TEXT_PATTERNS:
             try:
@@ -269,7 +269,7 @@ class ResolverLinkFinder:
 
         return None
 
-    async def click_and_wait(self, page: Page, link: ElementHandle) -> bool:
+    async def click_and_wait_async(self, page: Page, link: ElementHandle) -> bool:
         """Click link and wait for navigation.
 
         Returns True if navigation succeeded.
@@ -314,7 +314,7 @@ class ResolverLinkFinder:
 
 
 # Convenience function for integration
-async def find_and_click_resolver_link(page: Page, doi: str) -> Optional[str]:
+async def find_and_click_resolver_link_async(page: Page, doi: str) -> Optional[str]:
     """Find and click the best resolver link.
 
     Args:
@@ -327,12 +327,12 @@ async def find_and_click_resolver_link(page: Page, doi: str) -> Optional[str]:
     finder = ResolverLinkFinder()
 
     # Find link
-    link = await finder.find_link(page, doi)
+    link = await finder.find_link_async(page, doi)
     if not link:
         return None
 
     # Click and navigate
-    success = await finder.click_and_wait(page, link)
+    success = await finder.click_and_wait_async(page, link)
     if success:
         return page.url
     else:

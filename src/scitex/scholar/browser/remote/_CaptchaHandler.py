@@ -37,7 +37,7 @@ class CaptchaHandler:
         self.base_url = "http://2captcha.com"
         self.timeout = 180  # 3 minutes max wait time
         
-    async def handle_page(self, page: Page) -> bool:
+    async def handle_page_async(self, page: Page) -> bool:
         """Check and handle captcha on the current page.
         
         Returns:
@@ -47,24 +47,24 @@ class CaptchaHandler:
             return False
             
         # Check for common captcha indicators
-        captcha_found = await self._detect_captcha(page)
+        captcha_found = await self._detect_captcha_async(page)
         if not captcha_found:
             return False
             
         logger.info("Captcha detected on page - attempting to solve")
         
         # Determine captcha type and solve
-        if await self._is_cloudflare_challenge(page):
-            return await self._solve_cloudflare_challenge(page)
-        elif await self._has_recaptcha(page):
-            return await self._solve_recaptcha(page)
-        elif await self._has_hcaptcha(page):
-            return await self._solve_hcaptcha(page)
+        if await self._is_cloudflare_challenge_async(page):
+            return await self._solve_cloudflare_challenge_async(page)
+        elif await self._has_recaptcha_async(page):
+            return await self._solve_recaptcha_async(page)
+        elif await self._has_hcaptcha_async(page):
+            return await self._solve_hcaptcha_async(page)
         else:
             logger.warning("Unknown captcha type detected")
             return False
     
-    async def _detect_captcha(self, page: Page) -> bool:
+    async def _detect_captcha_async(self, page: Page) -> bool:
         """Detect if page has a captcha."""
         # Check for common captcha elements
         selectors = [
@@ -96,7 +96,7 @@ class CaptchaHandler:
                 
         return False
     
-    async def _is_cloudflare_challenge(self, page: Page) -> bool:
+    async def _is_cloudflare_challenge_async(self, page: Page) -> bool:
         """Check if this is a Cloudflare challenge."""
         try:
             # Check for Cloudflare-specific elements
@@ -121,7 +121,7 @@ class CaptchaHandler:
         except:
             return False
     
-    async def _solve_cloudflare_challenge(self, page: Page) -> bool:
+    async def _solve_cloudflare_challenge_async(self, page: Page) -> bool:
         """Handle Cloudflare challenge/turnstile."""
         logger.info("Handling Cloudflare challenge")
         
@@ -131,7 +131,7 @@ class CaptchaHandler:
             await asyncio.sleep(5)
             
             # Check if still on challenge page
-            if not await self._is_cloudflare_challenge(page):
+            if not await self._is_cloudflare_challenge_async(page):
                 logger.info("Cloudflare challenge auto-solved")
                 return True
             
@@ -141,18 +141,18 @@ class CaptchaHandler:
                 logger.info("Cloudflare Turnstile detected - solving with 2Captcha")
                 
                 # Get site key
-                site_key = await self._extract_turnstile_key(page)
+                site_key = await self._extract_turnstile_key_async(page)
                 if not site_key:
                     logger.error("Could not extract Turnstile site key")
                     return False
                 
                 # Submit to 2Captcha
-                task_id = await self._submit_turnstile(page.url, site_key)
+                task_id = await self._submit_turnstile_async(page.url, site_key)
                 if not task_id:
                     return False
                 
                 # Get solution
-                solution = await self._get_captcha_result(task_id)
+                solution = await self._get_captcha_result_async(task_id)
                 if not solution:
                     return False
                 
@@ -170,7 +170,7 @@ class CaptchaHandler:
                 # Wait for navigation
                 await page.wait_for_load_state("networkidle", timeout=30000)
                 
-                return not await self._is_cloudflare_challenge(page)
+                return not await self._is_cloudflare_challenge_async(page)
             
             # For other Cloudflare challenges, just wait
             logger.info("Waiting for Cloudflare challenge to complete...")
@@ -185,14 +185,14 @@ class CaptchaHandler:
             logger.error(f"Failed to solve Cloudflare challenge: {e}")
             return False
     
-    async def _has_recaptcha(self, page: Page) -> bool:
+    async def _has_recaptcha_async(self, page: Page) -> bool:
         """Check if page has reCAPTCHA."""
         try:
             return await page.locator("iframe[src*='recaptcha']").first.is_visible()
         except:
             return False
     
-    async def _solve_recaptcha(self, page: Page) -> bool:
+    async def _solve_recaptcha_async(self, page: Page) -> bool:
         """Solve reCAPTCHA v2."""
         logger.info("Solving reCAPTCHA")
         
@@ -210,12 +210,12 @@ class CaptchaHandler:
                 return False
             
             # Submit to 2Captcha
-            task_id = await self._submit_recaptcha(page.url, site_key)
+            task_id = await self._submit_recaptcha_async(page.url, site_key)
             if not task_id:
                 return False
             
             # Get solution
-            solution = await self._get_captcha_result(task_id)
+            solution = await self._get_captcha_result_async(task_id)
             if not solution:
                 return False
             
@@ -243,14 +243,14 @@ class CaptchaHandler:
             logger.error(f"Failed to solve reCAPTCHA: {e}")
             return False
     
-    async def _has_hcaptcha(self, page: Page) -> bool:
+    async def _has_hcaptcha_async(self, page: Page) -> bool:
         """Check if page has hCaptcha."""
         try:
             return await page.locator("iframe[src*='hcaptcha']").first.is_visible()
         except:
             return False
     
-    async def _solve_hcaptcha(self, page: Page) -> bool:
+    async def _solve_hcaptcha_async(self, page: Page) -> bool:
         """Solve hCaptcha."""
         logger.info("Solving hCaptcha")
         
@@ -268,12 +268,12 @@ class CaptchaHandler:
                 return False
             
             # Submit to 2Captcha
-            task_id = await self._submit_hcaptcha(page.url, site_key)
+            task_id = await self._submit_hcaptcha_async(page.url, site_key)
             if not task_id:
                 return False
             
             # Get solution
-            solution = await self._get_captcha_result(task_id)
+            solution = await self._get_captcha_result_async(task_id)
             if not solution:
                 return False
             
@@ -292,7 +292,7 @@ class CaptchaHandler:
             logger.error(f"Failed to solve hCaptcha: {e}")
             return False
     
-    async def _extract_turnstile_key(self, page: Page) -> Optional[str]:
+    async def _extract_turnstile_key_async(self, page: Page) -> Optional[str]:
         """Extract Cloudflare Turnstile site key."""
         try:
             # Try different methods to get the key
@@ -324,9 +324,9 @@ class CaptchaHandler:
             logger.error(f"Failed to extract Turnstile key: {e}")
             return None
     
-    async def _submit_recaptcha(self, page_url: str, site_key: str) -> Optional[str]:
+    async def _submit_recaptcha_async(self, page_url: str, site_key: str) -> Optional[str]:
         """Submit reCAPTCHA to 2Captcha."""
-        return await self._submit_captcha({
+        return await self._submit_captcha_async({
             "key": self.api_key,
             "method": "userrecaptcha",
             "googlekey": site_key,
@@ -334,9 +334,9 @@ class CaptchaHandler:
             "json": 1
         })
     
-    async def _submit_hcaptcha(self, page_url: str, site_key: str) -> Optional[str]:
+    async def _submit_hcaptcha_async(self, page_url: str, site_key: str) -> Optional[str]:
         """Submit hCaptcha to 2Captcha."""
-        return await self._submit_captcha({
+        return await self._submit_captcha_async({
             "key": self.api_key,
             "method": "hcaptcha",
             "sitekey": site_key,
@@ -344,9 +344,9 @@ class CaptchaHandler:
             "json": 1
         })
     
-    async def _submit_turnstile(self, page_url: str, site_key: str) -> Optional[str]:
+    async def _submit_turnstile_async(self, page_url: str, site_key: str) -> Optional[str]:
         """Submit Turnstile to 2Captcha."""
-        return await self._submit_captcha({
+        return await self._submit_captcha_async({
             "key": self.api_key,
             "method": "turnstile",
             "sitekey": site_key,
@@ -354,7 +354,7 @@ class CaptchaHandler:
             "json": 1
         })
     
-    async def _submit_captcha(self, params: Dict[str, Any]) -> Optional[str]:
+    async def _submit_captcha_async(self, params: Dict[str, Any]) -> Optional[str]:
         """Submit captcha to 2Captcha and get task ID."""
         try:
             async with aiohttp.ClientSession() as session:
@@ -376,7 +376,7 @@ class CaptchaHandler:
             logger.error(f"Failed to submit captcha: {e}")
             return None
     
-    async def _get_captcha_result(self, task_id: str) -> Optional[str]:
+    async def _get_captcha_result_async(self, task_id: str) -> Optional[str]:
         """Poll 2Captcha for result."""
         start_time = time.time()
         

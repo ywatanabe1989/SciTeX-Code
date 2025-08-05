@@ -147,11 +147,16 @@ class CrossRefSearchEngine(BaseSearchEngine):
                     if date_parts and date_parts[0]:
                         year = str(date_parts[0][0])
                 
-                # Journal
-                journal = None
-                container_title = item.get('container-title', [])
-                if container_title:
-                    journal = container_title[0]
+                # Extract comprehensive journal information  
+                container_titles = item.get('container-title', [])
+                short_container_titles = item.get('short-container-title', [])
+                
+                journal = container_titles[0] if container_titles else None
+                short_journal = short_container_titles[0] if short_container_titles else None
+                
+                # Get ISSN (can be a list)
+                issn_list = item.get('ISSN', [])
+                issn = issn_list[0] if issn_list else None
                 
                 # DOI
                 doi = item.get('DOI')
@@ -179,9 +184,14 @@ class CrossRefSearchEngine(BaseSearchEngine):
                         'citation_count_source': 'CrossRef',
                         'url': url,
                         'publisher': item.get('publisher'),
-                        'issn': item.get('ISSN', []),
+                        'issn': issn,
+                        'issn_list': issn_list,
+                        'short_journal': short_journal,
+                        'volume': item.get('volume'),
+                        'issue': item.get('issue'),
                         'type': item.get('type'),
-                        'score': item.get('score')
+                        'score': item.get('score'),
+                        'journal_source': 'crossref'
                     }
                 )
                 
@@ -192,6 +202,82 @@ class CrossRefSearchEngine(BaseSearchEngine):
                 continue
         
         return papers
+
+    async def fetch_by_id_async(self, identifier: str) -> Optional[Paper]:
+        """Fetch single paper by DOI from CrossRef."""
+        try:
+            # Rate limiting
+            await self._rate_limit_async()
+            
+            # CrossRef API URL for fetching by DOI
+            url = f"https://api.crossref.org/works/{identifier}"
+            
+            headers = {
+                'User-Agent': f'SciTeX/1.0 (mailto:{self.email})'
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        # Parse the single work item
+                        items = [data.get('message', {})]
+                        papers = self._parse_crossref_response({'message': {'items': items}})
+                        return papers[0] if papers else None
+                    elif response.status == 404:
+                        logger.debug(f"Paper not found for identifier: {identifier}")
+                        return None
+                    else:
+                        logger.error(f"CrossRef fetch_by_id_async failed: {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"Error fetching paper by ID {identifier}: {e}")
+            return None
+
+    async def get_citation_count_async(self, doi: str) -> Optional[int]:
+        """Get citation count for DOI from CrossRef."""
+        try:
+            # Fetch the paper by DOI
+            paper = await self.fetch_by_id_async(doi)
+            return paper.citation_count if paper else None
+            
+        except Exception as e:
+            logger.error(f"Error getting citation count for {doi}: {e}")
+            return None
+
+    async def resolve_doi_async(self, title: str, year: Optional[int] = None) -> Optional[str]:
+        """Resolve title to DOI using CrossRef search."""
+        try:
+            # Search for the paper by title
+            search_query = title
+            if year:
+                search_query += f" {year}"
+                
+            papers = await self.search_async(search_query, limit=5)
+            
+            # Look for exact or close title matches
+            title_lower = title.lower().strip()
+            for paper in papers:
+                if paper.doi and paper.title:
+                    paper_title_lower = paper.title.lower().strip()
+                    # Simple matching - could be improved with fuzzy matching
+                    if title_lower in paper_title_lower or paper_title_lower in title_lower:
+                        # If year is specified, prefer papers from that year
+                        if year and paper.year and abs(paper.year - year) <= 1:
+                            return paper.doi
+                        elif not year:
+                            return paper.doi
+            
+            # If no exact match but we have results, return the first DOI
+            if papers and papers[0].doi:
+                return papers[0].doi
+                
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error resolving DOI for title '{title}': {e}")
+            return None
 
 
 async def main():

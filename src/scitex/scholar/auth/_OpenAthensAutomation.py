@@ -29,7 +29,7 @@ def _get_timestamp() -> str:
     return datetime.now().strftime("%H:%M:%S.%f")[:-3]
 
 
-async def _debug_screenshot(page: Page, description: str) -> None:
+async def _debug_screenshot_async(page: Page, description: str) -> None:
     """Take debug screenshot with timestamp."""
     try:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]
@@ -62,7 +62,7 @@ class OpenAthensAutomation:
             "sso_domains": [
                 "login.unimelb.edu.au",
                 "okta.unimelb.edu.au", 
-                "authenticate.unimelb.edu.au",
+                "authenticate_async.unimelb.edu.au",
                 "sso.unimelb.edu.au"
             ],
             "username_selector": "input[name='identifier']",
@@ -123,7 +123,7 @@ class OpenAthensAutomation:
             await self._handle_2fa_async(page)
             
             # Step 6: Wait for authentication completion
-            success = await self._wait_for_completion_async(page)
+            success = await self._wait_for_completion_async_async(page)
             
             if success:
                 await self._notify_user_intervention_async("authentication_success")
@@ -343,7 +343,7 @@ class OpenAthensAutomation:
             # Use the proven simple keyboard navigation approach
             # This approach works reliably: Fill → Enter → 5sec → ArrowDown → Enter
             logger.info(f"[{_get_timestamp()}] Using proven simple keyboard navigation...")
-            await _debug_screenshot(page, "institution_selection_start")
+            await _debug_screenshot_async(page, "institution_selection_start")
             
             success = await self._simple_keyboard_navigation_async(page, search_field)
             if success:
@@ -351,7 +351,7 @@ class OpenAthensAutomation:
                 return True
             
             logger.error(f"[{_get_timestamp()}] ❌ Institution selection failed")
-            await _debug_screenshot(page, "institution_selection_failed")
+            await _debug_screenshot_async(page, "institution_selection_failed")
             return False
             
         except Exception as e:
@@ -566,7 +566,7 @@ class OpenAthensAutomation:
         """Use simple Fill → Enter → 5sec → ArrowDown → Enter approach."""
         try:
             logger.info(f"[{_get_timestamp()}] 🔄 Starting simple keyboard navigation...")
-            await _debug_screenshot(page, "01_before_keyboard_nav")
+            await _debug_screenshot_async(page, "01_before_keyboard_nav")
             
             # Focus on search field
             await search_field.focus()
@@ -576,24 +576,24 @@ class OpenAthensAutomation:
             # Press Enter to activate dropdown
             await page.keyboard.press('Enter')
             logger.info(f"[{_get_timestamp()}] ⏎ Pressed Enter to activate dropdown")
-            await _debug_screenshot(page, "02_after_enter_pressed")
+            await _debug_screenshot_async(page, "02_after_enter_pressed")
             
             # Wait 5 seconds for dropdown to appear
             logger.info(f"[{_get_timestamp()}] ⏳ Waiting 5 seconds for dropdown...")
             await asyncio.sleep(5)
-            await _debug_screenshot(page, "03_after_5sec_wait")
+            await _debug_screenshot_async(page, "03_after_5sec_wait")
             
             # Press ArrowDown to select first option (which should be UniMelb)
             await page.keyboard.press('ArrowDown')
             logger.info(f"[{_get_timestamp()}] ⬇️ Pressed ArrowDown to select first option")
             await asyncio.sleep(1)
-            await _debug_screenshot(page, "04_after_arrow_down")
+            await _debug_screenshot_async(page, "04_after_arrow_down")
             
             # Press Enter to confirm selection
             await page.keyboard.press('Enter')
             logger.info(f"[{_get_timestamp()}] ⏎ Pressed Enter to confirm selection")
             await asyncio.sleep(3)
-            await _debug_screenshot(page, "05_after_final_enter")
+            await _debug_screenshot_async(page, "05_after_final_enter")
             
             # Check if navigation occurred
             current_url = page.url
@@ -601,7 +601,7 @@ class OpenAthensAutomation:
             
             if "my.openathens.net" not in current_url or self._is_sso_page(current_url):
                 logger.success(f"[{_get_timestamp()}] ✅ Simple keyboard navigation successful!")
-                await _debug_screenshot(page, "06_success_page")
+                await _debug_screenshot_async(page, "06_success_page")
                 return True
             else:
                 logger.info(f"[{_get_timestamp()}] ❌ Enter didn't navigate, trying Space...")
@@ -609,7 +609,7 @@ class OpenAthensAutomation:
                 # Try Space as backup
                 await page.keyboard.press('Space')
                 await asyncio.sleep(3)
-                await _debug_screenshot(page, "07_after_space_fallback")
+                await _debug_screenshot_async(page, "07_after_space_fallback")
                 
                 current_url = page.url
                 if "my.openathens.net" not in current_url or self._is_sso_page(current_url):
@@ -617,19 +617,19 @@ class OpenAthensAutomation:
                     return True
                 else:
                     logger.info(f"[{_get_timestamp()}] ❌ Simple keyboard navigation failed")
-                    await _debug_screenshot(page, "08_final_failure")
+                    await _debug_screenshot_async(page, "08_final_failure")
                     return False
                     
         except Exception as e:
             logger.error(f"[{_get_timestamp()}] ❌ Simple keyboard navigation failed: {e}")
-            await _debug_screenshot(page, "09_exception_error")
+            await _debug_screenshot_async(page, "09_exception_error")
             return False
     
     async def _handle_unimelb_sso_login_async(self, page: Page) -> bool:
         """Handle University of Melbourne SSO login based on working spark project approach."""
         try:
             logger.info(f"[{_get_timestamp()}] 🔐 Starting UniMelb SSO login...")
-            await _debug_screenshot(page, "sso_login_start")
+            await _debug_screenshot_async(page, "sso_login_start")
             
             # Get credentials from config
             username = self.institution_config.get("sso_username")
@@ -644,7 +644,7 @@ class OpenAthensAutomation:
                 username_field = await page.wait_for_selector('input[name="identifier"]', timeout=10000)
                 await username_field.fill(username)
                 logger.info(f"[{_get_timestamp()}] 👤 Username filled")
-                await _debug_screenshot(page, "sso_username_filled")
+                await _debug_screenshot_async(page, "sso_username_filled")
                 await asyncio.sleep(0.5)
                 
                 # Click Next button
@@ -652,20 +652,20 @@ class OpenAthensAutomation:
                 await next_button.click()
                 logger.info(f"[{_get_timestamp()}] ➡️ Next button clicked")
                 await asyncio.sleep(2)
-                await _debug_screenshot(page, "sso_after_next")
+                await _debug_screenshot_async(page, "sso_after_next")
                 
                 # Wait for password field
                 password_field = await page.wait_for_selector('input[name="credentials.passcode"]', timeout=10000)
                 await password_field.fill(password)
                 logger.info(f"[{_get_timestamp()}] 🔒 Password filled")
-                await _debug_screenshot(page, "sso_password_filled")
+                await _debug_screenshot_async(page, "sso_password_filled")
                 
                 # Click Verify button
                 verify_button = await page.wait_for_selector('input[type="submit"][value="Verify"]', timeout=5000)
                 await verify_button.click()
                 logger.info(f"[{_get_timestamp()}] ✅ Verify button clicked")
                 await asyncio.sleep(3)
-                await _debug_screenshot(page, "sso_after_verify")
+                await _debug_screenshot_async(page, "sso_after_verify")
                 
                 # Handle Duo 2FA if it appears
                 await self._handle_duo_2fa_async(page)
@@ -675,7 +675,7 @@ class OpenAthensAutomation:
                 
             except Exception as e:
                 logger.error(f"[{_get_timestamp()}] ❌ SSO login failed: {e}")
-                await _debug_screenshot(page, "sso_login_error")
+                await _debug_screenshot_async(page, "sso_login_error")
                 return False
                 
         except Exception as e:
@@ -686,20 +686,20 @@ class OpenAthensAutomation:
         """Handle Duo 2FA authentication."""
         try:
             logger.info(f"[{_get_timestamp()}] 🔒 Checking for Duo 2FA...")
-            await _debug_screenshot(page, "2fa_check_start")
+            await _debug_screenshot_async(page, "2fa_check_start")
             
             # Check if we're on a Duo authentication page
             try:
                 auth_list = await page.wait_for_selector('.authenticator-verify-list', timeout=5000)
                 logger.info(f"[{_get_timestamp()}] 🛡️ Duo 2FA detected")
-                await _debug_screenshot(page, "2fa_page_detected")
+                await _debug_screenshot_async(page, "2fa_page_detected")
                 
                 # Look for push notification option
                 try:
                     push_button = await page.wait_for_selector('xpath=//h3[contains(text(), "Get a push notification")]/../..//a[contains(@class, "button")]', timeout=3000)
                     await push_button.click()
                     logger.info(f"[{_get_timestamp()}] 🔔 Push notification requested - check your device!")
-                    await _debug_screenshot(page, "2fa_push_requested")
+                    await _debug_screenshot_async(page, "2fa_push_requested")
                     
                     # Send notification to user
                     await self._notify_user_intervention_async("duo_push_requested")
@@ -710,12 +710,12 @@ class OpenAthensAutomation:
                         auth_button = await page.wait_for_selector('.authenticator-button a.button', timeout=3000)
                         await auth_button.click()
                         logger.info(f"[{_get_timestamp()}] 📱 Alternative 2FA method selected")
-                        await _debug_screenshot(page, "2fa_alternative_selected")
+                        await _debug_screenshot_async(page, "2fa_alternative_selected")
                         
                         await self._notify_user_intervention_async("duo_alternative_requested")
                     except:
                         logger.warning(f"[{_get_timestamp()}] ⚠️ No 2FA options found - manual intervention required")
-                        await _debug_screenshot(page, "2fa_no_options")
+                        await _debug_screenshot_async(page, "2fa_no_options")
                         await self._notify_user_intervention_async("duo_manual_required")
                         return False
                 
@@ -733,7 +733,7 @@ class OpenAthensAutomation:
                     # Check if we've navigated away from SSO (authentication complete)
                     if not current_url.startswith("https://sso.unimelb.edu.au"):
                         logger.success(f"[{_get_timestamp()}] ✅ 2FA authentication completed - URL changed!")
-                        await _debug_screenshot(page, "2fa_completed")
+                        await _debug_screenshot_async(page, "2fa_completed")
                         return True
                     
                     # Check if we're on a success page or final destination
@@ -753,25 +753,25 @@ class OpenAthensAutomation:
                         
                         if completion_check['hasPromptField'] or completion_check['hasSuccessIndicator']:
                             logger.success(f"[{_get_timestamp()}] ✅ 2FA authentication completed - success indicators found!")
-                            await _debug_screenshot(page, "2fa_completed")
+                            await _debug_screenshot_async(page, "2fa_completed")
                             return True
                             
                     except Exception as e:
                         logger.debug(f"Error checking completion: {e}")
                 
                 logger.warning(f"[{_get_timestamp()}] ⏰ 2FA timeout after {max_wait_time}s - continuing anyway")
-                await _debug_screenshot(page, "2fa_timeout")
+                await _debug_screenshot_async(page, "2fa_timeout")
                 return True  # Continue even if timeout, might still work
                     
             except:
                 # No 2FA required
                 logger.info(f"[{_get_timestamp()}] ℹ️ No 2FA required")
-                await _debug_screenshot(page, "2fa_not_required")
+                await _debug_screenshot_async(page, "2fa_not_required")
                 return True
                 
         except Exception as e:
             logger.error(f"[{_get_timestamp()}] ❌ 2FA handling failed: {e}")
-            await _debug_screenshot(page, "2fa_error")
+            await _debug_screenshot_async(page, "2fa_error")
             return True  # Continue anyway
     
     async def _select_institution_from_dropdown_async(self, page: Page) -> bool:
@@ -977,12 +977,12 @@ class OpenAthensAutomation:
             logger.info("On SSO page, handling login")
             
             # Step 1: Handle username entry
-            success = await self._handle_username_step_async(page)
+            success = await self._handle_username_step_async_async(page)
             if not success:
                 return False
             
             # Step 2: Handle password entry  
-            success = await self._handle_password_step_async(page)
+            success = await self._handle_password_step_async_async(page)
             if not success:
                 return False
             
@@ -992,7 +992,7 @@ class OpenAthensAutomation:
             logger.error(f"SSO login failed: {e}")
             return False
     
-    async def _handle_username_step_async(self, page: Page) -> bool:
+    async def _handle_username_step_async_async(self, page: Page) -> bool:
         """Handle username entry step."""
         try:
             username = self.institution_config.get("sso_username")
@@ -1029,7 +1029,7 @@ class OpenAthensAutomation:
             logger.error(f"Username step failed: {e}")
             return False
     
-    async def _handle_password_step_async(self, page: Page) -> bool:
+    async def _handle_password_step_async_async(self, page: Page) -> bool:
         """Handle password entry step."""
         try:
             password = self.institution_config.get("sso_password")
@@ -1122,7 +1122,7 @@ class OpenAthensAutomation:
             logger.error(f"2FA handling failed: {e}")
             return False
     
-    async def _wait_for_completion_async(self, page: Page, timeout: int = 60) -> bool:
+    async def _wait_for_completion_async_async(self, page: Page, timeout: int = 60) -> bool:
         """Wait for authentication completion."""
         try:
             logger.info("Waiting for authentication completion...")
@@ -1188,7 +1188,7 @@ class OpenAthensAutomation:
             message = f"""
 OpenAthens Authentication Process Started
 
-The SciTeX Scholar system is attempting to authenticate with {institution} via OpenAthens.
+The SciTeX Scholar system is attempting to authenticate_async with {institution} via OpenAthens.
 
 Details:
 - Institution: {institution}
@@ -1286,7 +1286,7 @@ def create_institution_config(institution: str) -> Dict[str, Any]:
             "sso_domains": [
                 "login.unimelb.edu.au",
                 "okta.unimelb.edu.au",
-                "authenticate.unimelb.edu.au", 
+                "authenticate_async.unimelb.edu.au", 
                 "sso.unimelb.edu.au"
             ],
             "username_selector": "input[name='identifier']",

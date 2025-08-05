@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-03 04:06:11
+!-- Timestamp: 2025-08-05 16:25:55
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -8,6 +8,14 @@
 # SciTeX Scholar
 
 A comprehensive Python library for scientific literature management with automatic enrichment of journal impact factors and citation counts.
+
+## Command line
+
+``` bash
+python -m scitex.scholar resolve-and-enrich
+
+python -m scitex.scholar enrich-bibtex -h
+```
 
 ## 🌟 Key Features
 
@@ -44,7 +52,7 @@ pip install -e ~/proj/scitex_repo
 pip install impact-factor  # For real 2024 JCR impact factors
 pip install PyMuPDF       # For PDF text extraction
 pip install sentence-transformers  # For vector similarity search
-pip install selenium webdriver-manager  # For PDF downloading from Sci-Hub
+pip install selenium webdriver-manager  # For PDF download_asyncing from Sci-Hub
 pip install scholarly     # For Google Scholar search (Note: may be rate-limited)
 pip install pytesseract
 pip install pyautogui
@@ -118,7 +126,7 @@ print(papers_df)
 filted_papers = papers.filter(min_citations=3)
 
 # Download PDFs
-downloaded_papers = scholar.download_pdfs(filted_papers) # Shows progress with methods being tried
+download_asynced_papers = scholar.download_async_pdf_asyncs(filted_papers) # Shows progress with methods being tried
 
 
 # Example output:
@@ -129,7 +137,7 @@ downloaded_papers = scholar.download_pdfs(filted_papers) # Shows progress with m
 # Overall progress: 1/4
 # ...
 
-print(f"Downloaded {len(downloaded_papers)} papers successfully")
+print(f"Downloaded {len(download_asynced_papers)} papers successfully")
 
 # Individual Paper
 for paper in filted_papers:
@@ -182,7 +190,7 @@ crossref_email: "your.email@example.com"
 # Feature Settings
 enable_auto_enrich: true
 use_impact_factor_package: true
-enable_auto_download: false  # Auto-download PDFs during search
+enable_auto_download_async: false  # Auto-download_async PDFs during search
 acknowledge_scihub_ethical_usage: false  # Must be true to use Sci-Hub
 
 # Search Defaults
@@ -196,8 +204,8 @@ default_search_limit: 50
 # PDF Management
 pdf_dir: "~/.scitex/scholar/pdfs"
 enable_pdf_extraction: true
-max_parallel_downloads: 3
-download_timeout: 30
+max_parallel_download_asyncs: 3
+download_async_timeout: 30
 
 # Performance
 max_parallel_requests: 3
@@ -327,7 +335,7 @@ print(paper.journal_quartile) # Q1, Q2, Q3, Q4
 # Additional metadata
 print(paper.keywords)     # List of keywords
 print(paper.pdf_url)      # URL to PDF (when available)
-print(paper.pdf_path)     # Local PDF path (when downloaded)
+print(paper.pdf_path)     # Local PDF path (when download_asynced)
 
 # Methods
 similarity = paper.similarity_score(other_paper)
@@ -355,53 +363,53 @@ enriched_papers = scholar.enrich_bibtex(
 
 ### PDF Download Features
 
-SciTeX Scholar provides multiple ways to download PDFs:
+SciTeX Scholar provides multiple ways to download_async PDFs:
 
 #### 1. Automatic PDF Downloads During Search
 
 ```python
-# Enable auto-download in config
+# Enable auto-download_async in config
 config = ScholarConfig(
-    enable_auto_download=True,  # Download open-access PDFs automatically
+    enable_auto_download_async=True,  # Download open-access PDFs automatically
     pdf_dir="~/.scitex/scholar/pdfs"
 )
 scholar = Scholar(config)
 
-# PDFs are downloaded automatically during search
+# PDFs are download_asynced automatically during search
 papers = scholar.search("machine learning", limit=10)
-# Open-access PDFs are downloaded in the background
+# Open-access PDFs are download_asynced in the background
 ```
 
 #### 2. Manual PDF Downloads
 
 ```python
-# NEW: Unified download API - returns Papers instance with downloaded papers
+# NEW: Unified download_async API - returns Papers instance with download_asynced papers
 
 # Download from DOI strings
-downloaded_papers = scholar.download_pdfs(["10.1234/doi1", "10.5678/doi2"])
-print(f"Downloaded {len(downloaded_papers)} PDFs")
+download_asynced_papers = scholar.download_async_pdf_asyncs(["10.1234/doi1", "10.5678/doi2"])
+print(f"Downloaded {len(download_asynced_papers)} PDFs")
 
 # Download from single DOI
-downloaded_papers = scholar.download_pdfs("10.1234/example")
+download_asynced_papers = scholar.download_async_pdf_asyncs("10.1234/example")
 
 # Download from Papers collection
 papers = scholar.search("deep learning")
-downloaded_papers = scholar.download_pdfs(papers)
+download_asynced_papers = scholar.download_async_pdf_asyncs(papers)
 
 # Download with Papers convenience method
-downloaded_papers = papers.download_pdfs()  # Creates Scholar instance if needed
+download_asynced_papers = papers.download_async_pdf_asyncs()  # Creates Scholar instance if needed
 
 # Advanced options
-downloaded_papers = scholar.download_pdfs(
+download_asynced_papers = scholar.download_async_pdf_asyncs(
     papers,
-    download_dir="./my_pdfs",
-    max_workers=4,
-    show_progress=True,
+    download_async_dir="./my_pdfs",
+    max_worker_asyncs=4,
+    show_async_progress=True,
     acknowledge_ethical_usage=True  # Required for Sci-Hub
 )
 
-# Access downloaded papers
-for paper in downloaded_papers:
+# Access download_asynced papers
+for paper in download_asynced_papers:
     print(f"{paper.doi}: {paper.pdf_path}")
 ```
 
@@ -423,26 +431,26 @@ from scitex.scholar import dois_to_local_pdfs, dois_to_local_pdfs_async
 # Extract DOIs from papers
 dois = [paper.doi for paper in papers if paper.doi]
 
-# Synchronous download (simpler)
-downloaded_paths = dois_to_local_pdfs(
+# Synchronous download_async (simpler)
+download_asynced_paths = dois_to_local_pdfs(
     dois,
-    download_dir="./pdfs",
-    max_workers=4,  # Parallel downloads
+    download_async_dir="./pdfs",
+    max_worker_asyncs=4,  # Parallel download_asyncs
     acknowledge_ethical_usage=True  # Required!
 )
 
-# Asynchronous download (faster for many papers)
+# Asynchronous download_async (faster for many papers)
 import asyncio
-downloaded_paths = asyncio.run(
+download_asynced_paths = asyncio.run(
     dois_to_local_pdfs_async(
         dois, 
-        download_dir="./pdfs",
+        download_async_dir="./pdfs",
         acknowledge_ethical_usage=True  # Required!
     )
 )
 ```
 
-**⚖️ IMPORTANT**: This notice applies ONLY to the Sci-Hub PDF download feature. All other SciTeX Scholar features are completely legitimate research tools.
+**⚖️ IMPORTANT**: This notice applies ONLY to the Sci-Hub PDF download_async feature. All other SciTeX Scholar features are completely legitimate research tools.
 
 Sci-Hub access may be restricted in your jurisdiction. Please:
 - Check your local laws and institutional policies
@@ -464,13 +472,13 @@ Lean Library provides automatic institutional access via browser extension. It's
 scholar = Scholar()
 
 # Download papers - Lean Library will be tried first
-downloaded_papers = scholar.download_pdfs([
+download_asynced_papers = scholar.download_async_pdf_asyncs([
     "10.1038/s41586-020-2832-5",  # Nature paper
     "10.1126/science.abc1234",     # Science paper
 ])
 
 # Check if Lean Library was used
-for paper in downloaded_papers:
+for paper in download_asynced_papers:
     if paper.pdf_source == "Lean Library":
         print(f"Downloaded via Lean Library: {paper.title}")
 ```
@@ -500,7 +508,7 @@ export SCITEX_SCHOLAR_OPENATHENS_ENABLED="true"
 **First-time authentication:**
 ```python
 # Authenticate (opens browser for manual login)
-await scholar.authenticate_openathens()
+await scholar.authenticate_async_openathens()
 # Log in with your institutional credentials
 # Session is saved for ~8 hours
 ```
@@ -509,24 +517,24 @@ await scholar.authenticate_openathens()
 ```python
 # Download specific papers by DOI
 dois = ["10.1038/s41586-019-1666-5", "10.1126/science.abj8754"]
-downloaded_papers = scholar.download_pdfs(dois, output_dir="./pdfs")
+download_asynced_papers = scholar.download_async_pdf_asyncs(dois, output_dir="./pdfs")
 
 # Download from search results
 papers = scholar.search("deep learning", limit=20)
-downloaded_papers = scholar.download_pdfs(papers)
+download_asynced_papers = scholar.download_async_pdf_asyncs(papers)
 
 # The system automatically uses your saved OpenAthens session
-print(f"Downloaded {len(downloaded_papers)} papers")
+print(f"Downloaded {len(download_asynced_papers)} papers")
 ```
 
 **Session management:**
 ```python
-# Check if authenticated
-if await scholar.is_openathens_authenticated():
+# Check if authenticate_async
+if await scholar.is_openathens_authenticate_async():
     print("Session active")
     
 # Force re-authentication if needed
-await scholar.authenticate_openathens(force=True)
+await scholar.authenticate_async_openathens(force=True)
 ```
 
 **Supported publishers:**
@@ -568,21 +576,21 @@ export SCITEX_SCHOLAR_EZPROXY_USERNAME="your_username"
 
 **Authentication:**
 ```python
-# Check if authenticated
-if not scholar.is_ezproxy_authenticated():
+# Check if authenticate_async
+if not scholar.is_ezproxy_authenticate_async():
     # Authenticate (opens browser for login)
-    scholar.authenticate_ezproxy()
+    scholar.authenticate_async_ezproxy()
     # Enter credentials in browser
     # Session saved for ~8 hours
 ```
 
 **Download papers:**
 ```python
-# EZProxy will be used automatically for downloads
+# EZProxy will be used automatically for download_asyncs
 papers = scholar.search("machine learning", limit=10)
-downloaded = scholar.download_pdfs(papers)
+download_asynced = scholar.download_async_pdf_asyncs(papers)
 
-print(f"Downloaded {len(downloaded)} papers via EZProxy")
+print(f"Downloaded {len(download_asynced)} papers via EZProxy")
 ```
 
 **Supported features:**
@@ -615,10 +623,10 @@ print(f"Indexed papers: {stats['indexed_count']}")
 ```yaml
 # In config.yaml
 pdf_dir: "~/.scitex/scholar/pdfs"  # Where to store PDFs
-enable_auto_download: true          # Auto-download during search
+enable_auto_download_async: true          # Auto-download_async during search
 enable_pdf_extraction: true         # Extract text from PDFs
-max_parallel_downloads: 3           # Concurrent download limit
-download_timeout: 30                # Timeout per download (seconds)
+max_parallel_download_asyncs: 3           # Concurrent download_async limit
+download_async_timeout: 30                # Timeout per download_async (seconds)
 
 # Sci-Hub settings (optional)
 scihub_mirrors:                     # Custom mirror list
@@ -656,12 +664,12 @@ When enrichment data is unavailable, the DataFrame now provides explanations:
 # Example DataFrame output with N/A reasons:
 df = papers.to_dataframe()
 
-# Impact factor column might show:
+# Impact factor column might show_async:
 # - "N/A (No journal specified)" - for arXiv preprints or papers without journal info
 # - "N/A (Journal 'Example Journal' not found in JCR 2024 database)" - journal not in database
 # - "N/A (Not enriched)" - enrichment was not performed
 
-# Citation count column might show:
+# Citation count column might show_async:
 # - "N/A (API rate limit reached)" - hit API limits during enrichment
 # - "N/A (Paper not found in citation databases)" - couldn't find paper in databases
 # - "N/A (Citation lookup failed)" - other API errors
@@ -730,7 +738,7 @@ export SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT=10
 - See the `scholarly` documentation for proxy setup instructions
 
 ## Recent Improvements (2025-08-01)
-- ✅ Pre-flight checks for system validation before downloads
+- ✅ Pre-flight checks for system validation before download_asyncs
 - ✅ Smart retry logic with exponential backoff and strategy rotation
 - ✅ Enhanced error diagnostics with publisher-specific solutions
 - ✅ Statistical validation framework for research validity
@@ -778,7 +786,7 @@ Yusuke Watanabe (ywatanabe@scitex.ai)
   https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&rft.atitle=Addressing+artifactual+bias+in+large%2C+automated+MRI+analyses+of+brain+development&rft.jtitle=Nature+Neuroscience&rft.date=2025&rft.doi=10.1038%2Fs41593-025-01990-7&rft.au=Safia+Elyounssi ✓
 
   Phase 2: Execution
-  4. Navigate to the resolver URL with authenticated browser
+  4. Navigate to the resolver URL with authenticate_async browser
   5. Search for publisher access links on resolver pages with
   # NOTE; I am not sure how we make this reliable
   patterns like:
@@ -812,17 +820,17 @@ Yusuke Watanabe (ywatanabe@scitex.ai)
 |----------------------------------------------------|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Phase 1: Preparation (Search & Authentication)** |                               |                                                                                                                                                                                                                                        |
 | 1                                                  | Query to DOI                  | The user provides a query (e.g., paper title). The scholar.search() function calls academic APIs to find the paper's metadata, including its DOI.                                                                                      |
-| 2                                                  | Verify OpenAthens Session     | Before downloading, the system checks for a valid, cached OpenAthens session to avoid a new login.                                                                                                                                     |
+| 2                                                  | Verify OpenAthens Session     | Before download_asyncing, the system checks for a valid, cached OpenAthens session to avoid a new login.                                                                                                                                     |
 | 2.1                                                | Check for Session File        | Look for the session file in the cache directory (e.g., ~/.scitex/scholar/openathens_sessions/session.json).                                                                                                                           |
 | 2.2                                                | Read Session Data             | The file is read as a plain JSON file; no encoding or decoding is required.                                                                                                                                                            |
 | 2.3                                                | Check Expiry                  | Read the timestamp from the JSON file and confirm it has not expired (e.g., less than 8 hours old).                                                                                                                                    |
-| 2.4                                                | Live Verification             | Launch a headless browser with the cached cookies and navigate to https://my.openathens.net/?passiveLogin=false. If this redirects to an authenticated page like https://my.openathens.net/app/research, the session is valid.         |
+| 2.4                                                | Live Verification             | Launch a headless browser with the cached cookies and navigate to https://my.openathens.net/?passiveLogin=false. If this redirects to an authenticate_async page like https://my.openathens.net/app/research, the session is valid.         |
 | 3                                                  | Trigger Manual Authentication | If no valid session exists, launch a visible browser window to https://my.openathens.net/ for the user to log in manually. The script waits for a successful redirect and then saves the new session cookies to the session.json file. |
 | **Phase 2: Execution (Download per DOI)**          |                               |                                                                                                                                                                                                                                        |
 | 4                                                  | Construct Resolver URL        | For each DOI, construct the university-specific OpenURL resolver link. For UniMelb, this is https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?...&id=doi:{DOI}.                                                                        |
 | 5                                                  | Navigate to Resolver          | Launch a headless browser, load the valid OpenAthens cookies into the context, and navigate to the constructed resolver URL.                                                                                                           |
-| 6                                                  | Access Full Text              | On the resolver page, programmatically find and click the "View full text at..." link. The authenticated browser is then redirected to the full-access article page on the publisher's website.                                        |
+| 6                                                  | Access Full Text              | On the resolver page, programmatically find and click the "View full text at..." link. The authenticate_async browser is then redirected to the full-access article page on the publisher's website.                                        |
 | 7                                                  | Discover PDF URL              | On the publisher's page, inject and run the appropriate Zotero JavaScript translator (.js file) using the _ZoteroTranslatorRunner.py module. The translator parses the page to find the direct URL to the full-text PDF.               |
-| 8                                                  | Download and Save             | Use the direct PDF link from the translator to download the file within the same authenticated browser session. Save the file to the user's local storage.                                                                             |
+| 8                                                  | Download and Save             | Use the direct PDF link from the translator to download_async the file within the same authenticate_async browser session. Save the file to the user's local storage.                                                                             |
 
 <!-- EOF -->

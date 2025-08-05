@@ -66,10 +66,10 @@ class CitationEnricher(BaseEnricher):
 
     #     # Create session once
     #     async with aiohttp.ClientSession() as session:
-    #         tasks = [self._get_citations(p, session) for p in papers]
+    #         tasks = [self._get_citations_async(p, session) for p in papers]
     #         results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    #     tasks = [self._get_citations(p) for p in papers]
+    #     tasks = [self._get_citations_async(p) for p in papers]
     #     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     #     count = 0
@@ -85,7 +85,7 @@ class CitationEnricher(BaseEnricher):
 
     # async def _enrich_async(self, papers):
     #     async with aiohttp.ClientSession() as session:
-    #         tasks = [self._get_citations(p, session) for p in papers]
+    #         tasks = [self._get_citations_async(p, session) for p in papers]
     #         results = await asyncio.gather(*tasks, return_exceptions=True)
 
     #     count = 0
@@ -105,7 +105,7 @@ class CitationEnricher(BaseEnricher):
 
     async def _enrich_async(self, papers):
         async with aiohttp.ClientSession() as session:
-            tasks = [self._get_citations(p, session) for p in papers]
+            tasks = [self._get_citations_async(p, session) for p in papers]
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
         count = 0
@@ -123,7 +123,7 @@ class CitationEnricher(BaseEnricher):
         if count:
             logger.info(f"Enriched {count} papers with citation counts")
 
-    async def _get_citations(
+    async def _get_citations_async(
         self, paper: Paper, session: aiohttp.ClientSession
     ) -> Optional[int]:
         """Get citation count for single paper."""
@@ -137,7 +137,7 @@ class CitationEnricher(BaseEnricher):
                 (aiohttp.ClientError, asyncio.TimeoutError)
             ),
         )
-        async def fetch_crossref():
+        async def fetch_crossref_async():
             url = f"https://api.crossref.org/works/{paper.doi}"
             headers = {
                 "User-Agent": f"SciTeX Scholar (mailto:{self.crossref_email})"
@@ -160,7 +160,7 @@ class CitationEnricher(BaseEnricher):
                     )
 
         try:
-            return await fetch_crossref()
+            return await fetch_crossref_async()
         except Exception as exc:
             logger.debug(f"CrossRef lookup failed for {paper.doi}: {exc}")
             return None

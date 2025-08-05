@@ -213,7 +213,7 @@ class MultiInstitutionalResolver(OpenURLResolver):
         
         return alternatives
     
-    async def resolve_with_fallback(
+    async def resolve_with_fallback_async(
         self,
         doi: str,
         max_attempts: int = 3,

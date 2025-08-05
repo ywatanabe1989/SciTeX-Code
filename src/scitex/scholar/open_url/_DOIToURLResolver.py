@@ -18,7 +18,7 @@ __DIR__ = os.path.dirname(__FILE__)
 Convert DOIs to accessible publisher URLs using OpenURL resolvers.
 
 This module implements Critical Task #5: Resolve publisher URLs from DOIs
-using institutional OpenURL resolvers for authenticated access.
+using institutional OpenURL resolvers for authenticate_async access.
 """
 
 import asyncio
@@ -70,7 +70,7 @@ class DOIToURLResolver:
         # Track failures for adaptive behavior
         self.failures = {}
 
-    async def _capture_workflow_screenshot(self, doi: str, url: str, stage: str, page: Optional[Page] = None):
+    async def _capture_workflow_screenshot_async(self, doi: str, url: str, stage: str, page: Optional[Page] = None):
         """
         Capture systematic screenshots during DOI resolution workflow.
         
@@ -272,24 +272,24 @@ class DOIToURLResolver:
                 
                 # Capture screenshot of initial DOI URL
                 doi_url = f"https://doi.org/{doi}"
-                await self._capture_workflow_screenshot(doi, doi_url, "01_initial_doi")
+                await self._capture_workflow_screenshot_async(doi, doi_url, "01_initial_doi")
                 
-                openurl_result = await self._try_openurl(doi)
+                openurl_result = await self._try_openurl_async(doi)
                 if openurl_result:
                     result = openurl_result
                     # Capture screenshot of OpenURL result
                     if result.get('url'):
-                        await self._capture_workflow_screenshot(doi, result['url'], "02_openurl_resolved")
+                        await self._capture_workflow_screenshot_async(doi, result['url'], "02_openurl_resolved")
 
             # Try direct publisher URLs
             if not result:
                 logger.info(f"Trying direct publisher URLs for {doi}")
-                direct_result = await self._try_direct_urls(doi, verify_access)
+                direct_result = await self._try_direct_urls_async(doi, verify_access)
                 if direct_result:
                     result = direct_result
                     # Capture screenshot of direct URL result
                     if result.get('url'):
-                        await self._capture_workflow_screenshot(doi, result['url'], "03_direct_publisher")
+                        await self._capture_workflow_screenshot_async(doi, result['url'], "03_direct_publisher")
 
             # Cache successful result
             if result:
@@ -305,7 +305,7 @@ class DOIToURLResolver:
             logger.error(f"Error resolving {doi}: {e}")
             return None
 
-    async def _try_openurl(self, doi: str) -> Optional[Dict[str, any]]:
+    async def _try_openurl_async(self, doi: str) -> Optional[Dict[str, any]]:
         """Try to resolve DOI using OpenURL."""
         try:
             # Build OpenURL query
@@ -348,7 +348,7 @@ class DOIToURLResolver:
                         ]
                     ):
                         # Check for PDF access
-                        pdf_available = await self._check_pdf_access(page)
+                        pdf_available = await self._check_pdf_access_async(page)
 
                         return {
                             "url": final_url,
@@ -365,7 +365,7 @@ class DOIToURLResolver:
 
         return None
 
-    async def _try_direct_urls(
+    async def _try_direct_urls_async(
         self, doi: str, verify_access: bool = True
     ) -> Optional[Dict[str, any]]:
         """Try direct publisher URLs."""
@@ -375,7 +375,7 @@ class DOIToURLResolver:
             try:
                 if verify_access:
                     # Verify with browser
-                    result = await self._verify_url_access(url)
+                    result = await self._verify_url_access_async(url)
                     if result:
                         return {
                             "url": url,
@@ -404,7 +404,7 @@ class DOIToURLResolver:
 
         return None
 
-    async def _verify_url_access(self, url: str) -> Optional[Dict[str, any]]:
+    async def _verify_url_access_async(self, url: str) -> Optional[Dict[str, any]]:
         """Verify URL provides article access."""
         try:
             async with async_playwright() as p:
@@ -437,7 +437,7 @@ class DOIToURLResolver:
                     )
 
                     # Check for PDF access
-                    pdf_available = await self._check_pdf_access(page)
+                    pdf_available = await self._check_pdf_access_async(page)
 
                     if not has_paywall or pdf_available:
                         return {
@@ -453,10 +453,10 @@ class DOIToURLResolver:
 
         return None
 
-    async def _check_pdf_access(self, page: Page) -> bool:
-        """Check if PDF download is available on the page."""
+    async def _check_pdf_access_async(self, page: Page) -> bool:
+        """Check if PDF download_async is available on the page."""
         try:
-            # Look for PDF download links/buttons
+            # Look for PDF download_async links/buttons
             pdf_selectors = [
                 'a[href*=".pdf"]',
                 'a[href*="/pdf/"]',
@@ -464,7 +464,7 @@ class DOIToURLResolver:
                 'a:has-text("Download PDF")',
                 'a:has-text("View PDF")',
                 'a:has-text("Full Text PDF")',
-                ".pdf-download",
+                ".pdf-download_async",
                 '[class*="pdf-link"]',
             ]
 
@@ -502,7 +502,7 @@ class DOIToURLResolver:
         results = {}
         semaphore = asyncio.Semaphore(max_concurrent)
 
-        async def resolve_with_limit(doi: str, index: int):
+        async def resolve_with_limit_async(doi: str, index: int):
             async with semaphore:
                 if progress_callback:
                     progress_callback(index, len(dois), f"Resolving {doi}")
@@ -512,7 +512,7 @@ class DOIToURLResolver:
                 return doi, result
 
         # Create tasks
-        tasks = [resolve_with_limit(doi, i) for i, doi in enumerate(dois)]
+        tasks = [resolve_with_limit_async(doi, i) for i, doi in enumerate(dois)]
 
         # Process all DOIs
         await asyncio.gather(*tasks, return_exceptions=True)

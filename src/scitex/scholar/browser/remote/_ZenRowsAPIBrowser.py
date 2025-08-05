@@ -65,7 +65,7 @@ class ZenRowsAPIBrowser:
         self.premium_proxy = premium_proxy
         self.base_url = "https://api.zenrows.com/v1/"
         
-    async def navigate_and_screenshot(
+    async def navigate_and_screenshot_async(
         self,
         url: str,
         screenshot_path: Optional[str] = None,
@@ -235,7 +235,7 @@ class ZenRowsAPIBrowser:
                 "url": url
             }
     
-    async def get_pdf_url(self, doi: str, use_openurl: bool = True) -> Optional[str]:
+    async def get_pdf_url_async(self, doi: str, use_openurl: bool = True) -> Optional[str]:
         """Try to get PDF URL for a DOI.
         
         Args:
@@ -260,7 +260,7 @@ class ZenRowsAPIBrowser:
         urls_to_try.append(f"https://doi.org/{doi}")
         
         for url in urls_to_try:
-            result = await self.navigate_and_screenshot(
+            result = await self.navigate_and_screenshot_async(
                 url,
                 return_html=True,
                 wait_ms=8000  # Longer wait for redirects
@@ -286,7 +286,7 @@ class ZenRowsAPIBrowser:
         
         return None
     
-    async def batch_screenshot(
+    async def batch_screenshot_async(
         self,
         urls: List[str],
         output_dir: str,
@@ -304,24 +304,24 @@ class ZenRowsAPIBrowser:
         """
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         
-        async def process_url(url: str, index: int) -> Dict[str, Any]:
+        async def process_url_async(url: str, index: int) -> Dict[str, Any]:
             """Process single URL."""
             filename = f"screenshot_{index:03d}.png"
             filepath = os.path.join(output_dir, filename)
             
-            result = await self.navigate_and_screenshot(url, filepath)
+            result = await self.navigate_and_screenshot_async(url, filepath)
             result["index"] = index
             return result
         
         # Process with limited concurrency
         semaphore = asyncio.Semaphore(max_concurrent)
         
-        async def process_with_limit(url: str, index: int):
+        async def process_with_limit_async(url: str, index: int):
             async with semaphore:
-                return await process_url(url, index)
+                return await process_url_async(url, index)
         
         tasks = [
-            process_with_limit(url, i) 
+            process_with_limit_async(url, i) 
             for i, url in enumerate(urls)
         ]
         

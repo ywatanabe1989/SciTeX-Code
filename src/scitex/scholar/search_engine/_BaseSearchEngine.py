@@ -70,17 +70,17 @@ class BaseSearchEngine(ABC):
         pass
 
     @abstractmethod
-    async def fetch_by_id(self, identifier: str) -> Optional[Paper]:
+    async def fetch_by_id_async(self, identifier: str) -> Optional[Paper]:
         """Fetch single paper by ID (DOI, PMID, etc)."""
         pass
 
     @abstractmethod
-    async def get_citation_count(self, doi: str) -> Optional[int]:
+    async def get_citation_count_async(self, doi: str) -> Optional[int]:
         """Get citation count for DOI."""
         pass
 
     @abstractmethod
-    async def resolve_doi(
+    async def resolve_doi_async(
         self, title: str, year: Optional[int] = None
     ) -> Optional[str]:
         """Resolve title to DOI."""

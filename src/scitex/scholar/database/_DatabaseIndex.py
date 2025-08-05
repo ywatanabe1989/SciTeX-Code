@@ -117,7 +117,7 @@ class DatabaseIndex:
             self.collection_index[collection].append(entry_id)
         
         # Status index
-        self.status_index[entry.download_status].append(entry_id)
+        self.status_index[entry.download_async_status].append(entry_id)
     
     def remove_entry(self, entry_id: str, entry: 'DatabaseEntry'):
         """Remove entry from indices."""
@@ -158,8 +158,8 @@ class DatabaseIndex:
                 self.collection_index[collection].remove(entry_id)
         
         # Status index
-        if entry_id in self.status_index[entry.download_status]:
-            self.status_index[entry.download_status].remove(entry_id)
+        if entry_id in self.status_index[entry.download_async_status]:
+            self.status_index[entry.download_async_status].remove(entry_id)
     
     def find_by_doi(self, doi: str) -> Optional[str]:
         """Find entry by DOI."""
@@ -229,7 +229,7 @@ class DatabaseIndex:
         return list(self.collection_index.get(collection, []))
     
     def find_by_status(self, status: str) -> List[str]:
-        """Find entries by download status."""
+        """Find entries by download_async status."""
         return list(self.status_index.get(status, []))
     
     def search(self, query: Dict[str, Any]) -> Set[str]:

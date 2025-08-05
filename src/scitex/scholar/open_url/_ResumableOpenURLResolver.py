@@ -211,7 +211,7 @@ class ResumableOpenURLResolver:
         self.progress_data["duration_seconds"] = time.time() - self._start_time
         self._save_progress()
         
-        self._show_summary()
+        self._show_async_summary()
         return results
     
     def resolve_from_dois(self, dois: List[str]) -> Dict[str, Dict[str, Any]]:
@@ -249,7 +249,7 @@ class ResumableOpenURLResolver:
         
         return self.resolve_from_dois(dois)
     
-    def _show_progress(self):
+    def _show_async_progress(self):
         """Show current progress."""
         stats = self.progress_data["statistics"]
         progress_pct = (stats["processed"] / stats["total"] * 100) if stats["total"] > 0 else 0
@@ -260,7 +260,7 @@ class ResumableOpenURLResolver:
             f"Failed: {stats['failed']}"
         )
     
-    def _show_summary(self):
+    def _show_async_summary(self):
         """Show final summary."""
         stats = self.progress_data["statistics"]
         duration = time.time() - self._start_time

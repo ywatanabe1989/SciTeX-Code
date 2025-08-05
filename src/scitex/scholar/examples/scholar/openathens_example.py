@@ -30,23 +30,23 @@ papers = scholar.search("deep learning neuroscience", limit=5)
 print(f"Found {len(papers)} papers")
 
 # Download PDFs - will use OpenAthens authentication automatically
-results = scholar.download_pdfs(papers)
+results = scholar.download_async_pdf_asyncs(papers)
 
 print(f"\nDownload Results:")
 print(f"✓ Successful: {results['successful']}")
 print(f"✗ Failed: {results['failed']}")
 
-# The download process would try in this order:
-# 1. Direct download (if open access)
+# The download_async process would try in this order:
+# 1. Direct download_async (if open access)
 # 2. OpenAthens authentication (if configured and paper available via institution)
 # 3. Sci-Hub (if ethical usage acknowledged)
 # 4. Zotero translators (for additional sources)
 
 # Advanced usage: Explicit authentication
-if hasattr(scholar, 'authenticate_openathens'):  # Once implemented
+if hasattr(scholar, 'authenticate_async_openathens'):  # Once implemented
     # Authenticate once for the session
-    scholar.authenticate_openathens()
+    scholar.authenticate_async_openathens()
     
-    # All subsequent downloads use the authenticated session
+    # All subsequent download_asyncs use the authenticate_async session
     more_papers = scholar.search("neuroscience methods", limit=10)
-    scholar.download_pdfs(more_papers)
+    scholar.download_async_pdf_asyncs(more_papers)

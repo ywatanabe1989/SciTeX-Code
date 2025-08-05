@@ -5,9 +5,9 @@
 !-- --- -->
 
 ### CookieAutoAcceptor
-- `inject_auto_acceptor(context)` - Inject auto-acceptance script
-- `accept_cookies(page)` - Manually accept cookies
-- `check_cookie_banner_exists(page)` - Check if banner exists
+- `inject_auto_acceptor_async(context)` - Inject auto-acceptance script
+- `accept_cookies_async(page)` - Manually accept cookies
+- `check_cookie_banner_exists_async(page)` - Check if banner exists
 
 ## References
 - [Accept all cookies](https://chromewebstore.google.com/detail/accept-all-cookies/ofpnikijgfhlmmjlpkfaifhhdonchhoi?hl=en)

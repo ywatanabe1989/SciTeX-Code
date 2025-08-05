@@ -1,11 +1,11 @@
 # Feature Request: OpenAthens Authentication Support for Scholar Module
 
 ## Overview
-Add OpenAthens institutional authentication support to the Scholar module to enable PDF downloads through institutional subscriptions.
+Add OpenAthens institutional authentication support to the Scholar module to enable PDF download_asyncs through institutional subscriptions.
 
 ## Background
-Currently, the Scholar module can download PDFs through:
-- Direct download (open access papers)
+Currently, the Scholar module can download_async PDFs through:
+- Direct download_async (open access papers)
 - Sci-Hub (with ethical acknowledgment)
 - Zotero translators
 
@@ -41,19 +41,19 @@ Create `_OpenAthensAuthenticator.py`:
 class OpenAthensAuthenticator:
     """Handles OpenAthens authentication for institutional access."""
     
-    async def authenticate(self, username: str, password: str) -> Session:
+    async def authenticate_async(self, username: str, password: str) -> Session:
         """Authenticate and return session with auth cookies."""
         
-    async def download_with_auth(self, url: str, session: Session) -> bytes:
-        """Download PDF using authenticated session."""
+    async def download_async_with_auth_async(self, url: str, session: Session) -> bytes:
+        """Download PDF using authenticate_async session."""
 ```
 
 ### 3. Integration with PDFDownloader
 Modify `_PDFDownloader.py` to try OpenAthens before Sci-Hub:
 
 ```python
-async def download_pdf(self, doi: str) -> Optional[Path]:
-    # 1. Try direct download
+async def download_async_pdf_async(self, doi: str) -> Optional[Path]:
+    # 1. Try direct download_async
     # 2. Try OpenAthens (if configured)
     # 3. Try Sci-Hub (if acknowledged)
     # 4. Try Zotero translators
@@ -70,7 +70,7 @@ scholar.configure_openathens(
 
 # Downloads will now use OpenAthens authentication
 papers = scholar.search("neuroscience")
-results = scholar.download_pdfs(papers)  # Will prompt for credentials if needed
+results = scholar.download_async_pdf_asyncs(papers)  # Will prompt for credentials if needed
 ```
 
 ### 5. Security Considerations
@@ -95,7 +95,7 @@ results = scholar.download_pdfs(papers)  # Will prompt for credentials if needed
 High - This addresses a key limitation where legitimate institutional users cannot access papers they have legal access to.
 
 ## Related Issues
-- PDF download failures for paywalled content
+- PDF download_async failures for paywalled content
 - Need for institutional authentication support
 
 ## Next Steps

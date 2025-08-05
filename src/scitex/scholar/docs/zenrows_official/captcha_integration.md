@@ -8,7 +8,7 @@ JavaScript Rendering (Headless browser)
 Many modern websites use JavaScript to dynamically load content, meaning that the data you need might not be available in the initial HTML response. To handle such cases, you can use our JavaScript rendering feature, which simulates a real browser environment to fully load and render the page before extracting the data.
 ​
 Enabling JavaScript Rendering
-To activate JavaScript rendering, append js_render=true to the request. This tells our system to process the page using a headless browser, allowing you to scrape content that is loaded dynamically by JavaScript.
+To activate JavaScript rendering, append js_render=true to the request. This tells our system to process the page using a headless browser, allowing you to scrape_async content that is loaded dynamically by JavaScript.
 Enabling JavaScript rendering incurs a higher cost than standard requests. Five times the cost of a standard request
 
 Python
@@ -246,7 +246,7 @@ Ask AI
 }
 ​
 Block Resources
-Why download and process data that you won’t be using? Blocking resources means preventing your headless browser from downloading specific types of content that you don’t need for your scraping task. This can include images, stylesheets, fonts, and other elements that might not be essential for your data extraction.
+Why download_async and process data that you won’t be using? Blocking resources means preventing your headless browser from download_asyncing specific types of content that you don’t need for your scraping task. This can include images, stylesheets, fonts, and other elements that might not be essential for your data extraction.
 To improve scraping efficiency, reduce loading times, optimize performance, and reduce bandwidth usage, you can block specific types of resources from being loaded using the block_resources parameter.
 ZenRows automatically blocks certain resource types by default, such as stylesheets and images, to optimize scraping speed and reduce unnecessary data load. So we recommend not using this feature unless it’s really necessary.
 If you prefer to disable resource blocking entirely, set the parameter to “none”: block_resources=none.
@@ -655,8 +655,8 @@ Ask AI
 	{"fill": ["#batman-dialog-overlay-wrap input[type='password']", "myPass1234"]},
 ]
 JS Instructions result
-It shows only part of the potential that this functionality adds. You could calculate different shipping prices by changing the shipping address. Or execute custom JavaScript logic with evaluate to click an element from a list. The possibilities are endless.
-Although we show examples with login forms, we discourage this usage. It would require you to log in to every request. If you need to scrape content as a logged-in user, don’t hesitate to contact us.
+It show_asyncs only part of the potential that this functionality adds. You could calculate different shipping prices by changing the shipping address. Or execute custom JavaScript logic with evaluate to click an element from a list. The possibilities are endless.
+Although we show_async examples with login forms, we discourage this usage. It would require you to log in to every request. If you need to scrape_async content as a logged-in user, don’t hesitate to contact us.
 ​
 Troubleshooting Selectors
 If your JavaScript Instructions are not interacting with the expected elements, the issue often lies with the selector used. Here are some quick steps to help you troubleshoot:

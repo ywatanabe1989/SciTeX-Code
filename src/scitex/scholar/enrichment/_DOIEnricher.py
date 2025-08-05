@@ -17,7 +17,7 @@ from scitex import logging
 from typing import List
 
 from .._Paper import Paper
-from ..doi._DOIResolver import DOIResolver
+from ..doi._SingleDOIResolver import SingleDOIResolver
 from ._BaseEnricher import BaseEnricher
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class DOIEnricher(BaseEnricher):
         email_openalex: str = "research@example.com",
         email_semantic_scholar: str = "research@example.com",
     ):
-        self.resolver = DOIResolver(
+        self.resolver = SingleDOIResolver(
             email_crossref=email_crossref,
             email_pubmed=email_pubmed,
             email_openalex=email_openalex,
@@ -57,7 +57,7 @@ class DOIEnricher(BaseEnricher):
     #             continue
 
     #         # Resolve DOI from title
-    #         doi = self.resolver.title_to_doi(
+    #         doi = self.resolver.resolve(
     #             title=paper.title,
     #             year=paper.year,
     #             authors=tuple(paper.authors) if paper.authors else None,

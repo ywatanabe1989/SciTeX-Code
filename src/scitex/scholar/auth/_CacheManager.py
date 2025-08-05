@@ -143,7 +143,7 @@ class CacheManager:
 
     def _create_cache_data(self, session_manager: SessionManager) -> Dict[str, Any]:
         """Create cache data dictionary from session manager."""
-        expiry = session_manager.get_session_expiry()
+        expiry = session_manager.get_session_async_expiry()
         return {
             "cookies": session_manager.get_cookies(),
             "full_cookies": session_manager.get_full_cookies(),
@@ -165,7 +165,7 @@ class CacheManager:
         """Validate cache data format and email match."""
         # Skip encrypted files
         if "encrypted" in cache_data:
-            logger.warning("Found encrypted session file - please re-authenticate")
+            logger.warning("Found encrypted session file - please re-authenticate_async")
             return False
 
         # Check email match if specified

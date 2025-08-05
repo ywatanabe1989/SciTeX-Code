@@ -8,7 +8,7 @@
 Shibboleth authentication for institutional access to academic papers.
 
 This module provides authentication through Shibboleth single sign-on
-to enable legal PDF downloads via institutional subscriptions.
+to enable legal PDF download_asyncs via institutional subscriptions.
 """
 
 import asyncio
@@ -49,8 +49,8 @@ class ShibbolethAuthenticator(BaseAuthenticator):
     This authenticator:
     1. Authenticates via institutional Identity Provider (IdP)
     2. Handles SAML assertions and attribute exchange
-    3. Maintains authenticated sessions
-    4. Returns session cookies for use by download strategies
+    3. Maintains authenticate_async sessions
+    4. Returns session cookies for use by download_async strategies
     """
 
     def __init__(
@@ -103,7 +103,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
         # Session file path
-        self.session_file = self.cache_dir / f"session_{self._get_session_key()}.json"
+        self.session_file = self.cache_dir / f"session_{self._get_session_async_key()}.json"
 
         # Session management
         self._cookies: Dict[str, str] = {}
@@ -148,7 +148,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         # Load existing session
         self._load_session()
 
-    def _get_session_key(self) -> str:
+    def _get_session_async_key(self) -> str:
         """Generate unique session key for this configuration."""
         key_parts = []
         if self.institution:
@@ -180,7 +180,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             except Exception as e:
                 logger.warning(f"Failed to load session: {e}")
 
-    def _save_session(self) -> None:
+    def _save_session_async(self) -> None:
         """Save current session to cache."""
         if self._cookies and self._session_expiry:
             try:
@@ -198,7 +198,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             except Exception as e:
                 logger.warning(f"Failed to save session: {e}")
 
-    async def authenticate(self, force: bool = False, **kwargs) -> dict:
+    async def authenticate_async(self, force: bool = False, **kwargs) -> dict:
         """
         Authenticate with Shibboleth and return session data.
 
@@ -228,7 +228,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             )
 
         # Check existing session
-        if not force and await self.is_authenticated():
+        if not force and await self.is_authenticate_async():
             logger.info("Using existing Shibboleth session")
             return {
                 "cookies": self._cookies,
@@ -257,7 +257,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 await page.goto(resource_url, wait_until="networkidle")
                 
                 # Step 2: Look for institutional login option
-                login_found = await self._find_institutional_login(page)
+                login_found = await self._find_institutional_login_async(page)
                 
                 if login_found:
                     # Click institutional login
@@ -265,17 +265,17 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                     await page.wait_for_load_state("networkidle")
                 
                 # Step 3: Handle WAYF/Discovery Service
-                wayf_handled = await self._handle_wayf_selection(page)
+                wayf_handled = await self._handle_wayf_selection_async(page)
                 
                 if not wayf_handled and not self.idp_url:
                     raise ShibbolethError("Could not find institution selection page")
                 
                 # Step 4: Handle IdP login
                 if self.idp_url and page.url.startswith(self.idp_url):
-                    await self._handle_idp_login(page)
+                    await self._handle_idp_login_async(page)
                 else:
                     # Try to detect and handle IdP automatically
-                    await self._handle_idp_login(page)
+                    await self._handle_idp_login_async(page)
                 
                 # Step 5: Wait for redirect back to resource
                 try:
@@ -288,14 +288,14 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                         timeout=30000
                     )
                 except:
-                    # Continue anyway - might still be authenticated
+                    # Continue anyway - might still be authenticate_async
                     pass
                 
                 # Extract cookies and SAML attributes
                 cookies = await context.cookies()
                 
                 # Try to extract SAML attributes from page or headers
-                self._saml_attributes = await self._extract_saml_attributes(page)
+                self._saml_attributes = await self._extract_saml_attributes_async(page)
                 
                 # Convert cookies
                 self._cookies = {c["name"]: c["value"] for c in cookies}
@@ -305,7 +305,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 self._session_expiry = datetime.now() + timedelta(hours=8)
                 
                 # Save session
-                self._save_session()
+                self._save_session_async()
                 
                 logger.info("Shibboleth authentication successful")
                 return {
@@ -320,7 +320,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             finally:
                 await browser.close()
 
-    async def _find_institutional_login(self, page: Page) -> Optional[Any]:
+    async def _find_institutional_login_async(self, page: Page) -> Optional[Any]:
         """Find and return institutional login link/button."""
         selectors = [
             "a:has-text('Institutional')",
@@ -342,7 +342,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 
         return None
 
-    async def _handle_wayf_selection(self, page: Page) -> bool:
+    async def _handle_wayf_selection_async(self, page: Page) -> bool:
         """Handle WAYF/Discovery Service institution selection."""
         # Check if we're on a WAYF page
         wayf_indicators = ["wayf", "discovery", "ds.", "where are you from"]
@@ -391,7 +391,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             
         return False
 
-    async def _handle_idp_login(self, page: Page) -> None:
+    async def _handle_idp_login_async(self, page: Page) -> None:
         """Handle login at the Identity Provider."""
         logger.info("Handling IdP login page")
         
@@ -436,7 +436,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         # Wait for authentication to complete
         await page.wait_for_load_state("networkidle")
 
-    async def _extract_saml_attributes(self, page: Page) -> Dict[str, Any]:
+    async def _extract_saml_attributes_async(self, page: Page) -> Dict[str, Any]:
         """Try to extract SAML attributes from the page."""
         attributes = {}
         
@@ -465,15 +465,15 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             
         return attributes
 
-    async def is_authenticated(self, verify_live: bool = False) -> bool:
+    async def is_authenticate_async(self, verify_live: bool = False) -> bool:
         """
-        Check if we have a valid authenticated session.
+        Check if we have a valid authenticate_async session.
 
         Args:
             verify_live: If True, performs a live check
 
         Returns:
-            True if authenticated, False otherwise
+            True if authenticate_async, False otherwise
         """
         # Check if we have session data
         if not self._cookies or not self._session_expiry:
@@ -522,7 +522,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 
         return True
 
-    async def get_auth_headers(self) -> Dict[str, str]:
+    async def get_auth_headers_async(self) -> Dict[str, str]:
         """
         Get authentication headers.
 
@@ -542,19 +542,19 @@ class ShibbolethAuthenticator(BaseAuthenticator):
 
         return headers
 
-    async def get_auth_cookies(self) -> List[Dict[str, Any]]:
+    async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
         """Get authentication cookies."""
-        if not await self.is_authenticated():
-            raise ShibbolethError("Not authenticated")
+        if not await self.is_authenticate_async():
+            raise ShibbolethError("Not authenticate_async")
         return self._full_cookies
 
-    async def logout(self) -> None:
+    async def logout_async(self) -> None:
         """
         Log out and clear authentication state.
 
-        Note: Shibboleth logout is complex as it involves:
-        - Local application logout
-        - IdP logout
+        Note: Shibboleth logout_async is complex as it involves:
+        - Local application logout_async
+        - IdP logout_async
         - Optional Single Logout (SLO) to all SPs
         """
         self._cookies = {}
@@ -568,12 +568,12 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             
         logger.info("Logged out from Shibboleth")
 
-    async def get_session_info(self) -> Dict[str, Any]:
+    async def get_session_info_async(self) -> Dict[str, Any]:
         """Get information about current session."""
-        is_authenticated = await self.is_authenticated()
+        is_authenticate_async = await self.is_authenticate_async()
         
         return {
-            "authenticated": is_authenticated,
+            "authenticate_async": is_authenticate_async,
             "provider": "Shibboleth",
             "institution": self.institution,
             "username": self.username,
@@ -655,15 +655,15 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         # This would need to be configured based on user's location
         return self.wayf_urls[0]  # Default to first WAYF
 
-    async def create_authenticated_browser(self) -> tuple[Browser, Any]:
+    async def create_authenticate_async_browser(self) -> tuple[Browser, Any]:
         """
         Create a browser instance with Shibboleth authentication.
 
         Returns:
             Tuple of (browser, context) with authentication cookies set
         """
-        if not await self.is_authenticated():
-            await self.authenticate()
+        if not await self.is_authenticate_async():
+            await self.authenticate_async()
 
         if async_playwright is None:
             raise ShibbolethError("Playwright is required")

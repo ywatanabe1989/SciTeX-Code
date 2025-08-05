@@ -190,11 +190,11 @@ class ScholarPaths:
         paper_dir.mkdir(parents=True, exist_ok=True)
         return paper_dir
     
-    def get_downloads_dir(self) -> Path:
-        """Get temporary downloads directory."""
-        downloads_dir = self.base_dir / "workspace" / "downloads"
-        downloads_dir.mkdir(parents=True, exist_ok=True)
-        return downloads_dir
+    def get_download_asyncs_dir(self) -> Path:
+        """Get temporary download_asyncs directory."""
+        download_asyncs_dir = self.base_dir / "workspace" / "download_asyncs"
+        download_asyncs_dir.mkdir(parents=True, exist_ok=True)
+        return download_asyncs_dir
     
     def get_logs_dir(self) -> Path:
         """Get logs directory."""
@@ -265,7 +265,7 @@ if __name__ == "__main__":
     
     # Test new structure directories
     print(f"📚 Library storage: {paths.get_library_storage_dir()}")
-    print(f"⬇️  Downloads directory: {paths.get_downloads_dir()}")
+    print(f"⬇️  Downloads directory: {paths.get_download_asyncs_dir()}")
     print(f"📝 Logs directory: {paths.get_logs_dir()}")
     
     print("✅ ScholarPaths test complete")

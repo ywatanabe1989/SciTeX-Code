@@ -48,7 +48,7 @@ Uses ZenRows API to bypass anti-bot detection while making HTTP requests.
 **Limitations:**
 - Cannot execute JavaScript (no popup handling)
 - Limited authentication cookie transfer to publishers
-- May show "Purchase" for paywalled content even with auth
+- May show_async "Purchase" for paywalled content even with auth
 
 ```python
 from scitex.scholar.open_url import OpenURLResolverWithZenRows
@@ -104,7 +104,7 @@ logger.setLevel(logging.DEBUG)
 auth_manager = AuthenticationManager(
     email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL")
 )
-is_authenticated = await auth_manager.is_authenticated()
+is_authenticate_async = await auth_manager.is_authenticate_async()
 
 # Choose your resolver
 # Standard browser-based resolver
@@ -152,7 +152,7 @@ results = resolver.resolve(dois)
 You can implement automatic fallback between resolvers:
 
 ```python
-async def resolve_with_fallback(doi, metadata):
+async def resolve_with_fallback_async(doi, metadata):
     # Try standard resolver first
     result = await standard_resolver.resolve_async(doi=doi, **metadata)
     
@@ -181,9 +181,9 @@ from scitex.scholar import Scholar
 scholar = Scholar()
 
 # Download with automatic anti-bot protection
-papers = await scholar.download_pdfs_async(
+papers = await scholar.download_async_pdf_asyncs_async(
     ["10.1038/nature12373", "10.1073/pnas.0608765104"],
-    show_progress=True
+    show_async_progress=True
 )
 ```
 

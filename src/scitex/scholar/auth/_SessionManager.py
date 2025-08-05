@@ -83,11 +83,11 @@ class SessionManager:
         """Get full cookie objects."""
         return self._full_cookies.copy()
 
-    def get_session_expiry(self) -> Optional[datetime]:
+    def get_session_async_expiry(self) -> Optional[datetime]:
         """Get session expiry time."""
         return self._session_expiry
 
-    def get_session_info(self) -> Dict[str, Any]:
+    def get_session_info_async(self) -> Dict[str, Any]:
         """Get comprehensive session information."""
         return {
             "has_cookies": bool(self._cookies),

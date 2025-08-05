@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-DOI sources for the DOIResolver.
+DOI sources for the SingleDOIResolver.
 
 This module provides different sources for resolving DOIs including
 CrossRef, PubMed, OpenAlex, and Semantic Scholar.
@@ -24,6 +24,7 @@ from ._PubMedSource import PubMedSource
 from ._OpenAlexSource import OpenAlexSource
 from ._SemanticScholarSource import SemanticScholarSource
 from ._ArXivSource import ArXivSource
+from ._URLDOIExtractor import URLDOIExtractor
 
 __all__ = [
     "BaseDOISource",
@@ -32,6 +33,7 @@ __all__ = [
     "OpenAlexSource",
     "SemanticScholarSource",
     "ArXivSource",
+    "URLDOIExtractor",
 ]
 
 # EOF

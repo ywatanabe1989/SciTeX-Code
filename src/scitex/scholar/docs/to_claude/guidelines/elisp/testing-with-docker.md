@@ -224,7 +224,7 @@ jobs:
 
 ### Docker Issues
 - **Permission Denied**: Use `--user $(id -u):$(id -g)` flag
-- **Network Issues**: Use `--network host` for package downloads
+- **Network Issues**: Use `--network host` for package download_asyncs
 - **Volume Mounting**: Ensure proper bind mount permissions
 
 ### Apptainer Issues

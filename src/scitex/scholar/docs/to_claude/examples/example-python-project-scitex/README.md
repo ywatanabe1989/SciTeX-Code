@@ -53,12 +53,12 @@ For example,
 │       │           ├── train-images-idx3-ubyte.gz
 │       │           ├── train-labels-idx1-ubyte
 │       │           └── train-labels-idx1-ubyte.gz
-│       ├── test_flattened.npy -> ../../scripts/mnist/download_out/data/mnist/test_flattened.npy
-│       ├── test_labels.npy -> ../../scripts/mnist/download_out/data/mnist/test_labels.npy
-│       ├── test_loader.pkl -> ../../scripts/mnist/download_out/data/mnist/test_loader.pkl
-│       ├── train_flattened.npy -> ../../scripts/mnist/download_out/data/mnist/train_flattened.npy
-│       ├── train_labels.npy -> ../../scripts/mnist/download_out/data/mnist/train_labels.npy
-│       └── train_loader.pkl -> ../../scripts/mnist/download_out/data/mnist/train_loader.pkl
+│       ├── test_flattened.npy -> ../../scripts/mnist/download_async_out/data/mnist/test_flattened.npy
+│       ├── test_labels.npy -> ../../scripts/mnist/download_async_out/data/mnist/test_labels.npy
+│       ├── test_loader.pkl -> ../../scripts/mnist/download_async_out/data/mnist/test_loader.pkl
+│       ├── train_flattened.npy -> ../../scripts/mnist/download_async_out/data/mnist/train_flattened.npy
+│       ├── train_labels.npy -> ../../scripts/mnist/download_async_out/data/mnist/train_labels.npy
+│       └── train_loader.pkl -> ../../scripts/mnist/download_async_out/data/mnist/train_loader.pkl
 ├── README.md
 ├── requirements.txt
 └── scripts
@@ -82,7 +82,7 @@ For example,
         │   ├── predictions.npy
         │   └── RUNNING
         ├── clf_svm.py
-        ├── download_out
+        ├── download_async_out
         │   ├── data
         │   │   └── mnist
         │   │       ├── test_flattened.npy
@@ -97,7 +97,7 @@ For example,
         │   │           ├── stderr.log
         │   │           └── stdout.log
         │   └── RUNNING
-        ├── download.py
+        ├── download_async.py
         ├── main.sh
         ├── main.sh.log
         ├── plot_conf_mat_out

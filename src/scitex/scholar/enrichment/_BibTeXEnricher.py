@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-02 20:09:22 (ywatanabe)"
+# Timestamp: "2025-08-05 17:01:26 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/enrichment/_BibTeXEnricher.py
 # ----------------------------------------
 from __future__ import annotations
@@ -35,7 +35,7 @@ from bibtexparser.customization import convert_to_unicode
 from scitex import logging
 
 from ..config import ScholarConfig
-from ..doi import DOIResolver
+from ..doi._SingleDOIResolver import SingleDOIResolver
 from ..search_engine import (
     CrossRefSearchEngine,
     PubMedSearchEngine,
@@ -63,7 +63,7 @@ class BibTeXEnricher:
         self.semantic_scholar = SemanticScholarSearchEngine(config=self.config)
 
         # DOI resolver for entries without DOI
-        self.doi_resolver = DOIResolver(config=self.config)
+        self.doi_resolver = SingleDOIResolver(config=self.config)
 
         # Cache directory using path manager
         self.cache_dir = self.config.path_manager.get_cache_dir("enrichment")
@@ -134,7 +134,7 @@ class BibTeXEnricher:
         except Exception as e:
             logger.error(f"Failed to save progress: {e}")
 
-    async def _fetch_crossref_metadata(self, doi: str) -> Dict[str, Any]:
+    async def _fetch_crossref_async_metadata(self, doi: str) -> Dict[str, Any]:
         """Fetch metadata from CrossRef."""
         try:
             # Search by DOI
@@ -158,7 +158,7 @@ class BibTeXEnricher:
 
         return {}
 
-    async def _fetch_pubmed_metadata(
+    async def _fetch_pubmed_metadata_async(
         self, doi: str, title: str
     ) -> Dict[str, Any]:
         """Fetch metadata from PubMed."""
@@ -181,7 +181,7 @@ class BibTeXEnricher:
 
         return {}
 
-    async def _fetch_semantic_scholar_metadata(
+    async def _fetch_semantic_scholar_metadata_async(
         self, doi: str, title: str
     ) -> Dict[str, Any]:
         """Fetch metadata from Semantic Scholar."""
@@ -216,7 +216,7 @@ class BibTeXEnricher:
 
         return {}
 
-    async def _enrich_single_entry(
+    async def _enrich_single_entry_async(
         self, entry: Dict[str, str]
     ) -> Dict[str, str]:
         """Enrich a single BibTeX entry."""
@@ -234,7 +234,7 @@ class BibTeXEnricher:
         # Resolve DOI if missing
         if not doi:
             try:
-                doi = await self.doi_resolver.title_to_doi_async(title)
+                doi = await self.doi_resolver.resolve_async(title)
                 if doi:
                     entry["doi"] = doi
                     logger.debug(f"Resolved DOI: {doi}")
@@ -245,12 +245,12 @@ class BibTeXEnricher:
         metadata_tasks = []
 
         if doi:
-            metadata_tasks.append(self._fetch_crossref_metadata(doi))
+            metadata_tasks.append(self._fetch_crossref_async_metadata(doi))
 
         metadata_tasks.extend(
             [
-                self._fetch_pubmed_metadata(doi, title),
-                self._fetch_semantic_scholar_metadata(doi, title),
+                self._fetch_pubmed_metadata_async(doi, title),
+                self._fetch_semantic_scholar_metadata_async(doi, title),
             ]
         )
 
@@ -342,7 +342,8 @@ class BibTeXEnricher:
 
         # Setup progress tracking using workspace logs
         self.progress_file = (
-            self.config.path_manager.get_workspace_logs_dir() / f"enrichment_{bibtex_path.stem}_progress.json"
+            self.config.path_manager.get_workspace_logs_dir()
+            / f"enrichment_{bibtex_path.stem}_progress.json"
         )
         if resume:
             self.progress = self._load_progress()
@@ -384,10 +385,10 @@ class BibTeXEnricher:
         # Process entries with semaphore for rate limiting
         semaphore = asyncio.Semaphore(max_concurrent)
 
-        async def enrich_with_limit(entry: Dict, index: int):
+        async def enrich_with_limit_async(entry: Dict, index: int):
             async with semaphore:
                 try:
-                    enriched = await self._enrich_single_entry(entry)
+                    enriched = await self._enrich_single_entry_async(entry)
 
                     # Update progress periodically
                     if (index + 1) % 5 == 0:
@@ -419,7 +420,7 @@ class BibTeXEnricher:
 
         # Process all entries
         tasks = [
-            enrich_with_limit(entry, i)
+            enrich_with_limit_async(entry, i)
             for i, entry in enumerate(entries_to_process)
         ]
 
@@ -480,8 +481,8 @@ Examples:
   # Start fresh (don't resume)
   python -m scitex.scholar.enrichment.enrich --bibtex papers.bib --no-resume
 
-  # Use more concurrent workers
-  python -m scitex.scholar.enrichment.enrich --bibtex papers.bib --workers 5
+  # Use more concurrent worker_asyncs
+  python -m scitex.scholar.enrichment.enrich --bibtex papers.bib --worker_asyncs 5
         """,
     )
 
@@ -503,11 +504,11 @@ Examples:
     )
 
     parser.add_argument(
-        "--workers",
+        "--worker_asyncs",
         "-w",
         type=int,
         default=3,
-        help="Maximum concurrent workers (default: 3)",
+        help="Maximum concurrent worker_asyncs (default: 3)",
     )
 
     args = parser.parse_args()
@@ -521,7 +522,7 @@ Examples:
             Path(args.bibtex),
             Path(args.output) if args.output else None,
             resume=not args.no_resume,
-            max_concurrent=args.workers,
+            max_concurrent=args.worker_asyncs,
         )
 
         print(f"\nEnrichment Summary:")

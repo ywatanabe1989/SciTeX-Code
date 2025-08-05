@@ -38,7 +38,7 @@ class PaperDatabase:
     - Fast search by various fields
     - Import from BibTeX
     - Export to various formats
-    - Track download and validation status
+    - Track download_async and validation status
     """
     
     def __init__(self, database_dir: Optional[Union[str, Path]] = None):
@@ -312,7 +312,7 @@ class PaperDatabase:
                 "complete": 0,
                 "searchable": 0,
             },
-            "download_stats": defaultdict(int),
+            "download_async_stats": defaultdict(int),
             "journal_distribution": defaultdict(int),
             "year_distribution": defaultdict(int),
         }
@@ -330,7 +330,7 @@ class PaperDatabase:
                     stats["pdf_stats"]["searchable"] += 1
             
             # Download stats
-            stats["download_stats"][entry.download_status] += 1
+            stats["download_async_stats"][entry.download_async_status] += 1
             
             # Journal distribution
             if entry.journal:
@@ -341,7 +341,7 @@ class PaperDatabase:
                 stats["year_distribution"][entry.year] += 1
         
         # Convert defaultdicts to regular dicts
-        stats["download_stats"] = dict(stats["download_stats"])
+        stats["download_async_stats"] = dict(stats["download_async_stats"])
         stats["journal_distribution"] = dict(stats["journal_distribution"])
         stats["year_distribution"] = dict(stats["year_distribution"])
         

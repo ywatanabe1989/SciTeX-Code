@@ -21,7 +21,7 @@ Copy
 
 Ask AI
 # Install Python (if not already installed)
-# Visit https://www.python.org/downloads/ or use package managers:
+# Visit https://www.python.org/download_asyncs/ or use package managers:
 
 # macOS (using Homebrew)
 brew install python
@@ -38,7 +38,7 @@ playwright install
 If you need help setting up your environment, check out our detailed Playwright web scraping guide
 ​
 Get Your API Key and Connection URL
-Sign Up for a free ZenRows account and get your API key from the Scraping Browser dashboard. You’ll need this key to authenticate your WebSocket connection.
+Sign Up for a free ZenRows account and get your API key from the Scraping Browser dashboard. You’ll need this key to authenticate_async your WebSocket connection.
 ​
 2. Make Your First Request
 Start with a simple request to understand how the Scraping Browser works with Playwright. We’ll use the E-commerce Challenge page to demonstrate how to connect to the browser and extract the page title.
@@ -57,7 +57,7 @@ from playwright.async_api import async_playwright
 # scraping browser connection URL
 connection_url = "wss://browser.zenrows.com?apikey=YOUR_ZENROWS_API_KEY"
 
-async def scraper():
+async def scrape_asyncr_async():
     async with async_playwright() as p:
         # connect to the scraping browser
         browser = await p.chromium.connect_over_cdp(connection_url)
@@ -70,7 +70,7 @@ async def scraper():
         await browser.close()
 
 if __name__ == "__main__":
-    asyncio.run(scraper())
+    asyncio.run(scrape_asyncr_async())
 Replace YOUR_ZENROWS_API_KEY with your actual API key and run the script:
 
 Python
@@ -80,7 +80,7 @@ Node.js
 Copy
 
 Ask AI
-python scraper.py
+python scrape_asyncr_async.py
 ​
 Expected Output
 The script will print the page title:
@@ -108,7 +108,7 @@ from playwright.async_api import async_playwright
 # scraping browser connection URL
 connection_url = "wss://browser.zenrows.com?apikey=YOUR_ZENROWS_API_KEY"
 
-async def scraper(url):
+async def scrape_asyncr_async(url):
     async with async_playwright() as p:
         # connect to the scraping browser
         browser = await p.chromium.connect_over_cdp(connection_url)
@@ -142,7 +142,7 @@ async def scraper(url):
 
 if __name__ == "__main__":
     url = "https://www.scrapingcourse.com/ecommerce/"
-    products = asyncio.run(scraper(url))
+    products = asyncio.run(scrape_asyncr_async(url))
     print(products)
 ​
 Run Your Application
@@ -155,7 +155,7 @@ Node.js
 Copy
 
 Ask AI
-python scraper.py
+python scrape_asyncr_async.py
 Example Output
 The script will extract and display product information:
 
@@ -224,7 +224,7 @@ Ask AI
 const { chromium } = require('playwright');
 const { ScrapingBrowser } = require('@zenrows/browser-sdk');
 
-const scraper = async () => {
+const scrape_asyncr_async = async () => {
     // Initialize SDK
     const scrapingBrowser = new ScrapingBrowser({ apiKey: 'YOUR_ZENROWS_API_KEY' });
     const connectionURL = scrapingBrowser.getConnectURL();
@@ -238,7 +238,7 @@ const scraper = async () => {
     await browser.close();
 };
 
-scraper();
+scrape_asyncr_async();
 ​
 SDK Benefits
 Simplified configuration: No need to manually construct WebSocket URLs
@@ -273,7 +273,7 @@ Empty Data or Timeout Errors
 
 Use page.waitForSelector() to ensure elements load before extraction
 Increase timeout values for slow-loading pages
-scraper.js
+scrape_asyncr_async.js
 
 Copy
 
@@ -331,6 +331,6 @@ Can I use Playwright's network interception features?
 
 What's the difference between using Playwright locally vs. with Scraping Browser?
 
-How do I handle file downloads with Playwright and Scraping Browser?
+How do I handle file download_asyncs with Playwright and Scraping Browser?
 
 <!-- EOF -->

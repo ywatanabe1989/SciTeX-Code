@@ -1,0 +1,36 @@
+[
+  {
+    "corpus_id": "263829747",
+    "title": "Statistical Inference for Modulation Index in Phase-Amplitude Coupling",
+    "authors": [
+      "Marco Pinto-Orellana",
+      "H. Ombao",
+      "Beth A. Lopour"
+    ],
+    "year": 2023,
+    "doi": null,
+    "resolution_method": null,
+    "attempts": [
+      "semantic_scholar_api",
+      "crossref_search",
+      "arxiv_search",
+      "web_scraping"
+    ]
+  },
+  {
+    "corpus_id": "263786486",
+    "title": "Complex network modelling of EEG band coupling in dyslexia",
+    "authors": [
+      "N. Gallego-Molina"
+    ],
+    "year": 2021,
+    "doi": null,
+    "resolution_method": null,
+    "attempts": [
+      "semantic_scholar_api",
+      "crossref_search",
+      "arxiv_search",
+      "web_scraping"
+    ]
+  }
+]

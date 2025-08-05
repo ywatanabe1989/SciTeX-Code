@@ -16,7 +16,7 @@ from scitex import logging
 from typing import List, Optional
 
 from .._Paper import Paper
-from ..doi import DOIResolver
+from ..doi._SingleDOIResolver import SingleDOIResolver
 from ._BaseEnricher import BaseEnricher
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class KeywordEnricher(BaseEnricher):
         email_semantic_scholar: str = "research@example.com",
         sources: Optional[List[str]] = None,
     ):
-        self.resolver = DOIResolver(
+        self.resolver = SingleDOIResolver(
             email_crossref=email_crossref,
             email_pubmed=email_pubmed,
             email_openalex=email_openalex,

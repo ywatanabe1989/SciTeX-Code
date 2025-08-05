@@ -165,7 +165,7 @@ done
 - Upstream functions should be placed in upper positions
   - from top (upstream functions) to down (utility functions)
 - Do not change any code contents during sorting
-- Includes comments to show hierarchy
+- Includes comments to show_async hierarchy
 
   - For Shell scripts
   ```shell

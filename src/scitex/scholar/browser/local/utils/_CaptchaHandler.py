@@ -41,7 +41,7 @@ class CaptchaHandler:
             ".recaptcha-checkbox-border",
         ]
 
-    async def inject_captcha_handler(self, context):
+    async def inject_captcha_handler_async(self, context):
         """Inject auto-handler script for CAPTCHA."""
         script = f"""
 (() => {{
@@ -90,7 +90,7 @@ class CaptchaHandler:
 """
         await context.add_init_script(script)
 
-    async def handle_captcha(
+    async def handle_captcha_async(
         self, page: Page, wait_seconds: float = 2
     ) -> bool:
         """Try to handle 'I am not a robot' CAPTCHA."""
@@ -122,7 +122,7 @@ class CaptchaHandler:
 
         return False
 
-    async def check_captcha_exists(self, page: Page) -> bool:
+    async def check_captcha_exists_async(self, page: Page) -> bool:
         """Check if a CAPTCHA is visible."""
         try:
             for selector in self.captcha_selectors:

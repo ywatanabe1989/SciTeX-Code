@@ -146,7 +146,7 @@ pipeline.enrich(papers)
    - Requires journal name
 
 4. **AbstractEnricher** - Retrieves abstracts
-   - Uses DOIResolver with multiple sources
+   - Uses SingleDOIResolver with multiple sources
    - Requires DOI
 
 ## Creating Custom Enrichers

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-02 18:40:35 (ywatanabe)"
+# Timestamp: "2025-08-05 21:25:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,620 +11,265 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from typing import Any
+"""Unified DOI resolver with automatic input type detection."""
 
-"""
-Clean, optimized DOI resolver with pluggable sources.
-
-This module orchestrates DOI resolution across multiple sources
-(CrossRef, PubMed, OpenAlex, Semantic Scholar).
-"""
-
-import asyncio
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from functools import lru_cache
-from typing import Dict, List, Optional, Type
-
-import requests
-from tenacity import AsyncRetrying, stop_after_attempt, wait_exponential
-from tqdm import tqdm
+from pathlib import Path
+from typing import Any, Dict, List, Union
 
 from scitex import logging
 
-from .sources import (
-    ArXivSource,
-    BaseDOISource,
-    CrossRefSource,
-    OpenAlexSource,
-    PubMedSource,
-    SemanticScholarSource,
-)
+from ..config import ScholarConfig
+from ._BatchDOIResolver import BatchDOIResolver
+from ._BibTeXDOIResolver import BibTeXDOIResolver
 
 logger = logging.getLogger(__name__)
 
 
 class DOIResolver:
-    """Clean, optimized DOI resolver with configurable sources."""
-
-    # Default source order (based on rate limits and reliability)
-    DEFAULT_SOURCES = ["crossref", "semantic_scholar", "pubmed", "openalex"]
-
-    # Source registry
-    SOURCE_CLASSES: Dict[str, Type[BaseDOISource]] = {
-        "crossref": CrossRefSource,
-        "pubmed": PubMedSource,
-        "openalex": OpenAlexSource,
-        "semantic_scholar": SemanticScholarSource,
-        "arxiv": ArXivSource,
-    }
-
-    def __init__(
-        self,
-        email_crossref: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
-        email_pubmed: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
-        email_openalex: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
-        email_semantic_scholar: str = os.getenv(
-            "SCITEX_SCHOLAR_CROSSREF_EMAIL"
-        ),
-        email_arxiv: str = os.getenv("SCITEX_SCHOLAR_CROSSREF_EMAIL"),
-        sources: Optional[List[str]] = None,
-        config: Optional[Any] = None,
-    ):
-        """Initialize resolver with specified sources.
-
-        Args:
-            email_crossref: Email for CrossRef API
-            email_pubmed: Email for PubMed API
-            email_openalex: Email for OpenAlex API
-            email_semantic_scholar: Email for Semantic Scholar API
-            email_arxiv: Email for ArXiv API
-            sources: List of source names to use (default: all available)
-            config: ScholarConfig object
-        """
-        if config is None:
-            from ..config import ScholarConfig
-
-            config = ScholarConfig()
-
-        self.config = config
-
-        # Direct params override config
-        self.email_crossref = config.resolve(
-            "crossref_email", email_crossref, "research@example.com"
-        )
-        self.email_pubmed = config.resolve(
-            "pubmed_email", email_pubmed, "research@example.com"
-        )
-        self.email_openalex = config.resolve(
-            "openalex_email", email_openalex, "research@example.com"
-        )
-        self.email_semantic_scholar = config.resolve(
-            "semantic_scholar_email", email_semantic_scholar, "research@example.com"
-        )
-        self.email_arxiv = config.resolve(
-            "arxiv_email", email_arxiv, "research@example.com"
-        )
-
-        # Default fallback
-        default_email = "research@example.com"
-
-        self.sources = sources or self.DEFAULT_SOURCES
-        self._source_instances: Dict[str, BaseDOISource] = {}
-
-    def _get_source(self, name: str) -> Optional[BaseDOISource]:
-        """Get or create source instance."""
-        if name not in self._source_instances:
-            source_class = self.SOURCE_CLASSES.get(name)
-            if source_class:
-                # Get appropriate email for each source
-                email_map = {
-                    "crossref": self.email_crossref,
-                    "pubmed": self.email_pubmed,
-                    "openalex": self.email_openalex,
-                    "semantic_scholar": self.email_semantic_scholar,
-                    "arxiv": self.email_arxiv,
-                }
-                email = email_map.get(name, "research@example.com")
-                self._source_instances[name] = source_class(email)
-        return self._source_instances.get(name)
-
-    # @lru_cache(maxsize=1000)
-    # def title_to_doi(
-    #     self,
-    #     title: str,
-    #     year: Optional[int] = None,
-    #     authors: Optional[tuple] = None,  # Tuple for hashability
-    #     sources: Optional[tuple] = None,  # Tuple for hashability
-    # ) -> Optional[str]:
-    #     """
-    #     Resolve DOI from title with caching.
-
-    #     Args:
-    #         title: Paper title
-    #         year: Publication year (optional)
-    #         authors: Author list as tuple (optional)
-    #         sources: Specific sources to use as tuple (optional)
-
-    #     Returns:
-    #         DOI if found, None otherwise
-    #     """
-    #     if not title:
-    #         return None
-
-    #     # Normalize inputs
-    #     authors_list = list(authors) if authors else None
-    #     sources_list = list(sources) if sources else self.sources
-
-    #     # Try each source
-    #     for source_name in sources_list:
-    #         source = self._get_source(source_name)
-    #         if not source:
-    #             continue
-
-    #         try:
-    #             doi = source.search(title, year, authors_list)
-    #             if doi:
-    #                 logger.info(f"Found DOI via {source.name}: {doi}")
-    #                 return doi
-
-    #             # Rate limit
-    #             time.sleep(source.rate_limit_delay)
-
-    #         except Exception as e:
-    #             logger.warning(
-    #                 f"Error searching {source_name}: {e}", exc_info=True
-    #             )
-
-    #     return None
-
-    async def title_to_doi_async(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-    ) -> Optional[str]:
-        """Resolve DOI from title - tries sources sequentially, stops after first success.
-
-        Args:
-            title: Paper title
-            year: Publication year (optional)
-            authors: Author list (optional)
-            sources: Specific sources to use (optional)
-
-        Returns:
-            DOI if found, None otherwise
-        """
-        if not title:
-            return None
-
-        sources_list = sources or self.sources
-
-        # Try sources sequentially - stop after first success
-        for source_name in sources_list:
-            source = self._get_source(source_name)
-            if not source:
-                continue
-
-            try:
-                # Try this source
-                doi = await self._search_source_async(
-                    source, title, year, authors
-                )
-
-                if doi:
-                    # Success! Return immediately, no need to try other sources
-                    return {"doi": doi, "source": source_name}
-
-            except Exception as e:
-                logger.debug(f"Error searching {source_name}: {e}")
-                continue
-
-            # Small delay between sources to be polite
-            await asyncio.sleep(1.0)  # 1 second between sources
-
-        return None
-
-    # async def _search_source_async(
-    #     self,
-    #     source: BaseDOISource,
-    #     title: str,
-    #     year: Optional[int] = None,
-    #     authors: Optional[List[str]] = None,
-    # ) -> Optional[str]:
-    #     """Search single source asynchronously."""
-    #     try:
-    #         # Run blocking call in thread pool
-    #         loop = asyncio.get_event_loop()
-    #         doi = await loop.run_in_executor(
-    #             None, source.search, title, year, authors
-    #         )
-    #         if doi:
-    #             logger.info(f"Found DOI via {source.name}: {doi}")
-    #         return doi
-    #     except Exception as e:
-    #         logger.debug(f"Error searching {source.name}: {e}")
-    #         return None
-
-    async def _search_source_async(
-        self,
-        source: BaseDOISource,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-    ) -> Optional[str]:
-        """Search single source asynchronously - sources handle their own retries."""
-        try:
-            loop = asyncio.get_event_loop()
-            doi = await loop.run_in_executor(
-                None, source.search, title, year, authors
-            )
-
-            if doi:
-                logger.info(f"Found DOI via {source.name}: {doi}")
-                return doi
-            else:
-                logger.debug(f"No DOI found via {source.name}")
-                return None
-
-        except Exception as e:
-            logger.debug(f"Error searching {source.name}: {e}")
-            return None
-
-    # @lru_cache(maxsize=1000)
-    # def title_to_doi(
-    #     self,
-    #     title: str,
-    #     year: Optional[int] = None,
-    #     authors: Optional[tuple] = None,
-    #     sources: Optional[tuple] = None,
-    # ) -> Optional[str]:
-    #     """Sync wrapper for async DOI resolution with caching."""
-    #     # Convert tuples back to lists
-    #     authors_list = list(authors) if authors else None
-    #     sources_list = list(sources) if sources else None
-
-    #     # Create new event loop if needed
-    #     try:
-    #         loop = asyncio.get_event_loop()
-    #     except RuntimeError:
-    #         loop = asyncio.new_event_loop()
-    #         asyncio.set_event_loop(loop)
-
-    #     # Run async version
-    #     return loop.run_until_complete(
-    #         self.title_to_doi_async(title, year, authors_list, sources_list)
-    #     )
-
-    def title_to_doi(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-    ) -> Optional[str]:
-        """Sync wrapper for async DOI resolution."""
-        if not title:
-            return None
-
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-
-        return loop.run_until_complete(
-            self.title_to_doi_async(title, year, authors, sources)
-        )
-
-    # def get_abstract(
-    #     self, doi: str, sources: Optional[List[str]] = None
-    # ) -> Optional[str]:
-    #     """
-    #     Get abstract by DOI from configured sources.
-
-    #     Args:
-    #         doi: DOI to look up
-    #         sources: Specific sources to use (optional)
-
-    #     Returns:
-    #         Abstract text if found, None otherwise
-    #     """
-    #     if not doi:
-    #         return None
-
-    #     sources_to_try = sources or self.sources
-
-    #     for source_name in sources_to_try:
-    #         source = self._get_source(source_name)
-    #         if not source:
-    #             continue
-
-    #         try:
-    #             abstract = source.get_abstract(doi)
-    #             if abstract:
-    #                 logger.info(f"Found abstract via {source.name}")
-    #                 return abstract
-
-    #             # Rate limit
-    #             time.sleep(source.rate_limit_delay)
-
-    #         except Exception as e:
-    #             logger.warning(
-    #                 f"Error getting abstract from {source_name}: {e}",
-    #                 exc_info=True,
-    #             )
-
-    #     return None
-    def get_abstract(
-        self, doi: str, sources: Optional[List[str]] = None
-    ) -> Optional[str]:
-        """Get abstract by DOI from configured sources."""
-        if not doi:
-            return None
-
-        sources_to_try = sources or self.sources
-        for source_name in sources_to_try:
-            source = self._get_source(source_name)
-            if not source:
-                continue
-
-            try:
-                abstract = source.get_abstract(doi)
-                if abstract:
-                    logger.info(f"Found abstract via {source.name}")
-                    return abstract
-                time.sleep(source.rate_limit_delay)
-            except requests.HTTPError as exc:
-                if exc.response and exc.response.status_code == 429:
-                    logger.warning(
-                        f"Rate limit hit for {source_name}. Consider adding API key or waiting between requests."
-                    )
-                else:
-                    logger.debug(
-                        f"HTTP error getting abstract from {source_name}: {exc}"
-                    )
-                continue
-            except Exception as exc:
-                logger.debug(
-                    f"Error getting abstract from {source_name}: {exc}"
-                )
-                continue
-
-        return None
-
-    def batch_resolve(
-        self,
-        titles: List[str],
-        years: Optional[List[Optional[int]]] = None,
-        max_workers: int = 4,
-        show_progress: bool = True,
-    ) -> Dict[str, Optional[str]]:
-        """
-        Batch resolve DOIs for multiple titles.
-
-        Args:
-            titles: List of paper titles
-            years: Corresponding years (optional)
-            max_workers: Number of concurrent workers
-            show_progress: Show progress bar
-
-        Returns:
-            Dict mapping titles to DOIs (or None if not found)
-        """
-        if not titles:
-            return {}
-
-        # Prepare inputs
-        if not years:
-            years = [None] * len(titles)
-
-        results = {}
-
-        # Progress bar setup
-        pbar = None
-        if show_progress:
-            pbar = tqdm(total=len(titles), desc="Resolving DOIs")
-
-        def resolve_single(idx: int) -> tuple[str, Optional[str]]:
-            """Resolve single title."""
-            title = titles[idx]
-            year = years[idx] if idx < len(years) else None
-            doi = self.title_to_doi(title, year)
-            if pbar:
-                pbar.update(1)
-            return title, doi
-
-        # Process in parallel
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [
-                executor.submit(resolve_single, i) for i in range(len(titles))
-            ]
-
-            for future in as_completed(futures):
-                try:
-                    title, doi = future.result()
-                    results[title] = doi
-                except Exception as e:
-                    logger.error(f"Error in batch resolve: {e}")
-
-        if pbar:
-            pbar.close()
-
-        return results
-
-    def extract_dois_from_text(self, text: str) -> List[str]:
-        """
-        Extract all DOIs from text.
-
-        Args:
-            text: Text to search
-
-        Returns:
-            List of unique DOIs found
-        """
-        import re
-
-        doi_pattern = r"10\.\d{4,}/[-._;()/:\w]+"
-        matches = re.findall(doi_pattern, text)
-
-        # Deduplicate while preserving order
-        seen = set()
-        unique_dois = []
-        for doi in matches:
-            if doi not in seen:
-                seen.add(doi)
-                unique_dois.append(doi)
-
-        return unique_dois
-
-    def validate_doi(self, doi: str) -> bool:
-        """
-        Validate DOI format.
-
-        Args:
-            doi: DOI to validate
-
-        Returns:
-            True if valid DOI format
-        """
-        import re
-
-        if not doi:
-            return False
-
-        # Basic DOI pattern
-        pattern = r"^10\.\d{4,}/[-._;()/:\w]+$"
-        return bool(re.match(pattern, doi))
-
-    # def get_comprehensive_metadata(
-    #     self,
-    #     title: str,
-    #     year: Optional[int] = None,
-    #     authors: Optional[List[str]] = None,
-    #     sources: Optional[List[str]] = None,
-    # ) -> Optional[Dict[str, Any]]:
-    #     """Get comprehensive metadata from title with all available fields."""
-    #     if not title:
-    #         return None
-
-    #     sources_list = sources or self.sources
-
-    #     for source_name in sources_list:
-    #         source = self._get_source(source_name)
-    #         if not source:
-    #             continue
-
-    #         try:
-    #             # Try get_metadata first if available
-    #             if hasattr(source, "get_metadata"):
-    #                 metadata = source.get_metadata(title, year, authors)
-    #                 if metadata and metadata.get("doi"):
-    #                     metadata["source"] = source_name
-    #                     logger.info(
-    #                         f"Found comprehensive metadata via {source.name}"
-    #                     )
-    #                     return metadata
-
-    #             # Fallback to DOI-only search
-    #             doi = source.search(title, year, authors)
-    #             if doi:
-    #                 # Try to get additional metadata
-    #                 metadata = {"doi": doi, "source": source_name}
-
-    #                 # Try to get abstract
-    #                 if hasattr(source, "get_abstract"):
-    #                     abstract = source.get_abstract(doi)
-    #                     if abstract:
-    #                         metadata["abstract"] = abstract
-
-    #                 return metadata
-
-    #             time.sleep(source.rate_limit_delay)
-
-    #         except Exception as exc:
-    #             logger.warning(
-    #                 f"Error getting metadata from {source_name}: {exc}"
-    #             )
-
-    #     return None
-
-    def get_comprehensive_metadata(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-    ) -> Optional[Dict[str, Any]]:
-        """Get comprehensive metadata from title with all available fields."""
-        if not title:
-            return None
-
-        sources_list = sources or self.sources
-        for source_name in sources_list:
-            source = self._get_source(source_name)
-            if not source:
-                continue
-
-            try:
-                if hasattr(source, "get_metadata"):
-                    metadata = source.get_metadata(title, year, authors)
-                    if metadata and metadata.get("doi"):
-                        metadata["source"] = source_name
-                        logger.info(
-                            f"Found comprehensive metadata via {source.name}"
-                        )
-                        return metadata
-
-                doi = source.search(title, year, authors)
-                if doi:
-                    metadata = {"doi": doi, "source": source_name}
-                    if hasattr(source, "get_abstract"):
-                        try:
-                            abstract = source.get_abstract(doi)
-                            if abstract:
-                                metadata["abstract"] = abstract
-                        except Exception:
-                            pass
-                    return metadata
-
-                time.sleep(source.rate_limit_delay)
-            except requests.HTTPError as exc:
-                if exc.response and exc.response.status_code == 429:
-                    logger.warning(
-                        f"Rate limit hit for {source_name}. Consider adding API key or waiting between requests."
-                    )
-                else:
-                    logger.debug(
-                        f"HTTP error getting metadata from {source_name}: {exc}"
-                    )
-                continue
-            except Exception as exc:
-                logger.debug(
-                    f"Error getting metadata from {source_name}: {exc}"
-                )
-                continue
-
-        return None
-
-
-if __name__ == "__main__":
-    import asyncio
-
-    async def main():
+    """Unified DOI resolver that automatically handles different input types.
+    
+    Supports:
+    - Single DOI string: "10.1038/nature12373"
+    - DOI list: ["10.1038/nature12373", "10.1126/science.abc123"]
+    - BibTeX file path: "papers.bib" or Path("papers.bib")
+    - BibTeX content string: "@article{...}"
+    
+    Examples:
         resolver = DOIResolver()
-        title = "Attention is All You Need"
-        doi = await resolver.title_to_doi_async(title)
-        if doi:
-            print(f"\nFound DOI: {doi}")
-            print(f"URL: https://doi.org/{doi}")
+        
+        # Single DOI
+        result = await resolver.resolve("10.1038/nature12373")
+        
+        # Multiple DOIs
+        results = await resolver.resolve(["10.1038/nature12373", "10.1126/science.abc123"])
+        
+        # BibTeX file
+        results = await resolver.resolve("papers.bib")
+        
+        # BibTeX content
+        bibtex_string = '''
+        @article{example2023,
+            title={Example Paper},
+            author={Author, A.},
+            year={2023}
+        }
+        '''
+        results = await resolver.resolve(bibtex_string)
+    """
+
+    def __init__(self, config: ScholarConfig = None, **kwargs):
+        """Initialize unified DOI resolver.
+        
+        Args:
+            config: ScholarConfig instance
+            **kwargs: Additional configuration passed to underlying resolvers
+        """
+        self.config = config or ScholarConfig()
+        self.kwargs = kwargs
+        
+        # Initialize underlying resolvers lazily
+        self._single_resolver = None
+        self._batch_resolver = None
+        self._bibtex_resolver = None
+    
+    async def resolve_async(
+        self, 
+        input_data: Union[str, List[str], Path], 
+        **kwargs
+    ) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+        """Resolve DOIs from various input types.
+        
+        Args:
+            input_data: DOI string, DOI list, BibTeX file path, or BibTeX content
+            **kwargs: Additional options passed to underlying resolvers
+            
+        Returns:
+            Single result dict for single DOI, list of results for multiple
+        """
+        # Merge kwargs
+        resolve_kwargs = {**self.kwargs, **kwargs}
+        
+        # Auto-detect input type and delegate to appropriate resolver
+        if isinstance(input_data, (str, Path)):
+            return await self._resolve_string_or_path_async(input_data, **resolve_kwargs)
+        elif isinstance(input_data, list):
+            return await self._resolve_doi_list_async(input_data, **resolve_kwargs)
         else:
-            print("\nNo DOI found")
+            raise ValueError(f"Unsupported input type: {type(input_data)}")
+    
+    async def _resolve_string_or_path_async(self, input_data: Union[str, Path], **kwargs):
+        """Handle string or Path input (could be DOI, file path, or BibTeX content)."""
+        input_str = str(input_data)
+        
+        # Check if it's a file path
+        if self._is_file_path(input_str):
+            return await self._resolve_bibtex_file_async(Path(input_str), **kwargs)
+        
+        # Check if it's BibTeX content
+        elif self._is_bibtex_content(input_str):
+            return await self._resolve_bibtex_content_async(input_str, **kwargs)
+        
+        # Assume it's a single DOI
+        else:
+            return await self._resolve_single_doi_async(input_str, **kwargs)
+    
+    async def _resolve_single_doi_async(self, doi: str, **kwargs) -> Dict[str, Any]:
+        """Resolve a single DOI to get its metadata."""
+        # If we already have a DOI, we want to get metadata for it
+        # Use the DOI directly as the title for now - the sources will handle lookup
+        if self._single_resolver is None:
+            from ._SingleDOIResolver import SingleDOIResolver
+            self._single_resolver = SingleDOIResolver(config=self.config)
+        
+        try:
+            # Filter kwargs for SingleDOIResolver.resolve_async()
+            # It accepts: title, year, authors, sources, skip_cache
+            single_resolver_kwargs = {
+                k: v for k, v in kwargs.items() 
+                if k in ['year', 'authors', 'sources', 'skip_cache']
+            }
+            # Use the DOI as title for metadata lookup
+            result = await self._single_resolver.resolve_async(
+                title=doi,  # Use DOI as search term
+                **single_resolver_kwargs
+            )
+            return result or {"doi": doi, "source": "input", "title": ""}
+        except Exception as e:
+            logger.warning(f"Failed to resolve DOI {doi}: {e}")
+            return {"doi": doi, "source": "input", "title": "", "error": str(e)}
+    
+    async def _resolve_doi_list_async(self, dois: List[str], **kwargs) -> List[Dict[str, Any]]:
+        """Resolve a list of DOIs."""
+        # Convert DOI strings to paper dicts if needed
+        if isinstance(dois[0], str):
+            papers = [{"title": "", "doi": doi} for doi in dois]
+        else:
+            papers = dois
+            
+        if self._batch_resolver is None:
+            self._batch_resolver = BatchDOIResolver(config=self.config)
+        
+        # Use the library structure creation method for now
+        # Note: This is a temporary implementation - the interface needs refinement
+        try:
+            project_name = kwargs.get('project', 'default')
+            resolved_count, _, _ = await self._batch_resolver.resolve_and_create_library_structure_async(
+                papers=papers, project=project_name, **kwargs
+            )
+            # For now, return simplified results
+            return [{"doi": p.get("doi"), "title": p.get("title")} for p in papers]
+        except Exception as e:
+            logger.warning(f"Batch resolution failed: {e}")
+            return []
+    
+    async def _resolve_bibtex_file_async(self, file_path: Path, **kwargs) -> List[Dict[str, Any]]:
+        """Resolve DOIs from BibTeX file using the new LibraryStructureCreator."""
+        from .batch._LibraryStructureCreator import LibraryStructureCreator
+        from ._SingleDOIResolver import SingleDOIResolver
+        import bibtexparser
+        
+        # Parse BibTeX file
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                bib_database = bibtexparser.load(f)
+        except Exception as e:
+            logger.error(f"Failed to parse BibTeX file {file_path}: {e}")
+            return []
+        
+        # Convert BibTeX entries to paper dictionaries
+        papers = []
+        for entry in bib_database.entries:
+            paper = {
+                'title': entry.get('title', ''),
+                'authors': [entry.get('author', '')],  # BibTeX has single author field
+                'year': entry.get('year', ''),
+                'journal': entry.get('journal', ''),
+                'doi': entry.get('doi', ''),
+            }
+            
+            # Clean up title (remove BibTeX braces)
+            if paper['title']:
+                paper['title'] = paper['title'].strip('{}')
+            
+            papers.append(paper)
+        
+        logger.info(f"Loaded {len(papers)} entries from {file_path}")
+        
+        # Use LibraryStructureCreator for proper storage with symlinks
+        project = kwargs.get('project', 'default')
+        sources = kwargs.get('sources', None)
+        source_filename = file_path.stem  # Get filename without extension
+        
+        single_resolver = SingleDOIResolver(config=self.config)
+        creator = LibraryStructureCreator(config=self.config, doi_resolver=single_resolver)
+        
+        # Enhanced method to handle source filename
+        try:
+            results = await creator.resolve_and_create_library_structure_with_source_async(
+                papers=papers,
+                project=project,
+                sources=sources,
+                bibtex_source_filename=source_filename
+            )
+            
+            logger.success(f"Processed {len(results)}/{len(papers)} papers with new storage architecture")
+            return list(results.values())
+            
+        except Exception as e:
+            logger.error(f"LibraryStructureCreator failed: {e}")
+            return []
+    
+    async def _resolve_bibtex_content_async(self, bibtex_content: str, **kwargs) -> List[Dict[str, Any]]:
+        """Resolve DOIs from BibTeX content string."""
+        # Create temporary file for BibTeX content
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.bib', delete=False) as f:
+            f.write(bibtex_content)
+            temp_path = Path(f.name)
+        
+        try:
+            return await self._resolve_bibtex_file_async(temp_path, **kwargs)
+        finally:
+            # Clean up temporary file
+            try:
+                temp_path.unlink()
+            except Exception:
+                pass
+    
+    def _is_file_path(self, input_str: str) -> bool:
+        """Check if string looks like a file path."""
+        # Check for file extensions commonly used for BibTeX
+        if input_str.endswith(('.bib', '.bibtex')):
+            return True
+        
+        # Check if path exists as file
+        try:
+            return Path(input_str).is_file()
+        except (OSError, ValueError):
+            return False
+    
+    def _is_bibtex_content(self, input_str: str) -> bool:
+        """Check if string looks like BibTeX content."""
+        # Simple heuristic: contains @ followed by entry type
+        bibtex_indicators = ['@article', '@book', '@inproceedings', '@misc', '@techreport']
+        input_lower = input_str.lower()
+        return any(indicator in input_lower for indicator in bibtex_indicators)
+    
+    # Convenience methods for specific use cases
+    async def resolve_doi_async(self, doi: str, **kwargs) -> Dict[str, Any]:
+        """Resolve a single DOI (explicit method)."""
+        return await self._resolve_single_doi_async(doi, **kwargs)
+    
+    async def resolve_dois_async(self, dois: List[str], **kwargs) -> List[Dict[str, Any]]:
+        """Resolve multiple DOIs (explicit method)."""
+        return await self._resolve_doi_list_async(dois, **kwargs)
+    
+    async def resolve_bibtex_async(self, bibtex_input: Union[str, Path], **kwargs) -> List[Dict[str, Any]]:
+        """Resolve DOIs from BibTeX file or content (explicit method)."""
+        if isinstance(bibtex_input, Path) or self._is_file_path(str(bibtex_input)):
+            return await self._resolve_bibtex_file_async(Path(bibtex_input), **kwargs)
+        else:
+            return await self._resolve_bibtex_content_async(str(bibtex_input), **kwargs)
 
-    asyncio.run(main())
-
-
-# python -m scitex.scholar.doi._DOIResolver
 
 # EOF

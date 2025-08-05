@@ -7,7 +7,7 @@
 """
 Validate PDF content to ensure it contains the main paper.
 
-This module implements Critical Task #8: Confirm downloaded PDFs are main contents
+This module implements Critical Task #8: Confirm download_asynced PDFs are main contents
 by analyzing PDF structure, text content, and metadata.
 """
 

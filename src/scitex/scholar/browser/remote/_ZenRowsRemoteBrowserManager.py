@@ -71,7 +71,7 @@ class ZenRowsRemoteBrowserManager:
             proxy_country=self.proxy_country or "au"
         )
 
-    async def get_browser(self) -> Browser:
+    async def get_browser_async(self) -> Browser:
         """Connect to the ZenRows Scraping Browser."""
         if self._browser and self._browser.is_connected():
             return self._browser
@@ -107,7 +107,7 @@ class ZenRowsRemoteBrowserManager:
             logger.error(f"Failed to connect to ZenRows browser: {e}")
             raise
 
-    async def get_authenticated_context(
+    async def get_authenticate_async_context(
         self,
     ) -> tuple[Browser, BrowserContext]:
         """Get browser context with authentication cookies pre-loaded."""
@@ -119,7 +119,7 @@ class ZenRowsRemoteBrowserManager:
             )
             raise ValueError(err_msg)
 
-        browser = await self.get_browser()
+        browser = await self.get_browser_async()
 
         if browser.contexts:
             context = browser.contexts[0]
@@ -128,14 +128,14 @@ class ZenRowsRemoteBrowserManager:
 
         # Inject cookie auto-acceptor
         try:
-            await self.cookie_acceptor.inject_auto_acceptor(context)
+            await self.cookie_acceptor.inject_auto_acceptor_async(context)
             logger.info("Injected cookie auto-acceptor")
         except Exception as e:
             logger.warning(f"Failed to inject cookie acceptor: {e}")
 
-        if self.auth_manager and await self.auth_manager.is_authenticated():
+        if self.auth_manager and await self.auth_manager.is_authenticate_async():
             try:
-                cookies = await self.auth_manager.get_auth_cookies()
+                cookies = await self.auth_manager.get_auth_cookies_async()
                 await context.add_cookies(cookies)
                 logger.success(
                     f"Injected {len(cookies)} authentication cookies"
@@ -149,7 +149,7 @@ class ZenRowsRemoteBrowserManager:
     async def new_page(self, context: Optional[BrowserContext] = None) -> Any:
         """Create a new page in the ZenRows browser."""
         if not context:
-            _, context = await self.get_authenticated_context()
+            _, context = await self.get_authenticate_async_context()
 
         page = await context.new_page()
         await page.set_extra_http_headers(
@@ -171,7 +171,7 @@ class ZenRowsRemoteBrowserManager:
         self._context = None
         self._playwright = None
     
-    async def take_screenshot_reliable(
+    async def take_screenshot_reliable_async(
         self,
         url: str,
         output_path: str,
@@ -197,7 +197,7 @@ class ZenRowsRemoteBrowserManager:
         if use_api:
             # Use API browser for reliability
             logger.info("Using ZenRows API for screenshot (recommended)")
-            return await self._api_browser.navigate_and_screenshot(
+            return await self._api_browser.navigate_and_screenshot_async(
                 url=url,
                 screenshot_path=output_path,
                 wait_ms=wait_ms
@@ -206,7 +206,7 @@ class ZenRowsRemoteBrowserManager:
             # Use WebSocket browser (less reliable for captchas)
             logger.info("Using ZenRows WebSocket browser")
             try:
-                browser = await self.get_browser()
+                browser = await self.get_browser_async()
                 context = await browser.new_context()
                 page = await context.new_page()
                 
@@ -237,7 +237,7 @@ class ZenRowsRemoteBrowserManager:
                     "error": str(e)
                 }
     
-    async def navigate_and_extract(
+    async def navigate_and_extract_async(
         self,
         url: str,
         extract_pdf_url: bool = True,
@@ -258,7 +258,7 @@ class ZenRowsRemoteBrowserManager:
         Returns:
             Dict with extracted data
         """
-        result = await self._api_browser.navigate_and_screenshot(
+        result = await self._api_browser.navigate_and_screenshot_async(
             url=url,
             screenshot_path=screenshot_path if take_screenshot else None,
             return_html=extract_pdf_url,
@@ -319,7 +319,7 @@ if __name__ == "__main__":
             ("webrtc", "https://browserleaks.com/webrtc", "WebRTC IP leak test"),
         ]
         
-        async def test_browser(browser_type, browser_manager, use_auth=False):
+        async def test_browser_async(browser_type, browser_manager, use_auth=False):
             """Test a browser with all test sites."""
             print(f"\n{'='*60}")
             print(f"Testing: {browser_type}")
@@ -328,13 +328,13 @@ if __name__ == "__main__":
             results = {}
             
             try:
-                if use_auth and hasattr(browser_manager, 'get_authenticated_context'):
+                if use_auth and hasattr(browser_manager, 'get_authenticate_async_context'):
                     # For managers with auth support
-                    browser, context = await browser_manager.get_authenticated_context()
+                    browser, context = await browser_manager.get_authenticate_async_context()
                     pages_via_context = True
                 else:
                     # Direct browser access
-                    browser = await browser_manager.get_browser()
+                    browser = await browser_manager.get_browser_async()
                     pages_via_context = False
                 
                 for test_name, url, description in test_sites:
@@ -409,7 +409,7 @@ if __name__ == "__main__":
             
             print("Initializing regular browser for baseline comparison...")
             regular_manager = BrowserManager(headless=False)
-            regular_results = await test_browser("Regular Browser", regular_manager)
+            regular_results = await test_browser_async("Regular Browser", regular_manager)
             all_results["Regular Browser"] = regular_results
         except Exception as e:
             print(f"Regular browser not available for comparison: {e}")
@@ -419,7 +419,7 @@ if __name__ == "__main__":
         print("\nInitializing ZenRows Remote Browser...")
         try:
             zenrows_manager = ZenRowsRemoteBrowserManager()
-            zenrows_results = await test_browser("ZenRows Remote", zenrows_manager)
+            zenrows_results = await test_browser_async("ZenRows Remote", zenrows_manager)
             all_results["ZenRows Remote"] = zenrows_results
         except Exception as e:
             print(f"ZenRows Remote test failed: {e}")
@@ -429,7 +429,7 @@ if __name__ == "__main__":
         print("\nInitializing ZenRows Remote Browser with AU country...")
         try:
             zenrows_au_manager = ZenRowsRemoteBrowserManager(proxy_country='au')
-            zenrows_au_results = await test_browser("ZenRows Remote AU", zenrows_au_manager)
+            zenrows_au_results = await test_browser_async("ZenRows Remote AU", zenrows_au_manager)
             all_results["ZenRows Remote AU"] = zenrows_au_results
         except Exception as e:
             print(f"ZenRows Remote AU test failed: {e}")

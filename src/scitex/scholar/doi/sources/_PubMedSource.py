@@ -41,6 +41,7 @@ class PubMedSource(BaseDOISource):
     """PubMed DOI source - free, no API key required."""
 
     def __init__(self, email: str = "research@example.com"):
+        super().__init__()  # Initialize base class to access utilities
         self.email = email
         self._session = None
 
@@ -57,9 +58,8 @@ class PubMedSource(BaseDOISource):
     def name(self) -> str:
         return "PubMed"
 
-    @property
-    def rate_limit_delay(self) -> float:
-        return 0.35  # NCBI requests 3 per second max
+    # Note: Removed rate_limit_delay - now handled by unified RateLimitHandler
+    # NCBI rate limit (3 per second max = 0.35s delay) is configured in the handler
 
     @retry(
         stop=stop_after_attempt(3),
@@ -257,11 +257,36 @@ class PubMedSource(BaseDOISource):
                     if date_elem is not None:
                         year = int(date_elem.text)
 
-                    # Extract journal
+                    # Extract comprehensive journal information
                     journal = None
+                    short_journal = None
+                    issn = None
+                    volume = None
+                    issue = None
+                    
+                    # Full journal title
                     journal_elem = root.find(".//Journal/Title")
                     if journal_elem is not None:
                         journal = journal_elem.text
+                    
+                    # Abbreviated journal title
+                    iso_abbrev_elem = root.find(".//Journal/ISOAbbreviation")
+                    if iso_abbrev_elem is not None:
+                        short_journal = iso_abbrev_elem.text
+                    
+                    # ISSN
+                    issn_elem = root.find(".//Journal/ISSN")
+                    if issn_elem is not None:
+                        issn = issn_elem.text
+                    
+                    # Volume and Issue
+                    volume_elem = root.find(".//JournalIssue/Volume")
+                    if volume_elem is not None:
+                        volume = volume_elem.text
+                    
+                    issue_elem = root.find(".//JournalIssue/Issue")
+                    if issue_elem is not None:
+                        issue = issue_elem.text
 
                     # Extract authors
                     authors = []
@@ -286,6 +311,11 @@ class PubMedSource(BaseDOISource):
                         "doi": doi,
                         "title": title_elem.text,
                         "journal": journal,
+                        "journal_source": "pubmed",
+                        "short_journal": short_journal,
+                        "issn": issn,
+                        "volume": volume,
+                        "issue": issue,
                         "year": year,
                         "abstract": abstract,
                         "authors": authors if authors else None,

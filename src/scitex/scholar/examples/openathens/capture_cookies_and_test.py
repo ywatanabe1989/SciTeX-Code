@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Capture cookies from logged-in session and test PDF download
+# Capture cookies from logged-in session and test PDF download_async
 # ----------------------------------------
 
 """
-Captures cookies from an already logged-in OpenAthens session and tests PDF download.
+Captures cookies from an already logged-in OpenAthens session and tests PDF download_async.
 """
 
 import asyncio
@@ -13,8 +13,8 @@ from playwright.async_api import async_playwright
 from pathlib import Path
 import json
 
-async def capture_and_test():
-    """Capture cookies from logged-in session and test download."""
+async def capture_and_test_async():
+    """Capture cookies from logged-in session and test download_async."""
     
     print("=== Capturing Cookies from Logged-in Session ===\n")
     
@@ -65,7 +65,7 @@ async def capture_and_test():
         
         # Keep browser open for testing
         print("\n" + "="*50)
-        print("Now let's test downloading a PDF...")
+        print("Now let's test download_asyncing a PDF...")
         print("="*50)
         
         # Test URLs from different publishers
@@ -104,7 +104,7 @@ async def capture_and_test():
     
     # Now test with aiohttp using captured cookies
     print("\n" + "="*50)
-    print("Testing direct download with captured cookies...")
+    print("Testing direct download_async with captured cookies...")
     print("="*50)
     
     # Create cookie jar from captured cookies
@@ -122,7 +122,7 @@ async def capture_and_test():
     for domain, domain_cookies in cookies_by_domain.items():
         print(f"  {domain}: {len(domain_cookies)} cookies")
     
-    # Test download with aiohttp
+    # Test download_async with aiohttp
     async with aiohttp.ClientSession(cookie_jar=cookie_jar) as session:
         # Add all cookies to session
         for cookie in cookies:
@@ -131,7 +131,7 @@ async def capture_and_test():
                 response_url=f"https://{cookie['domain'].lstrip('.')}"
             )
         
-        # Test download
+        # Test download_async
         test_url = "https://www.annualreviews.org/doi/pdf/10.1146/annurev-neuro-111020-103314"
         
         headers = {
@@ -140,7 +140,7 @@ async def capture_and_test():
             'Referer': 'https://my.openathens.net/',
         }
         
-        print(f"\nTrying to download: {test_url}")
+        print(f"\nTrying to download_async: {test_url}")
         
         try:
             async with session.get(test_url, headers=headers, allow_redirects=True) as response:
@@ -150,17 +150,17 @@ async def capture_and_test():
                 
                 if response.status == 200 and 'pdf' in response.headers.get('content-type', '').lower():
                     content = await response.read()
-                    pdf_path = Path("test_openathens_download.pdf")
+                    pdf_path = Path("test_openathens_download_async.pdf")
                     
                     with open(pdf_path, 'wb') as f:
                         f.write(content)
                     
-                    print(f"\n✓ SUCCESS! PDF downloaded to: {pdf_path}")
+                    print(f"\n✓ SUCCESS! PDF download_asynced to: {pdf_path}")
                     print(f"File size: {len(content):,} bytes")
                 else:
-                    print("\n✗ Could not download PDF directly")
-                    print("The cookies might not be sufficient for direct download")
-                    print("May need to use browser automation for downloads")
+                    print("\n✗ Could not download_async PDF directly")
+                    print("The cookies might not be sufficient for direct download_async")
+                    print("May need to use browser automation for download_asyncs")
                     
         except Exception as e:
             print(f"\n✗ Download error: {e}")
@@ -169,8 +169,8 @@ async def capture_and_test():
     print("Analysis complete!")
     print("\nConclusions:")
     print("- Check if browser navigation to PDFs worked")
-    print("- Check if direct download with cookies worked")
+    print("- Check if direct download_async with cookies worked")
     print("- Saved cookies are in 'openathens_session_cookies.json'")
 
 if __name__ == "__main__":
-    asyncio.run(capture_and_test())
+    asyncio.run(capture_and_test_async())

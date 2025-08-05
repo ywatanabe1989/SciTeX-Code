@@ -8,7 +8,7 @@
 EZProxy authentication for institutional access to academic papers.
 
 This module provides authentication through EZProxy systems
-to enable legal PDF downloads via institutional subscriptions.
+to enable legal PDF download_asyncs via institutional subscriptions.
 """
 
 import asyncio
@@ -47,8 +47,8 @@ class EZProxyAuthenticator(BaseAuthenticator):
 
     This authenticator:
     1. Authenticates via institutional EZProxy server
-    2. Maintains authenticated sessions
-    3. Returns session cookies for use by download strategies
+    2. Maintains authenticate_async sessions
+    3. Returns session cookies for use by download_async strategies
     """
 
     def __init__(
@@ -97,7 +97,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
         # Session file path
-        self.session_file = self.cache_dir / f"session_{self._get_session_key()}.json"
+        self.session_file = self.cache_dir / f"session_{self._get_session_async_key()}.json"
 
         # Session management
         self._cookies: Dict[str, str] = {}
@@ -107,7 +107,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
         # Load existing session
         self._load_session()
 
-    def _get_session_key(self) -> str:
+    def _get_session_async_key(self) -> str:
         """Generate unique session key for this configuration."""
         key_parts = []
         if self.proxy_url:
@@ -138,7 +138,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
             except Exception as e:
                 logger.warning(f"Failed to load session: {e}")
 
-    def _save_session(self) -> None:
+    def _save_session_async(self) -> None:
         """Save current session to cache."""
         if self._cookies and self._session_expiry:
             try:
@@ -155,7 +155,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
             except Exception as e:
                 logger.warning(f"Failed to save session: {e}")
 
-    async def authenticate(self, force: bool = False, **kwargs) -> dict:
+    async def authenticate_async(self, force: bool = False, **kwargs) -> dict:
         """
         Authenticate with EZProxy and return session data.
 
@@ -176,7 +176,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
             )
 
         # Check existing session
-        if not force and await self.is_authenticated():
+        if not force and await self.is_authenticate_async():
             logger.info("Using existing EZProxy session")
             return {"cookies": self._cookies, "full_cookies": self._full_cookies}
 
@@ -269,7 +269,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                     except Exception as e:
                         if "Login failed" in str(e):
                             raise EZProxyError("Invalid credentials")
-                        # Continue if timeout - might still be authenticated
+                        # Continue if timeout - might still be authenticate_async
                 
                 # Extract cookies
                 cookies = await context.cookies()
@@ -282,7 +282,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                 self._session_expiry = datetime.now() + timedelta(hours=8)
                 
                 # Save session
-                self._save_session()
+                self._save_session_async()
                 
                 logger.info("EZProxy authentication successful")
                 return {"cookies": self._cookies, "full_cookies": self._full_cookies}
@@ -293,15 +293,15 @@ class EZProxyAuthenticator(BaseAuthenticator):
             finally:
                 await browser.close()
 
-    async def is_authenticated(self, verify_live: bool = False) -> bool:
+    async def is_authenticate_async(self, verify_live: bool = False) -> bool:
         """
-        Check if we have a valid authenticated session.
+        Check if we have a valid authenticate_async session.
 
         Args:
             verify_live: If True, performs a live check against EZProxy
 
         Returns:
-            True if authenticated, False otherwise
+            True if authenticate_async, False otherwise
         """
         # Check if we have session data
         if not self._cookies or not self._session_expiry:
@@ -354,18 +354,18 @@ class EZProxyAuthenticator(BaseAuthenticator):
                 
         return True
 
-    async def get_auth_headers(self) -> Dict[str, str]:
+    async def get_auth_headers_async(self) -> Dict[str, str]:
         """Get authentication headers."""
         # EZProxy typically doesn't use headers for auth
         return {}
 
-    async def get_auth_cookies(self) -> List[Dict[str, Any]]:
+    async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
         """Get authentication cookies."""
-        if not await self.is_authenticated():
-            raise EZProxyError("Not authenticated")
+        if not await self.is_authenticate_async():
+            raise EZProxyError("Not authenticate_async")
         return self._full_cookies
 
-    async def logout(self) -> None:
+    async def logout_async(self) -> None:
         """Log out and clear authentication state."""
         self._cookies = {}
         self._full_cookies = []
@@ -377,12 +377,12 @@ class EZProxyAuthenticator(BaseAuthenticator):
             
         logger.info("Logged out from EZProxy")
 
-    async def get_session_info(self) -> Dict[str, Any]:
+    async def get_session_info_async(self) -> Dict[str, Any]:
         """Get information about current session."""
-        is_authenticated = await self.is_authenticated()
+        is_authenticate_async = await self.is_authenticate_async()
         
         return {
-            "authenticated": is_authenticated,
+            "authenticate_async": is_authenticate_async,
             "provider": "EZProxy",
             "username": self.username,
             "institution": self.institution,
@@ -421,15 +421,15 @@ class EZProxyAuthenticator(BaseAuthenticator):
             base_url = self.proxy_url.rstrip('/')
             return f"{base_url}/login?url={encoded_url}"
 
-    async def create_authenticated_browser(self) -> tuple[Browser, Any]:
+    async def create_authenticate_async_browser(self) -> tuple[Browser, Any]:
         """
         Create a browser instance with EZProxy authentication.
 
         Returns:
             Tuple of (browser, context) with authentication cookies set
         """
-        if not await self.is_authenticated():
-            await self.authenticate()
+        if not await self.is_authenticate_async():
+            await self.authenticate_async()
 
         if async_playwright is None:
             raise EZProxyError("Playwright is required")

@@ -11,11 +11,11 @@ from scitex.scholar.browser import ChromeExtensionManager, SeleniumBrowserManage
 profile_manager = ChromeExtensionManager("scholar_default")
 
 # Check installed extensions
-status = profile_manager.check_extensions_installed()
+status = profile_manager.check_extensions_installed_async()
 print(status)
 
 # Install extensions interactively (one-time setup)
-profile_manager.install_extensions_interactive()
+profile_manager.install_extensions_interactive_async()
 
 # 2. Use the profile in automation
 browser = SeleniumBrowserManager(profile_name="scholar_default")

@@ -5,7 +5,7 @@
 !-- --- -->
 
 # Checklist for project completion
-  [ ] Are all matplotlib run in "Agg" mode and figures are saved instead of shown?
+  [ ] Are all matplotlib run in "Agg" mode and figures are saved instead of show_asyncn?
 - [ ] Is the directory structure appropriate?
   - [ ] For scientific project:
     - [ ] `./scripts` instead of `./src`

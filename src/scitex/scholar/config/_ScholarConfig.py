@@ -70,9 +70,9 @@ class ScholarConfig:
         """Get screenshots directory"""
         return self.path_manager.get_screenshots_dir(screenshot_type)
     
-    def get_downloads_dir(self) -> Path:
-        """Get downloads directory"""
-        return self.path_manager.get_downloads_dir()
+    def get_download_asyncs_dir(self) -> Path:
+        """Get download_asyncs directory"""
+        return self.path_manager.get_download_asyncs_dir()
 
     def _load_yaml_with_env_substitution(self, path: Path) -> dict:
         with open(path) as f:

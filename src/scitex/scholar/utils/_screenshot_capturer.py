@@ -5,9 +5,9 @@
 # File: _screenshot_capturer.py
 
 """
-Screenshot capture utilities for debugging PDF download failures.
+Screenshot capture utilities for debugging PDF download_async failures.
 
-This module provides functionality to capture screenshots during failed PDF downloads
+This module provides functionality to capture screenshots during failed PDF download_asyncs
 to help diagnose authentication issues, page structure changes, or other problems.
 """
 
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class ScreenshotCapturer:
-    """Captures screenshots for debugging download failures."""
+    """Captures screenshots for debugging download_async failures."""
     
     def __init__(self, screenshot_dir: Optional[Path] = None):
         """
@@ -53,7 +53,7 @@ class ScreenshotCapturer:
         identifier: str = "unknown"
     ) -> Optional[Path]:
         """
-        Capture screenshot when a download fails.
+        Capture screenshot when a download_async fails.
         
         Args:
             page: Playwright page instance

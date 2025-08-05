@@ -173,7 +173,7 @@ class Embedder:
         if self.model_name == "tfidf":
             return self._compute_tfidf_embeddings(texts)
         elif SENTENCE_TRANSFORMERS_AVAILABLE and self.model is not None:
-            return self.model.encode(texts, convert_to_numpy=True, show_progress_bar=False)
+            return self.model.encode(texts, convert_to_numpy=True, show_async_progress_bar=False)
         else:
             # Fallback
             return self._compute_tfidf_embeddings(texts)

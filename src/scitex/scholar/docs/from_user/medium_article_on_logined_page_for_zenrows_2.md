@@ -4,10 +4,10 @@
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/docs/medium_article_on_logined_page_for_zenrows_2.md
 !-- --- -->
 
-In simple terms, ZenRows cannot use your personal login session because it's a separate, remote service. It's like giving a delivery driver a photocopy of your ID—they can show it, but they can't pass the real identity check.
+In simple terms, ZenRows cannot use your personal login session because it's a separate, remote service. It's like giving a delivery driver a photocopy of your ID—they can show_async it, but they can't pass the real identity check.
 
 The Analogy: A Magic Wristband at a Festival 🎟️
-Your Local Browser (with OpenURLResolver): You go to the festival gate and show your ticket and ID (you log in via OpenAthens). They give you a secure, non-transferable "magic wristband" (an authenticated session). Now you can walk around the festival, and every stall (publisher website) can see your wristband and knows you're allowed to be there.
+Your Local Browser (with OpenURLResolver): You go to the festival gate and show_async your ticket and ID (you log in via OpenAthens). They give you a secure, non-transferable "magic wristband" (an authenticate_async session). Now you can walk around the festival, and every stall (publisher website) can see your wristband and knows you're allowed to be there.
 
 The ZenRows API (with ZenRowsOpenURLResolver): You are outside the festival. You ask a delivery driver (the ZenRows API 🚚) to go to a specific stall for you. You can give them a picture of your wristband (your auth cookies), but when the security guard at the stall (the resolver's JavaScript 🔐) tries to scan it, their machine says it's invalid because it's not the real wristband from the main gate. The driver is stuck.
 
@@ -72,7 +72,7 @@ Oct 12, 2023
 
 
 
-While web scraping, you might find some data available only after you’ve signed in. In this tutorial, we’ll learn the security measures used and three effective methods to scrape a website that requires a login with Python.
+While web scraping, you might find some data available only after you’ve signed in. In this tutorial, we’ll learn the security measures used and three effective methods to scrape_async a website that requires a login with Python.
 
 Let’s find a solution!
 
@@ -80,7 +80,7 @@ Let’s find a solution!
 
 Can You Scrape Websites that Require a Login?
 
-Yes, it’s technically possible to scrape behind a login. But you must be mindful of the target site’s scraping rules and laws like GDPR to comply with personal data and privacy matters.
+Yes, it’s technically possible to scrape_async behind a login. But you must be mindful of the target site’s scraping rules and laws like GDPR to comply with personal data and privacy matters.
 
 To get started, it’s essential to have some general knowledge about HTTP Request Methods. And if web scraping is new for you, read our beginner-friendly guide on web scraping with Python to master the fundamentals.
 
@@ -100,7 +100,7 @@ How Do You Scrape a Website behind a Login in Python?
 
 Time to explore each step of scraping data behind site logins with Python. We’ll start with forms requiring only a username and password and then increase the difficulty progressively.
 
-Remember that the methods showcased in this tutorial are for educational purposes only.
+Remember that the methods show_asynccased in this tutorial are for educational purposes only.
 
 Three, two, one… let’s code!
 
@@ -124,7 +124,7 @@ Zoom image will be displayed
 
 
 
-Submitting the form generates a POST request to the User Information page, with the server responding with a cookie and fulfilling the requested section. The screenshot below shows the headers, payload, response, and cookies.
+Submitting the form generates a POST request to the User Information page, with the server responding with a cookie and fulfilling the requested section. The screenshot below show_asyncs the headers, payload, response, and cookies.
 
 Zoom image will be displayed
 
@@ -180,7 +180,7 @@ Let’s dive into scraping GitHub!
 
 Step #1: Log into a GitHub Account
 
-GitHub is one of the websites that use CSRF token authentication for logins. We’ll scrape all the repositories in our test account for demonstration.
+GitHub is one of the websites that use CSRF token authentication for logins. We’ll scrape_async all the repositories in our test account for demonstration.
 
 Open a web browser (we use Chrome) and navigate to GitHub’s login page. Now, press the F12 key to see the DevTools window in your browser and inspect the HTML to check if the login form element has an action attribute:
 
@@ -282,7 +282,7 @@ There you have it!
 
 Step #3: Set Headers
 
-It’s possible to access auth-wall websites by sending a POST request with the payload. However, using this method alone won’t be enough to scrape sites with advanced security measures since they’re usually smart enough to identify non-human behavior. Thus, implementing measures to make the scraper appear more human-like is necessary.
+It’s possible to access auth-wall websites by sending a POST request with the payload. However, using this method alone won’t be enough to scrape_async sites with advanced security measures since they’re usually smart enough to identify non-human behavior. Thus, implementing measures to make the scrape_asyncr_async appear more human-like is necessary.
 
 Get ZenRows’s stories in your inbox
 
@@ -310,7 +310,7 @@ print(res.url)
 
 If the login’s successful, our output’ll be https://github.com/. Otherwise, we’ll get https://github.com/session.
 
-👍 Amazing, we just nailed a CSRF-protected login bypass! Let’s now scrape the data in the protected git repositories.
+👍 Amazing, we just nailed a CSRF-protected login bypass! Let’s now scrape_async the data in the protected git repositories.
 
 Step #5: Scrape Protected GitHub Repositories
 
@@ -425,7 +425,7 @@ And the output:
 
 
 
-👏 Excellent! We just scraped a CSRF-authenticated website.
+👏 Excellent! We just scrape_async a CSRF-authenticate_async website.
 
 Advanced Protections Using ZenRows
 
@@ -443,7 +443,7 @@ Zoom image will be displayed
 
 As mentioned, with ZenRows, you don’t need to install any particular browser drivers, as opposed to Selenium. Moreover, you don’t need to worry about advanced Cloudflare protection, identity reveal, and other DDoS mitigation services. Additionally, this scalable API frees you from infrastructure scalability issues.
 
-Just sign up for free to get to the Request Builder and fill in the details shown below.
+Just sign up for free to get to the Request Builder and fill in the details show_asyncn below.
 
 Zoom image will be displayed
 
@@ -455,9 +455,9 @@ Let’s go through each step of the request creation:
 
 Set the initial target (i.e., G2 login page in our case).
 
-Choose Plain HTML. We’ll parse it further using Beautiful Soup later in the code. If you prefer, you can use the CSS Selectors to scrape only specific elements from the target.
+Choose Plain HTML. We’ll parse it further using Beautiful Soup later in the code. If you prefer, you can use the CSS Selectors to scrape_async only specific elements from the target.
 
-Setting Premium Proxies helps you scrape region-specific data and mask you from identity reveal.
+Setting Premium Proxies helps you scrape_async region-specific data and mask you from identity reveal.
 
 Setting JavaScript Rendering is mandatory for running some JavaScript instructions in step #6.
 
@@ -508,7 +508,7 @@ import json
 
 client = ZenRowsClient("Your Zenrows API Goes Here")
 
-url = "https://www.g2.com/login?form=signup#state.email.showform"
+url = "https://www.g2.com/login?form=signup#state.email.show_asyncform"
 
 
 js_instructions = [
@@ -585,7 +585,7 @@ import json
 
 client = ZenRowsClient("Your Zenrows API Goes Here")
 
-url = "https://www.g2.com/login?form=signup#state.email.showform"
+url = "https://www.g2.com/login?form=signup#state.email.show_asyncform"
 
 
 js_instructions = [
@@ -635,11 +635,11 @@ print(welcome.text)
 
 Don’t miss the rest of the tutorial!
 
-To read the rest of the article, which is about how to scrape behind a login on more protected sites, go to our full tutorial on how to scrape a website that requires a login with Python.
+To read the rest of the article, which is about how to scrape_async behind a login on more protected sites, go to our full tutorial on how to scrape_async a website that requires a login with Python.
 
 
 
-You've asked an excellent and insightful question. Based on our last conversation, it might seem like ZenRows has no benefits for your specific authenticated workflow, but that's not the whole story.
+You've asked an excellent and insightful question. Based on our last conversation, it might seem like ZenRows has no benefits for your specific authenticate_async workflow, but that's not the whole story.
 
 That Medium article you found perfectly illustrates the other major use case for ZenRows: automating the login process itself for sites that don't have a complex, session-based SSO like OpenAthens.
 
@@ -651,17 +651,17 @@ Let's clarify the two different problems being solved:
 Your Current Workflow (OpenURLResolver)	The Article's Workflow (e.g., GitHub Login)
 Goal: Use an existing, live browser session (already logged in via OpenAthens) to access paywalled content.	Goal: Perform a brand new login from scratch by submitting a username, password, and CSRF token.
 Method: You perform a manual, one-time login, and the AuthenticationManager caches the session cookies for reuse.	Method: The script automates the entire login sequence by scraping tokens from the login page and submitting a POST request.
-Why ZenRows is Limited Here: Your authenticated "magic wristband" session is tied to your local browser. ZenRows can't clone this complex session on its remote servers.	Why ZenRows Excels Here: ZenRows can easily automate this because it's just a sequence of HTTP requests and JavaScript actions. It can visit the login page, grab the tokens, and submit the form for you.
+Why ZenRows is Limited Here: Your authenticate_async "magic wristband" session is tied to your local browser. ZenRows can't clone this complex session on its remote servers.	Why ZenRows Excels Here: ZenRows can easily automate this because it's just a sequence of HTTP requests and JavaScript actions. It can visit the login page, grab the tokens, and submit the form for you.
 
 Export to Sheets
 So, Where Are the Benefits of ZenRows and 2Captcha for You?
 You still gain significant benefits, just for slightly different problems:
 
-Scraping Public-Facing but Protected Sites: Many academic sites (and publisher sites) use Cloudflare or other bot detection on their public pages. If you just want to scrape metadata, abstracts, or check for open-access links without logging in, ZenRows is invaluable. It handles all the browser fingerprinting and proxy rotation needed to appear human.
+Scraping Public-Facing but Protected Sites: Many academic sites (and publisher sites) use Cloudflare or other bot detection on their public pages. If you just want to scrape_async metadata, abstracts, or check for open-access links without logging in, ZenRows is invaluable. It handles all the browser fingerprinting and proxy rotation needed to appear human.
 
 Automating Logins to Simpler Systems: If you ever need to access a resource that uses a standard username/password form (like the GitHub example in the article), ZenRows is the perfect tool. You can use its js_instructions to fill in forms, click buttons, and handle the entire login flow automatically. This is much simpler than writing complex Playwright scripts.
 
-Handling CAPTCHAs on Non-Authenticated Pages: If you're scraping a site and hit a public CAPTCHA wall, the 2Captcha integration would be the key. This is less common for the final PDF download step (which is usually a direct link) but can happen on search pages or landing pages.
+Handling CAPTCHAs on Non-Authenticated Pages: If you're scraping a site and hit a public CAPTCHA wall, the 2Captcha integration would be the key. This is less common for the final PDF download_async step (which is usually a direct link) but can happen on search pages or landing pages.
 
 In short, you don't have zero benefits. You've just correctly identified that for the specific task of leveraging a live OpenAthens session, the local browser-based OpenURLResolver is the superior tool.
 
@@ -689,13 +689,13 @@ Idowu Omisola
 
 Updated: September 4, 2024 · 8 min read
 
-After spending years building web scrapers for all kinds of sites, I've found that login barriers are among the toughest challenges. This guide shares what actually works for getting past login walls, from basic authentication to the most advanced protections.
+After spending years building web scrape_asyncr_asyncs for all kinds of sites, I've found that login barriers are among the toughest challenges. This guide shares what actually works for getting past login walls, from basic authentication to the most advanced protections.
 
 Let's skip the theory and get to the practical solutions.
 
 For educational purposes only, we'll go through the following methods:
 
-How to scrape sites requiring simple usernames and passwords.
+How to scrape_async sites requiring simple usernames and passwords.
 
 Scrape websites with CSRF token authentication for login.
 
@@ -703,7 +703,7 @@ Scraping behind the login on WAF-protected websites.
 
 Can You Scrape Websites That Require a Login?
 
-Yes, it's technically possible to scrape behind a login. However, to comply with personal data and privacy matters, you must be mindful of the target site's scraping rules and laws, such as the General Data Protection Regulation (GDPR).
+Yes, it's technically possible to scrape_async behind a login. However, to comply with personal data and privacy matters, you must be mindful of the target site's scraping rules and laws, such as the General Data Protection Regulation (GDPR).
 
 It's also essential to have some general knowledge about HTTP Request methods. If you're new to web scraping, read our beginner-friendly guide on web scraping with Python to master the fundamentals.
 
@@ -711,7 +711,7 @@ In the next sections, we'll explore the steps of scraping data behind site login
 
 How to Scrape Sites Requiring Simple Username and Password Logins
 
-This tutorial assumes you've set up Python3 on your machine. If you haven't, download and install the latest version from the Python download page.
+This tutorial assumes you've set up Python3 on your machine. If you haven't, download_async and install the latest version from the Python download_async page.
 
 We'll use Python's Requests as the HTTP client and parse HTML content with BeautifulSoup. Install both libraries using pip:
 
@@ -773,9 +773,9 @@ Page title: Success Page - ScrapingCourse.com
 
 
 
-Great! You've just learned to scrape a website behind a simple login with Python. Now, let's try using a bit more complex protection.
+Great! You've just learned to scrape_async a website behind a simple login with Python. Now, let's try using a bit more complex protection.
 
-Frustrated that your web scrapers are blocked once and again?
+Frustrated that your web scrape_asyncr_asyncs are blocked once and again?
 
 
 
@@ -787,13 +787,13 @@ Scraping Websites With CSRF Token Authentication for Login
 
 Most websites have implemented additional security measures to stop hackers and malicious bots, making it more difficult to log in. One of these measures requires a CSRF (Cross-Site Request Forgery) token in the authentication process.
 
-This time, we'll use the Login with CSRF challenge page as a test website to show you how to access CSRF-protected login.
+This time, we'll use the Login with CSRF challenge page as a test website to show_async you how to access CSRF-protected login.
 
 See what the page looks like below:
 
 Click to open the image in full screen
 
-Try the previous scraper with this page. You'll see it outputs the following error message, indicating that you can't bypass CSRF protection:
+Try the previous scrape_asyncr_async with this page. You'll see it outputs the following error message, indicating that you can't bypass CSRF protection:
 
 Output
 
@@ -807,7 +807,7 @@ You'll use your browser's Developer Tools to determine if your target website re
 
 Open that page on a browser like Chrome, right-click any part and click Inspect. Go to the Network tab. Enter the given credentials (provided at the top of the login form), hit the login button, and click csrf from the request table.
 
-You'll see an extra _token payload now sent with the email and password, showing that the website requires a CSRF token:
+You'll see an extra _token payload now sent with the email and password, show_asyncing that the website requires a CSRF token:
 
 Click to open the image in full screen
 
@@ -865,7 +865,7 @@ response = session.post(login_url, data=payload)
 
 Note
 
-You can add request headers such as User Agent to your request to make your scraper more human-like. Check out our tutorial on changing the User Agent in Python Requests to learn more.
+You can add request headers such as User Agent to your request to make your scrape_asyncr_async more human-like. Check out our tutorial on changing the User Agent in Python Requests to learn more.
 
 Step 4: Extract Product Data
 
@@ -875,7 +875,7 @@ You'll see that each product is in a div tag with the class name product-item
 
 Click to open the image in full screen
 
-Remember you parsed the login page HTML earlier. Re-parse the result page separately in another BeautifulSoup instance. Then, scrape the product name and price from each parent element using a for loop. Append the scraped data to an empty list and print it:
+Remember you parsed the login page HTML earlier. Re-parse the result page separately in another BeautifulSoup instance. Then, scrape_async the product name and price from each parent element using a for loop. Append the scrape_async data to an empty list and print it:
 
 Example
 
@@ -980,13 +980,13 @@ Output
 
 
 
-Excellent! You just scraped a CSRF-authenticated website with Python's Requests and BeautifulSoup.
+Excellent! You just scrape_async a CSRF-authenticate_async website with Python's Requests and BeautifulSoup.
 
 Scraping Behind the Login on WAF-Protected Websites
 
 On many websites, you'll still get an Access Denied screen or receive an HTTP error like 403 forbidden error despite sending the correct username, password, and CSRF token. Even using the proper request headers won't work. All these indicate that the site uses advanced protections, like client-side browser verification.
 
-Client-side verification is a security measure to block bots and scrapers from accessing websites, implemented mainly by WAFs (Web Application Firewalls) like Cloudflare, Akamai, PerimeterX, and other advanced anti-bot systems.
+Client-side verification is a security measure to block bots and scrape_asyncr_asyncs from accessing websites, implemented mainly by WAFs (Web Application Firewalls) like Cloudflare, Akamai, PerimeterX, and other advanced anti-bot systems.
 
 Let's find a solution to this problem. 
 
@@ -1254,7 +1254,7 @@ Keep Making Progress
 
 
 
-Great! You've successfully scraped content behind a basic login page protected by basic WAF protection. But will this work for every website? Unfortunately, the answer is no.
+Great! You've successfully scrape_async content behind a basic login page protected by basic WAF protection. But will this work for every website? Unfortunately, the answer is no.
 
 The Undetected Chromedriver package still leaks some bot-like attributes like the automated WebDriver and won't work against advanced protection measures. Moreover, WAF-protected sites can easily detect its headless mode.
 
@@ -1276,7 +1276,7 @@ Click to open the image in full screen
 
 To use ZenRows, sign up to load the Request Builder. Paste the target URL in the link box, and activate Premium Proxies and JS Rendering. Toggle on JS Instructions and input the login credentials using the form field selectors and relevant JavaScript actions.
 
-Select Python as your programming language and choose the API connection mode. Copy and paste the generated code into your scraper file.
+Select Python as your programming language and choose the API connection mode. Copy and paste the generated code into your scrape_asyncr_async file.
 
 The generated code should look like this with the JavaScript instructions:
 
@@ -1410,7 +1410,7 @@ print(product_data)
 
 
 
-The above code bypasses Cloudflare protection, logs into the product website, and scrapes its product. See the output below:
+The above code bypasses Cloudflare protection, logs into the product website, and scrape_asyncs its product. See the output below:
 
 Output
 
@@ -1445,7 +1445,7 @@ Extract data behind a login page protected by a CSRF token.
 
 Retrieve data behind a basic WAF-protected login page.
 
-Bypass advanced WAF-protected login page and scrape its product data.
+Bypass advanced WAF-protected login page and scrape_async its product data.
 
 However, accessing and scraping data behind an anti-bot-protected login page is difficult. For an easy and scalable solution to bypass any anti-bot protection with Python, ZenRows offers all the toolkits you need, including CAPTCHA and anti-bot auto-bypass, premium proxy rotation, headless browsing, and more.
 
@@ -1455,7 +1455,7 @@ Don't stop learning! Here are a few tips to avoid getting blocked. Also, check 
 
 You're asking the right questions. It's smart to challenge the initial conclusion and dig deeper. That article provides the crucial missing piece of the puzzle.
 
-You are correct—that article shows a powerful way to use ZenRows that does apply to your project. It confirms that you have two distinct, powerful methods for handling authenticated scraping, not just one.
+You are correct—that article show_asyncs a powerful way to use ZenRows that does apply to your project. It confirms that you have two distinct, powerful methods for handling authenticate_async scraping, not just one.
 
 Here’s the refined understanding based on that new information:
 
@@ -1465,7 +1465,7 @@ Your project now has a solution for both major types of authentication:
 1. Session-Based Authentication (Your Current OpenURLResolver)
 What it is: You log in once through a complex, multi-step process (like OpenAthens + Okta). Your browser then holds a "live" session. All subsequent actions happen within this trusted environment.
 
-Your Solution: The standard OpenURLResolver using Playwright is perfect for this. It keeps the automation inside the already-authenticated browser.
+Your Solution: The standard OpenURLResolver using Playwright is perfect for this. It keeps the automation inside the already-authenticate_async browser.
 
 Why ZenRows Struggles: ZenRows can't easily replicate this live, complex session on its remote servers.
 
@@ -1489,8 +1489,8 @@ Direct Publisher Logins: If you have direct username/password credentials for a 
 
 Bypassing Blocks Before Login: Use it to overcome CAPTCHAs or Cloudflare on the way to a login page.
 
-Scraping Public Data: Use it to scrape any public-facing site that is heavily protected against bots.
+Scraping Public Data: Use it to scrape_async any public-facing site that is heavily protected against bots.
 
-You were right to question the initial conclusion. The article correctly shows that ZenRows is extremely capable of handling logins, but it's a different type of login than the complex, session-based one you primarily use for institutional access.
+You were right to question the initial conclusion. The article correctly show_asyncs that ZenRows is extremely capable of handling logins, but it's a different type of login than the complex, session-based one you primarily use for institutional access.
 
 <!-- EOF -->

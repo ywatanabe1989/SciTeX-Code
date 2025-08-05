@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 19:45:59 (ywatanabe)"
+# Timestamp: "2025-08-04 00:52:57 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_CookieAutoAcceptor.py
 # ----------------------------------------
 from __future__ import annotations
@@ -44,9 +44,16 @@ class CookieAutoAcceptor:
             "#cookie-banner button:first-of-type",
         ]
 
-    async def inject_auto_acceptor(self, context):
+    async def inject_auto_acceptor_async(self, context):
         """Inject auto-acceptor script into browser context."""
-        script = f"""
+        logger.warn("Use get_auto_acceptor_script instead")
+        script = self.get_auto_acceptor_script()
+        await context.add_init_script(script)
+
+    def get_auto_acceptor_script(
+        self,
+    ):
+        return f"""
         (() => {{
             const cookieTexts = {json.dumps(self.cookie_texts)};
             const selectors = {json.dumps(self.selectors)};
@@ -92,9 +99,8 @@ class CookieAutoAcceptor:
             setTimeout(() => clearInterval(interval), 30000);
         }})();
         """
-        await context.add_init_script(script)
 
-    # async def accept_cookies(
+    # async def accept_cookies_async(
     #     self, page: Page, wait_seconds: float = 2
     # ) -> bool:
     #     """Try to automatically accept cookies on the page.
@@ -130,7 +136,7 @@ class CookieAutoAcceptor:
 
     #     return False
 
-    async def check_cookie_banner_exists(self, page: Page) -> bool:
+    async def check_cookie_banner_exists_async(self, page: Page) -> bool:
         """Check if a cookie banner is still visible."""
         try:
             return await page.locator(
@@ -148,10 +154,10 @@ class CookieAutoAcceptor:
 # acceptor = CookieAutoAcceptor()
 
 # # Inject into browser context
-# await acceptor.inject_auto_acceptor(context)
+# await acceptor.inject_auto_acceptor_async(context)
 
 # # Manual acceptance on page
-# success = await acceptor.accept_cookies(page)
+# success = await acceptor.accept_cookies_async(page)
 # ```
 
 # EOF

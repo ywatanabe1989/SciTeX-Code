@@ -29,7 +29,7 @@
 3. Cloudflare Turnstile - 3-5% market share
    - not working 
      - https://httpbin.org/status/403
-     - https://demo.turnstile.workers.dev/
+     - https://demo.turnstile.worker_asyncs.dev/
      - https://turnstile.example.com/
    - https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 

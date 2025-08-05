@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-03 05:48:00
+!-- Timestamp: 2025-08-05 04:06:48
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -8,7 +8,7 @@
 # General Guidelines
 ----------------------------------------
 ## Multi Agent System
-Working with other agents using the bulletin board: ./project_management/BULLETIN-BOARD.md
+Work with other agents using the bulletin board: ./project_management/BULLETIN-BOARD.md
 
 ## Keep the project clean and tidy
 Use `./.dev` directory for your small experiments - You can use the `.dev` directory as you like but I will delete it lator so that do translate once successful results acquired
@@ -218,5 +218,59 @@ We need cleanup using safe_rm.sh
 
 ## No need metadata
 we do not need journal_rank and h_index
+
+## Resolve circular dependency and organize SoC
+- `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_BrowserAuthenticator.py`
+  - This should be not specific to unimelb
+  - We need to map library authenticators and sso (openathens -> unimelb)
+- `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/sso_automations/_UniversityOfMelbourneSSOAutomator.py`
+  - The issue was importing `UniversityOfMelbourneSSOAutomator` which creates a circular dependency since that class imports `BrowserAuthenticator`.
+  - This should handle unimelb-specific logics
+
+
+## DOI resolver
+- [x] All info should be saved to library as json file
+- [x] All info shoudl be associated with source all the time
+- [x] If one field is already filled, no need to override, just skip that field, assuming once entered info is correct 
+- [x] How project name, like pac, specified?
+  - [x] Is it possible to copy bibtex file when dois are resolved from_bibtex?
+  - [x] Is it possible to prepare a summary table to show the results of from_bibtex?
+  - [x] For exmaple, ~/.scitex/scholar/library/pac/info/files-bib/summary.csv
+  - [x] For exmaple, ~/.scitex/scholar/library/pac/info/filesname-2-bib/summary.csv
+
+## Technical Debt - Storage Architecture
+**Issue**: Current storage structure mixes master storage with project directories
+**Current (Working but Suboptimal)**:
+```
+~/.scitex/scholar/library/
+├── master/8DIGIT01/  # ✓ Correct
+├── project/
+│   ├── 8DIGIT02/     # ❌ Should be symlink to master
+│   ├── Author-Year -> ../master/8DIGIT03  # ❌ Human-readable not needed
+│   └── info/files-bib/  # ❌ Should be info/filename/filename.bib
+```
+
+**Desired Architecture**:
+```
+~/.scitex/scholar/library/
+├── master/8DIGIT01/  # All actual data storage
+├── project/
+│   ├── info/filename/filename.bib  # Project metadata
+│   ├── 8DIGIT01 -> ../master/8DIGIT01  # Direct symlinks only
+│   └── 8DIGIT02 -> ../master/8DIGIT02
+```
+
+**Decision**: Keep current working system, refactor later when time permits
+**Priority**: Low (system works correctly, just suboptimal structure)
+
+## Metadata Enrichment
+- [ ] Once DOI is resolved, next process is metadata enrichment. Especially:
+  - [ ] abstract
+  - [ ] citation count
+  - [ ] journal impact factor
+
+
+It would be better to connect journal titles in symlinks with hypehen
+e.g. NOT: Journal of Neuroscience, Good: Journal-of-Neuroscience
 
 <!-- EOF -->

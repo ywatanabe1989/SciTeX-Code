@@ -28,7 +28,7 @@ async def main():
 
     try:
         # 2. Get a browser instance
-        browser = await manager.get_browser()
+        browser = await manager.get_browser_async()
         page = await browser.new_page()
 
         # 3. Perform browser actions

@@ -412,6 +412,17 @@ class Paper:
             **self._additional_metadata
         }
 
+    def to_bibtex(self, include_enriched: bool = True) -> str:
+        """Convert paper to BibTeX format.
+        
+        Args:
+            include_enriched: Include enriched metadata (impact factor, etc.)
+            
+        Returns:
+            BibTeX formatted string
+        """
+        return self._to_bibtex(include_enriched=include_enriched)
+
     @property
     def metadata(self) -> Dict[str, Any]:
         """Get additional metadata dictionary."""

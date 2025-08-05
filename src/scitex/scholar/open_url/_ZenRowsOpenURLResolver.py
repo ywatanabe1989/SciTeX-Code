@@ -120,7 +120,7 @@ class ZenRowsOpenURLResolver(OpenURLResolver):
                 cookies[name.strip()] = value.strip()
         return cookies
     
-    async def _zenrows_request(self, url: str) -> Optional[Dict[str, Any]]:
+    async def _zenrows_request_async(self, url: str) -> Optional[Dict[str, Any]]:
         """Make request through ZenRows API.
         
         Returns:
@@ -201,7 +201,7 @@ class ZenRowsOpenURLResolver(OpenURLResolver):
         logger.info(f"Resolving via ZenRows API: {openurl}")
         
         # Make request through ZenRows
-        result = await self._zenrows_request(openurl)
+        result = await self._zenrows_request_async(openurl)
         
         if not result:
             return {
@@ -261,8 +261,8 @@ class ZenRowsOpenURLResolver(OpenURLResolver):
         
         # Strong access indicators
         strong_access = [
-            "download pdf", "view pdf", "pdf download", "get pdf",
-            "download article", "access pdf", "open pdf"
+            "download_async pdf", "view pdf", "pdf download_async", "get pdf",
+            "download_async article", "access pdf", "open pdf"
         ]
         
         # No access indicators

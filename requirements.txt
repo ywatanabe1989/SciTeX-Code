@@ -1,4 +1,4 @@
-# Core scientific computing
+# Core Scientific Computing
 numpy
 scipy
 pandas
@@ -10,8 +10,9 @@ statsmodels
 sympy
 plotly
 
-# Data processing
+# Data Processing & File Handling
 PyYAML
+ruamel.yaml
 Pyarrow
 h5py
 openpyxl
@@ -21,8 +22,10 @@ lxml
 lxml_html_clean
 xarray
 pymatreader
+Pillow
+zarr
 
-# Machine learning / AI
+# Machine Learning & AI
 torch
 torchvision
 torchaudio
@@ -37,8 +40,10 @@ optuna
 catboost
 umap-learn
 sktime
+imbalanced-learn
+pytorch-optimizer
 
-# Specialized analysis
+# Specialized Scientific Analysis
 mne
 obspy
 pyedflib
@@ -47,14 +52,14 @@ tensorpac
 ripple_detection
 geom_median
 
-# AI services
+# AI Services
 openai
 anthropic
 google-genai
 groq
 llama-stack
 
-# Web and APIs
+# Web & APIs
 requests
 fastapi
 flask
@@ -66,11 +71,71 @@ html2text
 google-search-results
 googlesearch-python
 
-# Jupyter and notebooks
+# Jupyter & Notebooks
 jupyterlab
 jupyter-collaboration
 ipykernel
 papermill
+ipython
+ipdb
+
+# PDF Processing
+PyPDF2
+pdfplumber
+PyMuPDF
+
+# Signal Processing
+wavelets-pytorch
+
+# Database
+sqlalchemy
+psycopg2-binary
+
+# Development & Testing
+pytest
+pytest-cov
+pytest-xdist
+pytest-timeout
+pytest-mock
+pytest-env
+pytest-asyncio
+black
+isort
+flake8
+mypy
+pylint
+pre-commit
+ruff-lsp
+pyright
+python-lsp-server
+pyls
+jedi
+line-profiler
+memory-profiler
+rope
+autopep8
+pyupgrade
+
+# Documentation
+sphinx
+sphinx-rtd-theme
+sphinx-autodoc-typehints
+sphinx-autobuild
+myst-parser
+nbsphinx
+docutils<0.18
+
+# Build & Distribution
+build
+twine
+wheel
+setuptools
+six
+
+# Type Hints
+types-requests
+types-PyYAML
+types-setuptools
 
 # Utilities
 joblib
@@ -93,86 +158,24 @@ joypy
 julius
 sounddevice
 tk
-
-# File and data handling
-Pillow
 markdown
 markdown2
 pygments
 xmltodict
-
 streamlit
-zarr
-
 tabulate
 reportlab
 readability
 readability-lxml
-ruamel.yaml
+python-magic
 
-# Database
-sqlalchemy
-psycopg2-binary
-
-# Version control
+# Version Control
 GitPython
-
-# Development tools
-pytest
-pytest-cov
-pytest-xdist
-pytest-timeout
-pytest-mock
-pytest-env
-pytest-asyncio
-black
-isort
-flake8
-mypy
-pylint
-pre-commit
-ruff-lsp
-pyright
-python-lsp-server
-pyls
-jedi
-ipython
-ipdb
-line-profiler
-memory-profiler
-rope
-autopep8
-pyupgrade
-
-# Documentation
-sphinx
-sphinx-rtd-theme
-sphinx-autodoc-typehints
-sphinx-autobuild
-myst-parser
-nbsphinx
-docutils<0.18
-
-# Build and distribution
-build
-twine
-wheel
-setuptools
-six
-
-# Type hints
-types-requests
-types-PyYAML
-types-setuptools
 
 # Other
 pebble
-
 impact-factor
-PyMuPDF
 scholarly
 crawl4ai
-
 pytesseract
-pillow
 pyautogui

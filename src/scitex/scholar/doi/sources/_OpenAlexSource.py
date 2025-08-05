@@ -147,17 +147,26 @@ class OpenAlexSource(BaseDOISource):
                     if author.get("display_name"):
                         authors_list.append(author["display_name"])
 
+                # Extract comprehensive journal/venue information
                 journal = None
+                issn = None
+                publisher = None
+                
                 host_venue = work.get("host_venue", {})
                 if host_venue:
                     journal = host_venue.get("display_name")
+                    issn = host_venue.get("issn_l")  # Linking ISSN
+                    publisher = host_venue.get("publisher")
 
                 return {
                     "doi": doi,
                     "title": work_title,
                     "journal": journal,
+                    "journal_source": "openalex",
+                    "issn": issn,
+                    "publisher": publisher,
                     "year": work.get("publication_year"),
-                    "abstract": None,
+                    "abstract": None,  # OpenAlex doesn't provide abstracts
                     "authors": authors_list if authors_list else None,
                 }
         return None

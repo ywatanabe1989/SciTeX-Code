@@ -1,6 +1,6 @@
 # Scholar Database Module
 
-Organizes and manages downloaded research papers with metadata, search capabilities, and file organization.
+Organizes and manages download_asynced research papers with metadata, search capabilities, and file organization.
 
 ## Features
 
@@ -16,7 +16,7 @@ Organizes and manages downloaded research papers with metadata, search capabilit
 - Import from Paper objects or BibTeX
 - Organize PDFs by year/journal/author
 - Export to BibTeX or JSON
-- Track download and validation status
+- Track download_async and validation status
 - Find orphaned PDFs
 
 ### DatabaseIndex

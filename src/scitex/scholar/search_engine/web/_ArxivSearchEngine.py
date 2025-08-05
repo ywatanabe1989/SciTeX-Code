@@ -172,6 +172,72 @@ class ArxivSearchEngine(BaseSearchEngine):
         
         return papers
 
+    async def fetch_by_id_async(self, identifier: str) -> Optional[Paper]:
+        """Fetch single paper by arXiv ID."""
+        try:
+            # Rate limiting
+            await self._rate_limit_async()
+            
+            # arXiv API URL for fetching by ID
+            url = f"{self.base_url}query"
+            params = {
+                'id_list': identifier,
+                'max_results': 1
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        xml_data = await response.text()
+                        papers = self._parse_arxiv_response(xml_data)
+                        return papers[0] if papers else None
+                    else:
+                        logger.error(f"arXiv fetch_by_id_async failed: {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"Error fetching paper by ID {identifier}: {e}")
+            return None
+
+    async def get_citation_count_async(self, doi: str) -> Optional[int]:
+        """Get citation count for DOI (arXiv doesn't provide citation counts directly)."""
+        # arXiv doesn't provide citation counts directly
+        # This would require integration with a service like Google Scholar or Semantic Scholar
+        logger.debug("arXiv doesn't provide citation counts directly")
+        return None
+
+    async def resolve_doi_async(self, title: str, year: Optional[int] = None) -> Optional[str]:
+        """Resolve title to DOI using arXiv search (note: many arXiv papers don't have DOIs)."""
+        try:
+            # Search for the paper by title
+            papers = await self.search_async(title, limit=5)
+            
+            # Look for exact or close title matches
+            title_lower = title.lower().strip()
+            for paper in papers:
+                if paper.doi and paper.title:
+                    paper_title_lower = paper.title.lower().strip()
+                    # Simple matching - could be improved with fuzzy matching
+                    if title_lower in paper_title_lower or paper_title_lower in title_lower:
+                        # If year is specified, prefer papers from that year
+                        if year and paper.year and abs(paper.year - year) <= 1:
+                            return paper.doi
+                        elif not year:
+                            return paper.doi
+            
+            # If no exact match but we have results with DOI, return the first DOI
+            for paper in papers:
+                if paper.doi:
+                    return paper.doi
+            
+            # Note: Many arXiv papers don't have DOIs
+            logger.debug(f"No DOI found for arXiv paper: {title}")
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error resolving DOI for title '{title}': {e}")
+            return None
+
 
 async def main():
     """Test function for ArxivSearchEngine."""

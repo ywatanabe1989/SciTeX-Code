@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class PDFCandidate:
-    """Represents a potential PDF download link with confidence scoring."""
+    """Represents a potential PDF download_async link with confidence scoring."""
     text: str
     href: str
     selector: str
@@ -88,14 +88,14 @@ class GeneralizedPDFDetector:
             domain_patterns=['nature.com', 'springernature.com'],
             primary_selectors=[
                 'a[href*="/articles/"][href*=".pdf"]',  # Nature direct PDF
-                'a[data-track-action*="download pdf"]',
-                '.c-pdf-download__link',
-                '.pdf-download-link',
+                'a[data-track-action*="download_async pdf"]',
+                '.c-pdf-download_async__link',
+                '.pdf-download_async-link',
                 'a[title*="Download PDF"]'
             ],
             fallback_selectors=[
                 'a[href*="pdf"]',
-                '.c-article-pdf-download',
+                '.c-article-pdf-download_async',
                 'button:contains("PDF")'
             ],
             exclusion_patterns=['supplementary', 'extended data', 'correction'],
@@ -114,7 +114,7 @@ class GeneralizedPDFDetector:
             ],
             fallback_selectors=[
                 'a[href*="pdf"]',
-                '.downloadPdf'
+                '.download_asyncPdf'
             ],
             exclusion_patterns=['supporting', 'supplement'],
             confidence_boost=0.15
@@ -126,9 +126,9 @@ class GeneralizedPDFDetector:
             domain_patterns=['sciencedirect.com', 'elsevier.com'],
             primary_selectors=[
                 'a[href*="pdfft"]',  # ScienceDirect PDF pattern
-                '.download-pdf-link',
+                '.download_async-pdf-link',
                 'a[aria-label*="Download PDF"]',
-                '.pdf-download'
+                '.pdf-download_async'
             ],
             fallback_selectors=[
                 'a[href*="pdf"]',
@@ -148,7 +148,7 @@ class GeneralizedPDFDetector:
                 'a[title*="PDF"]'
             ],
             fallback_selectors=[
-                '.download-pdf'
+                '.download_async-pdf'
             ],
             exclusion_patterns=['supporting information'],
             confidence_boost=0.1
@@ -163,13 +163,13 @@ class GeneralizedPDFDetector:
                 # Direct PDF links
                 'a[href$=".pdf"]',
                 'a[href*="/pdf/"]',
-                'a[href*="pdf"][href*="download"]',
+                'a[href*="pdf"][href*="download_async"]',
                 
                 # Semantic selectors
-                '.pdf-download',
+                '.pdf-download_async',
                 '.pdf-link',
                 '.article-pdf',
-                '.download-pdf',
+                '.download_async-pdf',
                 
                 # ARIA and accessibility
                 'a[aria-label*="PDF"]',
@@ -184,7 +184,7 @@ class GeneralizedPDFDetector:
                 'button[title*="PDF"]',
                 
                 # Download buttons
-                '.download-link',
+                '.download_async-link',
                 'a:contains("Download")',
                 'button:contains("PDF")',
                 
@@ -197,7 +197,7 @@ class GeneralizedPDFDetector:
                 # Very generic patterns
                 'a:contains("PDF")',
                 'button:contains("Download")',
-                '.download',
+                '.download_async',
                 '[onclick*="pdf"]'
             ]
         }
@@ -383,10 +383,10 @@ class GeneralizedPDFDetector:
             logger.warning(f"Failed to process candidate: {e}")
             return None
     
-    async def download_best_pdf(self, page, candidates: List[PDFCandidate], 
-                               download_path: Path, timeout: int = 30000) -> Tuple[bool, Optional[str]]:
+    async def download_async_best_pdf(self, page, candidates: List[PDFCandidate], 
+                               download_async_path: Path, timeout: int = 30000) -> Tuple[bool, Optional[str]]:
         """
-        Attempt to download PDF using the best candidate.
+        Attempt to download_async PDF using the best candidate.
         
         Returns:
             (success: bool, error_message: Optional[str])
@@ -396,27 +396,27 @@ class GeneralizedPDFDetector:
         
         best_candidate = candidates[0]  # Already sorted by confidence
         
-        logger.info(f"Attempting download with best candidate: {best_candidate.text[:40]}... (confidence: {best_candidate.confidence:.2f})")
+        logger.info(f"Attempting download_async with best candidate: {best_candidate.text[:40]}... (confidence: {best_candidate.confidence:.2f})")
         
         try:
             # Method 1: Direct URL navigation
             if best_candidate.href and ('.pdf' in best_candidate.href or '/pdf/' in best_candidate.href):
-                download_promise = page.wait_for_event('download', timeout=timeout)
+                download_async_promise = page.wait_for_event('download_async', timeout=timeout)
                 await page.goto(best_candidate.href)
                 
                 try:
-                    download = await download_promise
-                    await download.save_as(str(download_path))
+                    download_async = await download_async_promise
+                    await download_async.save_as(str(download_async_path))
                     
-                    if download_path.exists() and download_path.stat().st_size > 1000:
+                    if download_async_path.exists() and download_async_path.stat().st_size > 1000:
                         return True, None
                         
-                except Exception as download_error:
-                    logger.warning(f"Direct URL download failed: {download_error}")
+                except Exception as download_async_error:
+                    logger.warning(f"Direct URL download_async failed: {download_async_error}")
             
             # Method 2: Element interaction
             if best_candidate.selector:
-                download_promise = page.wait_for_event('download', timeout=timeout)
+                download_async_promise = page.wait_for_event('download_async', timeout=timeout)
                 
                 click_js = f"""
                 () => {{
@@ -445,21 +445,21 @@ class GeneralizedPDFDetector:
                 
                 if 'clicked' in click_result:
                     try:
-                        download = await download_promise
-                        await download.save_as(str(download_path))
+                        download_async = await download_async_promise
+                        await download_async.save_as(str(download_async_path))
                         
-                        if download_path.exists() and download_path.stat().st_size > 1000:
+                        if download_async_path.exists() and download_async_path.stat().st_size > 1000:
                             return True, None
                             
-                    except Exception as click_download_error:
-                        logger.warning(f"Click download failed: {click_download_error}")
+                    except Exception as click_download_async_error:
+                        logger.warning(f"Click download_async failed: {click_download_async_error}")
             
-            return False, f"All download methods failed for candidate: {best_candidate.text[:40]}..."
+            return False, f"All download_async methods failed for candidate: {best_candidate.text[:40]}..."
             
         except Exception as e:
             return False, f"Download attempt failed: {str(e)}"
     
-    def get_download_report(self, candidates: List[PDFCandidate]) -> str:
+    def get_download_async_report(self, candidates: List[PDFCandidate]) -> str:
         """Generate a human-readable report of PDF detection results."""
         if not candidates:
             return "❌ No PDF candidates found"
@@ -485,6 +485,6 @@ class GeneralizedPDFDetector:
         elif best.confidence > 0.4:
             report += f"⚠️  Recommendation: Medium confidence - may need manual verification\n"
         else:
-            report += f"❌ Recommendation: Low confidence - manual download likely needed\n"
+            report += f"❌ Recommendation: Low confidence - manual download_async likely needed\n"
         
         return report

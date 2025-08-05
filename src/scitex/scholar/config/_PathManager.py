@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 05:07:29 (ywatanabe)"
+# Timestamp: "2025-08-03 14:54:55 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -43,13 +43,13 @@ class TidinessConstraints:
     max_cache_size_mb: int = 1000  # 1GB cache
     max_workspace_size_mb: int = 2000  # 2GB workspace
     max_screenshots_size_mb: int = 500  # 500MB screenshots
-    max_downloads_size_mb: int = 1000  # 1GB downloads
+    max_download_asyncs_size_mb: int = 1000  # 1GB download_asyncs
 
     # File age constraints (in days)
     cache_retention_days: int = 30
     workspace_retention_days: int = 7
     screenshots_retention_days: int = 14
-    downloads_retention_days: int = 3
+    download_asyncs_retention_days: int = 3
 
     # Directory depth constraints
     max_directory_depth: int = 8
@@ -100,8 +100,8 @@ class PathManager:
         subdirs = [
             self.cache_dir / "chrome",
             self.cache_dir / "auth",
-            self.library_dir / "indexes",
-            self.workspace_dir / "downloads",
+            # Removed unused indexes directory
+            self.workspace_dir / "download_asyncs",
             self.workspace_dir / "logs",
             self.workspace_dir / "screenshots",
         ]
@@ -164,6 +164,125 @@ class PathManager:
             filename = f"unnamed_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         return filename
+
+    def _hyphenate_for_symlinks(self, text: str) -> str:
+        """Convert text to hyphenated format suitable for symlinks.
+        
+        This method aggressively converts spaces, punctuation, and special
+        characters to hyphens for better readability in symlink names.
+        
+        Args:
+            text: Input text to hyphenate
+            
+        Returns:
+            Hyphenated text suitable for symlinks
+        """
+        if not text:
+            return ""
+        
+        # Convert to string if not already
+        text = str(text)
+        
+        # Remove common punctuation that should be eliminated entirely
+        # (parentheses, quotes, etc.)
+        text = re.sub(r'[()"\'\[\]{}]', '', text)
+        
+        # Convert spaces, commas, periods, and other separators to hyphens
+        text = re.sub(r'[\s,\.;:&/\\]+', '-', text)
+        
+        # Remove any remaining non-alphanumeric characters except hyphens
+        text = re.sub(r'[^a-zA-Z0-9\-]', '', text)
+        
+        # Remove multiple consecutive hyphens
+        text = re.sub(r'-{2,}', '-', text)
+        
+        # Remove leading/trailing hyphens
+        text = text.strip('-')
+        
+        # Ensure it's not empty
+        if not text:
+            text = "Unknown"
+        
+        return text
+
+    def _expand_journal_name(self, journal: str) -> str:
+        """Expand common journal abbreviations to more readable names."""
+        if not journal or journal == "Unknown":
+            return journal
+        
+        # Dictionary of common journal abbreviations and their expansions
+        # Based on your PAC research collection abbreviations
+        journal_expansions = {
+            # Nature family
+            'N': 'Nature',
+            'NC': 'Nature Communications', 
+            'NBR': 'Nature Biomedical Research',
+            'Nature': 'Nature',
+            
+            # Neuroscience journals
+            'FN': 'Frontiers in Neuroscience',
+            'FHN': 'Frontiers in Human Neuroscience',
+            'FIN': 'Frontiers in Neuroscience',
+            'FBN': 'Frontiers in Behavioral Neuroscience',
+            'eNeuro': 'eNeuro',
+            'JNE': 'Journal of Neural Engineering',
+            'JNM': 'Journal of Neuroscience Methods',
+            'JCN': 'Journal of Cognitive Neuroscience',
+            'CN': 'Computational Neuroscience',
+            'CON': 'Consciousness and Cognition',
+            'TJN': 'The Journal of Neuroscience',
+            'BB': 'Biological and Biomedical',
+            'BT': 'Brain Topography',
+            'BRI': 'Brain Research International',
+            
+            # Computing and Signal Processing
+            'PCB': 'PLOS Computational Biology',
+            'TCS': 'Theoretical Computer Science',
+            'IICASSP': 'IEEE International Conference on Acoustics Speech and Signal Processing',
+            'IIEMBS': 'IEEE Engineering in Medicine and Biology Society',
+            'AICIEMBS': 'AI Conference IEEE Engineering in Medicine and Biology Society',
+            'ITNSRE': 'IEEE Transactions on Neural Systems and Rehabilitation Engineering',
+            'ITM': 'IEEE Transactions on Medicine',
+            'IJBHI': 'International Journal of Biomedical and Health Informatics',
+            'IICBB': 'IEEE International Conference on Bioinformatics and Biomedicine',
+            'CEN': 'Computational and Engineering Networks',
+            
+            # Medical and Life Sciences
+            'PR': 'Pattern Recognition',
+            'H': 'Hippocampus',
+            'HBM': 'Human Brain Mapping',
+            'PO': 'PLOS ONE',
+            'S': 'Science',
+            'SR': 'Scientific Reports',
+            'BS': 'Brain Sciences',
+            'E': 'Entropy',
+            'IA': 'Intelligence and Applications',
+            'A': 'Applications',
+            'C': 'Communications',
+            'KS': 'Knowledge Systems',
+            'J': 'Journal',
+            'JSR': 'Journal of Sleep Research',
+            
+            # Preprint servers
+            'bioRxiv': 'bioRxiv Preprint',
+            'arXiv': 'arXiv Preprint',
+        }
+        
+        # Try exact match first
+        if journal in journal_expansions:
+            expanded = journal_expansions[journal]
+            logger.debug(f"Expanded journal: {journal} -> {expanded}")
+            return expanded
+        
+        # Try case-insensitive match
+        for abbrev, full_name in journal_expansions.items():
+            if journal.lower() == abbrev.lower():
+                logger.debug(f"Expanded journal: {journal} -> {full_name}")
+                return full_name
+        
+        # If no expansion found, return original (might already be expanded)
+        logger.debug(f"Journal not expanded: {journal}")
+        return journal
 
     def _sanitize_collection_name(self, collection_name: str) -> str:
         """Sanitize collection name according to constraints."""
@@ -286,7 +405,7 @@ class PathManager:
             "cache_cleaned": 0,
             "workspace_cleaned": 0,
             "screenshots_cleaned": 0,
-            "downloads_cleaned": 0,
+            "download_asyncs_cleaned": 0,
             "size_violations_fixed": 0,
         }
 
@@ -302,9 +421,9 @@ class PathManager:
             self.workspace_dir / "screenshots",
             self.constraints.screenshots_retention_days,
         )
-        results["downloads_cleaned"] = self._cleanup_old_files(
-            self.workspace_dir / "downloads",
-            self.constraints.downloads_retention_days,
+        results["download_asyncs_cleaned"] = self._cleanup_old_files(
+            self.workspace_dir / "download_asyncs",
+            self.constraints.download_asyncs_retention_days,
         )
 
         # Enforce size limits
@@ -316,8 +435,8 @@ class PathManager:
                 self.constraints.max_screenshots_size_mb,
             ),
             (
-                self.workspace_dir / "downloads",
-                self.constraints.max_downloads_size_mb,
+                self.workspace_dir / "download_asyncs",
+                self.constraints.max_download_asyncs_size_mb,
             ),
         ]
 
@@ -381,6 +500,40 @@ class PathManager:
     def backup_dir(self) -> Path:
         return self._ensure_directory(self.scholar_dir / "backup")
 
+    # Library directory methods with project support
+    def get_scholar_library_path(self) -> Path:
+        """Get the base Scholar library path (backward compatibility method)."""
+        return self.library_dir
+    
+    def get_library_master_dir(self) -> Path:
+        """Get the MASTER directory for internal storage.
+        
+        Returns:
+            Path to the MASTER storage directory where actual papers are stored
+        """
+        return self._ensure_directory(self.library_dir / "MASTER")
+
+    def get_library_dir(self, project: str = "default") -> Path:
+        """Get library directory for a specific project.
+        
+        Args:
+            project: Project name (default: "default")
+            
+        Returns:
+            Path to the project's library directory
+        """
+        assert project, "Project name cannot be empty"
+        
+        # Prevent using any variant of "master"/"MASTER" as user project names
+        assert project.upper() != "MASTER", \
+            f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
+        
+        # Internal code should use get_collection_dir("MASTER") for master storage
+        # This method is for user projects only
+        
+        project = self._sanitize_collection_name(project)
+        return self._ensure_directory(self.library_dir / project)
+
     # Enhanced methods with tidiness constraints (automatically ensure directories exist)
     def get_chrome_cache_dir(self) -> Path:
         return self._ensure_directory(self.cache_dir / "chrome")
@@ -393,14 +546,8 @@ class PathManager:
         collection_name = self._sanitize_collection_name(collection_name)
         return self._ensure_directory(self.library_dir / collection_name)
 
-    def get_collection_readable_dir(self, collection_name: str) -> Path:
-        collection_name = self._sanitize_collection_name(collection_name)
-        return self._ensure_directory(
-            self.library_dir / f"{collection_name}-human-readable"
-        )
 
-    def get_indexes_dir(self) -> Path:
-        return self._ensure_directory(self.library_dir / "indexes")
+    # Removed unused get_indexes_dir method
 
     def get_paper_storage_paths(
         self, paper_info: Dict, collection_name: str = "default"
@@ -411,41 +558,47 @@ class PathManager:
         # Generate unique ID using DOI if available, otherwise metadata
         unique_id = self._generate_paper_id(paper_info)
 
-        # Create storage path
+        # Create storage path (always use collection_dir, no special human-readable dirs)
         collection_dir = self.get_collection_dir(collection_name)
         storage_path = self._ensure_directory(collection_dir / unique_id)
 
-        # Create readable name
+        # Generate readable name for potential symlinks (but don't create readable_path here)
         first_author = "Unknown"
         if paper_info.get("authors"):
-            first_author = (
-                paper_info["authors"][0].split()[-1]
-                if paper_info["authors"]
-                else "Unknown"
-            )
-            first_author = self._sanitize_filename(first_author)
+            authors = paper_info["authors"]
+            if isinstance(authors, list) and authors:
+                # If it's a list, take the first author and parse it
+                author_str = str(authors[0])
+                if "," in author_str:
+                    # Format: "Last, First" -> take "Last"
+                    first_author = author_str.split(",")[0].strip()
+                else:
+                    # Format: "First Last" -> take "Last"
+                    first_author = author_str.split()[-1]
+            elif isinstance(authors, str) and authors:
+                # If it's a string, extract last name directly
+                # Handle formats like "Kapoor, A." or "John Smith"
+                if "," in authors:
+                    # Format: "Last, First" -> take "Last"
+                    first_author = authors.split(",")[0].strip()
+                else:
+                    # Format: "First Last" -> take "Last"
+                    first_author = authors.split()[-1]
+            first_author = self._hyphenate_for_symlinks(first_author)
 
         year = paper_info.get("year", "Unknown")
         journal = paper_info.get("journal", "Unknown")
-        journal = self._sanitize_filename(journal)
+        
+        # Expand common journal abbreviations and use hyphens for readability
+        journal_expanded = self._expand_journal_name(journal)
+        journal_clean = self._hyphenate_for_symlinks(journal_expanded)
 
-        readable_name = f"{first_author}-{year}-{journal}"
-        readable_name = self._sanitize_filename(readable_name)
-
-        readable_dir = self.get_collection_readable_dir(collection_name)
-        readable_path = readable_dir / readable_name
-
-        # Create symlink if both paths exist
-        if storage_path.exists() and not readable_path.exists():
-            try:
-                readable_path.symlink_to(storage_path)
-            except OSError:
-                # Fall back to creating a regular directory
-                self._ensure_directory(readable_path)
+        readable_name = f"{first_author}-{year}-{journal_clean}"
+        readable_name = self._hyphenate_for_symlinks(readable_name)
 
         return {
             "storage_path": storage_path,
-            "readable_path": readable_path,
+            "readable_name": readable_name,  # Just the name, not a path
             "unique_id": unique_id,
         }
 
@@ -455,8 +608,8 @@ class PathManager:
             self.workspace_dir / "screenshots" / screenshot_type
         )
 
-    def get_downloads_dir(self) -> Path:
-        return self._ensure_directory(self.workspace_dir / "downloads")
+    def get_download_asyncs_dir(self) -> Path:
+        return self._ensure_directory(self.workspace_dir / "download_asyncs")
 
     def get_workspace_logs_dir(self) -> Path:
         return self._ensure_directory(self.workspace_dir / "logs")
@@ -477,35 +630,58 @@ class PathManager:
     def get_config_file(self, config_name: str) -> Path:
         config_name = self._sanitize_filename(config_name)
         return self.config_dir / f"{config_name}.yaml"
+    
+    def get_project_bibtex_dir(self, collection_name: str = "default") -> Path:
+        """Get directory for storing project bibtex files."""
+        collection_name = self._sanitize_collection_name(collection_name)
+        return self._ensure_directory(self.library_dir / collection_name / "bibtex")
+    
+    def get_unresolved_entries_dir(self, collection_name: str = "default") -> Path:
+        """Get directory for tracking unresolved DOI entries."""
+        collection_name = self._sanitize_collection_name(collection_name)
+        return self._ensure_directory(self.library_dir / collection_name / "unresolved")
+    
+    def get_project_logs_dir(self, collection_name: str = "default") -> Path:
+        """Get directory for project-specific logs."""
+        collection_name = self._sanitize_collection_name(collection_name)
+        return self._ensure_directory(self.library_dir / collection_name / "logs")
 
     def _generate_paper_id(self, paper_info: Dict) -> str:
         """
         Generate unique 8-digit paper ID using deterministic strategy.
-        
+
         Priority:
         1. If DOI exists: Use DOI for consistent identification
         2. If no DOI: Use title + first author + year for deterministic hash
-        
+
         Args:
             paper_info: Dictionary containing paper metadata
-            
+
         Returns:
             8-character uppercase hexadecimal string
         """
-        doi = paper_info.get("doi", "").strip()
-        
+        doi = paper_info.get("doi") or ""
+        if isinstance(doi, str):
+            doi = doi.strip()
+
         if doi:
             # Use DOI for consistent identification across systems
             # Remove common DOI prefixes and normalize
-            clean_doi = doi.replace("https://doi.org/", "").replace("http://dx.doi.org/", "")
+            clean_doi = doi.replace("https://doi.org/", "").replace(
+                "http://dx.doi.org/", ""
+            )
             content = f"DOI:{clean_doi}"
             logger.debug(f"Generating ID from DOI: {clean_doi}")
         else:
             # Use deterministic metadata combination
-            title = paper_info.get("title", "").strip().lower()
+            title = paper_info.get("title") or ""
+            if isinstance(title, str):
+                title = title.strip().lower()
+            else:
+                title = ""
             authors = paper_info.get("authors", [])
             year = paper_info.get("year", "")
-            
+
             # Get first author's last name
             first_author = "unknown"
             if authors and len(authors) > 0:
@@ -513,19 +689,27 @@ class PathManager:
                 if author_parts:
                     # Take last part as last name
                     first_author = author_parts[-1].lower()
-            
+
             # Clean title (remove common words and normalize)
-            title_clean = re.sub(r'\b(the|and|of|in|on|at|to|for|with|by)\b', '', title)
-            title_clean = re.sub(r'[^\w\s]', '', title_clean)  # Remove punctuation
-            title_clean = re.sub(r'\s+', ' ', title_clean).strip()  # Normalize spaces
-            
+            title_clean = re.sub(
+                r"\b(the|and|of|in|on|at|to|for|with|by)\b", "", title
+            )
+            title_clean = re.sub(
+                r"[^\w\s]", "", title_clean
+            )  # Remove punctuation
+            title_clean = re.sub(
+                r"\s+", " ", title_clean
+            ).strip()  # Normalize spaces
+
             content = f"META:{title_clean}:{first_author}:{year}"
-            logger.debug(f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}...")
-        
+            logger.debug(
+                f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}..."
+            )
+
         # Generate hash and take first 8 characters
-        hash_obj = hashlib.md5(content.encode('utf-8'))
+        hash_obj = hashlib.md5(content.encode("utf-8"))
         paper_id = hash_obj.hexdigest()[:8].upper()
-        
+
         # Ensure it's a valid directory name
         return self._sanitize_filename(paper_id)
 
@@ -538,7 +722,7 @@ class PathManager:
             "library": self.library_dir,
             "workspace": self.workspace_dir,
             "screenshots": self.workspace_dir / "screenshots",
-            "downloads": self.workspace_dir / "downloads",
+            "download_asyncs": self.workspace_dir / "download_asyncs",
         }
 
         for name, directory in directories.items():
@@ -587,13 +771,16 @@ Tidiness Constraints:
 │   └── <config_name>.yaml (get_config_file(config_name))
 ├── library/ (.library_dir)
 │   ├── indexes/ (get_indexes_dir())
-│   ├── <collection_name>/ (get_collection_dir(collection_name))
-│   │   └── <unique_id>/ (get_paper_storage_paths(paper_info, collection_name))
-│   └── <collection_name>-human-readable/ (get_collection_readable_dir(collection_name))
-│       └── <Author>-<Year>-<Journal>/ (get_paper_storage_paths(paper_info, collection_name))
+│   ├── MASTER/ (master storage - real 8-digit directories)
+│   │   └── <8-digit-id>/ (paper storage with metadata.json)
+│   └── <project_name>/ (project directories with human-readable symlinks)
+│       ├── <Author-Year-Journal> -> ../MASTER/<8-digit-id>/
+│       └── info/
+│           └── <filename>/
+│               └── <filename>.bib
 ├── log/ (.log_dir)
 ├── workspace/ (.workspace_dir) [Max: {self.constraints.max_workspace_size_mb}MB, {self.constraints.workspace_retention_days}d retention]
-│   ├── downloads/ (get_downloads_dir()) [Max: {self.constraints.max_downloads_size_mb}MB, {self.constraints.downloads_retention_days}d retention]
+│   ├── download_asyncs/ (get_download_asyncs_dir()) [Max: {self.constraints.max_download_asyncs_size_mb}MB, {self.constraints.download_asyncs_retention_days}d retention]
 │   ├── logs/ (get_workspace_logs_dir())
 │   └── screenshots/ [Max: {self.constraints.max_screenshots_size_mb}MB, {self.constraints.screenshots_retention_days}d retention]
 │       └── <screenshot_type>/ (get_screenshots_dir(screenshot_type))
