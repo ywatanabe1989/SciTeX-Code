@@ -454,9 +454,9 @@ class DOIToURLResolver:
         return None
 
     async def _check_pdf_access_async(self, page: Page) -> bool:
-        """Check if PDF download_async is available on the page."""
+        """Check if PDF download is available on the page."""
         try:
-            # Look for PDF download_async links/buttons
+            # Look for PDF download links/buttons
             pdf_selectors = [
                 'a[href*=".pdf"]',
                 'a[href*="/pdf/"]',
@@ -464,7 +464,7 @@ class DOIToURLResolver:
                 'a:has-text("Download PDF")',
                 'a:has-text("View PDF")',
                 'a:has-text("Full Text PDF")',
-                ".pdf-download_async",
+                ".pdf-download",
                 '[class*="pdf-link"]',
             ]
 

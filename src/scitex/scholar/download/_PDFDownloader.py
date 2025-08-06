@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/download_async/_PDFDownloader.py"
+    "./src/scitex/scholar/download/_PDFDownloader.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -13,9 +13,9 @@ __DIR__ = os.path.dirname(__FILE__)
 from typing import Union
 
 """
-PDF download_asyncer for SciTeX Scholar.
+PDF downloader for SciTeX Scholar.
 
-This module provides comprehensive PDF download_async functionality:
+This module provides comprehensive PDF download functionality:
 1. Direct publisher patterns (fastest)
 2. Zotero translator support (most reliable)
 3. ZenRows anti-bot bypass (for protected sites)
@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 
 class PDFDownloader:
     """
-    PDF download_asyncer with multiple strategies.
+    PDF downloader with multiple strategies.
 
     Download priority:
     1. Check local cache
@@ -59,7 +59,7 @@ class PDFDownloader:
     5. Use Playwright for JavaScript sites
 
     Features:
-    - Concurrent download_asyncs with progress tracking
+    - Concurrent downloads with progress tracking
     - Smart caching and deduplication
     - Automatic retry with exponential backoff
     - Publisher-specific optimizations
@@ -72,7 +72,7 @@ class PDFDownloader:
 
     def __init__(
         self,
-        download_async_dir: Optional[Path] = None,
+        download_dir: Optional[Path] = None,
         use_translators: bool = True,
         use_playwright: bool = True,
         use_openathens: bool = False,
@@ -86,10 +86,10 @@ class PDFDownloader:
         debug_mode: bool = False,
     ):
         """
-        Initialize PDF download_asyncer.
+        Initialize PDF downloader.
 
         Args:
-            download_async_dir: Default download_async directory
+            download_dir: Default download directory
             use_translators: Enable Zotero translator support
             use_playwright: Enable Playwright for JS sites
             use_openathens: Enable OpenAthens authentication
@@ -99,10 +99,10 @@ class PDFDownloader:
             zenrows_api_key: ZenRows API key (auto-enables stealth when provided)
             timeout: Download timeout in seconds
             max_retries: Maximum retry attempts
-            max_concurrent: Maximum concurrent download_asyncs
+            max_concurrent: Maximum concurrent downloads
             debug_mode: Enable debug logging
         """
-        self.download_async_dir = Path(download_async_dir or "./pdfs")
+        self.download_dir = Path(download_dir or "./pdfs")
         self.use_translators = use_translators
         self.use_playwright = use_playwright
         self.use_openathens = use_openathens
@@ -220,7 +220,7 @@ class PDFDownloader:
         self.zenrows_strategy = None
         if self.use_zenrows:
             self.zenrows_strategy = ZenRowsDownloadStrategy(api_key=self.zenrows_api_key)
-            logger.info("ZenRows download_async strategy initialized")
+            logger.info("ZenRows download strategy initialized")
             
         # Initialize ZenRows stealthy browser automatically when API key is present
         self.zenrows_stealth_browser = None
@@ -237,10 +237,10 @@ class PDFDownloader:
                 logger.warning(f"Failed to initialize ZenRows stealth browser: {e}")
                 self.zenrows_stealth_browser = None
         
-        # Track download_asyncs to avoid duplicates
-        self._active_download_asyncs: Set[str] = set()
-        self._download_async_cache: Dict[str, Path] = {}
-        self._download_async_methods: Dict[str, str] = (
+        # Track downloads to avoid duplicates
+        self._active_downloads: Set[str] = set()
+        self._download_cache: Dict[str, Path] = {}
+        self._download_methods: Dict[str, str] = (
             {}
         )  # Track which method succeeded
 
@@ -275,7 +275,7 @@ class PDFDownloader:
         if value and getattr(value, 'shibboleth_enabled', False):
             self._init_shibboleth()
 
-    async def download_async_pdf_async(
+    async def download_pdf_async(
         self,
         identifier: str,
         output_dir: Optional[Path] = None,
@@ -291,29 +291,29 @@ class PDFDownloader:
             identifier: DOI, URL, or other identifier
             output_dir: Output directory (uses default if None)
             filename: Custom filename (auto-generated if None)
-            force: Force re-download_async even if exists
+            force: Force re-download even if exists
             metadata: Additional metadata for filename generation
 
         Returns:
-            Path to download_asynced PDF or None
+            Path to download PDF or None
         """
         # Normalize identifier
         identifier = identifier.strip()
 
-        # Check if already download_asyncing
-        if identifier in self._active_download_asyncs:
-            logger.info(f"Already download_asyncing: {identifier}")
-            # Wait for existing download_async
-            while identifier in self._active_download_asyncs:
+        # Check if already downloading
+        if identifier in self._active_downloads:
+            logger.info(f"Already downloading: {identifier}")
+            # Wait for existing download
+            while identifier in self._active_downloads:
                 await asyncio.sleep(0.5)
-            return self._download_async_cache.get(identifier)
+            return self._download_cache.get(identifier)
 
         # Mark as active
-        self._active_download_asyncs.add(identifier)
+        self._active_downloads.add(identifier)
 
         try:
             # Determine output path
-            output_dir = output_dir or self.download_async_dir
+            output_dir = output_dir or self.download_dir
             output_dir.mkdir(parents=True, exist_ok=True)
 
             if not filename:
@@ -327,21 +327,21 @@ class PDFDownloader:
                 and output_path.stat().st_size > 1000
             ):
                 logger.info(f"PDF already exists: {output_path}")
-                self._download_async_cache[identifier] = output_path
+                self._download_cache[identifier] = output_path
                 return output_path
 
-            # Try download_async strategies in order
+            # Try download strategies in order
             pdf_path = None
 
-            # Strategy 1: Direct download_async if URL
+            # Strategy 1: Direct download if URL
             if identifier.startswith("http"):
-                pdf_path = await self._try_direct_url_download_async_async(
+                pdf_path = await self._try_direct_url_download_async(
                     identifier, output_path
                 )
 
             # Strategy 2: DOI resolution and patterns
             elif self._is_doi(identifier):
-                pdf_path = await self._download_async_from_doi_async(
+                pdf_path = await self._download_from_doi_async(
                     identifier, output_path, progress_callback
                 )
 
@@ -351,7 +351,7 @@ class PDFDownloader:
                 for prefix in ["https://", "http://"]:
                     test_url = prefix + identifier
                     if await self._is_valid_url_async(test_url):
-                        pdf_path = await self._try_direct_url_download_async_async(
+                        pdf_path = await self._try_direct_url_download_async(
                             test_url, output_path
                         )
                         if pdf_path:
@@ -359,15 +359,15 @@ class PDFDownloader:
 
             # Cache result
             if pdf_path:
-                self._download_async_cache[identifier] = pdf_path
+                self._download_cache[identifier] = pdf_path
 
             return pdf_path
 
         finally:
-            # Remove from active download_asyncs
-            self._active_download_asyncs.discard(identifier)
+            # Remove from active downloads
+            self._active_downloads.discard(identifier)
 
-    async def _download_async_from_doi_async(
+    async def _download_from_doi_async(
         self,
         doi: str,
         output_path: Path,
@@ -473,7 +473,7 @@ class PDFDownloader:
                     
                 if pdf_path:
                     logger.info(f"Success with {name}: {pdf_path}")
-                    self._download_async_methods[doi] = name  # Track successful method
+                    self._download_methods[doi] = name  # Track successful method
                     return pdf_path
             except Exception as e:
                 logger.debug(f"{name} failed for {doi}: {e}")
@@ -585,17 +585,17 @@ class PDFDownloader:
     async def _try_direct_patterns_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try direct download_async using publisher patterns with optional authentication."""
+        """Try direct download using publisher patterns with optional authentication."""
         pdf_urls = self._get_publisher_pdf_urls(url, doi)
 
         for pdf_url in pdf_urls:
-            logger.debug(f"Trying direct download_async: {pdf_url}")
-            # If we have auth session, use it for download_async
+            logger.debug(f"Trying direct download: {pdf_url}")
+            # If we have auth session, use it for download
             if auth_session and auth_session.get('cookies'):
-                if await self._download_async_file_with_auth_async(pdf_url, output_path, auth_session, referer=url):
+                if await self._download_file_with_auth_async(pdf_url, output_path, auth_session, referer=url):
                     return output_path
             else:
-                if await self._download_async_file_async(pdf_url, output_path, referer=url):
+                if await self._download_file_async(pdf_url, output_path, referer=url):
                     return output_path
 
         return None
@@ -603,57 +603,57 @@ class PDFDownloader:
     async def _try_lean_library_async(
         self, identifier: str, url: str, output_path: Path
     ) -> Optional[Path]:
-        """Try download_asyncing using Lean Library browser extension."""
+        """Try downloading using Lean Library browser extension."""
         if not self.lean_library_authenticator:
             return None
             
         try:
-            logger.info("Attempting download_async with Lean Library...")
+            logger.info("Attempting download with Lean Library...")
             
             # Check if Lean Library is available
             if not await self.lean_library_authenticator.is_available_async():
                 logger.warning("Lean Library not available (no browser profile found)")
                 return None
             
-            # Try to download_async with extension
-            result = await self.lean_library_authenticator.download_async_with_extension_async(
+            # Try to download with extension
+            result = await self.lean_library_authenticator.download_with_extension_async(
                 url, output_path, timeout=self.timeout * 1000
             )
             
             if result:
-                logger.info(f"Successfully download_asynced with Lean Library: {output_path}")
+                logger.info(f"Successfully download with Lean Library: {output_path}")
                 return output_path
             else:
                 logger.warning("Lean Library could not access the PDF")
                 return None
                 
         except Exception as e:
-            logger.error(f"Lean Library download_async failed: {e}")
+            logger.error(f"Lean Library download failed: {e}")
             return None
 
     async def _try_openathens_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using OpenAthens authenticator's download_async_with_auth_async method."""
+        """Try download using OpenAthens authenticator's download_with_auth_async method."""
         if not self.openathens_authenticator:
             return None
             
         try:
-            logger.info(f"Using OpenAthens authenticate_async download_async for {url}")
-            # Use the authenticator's download_async method which handles publisher-specific flows
-            result = await self.openathens_authenticator.download_async_with_auth_async(
+            logger.info(f"Using OpenAthens authenticate_async download for {url}")
+            # Use the authenticator's download method which handles publisher-specific flows
+            result = await self.openathens_authenticator.download_with_auth_async(
                 url=url,
                 output_path=output_path
             )
             return result
         except Exception as e:
-            logger.error(f"OpenAthens download_async failed: {e}")
+            logger.error(f"OpenAthens download failed: {e}")
             return None
     
     async def _try_ezproxy_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using EZProxy authenticate_async access."""
+        """Try download using EZProxy authenticate_async access."""
         if not self.ezproxy_authenticator:
             return None
             
@@ -666,26 +666,26 @@ class PDFDownloader:
                 timeout=self.timeout
             )
             
-            logger.info(f"Trying EZProxy download_async for {url}")
+            logger.info(f"Trying EZProxy download for {url}")
             
-            # Use the strategy to download_async
-            success = await strategy.download_async(url, output_path)
+            # Use the strategy to download
+            success = await strategy.download(url, output_path)
             
             if success and output_path.exists():
-                logger.info(f"Successfully download_asynced via EZProxy: {output_path}")
-                self._download_async_methods[str(output_path)] = "EZProxy"
+                logger.info(f"Successfully download via EZProxy: {output_path}")
+                self._download_methods[str(output_path)] = "EZProxy"
                 return output_path
             else:
                 return None
                 
         except Exception as e:
-            logger.error(f"EZProxy download_async failed: {e}")
+            logger.error(f"EZProxy download failed: {e}")
             return None
     
     async def _try_shibboleth_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using Shibboleth authenticate_async access."""
+        """Try download using Shibboleth authenticate_async access."""
         if not self.shibboleth_authenticator:
             return None
             
@@ -698,26 +698,26 @@ class PDFDownloader:
                 timeout=self.timeout
             )
             
-            logger.info(f"Trying Shibboleth download_async for {url}")
+            logger.info(f"Trying Shibboleth download for {url}")
             
-            # Use the strategy to download_async
-            success = await strategy.download_async(url, output_path)
+            # Use the strategy to download
+            success = await strategy.download(url, output_path)
             
             if success and output_path.exists():
-                logger.info(f"Successfully download_asynced via Shibboleth: {output_path}")
-                self._download_async_methods[str(output_path)] = "Shibboleth"
+                logger.info(f"Successfully download via Shibboleth: {output_path}")
+                self._download_methods[str(output_path)] = "Shibboleth"
                 return output_path
             else:
                 return None
                 
         except Exception as e:
-            logger.error(f"Shibboleth download_async failed: {e}")
+            logger.error(f"Shibboleth download failed: {e}")
             return None
 
     async def _try_zotero_translator_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using Zotero translator with optional authentication."""
+        """Try download using Zotero translator with optional authentication."""
         if not self.zotero_translator_runner:
             return None
 
@@ -736,7 +736,7 @@ class PDFDownloader:
             pdf_urls = await self.zotero_translator_runner.extract_pdf_urls(url)
             for pdf_url in pdf_urls:
                 logger.info(f"Trying translator PDF: {pdf_url}")
-                if await self._download_async_file_async(pdf_url, output_path, referer=url):
+                if await self._download_file_async(pdf_url, output_path, referer=url):
                     return output_path
 
         return None
@@ -744,7 +744,7 @@ class PDFDownloader:
     async def _try_openurl_async_resolver_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using OpenURL resolver + Zotero translators."""
+        """Try download using OpenURL resolver + Zotero translators."""
         if not self.openurl_resolver:
             return None
             
@@ -814,13 +814,13 @@ class PDFDownloader:
                                 pdf_urls = await self._extract_pdf_urls_from_page_async(page, final_url)
                                 
                                 for pdf_url in pdf_urls:
-                                    if await self._download_async_file_async(pdf_url, output_path, referer=final_url):
+                                    if await self._download_file_async(pdf_url, output_path, referer=final_url):
                                         return output_path
                         
                         # Try direct patterns as fallback
                         pdf_urls = self._get_publisher_pdf_urls(final_url, doi)
                         for pdf_url in pdf_urls:
-                            if await self._download_async_file_async(pdf_url, output_path, referer=final_url):
+                            if await self._download_file_async(pdf_url, output_path, referer=final_url):
                                 return output_path
                                 
                     finally:
@@ -834,21 +834,21 @@ class PDFDownloader:
     async def _try_zenrows_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict] = None
     ) -> Optional[Path]:
-        """Try download_async using ZenRows for anti-bot bypass."""
+        """Try download using ZenRows for anti-bot bypass."""
         if not self.zenrows_strategy:
             logger.debug("ZenRows strategy not initialized")
             return None
             
         # Check if ZenRows can handle this URL
-        if not await self.zenrows_strategy.can_download_async(url, {"doi": doi}):
+        if not await self.zenrows_strategy.can_download(url, {"doi": doi}):
             logger.debug(f"ZenRows cannot handle URL: {url}")
             return None
             
-        logger.info(f"Attempting ZenRows download_async for {doi}")
+        logger.info(f"Attempting ZenRows download for {doi}")
         
         try:
             # Use ZenRows strategy
-            pdf_path = await self.zenrows_strategy.download_async(
+            pdf_path = await self.zenrows_strategy.download(
                 url=url,
                 output_path=output_path,
                 metadata={"doi": doi},
@@ -856,15 +856,15 @@ class PDFDownloader:
             )
             
             if pdf_path and pdf_path.exists():
-                logger.info(f"ZenRows download_async successful: {pdf_path}")
-                self._download_async_methods[doi] = "zenrows"
+                logger.info(f"ZenRows download successful: {pdf_path}")
+                self._download_methods[doi] = "zenrows"
                 return pdf_path
             else:
-                logger.warning("ZenRows download_async returned no file")
+                logger.warning("ZenRows download returned no file")
                 return None
                 
         except Exception as e:
-            logger.error(f"ZenRows download_async failed: {e}")
+            logger.error(f"ZenRows download failed: {e}")
             return None
 
 
@@ -913,7 +913,7 @@ class PDFDownloader:
     async def _try_playwright_async(
         self, doi: str, url: str, output_path: Path, auth_session: Optional[Dict[str, Any]] = None
     ) -> Optional[Path]:
-        """Try download_async using Playwright for JS-heavy sites with optional authentication.
+        """Try download using Playwright for JS-heavy sites with optional authentication.
         
         If ZenRows stealth browser is available, uses that for anti-bot protection.
         """
@@ -1014,7 +1014,7 @@ class PDFDownloader:
                         if pdf_frame:
                             logger.info(f"Found embedded PDF: {pdf_frame}")
                             # Download the embedded PDF
-                            if await self._download_async_file_async(pdf_frame, output_path, referer=final_url):
+                            if await self._download_file_async(pdf_frame, output_path, referer=final_url):
                                 return output_path
                     except Exception as e:
                         logger.debug(f"Failed to extract embedded PDF: {e}")
@@ -1037,14 +1037,14 @@ class PDFDownloader:
                         
                         // Enhanced selectors for authenticate_async pages
                         const authSelectors = [
-                            'a[data-track-action="download_async pdf"]',
-                            '.pdf-download_async-btn',
-                            'a.pdf-download_async',
+                            'a[data-track-action="download pdf"]',
+                            '.pdf-download-btn',
+                            'a.pdf-download',
                             'a:has-text("Access PDF")',
                             'button:has-text("Download PDF")',
                             // Nature specific
-                            'a[data-track-action="download_async-pdf"]',
-                            'a.c-pdf-download_async__link',
+                            'a[data-track-action="download-pdf"]',
+                            'a.c-pdf-download__link',
                             'a[href*="/articles/"][href$=".pdf"]',
                             'a[data-article-pdf]',
                             // More generic patterns
@@ -1077,13 +1077,13 @@ class PDFDownloader:
                 for url in pdf_urls[:3]:  # Log first 3
                     logger.debug(f"  - {url}")
                 
-                # Try download_asyncing PDFs
+                # Try downloading PDFs
                 for pdf_url in pdf_urls:
                     if auth_session and auth_session.get('cookies'):
-                        if await self._download_async_file_with_auth_async(pdf_url, output_path, auth_session, referer=url):
+                        if await self._download_file_with_auth_async(pdf_url, output_path, auth_session, referer=url):
                             return output_path
                     else:
-                        if await self._download_async_file_async(pdf_url, output_path, referer=url):
+                        if await self._download_file_async(pdf_url, output_path, referer=url):
                             return output_path
 
             finally:
@@ -1342,7 +1342,7 @@ class PDFDownloader:
             logger.error(f"DOI resolution failed for {doi}: {e}")
             return None
 
-    async def _download_async_file_async(
+    async def _download_file_async(
         self, url: str, output_path: Path, referer: Optional[str] = None
     ) -> bool:
         """Download file with retry logic."""
@@ -1394,19 +1394,19 @@ class PDFDownloader:
 
         return False
 
-    async def _try_direct_url_download_async_async(
+    async def _try_direct_url_download_async(
         self, url: str, output_path: Path
     ) -> Optional[Path]:
-        """Try download_asyncing directly from URL."""
+        """Try downloading directly from URL."""
         # Check if it's already a PDF URL
         if ".pdf" in url.lower() or "/pdf/" in url:
-            if await self._download_async_file_async(url, output_path):
+            if await self._download_file_async(url, output_path):
                 return output_path
 
         # Try appending .pdf
         if not url.endswith(".pdf"):
             pdf_url = url + ".pdf"
-            if await self._download_async_file_async(pdf_url, output_path):
+            if await self._download_file_async(pdf_url, output_path):
                 return output_path
 
         return None
@@ -1460,7 +1460,7 @@ class PDFDownloader:
         clean_id = re.sub(r"[^\w.-]", "_", identifier)
         return clean_id + ".pdf"
 
-    async def batch_download_async(
+    async def batch_download(
         self,
         identifiers: List[str],
         output_dir: Optional[Path] = None,
@@ -1479,10 +1479,10 @@ class PDFDownloader:
             organize_by_year: Create year subdirectories
             metadata_list: Metadata for each identifier
             progress_callback: Callback(completed, total, identifier)
-            return_detailed: If True, return detailed results with download_async methods
+            return_detailed: If True, return detailed results with download methods
 
         Returns:
-            If return_detailed is False: Dictionary mapping identifier to download_asynced path
+            If return_detailed is False: Dictionary mapping identifier to download path
             If return_detailed is True: Dictionary mapping identifier to {path, method}
         """
         if len(identifiers) > 10:
@@ -1491,7 +1491,7 @@ class PDFDownloader:
                 f"Downloading {len(identifiers)} PDFs. This may take time.",
             )
 
-        output_dir = output_dir or self.download_async_dir
+        output_dir = output_dir or self.download_dir
         results = {}
         completed = 0
         total = len(identifiers)
@@ -1517,7 +1517,7 @@ class PDFDownloader:
         elif not show_async_progress:
             progress_callback = None
 
-        # Prepare download_async tasks
+        # Prepare download tasks
         tasks = []
         for i, identifier in enumerate(identifiers):
             metadata = metadata_list[i] if metadata_list else None
@@ -1539,13 +1539,13 @@ class PDFDownloader:
         # Download with concurrency limit
         semaphore = asyncio.Semaphore(self.max_concurrent)
 
-        async def download_async_with_limit_async(
+        async def download_with_limit_async(
             task: Dict,
         ) -> Tuple[str, Optional[Path]]:
             nonlocal completed
 
             async with semaphore:
-                path = await self.download_async_pdf_async(
+                path = await self.download_pdf_async(
                     identifier=task["identifier"],
                     output_dir=task["output_dir"],
                     metadata=task["metadata"],
@@ -1562,14 +1562,14 @@ class PDFDownloader:
 
                 return task["identifier"], path
 
-        # Execute download_asyncs
-        download_async_results = await asyncio.gather(
-            *[download_async_with_limit_async(task) for task in tasks],
+        # Execute downloads
+        download_results = await asyncio.gather(
+            *[download_with_limit_async(task) for task in tasks],
             return_exceptions=True,
         )
 
         # Process results
-        for result in download_async_results:
+        for result in download_results:
             if isinstance(result, Exception):
                 logger.error(f"Download failed: {result}")
             else:
@@ -1591,7 +1591,7 @@ class PDFDownloader:
                 if path:
                     detailed_results[identifier] = {
                         "path": path,
-                        "method": self._download_async_methods.get(
+                        "method": self._download_methods.get(
                             identifier, "Unknown"
                         ),
                     }
@@ -1601,7 +1601,7 @@ class PDFDownloader:
         else:
             return results
     
-    async def _download_async_file_with_auth_async(
+    async def _download_file_with_auth_async(
         self,
         url: str,
         output_path: Path,
@@ -1634,7 +1634,7 @@ class PDFDownloader:
                 if referer:
                     await page.set_extra_http_headers({'Referer': referer})
                 
-                # Navigate to download_async URL
+                # Navigate to download URL
                 response = await page.goto(url, wait_until='domcontentloaded', timeout=30000)
                 
                 # Simple wait for page to stabilize
@@ -1652,21 +1652,21 @@ class PDFDownloader:
                             logger.info(f"Downloaded PDF with auth to {output_path}")
                             return True
                 
-                # Try download_async button if not direct PDF
+                # Try download button if not direct PDF
                 try:
-                    # Wait for download_async
-                    async with page.expect_download_async(timeout=15000) as download_async_info:
-                        # Click download_async button if present
+                    # Wait for download
+                    async with page.expect_download(timeout=15000) as download_info:
+                        # Click download button if present
                         await page.click('a:has-text("Download PDF")', timeout=5000)
                     
-                    download_async = await download_async_info.value
-                    await download_async.save_as(output_path)
+                    download = await download_info.value
+                    await download.save_as(output_path)
                     return True
                 except:
                     pass
                     
             except Exception as e:
-                logger.debug(f"Auth download_async failed: {e}")
+                logger.debug(f"Auth download failed: {e}")
             finally:
                 await browser.close()
                 
@@ -1689,12 +1689,12 @@ class PDFDownloader:
                         from urllib.parse import urljoin
                         pdf_urls.append(urljoin(url, href))
             
-            # Method 2: Look for download_async buttons
-            download_async_buttons = await page.query_selector_all(
+            # Method 2: Look for download buttons
+            download_buttons = await page.query_selector_all(
                 'a:has-text("Download PDF"), button:has-text("Download PDF"), '
                 'a:has-text("PDF"), a:has-text("Full Text PDF")'
             )
-            for button in download_async_buttons:
+            for button in download_buttons:
                 href = await button.get_attribute('href')
                 if href and href not in pdf_urls:
                     if href.startswith('http'):
@@ -1814,15 +1814,15 @@ class PDFDownloader:
                         
                         // Enhanced selectors for authenticate_async pages
                         const authSelectors = [
-                            'a[data-track-action="download_async pdf"]',
-                            '.pdf-download_async-btn',
-                            'a.pdf-download_async',
-                            '.c-pdf-download_async__link',
+                            'a[data-track-action="download pdf"]',
+                            '.pdf-download-btn',
+                            'a.pdf-download',
+                            '.c-pdf-download__link',
                             'a[data-article-pdf]',
                             'a:has-text("Download PDF")',
                             'a:has-text("Access PDF")',
                             'button:has-text("Download PDF")',
-                            'a[href*=".pdf"][class*="download_async"]'
+                            'a[href*=".pdf"][class*="download"]'
                         ];
                         
                         authSelectors.forEach(selector => {
@@ -1852,10 +1852,10 @@ class PDFDownloader:
                 
                 logger.info(f"Zotero translator found {len(unique_urls)} PDF URLs on authenticate_async page")
                 
-                # Try download_asyncing PDFs with auth
+                # Try downloading PDFs with auth
                 for pdf_url in unique_urls:
                     logger.info(f"Trying Zotero-discovered PDF: {pdf_url}")
-                    if await self._download_async_file_with_auth_async(
+                    if await self._download_file_with_auth_async(
                         pdf_url, output_path, auth_session, referer=url
                     ):
                         return output_path
@@ -1892,14 +1892,14 @@ class PDFDownloader:
 # Convenience functions
 
 
-async def download_async_pdf_async(
+async def download_pdf_async(
     identifier: str,
     output_dir: Optional[Path] = None,
     use_scihub: bool = True,
     acknowledge_ethical_usage: Optional[bool] = None,
 ) -> Optional[Path]:
     """
-    Simple function to download_async a single PDF.
+    Simple function to download a single PDF.
 
     Args:
         identifier: DOI or URL
@@ -1908,16 +1908,16 @@ async def download_async_pdf_async(
         acknowledge_ethical_usage: Acknowledge ethical usage
 
     Returns:
-        Path to download_asynced PDF or None
+        Path to download PDF or None
     """
-    download_asyncer = PDFDownloader(
+    downloader = PDFDownloader(
         use_scihub=use_scihub,
         acknowledge_ethical_usage=acknowledge_ethical_usage,
     )
-    return await download_asyncer.download_async_pdf_async(identifier, output_dir)
+    return await downloader.download_pdf_async(identifier, output_dir)
 
 
-async def download_async_pdf_asyncs_async(
+async def download_pdf_asyncs_async(
     identifiers: List[str],
     output_dir: Optional[Path] = None,
     max_concurrent: int = 3,
@@ -1931,7 +1931,7 @@ async def download_async_pdf_asyncs_async(
     Args:
         identifiers: List of DOIs/URLs
         output_dir: Output directory
-        max_concurrent: Maximum concurrent download_asyncs
+        max_concurrent: Maximum concurrent downloads
         use_scihub: Enable Sci-Hub fallback
         acknowledge_ethical_usage: Acknowledge ethical usage
         progress_callback: Optional progress callback
@@ -1939,12 +1939,12 @@ async def download_async_pdf_asyncs_async(
     Returns:
         Dictionary mapping identifier to path
     """
-    download_asyncer = PDFDownloader(
+    downloader = PDFDownloader(
         max_concurrent=max_concurrent,
         use_scihub=use_scihub,
         acknowledge_ethical_usage=acknowledge_ethical_usage,
     )
-    return await download_asyncer.batch_download_async(
+    return await downloader.batch_download(
         identifiers, output_dir, progress_callback=progress_callback
     )
 
@@ -1953,7 +1953,7 @@ if __name__ == "__main__":
     # Example usage
     import sys
 
-    async def test_unified_download_asyncer_async():
+    async def test_unified_downloader_async():
         # Test identifiers
         test_cases = [
             # DOIs
@@ -1978,12 +1978,12 @@ if __name__ == "__main__":
         print("Testing PDF Downloader")
         print("=" * 50)
 
-        # Test single download_async
+        # Test single download
         if len(test_cases) == 1:
             identifier = test_cases[0]
             print(f"\nDownloading: {identifier}")
 
-            path = await download_async_pdf_async(
+            path = await download_pdf_async(
                 identifier,
                 output_dir,
                 use_scihub=True,
@@ -1994,16 +1994,16 @@ if __name__ == "__main__":
                 print(f"✓ Success: {path}")
                 print(f"  Size: {path.stat().st_size / 1024:.1f} KB")
             else:
-                print(f"✗ Failed to download_async {identifier}")
+                print(f"✗ Failed to download {identifier}")
 
         else:
-            # Test batch download_async
-            print(f"\nBatch download_asyncing {len(test_cases)} PDFs...")
+            # Test batch download
+            print(f"\nBatch downloading {len(test_cases)} PDFs...")
 
             def progress(completed, total, identifier):
                 print(f"Progress: {completed}/{total} - {identifier}")
 
-            results = await download_async_pdf_asyncs(
+            results = await download_pdf_asyncs(
                 test_cases,
                 output_dir,
                 max_concurrent=2,
@@ -2029,6 +2029,6 @@ if __name__ == "__main__":
                 f"\nSuccess rate: {success}/{len(test_cases)} ({success/len(test_cases)*100:.0f}%)"
             )
 
-    asyncio.run(test_unified_download_asyncer())
+    asyncio.run(test_unified_downloader())
 
 # EOF

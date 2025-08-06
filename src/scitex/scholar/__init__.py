@@ -4,7 +4,7 @@ SciTeX Scholar - Scientific Literature Management Made Simple
 This module provides a unified interface for:
 - Searching scientific literature across multiple sources
 - Automatic paper enrichment with journal metrics
-- PDF download_asyncs and local library management
+- PDF downloads and local library management
 - Bibliography generation in multiple formats
 
 Quick Start:
@@ -55,20 +55,20 @@ __all__ = [
 #     _enrich_papers_with_citations,
 # )
 
-# # PDF download_async functionality
-# from .download_async._PDFDownloader import (
+# # PDF download functionality
+# from .download._PDFDownloader import (
 #     PDFDownloader,
-#     download_async_pdf_async,
-#     download_async_pdf_asyncs_async,
+#     download_pdf_async,
+#     download_pdf_asyncs_async,
 # )
-# from .download_async._SmartPDFDownloader import SmartPDFDownloader
+# from .download._SmartPDFDownloader import SmartPDFDownloader
 
-# # Browser-based download_async functionality removed - simplified structure
+# # Browser-based download functionality removed - simplified structure
 
 # # Create module-level convenience function
-# def download_async_pdf_asyncs(
+# def download_pdf_asyncs(
 #     dois,
-#     download_async_dir=None,
+#     download_dir=None,
 #     force=False,
 #     max_worker_asyncs=4,
 #     show_async_progress=True,
@@ -79,29 +79,29 @@ __all__ = [
 #     Download PDFs for DOIs using default Scholar instance.
 
 #     This is a convenience function that creates a Scholar instance if needed.
-#     For more control, use Scholar().download_async_pdf_asyncs() directly.
+#     For more control, use Scholar().download_pdf_asyncs() directly.
 
 #     Args:
 #         dois: DOI strings (list or single string) or Papers/Paper objects
-#         download_async_dir: Directory to save PDFs
-#         force: Force re-download_async
-#         max_worker_asyncs: Maximum concurrent download_asyncs
-#         show_async_progress: Show download_async progress
+#         download_dir: Directory to save PDFs
+#         force: Force re-download
+#         max_worker_asyncs: Maximum concurrent downloads
+#         show_async_progress: Show download progress
 #         acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
 #         **kwargs: Additional arguments
 
 #     Returns:
-#         Dictionary with download_async results
+#         Dictionary with download results
 
 #     Examples:
 #         >>> import scitex as stx
-#         >>> stx.scholar.download_async_pdf_asyncs(["10.1234/doi1", "10.5678/doi2"])
-#         >>> stx.scholar.download_async_pdf_asyncs("10.1234/single-doi")
+#         >>> stx.scholar.download_pdf_asyncs(["10.1234/doi1", "10.5678/doi2"])
+#         >>> stx.scholar.download_pdf_asyncs("10.1234/single-doi")
 #     """
 #     scholar = Scholar()
-#     return scholar.download_async_pdf_asyncs(
+#     return scholar.download_pdf_asyncs(
 #         dois,
-#         download_async_dir=download_async_dir,
+#         download_dir=download_dir,
 #         force=force,
 #         max_worker_asyncs=max_worker_asyncs,
 #         show_async_progress=show_async_progress,
@@ -123,7 +123,7 @@ __all__ = [
 #     'search',
 #     'search_quick',
 #     'enrich_bibtex',
-#     'download_async_pdf_asyncs',  # NEW: Module-level convenience function
+#     'download_pdf_asyncs',  # NEW: Module-level convenience function
 
 #     "doi",
 #     "resolve_doi_asyncs",
@@ -142,10 +142,10 @@ __all__ = [
 #     # Enrichment
 #     'MetadataEnricher',
 
-#     # PDF download_async functionality
+#     # PDF download functionality
 #     'PDFDownloader',
-#     'download_async_pdf_async',
-#     'download_async_pdf_asyncs_async',
+#     'download_pdf_async',
+#     'download_pdf_asyncs_async',
 
 #     # Browser-based functionality
 
@@ -249,7 +249,7 @@ __all__ = [
 #     MetadataEnricher,
 #     JCR_YEAR,
 # )
-# # from .command_line import resolve_doi_asyncs
+# # from .cli import resolve_doi_asyncs
 # from .validation import PDFValidator, ValidationResult
 # # from .database import PaperDatabase, DatabaseEntry, DatabaseIndex
 # # from .search import SemanticSearchEngine, VectorDatabase, Embedder
@@ -275,7 +275,7 @@ __all__ = [
 #         papers = scholar.search("deep learning", year_min=2022)
 
 #         # Download PDFs
-#         scholar.download_async_pdf_asyncs(papers)
+#         scholar.download_pdf_asyncs(papers)
 
 #         # Filter results
 #         high_impact = papers.filter(impact_factor_min=5.0)

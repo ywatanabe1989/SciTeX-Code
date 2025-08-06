@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 16:41:22 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/command_line/resolve_and_enrich.py
+# Timestamp: "2025-08-06 15:11:37 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/resolve_and_enrich.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/command_line/resolve_and_enrich.py"
+    "./src/scitex/scholar/cli/resolve_and_enrich.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -17,18 +17,15 @@ import sys
 from pathlib import Path
 
 from scitex import logging
-
-# from scitex.scholar.doi import ProjectAwareSingleDOIResolver
-# from scitex.scholar.enrichment import ProjectAwareEnricher
-from scitex.scholar.doi import SingleDOIResolver
+from scitex.scholar.doi._SingleDOIResolver import SingleDOIResolver
 from scitex.scholar.enrichment import MetadataEnricher
 
 logger = logging.getLogger(__name__)
 
 
-def main():
+def create_parser():
     parser = argparse.ArgumentParser(
-        description="Resolve DOIs and enrich metadata with project support",
+        description="Resolve DOIs, abstracts, citation counts, journal IFs and assign project in SciTeX Scholar Library",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
 # Resolve and enrich with project organization
@@ -84,7 +81,11 @@ python -m scitex.scholar resolve-and-enrich --project myproject --summary""",
         default=4,
         help="Number of concurrent worker_asyncs (default: 4)",
     )
+    return parser
 
+
+def main():
+    parser = create_parser()
     args = parser.parse_args()
 
     # Validate arguments
@@ -92,7 +93,9 @@ python -m scitex.scholar resolve-and-enrich --project myproject --summary""",
         parser.error("Must specify --bibtex, --title, or --summary")
 
     try:
-        resolver = SingleDOIResolver(project=args.project, max_worker_asyncs=args.worker_asyncs)
+        resolver = SingleDOIResolver(
+            project=args.project, max_worker_asyncs=args.worker_asyncs
+        )
 
         if args.summary:
             display_project_summary(resolver)

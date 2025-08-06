@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 14:54:55 (ywatanabe)"
+# Timestamp: "2025-08-06 01:55:27 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -43,13 +43,13 @@ class TidinessConstraints:
     max_cache_size_mb: int = 1000  # 1GB cache
     max_workspace_size_mb: int = 2000  # 2GB workspace
     max_screenshots_size_mb: int = 500  # 500MB screenshots
-    max_download_asyncs_size_mb: int = 1000  # 1GB download_asyncs
+    max_downloads_size_mb: int = 1000  # 1GB downloads
 
     # File age constraints (in days)
     cache_retention_days: int = 30
     workspace_retention_days: int = 7
     screenshots_retention_days: int = 14
-    download_asyncs_retention_days: int = 3
+    downloads_retention_days: int = 3
 
     # Directory depth constraints
     max_directory_depth: int = 8
@@ -100,8 +100,7 @@ class PathManager:
         subdirs = [
             self.cache_dir / "chrome",
             self.cache_dir / "auth",
-            # Removed unused indexes directory
-            self.workspace_dir / "download_asyncs",
+            self.workspace_dir / "downloads",
             self.workspace_dir / "logs",
             self.workspace_dir / "screenshots",
         ]
@@ -167,119 +166,115 @@ class PathManager:
 
     def _hyphenate_for_symlinks(self, text: str) -> str:
         """Convert text to hyphenated format suitable for symlinks.
-        
+
         This method aggressively converts spaces, punctuation, and special
         characters to hyphens for better readability in symlink names.
-        
+
         Args:
             text: Input text to hyphenate
-            
+
         Returns:
             Hyphenated text suitable for symlinks
         """
         if not text:
             return ""
-        
+
         # Convert to string if not already
         text = str(text)
-        
+
         # Remove common punctuation that should be eliminated entirely
         # (parentheses, quotes, etc.)
-        text = re.sub(r'[()"\'\[\]{}]', '', text)
-        
+        text = re.sub(r'[()"\'\[\]{}]', "", text)
+
         # Convert spaces, commas, periods, and other separators to hyphens
-        text = re.sub(r'[\s,\.;:&/\\]+', '-', text)
-        
+        text = re.sub(r"[\s,\.;:&/\\]+", "-", text)
+
         # Remove any remaining non-alphanumeric characters except hyphens
-        text = re.sub(r'[^a-zA-Z0-9\-]', '', text)
-        
+        text = re.sub(r"[^a-zA-Z0-9\-]", "", text)
+
         # Remove multiple consecutive hyphens
-        text = re.sub(r'-{2,}', '-', text)
-        
+        text = re.sub(r"-{2,}", "-", text)
+
         # Remove leading/trailing hyphens
-        text = text.strip('-')
-        
+        text = text.strip("-")
+
         # Ensure it's not empty
         if not text:
             text = "Unknown"
-        
+
         return text
 
     def _expand_journal_name(self, journal: str) -> str:
         """Expand common journal abbreviations to more readable names."""
         if not journal or journal == "Unknown":
             return journal
-        
+
         # Dictionary of common journal abbreviations and their expansions
         # Based on your PAC research collection abbreviations
         journal_expansions = {
             # Nature family
-            'N': 'Nature',
-            'NC': 'Nature Communications', 
-            'NBR': 'Nature Biomedical Research',
-            'Nature': 'Nature',
-            
+            "N": "Nature",
+            "NC": "Nature Communications",
+            "NBR": "Nature Biomedical Research",
+            "Nature": "Nature",
             # Neuroscience journals
-            'FN': 'Frontiers in Neuroscience',
-            'FHN': 'Frontiers in Human Neuroscience',
-            'FIN': 'Frontiers in Neuroscience',
-            'FBN': 'Frontiers in Behavioral Neuroscience',
-            'eNeuro': 'eNeuro',
-            'JNE': 'Journal of Neural Engineering',
-            'JNM': 'Journal of Neuroscience Methods',
-            'JCN': 'Journal of Cognitive Neuroscience',
-            'CN': 'Computational Neuroscience',
-            'CON': 'Consciousness and Cognition',
-            'TJN': 'The Journal of Neuroscience',
-            'BB': 'Biological and Biomedical',
-            'BT': 'Brain Topography',
-            'BRI': 'Brain Research International',
-            
+            "FN": "Frontiers in Neuroscience",
+            "FHN": "Frontiers in Human Neuroscience",
+            "FIN": "Frontiers in Neuroscience",
+            "FBN": "Frontiers in Behavioral Neuroscience",
+            "eNeuro": "eNeuro",
+            "JNE": "Journal of Neural Engineering",
+            "JNM": "Journal of Neuroscience Methods",
+            "JCN": "Journal of Cognitive Neuroscience",
+            "CN": "Computational Neuroscience",
+            "CON": "Consciousness and Cognition",
+            "TJN": "The Journal of Neuroscience",
+            "BB": "Biological and Biomedical",
+            "BT": "Brain Topography",
+            "BRI": "Brain Research International",
             # Computing and Signal Processing
-            'PCB': 'PLOS Computational Biology',
-            'TCS': 'Theoretical Computer Science',
-            'IICASSP': 'IEEE International Conference on Acoustics Speech and Signal Processing',
-            'IIEMBS': 'IEEE Engineering in Medicine and Biology Society',
-            'AICIEMBS': 'AI Conference IEEE Engineering in Medicine and Biology Society',
-            'ITNSRE': 'IEEE Transactions on Neural Systems and Rehabilitation Engineering',
-            'ITM': 'IEEE Transactions on Medicine',
-            'IJBHI': 'International Journal of Biomedical and Health Informatics',
-            'IICBB': 'IEEE International Conference on Bioinformatics and Biomedicine',
-            'CEN': 'Computational and Engineering Networks',
-            
+            "PCB": "PLOS Computational Biology",
+            "TCS": "Theoretical Computer Science",
+            "IICASSP": "IEEE International Conference on Acoustics Speech and Signal Processing",
+            "IIEMBS": "IEEE Engineering in Medicine and Biology Society",
+            "AICIEMBS": "AI Conference IEEE Engineering in Medicine and Biology Society",
+            "ITNSRE": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+            "ITM": "IEEE Transactions on Medicine",
+            "IJBHI": "International Journal of Biomedical and Health Informatics",
+            "IICBB": "IEEE International Conference on Bioinformatics and Biomedicine",
+            "CEN": "Computational and Engineering Networks",
             # Medical and Life Sciences
-            'PR': 'Pattern Recognition',
-            'H': 'Hippocampus',
-            'HBM': 'Human Brain Mapping',
-            'PO': 'PLOS ONE',
-            'S': 'Science',
-            'SR': 'Scientific Reports',
-            'BS': 'Brain Sciences',
-            'E': 'Entropy',
-            'IA': 'Intelligence and Applications',
-            'A': 'Applications',
-            'C': 'Communications',
-            'KS': 'Knowledge Systems',
-            'J': 'Journal',
-            'JSR': 'Journal of Sleep Research',
-            
+            "PR": "Pattern Recognition",
+            "H": "Hippocampus",
+            "HBM": "Human Brain Mapping",
+            "PO": "PLOS ONE",
+            "S": "Science",
+            "SR": "Scientific Reports",
+            "BS": "Brain Sciences",
+            "E": "Entropy",
+            "IA": "Intelligence and Applications",
+            "A": "Applications",
+            "C": "Communications",
+            "KS": "Knowledge Systems",
+            "J": "Journal",
+            "JSR": "Journal of Sleep Research",
             # Preprint servers
-            'bioRxiv': 'bioRxiv Preprint',
-            'arXiv': 'arXiv Preprint',
+            "bioRxiv": "bioRxiv Preprint",
+            "arXiv": "arXiv Preprint",
         }
-        
+
         # Try exact match first
         if journal in journal_expansions:
             expanded = journal_expansions[journal]
             logger.debug(f"Expanded journal: {journal} -> {expanded}")
             return expanded
-        
+
         # Try case-insensitive match
         for abbrev, full_name in journal_expansions.items():
             if journal.lower() == abbrev.lower():
                 logger.debug(f"Expanded journal: {journal} -> {full_name}")
                 return full_name
-        
+
         # If no expansion found, return original (might already be expanded)
         logger.debug(f"Journal not expanded: {journal}")
         return journal
@@ -405,7 +400,7 @@ class PathManager:
             "cache_cleaned": 0,
             "workspace_cleaned": 0,
             "screenshots_cleaned": 0,
-            "download_asyncs_cleaned": 0,
+            "downloads_cleaned": 0,
             "size_violations_fixed": 0,
         }
 
@@ -421,9 +416,9 @@ class PathManager:
             self.workspace_dir / "screenshots",
             self.constraints.screenshots_retention_days,
         )
-        results["download_asyncs_cleaned"] = self._cleanup_old_files(
-            self.workspace_dir / "download_asyncs",
-            self.constraints.download_asyncs_retention_days,
+        results["downloads_cleaned"] = self._cleanup_old_files(
+            self.workspace_dir / "downloads",
+            self.constraints.downloads_retention_days,
         )
 
         # Enforce size limits
@@ -435,8 +430,8 @@ class PathManager:
                 self.constraints.max_screenshots_size_mb,
             ),
             (
-                self.workspace_dir / "download_asyncs",
-                self.constraints.max_download_asyncs_size_mb,
+                self.workspace_dir / "downloads",
+                self.constraints.max_downloads_size_mb,
             ),
         ]
 
@@ -504,10 +499,10 @@ class PathManager:
     def get_scholar_library_path(self) -> Path:
         """Get the base Scholar library path (backward compatibility method)."""
         return self.library_dir
-    
+
     def get_library_master_dir(self) -> Path:
         """Get the MASTER directory for internal storage.
-        
+
         Returns:
             Path to the MASTER storage directory where actual papers are stored
         """
@@ -515,28 +510,29 @@ class PathManager:
 
     def get_library_dir(self, project: str = "default") -> Path:
         """Get library directory for a specific project.
-        
+
         Args:
             project: Project name (default: "default")
-            
+
         Returns:
             Path to the project's library directory
         """
         assert project, "Project name cannot be empty"
-        
+
         # Prevent using any variant of "master"/"MASTER" as user project names
-        assert project.upper() != "MASTER", \
-            f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
-        
+        assert (
+            project.upper() != "MASTER"
+        ), f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
+
         # Internal code should use get_collection_dir("MASTER") for master storage
         # This method is for user projects only
-        
+
         project = self._sanitize_collection_name(project)
         return self._ensure_directory(self.library_dir / project)
 
     # Enhanced methods with tidiness constraints (automatically ensure directories exist)
-    def get_chrome_cache_dir(self) -> Path:
-        return self._ensure_directory(self.cache_dir / "chrome")
+    def get_chrome_cache_dir(self, profile_name: str) -> Path:
+        return self._ensure_directory(self.cache_dir / "chrome" / profile_name)
 
     def get_auth_cache_dir(self, auth_type: str) -> Path:
         auth_type = self._sanitize_filename(auth_type)
@@ -545,9 +541,6 @@ class PathManager:
     def get_collection_dir(self, collection_name: str) -> Path:
         collection_name = self._sanitize_collection_name(collection_name)
         return self._ensure_directory(self.library_dir / collection_name)
-
-
-    # Removed unused get_indexes_dir method
 
     def get_paper_storage_paths(
         self, paper_info: Dict, collection_name: str = "default"
@@ -588,7 +581,7 @@ class PathManager:
 
         year = paper_info.get("year", "Unknown")
         journal = paper_info.get("journal", "Unknown")
-        
+
         # Expand common journal abbreviations and use hyphens for readability
         journal_expanded = self._expand_journal_name(journal)
         journal_clean = self._hyphenate_for_symlinks(journal_expanded)
@@ -608,8 +601,8 @@ class PathManager:
             self.workspace_dir / "screenshots" / screenshot_type
         )
 
-    def get_download_asyncs_dir(self) -> Path:
-        return self._ensure_directory(self.workspace_dir / "download_asyncs")
+    def get_downloads_dir(self) -> Path:
+        return self._ensure_directory(self.workspace_dir / "downloads")
 
     def get_workspace_logs_dir(self) -> Path:
         return self._ensure_directory(self.workspace_dir / "logs")
@@ -630,21 +623,29 @@ class PathManager:
     def get_config_file(self, config_name: str) -> Path:
         config_name = self._sanitize_filename(config_name)
         return self.config_dir / f"{config_name}.yaml"
-    
+
     def get_project_bibtex_dir(self, collection_name: str = "default") -> Path:
         """Get directory for storing project bibtex files."""
         collection_name = self._sanitize_collection_name(collection_name)
-        return self._ensure_directory(self.library_dir / collection_name / "bibtex")
-    
-    def get_unresolved_entries_dir(self, collection_name: str = "default") -> Path:
+        return self._ensure_directory(
+            self.library_dir / collection_name / "bibtex"
+        )
+
+    def get_unresolved_entries_dir(
+        self, collection_name: str = "default"
+    ) -> Path:
         """Get directory for tracking unresolved DOI entries."""
         collection_name = self._sanitize_collection_name(collection_name)
-        return self._ensure_directory(self.library_dir / collection_name / "unresolved")
-    
+        return self._ensure_directory(
+            self.library_dir / collection_name / "unresolved"
+        )
+
     def get_project_logs_dir(self, collection_name: str = "default") -> Path:
         """Get directory for project-specific logs."""
         collection_name = self._sanitize_collection_name(collection_name)
-        return self._ensure_directory(self.library_dir / collection_name / "logs")
+        return self._ensure_directory(
+            self.library_dir / collection_name / "logs"
+        )
 
     def _generate_paper_id(self, paper_info: Dict) -> str:
         """
@@ -722,7 +723,7 @@ class PathManager:
             "library": self.library_dir,
             "workspace": self.workspace_dir,
             "screenshots": self.workspace_dir / "screenshots",
-            "download_asyncs": self.workspace_dir / "download_asyncs",
+            "downloads": self.workspace_dir / "downloads",
         }
 
         for name, directory in directories.items():
@@ -762,7 +763,8 @@ Tidiness Constraints:
 
         structure = f"""{base}/
 ├── cache/ (.cache_dir) [Max: {self.constraints.max_cache_size_mb}MB, {self.constraints.cache_retention_days}d retention]
-│   ├── chrome/ (get_chrome_cache_dir())
+│   ├── chrome/
+│   │   └── <profile_name>/ (get_auth_cache_dir(auth_type))
 │   ├── auth/
 │   │   └── <auth_type>/ (get_auth_cache_dir(auth_type))
 │   └── <cache_type>/
@@ -770,7 +772,6 @@ Tidiness Constraints:
 ├── config/ (.config_dir)
 │   └── <config_name>.yaml (get_config_file(config_name))
 ├── library/ (.library_dir)
-│   ├── indexes/ (get_indexes_dir())
 │   ├── MASTER/ (master storage - real 8-digit directories)
 │   │   └── <8-digit-id>/ (paper storage with metadata.json)
 │   └── <project_name>/ (project directories with human-readable symlinks)
@@ -780,7 +781,7 @@ Tidiness Constraints:
 │               └── <filename>.bib
 ├── log/ (.log_dir)
 ├── workspace/ (.workspace_dir) [Max: {self.constraints.max_workspace_size_mb}MB, {self.constraints.workspace_retention_days}d retention]
-│   ├── download_asyncs/ (get_download_asyncs_dir()) [Max: {self.constraints.max_download_asyncs_size_mb}MB, {self.constraints.download_asyncs_retention_days}d retention]
+│   ├── downloads/ (get_downloads_dir()) [Max: {self.constraints.max_downloads_size_mb}MB, {self.constraints.downloads_retention_days}d retention]
 │   ├── logs/ (get_workspace_logs_dir())
 │   └── screenshots/ [Max: {self.constraints.max_screenshots_size_mb}MB, {self.constraints.screenshots_retention_days}d retention]
 │       └── <screenshot_type>/ (get_screenshots_dir(screenshot_type))

@@ -91,7 +91,7 @@ class StorageIntegratedDB:
                     pdf_url TEXT,
                     size_bytes INTEGER,
                     hash TEXT,
-                    download_asynced_at TEXT,
+                    download_at TEXT,
                     FOREIGN KEY (paper_id) REFERENCES papers(id)
                 )
             """)
@@ -114,7 +114,7 @@ class StorageIntegratedDB:
                     paper_id INTEGER PRIMARY KEY,
                     doi_resolved BOOLEAN DEFAULT 0,
                     metadata_enriched BOOLEAN DEFAULT 0,
-                    pdf_download_asynced BOOLEAN DEFAULT 0,
+                    pdf_download BOOLEAN DEFAULT 0,
                     last_attempt TEXT,
                     FOREIGN KEY (paper_id) REFERENCES papers(id)
                 )
@@ -211,7 +211,7 @@ class StorageIntegratedDB:
             paper_id: Paper ID
             pdf_path: Path to PDF file
             original_filename: Original filename from journal
-            pdf_url: URL where PDF was download_asynced
+            pdf_url: URL where PDF was download
             
         Returns:
             Success status
@@ -254,7 +254,7 @@ class StorageIntegratedDB:
         with self._get_connection() as conn:
             conn.execute("""
                 INSERT INTO pdf_attachments 
-                (paper_id, filename, original_filename, pdf_url, size_bytes, hash, download_asynced_at)
+                (paper_id, filename, original_filename, pdf_url, size_bytes, hash, download_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 paper_id,
@@ -269,14 +269,14 @@ class StorageIntegratedDB:
             # Update enrichment status
             conn.execute("""
                 UPDATE enrichment_status
-                SET pdf_download_asynced = 1
+                SET pdf_download = 1
                 WHERE paper_id = ?
             """, (paper_id,))
             
             conn.commit()
             
         # Update lookup index
-        self.lookup.mark_pdf_download_asynced(
+        self.lookup.mark_pdf_download(
             storage_key=paper["storage_key"],
             pdf_size=pdf_info["size_bytes"],
             pdf_filename=pdf_info["filename"],
@@ -287,7 +287,7 @@ class StorageIntegratedDB:
         return True
         
     def capture_screenshot(self, paper_id: int, screenshot_path: Path,
-                          description: str = "download_async-attempt") -> bool:
+                          description: str = "download-attempt") -> bool:
         """Capture screenshot for paper.
         
         Args:
@@ -347,7 +347,7 @@ class StorageIntegratedDB:
         with self._get_connection() as conn:
             cursor = conn.execute("""
                 SELECT p.*, 
-                       es.doi_resolved, es.metadata_enriched, es.pdf_download_asynced,
+                       es.doi_resolved, es.metadata_enriched, es.pdf_download,
                        COUNT(DISTINCT pa.id) as pdf_count,
                        COUNT(DISTINCT s.id) as screenshot_count
                 FROM papers p
@@ -369,7 +369,7 @@ class StorageIntegratedDB:
             cursor = conn.execute("""
                 SELECT * FROM pdf_attachments
                 WHERE paper_id = ?
-                ORDER BY download_asynced_at DESC
+                ORDER BY download_at DESC
             """, (paper["id"],))
             paper["pdfs"] = [dict(pdf) for pdf in cursor]
             
@@ -400,7 +400,7 @@ class StorageIntegratedDB:
                 SELECT p.*
                 FROM papers p
                 LEFT JOIN enrichment_status es ON p.id = es.paper_id
-                WHERE es.pdf_download_asynced = 0 OR es.pdf_download_asynced IS NULL
+                WHERE es.pdf_download = 0 OR es.pdf_download IS NULL
                 ORDER BY p.created_at
             """)
             
@@ -545,7 +545,7 @@ if __name__ == "__main__":
     print("\nKey features:")
     print("- Uses enhanced storage for all PDFs")
     print("- Preserves original filenames")
-    print("- Captures screenshots during download_asyncs")
+    print("- Captures screenshots during downloads")
     print("- Creates human-readable links")
     print("- Direct Zotero migration support")
     
@@ -563,7 +563,7 @@ if __name__ == "__main__":
     # Attach PDF with original filename
     db.attach_pdf(
         paper_id=paper_id,
-        pdf_path=Path("download_asynced.pdf"),
+        pdf_path=Path("download.pdf"),
         original_filename="nature12373.pdf",
         pdf_url="https://nature.com/..."
     )
@@ -572,7 +572,7 @@ if __name__ == "__main__":
     db.capture_screenshot(
         paper_id=paper_id,
         screenshot_path=Path("screenshot.png"),
-        description="download_async-success"
+        description="download-success"
     )
     
     # Migrate from Zotero

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-30 22:40:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download_async/_ZenRowsDownloadStrategy.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/_ZenRowsDownloadStrategy.py
 # ----------------------------------------
-"""ZenRows-based download_async strategy for bypassing bot detection and CAPTCHAs.
+"""ZenRows-based download strategy for bypassing bot detection and CAPTCHAs.
 
-This strategy uses the ZenRows API to download_async PDFs that are protected by:
+This strategy uses the ZenRows API to download PDFs that are protected by:
 - Bot detection systems (Cloudflare, PerimeterX, etc.)
 - CAPTCHA challenges
 - JavaScript-heavy sites
@@ -56,8 +56,8 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
         # ZenRows expects smaller session IDs (1-9999 based on error)
         return str(random.randint(1, 9999))
         
-    async def can_download_async(self, url: str, metadata: Dict[str, Any]) -> bool:
-        """Check if this strategy can download_async from the URL.
+    async def can_download(self, url: str, metadata: Dict[str, Any]) -> bool:
+        """Check if this strategy can download from the URL.
         
         ZenRows can handle any URL, but we prioritize it for:
         - Known problematic publishers (Elsevier, Springer, Wiley, etc.)
@@ -70,7 +70,7 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
         # Always available as a fallback
         return True
         
-    async def download_async(
+    async def download(
         self,
         url: str,
         output_path: Path,
@@ -80,13 +80,13 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
         """Download PDF using ZenRows API.
         
         Args:
-            url: URL to download_async
+            url: URL to download
             output_path: Where to save the PDF
             metadata: Paper metadata (title, authors, etc.)
             session_data: Authentication session data (cookies)
             
         Returns:
-            Path to download_asynced PDF or None if failed
+            Path to download PDF or None if failed
         """
         if not self.api_key:
             logger.error("ZenRows API key not configured")
@@ -154,7 +154,7 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
                     
                     # Check if it's a PDF
                     if 'application/pdf' in content_type:
-                        # Direct PDF download_async
+                        # Direct PDF download
                         content = await response.read()
                         output_path.parent.mkdir(parents=True, exist_ok=True)
                         output_path.write_bytes(content)
@@ -171,7 +171,7 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
                         if pdf_url:
                             logger.info(f"Found PDF URL: {pdf_url}")
                             # Download the PDF
-                            return await self._download_async_pdf_async_url(pdf_url, output_path)
+                            return await self._download_pdf_async_url(pdf_url, output_path)
                         else:
                             logger.warning("No PDF link found in page")
                             # Save HTML for debugging
@@ -181,7 +181,7 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
                             return None
                             
         except Exception as e:
-            logger.error(f"ZenRows download_async error: {e}")
+            logger.error(f"ZenRows download error: {e}")
             return None
             
     def _parse_cookie_header(self, cookie_header: str) -> Dict[str, str]:
@@ -195,7 +195,7 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
         return cookies
         
     async def _find_pdf_url_async(self, html_content: str, base_url: str) -> Optional[str]:
-        """Find PDF download_async URL in HTML content."""
+        """Find PDF download URL in HTML content."""
         import re
         
         # First check meta tags (most reliable for academic publishers)
@@ -218,11 +218,11 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
         pdf_patterns = [
             r'href="([^"]+\.pdf[^"]*)"',  # Direct .pdf links
             r'href="([^"]+/pdf/[^"]+)"',  # /pdf/ path
-            r'href="([^"]+[?&]download_async=true[^"]*)"',  # Download parameter
+            r'href="([^"]+[?&]download=true[^"]*)"',  # Download parameter
             r'data-pdf-url="([^"]+)"',  # Data attribute
             r'window\.location\.href\s*=\s*["\']([^"\']+\.pdf[^"\']*)["\']',  # JavaScript redirect
             r'"pdfUrl"\s*:\s*"([^"]+)"',  # JSON data
-            r'<a[^>]+class="[^"]*download_async[^"]*"[^>]+href="([^"]+)"',  # Download button
+            r'<a[^>]+class="[^"]*download[^"]*"[^>]+href="([^"]+)"',  # Download button
         ]
         
         for pattern in pdf_patterns:
@@ -230,13 +230,13 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
             for match in matches:
                 # Convert relative URLs to absolute
                 pdf_url = urljoin(base_url, match)
-                if 'pdf' in pdf_url.lower() or 'download_async' in pdf_url.lower():
+                if 'pdf' in pdf_url.lower() or 'download' in pdf_url.lower():
                     logger.info(f"Found PDF URL in content: {pdf_url}")
                     return pdf_url
                     
         return None
         
-    async def _download_async_pdf_async_url(self, pdf_url: str, output_path: Path) -> Optional[Path]:
+    async def _download_pdf_async_url(self, pdf_url: str, output_path: Path) -> Optional[Path]:
         """Download PDF from a specific URL using ZenRows."""
         # Use ZenRows again for the PDF URL
         params = {
@@ -274,11 +274,11 @@ class ZenRowsDownloadStrategy(BaseDownloadStrategy):
                             logger.warning("Downloaded content is not a PDF")
                             return None
                     else:
-                        logger.error(f"Failed to download_async PDF: {response.status}")
+                        logger.error(f"Failed to download PDF: {response.status}")
                         return None
                         
         except Exception as e:
-            logger.error(f"PDF download_async error: {e}")
+            logger.error(f"PDF download error: {e}")
             return None
             
     def reset_session(self):

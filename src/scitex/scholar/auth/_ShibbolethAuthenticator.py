@@ -8,7 +8,7 @@
 Shibboleth authentication for institutional access to academic papers.
 
 This module provides authentication through Shibboleth single sign-on
-to enable legal PDF download_asyncs via institutional subscriptions.
+to enable legal PDF downloads via institutional subscriptions.
 """
 
 import asyncio
@@ -50,7 +50,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
     1. Authenticates via institutional Identity Provider (IdP)
     2. Handles SAML assertions and attribute exchange
     3. Maintains authenticate_async sessions
-    4. Returns session cookies for use by download_async strategies
+    4. Returns session cookies for use by download strategies
     """
 
     def __init__(

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 18:28:12 (ywatanabe)"
+# Timestamp: "2025-08-06 01:16:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -234,9 +234,7 @@ if __name__ == "__main__":
         auth_manager = AuthenticationManager(
             email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"),
         )
-
         providers = auth_manager.list_providers()
-        print(f"Available providers: {providers}")
 
         try:
             is_authenticate_async = (

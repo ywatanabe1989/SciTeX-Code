@@ -5,7 +5,7 @@
 # File: _SmartPDFDownloader.py
 
 """
-Smart PDF download_asyncer using AI agents and multiple strategies.
+Smart PDF downloader using AI agents and multiple strategies.
 
 This module implements Critical Task #7: Download PDFs using AI agents
 with intelligent retry, authentication handling, and quality verification.
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 class DownloadAgent:
-    """Base class for download_async agents with different strategies."""
+    """Base class for download agents with different strategies."""
     
     def __init__(self, name: str, priority: int = 0):
         self.name = name
@@ -44,11 +44,11 @@ class DownloadAgent:
         self.failure_count = 0
         
     async def can_handle_async(self, paper: Paper, url: str) -> bool:
-        """Check if this agent can handle the download_async."""
+        """Check if this agent can handle the download."""
         return True
         
-    async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
-        """Attempt to download_async the PDF."""
+    async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
+        """Attempt to download the PDF."""
         raise NotImplementedError
         
     def adjust_priority(self, success: bool):
@@ -62,20 +62,20 @@ class DownloadAgent:
 
 
 class DirectDownloadAgent(DownloadAgent):
-    """Direct HTTP download_async without browser."""
+    """Direct HTTP download without browser."""
     
-    def __init__(self, download_asyncer=None):
+    def __init__(self, downloader=None):
         super().__init__("DirectDownload", priority=10)
-        self.download_asyncer = download_asyncer
+        self.downloader = downloader
         
     async def can_handle_async(self, paper: Paper, url: str) -> bool:
-        """Check if URL is directly download_asyncable."""
+        """Check if URL is directly downloadable."""
         return url.endswith('.pdf') or '/pdf/' in url
         
-    async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+    async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
         """Download PDF directly via HTTP."""
         try:
-            http_timeout = self.download_asyncer.timeouts['http_request'] if self.download_asyncer else 30
+            http_timeout = self.downloader.timeouts['http_request'] if self.downloader else 30
             timeout = aiohttp.ClientTimeout(total=http_timeout)
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(url) as response:
@@ -85,40 +85,40 @@ class DirectDownloadAgent(DownloadAgent):
                         # Verify it's a PDF
                         if content.startswith(b'%PDF'):
                             output_path.write_bytes(content)
-                            logger.success(f"Direct download_async successful: {output_path.name}")
+                            logger.success(f"Direct download successful: {output_path.name}")
                             return True
                             
         except Exception as e:
-            logger.debug(f"Direct download_async failed: {e}")
+            logger.debug(f"Direct download failed: {e}")
             
         return False
 
 
 class BrowserDownloadAgent(DownloadAgent):
-    """Browser-based download_async with JavaScript handling."""
+    """Browser-based download with JavaScript handling."""
     
-    def __init__(self, browser_manager: BrowserManager, screenshot_capturer=None, download_asyncer=None):
+    def __init__(self, browser_manager: BrowserManager, screenshot_capturer=None, downloader=None):
         super().__init__("BrowserDownload", priority=8)
         self.browser_manager = browser_manager
         self.screenshot_capturer = screenshot_capturer
-        self.download_asyncer = download_asyncer
+        self.downloader = downloader
         
-    async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+    async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
         """Download PDF using browser automation."""
         browser = None
         try:
             browser = await self.browser_manager.get_browser_async()
             context = await browser.new_context(
-                accept_download_asyncs=True,
+                accept_downloads=True,
                 viewport={'width': 1920, 'height': 1080}
             )
             page = await context.new_page()
             
-            # Set download_async behavior
+            # Set download behavior
             await page.route('**/*.pdf', lambda route: route.continue_())
             
             # Navigate to URL with configurable timeout
-            page_timeout = self.download_asyncer.timeouts['page_load'] if self.download_asyncer else 60000
+            page_timeout = self.downloader.timeouts['page_load'] if self.downloader else 60000
             await page.goto(url, wait_until='networkidle', timeout=page_timeout)
             
             # Capture initial page screenshot
@@ -126,48 +126,48 @@ class BrowserDownloadAgent(DownloadAgent):
                 await self.screenshot_capturer(paper, url, "initial_page", page)
             
             # Wait for page to stabilize with configurable timeout
-            stabilization_wait = self.download_asyncer.timeouts['stabilization'] if self.download_asyncer else 3000
+            stabilization_wait = self.downloader.timeouts['stabilization'] if self.downloader else 3000
             await page.wait_for_timeout(stabilization_wait)
             
             # Capture page after stabilization
             if self.screenshot_capturer:
                 await self.screenshot_capturer(paper, url, "after_stabilization", page)
             
-            # Try to find and click PDF download_async button
-            download_async_selectors = [
+            # Try to find and click PDF download button
+            download_selectors = [
                 'a[href$=".pdf"]',
                 'a[href*="/pdf/"]',
                 'button:has-text("Download PDF")',
                 'a:has-text("Download PDF")',
                 'a:has-text("View PDF")',
                 'a:has-text("Full Text PDF")',
-                '.pdf-download_async',
+                '.pdf-download',
                 '[aria-label*="Download"]',
                 'a[title*="PDF"]'
             ]
             
-            for selector in download_async_selectors:
+            for selector in download_selectors:
                 try:
                     elements = await page.query_selector_all(selector)
                     if elements:
-                        # Start waiting for download_async
-                        async with page.expect_download_async() as download_async_info:
+                        # Start waiting for download
+                        async with page.expect_download() as download_info:
                             await elements[0].click()
-                            download_async = await download_async_info.value
+                            download = await download_info.value
                             
-                        # Save the download_async
-                        await download_async.save_as(output_path)
+                        # Save the download
+                        await download.save_as(output_path)
                         
-                        # Capture screenshot after download_async attempt
+                        # Capture screenshot after download attempt
                         if self.screenshot_capturer:
-                            await self.screenshot_capturer(paper, url, "after_download_async_attempt", page)
+                            await self.screenshot_capturer(paper, url, "after_download_attempt", page)
                         
                         # Verify it's a PDF
                         if output_path.exists() and output_path.read_bytes().startswith(b'%PDF'):
                             # Capture success screenshot
                             if self.screenshot_capturer:
-                                await self.screenshot_capturer(paper, url, "download_async_successful", page)
-                            logger.success(f"Browser download_async successful: {output_path.name}")
+                                await self.screenshot_capturer(paper, url, "download_successful", page)
+                            logger.success(f"Browser download successful: {output_path.name}")
                             return True
                             
                 except Exception as e:
@@ -183,18 +183,18 @@ class BrowserDownloadAgent(DownloadAgent):
                 
                 frame_src = await pdf_frames[0].get_attribute('src')
                 if frame_src:
-                    # Try direct download_async of embedded PDF
+                    # Try direct download of embedded PDF
                     if frame_src.startswith('/'):
                         frame_src = f"{urlparse(url).scheme}://{urlparse(url).netloc}{frame_src}"
                     
-                    return await DirectDownloadAgent().download_async(paper, frame_src, output_path)
+                    return await DirectDownloadAgent().download(paper, frame_src, output_path)
             
             # If no PDF found, capture final state
             if self.screenshot_capturer:
                 await self.screenshot_capturer(paper, url, "no_pdf_found", page)
                     
         except Exception as e:
-            logger.error(f"Browser download_async error: {e}")
+            logger.error(f"Browser download error: {e}")
             
         finally:
             if browser:
@@ -219,7 +219,7 @@ class AuthenticatedDownloadAgent(DownloadAgent):
             'nature', 'science', 'cell', 'elsevier'
         ])
         
-    async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+    async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
         """Download using authenticate_async session."""
         try:
             # Get authenticate_async browser
@@ -232,20 +232,20 @@ class AuthenticatedDownloadAgent(DownloadAgent):
                 agent = BrowserDownloadAgent(None)
                 agent.browser_manager = type('obj', (object,), {'get_browser_async': lambda: browser})()
                 
-                return await agent.download_async(paper, url, output_path)
+                return await agent.download(paper, url, output_path)
                 
         except Exception as e:
-            logger.error(f"Authenticated download_async error: {e}")
+            logger.error(f"Authenticated download error: {e}")
             
         return False
 
 
 class SmartPDFDownloader:
-    """Intelligent PDF download_asyncer using multiple AI agents."""
+    """Intelligent PDF downloader using multiple AI agents."""
     
     def __init__(self, config: Optional[ScholarConfig] = None):
         """
-        Initialize smart PDF download_asyncer.
+        Initialize smart PDF downloader.
         
         Args:
             config: Scholar configuration
@@ -261,32 +261,32 @@ class SmartPDFDownloader:
         
         # Performance optimization: Configurable timeouts
         self.timeouts = {
-            'page_load': self.config.resolve('pdf_download_async_page_load_timeout', default=30000, type=int),
-            'screenshot': self.config.resolve('pdf_download_async_screenshot_timeout', default=10000, type=int),
-            'stabilization': self.config.resolve('pdf_download_async_stabilization_wait', default=2000, type=int),
-            'http_request': self.config.resolve('pdf_download_async_http_timeout', default=30, type=int),
-            'download_async_wait': self.config.resolve('pdf_download_async_wait', default=2, type=int)
+            'page_load': self.config.resolve('pdf_download_page_load_timeout', default=30000, type=int),
+            'screenshot': self.config.resolve('pdf_download_screenshot_timeout', default=10000, type=int),
+            'stabilization': self.config.resolve('pdf_download_stabilization_wait', default=2000, type=int),
+            'http_request': self.config.resolve('pdf_download_http_timeout', default=30, type=int),
+            'download_wait': self.config.resolve('pdf_download_wait', default=2, type=int)
         }
         
-        # Initialize download_async agents with screenshot capability and download_asyncer reference
+        # Initialize download agents with screenshot capability and downloader reference
         self.agents = [
-            DirectDownloadAgent(download_asyncer=self),
-            BrowserDownloadAgent(self.browser_manager, self.capture_systematic_screenshot_async, download_asyncer=self),
+            DirectDownloadAgent(downloader=self),
+            BrowserDownloadAgent(self.browser_manager, self.capture_systematic_screenshot_async, downloader=self),
             AuthenticatedDownloadAgent(self.auth_manager, self.config)
         ]
         
         # Simplified tracking: Use organized directory structure
         # No need for centralized JSON progress files - each paper's directory contains its status
         
-    def is_paper_download_asynced(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
+    def is_paper_download(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
         """
-        Check if a paper is already download_asynced using directory-based lookup.
+        Check if a paper is already download using directory-based lookup.
         
         Args:
             paper: Paper object
             
         Returns:
-            Tuple of (is_download_asynced, pdf_path)
+            Tuple of (is_download, pdf_path)
         """
         paper_info = {
             'title': paper.title,
@@ -305,7 +305,7 @@ class SmartPDFDownloader:
         
     async def capture_systematic_screenshot_async(self, paper: Paper, url: str, description: str, page: Optional[Page] = None):
         """
-        Capture systematic screenshots during download_async process.
+        Capture systematic screenshots during download process.
         
         Args:
             paper: Paper object
@@ -364,7 +364,7 @@ class SmartPDFDownloader:
         except Exception as e:
             logger.debug(f"Failed to capture systematic screenshot for {description}: {e}")
 
-    async def download_async_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
+    async def download_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
         """
         Download a single paper using multiple strategies.
         
@@ -374,7 +374,7 @@ class SmartPDFDownloader:
         Returns:
             Tuple of (success, pdf_path)
         """
-        # Check if already download_asynced using directory-based lookup
+        # Check if already download using directory-based lookup
         paper_info = {
             'title': paper.title,
             'authors': getattr(paper, 'authors', []),
@@ -389,7 +389,7 @@ class SmartPDFDownloader:
         
         if existing_pdfs:
             pdf_path = existing_pdfs[0]  # Take the first PDF found
-            logger.info(f"Already download_asynced: {pdf_path.name}")
+            logger.info(f"Already download: {pdf_path.name}")
             return True, pdf_path
                 
         # Get URLs to try
@@ -440,16 +440,16 @@ class SmartPDFDownloader:
                 if await agent.can_handle_async(paper, url):
                     logger.info(f"Trying {agent.name} agent...")
                     
-                    success = await agent.download_async(paper, url, output_path)
+                    success = await agent.download(paper, url, output_path)
                     agent.adjust_priority(success)
                     
                     if success and output_path.exists():
                         # Verify PDF
                         content = output_path.read_bytes()
                         if len(content) > 1000 and content.startswith(b'%PDF'):
-                            # Save simple download_async metadata alongside PDF
-                            metadata_file = output_path.with_suffix('.download_async.json')
-                            download_async_metadata = {
+                            # Save simple download metadata alongside PDF
+                            metadata_file = output_path.with_suffix('.download.json')
+                            download_metadata = {
                                 'url': url,
                                 'agent': agent.name,
                                 'timestamp': datetime.now().isoformat(),
@@ -461,9 +461,9 @@ class SmartPDFDownloader:
                             
                             try:
                                 with open(metadata_file, 'w') as f:
-                                    json.dump(download_async_metadata, f, indent=2)
+                                    json.dump(download_metadata, f, indent=2)
                             except Exception as e:
-                                logger.warning(f"Failed to save download_async metadata: {e}")
+                                logger.warning(f"Failed to save download metadata: {e}")
                             
                             logger.success(f"Downloaded: {output_path.name} ({len(content)/1024:.1f} KB)")
                             return True, output_path
@@ -473,13 +473,13 @@ class SmartPDFDownloader:
                             logger.warning("Downloaded file is not a valid PDF")
                             
         # All attempts failed - save failure info in organized directory
-        failure_file = storage_paths["storage_path"] / "download_async_failed.json"
+        failure_file = storage_paths["storage_path"] / "download_failed.json"
         failure_metadata = {
             'urls_tried': urls,
             'timestamp': datetime.now().isoformat(),
             'title': paper_info.get('title'),
             'doi': paper_info.get('doi'),
-            'last_error': 'All download_async agents failed'
+            'last_error': 'All download agents failed'
         }
         
         try:
@@ -490,18 +490,18 @@ class SmartPDFDownloader:
         
         # Capture screenshot for debugging using proper directory structure
         if urls:
-            await self._capture_failure_screenshot_async(paper, urls[0], "download_async_failed")
+            await self._capture_failure_screenshot_async(paper, urls[0], "download_failed")
                     
         return False, None
     
     async def _capture_failure_screenshot_async(self, paper: Paper, url: str, description: str):
         """
-        Capture screenshot for failed download_async using proper directory structure.
+        Capture screenshot for failed download using proper directory structure.
         
         Args:
             paper: Paper object
             url: URL that failed
-            description: Description of the failure (e.g., "download_async_failed", "auth_required")
+            description: Description of the failure (e.g., "download_failed", "auth_required")
         """
         try:
             # Get paper storage paths for screenshots
@@ -514,7 +514,7 @@ class SmartPDFDownloader:
                 'url': url
             }
             
-            # Use "screenshots" as collection name for failed download_asyncs
+            # Use "screenshots" as collection name for failed downloads
             storage_paths = self.path_manager.get_paper_storage_paths(paper_info, "screenshots")
             screenshots_dir = storage_paths["storage_path"] / "screenshots"
             screenshots_dir.mkdir(parents=True, exist_ok=True)
@@ -530,7 +530,7 @@ class SmartPDFDownloader:
                 page = await browser.new_page()
                 
                 try:
-                    logger.info(f"Capturing screenshot for failed download_async: {url}")
+                    logger.info(f"Capturing screenshot for failed download: {url}")
                     page_timeout = self.timeouts['page_load']
                     await page.goto(url, wait_until='networkidle', timeout=page_timeout)
                     
@@ -570,7 +570,7 @@ class SmartPDFDownloader:
         except Exception as e:
             logger.error(f"Error in screenshot capture system: {e}")
         
-    async def download_async_batch(
+    async def download_batch(
         self,
         papers: List[Paper],
         max_concurrent: int = 3,
@@ -581,7 +581,7 @@ class SmartPDFDownloader:
         
         Args:
             papers: List of Paper objects
-            max_concurrent: Maximum concurrent download_asyncs
+            max_concurrent: Maximum concurrent downloads
             progress_callback: Optional progress callback
             
         Returns:
@@ -593,24 +593,24 @@ class SmartPDFDownloader:
         results = {}
         semaphore = asyncio.Semaphore(max_concurrent)
         
-        async def download_async_with_limit(paper: Paper, index: int):
+        async def download_with_limit(paper: Paper, index: int):
             async with semaphore:
                 if progress_callback:
                     progress_callback(index, len(papers), f"Downloading: {paper.title[:50]}...")
                     
-                success, path = await self.download_async_single(paper)
+                success, path = await self.download_single(paper)
                 paper_id = paper.doi or paper.title
                 results[paper_id] = (success, path)
                 
                 # Add configurable delay to avoid rate limiting
-                download_async_wait = self.timeouts['download_async_wait']
-                await asyncio.sleep(download_async_wait)
+                download_wait = self.timeouts['download_wait']
+                await asyncio.sleep(download_wait)
                 
                 return success, path
                 
         # Create tasks
         tasks = [
-            download_async_with_limit(paper, i)
+            download_with_limit(paper, i)
             for i, paper in enumerate(papers)
         ]
         
@@ -623,7 +623,7 @@ class SmartPDFDownloader:
         
         return results
         
-    def download_async_from_bibtex(
+    def download_from_bibtex(
         self,
         bibtex_path: Path,
         max_concurrent: int = 3
@@ -633,7 +633,7 @@ class SmartPDFDownloader:
         
         Args:
             bibtex_path: Path to BibTeX file
-            max_concurrent: Maximum concurrent download_asyncs
+            max_concurrent: Maximum concurrent downloads
             
         Returns:
             Dict mapping paper IDs to (success, path) tuples
@@ -667,14 +667,14 @@ class SmartPDFDownloader:
         
         try:
             return loop.run_until_complete(
-                self.download_async_batch(papers, max_concurrent)
+                self.download_batch(papers, max_concurrent)
             )
         finally:
             loop.close()
 
 
 async def main():
-    """Command-line interface for smart PDF download_asyncs."""
+    """Command-line interface for smart PDF downloads."""
     import argparse
     
     parser = argparse.ArgumentParser(
@@ -683,13 +683,13 @@ async def main():
         epilog="""
 Examples:
   # Download PDFs from BibTeX file
-  python -m scitex.scholar.download_async.smart --bibtex papers.bib
+  python -m scitex.scholar.download.smart --bibtex papers.bib
   
-  # Use more concurrent download_asyncs
-  python -m scitex.scholar.download_async.smart --bibtex papers.bib --worker_asyncs 5
+  # Use more concurrent downloads
+  python -m scitex.scholar.download.smart --bibtex papers.bib --worker_asyncs 5
   
   # Download to specific directory
-  python -m scitex.scholar.download_async.smart --bibtex papers.bib --output-dir ./pdfs
+  python -m scitex.scholar.download.smart --bibtex papers.bib --output-dir ./pdfs
         """
     )
     
@@ -697,14 +697,14 @@ Examples:
         "--bibtex", "-b",
         type=str,
         required=True,
-        help="BibTeX file containing papers to download_async"
+        help="BibTeX file containing papers to download"
     )
     
     parser.add_argument(
         "--worker_asyncs", "-w",
         type=int,
         default=3,
-        help="Maximum concurrent download_asyncs (default: 3)"
+        help="Maximum concurrent downloads (default: 3)"
     )
     
     parser.add_argument(
@@ -715,16 +715,16 @@ Examples:
     
     args = parser.parse_args()
     
-    # Initialize download_asyncer
-    download_asyncer = SmartPDFDownloader()
+    # Initialize downloader
+    downloader = SmartPDFDownloader()
     
     if args.output_dir:
-        download_asyncer.download_async_dir = Path(args.output_dir)
-        download_asyncer.download_async_dir.mkdir(parents=True, exist_ok=True)
+        downloader.download_dir = Path(args.output_dir)
+        downloader.download_dir.mkdir(parents=True, exist_ok=True)
         
     # Download PDFs
     try:
-        results = download_asyncer.download_async_from_bibtex(
+        results = downloader.download_from_bibtex(
             Path(args.bibtex),
             max_concurrent=args.worker_asyncs
         )
@@ -735,7 +735,7 @@ Examples:
         print(f"  Total papers: {len(results)}")
         print(f"  Downloaded: {success_count}")
         print(f"  Failed: {len(results) - success_count}")
-        print(f"\nPDFs saved to: {download_asyncer.download_async_dir}")
+        print(f"\nPDFs saved to: {downloader.download_dir}")
         
     except KeyboardInterrupt:
         print("\nInterrupted! Progress has been saved.")

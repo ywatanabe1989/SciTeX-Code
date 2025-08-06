@@ -181,7 +181,7 @@ from scitex.scholar import Scholar
 scholar = Scholar()
 
 # Download with automatic anti-bot protection
-papers = await scholar.download_async_pdf_asyncs_async(
+papers = await scholar.download_pdf_asyncs_async(
     ["10.1038/nature12373", "10.1073/pnas.0608765104"],
     show_async_progress=True
 )

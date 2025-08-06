@@ -23,7 +23,7 @@ class BrowserMixin:
 
     Browser Modes:
     - interactive: For human interaction (authentication, debugging) - 1280x720 viewport
-    - stealth: For automated operations (scraping, download_asyncing) - 1x1 viewport
+    - stealth: For automated operations (scraping, downloading) - 1x1 viewport
 
     Note: Always runs browser in visible system mode (never truly headless)
     but uses viewport sizing to control interaction vs stealth behavior.

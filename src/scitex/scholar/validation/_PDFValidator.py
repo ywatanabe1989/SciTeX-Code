@@ -11,7 +11,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""PDF validator for checking download_asynced PDFs."""
+"""PDF validator for checking download PDFs."""
 
 import asyncio
 import json

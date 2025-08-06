@@ -246,7 +246,7 @@ Ask AI
 }
 ​
 Block Resources
-Why download_async and process data that you won’t be using? Blocking resources means preventing your headless browser from download_asyncing specific types of content that you don’t need for your scraping task. This can include images, stylesheets, fonts, and other elements that might not be essential for your data extraction.
+Why download and process data that you won’t be using? Blocking resources means preventing your headless browser from downloading specific types of content that you don’t need for your scraping task. This can include images, stylesheets, fonts, and other elements that might not be essential for your data extraction.
 To improve scraping efficiency, reduce loading times, optimize performance, and reduce bandwidth usage, you can block specific types of resources from being loaded using the block_resources parameter.
 ZenRows automatically blocks certain resource types by default, such as stylesheets and images, to optimize scraping speed and reduce unnecessary data load. So we recommend not using this feature unless it’s really necessary.
 If you prefer to disable resource blocking entirely, set the parameter to “none”: block_resources=none.

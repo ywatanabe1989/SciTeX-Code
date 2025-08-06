@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-02 19:49:56 (ywatanabe)"
+# Timestamp: "2025-08-06 15:14:43 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -7,7 +7,7 @@
 scholar_dir: ${SCITEX_DIR:-"~/.scitex"}  
 debug_mode: ${SCITEX_SCHOLAR_DEBUG_MODE:-false}
 enable_auto_enrich: ${SCITEX_SCHOLAR_AUTO_ENRICH:-true}
-enable_auto_download_async: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
+enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
 default_search_sources:
 - pubmed
 - semantic_scholar

@@ -323,10 +323,10 @@ class LookupIndex:
             cursor = conn.execute("SELECT storage_key FROM lookups WHERE doi IS NULL")
             return [row["storage_key"] for row in cursor]
             
-    def mark_pdf_download_asynced(self, storage_key: str, pdf_size: int,
+    def mark_pdf_download(self, storage_key: str, pdf_size: int,
                           pdf_filename: Optional[str] = None,
                           original_filename: Optional[str] = None) -> bool:
-        """Mark that PDF has been download_asynced.
+        """Mark that PDF has been download.
         
         Args:
             storage_key: Storage key
@@ -352,7 +352,7 @@ class LookupIndex:
             return True
             
         except Exception as e:
-            logger.error(f"Failed to mark PDF download_asynced: {e}")
+            logger.error(f"Failed to mark PDF download: {e}")
             return False
             
     def get_statistics(self) -> Dict:

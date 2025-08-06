@@ -32,18 +32,18 @@ class DirectPDFDownloader:
         Initialize DirectPDFDownloader with screenshot capabilities.
         
         Args:
-            capture_screenshots: Whether to automatically capture screenshots during download_asyncs
+            capture_screenshots: Whether to automatically capture screenshots during downloads
         """
         self.capture_screenshots = capture_screenshots
     
-    async def _capture_download_async_screenshot(self, page, download_async_path: Path, stage: str) -> Optional[str]:
+    async def _capture_download_screenshot(self, page, download_path: Path, stage: str) -> Optional[str]:
         """
-        Capture screenshot during PDF download_async process.
+        Capture screenshot during PDF download process.
         
         Args:
             page: Playwright page object
-            download_async_path: Path where PDF is being download_asynced
-            stage: Stage of download_async (e.g., 'before_navigation', 'after_navigation', 'error')
+            download_path: Path where PDF is being download
+            stage: Stage of download (e.g., 'before_navigation', 'after_navigation', 'error')
         
         Returns:
             Path to screenshot file if successful, None otherwise
@@ -54,9 +54,9 @@ class DirectPDFDownloader:
         try:
             # Generate screenshot filename based on PDF name and stage
             timestamp = datetime.now().strftime("%H%M%S")
-            pdf_name = download_async_path.stem
+            pdf_name = download_path.stem
             screenshot_name = f"{pdf_name}_{stage}_{timestamp}.png"
-            screenshot_path = download_async_path.parent / screenshot_name
+            screenshot_path = download_path.parent / screenshot_name
             
             # Capture screenshot - use full page for maximum information
             await page.screenshot(path=str(screenshot_path), full_page=True)
@@ -70,10 +70,10 @@ class DirectPDFDownloader:
             logger.warning(f"Failed to capture screenshot at {stage}: {e}")
             return None
     
-    async def download_async_pdf_async_direct(self, 
+    async def download_pdf_async_direct(self, 
                                  page, 
                                  pdf_url: str, 
-                                 download_async_path: Path, 
+                                 download_path: Path, 
                                  timeout: int = 30000) -> Tuple[bool, Optional[str]]:
         """
         Download PDF by jumping directly to the PDF URL.
@@ -81,21 +81,21 @@ class DirectPDFDownloader:
         Args:
             page: Playwright page with authenticate_async context
             pdf_url: Direct URL to the PDF
-            download_async_path: Local path to save the PDF
+            download_path: Local path to save the PDF
             timeout: Timeout in milliseconds
             
         Returns:
             (success: bool, error_message: Optional[str])
         """
         try:
-            # Ensure download_async directory exists
-            download_async_path.parent.mkdir(parents=True, exist_ok=True)
+            # Ensure download directory exists
+            download_path.parent.mkdir(parents=True, exist_ok=True)
             
             logger.info(f"🎯 Jumping directly to PDF URL: {pdf_url}")
-            logger.info(f"📥 Target path: {download_async_path}")
+            logger.info(f"📥 Target path: {download_path}")
             
             # Capture initial screenshot before navigation
-            await self._capture_download_async_screenshot(page, download_async_path, "before_navigation")
+            await self._capture_download_screenshot(page, download_path, "before_navigation")
             
             # Method 1: Try to capture PDF response directly
             pdf_content = None
@@ -124,12 +124,12 @@ class DirectPDFDownloader:
                 await page.wait_for_timeout(3000)  # Wait for response handler
                 
                 # Capture screenshot after navigation
-                await self._capture_download_async_screenshot(page, download_async_path, "after_navigation")
+                await self._capture_download_screenshot(page, download_path, "after_navigation")
                 
             except Exception as nav_error:
                 logger.debug(f"Navigation completed with: {nav_error}")
                 # Capture error screenshot
-                await self._capture_download_async_screenshot(page, download_async_path, "navigation_error")
+                await self._capture_download_screenshot(page, download_path, "navigation_error")
             
             # Remove response handler
             try:
@@ -139,42 +139,42 @@ class DirectPDFDownloader:
             
             # Save captured PDF content
             if pdf_content and content_length > 1000:  # At least 1KB
-                with open(download_async_path, 'wb') as f:
+                with open(download_path, 'wb') as f:
                     f.write(pdf_content)
                 
                 # Verify saved file
-                if download_async_path.exists():
-                    file_size = download_async_path.stat().st_size
+                if download_path.exists():
+                    file_size = download_path.stat().st_size
                     size_mb = file_size / (1024 * 1024)
                     
-                    logger.info(f"✅ PDF saved successfully: {download_async_path.name}")
+                    logger.info(f"✅ PDF saved successfully: {download_path.name}")
                     logger.info(f"📊 File size: {size_mb:.2f} MB ({file_size:,} bytes)")
                     
                     # Capture success screenshot
-                    await self._capture_download_async_screenshot(page, download_async_path, "download_async_success")
+                    await self._capture_download_screenshot(page, download_path, "download_success")
                     
                     return True, None
                 else:
                     return False, "File was not saved to disk"
             
-            # Method 2: Fallback - use browser's built-in download_async
-            logger.info("🔄 Trying fallback download_async method...")
+            # Method 2: Fallback - use browser's built-in download
+            logger.info("🔄 Trying fallback download method...")
             
             try:
-                # Set up download_async event handler
-                download_async_promise = page.wait_for_event('download_async', timeout=10000)
+                # Set up download event handler
+                download_promise = page.wait_for_event('download', timeout=10000)
                 
-                # Trigger download_async (page might already be loaded)
+                # Trigger download (page might already be loaded)
                 await page.evaluate('''
                     () => {
-                        // Try to trigger download_async via various methods
-                        if (document.querySelector('a[download_async]')) {
-                            document.querySelector('a[download_async]').click();
+                        // Try to trigger download via various methods
+                        if (document.querySelector('a[download]')) {
+                            document.querySelector('a[download]').click();
                         } else {
-                            // Force download_async by creating temporary link
+                            // Force download by creating temporary link
                             const link = document.createElement('a');
                             link.href = window.location.href;
-                            link.download_async = '';
+                            link.download = '';
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
@@ -182,22 +182,22 @@ class DirectPDFDownloader:
                     }
                 ''')
                 
-                # Wait for download_async
-                download_async = await download_async_promise
-                await download_async.save_as(str(download_async_path))
+                # Wait for download
+                download = await download_promise
+                await download.save_as(str(download_path))
                 
-                if download_async_path.exists() and download_async_path.stat().st_size > 1000:
-                    file_size = download_async_path.stat().st_size
+                if download_path.exists() and download_path.stat().st_size > 1000:
+                    file_size = download_path.stat().st_size
                     size_mb = file_size / (1024 * 1024)
-                    logger.info(f"✅ Fallback download_async successful: {size_mb:.2f} MB")
+                    logger.info(f"✅ Fallback download successful: {size_mb:.2f} MB")
                     
                     # Capture fallback success screenshot
-                    await self._capture_download_async_screenshot(page, download_async_path, "fallback_success")
+                    await self._capture_download_screenshot(page, download_path, "fallback_success")
                     
                     return True, None
                     
             except Exception as fallback_error:
-                logger.debug(f"Fallback download_async failed: {fallback_error}")
+                logger.debug(f"Fallback download failed: {fallback_error}")
             
             # Method 3: HTTP request with browser cookies (last resort)
             logger.info("🔄 Trying HTTP request with browser cookies...")
@@ -232,37 +232,37 @@ class DirectPDFDownloader:
                 if response.status_code == 200:
                     content_type = response.headers.get('content-type', '')
                     if 'application/pdf' in content_type:
-                        with open(download_async_path, 'wb') as f:
+                        with open(download_path, 'wb') as f:
                             f.write(response.content)
                         
                         file_size = len(response.content)
                         if file_size > 1000:
                             size_mb = file_size / (1024 * 1024)
-                            logger.info(f"✅ HTTP download_async successful: {size_mb:.2f} MB")
+                            logger.info(f"✅ HTTP download successful: {size_mb:.2f} MB")
                             return True, None
                 
             except Exception as http_error:
-                logger.debug(f"HTTP download_async failed: {http_error}")
+                logger.debug(f"HTTP download failed: {http_error}")
             
-            return False, "All download_async methods failed"
+            return False, "All download methods failed"
             
         except Exception as e:
-            error_msg = f"Direct PDF download_async failed: {str(e)}"
+            error_msg = f"Direct PDF download failed: {str(e)}"
             logger.error(error_msg)
             return False, error_msg
     
-    async def download_async_multiple_pdfs(self, 
+    async def download_multiple_pdfs(self, 
                                    page, 
                                    pdf_urls: List[str], 
-                                   download_async_dir: Path,
+                                   download_dir: Path,
                                    filename_pattern: str = "{index}_{doi}.pdf") -> List[Tuple[str, Path, bool, Optional[str]]]:
         """
         Download multiple PDFs directly.
         
         Args:
             page: Playwright page with authenticate_async context
-            pdf_urls: List of PDF URLs to download_async
-            download_async_dir: Directory to save PDFs
+            pdf_urls: List of PDF URLs to download
+            download_dir: Directory to save PDFs
             filename_pattern: Pattern for filenames
             
         Returns:
@@ -283,12 +283,12 @@ class DirectPDFDownloader:
                 else:
                     filename = f"{doi_part}_{i}.pdf"
                 
-                file_path = download_async_dir / filename
+                file_path = download_dir / filename
                 
                 logger.info(f"📄 Downloading PDF {i+1}/{len(pdf_urls)}: {filename}")
                 
                 # Download the PDF
-                success, error = await self.download_async_pdf_async_direct(page, pdf_url, file_path)
+                success, error = await self.download_pdf_async_direct(page, pdf_url, file_path)
                 
                 results.append((pdf_url, file_path, success, error))
                 
@@ -297,18 +297,18 @@ class DirectPDFDownloader:
                 else:
                     logger.warning(f"❌ Failed: {filename} - {error}")
                 
-                # Small delay between download_asyncs
+                # Small delay between downloads
                 await asyncio.sleep(1)
                 
             except Exception as e:
-                error_msg = f"Error download_asyncing {pdf_url}: {str(e)}"
+                error_msg = f"Error downloading {pdf_url}: {str(e)}"
                 logger.error(error_msg)
                 results.append((pdf_url, None, False, error_msg))
         
         return results
     
-    def create_download_async_report(self, results: List[Tuple[str, Path, bool, Optional[str]]]) -> str:
-        """Create a download_async report."""
+    def create_download_report(self, results: List[Tuple[str, Path, bool, Optional[str]]]) -> str:
+        """Create a download report."""
         successful = [r for r in results if r[2]]
         failed = [r for r in results if not r[2]]
         
@@ -334,7 +334,7 @@ class DirectPDFDownloader:
 
 
 # Convenience function
-async def download_async_pdf_asyncs_direct(page, pdf_urls: List[str], download_async_dir: Path) -> List[Tuple[str, Path, bool, Optional[str]]]:
-    """Convenience function for direct PDF download_asyncs."""
-    download_asyncer = DirectPDFDownloader()
-    return await download_asyncer.download_async_multiple_pdfs(page, pdf_urls, download_async_dir)
+async def download_pdf_asyncs_direct(page, pdf_urls: List[str], download_dir: Path) -> List[Tuple[str, Path, bool, Optional[str]]]:
+    """Convenience function for direct PDF downloads."""
+    downloader = DirectPDFDownloader()
+    return await downloader.download_multiple_pdfs(page, pdf_urls, download_dir)

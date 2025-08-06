@@ -661,7 +661,7 @@ Scraping Public-Facing but Protected Sites: Many academic sites (and publisher s
 
 Automating Logins to Simpler Systems: If you ever need to access a resource that uses a standard username/password form (like the GitHub example in the article), ZenRows is the perfect tool. You can use its js_instructions to fill in forms, click buttons, and handle the entire login flow automatically. This is much simpler than writing complex Playwright scripts.
 
-Handling CAPTCHAs on Non-Authenticated Pages: If you're scraping a site and hit a public CAPTCHA wall, the 2Captcha integration would be the key. This is less common for the final PDF download_async step (which is usually a direct link) but can happen on search pages or landing pages.
+Handling CAPTCHAs on Non-Authenticated Pages: If you're scraping a site and hit a public CAPTCHA wall, the 2Captcha integration would be the key. This is less common for the final PDF download step (which is usually a direct link) but can happen on search pages or landing pages.
 
 In short, you don't have zero benefits. You've just correctly identified that for the specific task of leveraging a live OpenAthens session, the local browser-based OpenURLResolver is the superior tool.
 
@@ -711,7 +711,7 @@ In the next sections, we'll explore the steps of scraping data behind site login
 
 How to Scrape Sites Requiring Simple Username and Password Logins
 
-This tutorial assumes you've set up Python3 on your machine. If you haven't, download_async and install the latest version from the Python download_async page.
+This tutorial assumes you've set up Python3 on your machine. If you haven't, download and install the latest version from the Python download page.
 
 We'll use Python's Requests as the HTTP client and parse HTML content with BeautifulSoup. Install both libraries using pip:
 

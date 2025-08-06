@@ -1243,7 +1243,7 @@ def calculate_statistics(values):
     """Calculate mean, median, and mode of a dataset.
     
     This implementation prioritizes readability over micro-optimizations.
-    Performance testing show_asynced it handles datasets of up to 100,000 elements
+    Performance testing show_async it handles datasets of up to 100,000 elements
     in under 50ms, which is sufficient for our current needs.
     
     For larger datasets, consider using NumPy's statistical functions which

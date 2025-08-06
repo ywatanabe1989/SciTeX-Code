@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 21:25:10 (ywatanabe)"
+# Timestamp: "2025-08-06 15:15:01 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -14,7 +14,7 @@ __DIR__ = os.path.dirname(__FILE__)
 """OpenAthens authentication for institutional access to academic papers.
 
 This module provides authentication through OpenAthens single sign-on
-to enable legal PDF download_asyncs via institutional subscriptions.
+to enable legal PDF downloads via institutional subscriptions.
 
 This refactored version uses smaller, focused helper classes:
 - SessionManager: Handles session state and validation
@@ -428,7 +428,7 @@ Details:
 Status: Authenticated ✓
 
 You can now access institutional resources through SciTeX Scholar.
-The system will use this session for automatic PDF download_asyncs and research access.
+The system will use this session for automatic PDF downloads and research access.
 
 This is an automated notification from the SciTeX Scholar authentication system.
 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}

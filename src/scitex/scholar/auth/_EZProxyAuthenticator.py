@@ -8,7 +8,7 @@
 EZProxy authentication for institutional access to academic papers.
 
 This module provides authentication through EZProxy systems
-to enable legal PDF download_asyncs via institutional subscriptions.
+to enable legal PDF downloads via institutional subscriptions.
 """
 
 import asyncio
@@ -48,7 +48,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
     This authenticator:
     1. Authenticates via institutional EZProxy server
     2. Maintains authenticate_async sessions
-    3. Returns session cookies for use by download_async strategies
+    3. Returns session cookies for use by download strategies
     """
 
     def __init__(

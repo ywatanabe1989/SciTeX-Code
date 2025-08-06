@@ -242,7 +242,7 @@ class ScholarAPI:
         
         # Update PDF details if available
         if has_pdf and success:
-            self.lookup.mark_pdf_download_asynced(
+            self.lookup.mark_pdf_download(
                 storage_key=storage_key,
                 pdf_size=pdf_size,
                 pdf_filename=pdf_filename,

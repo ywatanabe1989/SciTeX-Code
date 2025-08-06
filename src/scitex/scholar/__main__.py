@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 16:35:30 (ywatanabe)"
+# Timestamp: "2025-08-06 15:05:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,48 +12,27 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import argparse
+import asyncio
 import sys
 
 
 def main():
+    from .cli._CentralArgumentParser import CentralArgumentParser
+
+    parsers, descriptions = CentralArgumentParser.get_command_parsers()
+
     parser = argparse.ArgumentParser(
         prog="python -m scitex.scholar",
-        description="SciTeX Scholar - Academic paper management and metadata enrichment tools",
+        description="SciTeX Scholar - Academic paper management tools",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""Available Commands:
-
-resolve-and-enrich:
-  Resolve DOIs and enrich metadata with project organization
-  python -m scitex.scholar resolve-and-enrich --bibtex papers.bib --project myproject
-  python -m scitex.scholar resolve-and-enrich --title "Paper Title" --project myproject
-  python -m scitex.scholar resolve-and-enrich --project myproject --summary
-
-enrich-bibtex:
-  Enrich existing BibTeX files with metadata (impact factors, citations, abstracts)
-  python -m scitex.scholar enrich-bibtex papers.bib
-  python -m scitex.scholar enrich-bibtex papers.bib enriched.bib --no-abstracts
-  python -m scitex.scholar enrich-bibtex papers.bib --verbose
-
-For detailed help on each command:
-  python -m scitex.scholar resolve-and-enrich -h
-  python -m scitex.scholar enrich-bibtex -h
-
-Data Sources:
-  - DOI Resolution: CrossRef, PubMed, Semantic Scholar, OpenAlex, arXiv
-  - Metadata: JCR 2024 impact factors, citation counts, abstracts, quartiles
-  - Project organization in ~/.scitex/scholar/library/
-""",
     )
 
-    subparsers = parser.add_subparsers(
-        dest="command", help="Available commands"
-    )
-
-    subparsers.add_parser(
-        "resolve-and-enrich",
-        help="Resolve DOIs and enrich metadata with project support",
-    )
-    subparsers.add_parser("enrich-bibtex", help="Enrich BibTeX with metadata")
+    subparsers = parser.add_subparsers(dest="command")
+    for cmd_name, cmd_parser in parsers.items():
+        description = descriptions.get(cmd_name, "")
+        subparsers.add_parser(
+            cmd_name, parents=[cmd_parser], add_help=False, help=description
+        )
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -62,7 +41,7 @@ Data Sources:
     args, remaining = parser.parse_known_args()
 
     if args.command == "resolve-and-enrich":
-        from .command_line.resolve_and_enrich import main as enhanced_main
+        from .cli.resolve_and_enrich import main as enhanced_main
 
         original_argv = sys.argv
         sys.argv = ["resolve-and-enrich"] + remaining
@@ -70,15 +49,37 @@ Data Sources:
             enhanced_main()
         finally:
             sys.argv = original_argv
-    elif args.command == "enrich-bibtex":
-        from .command_line.enrich_bibtex import main as enrich_main
+
+    # elif args.command == "enrich-bibtex":
+    #     from .cli.enrich_bibtex import main as enrich_main
+
+    #     original_argv = sys.argv
+    #     sys.argv = ["enrich-bibtex"] + remaining
+    #     try:
+    #         enrich_main()
+    #     finally:
+    #         sys.argv = original_argv
+
+    # elif args.command == "resolve-doi":
+    #     from .cli.resolve_doi import main as resolve_main
+
+    #     original_argv = sys.argv
+    #     sys.argv = ["resolve-doi"] + remaining
+    #     try:
+    #         asyncio.run(resolve_main())
+    #     finally:
+    #         sys.argv = original_argv
+
+    elif args.command == "open-chrome":
+        from .cli.open_chrome import main_async as open_chrome_main_async
 
         original_argv = sys.argv
-        sys.argv = ["enrich-bibtex"] + remaining
+        sys.argv = ["open-chrome"] + remaining
         try:
-            enrich_main()
+            asyncio.run(open_chrome_main_async())
         finally:
             sys.argv = original_argv
+
     else:
         parser.print_help()
 

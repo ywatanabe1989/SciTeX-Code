@@ -261,8 +261,8 @@ class ZenRowsOpenURLResolver(OpenURLResolver):
         
         # Strong access indicators
         strong_access = [
-            "download_async pdf", "view pdf", "pdf download_async", "get pdf",
-            "download_async article", "access pdf", "open pdf"
+            "download pdf", "view pdf", "pdf download", "get pdf",
+            "download article", "access pdf", "open pdf"
         ]
         
         # No access indicators

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-05 21:38:18
+!-- Timestamp: 2025-08-06 15:14:51
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/docs/from_user/renamed-async_functions.md
 !-- --- -->
@@ -15,7 +15,7 @@ File: validation/_PreflightChecker.py
   77   5     async def _check_python_version_async(self):
   92   5     async def _check_required_packages_async(self):
  122   5     async def _check_optional_features_async(
- 183   5     async def _check_download_async_directory_async(self, download_async_dir: Optional[Path]):
+ 183   5     async def _check_download_directory_async(self, download_dir: Optional[Path]):
  217   5     async def _check_network_connectivity_async(self):
  248   5     async def _check_authentication_status_async(
  295   5     async def _check_system_resources_async(self):
@@ -42,8 +42,8 @@ File: enrichment/_BibTeXEnricher.py
 
 File: docs/from_agents/feature-requests/scholar-openathens-authentication.md
   44   5     async def authenticate_async(self, username: str, password: str) -> Session:
-  47   5     async def download_async_with_auth_async(self, url: str, session: Session) -> bytes:
-  55   1 async def download_async_pdf_async(self, doi: str) -> Optional[Path]:
+  47   5     async def download_with_auth_async(self, url: str, session: Session) -> bytes:
+  55   1 async def download_pdf_async(self, doi: str) -> Optional[Path]:
 
 File: docs/zenrows_official/with_playwright.md
   60   1 async def scrape_asyncr_async():
@@ -65,17 +65,17 @@ File: search_engine/_UnifiedSearcher.py
 
 File: old/suggestions.md
 1585   5     async def _run_translator_on_page_async(self, page: Page, translator_path: Path) -> Optional[str]:
-1643   5     async def download_async(self, paper: Paper, session_data: Optional[Dict[str, Any]] = None) -> Optional[bytes]:
+1643   5     async def download(self, paper: Paper, session_data: Optional[Dict[str, Any]] = None) -> Optional[bytes]:
 1676   1 async def main():
 
 File: examples/complete_workflow_example.py
   45   1 async def main():
 
-File: examples/openathens/test_openathens_debug_download_async.py
-  20   1 async def debug_pdf_download_async():
+File: examples/openathens/test_openathens_debug_download.py
+  20   1 async def debug_pdf_download():
 
-File: examples/openathens/download_async_nature_neuro_paper.py
-  19   1 async def download_async_paper():
+File: examples/openathens/download_nature_neuro_paper.py
+  19   1 async def download_paper():
 
 File: search_engine/web/_GoogleScholarSearchEngine.py
   47   5     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -136,11 +136,11 @@ File: examples/openathens/test_openathens_simple.py
 File: examples/openathens/test_openathens_paywalled.py
   92   1 async def test_openathens_authentication_async():
 
-File: examples/openathens/test_direct_pdf_download_async.py
-  21   1 async def download_async_with_cookies():
+File: examples/openathens/test_direct_pdf_download.py
+  21   1 async def download_with_cookies():
 
 File: _Scholar.py
- 445   9         async def download_async_batch_async():
+ 445   9         async def download_batch_async():
 1114   5     async def authenticate_async_openathens_async(self, force: bool = False) -> bool:
 1147   5     async def is_openathens_authenticate_asyncd_async(self) -> bool:
 1565   5     async def authenticate_async_ezproxy_async(self, force: bool = False) -> bool:
@@ -172,7 +172,7 @@ File: search_engine/web/_ArxivSearchEngine.py
  242   1 async def main():
 
 File: examples/openathens/test_authenticate_asyncd_browser.py
-  15   1 async def test_authenticate_asyncd_download_asyncs():
+  15   1 async def test_authenticate_asyncd_downloads():
 
 File: old/search_engine_v01/web/_ArxivSearchEngine.py
   35   5     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
@@ -199,7 +199,7 @@ File: old/search_engine_v01/web/_SemanticScholarSearchEngine.py
   44   5     async def search_async(self, query: str, limit: int = 20, **kwargs) -> List[Paper]:
  127   5     async def _fetch_paper_by_id_async(self, paper_id: str) -> Optional[Paper]:
 
-File: doi/_BibTeXDOIResolver.py
+File: doi/_BibTeXBatchDOIResolver.py
  238   5     async def resolve_all_async(self) -> Tuple[int, int, int]:
  579   5     async def main():
 
@@ -209,7 +209,7 @@ File: old/search_engine_v01/web/_PubMedSearchEngine.py
 
 File: utils/_retry_handler.py
  155   9         async def wrapper(*args, **kwargs) -> Any:
- 258   5     async def download_async_with_retry(
+ 258   5     async def download_with_retry(
 
 File: utils/_email.py
   40   1 async def send_email_async(
@@ -223,15 +223,15 @@ File: utils/_CheckpointScreenshotter.py
  267   1 async def take_info_checkpoint(screenshotter: CheckpointScreenshotter, page, description: str) -> dict:
 
 File: utils/_DirectPDFDownloader.py
-  39   5     async def _capture_download_async_screenshot(self, page, download_async_path: Path, stage: str) -> Optional[str]:
-  73   5     async def download_async_pdf_async_direct(self, 
+  39   5     async def _capture_download_screenshot(self, page, download_path: Path, stage: str) -> Optional[str]:
+  73   5     async def download_pdf_async_direct(self, 
  104  13             async def handle_response(response):
- 254   5     async def download_async_multiple_pdfs(self, 
- 337   1 async def download_async_pdf_asyncs_direct(page, pdf_urls: List[str], download_async_dir: Path) -> List[Tuple[str, Path, bool, Optional[str]]]:
+ 254   5     async def download_multiple_pdfs(self, 
+ 337   1 async def download_pdf_asyncs_direct(page, pdf_urls: List[str], download_dir: Path) -> List[Tuple[str, Path, bool, Optional[str]]]:
 
 File: utils/_GeneralizedPDFDetector.py
  217   5     async def detect_pdf_candidates(self, page, doi: str = "", url: str = "") -> List[PDFCandidate]:
- 386   5     async def download_async_best_pdf(self, page, candidates: List[PDFCandidate], 
+ 386   5     async def download_best_pdf(self, page, candidates: List[PDFCandidate], 
 
 File: doi/batch/_LibraryStructureCreator.py
  182   5     async def resolve_and_create_library_structure_async(
@@ -244,8 +244,8 @@ File: utils/_screenshot_capturer.py
 
 File: utils/_JavaScriptInjectionPDFDetector.py
  364   5     async def detect_pdfs_with_injection(
- 645   5     async def download_async_detected_pdfs(
- 694   5     async def _download_async_pdf_async_url(self, page, pdf_url: str, download_async_path: Path) -> bool:
+ 645   5     async def download_detected_pdfs(
+ 694   5     async def _download_pdf_async_url(self, page, pdf_url: str, download_path: Path) -> bool:
  768  21                     async def handle_response(response):
  893   1 async def detect_pdfs_with_injection(page, url: str = "", doi: str = "") -> InjectedPDFResult:
  911   5     async def test_injection_detection():
@@ -259,7 +259,7 @@ File: doi/_resolve_doi_asyncs.py
   23   1 async def resolve_single_doi(title: str):
   35   1 async def resolve_bibtex_dois(args):
 
-File: doi/_SingleDOIResolver.py
+File: doi/_SingleBatchDOIResolver.py
  171   5     async def resolve_async(
  371   5     async def main():
 
@@ -299,8 +299,8 @@ File: doi/sources/_BaseDOISource.py
 
 File: project_management/feature-request-scholar-openathens-authentication.md
   44   5     async def authenticate_async(self, username: str, password: str) -> Session:
-  47   5     async def download_async_with_auth_async(self, url: str, session: Session) -> bytes:
-  55   1 async def download_async_pdf_async(self, doi: str) -> Optional[Path]:
+  47   5     async def download_with_auth_async(self, url: str, session: Session) -> bytes:
+  55   1 async def download_pdf_async(self, doi: str) -> Optional[Path]:
 
 File: auth/_OpenAthensAuthenticator.py
  132   5     async def _ensure_session_loaded_async(self) -> None:
@@ -320,7 +320,7 @@ File: auth/_OpenAthensAuthenticator.py
 
 File: database/_ScholarDatabaseIntegration.py
   86   5     async def process_bibtex_workflow(
- 210   5     async def _download_async_pdf_async_for_entry(
+ 210   5     async def _download_pdf_async_for_entry(
 
 File: browser/remote/_CaptchaHandler.py
   40   5     async def handle_page_async(self, page: Page) -> bool:
@@ -500,9 +500,9 @@ File: browser/local/utils/_ChromeExtensionManager_v01-with-config.py
  128   5     async def install_extensions_interactive_async(self):
  172   5     async def check_lean_library_active_async(self, page, url: str) -> bool:
 
-File: download_async/_ShibbolethDownloadStrategy.py
-  74   5     async def can_download_async(self, url: str, paper: Optional[Any] = None) -> bool:
- 100   5     async def download_async(
+File: download/_ShibbolethDownloadStrategy.py
+  74   5     async def can_download(self, url: str, paper: Optional[Any] = None) -> bool:
+ 100   5     async def download(
  186   5     async def _needs_institutional_login_async(self, page: Page) -> bool:
  199   5     async def _find_institutional_login_async(self, page: Page) -> Optional[Any]:
  216   5     async def _find_pdf_link_async(self, page: Page) -> Optional[str]:
@@ -554,22 +554,22 @@ File: browser/local/_BrowserMixin.py
  260   5     async def main():
  264  13             async def scrape_async(self, url):
 
-File: download_async/_BaseDownloadStrategy.py
-  30   5     async def can_download_async(self, url: str, metadata: Dict[str, Any]) -> bool:
-  43   5     async def download_async(
+File: download/_BaseDownloadStrategy.py
+  30   5     async def can_download(self, url: str, metadata: Dict[str, Any]) -> bool:
+  43   5     async def download(
 
-File: download_async/_ZenRowsDownloadStrategy.py
-  59   5     async def can_download_async(self, url: str, metadata: Dict[str, Any]) -> bool:
-  73   5     async def download_async(
+File: download/_ZenRowsDownloadStrategy.py
+  59   5     async def can_download(self, url: str, metadata: Dict[str, Any]) -> bool:
+  73   5     async def download(
  197   5     async def _find_pdf_url_async(self, html_content: str, base_url: str) -> Optional[str]:
- 239   5     async def _download_async_pdf_async_url(self, pdf_url: str, output_path: Path) -> Optional[Path]:
+ 239   5     async def _download_pdf_async_url(self, pdf_url: str, output_path: Path) -> Optional[Path]:
 
 File: open_url/_OpenURLResolver.py
  115   5     async def _capture_checkpoint_screenshot_async(
  204   5     async def _follow_saml_redirect_async(self, page, saml_url, doi=""):
  256   5     async def _find_and_click_publisher_go_button_async(self, page, doi=""):
- 429   5     async def _download_async_pdf_async_from_publisher_page(
- 612   5     async def resolve_and_download_async_pdf_async(
+ 429   5     async def _download_pdf_async_from_publisher_page(
+ 612   5     async def resolve_and_download_pdf_async(
  726   5     async def _resolve_single_async(
  972   5     async def _resolve_parallel_async(
  999   9         async def worker_async(doi):
@@ -593,36 +593,36 @@ File: browser/local/_BrowserManager.py
  298   5     async def __aexit__(self, exc_type, exc_val, exc_tb):
  304   5     async def main(browser_mode="interactive"):
 
-File: download_async/_EZProxyDownloadStrategy.py
-  71   5     async def can_download_async(self, url: str, paper: Optional[Any] = None) -> bool:
-  92   5     async def download_async(
+File: download/_EZProxyDownloadStrategy.py
+  71   5     async def can_download(self, url: str, paper: Optional[Any] = None) -> bool:
+  92   5     async def download(
  172   5     async def _find_pdf_link_async(self, page: Page) -> Optional[str]:
  213   5     async def get_authenticate_asyncd_session(self) -> Dict[str, Any]:
 
-File: download_async/_ScreenshotDownloadHelper.py
-  57   5     async def download_async_with_screenshots(self, storage_key: str, urls: List[str],
-  99  13             async def handle_download_async(download_async):
+File: download/_ScreenshotDownloadHelper.py
+  57   5     async def download_with_screenshots(self, storage_key: str, urls: List[str],
+  99  13             async def handle_download(download):
  205   5     async def _capture_screenshot_async(self, page: Page, storage_key: str, 
  238   5     async def _check_for_login_async(self, page: Page) -> bool:
  258   5     async def _check_for_captcha_async(self, page: Page) -> bool:
- 277   5     async def _try_download_async_button(self, page: Page) -> bool:
+ 277   5     async def _try_download_button(self, page: Page) -> bool:
 
-File: download_async/_SmartPDFDownloader.py
+File: download/_SmartPDFDownloader.py
   46   5     async def can_handle_async(self, paper: Paper, url: str) -> bool:
-  50   5     async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+  50   5     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
   71   5     async def can_handle_async(self, paper: Paper, url: str) -> bool:
-  75   5     async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
- 106   5     async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+  75   5     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
+ 106   5     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
  214   5     async def can_handle_async(self, paper: Paper, url: str) -> bool:
- 222   5     async def download_async(self, paper: Paper, url: str, output_path: Path) -> bool:
+ 222   5     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
  306   5     async def capture_systematic_screenshot_async(self, paper: Paper, url: str, description: str, page: Optional[Page] = None):
- 367   5     async def download_async_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
+ 367   5     async def download_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
  497   5     async def _capture_failure_screenshot_async(self, paper: Paper, url: str, description: str):
- 573   5     async def download_async_batch(
- 596   9         async def download_async_with_limit(paper: Paper, index: int):
+ 573   5     async def download_batch(
+ 596   9         async def download_with_limit(paper: Paper, index: int):
  676   1 async def main():
 
-File: download_async/_ZoteroTranslatorRunner.py
+File: download/_ZoteroTranslatorRunner.py
  434   5     async def run_translator_async(
  551   5     async def _enhance_item_with_pdf_urls_async(self, page: Page, item: Dict):
  596   5     async def extract_pdf_urls_async(self, url: str) -> List[str]:
@@ -651,9 +651,9 @@ File: open_url/_ResolverLinkFinder.py
  272   5     async def click_and_wait_async(self, page: Page, link: ElementHandle) -> bool:
  317   1 async def find_and_click_resolver_link_async(page: Page, doi: str) -> Optional[str]:
 
-File: download_async/_PDFDownloader.py
- 278   5     async def download_async_pdf_async(
- 370   5     async def _download_async_from_doi_async(
+File: download/_PDFDownloader.py
+ 278   5     async def download_pdf_async(
+ 370   5     async def _download_from_doi_async(
  484   5     async def _get_authenticate_asyncd_session_async(self) -> Optional[Dict[str, Any]]:
  585   5     async def _try_direct_patterns_async(
  603   5     async def _try_lean_library_async(
@@ -666,17 +666,17 @@ File: download_async/_PDFDownloader.py
  871   5     async def _handle_cookie_consent_async(self, page) -> None:
  913   5     async def _try_playwright_async(
 1319   5     async def _resolve_doi_async_async(self, doi: str) -> Optional[str]:
-1345   5     async def _download_async_file_async(
-1397   5     async def _try_direct_url_download_async_async(
+1345   5     async def _download_file_async(
+1397   5     async def _try_direct_url_download_async(
 1420   5     async def _is_valid_url_async(self, url: str) -> bool:
-1463   5     async def batch_download_async(
-1542   9         async def download_async_with_limit_async(
-1604   5     async def _download_async_file_with_auth_async(
+1463   5     async def batch_download(
+1542   9         async def download_with_limit_async(
+1604   5     async def _download_file_with_auth_async(
 1675   5     async def _extract_pdf_urls_from_page_async(self, page, url: str) -> List[str]:
 1728   5     async def _run_translator_with_auth_async(
-1895   1 async def download_async_pdf_async(
-1920   1 async def download_async_pdf_asyncs_async(
-1956   5     async def test_unified_download_asyncer_async():
+1895   1 async def download_pdf_async(
+1920   1 async def download_pdf_asyncs_async(
+1956   5     async def test_unified_downloader_async():
 
 File: open_url/README.md
  155   1 async def resolve_with_fallback_async(doi, metadata):
@@ -724,7 +724,7 @@ func_names=(
     "_check_python_version_async"
     "_check_required_packages_async"
     "_check_optional_features_async"
-    "_check_download_async_directory_async"
+    "_check_download_directory_async"
     "_check_network_connectivity_async"
     "_check_authentication_status_async"
     "_check_system_resources_async"
@@ -737,26 +737,26 @@ func_names=(
     "_enrich_single_entry_async"
     "enrich_with_limit_async"
     "authenticate_async"
-    "download_async_with_auth_async"
-    "download_async_pdf_async"
+    "download_with_auth_async"
+    "download_pdf_async"
     "scrape_asyncr_async"
     "fetch_by_id_async"
     "get_citation_count_async"
     "resolve_doi_async"
     "_run_translator_on_page_async"
-    "download_async"
-    "debug_pdf_download_async"
-    "download_async_paper"
+    "download"
+    "debug_pdf_download"
+    "download_paper"
     "quick_test_async"
     "test_complete_flow_async"
     "monitor_auth_process_async"
     "capture_and_test_async"
     "test_openathens_approach_async"
     "test_openathens_authentication_async"
-    "download_async_with_cookies"
+    "download_with_cookies"
     "test_session_reuse_async"
     "test_with_saved_cookies_async"
-    "test_authenticate_asyncd_download_asyncs"
+    "test_authenticate_asyncd_downloads"
     "test_encryption_async"
     "wait_with_countdown_async"
     "test_rate_limit_handler_async"
@@ -847,7 +847,7 @@ func_names=(
     "check_extensions_installed_async"
     "install_extensions_interactive_async"
     "check_lean_library_active_async"
-    "can_download_async"
+    "can_download"
     "_needs_institutional_login_async"
     "_find_pdf_link_async"
     "get_authenticate_asyncd_session"
@@ -873,12 +873,12 @@ func_names=(
     "_restart_contexts_async"
     "scrape_async"
     "_find_pdf_url_async"
-    "_download_async_pdf_async_url"
+    "_download_pdf_async_url"
     "_capture_checkpoint_screenshot_async"
     "_follow_saml_redirect_async"
     "_find_and_click_publisher_go_button_async"
-    "_download_async_pdf_async_from_publisher_page"
-    "resolve_and_download_async_pdf_async"
+    "_download_pdf_async_from_publisher_page"
+    "resolve_and_download_pdf_async"
     "_create_stealth_context_async"
     "get_browser_async_with_profile"
     "_ensure_playwright_started_async"
@@ -886,18 +886,18 @@ func_names=(
     "_launch_persistent_context_async"
     "_apply_stealth_scripts_async"
     "take_screenshot_safe_async"
-    "download_async_with_screenshots"
-    "handle_download_async"
+    "download_with_screenshots"
+    "handle_download"
     "_capture_screenshot_async"
     "_check_for_login_async"
     "_check_for_captcha_async"
-    "_try_download_async_button"
+    "_try_download_button"
     "can_handle_async"
     "capture_systematic_screenshot_async"
-    "download_async_single"
+    "download_single"
     "_capture_failure_screenshot_async"
-    "download_async_batch"
-    "download_async_with_limit"
+    "download_batch"
+    "download_with_limit"
     "_enhance_item_with_pdf_urls_async"
     "extract_pdf_urls_async"
     "batch_extract_async"
@@ -913,7 +913,7 @@ func_names=(
     "_find_by_text_async"
     "click_and_wait_async"
     "find_and_click_resolver_link_async"
-    "_download_async_from_doi_async"
+    "_download_from_doi_async"
     "_get_authenticate_asyncd_session_async"
     "_try_direct_patterns_async"
     "_try_lean_library_async"
@@ -926,15 +926,15 @@ func_names=(
     "_handle_cookie_consent_async"
     "_try_playwright_async"
     "_resolve_doi_async_async"
-    "_download_async_file_async"
-    "_try_direct_url_download_async_async"
+    "_download_file_async"
+    "_try_direct_url_download_async"
     "_is_valid_url_async"
-    "download_async_with_limit_async"
-    "_download_async_file_with_auth_async"
+    "download_with_limit_async"
+    "_download_file_with_auth_async"
     "_extract_pdf_urls_from_page_async"
     "_run_translator_with_auth_async"
-    "download_async_pdf_asyncs_async"
-    "test_unified_download_asyncer_async"
+    "download_pdf_asyncs_async"
+    "test_unified_downloader_async"
     "resolve_with_fallback_async"
     "analyze_go_buttons_async"
     "intelligent_go_button_selection_async"
@@ -962,5 +962,9 @@ rename.sh get_session_async_info_async get_session_info_async ./src/scitex/schol
 
 
 rename.sh BatchDOIResolver BatchBatchDOIResolver ./src/scitex/scholar -n
+rename.sh BibTeXBatchDOIResolver BibTeXDOIResolver ./src/scitex/scholar -n
+rename.sh UnifiedBatchDOIResolver DOIResolver ./src/scitex/scholar -n
+rename.sh SingleBatchDOIResolver SingleDOIResolver ./src/scitex/scholar -n
+SingleBatchDOIResolver
 
 <!-- EOF -->

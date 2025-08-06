@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-08-01 14:15:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download_async/_BrowserDownloadHelper.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/_BrowserDownloadHelper.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/download_async/_BrowserDownloadHelper.py"
+    "./src/scitex/scholar/download/_BrowserDownloadHelper.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""Browser download_async helper for papers requiring authentication.
+"""Browser download helper for papers requiring authentication.
 
-Opens multiple paper URLs in browser tabs for efficient manual download_async.
+Opens multiple paper URLs in browser tabs for efficient manual download.
 """
 
 import json
@@ -33,12 +33,12 @@ logger = logging.getLogger(__name__)
 
 
 class BrowserDownloadHelper:
-    """Helper for opening papers in browser for manual download_async."""
+    """Helper for opening papers in browser for manual download."""
     
     def __init__(self, library_name: str = "default", 
                  batch_size: int = 10,
                  delay_between_batches: float = 5.0):
-        """Initialize browser download_async helper.
+        """Initialize browser download helper.
         
         Args:
             library_name: Library to use
@@ -55,11 +55,11 @@ class BrowserDownloadHelper:
         
         # Session tracking
         scitex_dir = Path(os.getenv("SCITEX_DIR", Path.home() / ".scitex"))
-        self.session_dir = scitex_dir / "scholar" / "download_async_sessions"
+        self.session_dir = scitex_dir / "scholar" / "download_sessions"
         self.session_dir.mkdir(parents=True, exist_ok=True)
         
-    def create_download_async_session(self, max_papers: Optional[int] = None) -> str:
-        """Create a new download_async session for papers without PDFs.
+    def create_download_session(self, max_papers: Optional[int] = None) -> str:
+        """Create a new download session for papers without PDFs.
         
         Args:
             max_papers: Maximum number of papers to include
@@ -142,7 +142,7 @@ class BrowserDownloadHelper:
         with open(session_path, 'w') as f:
             json.dump(session_data, f, indent=2)
             
-        logger.info(f"Created download_async session: {session_id}")
+        logger.info(f"Created download session: {session_id}")
         logger.info(f"Session file: {session_path}")
         
         return session_id
@@ -208,8 +208,8 @@ class BrowserDownloadHelper:
         
         return True
         
-    def generate_download_async_html(self, session_id: str) -> Path:
-        """Generate HTML page with all paper links for manual download_async.
+    def generate_download_html(self, session_id: str) -> Path:
+        """Generate HTML page with all paper links for manual download.
         
         Args:
             session_id: Session ID
@@ -227,7 +227,7 @@ class BrowserDownloadHelper:
             session_data = json.load(f)
             
         # Generate HTML
-        html_path = self.session_dir / f"download_async_helper_{session_id}.html"
+        html_path = self.session_dir / f"download_helper_{session_id}.html"
         
         html_content = f"""<!DOCTYPE html>
 <html>
@@ -242,7 +242,7 @@ class BrowserDownloadHelper:
             border-radius: 5px;
             background-color: #f9f9f9;
         }}
-        .paper.download_asynced {{ 
+        .paper.download {{ 
             background-color: #e8f5e9;
             opacity: 0.7;
         }}
@@ -305,30 +305,30 @@ class BrowserDownloadHelper:
     <script>
         function updateProgress() {{
             const total = document.querySelectorAll('.paper').length;
-            const download_asynced = document.querySelectorAll('.paper.download_asynced').length;
-            document.getElementById('progress').textContent = `Downloaded: ${{download_asynced}}/${{total}}`;
+            const download = document.querySelectorAll('.paper.download').length;
+            document.getElementById('progress').textContent = `Downloaded: ${{download}}/${{total}}`;
         }}
         
         function markDownloaded(index) {{
             const paper = document.getElementById(`paper-${{index}}`);
-            paper.classList.toggle('download_asynced');
+            paper.classList.toggle('download');
             updateProgress();
             
             // Save state to localStorage
-            const download_asynced = [];
-            document.querySelectorAll('.paper.download_asynced').forEach(p => {{
-                download_asynced.push(p.id);
+            const download = [];
+            document.querySelectorAll('.paper.download').forEach(p => {{
+                download.push(p.id);
             }});
-            localStorage.setItem('download_asynced-{session_id}', JSON.stringify(download_asynced));
+            localStorage.setItem('download-{session_id}', JSON.stringify(download));
         }}
         
         // Restore state on page load
         window.onload = function() {{
-            const saved = localStorage.getItem('download_asynced-{session_id}');
+            const saved = localStorage.getItem('download-{session_id}');
             if (saved) {{
-                const download_asynced = JSON.parse(saved);
-                download_asynced.forEach(id => {{
-                    document.getElementById(id)?.classList.add('download_asynced');
+                const download = JSON.parse(saved);
+                download.forEach(id => {{
+                    document.getElementById(id)?.classList.add('download');
                 }});
             }}
             updateProgress();
@@ -344,7 +344,7 @@ class BrowserDownloadHelper:
         <p><strong>Created:</strong> {session_data['created_at']}</p>
         <p><strong>Total Papers:</strong> {session_data['total_papers']}</p>
         <p><strong>Instructions:</strong> Click on the links to open papers in your authenticate_async browser. 
-        Check the box when download_asynced. Your progress is automatically saved.</p>
+        Check the box when download. Your progress is automatically saved.</p>
     </div>
 """
         
@@ -393,11 +393,11 @@ class BrowserDownloadHelper:
         with open(html_path, 'w') as f:
             f.write(html_content)
             
-        logger.info(f"Generated download_async helper HTML: {html_path}")
+        logger.info(f"Generated download helper HTML: {html_path}")
         return html_path
         
-    def open_download_async_helper(self, session_id: str) -> bool:
-        """Generate and open download_async helper HTML in browser.
+    def open_download_helper(self, session_id: str) -> bool:
+        """Generate and open download helper HTML in browser.
         
         Args:
             session_id: Session ID
@@ -405,14 +405,14 @@ class BrowserDownloadHelper:
         Returns:
             Success status
         """
-        html_path = self.generate_download_async_html(session_id)
+        html_path = self.generate_download_html(session_id)
         if html_path:
             webbrowser.open(f"file://{html_path}")
             return True
         return False
         
     def list_sessions(self) -> List[Dict]:
-        """List all download_async sessions."""
+        """List all download sessions."""
         sessions = []
         
         for session_file in sorted(self.session_dir.glob("session_*.json"), reverse=True):
@@ -439,15 +439,15 @@ if __name__ == "__main__":
     
     print("\nUsage:")
     print("""
-    # Create download_async session for papers without PDFs
-    session_id = helper.create_download_async_session(max_papers=50)
+    # Create download session for papers without PDFs
+    session_id = helper.create_download_session(max_papers=50)
     
     # Option 1: Open papers in batches
     helper.open_batch(session_id, batch_index=0)  # First 10 papers
     helper.open_batch(session_id, batch_index=1)  # Next 10 papers
     
     # Option 2: Generate HTML helper page
-    helper.open_download_async_helper(session_id)
+    helper.open_download_helper(session_id)
     
     # List existing sessions
     sessions = helper.list_sessions()

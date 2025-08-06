@@ -230,10 +230,10 @@ class JavaScriptInjectionPDFDetector:
                         'a[href*="/full.pdf"]',          // Various publishers
                         
                         // Semantic selectors
-                        '.pdf-download_async',
+                        '.pdf-download',
                         '.pdf-link',
                         '.article-pdf',
-                        '.download_async-pdf',
+                        '.download-pdf',
                         'a[title*="PDF"]',
                         'a[aria-label*="PDF"]',
                         'a[data-track-action*="pdf"]',
@@ -435,14 +435,14 @@ class JavaScriptInjectionPDFDetector:
                                 additionalSelectors = [
                                     'a[href*="/doi/pdf/"]',
                                     'a[href*="/doi/epdf/"]',
-                                    '.download_asyncPdf a',
+                                    '.downloadPdf a',
                                     '.pdf-link'
                                 ];
                             }} else if (publisherName.includes("Nature")) {{
                                 additionalSelectors = [
                                     'a[href*="/articles/"][href*=".pdf"]',
-                                    '.c-pdf-download_async__link',
-                                    'a[data-track-action*="download_async pdf"]'
+                                    '.c-pdf-download__link',
+                                    'a[data-track-action*="download pdf"]'
                                 ];
                             }}
                             
@@ -642,11 +642,11 @@ class JavaScriptInjectionPDFDetector:
         
         return any(indicator in url_lower for indicator in pdf_indicators)
     
-    async def download_async_detected_pdfs(
+    async def download_detected_pdfs(
         self, 
         page, 
         result: InjectedPDFResult, 
-        download_async_dir: Path,
+        download_dir: Path,
         filename_pattern: str = "{index}_{title}.pdf"
     ) -> List[Tuple[str, Path, bool]]:
         """
@@ -655,13 +655,13 @@ class JavaScriptInjectionPDFDetector:
         Args:
             page: Playwright page object
             result: Detection result from detect_pdfs_with_injection
-            download_async_dir: Directory to save PDFs
+            download_dir: Directory to save PDFs
             filename_pattern: Pattern for filenames
             
         Returns:
             List of (pdf_url, file_path, success) tuples
         """
-        download_async_results = []
+        download_results = []
         
         for i, pdf_url in enumerate(result.pdf_urls):
             try:
@@ -674,46 +674,46 @@ class JavaScriptInjectionPDFDetector:
                     url=pdf_url.split('/')[-1]
                 )
                 
-                download_async_path = download_async_dir / filename
+                download_path = download_dir / filename
                 
-                # Attempt download_async
-                success = await self._download_async_pdf_async_url(page, pdf_url, download_async_path)
-                download_async_results.append((pdf_url, download_async_path, success))
+                # Attempt download
+                success = await self._download_pdf_async_url(page, pdf_url, download_path)
+                download_results.append((pdf_url, download_path, success))
                 
                 if success:
                     logger.info(f"Downloaded PDF: {filename}")
                 else:
-                    logger.warning(f"Failed to download_async PDF: {pdf_url}")
+                    logger.warning(f"Failed to download PDF: {pdf_url}")
                     
             except Exception as e:
                 logger.error(f"Download error for {pdf_url}: {e}")
-                download_async_results.append((pdf_url, None, False))
+                download_results.append((pdf_url, None, False))
         
-        return download_async_results
+        return download_results
     
-    async def _download_async_pdf_async_url(self, page, pdf_url: str, download_async_path: Path) -> bool:
+    async def _download_pdf_async_url(self, page, pdf_url: str, download_path: Path) -> bool:
         """Download a single PDF URL with proper path specification."""
         try:
-            # Ensure download_async directory exists
-            download_async_path.parent.mkdir(parents=True, exist_ok=True)
+            # Ensure download directory exists
+            download_path.parent.mkdir(parents=True, exist_ok=True)
             
-            logger.info(f"Attempting to download_async PDF from: {pdf_url}")
-            logger.info(f"Target location: {download_async_path}")
+            logger.info(f"Attempting to download PDF from: {pdf_url}")
+            logger.info(f"Target location: {download_path}")
             
-            # Method 1: Try direct download_async first
+            # Method 1: Try direct download first
             try:
-                download_async_promise = page.wait_for_event('download_async', timeout=10000)
+                download_promise = page.wait_for_event('download', timeout=10000)
                 await page.goto(pdf_url)
                 
-                download_async = await download_async_promise
-                await download_async.save_as(str(download_async_path))
+                download = await download_promise
+                await download.save_as(str(download_path))
                 
-                if download_async_path.exists() and download_async_path.stat().st_size > 1000:
-                    logger.info(f"✅ Direct download_async successful: {download_async_path.name}")
+                if download_path.exists() and download_path.stat().st_size > 1000:
+                    logger.info(f"✅ Direct download successful: {download_path.name}")
                     return True
                     
             except Exception as direct_error:
-                logger.debug(f"Direct download_async failed: {direct_error}")
+                logger.debug(f"Direct download failed: {direct_error}")
             
             # Method 2: PDF is show_asyncn in browser - extract the actual PDF file
             logger.info("PDF displayed in browser - extracting original PDF file")
@@ -756,7 +756,7 @@ class JavaScriptInjectionPDFDetector:
                 ''')
                 
                 if pdf_data.get('url'):
-                    # Use CDP (Chrome DevTools Protocol) to download_async the actual PDF
+                    # Use CDP (Chrome DevTools Protocol) to download the actual PDF
                     logger.info(f"Found PDF source: {pdf_data['method']} - {pdf_data['url'][:60]}...")
                     
                     # Create a new page to fetch the PDF directly
@@ -782,10 +782,10 @@ class JavaScriptInjectionPDFDetector:
                     
                     # If we captured the PDF content, save it
                     if pdf_content and len(pdf_content) > 10000:  # At least 10KB
-                        with open(download_async_path, 'wb') as f:
+                        with open(download_path, 'wb') as f:
                             f.write(pdf_content)
                         
-                        logger.info(f"✅ Original PDF saved: {download_async_path.name} ({len(pdf_content)/1024:.1f} KB)")
+                        logger.info(f"✅ Original PDF saved: {download_path.name} ({len(pdf_content)/1024:.1f} KB)")
                         await pdf_page.close()
                         return True
                     
@@ -815,7 +815,7 @@ class JavaScriptInjectionPDFDetector:
                 # Get cookies from the browser context
                 cookies = await page.context.cookies()
                 
-                # Use Python requests with the same cookies to download_async
+                # Use Python requests with the same cookies to download
                 import requests
                 
                 session = requests.Session()
@@ -841,12 +841,12 @@ class JavaScriptInjectionPDFDetector:
                 response = session.get(pdf_url, headers=headers, timeout=30)
                 
                 if response.status_code == 200 and 'application/pdf' in response.headers.get('content-type', ''):
-                    with open(download_async_path, 'wb') as f:
+                    with open(download_path, 'wb') as f:
                         f.write(response.content)
                     
                     file_size = len(response.content)
                     if file_size > 10000:  # At least 10KB
-                        logger.info(f"✅ Original PDF download_asynced via HTTP: {download_async_path.name} ({file_size/1024:.1f} KB)")
+                        logger.info(f"✅ Original PDF download via HTTP: {download_path.name} ({file_size/1024:.1f} KB)")
                         return True
                     else:
                         logger.warning(f"Downloaded PDF too small: {file_size} bytes")
@@ -859,7 +859,7 @@ class JavaScriptInjectionPDFDetector:
             return False
             
         except Exception as e:
-            logger.error(f"PDF download_async/generation failed for {pdf_url}: {e}")
+            logger.error(f"PDF download/generation failed for {pdf_url}: {e}")
             return False
     
     def create_detection_report(self, result: InjectedPDFResult) -> str:

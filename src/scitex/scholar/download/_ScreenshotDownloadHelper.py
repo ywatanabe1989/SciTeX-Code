@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-08-01 14:45:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download_async/_ScreenshotDownloadHelper.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/_ScreenshotDownloadHelper.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/download_async/_ScreenshotDownloadHelper.py"
+    "./src/scitex/scholar/download/_ScreenshotDownloadHelper.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """Download helper with screenshot capture for debugging.
 
-Captures screenshots during download_async attempts to help diagnose:
+Captures screenshots during download attempts to help diagnose:
 - Authentication pages
 - Captchas
 - Access denied errors
-- Successful download_asyncs
+- Successful downloads
 """
 
 import asyncio
@@ -46,7 +46,7 @@ class ScreenshotDownloadHelper:
     """Download helper with screenshot capture capabilities."""
     
     def __init__(self, storage_manager: Optional[EnhancedStorageManager] = None):
-        """Initialize download_async helper.
+        """Initialize download helper.
         
         Args:
             storage_manager: Storage manager instance
@@ -54,9 +54,9 @@ class ScreenshotDownloadHelper:
         self.storage = storage_manager or EnhancedStorageManager()
         self.lookup = get_default_lookup()
         
-    async def download_async_with_screenshots(self, storage_key: str, urls: List[str],
+    async def download_with_screenshots(self, storage_key: str, urls: List[str],
                                       headless: bool = False) -> Dict:
-        """Attempt to download_async PDF with screenshot capture.
+        """Attempt to download PDF with screenshot capture.
         
         Args:
             storage_key: Storage key for the paper
@@ -87,23 +87,23 @@ class ScreenshotDownloadHelper:
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             )
             
-            # Set download_async directory
-            download_async_dir = Path.home() / ".scitex" / "download_asyncs" / storage_key
-            download_async_dir.mkdir(parents=True, exist_ok=True)
+            # Set download directory
+            download_dir = Path.home() / ".scitex" / "downloads" / storage_key
+            download_dir.mkdir(parents=True, exist_ok=True)
             
             page = await context.new_page()
             
-            # Listen for download_asyncs
-            download_async_path = None
+            # Listen for downloads
+            download_path = None
             
-            async def handle_download_async(download_async):
-                nonlocal download_async_path
-                suggested_filename = download_async.suggested_filename
-                download_async_path = download_async_dir / suggested_filename
-                await download_async.save_as(download_async_path)
+            async def handle_download(download):
+                nonlocal download_path
+                suggested_filename = download.suggested_filename
+                download_path = download_dir / suggested_filename
+                await download.save_as(download_path)
                 logger.info(f"Downloaded: {suggested_filename}")
                 
-            page.on("download_async", handle_download_async)
+            page.on("download", handle_download)
             
             # Try each URL
             for idx, url in enumerate(urls):
@@ -142,16 +142,16 @@ class ScreenshotDownloadHelper:
                         result["errors"].append(f"Captcha detected at {url}")
                         continue
                         
-                    # Look for PDF viewer or download_async button
-                    if "pdf" in page_content.lower() or "download_async" in page_content.lower():
-                        # Try clicking download_async button
-                        download_async_clicked = await self._try_download_async_button(page)
+                    # Look for PDF viewer or download button
+                    if "pdf" in page_content.lower() or "download" in page_content.lower():
+                        # Try clicking download button
+                        download_clicked = await self._try_download_button(page)
                         
-                        if download_async_clicked:
-                            # Wait for download_async
+                        if download_clicked:
+                            # Wait for download
                             await page.wait_for_timeout(5000)
                             
-                            if download_async_path and download_async_path.exists():
+                            if download_path and download_path.exists():
                                 # Success!
                                 screenshot_path = await self._capture_screenshot_async(
                                     page, storage_key, f"attempt-{idx+1}-success"
@@ -161,14 +161,14 @@ class ScreenshotDownloadHelper:
                                 # Store the PDF
                                 stored_path = self.storage.store_pdf(
                                     storage_key=storage_key,
-                                    pdf_path=download_async_path,
-                                    original_filename=download_async_path.name,
+                                    pdf_path=download_path,
+                                    original_filename=download_path.name,
                                     pdf_url=url
                                 )
                                 
                                 result["success"] = True
                                 result["pdf_path"] = str(stored_path)
-                                logger.info(f"Successfully download_asynced from {url}")
+                                logger.info(f"Successfully download from {url}")
                                 break
                                 
                     # Capture final state
@@ -192,13 +192,13 @@ class ScreenshotDownloadHelper:
                         
             await browser.close()
             
-        # Clean up download_async directory
-        if download_async_dir.exists():
-            for f in download_async_dir.iterdir():
-                if f != download_async_path:
+        # Clean up download directory
+        if download_dir.exists():
+            for f in download_dir.iterdir():
+                if f != download_path:
                     f.unlink()
-            if not any(download_async_dir.iterdir()):
-                download_async_dir.rmdir()
+            if not any(download_dir.iterdir()):
+                download_dir.rmdir()
                 
         return result
         
@@ -274,19 +274,19 @@ class ScreenshotDownloadHelper:
                 
         return False
         
-    async def _try_download_async_button(self, page: Page) -> bool:
-        """Try to click download_async button."""
-        download_async_selectors = [
+    async def _try_download_button(self, page: Page) -> bool:
+        """Try to click download button."""
+        download_selectors = [
             "a[href$='.pdf']",
             "button:has-text('Download PDF')",
             "a:has-text('Download PDF')",
             "button:has-text('Download')",
             "a:has-text('Download')",
-            "a[download_async]",
-            "button[aria-label*='download_async']"
+            "a[download]",
+            "button[aria-label*='download']"
         ]
         
-        for selector in download_async_selectors:
+        for selector in download_selectors:
             try:
                 elements = await page.locator(selector).all()
                 if elements:
@@ -298,8 +298,8 @@ class ScreenshotDownloadHelper:
         return False
 
 
-def create_download_async_report(storage_key: str) -> Dict:
-    """Create a report of download_async attempts for a paper.
+def create_download_report(storage_key: str) -> Dict:
+    """Create a report of download attempts for a paper.
     
     Args:
         storage_key: Storage key
@@ -320,7 +320,7 @@ def create_download_async_report(storage_key: str) -> Dict:
         "storage_key": storage_key,
         "has_pdf": len(pdfs) > 0,
         "pdf_info": pdf_info,
-        "download_async_attempts": len([s for s in screenshots if "attempt" in s["description"]]),
+        "download_attempts": len([s for s in screenshots if "attempt" in s["description"]]),
         "screenshots": screenshots,
         "latest_screenshot": None
     }
@@ -338,18 +338,18 @@ if __name__ == "__main__":
     print("=" * 60)
     
     print("\nFeatures:")
-    print("- Captures screenshots during download_async attempts")
+    print("- Captures screenshots during download attempts")
     print("- Converts PNG to JPG to save space")
     print("- Organized storage: storage/KEY/screenshots/")
     print("- Tracks login pages, captchas, errors")
-    print("- Keeps download_async history for debugging")
+    print("- Keeps download history for debugging")
     
     print("\nUsage:")
     print("""
     # With playwright installed
     helper = ScreenshotDownloadHelper()
     
-    result = await helper.download_async_with_screenshots(
+    result = await helper.download_with_screenshots(
         storage_key="ABCD1234",
         urls=[
             "https://doi.org/10.1038/example",

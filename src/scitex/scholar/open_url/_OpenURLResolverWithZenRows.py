@@ -305,10 +305,10 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
             # Check for access
             access_indicators = [
-                "full text", "download_async pdf", "view pdf", "pdf download_async",
-                "article pdf", "get pdf", "download_async article", "read the full",
+                "full text", "download pdf", "view pdf", "pdf download",
+                "article pdf", "get pdf", "download article", "read the full",
                 "access pdf", "open pdf", "full article", "read online",
-                "download_async full", "view full text", "read full text"
+                "download full", "view full text", "read full text"
             ]
             no_access_indicators = [
                 "purchase", "subscribe", "get access", "buy now",
@@ -326,8 +326,8 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
             # More nuanced access detection
             # If we find strong access indicators, we likely have access even if purchase options exist
             strong_access_indicators = [
-                "download_async pdf", "view pdf", "pdf download_async", "get pdf",
-                "download_async article", "access pdf", "open pdf"
+                "download pdf", "view pdf", "pdf download", "get pdf",
+                "download article", "access pdf", "open pdf"
             ]
             critical_no_access = [
                 "preview of subscription content", "access denied",
@@ -384,10 +384,10 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
 
                 # More comprehensive access detection
                 access_indicators = [
-                    "full text", "download_async pdf", "view pdf", "pdf download_async",
-                    "article pdf", "get pdf", "download_async article", "read the full",
+                    "full text", "download pdf", "view pdf", "pdf download",
+                    "article pdf", "get pdf", "download article", "read the full",
                     "access pdf", "open pdf", "full article", "read online",
-                    "download_async full", "view full text", "read full text"
+                    "download full", "view full text", "read full text"
                 ]
                 no_access_indicators = [
                     "purchase", "subscribe", "get access", "buy now",
@@ -404,8 +404,8 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
                 
                 # More nuanced access detection (same logic as above)
                 strong_access_indicators = [
-                    "download_async pdf", "view pdf", "pdf download_async", "get pdf",
-                    "download_async article", "access pdf", "open pdf"
+                    "download pdf", "view pdf", "pdf download", "get pdf",
+                    "download article", "access pdf", "open pdf"
                 ]
                 critical_no_access = [
                     "preview of subscription content", "access denied",
@@ -491,14 +491,14 @@ class OpenURLResolverWithZenRows(OpenURLResolver):
     def get_access_details(self, content: str, url: str = "", doi: str = "") -> Dict[str, Any]:
         """Analyze page content for detailed access information."""
         access_indicators = [
-            "full text", "download_async pdf", "view pdf", "pdf download_async",
-            "article pdf", "get pdf", "download_async article", "read the full",
+            "full text", "download pdf", "view pdf", "pdf download",
+            "article pdf", "get pdf", "download article", "read the full",
             "access pdf", "open pdf", "full article", "read online",
-            "download_async full", "view full text", "read full text"
+            "download full", "view full text", "read full text"
         ]
         strong_access_indicators = [
-            "download_async pdf", "view pdf", "pdf download_async", "get pdf",
-            "download_async article", "access pdf", "open pdf"
+            "download pdf", "view pdf", "pdf download", "get pdf",
+            "download article", "access pdf", "open pdf"
         ]
         no_access_indicators = [
             "purchase", "subscribe", "get access", "buy now",

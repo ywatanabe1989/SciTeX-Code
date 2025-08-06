@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 04:36:31 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/command_line/enrich_bibtex.py
+# Timestamp: "2025-08-06 14:59:55 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/enrich_bibtex.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/command_line/enrich_bibtex.py"
+    "./src/scitex/scholar/cli/enrich_bibtex.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -34,73 +34,56 @@ from scitex.scholar import Scholar
 logger = logging.getLogger(__name__)
 
 
-def main():
-    """Main CLI function for BibTeX enrichment."""
+def create_parser():
     parser = argparse.ArgumentParser(
-        description="Enrich BibTeX files with impact factors, citations, and metadata",
+        description="Add impact factors, citations, and metadata to BibTeX files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Enrich in-place (creates backup)
-  python -m scitex.scholar.enrich_bibtex papers.bib
+        epilog="""Examples:
+# Enrich in-place (creates backup)
+python -m scitex.scholar enrich_bibtex papers.bib
 
-  # Save to new file
-  python -m scitex.scholar.enrich_bibtex papers.bib papers_enriched.bib
-
-  # Skip backup creation
-  python -m scitex.scholar.enrich_bibtex papers.bib --no-backup
-
-  # Only update impact factors and citations
-  python -m scitex.scholar.enrich_bibtex papers.bib --no-abstracts --no-urls
-
-This command will:
-- Add journal impact factors (2024 JCR data)
-- Add citation counts from CrossRef/Semantic Scholar
-- Resolve missing DOIs
-- Optionally fetch missing abstracts and URLs
-- Preserve all original BibTeX fields
-        """,
+# Save to new file
+python -m scitex.scholar enrich_bibtex papers.bib papers_enriched.bib""",
     )
 
     parser.add_argument("input", type=str, help="Input BibTeX file to enrich")
-
     parser.add_argument(
         "output",
         type=str,
         nargs="?",
         help="Output file (defaults to input file with backup)",
     )
-
     parser.add_argument(
         "--no-backup",
         action="store_true",
         help="Don't create backup when overwriting input file",
     )
-
     parser.add_argument(
         "--no-preserve",
         action="store_true",
         help="Don't preserve original BibTeX fields",
     )
-
     parser.add_argument(
         "--no-abstracts",
         action="store_true",
         help="Don't fetch missing abstracts",
     )
-
     parser.add_argument(
         "--no-urls", action="store_true", help="Don't fetch missing URLs"
     )
-
     parser.add_argument(
         "--quiet", "-q", action="store_true", help="Suppress progress output"
     )
-
     parser.add_argument(
         "--verbose", "-v", action="store_true", help="Show detailed progress"
     )
 
+    return parser
+
+
+def main():
+    """Main CLI function for BibTeX enrichment."""
+    parser = create_parser()
     args = parser.parse_args()
 
     # Validate input file

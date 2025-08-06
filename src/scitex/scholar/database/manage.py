@@ -27,7 +27,7 @@ def import_bibtex(args):
         results = loop.run_until_complete(
             integration.process_bibtex_workflow(
                 Path(args.bibtex),
-                download_async_pdf_asyncs=args.download_async,
+                download_pdf_asyncs=args.download,
                 validate_pdfs=args.validate
             )
         )
@@ -39,8 +39,8 @@ def import_bibtex(args):
     print(f"  Total entries: {results['total_entries']}")
     print(f"  Added to database: {results['database_added']}")
     
-    if args.download_async:
-        print(f"  PDFs download_asynced: {results['pdfs_download_asynced']}")
+    if args.download:
+        print(f"  PDFs download: {results['pdfs_download']}")
         
     if args.validate:
         print(f"  PDFs validated: {results['pdfs_validated']}")
@@ -211,7 +211,7 @@ def main():
     # Import command
     import_parser = subparsers.add_parser("import", help="Import papers from BibTeX")
     import_parser.add_argument("bibtex", help="BibTeX file to import")
-    import_parser.add_argument("--download_async", action="store_true", help="Download PDFs")
+    import_parser.add_argument("--download", action="store_true", help="Download PDFs")
     import_parser.add_argument("--validate", action="store_true", help="Validate PDFs")
     import_parser.set_defaults(func=import_bibtex)
     

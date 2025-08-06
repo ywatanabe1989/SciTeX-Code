@@ -63,7 +63,7 @@ class DatabaseEntry:
     
     # Timestamps
     added_date: datetime = field(default_factory=datetime.now)
-    download_asynced_date: Optional[datetime] = None
+    download_date: Optional[datetime] = None
     validated_date: Optional[datetime] = None
     last_accessed: Optional[datetime] = None
     
@@ -73,7 +73,7 @@ class DatabaseEntry:
     notes: Optional[str] = None
     
     # Status
-    download_async_status: str = "pending"  # pending, download_asynced, failed, skipped
+    download_status: str = "pending"  # pending, download, failed, skipped
     validation_errors: List[str] = field(default_factory=list)
     validation_warnings: List[str] = field(default_factory=list)
     
@@ -119,7 +119,7 @@ class DatabaseEntry:
             
             # Timestamps
             "added_date": self.added_date.isoformat() if self.added_date else None,
-            "download_asynced_date": self.download_asynced_date.isoformat() if self.download_asynced_date else None,
+            "download_date": self.download_date.isoformat() if self.download_date else None,
             "validated_date": self.validated_date.isoformat() if self.validated_date else None,
             "last_accessed": self.last_accessed.isoformat() if self.last_accessed else None,
             
@@ -129,7 +129,7 @@ class DatabaseEntry:
             "notes": self.notes,
             
             # Status
-            "download_async_status": self.download_async_status,
+            "download_status": self.download_status,
             "validation_errors": self.validation_errors,
             "validation_warnings": self.validation_warnings,
             
@@ -144,7 +144,7 @@ class DatabaseEntry:
     def from_dict(cls, data: Dict[str, Any]) -> 'DatabaseEntry':
         """Create from dictionary."""
         # Handle datetime fields
-        for field_name in ['added_date', 'download_asynced_date', 'validated_date', 'last_accessed']:
+        for field_name in ['added_date', 'download_date', 'validated_date', 'last_accessed']:
             if field_name in data and data[field_name]:
                 if isinstance(data[field_name], str):
                     data[field_name] = datetime.fromisoformat(data[field_name])

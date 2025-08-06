@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Command-line tool for validating download_asynced PDFs."""
+"""Command-line tool for validating download PDFs."""
 
 import argparse
 import json
@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def validate_download_asynced_pdfs(
+def validate_download_pdfs(
     pdf_dir: Path,
     bibtex_path: Optional[Path] = None,
     output_report: Optional[Path] = None,
@@ -152,18 +152,18 @@ def print_validation_summary(results: Dict[str, Dict]):
     # Show recommendations
     print("\nRecommendations:")
     if summary['invalid'] > 0:
-        print("  - Re-download_async invalid PDFs with authentication")
+        print("  - Re-download invalid PDFs with authentication")
         print("  - Check if invalid PDFs are supplementary materials")
         
     if summary['suspicious'] > 0:
         print("  - Manually review suspicious PDFs")
-        print("  - Consider alternative download_async sources")
+        print("  - Consider alternative download sources")
 
 
 def main():
     """Command-line interface for PDF validation."""
     parser = argparse.ArgumentParser(
-        description="Validate download_asynced PDFs to ensure they contain main paper content",
+        description="Validate download PDFs to ensure they contain main paper content",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -227,7 +227,7 @@ Examples:
         return 1
     
     try:
-        results = validate_download_asynced_pdfs(
+        results = validate_download_pdfs(
             pdf_dir=pdf_dir,
             bibtex_path=Path(args.bibtex) if args.bibtex else None,
             output_report=Path(args.report) if args.report else None,

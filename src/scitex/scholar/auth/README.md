@@ -51,7 +51,7 @@ AuthenticationManager
 └── ShibbolethAuthenticator (placeholder)
 
 AuthenticatedBrowserMixin
-└── Provides authenticate_async browser contexts for download_async strategies
+└── Provides authenticate_async browser contexts for download strategies
 ```
 
 <!-- EOF -->

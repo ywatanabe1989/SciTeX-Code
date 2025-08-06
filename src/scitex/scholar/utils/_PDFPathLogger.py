@@ -3,7 +3,7 @@
 PDF Path Logger
 
 Utility to log and save detected PDF paths for later processing.
-This allows us to capture PDF URLs even when direct download_async fails.
+This allows us to capture PDF URLs even when direct download fails.
 """
 
 import json
@@ -21,12 +21,12 @@ class PDFPathLogger:
     Logger for detected PDF paths and metadata.
     
     Saves PDF detection results to various formats for later processing,
-    analysis, or manual download_async.
+    analysis, or manual download.
     """
     
     def __init__(self, base_dir: Path = None):
         """Initialize PDF path logger."""
-        self.base_dir = base_dir or Path("download_asyncs")
+        self.base_dir = base_dir or Path("downloads")
         self.base_dir.mkdir(parents=True, exist_ok=True)
         
         # Create timestamped log directory
@@ -53,7 +53,7 @@ class PDFPathLogger:
                            translator_used: str,
                            confidence: float,
                            local_paths: List[str] = None,
-                           download_async_status: List[bool] = None,
+                           download_status: List[bool] = None,
                            metadata: Dict[str, Any] = None):
         """
         Log a PDF detection result.
@@ -66,23 +66,23 @@ class PDFPathLogger:
             translator_used: Zotero translator used
             confidence: Confidence score
             local_paths: List of local file paths (where PDFs are/should be saved)
-            download_async_status: List of download_async success status for each PDF
+            download_status: List of download success status for each PDF
             metadata: Additional metadata
         """
         # Ensure lists are same length
         local_paths = local_paths or [None] * len(pdf_urls)
-        download_async_status = download_async_status or [False] * len(pdf_urls)
+        download_status = download_status or [False] * len(pdf_urls)
         
         # Create PDF entries with both URL and local path info
         pdf_entries = []
         for i, pdf_url in enumerate(pdf_urls):
             local_path = local_paths[i] if i < len(local_paths) else None
-            download_asynced = download_async_status[i] if i < len(download_async_status) else False
+            download = download_status[i] if i < len(download_status) else False
             
             pdf_entries.append({
                 "url": pdf_url,
                 "local_path": str(local_path) if local_path else None,
-                "download_asynced": download_asynced,
+                "download": download,
                 "is_main": self._is_main_pdf(pdf_url),
                 "is_supplementary": self._is_supplementary_pdf(pdf_url),
                 "file_exists": Path(local_path).exists() if local_path else False,
@@ -102,7 +102,7 @@ class PDFPathLogger:
             "translator_used": translator_used,
             "confidence": confidence,
             "pdf_count": len(pdf_urls),
-            "download_asynced_count": sum(entry["download_asynced"] for entry in pdf_entries),
+            "download_count": sum(entry["download"] for entry in pdf_entries),
             "total_size_mb": sum(entry["file_size_mb"] or 0 for entry in pdf_entries),
             "metadata": metadata or {}
         }
@@ -187,7 +187,7 @@ class PDFPathLogger:
             # Header
             writer.writerow([
                 'timestamp', 'doi', 'source_url', 'main_pdf_url', 'main_pdf_path',
-                'supplementary_count', 'total_pdfs', 'download_asynced_count', 'total_size_mb',
+                'supplementary_count', 'total_pdfs', 'download_count', 'total_size_mb',
                 'detection_method', 'translator_used', 'confidence'
             ])
             
@@ -201,7 +201,7 @@ class PDFPathLogger:
                     entry['main_pdf_path'],
                     len(entry['supplementary_pdfs']),
                     entry['pdf_count'],
-                    entry['download_asynced_count'],
+                    entry['download_count'],
                     entry['total_size_mb'],
                     entry['detection_method'],
                     entry['translator_used'],
@@ -291,8 +291,8 @@ class PDFPathLogger:
         return main_pdfs
     
     def create_browser_helper_html(self) -> str:
-        """Create an HTML file to help with manual PDF download_asyncs."""
-        html_file = self.log_dir / "manual_download_async_helper.html"
+        """Create an HTML file to help with manual PDF downloads."""
+        html_file = self.log_dir / "manual_download_helper.html"
         
         html_content = f"""
         <!DOCTYPE html>
@@ -344,7 +344,7 @@ class PDFPathLogger:
         with open(html_file, 'w') as f:
             f.write(html_content)
         
-        logger.info(f"📋 Created manual download_async helper: {html_file}")
+        logger.info(f"📋 Created manual download helper: {html_file}")
         return str(html_file)
 
 

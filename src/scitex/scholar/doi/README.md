@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-05 17:02:51
+!-- Timestamp: 2025-08-06 14:43:41
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/README.md
 !-- --- -->
@@ -46,8 +46,8 @@ python -m scitex.scholar.doi "10.1038/nature12373"
 python -m scitex.scholar.doi "papers.bib"
 
 # Legacy command-line interface (still supported)
-python -m scitex.scholar.command_line.resolve_doi_asyncs --title "Deep Learning" --year 2015
-python -m scitex.scholar.command_line.resolve_doi_asyncs --bibtex papers.bib --enhanced --resume
+python -m scitex.scholar.cli.resolve_doi_asyncs --title "Deep Learning" --year 2015
+python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib --enhanced --resume
 ```
 
 ## 🏗️ System Architecture
@@ -281,16 +281,16 @@ python -m scitex.scholar.doi "research_papers.bib"    # BibTeX file
 **Legacy Interface (still supported):**
 ```bash
 # Single paper
-python -m scitex.scholar.command_line.resolve_doi_asyncs --title "Paper Title"
+python -m scitex.scholar.cli.resolve_doi_asyncs --title "Paper Title"
 
 # BibTeX batch
-python -m scitex.scholar.command_line.resolve_doi_asyncs --bibtex papers.bib
+python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib
 
 # Enhanced mode
-python -m scitex.scholar.command_line.resolve_doi_asyncs --bibtex papers.bib --enhanced --worker_asyncs 8
+python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib --enhanced --worker_asyncs 8
 
 # Resume interrupted
-python -m scitex.scholar.command_line.resolve_doi_asyncs --bibtex papers.bib --resume
+python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib --resume
 ```
 
 ### Advanced Options

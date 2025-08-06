@@ -384,7 +384,7 @@ class ZoteroCompatibleDB:
                     itemID INTEGER PRIMARY KEY,
                     doi_resolved BOOLEAN DEFAULT 0,
                     metadata_enriched BOOLEAN DEFAULT 0,
-                    pdf_download_asynced BOOLEAN DEFAULT 0,
+                    pdf_download BOOLEAN DEFAULT 0,
                     fulltext_extracted BOOLEAN DEFAULT 0,
                     last_enrichment TIMESTAMP,
                     enrichment_errors TEXT,  -- JSON
@@ -999,7 +999,7 @@ class ZoteroCompatibleDB:
             # Update enrichment status
             conn.execute("""
                 UPDATE scitex_enrichment_status
-                SET pdf_download_asynced = 1
+                SET pdf_download = 1
                 WHERE itemID = ?
             """, (parent_item_id,))
             
@@ -1013,8 +1013,8 @@ class ZoteroCompatibleDB:
         stage_conditions = {
             "doi": "doi_resolved = 0",
             "metadata": "doi_resolved = 1 AND metadata_enriched = 0",
-            "pdf": "metadata_enriched = 1 AND pdf_download_asynced = 0",
-            "fulltext": "pdf_download_asynced = 1 AND fulltext_extracted = 0"
+            "pdf": "metadata_enriched = 1 AND pdf_download = 0",
+            "fulltext": "pdf_download = 1 AND fulltext_extracted = 0"
         }
         
         condition = stage_conditions.get(stage, "1=1")
@@ -1073,7 +1073,7 @@ class ZoteroCompatibleDB:
                     COUNT(*) as total,
                     SUM(doi_resolved) as doi_resolved,
                     SUM(metadata_enriched) as metadata_enriched,
-                    SUM(pdf_download_asynced) as pdf_download_asynced
+                    SUM(pdf_download) as pdf_download
                 FROM scitex_enrichment_status
             """)
             stats["enrichment"] = dict(cursor.fetchone())

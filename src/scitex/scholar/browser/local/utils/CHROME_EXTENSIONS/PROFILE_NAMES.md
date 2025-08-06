@@ -14,7 +14,7 @@
 - Purpose: Workflows requiring extensions (PDF discovery, metadata)
 - Mode: Visible but automated
 - Extensions: All Scholar extensions (Lean Library, Zotero, Captcha solvers)
-- Use: Steps 6-7 (enrichment, some PDF download_asyncs)
+- Use: Steps 6-7 (enrichment, some PDF downloads)
 
 3. scholar_stealth - Automated Scraping
 - Purpose: Headless automation, rate-limited tasks

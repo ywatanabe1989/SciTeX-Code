@@ -6,12 +6,12 @@
 ### Completed Enhancements
 
 #### 1. Fixed PDF Download Return Value Issue ✅
-**Problem**: `Scholar.download_async_pdf_asyncs()` was returning an empty Papers collection even though PDFs were download_asyncing successfully.
+**Problem**: `Scholar.download_pdf_asyncs()` was returning an empty Papers collection even though PDFs were downloading successfully.
 
 **Solution**: 
 - Added logic to create Paper objects when DOI strings are provided as input
-- Properly maps download_asynced PDFs back to Paper objects
-- Returns a populated Papers collection with pdf_path set for successful download_asyncs
+- Properly maps download PDFs back to Paper objects
+- Returns a populated Papers collection with pdf_path set for successful downloads
 
 **Code changes**: `_Scholar.py` lines 445-470
 
@@ -32,7 +32,7 @@
 
 **Solution**:
 - Updated all environment variable references to use consistent SCITEX_SCHOLAR_ prefix
-- Added missing configuration options for OpenAthens and auto-download_async features
+- Added missing configuration options for OpenAthens and auto-download features
 - Updated documentation in default_config.yaml
 
 **Files changed**: 
@@ -48,14 +48,14 @@ The OpenAthens email can now be configured in three ways (priority order):
 ### Testing
 
 Created comprehensive test scripts to verify:
-- PDF download_async functionality with proper Papers collection return
+- PDF download functionality with proper Papers collection return
 - OpenAthens email auto-fill with all configuration methods
 - Configuration priority (direct > YAML > environment)
 
 ### Impact
 
 - Improved user experience with automatic email filling during authentication
-- Fixed critical bug where download_asynced PDFs weren't accessible in the returned Papers collection
+- Fixed critical bug where download PDFs weren't accessible in the returned Papers collection
 - Consistent environment variable naming prevents conflicts with other packages
 - Better configuration documentation for users
 

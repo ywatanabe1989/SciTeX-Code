@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Pre-flight checks for Scholar PDF download_asyncs.
+"""Pre-flight checks for Scholar PDF downloads.
 
-This module performs comprehensive checks before attempting download_asyncs
+This module performs comprehensive checks before attempting downloads
 to fail fast with clear error messages and reduce debugging time.
 """
 
@@ -26,7 +26,7 @@ from ...errors import ScholarError, SciTeXWarning
 
 
 class PreflightChecker:
-    """Perform pre-flight checks before PDF download_asyncs."""
+    """Perform pre-flight checks before PDF downloads."""
     
     def __init__(self):
         self.checks_passed = {}
@@ -35,7 +35,7 @@ class PreflightChecker:
     
     async def run_all_checks_async(
         self,
-        download_async_dir: Optional[Path] = None,
+        download_dir: Optional[Path] = None,
         use_translators: bool = True,
         use_playwright: bool = True,
         use_openathens: bool = False,
@@ -58,7 +58,7 @@ class PreflightChecker:
         await self._check_optional_features_async(
             use_translators, use_playwright, use_openathens, zenrows_api_key
         )
-        await self._check_download_async_directory_async(download_async_dir)
+        await self._check_download_directory_async(download_dir)
         await self._check_network_connectivity_async()
         await self._check_authentication_status_async(use_openathens, zenrows_api_key)
         await self._check_system_resources_async()
@@ -180,29 +180,29 @@ class PreflightChecker:
             else:
                 self.checks_passed['zenrows_key_format'] = True
     
-    async def _check_download_async_directory_async(self, download_async_dir: Optional[Path]):
-        """Check download_async directory permissions."""
-        if download_async_dir is None:
-            download_async_dir = Path.home() / '.scitex' / 'scholar' / 'pdfs'
+    async def _check_download_directory_async(self, download_dir: Optional[Path]):
+        """Check download directory permissions."""
+        if download_dir is None:
+            download_dir = Path.home() / '.scitex' / 'scholar' / 'pdfs'
         
         try:
-            download_async_dir.mkdir(parents=True, exist_ok=True)
+            download_dir.mkdir(parents=True, exist_ok=True)
             
             # Test write permissions
-            test_file = download_async_dir / '.write_test'
+            test_file = download_dir / '.write_test'
             test_file.write_text('test')
             test_file.unlink()
             
-            self.checks_passed['download_async_directory'] = True
+            self.checks_passed['download_directory'] = True
             
             # Check disk space
             import shutil
-            stats = shutil.disk_usage(download_async_dir)
+            stats = shutil.disk_usage(download_dir)
             free_gb = stats.free / (1024**3)
             
             if free_gb < 1:
                 self.warnings.append(
-                    f"Low disk space: {free_gb:.1f} GB free at {download_async_dir}"
+                    f"Low disk space: {free_gb:.1f} GB free at {download_dir}"
                 )
                 self.checks_passed['disk_space'] = False
             else:
@@ -210,9 +210,9 @@ class PreflightChecker:
                 
         except Exception as e:
             self.errors.append(
-                f"Cannot write to download_async directory {download_async_dir}: {e}"
+                f"Cannot write to download directory {download_dir}: {e}"
             )
-            self.checks_passed['download_async_directory'] = False
+            self.checks_passed['download_directory'] = False
     
     async def _check_network_connectivity_async(self):
         """Check network connectivity to key services."""
@@ -346,7 +346,7 @@ class PreflightChecker:
         # Translators
         if not self.checks_passed.get('zotero_translators', True):
             recommendations.append(
-                "Download translators: python -m scitex.scholar.download_async.setup_translators"
+                "Download translators: python -m scitex.scholar.download.setup_translators"
             )
         
         # Network

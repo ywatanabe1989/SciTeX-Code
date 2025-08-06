@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-02 19:53:07 (ywatanabe)"
+# Timestamp: "2025-08-06 15:14:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_ScholarConfig.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,14 +10,15 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import re
 
+import re
 from pathlib import Path
-from typing import Optional
-from typing import Union
+from typing import Optional, Union
+
 import yaml
-from ._PathManager import PathManager
+
 from ._CascadeConfig import CascadeConfig
+from ._PathManager import PathManager
 
 
 class ScholarConfig:
@@ -35,15 +36,15 @@ class ScholarConfig:
     def resolve(self, key, direct_val=None, default=None, type=str, mask=None):
         """Resolve configuration value with precedence: direct → config → env → default"""
         return self.cascade.resolve(key, direct_val, default, type, mask)
-    
+
     def get(self, key):
         """Get value from config dict only"""
         return self.cascade.get(key)
-    
+
     def print_resolutions(self):
         """Print how each config was resolved"""
         return self.cascade.print_resolutions()
-    
+
     def clear_log(self):
         """Clear resolution log"""
         return self.cascade.clear_log()
@@ -53,26 +54,26 @@ class ScholarConfig:
     def paths(self):
         """Access to path manager for organized directory structure"""
         return self.path_manager
-    
+
     def get_cache_dir(self, cache_type: str = "general") -> Path:
         """Get cache directory for specific cache type"""
         return self.path_manager.cache_dir / cache_type
-    
+
     def get_auth_cache_dir(self, auth_type: str) -> Path:
         """Get authentication cache directory"""
         return self.path_manager.get_auth_cache_dir(auth_type)
-    
-    def get_chrome_cache_dir(self) -> Path:
+
+    def get_chrome_cache_dir(self, profile_name: str) -> Path:
         """Get Chrome cache directory"""
-        return self.path_manager.get_chrome_cache_dir()
-    
+        return self.path_manager.get_chrome_cache_dir(profile_name)
+
     def get_screenshots_dir(self, screenshot_type: str = "general") -> Path:
         """Get screenshots directory"""
         return self.path_manager.get_screenshots_dir(screenshot_type)
-    
-    def get_download_asyncs_dir(self) -> Path:
-        """Get download_asyncs directory"""
-        return self.path_manager.get_download_asyncs_dir()
+
+    def get_downloads_dir(self) -> Path:
+        """Get downloads directory"""
+        return self.path_manager.get_downloads_dir()
 
     def _load_yaml_with_env_substitution(self, path: Path) -> dict:
         with open(path) as f:

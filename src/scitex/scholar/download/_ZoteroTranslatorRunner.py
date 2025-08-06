@@ -5,7 +5,7 @@
 # ----------------------------------------
 import os
 __FILE__ = (
-    "./src/scitex/scholar/download_async/_ZoteroTranslatorRunner.py"
+    "./src/scitex/scholar/download/_ZoteroTranslatorRunner.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -560,7 +560,7 @@ window.doc = document;
                     'a[href*=".pdf"]',
                     'a[href*="/pdf/"]',
                     'a[href*="/full.pdf"]',
-                    'a[href*="/download_async/"]',
+                    'a[href*="/download/"]',
                     'a:has-text("PDF")',
                     'a:has-text("Download")',
                     '.pdf-link',

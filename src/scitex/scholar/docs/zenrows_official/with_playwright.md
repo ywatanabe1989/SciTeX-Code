@@ -21,7 +21,7 @@ Copy
 
 Ask AI
 # Install Python (if not already installed)
-# Visit https://www.python.org/download_asyncs/ or use package managers:
+# Visit https://www.python.org/downloads/ or use package managers:
 
 # macOS (using Homebrew)
 brew install python
@@ -331,6 +331,6 @@ Can I use Playwright's network interception features?
 
 What's the difference between using Playwright locally vs. with Scraping Browser?
 
-How do I handle file download_asyncs with Playwright and Scraping Browser?
+How do I handle file downloads with Playwright and Scraping Browser?
 
 <!-- EOF -->

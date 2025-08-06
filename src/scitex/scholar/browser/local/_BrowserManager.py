@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 07:19:07 (ywatanabe)"
+# Timestamp: "2025-08-06 02:16:07 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -181,21 +181,68 @@ class BrowserManager(BrowserMixin):
             logger.error("Chrome extensions not verified")
             try:
                 logger.warn("Trying install extensions")
-                await self.extension_manager.install_extensions_interactive_async_if_not_installed()
+                await self.extension_manager.install_extensions_manually_if_not_installed_async()
             except Exception as e:
                 logger.error(f"Installation failed: {str(e)}")
+
+        # Configure extensions after installation/verification
+        try:
+            logger.info("Configuring extensions for optimal operation...")
+            await self.extension_manager.configure_all_extensions_async()
+        except Exception as e:
+            logger.error(f"Extension configuration failed: {str(e)}")
 
     async def _launch_persistent_context_async(self):
         launch_options = self._build_launch_options()
 
         # Clean up any existing singleton lock files that might prevent browser launch
-        singleton_lock = self.extension_manager.profile_dir / "SingletonLock"
-        if singleton_lock.exists():
-            try:
-                singleton_lock.unlink()
-                logger.info("🧹 Removed existing Chrome SingletonLock")
-            except Exception as e:
-                logger.warning(f"Could not remove SingletonLock: {e}")
+        profile_dir = self.extension_manager.profile_dir
+
+        # Multiple possible lock file locations
+        lock_files = [
+            profile_dir / "SingletonLock",
+            profile_dir / "SingletonSocket",
+            profile_dir / "SingletonCookie",
+            profile_dir / "lockfile",
+        ]
+
+        removed_locks = 0
+        for lock_file in lock_files:
+            if lock_file.exists():
+                try:
+                    lock_file.unlink()
+                    logger.info(
+                        f"🧹 Removed Chrome lock file: {lock_file.name}"
+                    )
+                    removed_locks += 1
+                except Exception as e:
+                    logger.warning(f"Could not remove {lock_file.name}: {e}")
+
+        if removed_locks > 0:
+            logger.info(f"🧹 Cleaned up {removed_locks} Chrome lock files")
+            # Wait a moment for the system to release file handles
+            import time
+
+            time.sleep(1)
+
+        # Kill any lingering Chrome processes using this profile
+        try:
+            import subprocess
+
+            profile_path_str = str(profile_dir)
+            # Find and kill Chrome processes using this profile
+            result = subprocess.run(
+                ["pkill", "-f", f"user-data-dir={profile_path_str}"],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                logger.info(
+                    "🧹 Killed lingering Chrome processes for this profile"
+                )
+                time.sleep(2)  # Give processes time to fully terminate
+        except Exception as e:
+            logger.debug(f"Chrome process cleanup attempt: {e}")
 
         # This show_asyncs a small screen with 4 extensions show_asyncn
         launch_options["headless"] = False

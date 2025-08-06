@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-05 04:33:56
+!-- Timestamp: 2025-08-06 14:43:47
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/command_line/README.md
 !-- --- -->
@@ -10,6 +10,9 @@
 Command-line tools for academic paper management and metadata enrichment.
 
 ## Commands
+
+
+python -m scitex.scholar open-chrome
 
 ### DOI Resolution for a Single Entry
 ```bash

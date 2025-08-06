@@ -180,7 +180,7 @@ Sessions are cached to avoid repeated logins:
 
 See `/examples/scholar/` for complete examples:
 - `openathens_working_example.py` - Basic SSO automation
-- `university_sso_zenrows_download_async.py` - SSO with anti-bot bypass
+- `university_sso_zenrows_download.py` - SSO with anti-bot bypass
 - `test_sso_integration.py` - Testing SSO automation
 
 ## Contributing

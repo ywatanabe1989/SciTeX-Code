@@ -70,7 +70,7 @@ class EnhancedStorageManager:
             storage_key: 8-character unique key
             pdf_path: Path to PDF file to store
             original_filename: Original filename from journal
-            pdf_url: URL where PDF was download_asynced
+            pdf_url: URL where PDF was download
             paper_metadata: Paper metadata for human-readable link
             
         Returns:

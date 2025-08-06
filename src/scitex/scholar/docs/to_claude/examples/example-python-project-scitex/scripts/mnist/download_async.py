@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-02-15 01:06:56 (ywatanabe)"
-# File: /home/ywatanabe/proj/example-scitex-project/scripts/mnist/download_async.py
+# File: /home/ywatanabe/proj/example-scitex-project/scripts/mnist/download.py
 
-__file__ = "./scripts/mnist/download_async.py"
+__file__ = "./scripts/mnist/download.py"
 
 """
 Functionality:
@@ -33,7 +33,7 @@ from torchvision import datasets, transforms
 """Functions & Classes"""
 
 
-def download_async_mnist() -> Dict[str, torch.utils.data.Dataset]:
+def download_mnist() -> Dict[str, torch.utils.data.Dataset]:
     transform = transforms.Compose(
         [
             transforms.ToTensor(),
@@ -44,7 +44,7 @@ def download_async_mnist() -> Dict[str, torch.utils.data.Dataset]:
         ]
     )
     train_dataset = datasets.MNIST(
-        CONFIG.PATH.MNIST.RAW, train=True, download_async=True, transform=transform
+        CONFIG.PATH.MNIST.RAW, train=True, download=True, transform=transform
     )
     test_dataset = datasets.MNIST(
         CONFIG.PATH.MNIST.RAW, train=False, transform=transform
@@ -82,7 +82,7 @@ def prepare_flattened_data(
 
 
 def main(args: argparse.Namespace) -> Optional[int]:
-    datasets = download_async_mnist()
+    datasets = download_mnist()
     loaders = create_loaders(datasets)
     flat_data = prepare_flattened_data(datasets)
 

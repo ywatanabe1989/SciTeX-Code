@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Command-line interface for smart PDF download_asyncs."""
+"""Command-line interface for smart PDF downloads."""
 
 import asyncio
 import sys

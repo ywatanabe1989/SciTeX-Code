@@ -393,7 +393,7 @@ class OpenURLResolver:
                         "access_type": "publisher_go_button",
                         "success": True,
                         "publisher_detected": True,
-                        "popup_page": popup,  # Keep popup open for potential PDF download_async
+                        "popup_page": popup,  # Keep popup open for potential PDF download
                     }
 
                     # Don't close popup immediately - let caller decide
@@ -408,7 +408,7 @@ class OpenURLResolver:
                         "access_type": "go_button_redirect",
                         "success": True,
                         "publisher_detected": False,
-                        "popup_page": popup,  # Keep popup open for potential PDF download_async
+                        "popup_page": popup,  # Keep popup open for potential PDF download
                     }
 
                     # Don't close popup immediately - let caller decide
@@ -426,29 +426,29 @@ class OpenURLResolver:
             logger.error(f"GO button detection failed: {e}")
             return {"success": False, "reason": f"detection_error: {e}"}
 
-    async def _download_async_pdf_async_from_publisher_page(
-        self, popup, filename, download_async_dir="download_asyncs"
+    async def _download_pdf_async_from_publisher_page(
+        self, popup, filename, download_dir="downloads"
     ):
         """Download PDF from publisher page after successful GO button access.
 
-        This method implements our proven PDF download_async logic that works
+        This method implements our proven PDF download logic that works
         with various publisher sites including Science.org and Nature.com.
         """
         from pathlib import Path
 
         try:
-            download_async_path = Path(download_async_dir)
-            download_async_path.mkdir(exist_ok=True)
+            download_path = Path(download_dir)
+            download_path.mkdir(exist_ok=True)
 
-            logger.info("Looking for PDF download_async links on publisher page...")
+            logger.info("Looking for PDF download links on publisher page...")
 
-            # Find PDF download_async links
+            # Find PDF download links
             pdf_links = await popup.evaluate(
                 """() => {
                 const allLinks = Array.from(document.querySelectorAll('a, button, input'));
                 return allLinks.filter(el =>
                     el.textContent.toLowerCase().includes('pdf') ||
-                    el.textContent.toLowerCase().includes('download_async') ||
+                    el.textContent.toLowerCase().includes('download') ||
                     el.href?.includes('pdf') ||
                     el.getAttribute('data-track-action')?.includes('pdf')
                 ).map(el => ({
@@ -472,12 +472,12 @@ class OpenURLResolver:
                     f"PDF link {i}: {link['text'][:30]}... | {link['href'][:50]}..."
                 )
 
-            # Find the best PDF download_async link
+            # Find the best PDF download link
             main_pdf_link = None
 
-            # Priority order: direct download_async > PDF with download_async > PDF view
+            # Priority order: direct download > PDF with download > PDF view
             for link in pdf_links:
-                if "download_async pdf" in link["text"].lower():
+                if "download pdf" in link["text"].lower():
                     main_pdf_link = link
                     break
                 elif link["href"] != "no-href" and link["href"].endswith(
@@ -499,16 +499,16 @@ class OpenURLResolver:
 
             logger.info(f"Selected PDF link: {main_pdf_link['text'][:40]}...")
 
-            # Set up download_async path
-            file_path = download_async_path / filename
+            # Set up download path
+            file_path = download_path / filename
 
-            # Configure download_async headers
+            # Configure download headers
             await popup.set_extra_http_headers(
                 {"Accept": "application/pdf,application/octet-stream,*/*"}
             )
 
-            # Try download_async methods
-            pdf_download_asynced = False
+            # Try download methods
+            pdf_download = False
 
             # Method 1: Direct URL navigation
             if (
@@ -516,31 +516,31 @@ class OpenURLResolver:
                 and "pdf" in main_pdf_link["href"].lower()
             ):
                 try:
-                    logger.info("Attempting direct PDF URL download_async...")
-                    download_async_promise = popup.wait_for_event(
-                        "download_async", timeout=30000
+                    logger.info("Attempting direct PDF URL download...")
+                    download_promise = popup.wait_for_event(
+                        "download", timeout=30000
                     )
                     await popup.goto(main_pdf_link["href"])
 
-                    download_async = await download_async_promise
-                    await download_async.save_as(str(file_path))
+                    download = await download_promise
+                    await download.save_as(str(file_path))
 
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
                         logger.success(
-                            f"PDF download_asynced successfully: {filename} ({size_mb:.1f} MB)"
+                            f"PDF download successfully: {filename} ({size_mb:.1f} MB)"
                         )
-                        pdf_download_asynced = True
+                        pdf_download = True
 
                 except Exception as e:
-                    logger.debug(f"Direct download_async failed: {e}")
+                    logger.debug(f"Direct download failed: {e}")
 
-            # Method 2: Click-based download_async
-            if not pdf_download_asynced:
+            # Method 2: Click-based download
+            if not pdf_download:
                 try:
-                    logger.info("Attempting click-based PDF download_async...")
-                    download_async_promise = popup.wait_for_event(
-                        "download_async", timeout=30000
+                    logger.info("Attempting click-based PDF download...")
+                    download_promise = popup.wait_for_event(
+                        "download", timeout=30000
                     )
 
                     # Click the first PDF link
@@ -549,7 +549,7 @@ class OpenURLResolver:
                         const allLinks = Array.from(document.querySelectorAll('a, button, input'));
                         const pdfLinks = allLinks.filter(el =>
                             el.textContent.toLowerCase().includes('pdf') ||
-                            el.textContent.toLowerCase().includes('download_async') ||
+                            el.textContent.toLowerCase().includes('download') ||
                             el.href?.includes('pdf')
                         );
                         if (pdfLinks.length > 0) {
@@ -560,20 +560,20 @@ class OpenURLResolver:
                     }"""
                     )
 
-                    download_async = await download_async_promise
-                    await download_async.save_as(str(file_path))
+                    download = await download_promise
+                    await download.save_as(str(file_path))
 
                     if file_path.exists():
                         size_mb = file_path.stat().st_size / (1024 * 1024)
                         logger.success(
-                            f"PDF download_asynced successfully: {filename} ({size_mb:.1f} MB)"
+                            f"PDF download successfully: {filename} ({size_mb:.1f} MB)"
                         )
-                        pdf_download_asynced = True
+                        pdf_download = True
 
                 except Exception as e:
-                    logger.debug(f"Click-based download_async failed: {e}")
+                    logger.debug(f"Click-based download failed: {e}")
 
-            if pdf_download_asynced:
+            if pdf_download:
                 return {
                     "success": True,
                     "filename": filename,
@@ -585,11 +585,11 @@ class OpenURLResolver:
                     ),
                 }
             else:
-                logger.warning("All PDF download_async methods failed")
+                logger.warning("All PDF download methods failed")
                 # Take screenshot for debugging
                 screenshot_path = (
-                    download_async_path
-                    / f"pdf_download_async_failed_{filename.replace('.pdf', '.png')}"
+                    download_path
+                    / f"pdf_download_failed_{filename.replace('.pdf', '.png')}"
                 )
                 await popup.screenshot(
                     path=str(screenshot_path), full_page=True
@@ -600,16 +600,16 @@ class OpenURLResolver:
 
                 return {
                     "success": False,
-                    "reason": "download_async_failed",
+                    "reason": "download_failed",
                     "screenshot": str(screenshot_path),
                     "available_links": [link["text"] for link in pdf_links],
                 }
 
         except Exception as e:
-            logger.error(f"PDF download_async failed: {e}")
+            logger.error(f"PDF download failed: {e}")
             return {"success": False, "reason": f"error: {e}"}
 
-    async def resolve_and_download_async_pdf_async(
+    async def resolve_and_download_pdf_async(
         self,
         title: str = "",
         authors: Optional[list] = None,
@@ -621,11 +621,11 @@ class OpenURLResolver:
         doi: str = "",
         pmid: str = "",
         filename: str = None,
-        download_async_dir: str = "download_asyncs",
+        download_dir: str = "downloads",
     ) -> Dict[str, Any]:
-        """Resolve paper access and download_async PDF in one operation.
+        """Resolve paper access and download PDF in one operation.
 
-        This method combines our GO button resolution with PDF download_async
+        This method combines our GO button resolution with PDF download
         to provide a complete paper acquisition workflow.
         """
         if not filename:
@@ -639,7 +639,7 @@ class OpenURLResolver:
                 c for c in filename if c.isalnum() or c in ".-_"
             ).strip()
 
-        logger.info(f"Starting resolve and download_async for: {filename}")
+        logger.info(f"Starting resolve and download for: {filename}")
 
         # Create fresh context for this operation
         browser, context = await self.browser.get_authenticate_async_context()
@@ -650,7 +650,7 @@ class OpenURLResolver:
             openurl = self.build_openurl(
                 title, authors, journal, year, volume, issue, pages, doi, pmid
             )
-            logger.info(f"Resolving and download_asyncing via OpenURL: {openurl}")
+            logger.info(f"Resolving and downloading via OpenURL: {openurl}")
 
             # Navigate to OpenURL resolver
             await page.goto(
@@ -670,12 +670,12 @@ class OpenURLResolver:
                 popup = go_button_result["popup_page"]
 
                 logger.info(
-                    "Successfully accessed publisher page, attempting PDF download_async..."
+                    "Successfully accessed publisher page, attempting PDF download..."
                 )
 
-                # Try to download_async PDF
-                download_async_result = await self._download_async_pdf_async_from_publisher_page(
-                    popup, filename, download_async_dir
+                # Try to download PDF
+                download_result = await self._download_pdf_async_from_publisher_page(
+                    popup, filename, download_dir
                 )
 
                 # Close popup
@@ -687,7 +687,7 @@ class OpenURLResolver:
                 # Combine results
                 final_result = {
                     **go_button_result,
-                    "pdf_download_async": download_async_result,
+                    "pdf_download": download_result,
                     "filename": filename,
                 }
 
@@ -695,11 +695,11 @@ class OpenURLResolver:
                 if "popup_page" in final_result:
                     del final_result["popup_page"]
 
-                if download_async_result["success"]:
-                    logger.success(f"Successfully download_asynced PDF: {filename}")
+                if download_result["success"]:
+                    logger.success(f"Successfully download PDF: {filename}")
                 else:
                     logger.warning(
-                        f"Paper accessed but PDF download_async failed: {download_async_result.get('reason', 'unknown')}"
+                        f"Paper accessed but PDF download failed: {download_result.get('reason', 'unknown')}"
                     )
 
                 return final_result
@@ -714,7 +714,7 @@ class OpenURLResolver:
                 }
 
         except Exception as e:
-            logger.error(f"Resolve and download_async failed: {e}")
+            logger.error(f"Resolve and download failed: {e}")
             return {
                 "success": False,
                 "reason": f"error: {e}",

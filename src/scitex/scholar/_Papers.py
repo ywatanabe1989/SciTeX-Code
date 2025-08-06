@@ -1031,10 +1031,10 @@ class Papers:
                 actual_format=format,
             )
 
-    def download_async_pdf_asyncs(
+    def download_pdf_asyncs(
         self,
         scholar=None,
-        download_async_dir: Optional[Union[str, Path]] = None,
+        download_dir: Optional[Union[str, Path]] = None,
         force: bool = False,
         max_worker_asyncs: int = 4,
         show_async_progress: bool = True,
@@ -1044,37 +1044,37 @@ class Papers:
         Download PDFs for papers in this collection.
 
         Args:
-            scholar: Scholar instance to use for download_asyncing. If None, creates a new instance.
-            download_async_dir: Directory to save PDFs (default: uses scholar's workspace)
-            force: Force re-download_async even if files exist
-            max_worker_asyncs: Maximum concurrent download_asyncs
-            show_async_progress: Show download_async progress
-            **kwargs: Additional arguments passed to download_asyncer
+            scholar: Scholar instance to use for downloading. If None, creates a new instance.
+            download_dir: Directory to save PDFs (default: uses scholar's workspace)
+            force: Force re-download even if files exist
+            max_worker_asyncs: Maximum concurrent downloads
+            show_async_progress: Show download progress
+            **kwargs: Additional arguments passed to downloader
 
         Returns:
-            Dictionary with download_async results:
-                - 'successful': Number of successful download_asyncs
-                - 'failed': Number of failed download_asyncs
+            Dictionary with download results:
+                - 'successful': Number of successful downloads
+                - 'failed': Number of failed downloads
                 - 'results': List of detailed results
-                - 'download_asynced_files': Dict mapping DOIs to file paths
+                - 'download_files': Dict mapping DOIs to file paths
 
         Examples:
             >>> papers = scholar.search("deep learning")
             >>> # Using existing scholar instance
-            >>> results = papers.download_async_pdf_asyncs(scholar)
+            >>> results = papers.download_pdf_asyncs(scholar)
             >>> print(f"Downloaded {results['successful']} PDFs")
 
             >>> # Or create new scholar instance automatically
-            >>> results = papers.download_async_pdf_asyncs(download_async_dir="./my_pdfs")
+            >>> results = papers.download_pdf_asyncs(download_dir="./my_pdfs")
         """
         if scholar is None:
             from ._Scholar import Scholar
 
             scholar = Scholar()
 
-        return scholar.download_async_pdf_asyncs(
+        return scholar.download_pdf_asyncs(
             self,
-            download_async_dir=download_async_dir,
+            download_dir=download_dir,
             force=force,
             max_worker_asyncs=max_worker_asyncs,
             show_async_progress=show_async_progress,

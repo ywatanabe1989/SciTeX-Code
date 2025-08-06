@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 00:40:20 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_ChromeExtensionManager.py
+# Timestamp: "2025-08-06 01:53:20 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_ChromeExtensionManager_v02-detected-by-cloudflare.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/browser/local/utils/_ChromeExtensionManager.py"
+    "./src/scitex/scholar/browser/local/utils/_ChromeExtensionManager_v02-detected-by-cloudflare.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -14,7 +14,8 @@ __DIR__ = os.path.dirname(__FILE__)
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
+from typing import Optional
 
 from scitex import logging
 
@@ -22,6 +23,10 @@ from ....config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
+
+# We need to incorporate them into config
+# TWO_CAPTCHA_API_KEY = os.getenv("SCITEX_SCHOLAR_2CAPTCHA_API_KEY")
+# CAPTCHA_SOLVER_API_KEY = os.getenv("SCITEX_SCHOLAR_CAPTCHA_SOLVER_API_KEY")
 
 class ChromeExtensionManager:
     """Manages Chrome extensions for automated literature search."""
@@ -45,7 +50,7 @@ class ChromeExtensionManager:
         "captcha_solver_2captcha": {
             "id": "ifibfemgeogfhoebkmokieepdoobkbpo",
             "name": "2Captcha Solver",
-            "description": "reCAPTCHA v2/v3 solving (may need API for advanced features)",
+            "description": f"reCAPTCHA v2/v3 solving (SCITEX_SCHOLAR_2CAPTCHA_API_KEY={})",
         },
         "captcha_solver_hcaptcha": {
             "id": "hlifkpholllijblknnmbfagnkjneagid",
@@ -78,19 +83,19 @@ class ChromeExtensionManager:
         )
         self.profile_name = profile_name
         self.config = config or ScholarConfig()
-        self.profile_dir = self._get_profile_path(profile_name)
-        self._ensure_profile_directory()
+        self.profile_dir = self.config.get_chrome_cache_dir(profile_name)
+        # self._ensure_profile_directory()
 
-    def _get_profile_path(self, profile_name: str) -> Path:
-        """Get Chrome profile path using config manager."""
-        # Use config system for proper cache directory management
-        chrome_cache_dir = self.config.get_chrome_cache_dir()
-        return chrome_cache_dir / profile_name
+    # def _get_profile_path(self, profile_name: str) -> Path:
+    #     """Get Chrome profile path using config manager."""
+    #     # Use config system for proper cache directory management
+    #     chrome_cache_dir = self.config.get_chrome_cache_dir()
+    #     return chrome_cache_dir / profile_name
 
-    def _ensure_profile_directory(self):
-        """Ensure profile directory exists."""
-        self.profile_dir.mkdir(parents=True, exist_ok=True)
-        logger.warn(f"Chrome profile directory: {self.profile_dir}")
+    # def _ensure_profile_directory(self):
+    #     """Ensure profile directory exists."""
+    #     self.profile_dir.mkdir(parents=True, exist_ok=True)
+    #     logger.warn(f"Chrome profile directory: {self.profile_dir}")
 
     def _get_installed_extension_paths(self) -> list[str]:
         """Get paths to installed extensions for --load-extension argument."""
@@ -175,7 +180,7 @@ class ChromeExtensionManager:
         is_all_installed = installed_count == len(self.EXTENSIONS)
         return is_all_installed
 
-    async def install_extensions_interactive_asyncly_if_not_installed(self):
+    async def install_extensions_manually_if_not_installed_async(self):
         """Open Chrome for manual extension installation.
         IMPORTANT: Why we use regular Chrome instead of Playwright:
         1. Playwright-controlled browsers show_async "Chrome is being controlled by automated test software"
@@ -334,7 +339,7 @@ if __name__ == "__main__":
             if answer.lower() == "y":
                 print("\nStarting installation...")
                 asyncio.run(
-                    manager.install_extensions_interactive_asyncly_if_not_installed()
+                    manager.install_extensions_manually_if_not_installed_async()
                 )
 
                 # Check again after installation

@@ -3,7 +3,7 @@
 # ---
 # @Author: ywatanabe
 # @Date: 2025-07-24
-# @Description: Progress tracking for Scholar PDF download_asyncs
+# @Description: Progress tracking for Scholar PDF downloads
 # ---
 
 import sys
@@ -15,7 +15,7 @@ import threading
 
 
 class ProgressTracker:
-    """Progress tracker for PDF download_asyncs with method visibility."""
+    """Progress tracker for PDF downloads with method visibility."""
     
     def __init__(self, total: int, show_async_progress: bool = True):
         self.total = total
@@ -30,11 +30,11 @@ class ProgressTracker:
         self.terminal_width = shutil.get_terminal_size().columns
         self._last_print_length = 0
         self._lock = threading.Lock()  # Thread safety for concurrent updates
-        self._active_download_asyncs = {}  # Track active download_asyncs per identifier
+        self._active_downloads = {}  # Track active downloads per identifier
         
     def update(self, identifier: str, method: Optional[str] = None, 
                status: Optional[str] = None, completed: Optional[int] = None):
-        """Update progress with current download_async info."""
+        """Update progress with current download info."""
         with self._lock:
             self.current_file = identifier
             
@@ -47,16 +47,16 @@ class ProgressTracker:
                 if identifier not in self.method_attempts:
                     self.method_attempts[identifier] = []
                 self.method_attempts[identifier].append(method)
-                # Track active download_async
-                self._active_download_asyncs[identifier] = method
+                # Track active download
+                self._active_downloads[identifier] = method
                 
             if status:
                 self.paper_status[identifier] = status
                 if status == "failed":
                     self.failed += 1
                 elif status == "success":
-                    # Remove from active download_asyncs
-                    self._active_download_asyncs.pop(identifier, None)
+                    # Remove from active downloads
+                    self._active_downloads.pop(identifier, None)
                     
             if self.show_async_progress:
                 self._print_progress()
@@ -102,12 +102,12 @@ class ProgressTracker:
         # Print status
         sys.stdout.write(f"{status_line}{clear}\n")
         
-        # Show active download_asyncs (up to 3 concurrent)
+        # Show active downloads (up to 3 concurrent)
         lines_printed = 1
         max_file_len = self.terminal_width - 80
-        max_show_asyncn = 3  # Only show_async up to 3 concurrent download_asyncs
+        max_show_asyncn = 3  # Only show_async up to 3 concurrent downloads
         
-        for idx, (identifier, method) in enumerate(list(self._active_download_asyncs.items())):
+        for idx, (identifier, method) in enumerate(list(self._active_downloads.items())):
             if idx >= max_show_asyncn:
                 break
                 
@@ -119,10 +119,10 @@ class ProgressTracker:
             sys.stdout.write(f"{file_line}{clear}\n")
             lines_printed += 1
             
-        # If there are more active download_asyncs, show_async count
-        if len(self._active_download_asyncs) > max_show_asyncn:
-            more_count = len(self._active_download_asyncs) - max_show_asyncn
-            sys.stdout.write(f"  ... and {more_count} more download_asyncing in parallel{clear}\n")
+        # If there are more active downloads, show_async count
+        if len(self._active_downloads) > max_show_asyncn:
+            more_count = len(self._active_downloads) - max_show_asyncn
+            sys.stdout.write(f"  ... and {more_count} more downloading in parallel{clear}\n")
             lines_printed += 1
             
         # Clear any remaining lines from previous print
@@ -149,7 +149,7 @@ class ProgressTracker:
         print(f"\n✓ Download complete: {success}/{self.total} successful")
         
         if self.failed > 0:
-            print(f"✗ Failed download_asyncs: {self.failed}")
+            print(f"✗ Failed downloads: {self.failed}")
             
         print(f"⏱  Total time: {str(timedelta(seconds=int(elapsed)))}")
         
@@ -199,7 +199,7 @@ class SimpleProgressLogger:
         success = self.completed - self.failed
         print(f"\n✓ Download complete: {success}/{self.total} successful")
         if self.failed > 0:
-            print(f"✗ Failed download_asyncs: {self.failed}")
+            print(f"✗ Failed downloads: {self.failed}")
         print(f"⏱  Total time: {str(timedelta(seconds=int(elapsed)))}")
 
 
