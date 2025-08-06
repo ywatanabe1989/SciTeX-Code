@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 02:16:07 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
+# Timestamp: "2025-08-06 17:05:45 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -253,6 +253,9 @@ class BrowserManager(BrowserMixin):
         )
 
         await self._apply_stealth_scripts_async()
+        
+        # Load authentication cookies into the persistent context
+        await self._load_auth_cookies_to_persistent_context_async()
 
         self._shared_browser = self._shared_context.browser
 
@@ -291,6 +294,26 @@ class BrowserManager(BrowserMixin):
             await self._shared_context.add_init_script(
                 self.cookie_acceptor.get_auto_acceptor_script()
             )
+
+    async def _load_auth_cookies_to_persistent_context_async(self):
+        """Load authentication cookies into the persistent browser context."""
+        if not self.auth_manager:
+            logger.debug("No auth_manager available, skipping cookie loading")
+            return
+            
+        try:
+            # Check if we have authentication
+            if await self.auth_manager.is_authenticate_async(verify_live=False):
+                cookies = await self.auth_manager.get_auth_cookies_async()
+                if cookies:
+                    await self._shared_context.add_cookies(cookies)
+                    logger.success(f"Loaded {len(cookies)} authentication cookies into persistent browser context")
+                else:
+                    logger.debug("No cookies available from auth manager")
+            else:
+                logger.debug("Not authenticated, skipping cookie loading")
+        except Exception as e:
+            logger.warning(f"Failed to load authentication cookies: {e}")
 
     async def check_lean_library_active_async(self, page, url, timeout_sec=5):
         """Check if Lean Library provides PDF access."""
@@ -363,6 +386,12 @@ if __name__ == "__main__":
 
         # Test sites configuration
         test_sites = [
+            {
+                "name": "OpenAthens",
+                "url": "https://my.openathens.net/account",
+                "screenshot": f"/tmp/openathens_test-{browser_mode}.png",
+                "description": "OpenAthens autehntication test",
+            },
             {
                 "name": "Lean Library",
                 "url": "https://www.science.org/doi/10.1126/science.aao0702",
