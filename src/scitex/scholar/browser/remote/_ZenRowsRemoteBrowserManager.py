@@ -107,7 +107,7 @@ class ZenRowsRemoteBrowserManager:
             logger.error(f"Failed to connect to ZenRows browser: {e}")
             raise
 
-    async def get_authenticate_async_context(
+    async def get_authenticated_browser_and_context_async(
         self,
     ) -> tuple[Browser, BrowserContext]:
         """Get browser context with authentication cookies pre-loaded."""
@@ -149,7 +149,7 @@ class ZenRowsRemoteBrowserManager:
     async def new_page(self, context: Optional[BrowserContext] = None) -> Any:
         """Create a new page in the ZenRows browser."""
         if not context:
-            _, context = await self.get_authenticate_async_context()
+            _, context = await self.get_authenticated_browser_and_context_async()
 
         page = await context.new_page()
         await page.set_extra_http_headers(
@@ -328,9 +328,9 @@ if __name__ == "__main__":
             results = {}
             
             try:
-                if use_auth and hasattr(browser_manager, 'get_authenticate_async_context'):
+                if use_auth and hasattr(browser_manager, 'get_authenticated_browser_and_context_async'):
                     # For managers with auth support
-                    browser, context = await browser_manager.get_authenticate_async_context()
+                    browser, context = await browser_manager.get_authenticated_browser_and_context_async()
                     pages_via_context = True
                 else:
                     # Direct browser access

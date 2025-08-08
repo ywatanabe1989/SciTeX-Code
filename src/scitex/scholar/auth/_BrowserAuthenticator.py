@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 18:50:46 (ywatanabe)"
+# Timestamp: "2025-08-07 15:22:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_BrowserAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,8 +24,8 @@ from playwright.async_api import Browser, Page, async_playwright
 
 from scitex import logging
 
+from ..browser._BrowserUtils import BrowserUtils
 from ..browser.local._BrowserMixin import BrowserMixin
-from ._BrowserUtils import BrowserUtils
 
 logger = logging.getLogger(__name__)
 
@@ -112,20 +112,29 @@ class BrowserAuthenticator(BrowserMixin):
 
             # Handle different authentication flows based on current URL
             automation_attempted = False
-            
+
             # Priority 1: OpenAthens page automation (if on OpenAthens and not yet automated)
-            if not openathens_automated and self._is_openathens_page(current_url):
+            if not openathens_automated and self._is_openathens_page(
+                current_url
+            ):
                 logger.info("OpenAthens page detected - attempting automation")
                 automation_attempted = True
-                
+
                 try:
-                    from .sso_automations._OpenAthensPageAutomator import OpenAthensPageAutomator
+                    from .library._OpenAthensPageAutomator import (
+                        OpenAthensPageAutomator,
+                    )
+
                     openathens_automator = OpenAthensPageAutomator()
-                    
+
                     if openathens_automator.is_sso_page(current_url):
-                        oa_success = await openathens_automator.handle_sso_redirect_async(page)
+                        oa_success = await openathens_automator.handle_sso_redirect_async(
+                            page
+                        )
                         if oa_success:
-                            logger.success("OpenAthens page automation completed")
+                            logger.success(
+                                "OpenAthens page automation completed"
+                            )
                             openathens_automated = True
                         else:
                             logger.warning("OpenAthens page automation failed")
@@ -133,24 +142,36 @@ class BrowserAuthenticator(BrowserMixin):
                     logger.warning(f"OpenAthens automation failed: {e}")
 
             # Priority 2: Institution-specific SSO automation (if available and on SSO page)
-            elif self.sso_automator and self.sso_automator.is_sso_page(current_url):
+            elif self.sso_automator and self.sso_automator.is_sso_page(
+                current_url
+            ):
                 institution_name = self.sso_automator.get_institution_name()
-                logger.info(f"{institution_name} SSO detected - attempting automation")
+                logger.info(
+                    f"{institution_name} SSO detected - attempting automation"
+                )
                 automation_attempted = True
 
-                sso_success = await self.sso_automator.handle_sso_redirect_async(page)
+                sso_success = (
+                    await self.sso_automator.handle_sso_redirect_async(page)
+                )
                 if sso_success:
-                    logger.success(f"{institution_name} SSO automation completed")
+                    logger.success(
+                        f"{institution_name} SSO automation completed"
+                    )
                 else:
                     logger.warning(f"{institution_name} SSO automation failed")
 
             # Priority 3: Generic automation attempt for unknown SSO pages
             elif self._is_sso_page(current_url) and not automation_attempted:
-                logger.info("Generic SSO page detected - attempting basic automation")
+                logger.info(
+                    "Generic SSO page detected - attempting basic automation"
+                )
                 automation_attempted = True
-                
+
                 try:
-                    generic_success = await self._attempt_generic_sso_automation(page)
+                    generic_success = (
+                        await self._attempt_generic_sso_automation(page)
+                    )
                     if generic_success:
                         logger.success("Generic SSO automation completed")
                     else:
@@ -158,11 +179,13 @@ class BrowserAuthenticator(BrowserMixin):
                 except Exception as e:
                     logger.debug(f"Generic SSO automation failed: {e}")
 
-            # If automation was attempted but we're still on the same page, 
+            # If automation was attempted but we're still on the same page,
             # it likely failed and requires manual intervention
             if automation_attempted and elapsed_time > 30:
                 if elapsed_time % 30 == 0:  # Show message every 30 seconds
-                    logger.info("Automation completed - waiting for manual completion if needed")
+                    logger.info(
+                        "Automation completed - waiting for manual completion if needed"
+                    )
 
             # Check for success
             if self._check_success_indicators(current_url, success_indicators):
@@ -258,9 +281,7 @@ class BrowserAuthenticator(BrowserMixin):
         simple_cookies = {c["name"]: c["value"] for c in cookies}
         return simple_cookies, cookies
 
-    async def reliable_click_async(
-        self, page: Page, selector: str
-    ) -> bool:
+    async def reliable_click_async(self, page: Page, selector: str) -> bool:
         """Perform reliable click using shared utility."""
         return await BrowserUtils.reliable_click_async(page, selector)
 
@@ -268,9 +289,7 @@ class BrowserAuthenticator(BrowserMixin):
         self, page: Page, selector: str, value: str
     ) -> bool:
         """Perform reliable form fill using shared utility."""
-        return await BrowserUtils.reliable_fill_async(
-            page, selector, value
-        )
+        return await BrowserUtils.reliable_fill_async(page, selector, value)
 
     def display_login_instructions(
         self, email: Optional[str], timeout: int
@@ -305,7 +324,10 @@ class BrowserAuthenticator(BrowserMixin):
 
     def _is_openathens_page(self, url: str) -> bool:
         """Check if URL is OpenAthens page."""
-        return "my.openathens.net" in url.lower() or "openathens.net" in url.lower()
+        return (
+            "my.openathens.net" in url.lower()
+            or "openathens.net" in url.lower()
+        )
 
     def _check_success_indicators(
         self, url: str, indicators: List[str]

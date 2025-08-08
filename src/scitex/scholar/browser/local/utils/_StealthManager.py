@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 07:03:11 (ywatanabe)"
+# Timestamp: "2025-08-07 20:01:40 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_StealthManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -26,20 +26,18 @@ class StealthManager:
         self,
         viewport_size: tuple = None,
         spoof_dimension: bool = False,
-        window_position: tuple = None,
     ):
         self.viewport_size = viewport_size
         self.spoof_dimension = spoof_dimension
-        self.window_position = window_position
 
     def get_random_user_agent(self) -> str:
         user_agents = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
         ]
         user_agent = random.choice(user_agents)
         logger.info(f"User Agent randomly selected: {user_agent}")
@@ -57,7 +55,8 @@ class StealthManager:
             return viewport
 
         if self.spoof_dimension:
-            viewport = {"width": 1, "height": 1}
+            # viewport = {"width": 1, "height": 1}
+            viewport = {"width": 1920, "height": 1080}
             logger.info(
                 f"Viewport defined as spoof_dimension passed during Stealth Manager initiation: {viewport}"
             )
@@ -128,7 +127,7 @@ class StealthManager:
             "--disable-component-update",
             "--disable-domain-reliability",
             "--disable-background-mode",
-            "--disable-extensions-http-throttling",
+            # "--disable-extensions-http-throttling",
             "--disable-ipc-flooding-protection",
             # Browser behavior normalization
             "--disable-sync",
@@ -175,6 +174,8 @@ class StealthManager:
             "--disable-search-engine-choice-screen",
             "--disable-features=PrivacySandboxSettings4",
             "--disable-features=AutofillServerCommunication",
+            # Keep this one:
+            "--enable-extensions",
         ]
         # Apply window size and position based on mode
         if self.spoof_dimension:
@@ -191,15 +192,6 @@ class StealthManager:
                 )
             else:
                 stealth_args.append("--window-size=1920,1080")
-
-            # Apply custom window position if specified
-            if self.window_position:
-                stealth_args.append(
-                    f"--window-position={self.window_position[0]},{self.window_position[1]}"
-                )
-                logger.info(
-                    f"Window positioned at: {self.window_position[0]},{self.window_position[1]}"
-                )
 
         if self.spoof_dimension:
             config_desc = "Invisible (1x1)"

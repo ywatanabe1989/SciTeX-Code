@@ -1176,7 +1176,7 @@ class Papers:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from .enrichment._MetadataEnricher import JCR_YEAR
+            from .metadata.enrichment._MetadataEnricher import JCR_YEAR
 
             if paper.impact_factor is not None and paper.impact_factor > 0:
                 fields["impact_factor"] = str(paper.impact_factor)

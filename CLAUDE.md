@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-05 04:06:48
+!-- Timestamp: 2025-08-07 07:14:31
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -48,8 +48,6 @@ Use `./scitex_repo/src/scitex/errors.py
 Now we are facing challenges with automating literature search, which is one of the modules for automatic scientific research project, SciTeX (https://scitex.ai).
 
 Scholar related temporal files, including auth cookies and cache files, should be placed under `~/.scitex/scholar` (= "$SCITEX_DIR/scholar")
-
---- WE NEED TO HANDLE NEWLY IMPLEMENTED CONFIG LOGIC THROUGHOUT THE CODEBASE.SO, PLEASE CHECK ONE BY ONE. ESPECIALLY EACHFILE SHOULD HAVE MAIN TO CHECK EASILY ---
 
 Planned workflow is:
 1. Manual Login to OpenAthens (Unimelb)
@@ -132,6 +130,7 @@ Environment variables are available at:
 `/home/ywatanabe/.dotfiles/.bash.d/secrets/000_ENV_UNIMELB.src`
 `/home/ywatanabe/.dotfiles/.bash.d/secrets/001_ENV_SCITEX.src`
 
+# IMPORTANT
 Python env is in the current directory. Do not change directory as bash handles python environments based on working directory.
 
 ## Browser extentions
@@ -142,35 +141,34 @@ Python env is in the current directory. Do not change directory as bash handles 
   - $SCITEX_SCHOLAR_2CAPTCHA_API_KEY
 
 
-## About Crawl4ai MCP Server (Now, it seems not working)
-   - Crawl4ai MCP server
-     - # Pull and run the latest release candidate
-     <!-- - # Latest version of Crawl4ai MCP server does not work
-      !-- - docker pull unclecode/crawl4ai:latest
-      !-- - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:latest
-      !-- - docker rm -f crawl4ai -->
-     - docker pull unclecode/crawl4ai:0.6.0rc1-r2
-     - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:0.6.0rc1-r2
- │   - docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g --user "$(id -u):$(id -g)" -v                        │
-     - Visit the playground at http://localhost:11235/playground
-
-● The c4ai-sse MCP server is working - it's responding to HTTP requests.
-  The issue might be with how the MCP client is configured to connect to
-  it. Since you're running the crawl4ai Docker container on Windows and
-  accessing it from WSL2, the MCP configuration might need to use the
-  Windows host IP (10.255.255.254) instead of localhost.
-
-  The server is accessible at http://localhost:11235 from WSL2, so it's not
-   a networking issue between WSL2 and Windows.
-  
-  NOTE: The crawl4ai container uses port 11235 (not 11234 as sometimes 
-  reported in GitHub issues). Verified with: docker ps | grep crawl4ai
-  
-  Maybe it should be http://127.0.0.1:11235 from wsl2 or we need to explicitly resolve windows ip
-
-Expert software engineer that helps review my code based on best practices
-Expert software engineer that monitor codebase not to introduce regressions
-Expert software engineer that solves path management from newly introduced config manager
+## About Crawl4ai MCP Server
+1. Markdown Extraction (mcp__crawl4ai__md)
+  - Converts web pages to clean markdown with filtering options (fit, raw, bm25, llm)
+  - Supports query-based content filtering
+  - Example: `mcp__crawl4ai__md(url="https://example.com")`
+2. HTML Preprocessing (mcp__crawl4ai__html)
+  - Returns sanitized HTML structure for schema extraction
+  - Useful for building structured data extraction schemas
+  - Example: `mcp__crawl4ai__html(url="https://example.com")`
+3. Screenshot Capture (mcp__crawl4ai__screenshot)
+  - Captures full-page PNG screenshots
+  - Optional output path and wait time parameters
+  - Example: `mcp__crawl4ai__screenshot(url="https://example.com", output_path="test")`
+4. PDF Generation (mcp__crawl4ai__pdf)
+  - Generates PDF documents of web pages
+  - Supports custom output paths
+  - Example: `mcp__crawl4ai__pdf(url="https://example.com", output_path="/tmp/test.pdf")`
+5. JavaScript Execution (mcp__crawl4ai__execute_js)
+  - Executes custom JS snippets in browser context
+  - Returns comprehensive CrawlResult with full page data, execution results, and metadata
+  - Example: `mcp__crawl4ai__execute_js(url="https://example.com", scripts=["document.title"])`
+6. Multi-URL Crawling (mcp__crawl4ai__crawl)
+  - Processes multiple URLs simultaneously
+  - Returns performance metrics and complete results for each URL
+7. Documentation/Context Query (mcp__crawl4ai__ask)
+  - Searches crawl4ai documentation using BM25 filtering
+  - Supports filtering by context type (doc, code, all) and result limits
+  - Example: `mcp__crawl4ai__ask(query="basic usage")`
 
 
 ## File versioning
@@ -270,7 +268,85 @@ we do not need journal_rank and h_index
   - [ ] journal impact factor
 
 
-It would be better to connect journal titles in symlinks with hypehen
-e.g. NOT: Journal of Neuroscience, Good: Journal-of-Neuroscience
+- [ ] Please download the PDF files of the pac collection, listed below
+  - `/home/ywatanabe/.scitex/scholar/library/pac`
+- Authentication is available in `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth`
+- Chrome Extensions are available in `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_ChromeExtensionManager.py`
+- Crawl4ai is available in `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/crawl4ai_integration.py`
+- Zotero Translators are available in `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/_ZoteroTranslatorRunner.py`
+- cache are available there
+  `/home/ywatanabe/.scitex/scholar/cache/chrome/auth`
+  `/home/ywatanabe/.scitex/scholar/cache/chrome/_extension`
+  `/home/ywatanabe/.scitex/scholar/cache/chrome/extension -> Profile 1`
+  `/home/ywatanabe/.scitex/scholar/cache/chrome/Profile 1`
+  Profile 1 is manually created browser profile; _extension is the one created programatically using scitex.scholar
+
+  
+- [ ] Aazhang-2017-IEEE-Transactions-on-Signal-Processing -> ../MASTER/F99329E1 (No DOI)
+- [ ] Agarwal-2018-MATEC-Web-of-Conferences -> ../MASTER/4A0327A5
+- [ ] Ahmad-2020-2020-IEEE-Region-10-Symposium-TENSYMP -> ../MASTER/164DD9BF (IEEE - not subscribed)
+- [ ] Alhudhaif-2021-PeerJ-Computer-Science -> ../MASTER/3A48D547
+- [ ] Alotaiby-2017-Computational-Intelligence-and-Neuroscience -> ../MASTER/4A6C3067
+- [ ] Alvarado-Rojas-2011-2011-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society -> ../MASTER/B36DE522 (IEEE - not subscribed)
+- [x] Alvarado-Rojas-2014-Scientific-Reports -> ../MASTER/16830DAC ✅ Downloaded
+- [x] Amiri-2016-Frontiers-in-Human-Neuroscience -> ../MASTER/E6A3AF59 ✅ Downloaded
+- [ ] Asano-2023-Nature-Communications -> ../MASTER/0C8F17CA (In Chrome for Zotero)
+- [ ] Ashokkumar-2023-Wireless-Personal-Communications -> ../MASTER/B6C5C2AC
+- [x] Assi-2018-Scientific-Reports -> ../MASTER/86D49E5E ✅ Downloaded
+- [x] Bosl-2021-Frontiers-in-Neurology -> ../MASTER/26E1350B ✅ Downloaded
+- [ ] Chang-2018-Nature-Neuroscience -> ../MASTER/A9D6B0E4 (In Chrome for Zotero)
+- [x] Cmpora-2019-Scientific-Reports -> ../MASTER/96EFCB15 ✅ Downloaded
+- [x] Edakawa-2016-Scientific-Reports -> ../MASTER/27CE930A ✅ Downloaded 
+- [ ] El-Samie-2014-EURASIP-Journal-on-Advances-in-Signal-Processing -> ../MASTER/2CEBD4C1 
+- [ ] Gagliano-2018-Epilepsy-Research -> ../MASTER/A72E87D0 (In Chrome for Zotero)
+- [x] Gagliano-2019-Scientific-Reports -> ../MASTER/ED7E7BB8 ✅ Downloaded
+- [ ] Garcia-2024-2024-46th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC (IEEE - not subscribed)
+- [ ] Ghiasvand-2020-The-Neuroscience-Journal-of-Shefaye-Khatam -> ../MASTER/1F60D8D6
+- [ ] Grigorovsky-2020-Brain-Communications -> ../MASTER/9A77D799 
+- [ ] Hasan-2017-Applied-Bionics-and-Biomechanics -> ../MASTER/C9499509
+- [ ] Jin-2022-2022-41st-Chinese-Control-Conference-CCC -> ../MASTER/FD084C7A
+- [ ] Kapoor-2022-Sensors -> ../MASTER/BAC5A831 (MDPI - failed)
+- [ ] Li-2021-Brain-Sciences -> ../MASTER/389212D2 (MDPI - failed)
+- [ ] Li-2021-IEEE-Transactions-on-Biomedical-Engineering -> ../MASTER/F4B572EA (IEEE - not subscribed)
+- [x] Li-2023-Frontiers-in-Neuroscience -> ../MASTER/1D3D59B7 ✅ Downloaded
+- [x] Li-2023-Frontiers-in-Physiology -> ../MASTER/C86A349E ✅ Downloaded
+- [ ] Liu-2016-Conference-proceedings-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Socie (IEEE - not subscribed)
+- [x] Liu-2021-Frontiers-in-Neurology -> ../MASTER/6FBC385E ✅ Downloaded
+- [x] Liu-2024-Frontiers-in-Neuroinformatics -> ../MASTER/3E42A141 ✅ Downloaded
+- [x] Ma-2021-Frontiers-in-Neurology -> ../MASTER/C6528D0E ✅ Downloaded
+- [ ] Marcoleta-2020-Biomedical-Physics-amp-Engineering-Express -> ../MASTER/3BDC1B0E (In Chrome for Zotero)
+- [x] Marzulli-2025-Frontiers-in-Human-Neuroscience -> ../MASTER/EA0A7E5E ✅ Downloaded
+- [ ] Mendoza-Cardenas-2021-2021-10th-International-IEEE-EMBS-Conference-on-Neural-Engineering-NER -> ../MASTER/8B351253 (IEEE - not subscribed)
+- [ ] Mendoza-Cardenas-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Socie (IEEE - not subscribed)
+- [ ] Miao-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC -> ../MASTER/10BDDE3C (IEEE - not subscribed)
+- [ ] Miao-2021-Cognitive-Neurodynamics -> ../MASTER/6244D82B
+- [ ] Mierlo-2014-Progress-in-Neurobiology -> ../MASTER/3E6C777F (In Chrome for Zotero)
+- [ ] Mukamel-2014-The-Journal-of-Neuroscience -> ../MASTER/E9314839
+- [ ] Natu-2022-Computational-and-Mathematical-Methods-in-Medicine -> ../MASTER/11E29EDE
+- [ ] Parvez-2016-IEEE-Transactions-on-Neural-Systems-and-Rehabilitation-Engineering -> ../MASTER/6497F609 (IEEE - not subscribed)
+- [x] Pilet-2025-Scientific-Reports -> ../MASTER/30AE20CD ✅ Downloaded
+- [x] Raghavan-2024-Scientific-Reports -> ../MASTER/A7F46FE2 ✅ Downloaded
+- [ ] Ramachandran-2018-Sensors -> ../MASTER/21308B16 (MDPI - failed)
+- [ ] Richner-2019-Journal-of-Neural-Engineering -> ../MASTER/888B096E (In Chrome for Zotero)
+- [ ] Rong-2020-Engineering -> ../MASTER/D5F8B73F (In Chrome for Zotero)
+- [ ] Salimpour-2019-Frontiers-in-Neuroscience -> ../MASTER/D0532643
+- [ ] Schelter-2007 -> ../MASTER/F45A8E5A (No journal info)
+- [ ] Sebaei-2024-South-Eastern-European-Journal-of-Public-Health -> ../MASTER/CF93E994 
+- [ ] Seo-2020-Mathematics -> ../MASTER/0AFEF557 (MDPI - failed)
+- [ ] Shirzadi-2024-Diagnostics -> ../MASTER/98763EC9 (MDPI - failed)
+- [ ] Sivathamboo-2020-IEEE-Reviews-in-Biomedical-Engineering -> ../MASTER/ABFB9D35 (IEEE - not subscribed)
+- [ ] Song-2022-Sensors -> ../MASTER/CEB508B6 (MDPI - failed)
+- [ ] Sun-2022-Acta-Epileptologica -> ../MASTER/E8601E3A 
+- [ ] Tang-2015-Bio-Medical-Materials-and-Engineering -> ../MASTER/90E10266 (In Chrome for Zotero)
+- [ ] Ujma-2022-Scientific-Reports -> ../MASTER/9D62A9C5 (DOI issue)
+- [ ] Wang-2020-2020-42nd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC -> ../MASTER/FFB1C06B (IEEE - not subscribed)
+- [ ] Watson-2015-BMC-Neuroscience -> ../MASTER/AB782507
+- [x] Winter-2020-Scientific-Reports -> ../MASTER/E8361A2E ✅ Downloaded
+- [x] Xie-2017-Scientific-Reports -> ../MASTER/B9F0224C ✅ Downloaded
+- [ ] Yanagisawa-2012-The-Journal-of-Neuroscience -> ../MASTER/54D73605
+- [ ] Yekutieli-2018-Epilepsy-Journal -> ../MASTER/9C6D5B43 
+- [ ] Yuan-2015-2015-IEEE-International-Conference-on-Digital-Signal-Processing-DSP -> ../MASTER/96980DBC (IEEE - not subscribed)
+- [ ] Zhang-2024-International-Journal-of-Surgery -> ../MASTER/8F313217
+- [ ] Zhou-2016-2016-38th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC -> ../MASTER/7E53E268 (IEEE - not subscribed) 
 
 <!-- EOF -->

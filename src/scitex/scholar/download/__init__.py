@@ -11,12 +11,39 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""Download functionality for SciTeX Scholar."""
+"""Download functionality for SciTeX Scholar - Focused on paywalled content."""
 
-from ._BrowserDownloadHelper import BrowserDownloadHelper
-from ._SmartPDFDownloader import SmartPDFDownloader
-from ._PDFDownloader import PDFDownloader
+# Core download components
+from ._DirectPDFDownloader import DirectPDFDownloader, download_pdf_simple
 
-__all__ = ["BrowserDownloadHelper", "SmartPDFDownloader", "PDFDownloader"]
+# Legacy components (to be refactored)
+try:
+    from ._SmartPDFDownloader import SmartPDFDownloader
+except ImportError:
+    SmartPDFDownloader = None
+
+try:
+    from ._AuthenticatedBrowserStrategy import AuthenticatedBrowserStrategy
+except ImportError:
+    AuthenticatedBrowserStrategy = None
+
+try:
+    from ._BaseDownloadStrategy import BaseDownloadStrategy
+except ImportError:
+    BaseDownloadStrategy = None
+
+try:
+    from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+except ImportError:
+    ZoteroTranslatorRunner = None
+
+__all__ = [
+    "DirectPDFDownloader",
+    "download_pdf_simple",
+    "SmartPDFDownloader",
+    "AuthenticatedBrowserStrategy",
+    "BaseDownloadStrategy",
+    "ZoteroTranslatorRunner"
+]
 
 # EOF

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-05 16:25:55
+!-- Timestamp: 2025-08-08 12:04:40
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -8,6 +8,89 @@
 # SciTeX Scholar
 
 A comprehensive Python library for scientific literature management with automatic enrichment of journal impact factors and citation counts.
+
+## Authentication Workflow
+``` mermaid
+sequenceDiagram
+    participant User
+    participant AuthenticationManager
+    participant OpenAthensAuthenticator
+    participant SessionManager
+    participant CacheManager
+    participant LockManager
+    participant BrowserAuthenticator
+
+    User->>AuthenticationManager: authenticate_async(force=False)
+    AuthenticationManager->>SessionManager: has_valid_session_data()
+    SessionManager-->>AuthenticationManager: returns session status
+    alt Session is valid
+        AuthenticationManager-->>User: returns success
+    else Session is invalid or force=True
+        AuthenticationManager->>LockManager: acquire_lock_async()
+        LockManager-->>AuthenticationManager: lock acquired
+        AuthenticationManager->>CacheManager: load_session_async()
+        CacheManager-->>AuthenticationManager: returns cached session if available
+        alt Cached session is valid
+            AuthenticationManager->>SessionManager: set_session_data()
+            SessionManager-->>AuthenticationManager: session updated
+            AuthenticationManager-->>User: returns success
+        else No valid cached session
+            AuthenticationManager->>OpenAthensAuthenticator: _perform_browser_authentication_async()
+            OpenAthensAuthenticator->>BrowserAuthenticator: navigate_to_login_async()
+            BrowserAuthenticator-->>OpenAthensAuthenticator: returns page
+            OpenAthensAuthenticator->>BrowserAuthenticator: wait_for_login_completion_async()
+            BrowserAuthenticator-->>OpenAthensAuthenticator: returns success status
+            alt Login successful
+                OpenAthensAuthenticator->>BrowserAuthenticator: extract_session_cookies_async()
+                BrowserAuthenticator-->>OpenAthensAuthenticator: returns cookies
+                OpenAthensAuthenticator->>SessionManager: set_session_data()
+                SessionManager-->>OpenAthensAuthenticator: session updated
+                OpenAthensAuthenticator->>CacheManager: save_session_async()
+                CacheManager-->>OpenAthensAuthenticator: session saved
+                OpenAthensAuthenticator-->>AuthenticationManager: returns success
+                AuthenticationManager-->>User: returns success
+            else Login failed
+                OpenAthensAuthenticator-->>AuthenticationManager: returns failure
+                AuthenticationManager-->>User: returns failure
+            end
+        end
+        AuthenticationManager->>LockManager: release_lock_async()
+    end
+```
+
+
+## DOI Resolution Workflow
+``` mermaid
+graph TD
+    A[Start DOI Resolution] --> B{Check Cache};
+    B -- Yes --> C[Return Cached DOI];
+    B -- No --> D{Select Optimal Sources};
+    D --> E[Attempt Resolution with Source 1];
+    E -- Success --> F{Validate & Clean DOI};
+    F --> G[Save to Cache];
+    G --> H[Return DOI];
+    E -- Failure --> I{Attempt Resolution with Source 2};
+    I -- Success --> F;
+    I -- Failure --> J{Attempt Resolution with Source 3};
+    J -- Success --> F;
+    J -- Failure --> K[Log Failure];
+    K --> L[Return Not Found];
+
+    subgraph Sources
+        direction LR
+        S1[URLDOIExtractor]
+        S2[CrossRefSource]
+        S3[SemanticScholarSource]
+        S4[PubMedSource]
+        S5[OpenAlexSource]
+    end
+
+    D --> S1;
+    D --> S2;
+    D --> S3;
+    D --> S4;
+    D --> S5;
+```
 
 ## Command line
 

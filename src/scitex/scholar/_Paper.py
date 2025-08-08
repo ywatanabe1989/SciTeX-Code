@@ -221,7 +221,7 @@ class Paper:
         # Enriched metadata
         if include_enriched:
             # Get JCR year dynamically from enrichment module
-            from .enrichment._MetadataEnricher import JCR_YEAR
+            from .metadata.enrichment._MetadataEnricher import JCR_YEAR
 
             if self.impact_factor is not None:
                 # Only add if it's a real value (not 0.0)

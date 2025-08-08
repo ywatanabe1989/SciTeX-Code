@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 01:55:27 (ywatanabe)"
+# Timestamp: "2025-08-07 18:47:55 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations

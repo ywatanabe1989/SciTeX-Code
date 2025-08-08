@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 15:05:51 (ywatanabe)"
+# Timestamp: "2025-08-07 15:44:14 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/_CentralArgumentParser.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,6 +15,10 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from dataclasses import dataclass
 from typing import Any, List, Optional
+
+from scitex import logging
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -33,40 +37,6 @@ class ArgumentConfig:
 
 
 class CentralArgumentParser:
-    # @classmethod
-    # def get_command_parsers(cls):
-    #     """Import and get parsers from command modules."""
-    #     parsers = {}
-
-    #     try:
-    #         from .enrich_bibtex import create_parser
-
-    #         parsers["enrich-bibtex"] = create_parser()
-    #     except ImportError:
-    #         pass
-
-    #     try:
-    #         from .resolve_doi import create_parser
-
-    #         parsers["resolve-doi"] = create_parser()
-    #     except ImportError:
-    #         pass
-
-    #     try:
-    #         from .resolve_and_enrich import create_parser
-
-    #         parsers["resolve-and-enrich"] = create_parser()
-    #     except ImportError:
-    #         pass
-
-    #     try:
-    #         from .open_chrome import create_parser
-
-    #         parsers["open-chrome"] = create_parser()
-    #     except ImportError:
-    #         pass
-
-    #     return parsers
 
     @classmethod
     def get_command_parsers(cls):
@@ -98,18 +68,26 @@ class CentralArgumentParser:
             parser = create_parser()
             parsers["resolve-and-enrich"] = parser
             descriptions["resolve-and-enrich"] = parser.description
-        except ImportError:
-            pass
+        except ImportError as ie:
+            logger.warn(str(ie))
 
         try:
-            from .open_chrome import create_parser
+            from .chrome import create_parser
 
             parser = create_parser()
-            parsers["open-chrome"] = parser
-            descriptions["open-chrome"] = parser.description
-        except ImportError:
-            pass
+            parsers["chrome"] = parser
+            descriptions["chrome"] = parser.description
+        except ImportError as ie:
+            logger.warn(str(ie))
 
+        try:
+            from .download_pdf import create_parser
+
+            parser = create_parser()
+            parsers["download"] = parser
+            descriptions["download"] = parser.description
+        except ImportError as ie:
+            logger.warn(str(ie))
         return parsers, descriptions
 
     @classmethod

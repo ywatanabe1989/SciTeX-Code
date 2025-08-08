@@ -358,7 +358,7 @@ File: browser/remote/_ZenRowsAPIBrowser.py
  307   9         async def process_url_async(url: str, index: int) -> Dict[str, Any]:
  319   9         async def process_with_limit_async(url: str, index: int):
 
-File: auth/sso_automations/_UniversityOfMelbourneSSOAutomator.py
+File: auth/sso_automation/_UniversityOfMelbourneSSOAutomator.py
   65   5     async def perform_login_async(self, page: Page) -> bool:
  117   5     async def _handle_username_step_async(self, page: Page) -> bool:
  147   5     async def _handle_password_step_async(self, page: Page) -> bool:
@@ -427,14 +427,14 @@ File: auth/_BaseAuthenticator.py
  105   5     async def get_session_async_info_async(self) -> Dict[str, Any]:
  126   5     async def main():
 
-File: auth/sso_automations/_BaseSSOAutomator.py
+File: auth/sso_automation/_BaseSSOAutomator.py
   77   5     async def perform_login_async(self, page: Page) -> bool:
   81   5     async def handle_sso_redirect_async(self, page: Page) -> bool:
  124   5     async def _save_session_async(self, context: BrowserContext):
  144   5     async def _restore_session_async(self, context: BrowserContext) -> bool:
  176   5     async def notify_user_async(self, event_type: str, **kwargs) -> None:
 
-File: auth/sso_automations/README.md
+File: auth/sso_automation/README.md
  108   5     async def perform_login_async(self, page: Page) -> bool:
 
 File: browser/README.md
@@ -495,8 +495,8 @@ File: browser/local/utils/_CaptchaHandler.py
   93   5     async def handle_captcha_async(
  125   5     async def check_captcha_exists_async(self, page: Page) -> bool:
 
-File: browser/local/utils/_ChromeExtensionManager_v01-with-config.py
-  84   5     async def check_extensions_installed_async(self) -> Dict[str, bool]:
+File: browser/local/utils/_ChromeProfileManager_v01-with-config.py
+  84   5     def check_extensions_installed(self) -> Dict[str, bool]:
  128   5     async def install_extensions_interactive_async(self):
  172   5     async def check_lean_library_active_async(self, page, url: str) -> bool:
 
@@ -508,8 +508,8 @@ File: download/_ShibbolethDownloadStrategy.py
  216   5     async def _find_pdf_link_async(self, page: Page) -> Optional[str]:
  264   5     async def get_authenticate_asyncd_session(self) -> Dict[str, Any]:
 
-File: browser/local/utils/_ChromeExtensionManager.py
- 125   5     async def check_extensions_installed_async(self) -> bool:
+File: browser/local/utils/_ChromeProfileManager.py
+ 125   5     def check_extensions_installed(self) -> bool:
  178   5     async def install_extensions_interactive_asyncly_if_not_installed(self):
  237   5     async def check_lean_library_active_async(
 
@@ -524,14 +524,14 @@ File: browser/local/utils/_StealthManager.py
 1026   5     async def human_type_async(self, page: Page, selector: str, text: str):
 1039   5     async def main():
 
-File: browser/local/utils/_ChromeExtensionManager_v99.py
+File: browser/local/utils/_ChromeProfileManager_v99.py
  108   5     async def install_extensions_fallback_async(self):
- 135   5     async def check_extensions_installed_async(self) -> Dict[str, bool]:
+ 135   5     def check_extensions_installed(self) -> Dict[str, bool]:
  179   5     async def install_extensions_interactive_async(self):
  368   5     async def check_lean_library_active_async(self, page, url: str) -> bool:
 
-File: browser/local/utils/_ChromeExtensionManager_v02-detected-by-cloudflare.py
- 125   5     async def check_extensions_installed_async(self) -> bool:
+File: browser/local/utils/_ChromeProfileManager_v02-detected-by-cloudflare.py
+ 125   5     def check_extensions_installed(self) -> bool:
  178   5     async def install_extensions_interactive_asyncly_if_not_installed(self):
  237   5     async def check_lean_library_active_async(
 
@@ -581,7 +581,7 @@ File: open_url/_OpenURLResolver.py
 File: browser/local/_BrowserManager.py
   99   5     async def get_authenticate_asyncd_context(
  145   5     async def _create_stealth_context_async(
- 164   5     async def get_browser_async_with_profile(self) -> Browser:
+ 164   5     async def get_shared_browser_with_profile_async(self) -> Browser:
  175   5     async def _ensure_playwright_started_async(self):
  179   5     async def _ensure_extensions_installed_async(self):
  188   5     async def _launch_persistent_context_async(self):
@@ -681,7 +681,7 @@ File: download/_PDFDownloader.py
 File: open_url/README.md
  155   1 async def resolve_with_fallback_async(doi, metadata):
 
-File: open_url/_IntelligentGoButtonSelector.py
+File: open_url/_UnimelbLibraryGoButtonSelector.py
  111   5     async def analyze_go_buttons_async(self, page) -> List[GoButtonCandidate]:
  405   5     async def intelligent_go_button_selection_async(self, page) -> Optional[Dict]:
  445   1 async def select_most_reliable_go_button_async(page) -> Optional[Dict]:
@@ -844,7 +844,7 @@ func_names=(
     "inject_captcha_handler_async"
     "handle_captcha_async"
     "check_captcha_exists_async"
-    "check_extensions_installed_async"
+    "check_extensions_installed"
     "install_extensions_interactive_async"
     "check_lean_library_active_async"
     "can_download"
@@ -880,7 +880,7 @@ func_names=(
     "_download_pdf_async_from_publisher_page"
     "resolve_and_download_pdf_async"
     "_create_stealth_context_async"
-    "get_browser_async_with_profile"
+    "get_shared_browser_with_profile_async"
     "_ensure_playwright_started_async"
     "_ensure_extensions_installed_async"
     "_launch_persistent_context_async"

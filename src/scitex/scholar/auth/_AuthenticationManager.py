@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 01:16:23 (ywatanabe)"
+# Timestamp: "2025-08-07 15:30:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -25,10 +25,10 @@ from scitex import logging
 
 from ...errors import AuthenticationError
 from ..config import ScholarConfig
-from ._BaseAuthenticator import BaseAuthenticator
-from ._EZProxyAuthenticator import EZProxyAuthenticator
-from ._OpenAthensAuthenticator import OpenAthensAuthenticator
-from ._ShibbolethAuthenticator import ShibbolethAuthenticator
+from .library._BaseAuthenticator import BaseAuthenticator
+from .library._EZProxyAuthenticator import EZProxyAuthenticator
+from .library._OpenAthensAuthenticator import OpenAthensAuthenticator
+from .library._ShibbolethAuthenticator import ShibbolethAuthenticator
 
 logger = logging.getLogger(__name__)
 
@@ -90,12 +90,6 @@ class AuthenticationManager:
                         config=self.config,
                     ),
                 )
-
-        # # This is not possible as __init__ is not async function
-        # try:
-        #     await self.ensure_authenticate_async()
-        # except Exception as e:
-        #     print(e)
 
     def _register_provider(
         self, name: str, provider: BaseAuthenticator
@@ -226,9 +220,6 @@ if __name__ == "__main__":
     async def main():
         import os
 
-        import aiohttp
-        from yarl import URL
-
         from scitex.scholar.auth import AuthenticationManager
 
         auth_manager = AuthenticationManager(
@@ -236,34 +227,10 @@ if __name__ == "__main__":
         )
         providers = auth_manager.list_providers()
 
-        try:
-            is_authenticate_async = (
-                await auth_manager.ensure_authenticate_async()
-            )
-            print(f"Authentication ensured: {is_authenticate_async}")
+        is_authenticate_async = await auth_manager.ensure_authenticate_async()
 
-            headers = await auth_manager.get_auth_headers_async()
-            cookies = await auth_manager.get_auth_cookies_async()
-            print(f"Got {len(headers)} headers and {len(cookies)} cookies")
-
-            jar = aiohttp.CookieJar()
-            for cookie in cookies:
-                domain = cookie.get("domain", "").lstrip(".")
-                url = URL(f"https://{domain}")
-                jar.update_cookies(
-                    {cookie["name"]: cookie["value"]}, response_url=url
-                )
-
-            async with aiohttp.ClientSession(
-                cookie_jar=jar, headers=headers
-            ) as session:
-                test_url = "https://my.openathens.net/account"
-                async with session.get(test_url, timeout=10) as response:
-                    print(f"Test access: {test_url} -> {response.status}")
-
-        finally:
-            await auth_manager.logout_async()
-            print("Logged out from all providers")
+        headers = await auth_manager.get_auth_headers_async()
+        cookies = await auth_manager.get_auth_cookies_async()
 
     asyncio.run(main())
 

@@ -12,14 +12,14 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 from ._BrowserManager import BrowserManager
-# from ._ChromeExtensionManager import ChromeExtensionManager
+# from ._ChromeProfileManager import ChromeProfileManager
 # from ._SeleniumBrowserManager import SeleniumBrowserManager
 # from ._HybridBrowserManager import HybridBrowserManager
 
 __all__ = [
     "BrowserManager",
     # "ZenRowsBrowserManager",
-    # "ChromeExtensionManager",
+    # "ChromeProfileManager",
     # "SeleniumBrowserManager",
     # "HybridBrowserManager"
 ]

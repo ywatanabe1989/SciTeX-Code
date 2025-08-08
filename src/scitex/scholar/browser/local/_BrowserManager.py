@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 17:05:45 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/_BrowserManager.py
+# Timestamp: "2025-08-07 23:24:26 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -12,6 +12,9 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import asyncio
+import subprocess
+import time
+from datetime import datetime
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
@@ -19,11 +22,52 @@ from scitex import logging
 
 from ...config._ScholarConfig import ScholarConfig
 from ._BrowserMixin import BrowserMixin
-from .utils._ChromeExtensionManager import ChromeExtensionManager
+from .utils._ChromeProfileManager import ChromeProfileManager
 from .utils._CookieAutoAcceptor import CookieAutoAcceptor
 from .utils._StealthManager import StealthManager
 
 logger = logging.getLogger(__name__)
+
+"""
+Browser Manager with persistent context support.
+
+_persistent_context is a **persistent browser context** that stays alive across multiple operations.
+
+## Regular vs Persistent Context
+
+**Regular context** (new each time):
+```python
+browser = await playwright.chromium.launch()
+context = await browser.new_context()  # New context each time
+page = await context.new_page()
+```
+
+**Persistent context** (reused):
+```python
+# Created once in _launch_persistent_context_async()
+self._persistent_context = await self._persistent_playwright.chromium.launch_persistent_context(
+    user_data_dir=str(profile_dir),  # Persistent profile
+    headless=False,
+    args=[...extensions...]
+)
+
+# Reused multiple times
+if hasattr(self, "_persistent_context") and self._persistent_context:
+    context = self._persistent_context  # Same context
+```
+
+## Benefits of Persistent Context
+
+1. **Extensions persist** - Extensions loaded once, available for all pages
+2. **Authentication cookies persist** - No need to re-login
+3. **Profile data persistent** - Bookmarks, history, settings maintained
+4. **Performance** - Faster page creation (no browser restart)
+5. **Session continuity** - Maintains login state across operations
+
+## In Your Code
+
+`_persistent_context` is set in `_launch_persistent_context_async()` and reused in `get_authenticated_browser_and_context_async()`. This allows multiple pages to share the same authenticated, extension-enabled browser session.
+"""
 
 
 class BrowserManager(BrowserMixin):
@@ -33,6 +77,7 @@ class BrowserManager(BrowserMixin):
         self,
         browser_mode=None,
         auth_manager=None,
+        chrome_profile_name=None,
         config: ScholarConfig = None,
     ):
         """
@@ -42,13 +87,13 @@ class BrowserManager(BrowserMixin):
             auth_manager: Authentication manager instance
             config: Scholar configuration instance
         """
-        # Store scholar_config for use by components like ChromeExtensionManager
-        self.scholar_config = config or ScholarConfig()
+        # Store scholar_config for use by components like ChromeProfileManager
+        self.config = config or ScholarConfig()
 
-        browser_mode = self.scholar_config.resolve(
+        self.browser_mode = self.config.resolve(
             "browser_mode", browser_mode, default="interactive"
         )
-        super().__init__(mode=browser_mode)
+        super().__init__(mode=self.browser_mode)
 
         self._set_interactive_or_stealth(browser_mode)
 
@@ -60,32 +105,38 @@ class BrowserManager(BrowserMixin):
             )
 
         # Chrome Extension
-        logger.warn(f"Profile name is set as extension in hardcoding")
-        self.extension_manager = ChromeExtensionManager(
-            profile_name="extension", config=self.scholar_config
+        self.chrome_profile_manager = ChromeProfileManager(
+            chrome_profile_name, config=self.config
         )
 
         # Stealth
         self.stealth_manager = StealthManager(
-            self.viewport_size, self.spoof_dimension, self.window_position
+            self.viewport_size, self.spoof_dimension
         )
 
         # Cookie
         self.cookie_acceptor = CookieAutoAcceptor()
+
+        # Initialize persistent browser attributes
+        self._persistent_browser = None
+        self._persistent_context = None
+        self._persistent_playwright = None
 
     def _set_interactive_or_stealth(self, browser_mode):
         # Interactive or Stealth
         if browser_mode == "interactive":
             self.headless = False
             self.spoof_dimension = False
-            self.viewport_size = (1200, 800)
-            self.window_position = (100, 100)
+            self.viewport_size = (1920, 1080)
+            self.display = 0
         elif browser_mode == "stealth":
             # Must be False for dimension spoofing to work
             self.headless = False
             self.spoof_dimension = True
-            self.viewport_size = (1, 1)
-            self.window_position = (0, 0)
+            # This only affects internal viewport, not window size
+            # self.viewport_size = (1, 1)
+            self.viewport_size = (1920, 1080)
+            self.display = 99
         else:
             raise ValueError(
                 "browser_mode must be eighther of 'interactive' or 'stealth'"
@@ -94,9 +145,8 @@ class BrowserManager(BrowserMixin):
         logger.warn(f"headless: {self.headless}")
         logger.warn(f"spoof_dimension: {self.spoof_dimension}")
         logger.warn(f"viewport_size: {self.viewport_size}")
-        logger.warn(f"window_position: {self.window_position}")
 
-    async def get_authenticate_async_context(
+    async def get_authenticated_browser_and_context_async(
         self,
     ) -> tuple[Browser, BrowserContext]:
         """Get browser context with authentication cookies and extensions loaded."""
@@ -104,18 +154,21 @@ class BrowserManager(BrowserMixin):
         # Ensure auth_manager is passed
         if self.auth_manager is None:
             raise ValueError(
-                "Authentication manager is not set. To use this method, please initialize BrowserManager with an auth_manager."
+                "Authentication manager is not set. "
+                "To use this method, please initialize BrowserManager with an auth_manager."
             )
 
         # Ensure auth_manager has authenticate_async info
         await self.auth_manager.ensure_authenticate_async()
 
         # Use browser with Chrome profile for extension support
-        browser = await self.get_browser_async_with_profile()
+        browser = (
+            await self._get_persistent_browser_with_profile_but_not_with_auth_async()
+        )
 
         # With persistent context, we already have the profile and extensions loaded
-        if hasattr(self, "_shared_context") and self._shared_context:
-            context = self._shared_context
+        if hasattr(self, "_persistent_context") and self._persistent_context:
+            context = self._persistent_context
             logger.success(
                 "Using persistent context with profile and extensions"
             )
@@ -146,57 +199,56 @@ class BrowserManager(BrowserMixin):
         self, browser: Browser, **context_options
     ) -> BrowserContext:
         """Creates a new browser context with stealth options and invisible mode applied."""
-        stealth_options = self.stealth_manager.get_stealth_options()
-
-        merged_options = {**stealth_options, **context_options}
-        context = await browser.new_context(**merged_options)
-
-        # Apply stealth script
-        await context.add_init_script(self.stealth_manager.get_init_script())
-        await context.add_init_script(
-            self.stealth_manager.get_dimension_spoofing_script()
+        # stealth_options = self.stealth_manager.get_stealth_options()
+        stealth_options = {}
+        context = await browser.new_context(
+            {**stealth_options, **context_options}
         )
-        await context.add_init_script(
-            self.cookie_acceptor.get_auto_acceptor_script()
-        )
+
+        # # Apply stealth script
+        # await context.add_init_script(self.stealth_manager.get_init_script())
+        # await context.add_init_script(
+        #     self.stealth_manager.get_dimension_spoofing_script()
+        # )
+        # await context.add_init_script(
+        #     self.cookie_acceptor.get_auto_acceptor_script()
+        # )
         return context
 
-    async def get_browser_async_with_profile(self) -> Browser:
+    # ########################################
+    # Persistent Context
+    # ########################################
+    async def _get_persistent_browser_with_profile_but_not_with_auth_async(
+        self,
+    ) -> Browser:
         if (
-            self._shared_browser is None
-            or self._shared_browser.is_connected() is False
+            self._persistent_browser is None
+            or self._persistent_browser.is_connected() is False
         ):
             await self.auth_manager.ensure_authenticate_async()
             await self._ensure_playwright_started_async()
             await self._ensure_extensions_installed_async()
             await self._launch_persistent_context_async()
-        return self._shared_browser
+        return self._persistent_browser
 
     async def _ensure_playwright_started_async(self):
-        if self._shared_playwright is None:
-            self._shared_playwright = await async_playwright().start()
+        if self._persistent_playwright is None:
+            self._persistent_playwright = await async_playwright().start()
 
     async def _ensure_extensions_installed_async(self):
-        if not await self.extension_manager.check_extensions_installed_async():
+        if not self.chrome_profile_manager.check_extensions_installed():
             logger.error("Chrome extensions not verified")
             try:
                 logger.warn("Trying install extensions")
-                await self.extension_manager.install_extensions_manually_if_not_installed_async()
+                await self.chrome_profile_manager.install_extensions_manually_if_not_installed_async()
             except Exception as e:
                 logger.error(f"Installation failed: {str(e)}")
-
-        # Configure extensions after installation/verification
-        try:
-            logger.info("Configuring extensions for optimal operation...")
-            await self.extension_manager.configure_all_extensions_async()
-        except Exception as e:
-            logger.error(f"Extension configuration failed: {str(e)}")
 
     async def _launch_persistent_context_async(self):
         launch_options = self._build_launch_options()
 
         # Clean up any existing singleton lock files that might prevent browser launch
-        profile_dir = self.extension_manager.profile_dir
+        profile_dir = self.chrome_profile_manager.profile_dir
 
         # Multiple possible lock file locations
         lock_files = [
@@ -211,24 +263,18 @@ class BrowserManager(BrowserMixin):
             if lock_file.exists():
                 try:
                     lock_file.unlink()
-                    logger.info(
-                        f"🧹 Removed Chrome lock file: {lock_file.name}"
-                    )
+                    logger.info(f"Removed Chrome lock file: {lock_file.name}")
                     removed_locks += 1
                 except Exception as e:
                     logger.warning(f"Could not remove {lock_file.name}: {e}")
 
         if removed_locks > 0:
-            logger.info(f"🧹 Cleaned up {removed_locks} Chrome lock files")
+            logger.info(f"Cleaned up {removed_locks} Chrome lock files")
             # Wait a moment for the system to release file handles
-            import time
-
             time.sleep(1)
 
         # Kill any lingering Chrome processes using this profile
         try:
-            import subprocess
-
             profile_path_str = str(profile_dir)
             # Find and kill Chrome processes using this profile
             result = subprocess.run(
@@ -238,7 +284,7 @@ class BrowserManager(BrowserMixin):
             )
             if result.returncode == 0:
                 logger.info(
-                    "🧹 Killed lingering Chrome processes for this profile"
+                    "Killed lingering Chrome processes for this profile"
                 )
                 time.sleep(2)  # Give processes time to fully terminate
         except Exception as e:
@@ -246,31 +292,110 @@ class BrowserManager(BrowserMixin):
 
         # This show_asyncs a small screen with 4 extensions show_asyncn
         launch_options["headless"] = False
-        self._shared_context = (
-            await self._shared_playwright.chromium.launch_persistent_context(
-                **launch_options
-            )
+        self._persistent_context = await self._persistent_playwright.chromium.launch_persistent_context(
+            **launch_options
         )
 
-        await self._apply_stealth_scripts_async()
-        
-        # Load authentication cookies into the persistent context
+        await self._close_unwanted_extension_pages_async()
+        asyncio.create_task(self._close_unwanted_extension_pages_async())
+        await self._apply_stealth_scripts_to_persistent_context_async()
         await self._load_auth_cookies_to_persistent_context_async()
+        self._persistent_browser = self._persistent_context.browser
 
-        self._shared_browser = self._shared_context.browser
+    async def _close_unwanted_extension_pages_async(self):
+        await asyncio.sleep(1)
+
+        for _ in range(20):
+            try:
+                unwanted_pages = [
+                    page
+                    for page in self._persistent_context.pages
+                    if (
+                        "chrome-extension://" in page.url
+                        or "app.pbapi.xyz" in page.url
+                        or "options.html" in page.url
+                        # or "page:blacnk" in page.url
+                    )
+                ]
+
+                if not unwanted_pages:
+                    logger.info("Extension cleanup completed")
+                    break
+
+                # Ensure context stays alive
+                if len(self._persistent_context.pages) == len(unwanted_pages):
+                    await self._persistent_context.new_page()
+
+                for page in unwanted_pages:
+                    await page.close()
+                    logger.info(f"Closed unwanted page: {page.url}")
+
+            except Exception as e:
+                logger.debug(f"Cleanup attempt failed: {e}")
+
+            await asyncio.sleep(2)
+
+    def _verify_xvfb_running(self):
+        """Verify Xvfb virtual display is running"""
+        try:
+            result = subprocess.run(
+                ["xdpyinfo", "-display", f":{self.display}"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if result.returncode == 0:
+                logger.success(f"Xvfb display :{self.display} is running")
+                return True
+            else:
+                logger.info(f"Starting Xvfb display :{self.display}")
+                subprocess.Popen(
+                    [
+                        "Xvfb",
+                        f":{self.display}",
+                        "-screen",
+                        "0",
+                        "1920x1080x24",
+                        "-ac",
+                        "+extension",
+                        "GLX",
+                        "+render",
+                        "-noreset",
+                    ]
+                )
+                time.sleep(2)
+                return self._verify_xvfb_running()
+        except Exception as e:
+            logger.error(f"Cannot verify Xvfb: {e}")
+            return False
 
     def _build_launch_options(self):
-        stealth_args = self.stealth_manager.get_stealth_options_additional()
-        extension_args = self.extension_manager.get_extension_args()
-        launch_args = stealth_args + extension_args
+        # stealth_args = self.stealth_manager.get_stealth_options_additional()
+        stealth_args = []
+        extension_args = self.chrome_profile_manager.get_extension_args()
+
+        stealth_args.extend(
+            [
+                f"--display=:{self.display}",
+                "--window-size=1920,1080",
+            ]
+        )
+
+        no_welcome_args = [
+            "--disable-extensions-file-access-check",
+            "--disable-extensions-http-throttling",
+            "--disable-component-extensions-with-background-pages",
+        ]
+
+        launch_args = extension_args + stealth_args + no_welcome_args
 
         # Debug: Show window args for stealth mode
         if self.spoof_dimension:
             window_args = [arg for arg in launch_args if "window-" in arg]
-            logger.info(f"🎭 Stealth window args: {window_args}")
+            logger.warn(f"Stealth window args: {window_args}")
 
         return {
-            "user_data_dir": str(self.extension_manager.profile_dir),
+            "user_data_dir": str(self.chrome_profile_manager.profile_dir),
             "headless": self.headless,
             "args": launch_args,
             "viewport": {
@@ -283,31 +408,34 @@ class BrowserManager(BrowserMixin):
             },
         }
 
-    async def _apply_stealth_scripts_async(self):
-        if self.spoof_dimension:
-            await self._shared_context.add_init_script(
-                self.stealth_manager.get_init_script()
-            )
-            await self._shared_context.add_init_script(
-                self.stealth_manager.get_dimension_spoofing_script()
-            )
-            await self._shared_context.add_init_script(
-                self.cookie_acceptor.get_auto_acceptor_script()
-            )
+    async def _apply_stealth_scripts_to_persistent_context_async(self):
+        # await self._persistent_context.add_init_script(
+        #     self.stealth_manager.get_init_script()
+        # )
+        # await self._persistent_context.add_init_script(
+        #     self.stealth_manager.get_dimension_spoofing_script()
+        # )
+        await self._persistent_context.add_init_script(
+            self.cookie_acceptor.get_auto_acceptor_script()
+        )
 
     async def _load_auth_cookies_to_persistent_context_async(self):
         """Load authentication cookies into the persistent browser context."""
         if not self.auth_manager:
             logger.debug("No auth_manager available, skipping cookie loading")
             return
-            
+
         try:
             # Check if we have authentication
-            if await self.auth_manager.is_authenticate_async(verify_live=False):
+            if await self.auth_manager.is_authenticate_async(
+                verify_live=False
+            ):
                 cookies = await self.auth_manager.get_auth_cookies_async()
                 if cookies:
-                    await self._shared_context.add_cookies(cookies)
-                    logger.success(f"Loaded {len(cookies)} authentication cookies into persistent browser context")
+                    await self._persistent_context.add_cookies(cookies)
+                    logger.success(
+                        f"Loaded {len(cookies)} authentication cookies into persistent browser context"
+                    )
                 else:
                     logger.debug("No cookies available from auth manager")
             else:
@@ -315,61 +443,101 @@ class BrowserManager(BrowserMixin):
         except Exception as e:
             logger.warning(f"Failed to load authentication cookies: {e}")
 
-    async def check_lean_library_active_async(self, page, url, timeout_sec=5):
-        """Check if Lean Library provides PDF access."""
-        return await self.extension_manager.check_lean_library_active_async(
-            page, url, timeout_sec=timeout_sec
+    async def take_screenshot_safe_async(
+        self,
+        page,
+        fname: str,
+        timeout_sec: float = 30.0,
+        timeout_after_sec: float = 30.0,
+        full_page: bool = False,
+    ):
+        """Take screenshot without viewport changes."""
+        screenshots_dir = self.config.get_screenshots_dir(
+            screenshot_type="log"
+        )
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        path = os.path.join(
+            str(screenshots_dir),
+            f"{fname}-{timestamp}-{self.browser_mode}.png",
         )
 
-    # def get_page(self):
-    #     """Get a new page with proper context management."""
-
-    #     class PageManager:
-    #         def __init__(self, browser_manager):
-    #             self.browser_manager = browser_manager
-    #             self.browser = None
-    #             self.context = None
-    #             self.page = None
-
-    #         async def __aenter__(self):
-    #             self.browser, self.context = (
-    #                 await self.browser_manager.get_authenticate_async_context()
-    #             )
-    #             self.page = await self.context.new_page()
-
-    #             # Inject advanced stealth scripts for Cloudflare evasion
-    #             stealth_manager = StealthManager(
-    #                 viewport_size=self.browser_manager.viewport_size,
-    #                 spoof_dimension=self.browser_manager.spoof_dimension,
-    #                 window_position=self.browser_manager.window_position,
-    #             )
-    #             await stealth_manager.inject_stealth_scripts(self.page)
-    #             await stealth_manager.add_human_behavior_async(self.page)
-
-    #             return self.page
-
-    #         async def __aexit__(self, exc_type, exc_val, exc_tb):
-    #             if self.page:
-    #                 await self.page.close()
-
-    #     return PageManager(self)
-
-    async def take_screenshot_safe_async(
-        self, page, path: str, description: str = "", timeout: int = 30000
-    ):
-        """Take screenshot in stealth mode without viewport changes."""
         try:
-            await page.screenshot(path=path, timeout=timeout, full_page=True)
-            logger.info(f"Screenshot saved: {description} -> {path}")
-
+            await page.screenshot(
+                path=path, timeout=timeout_sec * 1000, full_page=full_page
+            )
+            logger.success(f"Saved: {path}")
         except Exception as e:
-            logger.warning(f"Screenshot failed for {description}: {e}")
+            logger.fail(f"Screenshot failed for {path}: {e}")
+    
+    async def start_periodic_screenshots_async(
+        self,
+        page,
+        prefix: str = "periodic",
+        interval_seconds: int = 1,
+        duration_seconds: int = 10,
+        verbose: bool = False,
+    ):
+        """
+        Start taking periodic screenshots in the background.
+        
+        Args:
+            page: The page to screenshot
+            prefix: Prefix for screenshot filenames
+            interval_seconds: Seconds between screenshots
+            duration_seconds: Total duration to take screenshots (0 = infinite)
+            verbose: Whether to log each screenshot
+            
+        Returns:
+            asyncio.Task that can be cancelled to stop screenshots
+        """
+        async def take_periodic_screenshots():
+            screenshots_dir = self.config.get_screenshots_dir(screenshot_type="log")
+            elapsed = 0
+            step = 0
+            
+            while duration_seconds == 0 or elapsed < duration_seconds:
+                step += 1
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Include milliseconds
+                fname = f"{prefix}_step{step:03d}_{timestamp}"
+                path = os.path.join(
+                    str(screenshots_dir),
+                    f"{fname}-{self.browser_mode}.png",
+                )
+                
+                try:
+                    await page.screenshot(path=path)
+                    if verbose:
+                        logger.debug(f"Screenshot {step}: {fname}")
+                    elif step == 1:
+                        logger.info(f"Started periodic screenshots: {prefix}_*")
+                except Exception as e:
+                    if verbose:
+                        logger.debug(f"Screenshot {step} failed: {e}")
+                
+                await asyncio.sleep(interval_seconds)
+                elapsed += interval_seconds
+            
+            logger.info(f"Completed {step} periodic screenshots for {prefix}")
+        
+        # Start the task in background
+        task = asyncio.create_task(take_periodic_screenshots())
+        return task
+    
+    async def stop_periodic_screenshots_async(self, task: asyncio.Task):
+        """Stop periodic screenshots task."""
+        if task and not task.done():
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                logger.debug("Periodic screenshots stopped")
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)
 
 
 if __name__ == "__main__":
+    import json
 
     async def main(browser_mode="interactive"):
         """Example usage of BrowserManager with stealth features."""
@@ -377,81 +545,132 @@ if __name__ == "__main__":
 
         auth_manager = AuthenticationManager()
         browser_manager = BrowserManager(
+            chrome_profile_name="system",
             browser_mode=browser_mode,
             auth_manager=auth_manager,
         )
 
-        browser = await browser_manager.get_browser_async_with_profile()
-        page = await browser_manager._shared_context.new_page()
+        browser, context = (
+            await browser_manager.get_authenticated_browser_and_context_async()
+        )
+        page = await context.new_page()
 
         # Test sites configuration
         test_sites = [
+            # {
+            #     "name": "Extensions Test",
+            #     "url": "",
+            #     "screenshot_fname": "openathens_test",
+            # },
+            # {
+            #     "name": "SSO Test",
+            #     "url": "https://sso.unimelb.edu.au/",
+            #     "screenshot_fname": "unimelb_sso_test",
+            # },
+            # {
+            #     "name": "OpenAthens",
+            #     "url": "https://my.openathens.net/account",
+            #     "screenshot_fname": "openathens_test",
+            # },
+            # {
+            #     "name": "CAPTCHA Test",
+            #     "url": "https://www.google.com/recaptcha/api2/demo",
+            #     "screenshot_fname": "captcha_test",
+            # },
             {
-                "name": "OpenAthens",
-                "url": "https://my.openathens.net/account",
-                "screenshot": f"/tmp/openathens_test-{browser_mode}.png",
-                "description": "OpenAthens autehntication test",
+                "name": "Nature Test",
+                "url": "https://www.nature.com/articles/s41593-025-01990-7",
+                "screenshot_fname": "nature_test",
             },
-            {
-                "name": "Lean Library",
-                "url": "https://www.science.org/doi/10.1126/science.aao0702",
-                "screenshot": f"/tmp/lean_library_test-{browser_mode}.png",
-                "description": "Lean Library functionality with stealth",
-            },
-            {
-                "name": "Bot Detection",
-                "url": "https://bot.sannysoft.com/",
-                "screenshot": f"/tmp/stealth_test_results-{browser_mode}.png",
-                "description": "Bot detection test",
-            },
-            {
-                "name": "Cookie Test",
-                "url": "https://www.whatismybrowser.com/detect/are-cookies-enabled",
-                "screenshot": f"/tmp/cookie_test-{browser_mode}.png",
-                "description": "Cookie acceptance",
-            },
-            {
-                "name": "Popup Test",
-                "url": "https://popuptest.com/",
-                "screenshot": f"/tmp/popup_test-{browser_mode}.png",
-                "description": "Popup blocking",
-            },
-            {
-                "name": "CAPTCHA Test",
-                "url": "https://www.google.com/recaptcha/api2/demo",
-                "screenshot": f"/tmp/captcha_test-{browser_mode}.png",
-                "description": "CAPTCHA solving",
-            },
+            # {
+            #     "name": "Google Test",
+            #     "url": "https://www.google.com",
+            #     "screenshot_fname": "google_test",
+            # },
         ]
 
         # Run tests for each site
         for site in test_sites:
-            logger.info(f"🧪 Testing {site['name']}...")
-            await page.goto(site["url"])
-            await browser_manager.stealth_manager.human_delay_async(2000, 3000)
+            try:
+                await page.goto(site["url"])
+                # await browser_manager.stealth_manager.human_delay_async(
+                #     2000, 3000
+                # )
 
-            await browser_manager.take_screenshot_safe_async(
-                page, site["screenshot"], site["description"]
-            )
+                if site["name"] == "Nature Test":
+                    from ...download.run_zotero_translators import (
+                        download_using_zotero_translator,
+                        find_translator_for_url,
+                    )
 
-            logger.info(f"  - {site['screenshot']} - {site['description']}")
+                    translator_path = find_translator_for_url(page.url)
+                    if translator_path:
+                        download_results = (
+                            await download_using_zotero_translator(
+                                page, site["url"]
+                            )
+                        )
+                        if download_results:
+                            logger.success(
+                                "Download process completed successfully."
+                            )
+                            logger.info(
+                                f"Main PDF: {download_results.get('main_pdf')}"
+                            )
+                            logger.info(
+                                f"Supplementary files: {len(download_results.get('supplementary', []))} files"
+                            )
+                    else:
+                        logger.error("No translator found for this URL")
 
-        logger.success("🎯 All extension tests completed!")
+                # ########################################
+                # ## Experiment
+                # if site["name"] == "Nature Test":
+                #     from ...download.run_zotero_translators import (
+                #         ZoteroExecutor,
+                #         find_translator_for_url,
+                #     )
+
+                #     translator_path = find_translator_for_url(page.url)
+                #     if translator_path:
+                #         executor = ZoteroExecutor(page)
+                #         scraped_items = await executor.execute(translator_path)
+
+                #         print("\\n--- Scraped Items ---")
+                #         for item in scraped_items:
+                #             print(
+                #                 json.dumps(item, indent=2, ensure_ascii=False)
+                #             )
+                #         print("---------------------")
+
+                #     await asyncio.sleep(10)  # Keep browser open for a bit
+                #     await browser.close()
+
+                #     # download_results = await download_using_zotero_translator(
+                #     #     page, site["url"]
+                #     # )
+
+                await browser_manager.take_screenshot_safe_async(
+                    page, site["screenshot_fname"]
+                )
+            except Exception as e:
+                logger.fail(f"Failed to process {site['name']}: {e}")
+                continue
 
     import argparse
 
     parser = argparse.ArgumentParser(description="BrowserManager testing")
     parser.add_argument(
-        "--mode",
-        choices=["interactive", "stealth"],
-        default="interactive",
-        help="Browser mode (default: interactive)",
+        "--stealth",
+        action="store_true",
+        help="Use stealth mode (default: interactive)",
     )
-
     args = parser.parse_args()
-    asyncio.run(main(browser_mode=args.mode))
 
+    browser_mode = "stealth" if args.stealth else "interactive"
+    asyncio.run(main(browser_mode=browser_mode))
 
+# python -m scitex.scholar.browser.local._BrowserManager --stealth
 # python -m scitex.scholar.browser.local._BrowserManager
 
 # EOF

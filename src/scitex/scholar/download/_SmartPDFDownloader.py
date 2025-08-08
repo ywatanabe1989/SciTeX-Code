@@ -28,7 +28,9 @@ from ..browser.local import BrowserManager
 from ..config import ScholarConfig
 from ..open_url import DOIToURLResolver
 from ..utils._screenshot_capturer import ScreenshotCapturer
-from ._PDFDownloader import PDFDownloader
+# PDFDownloader removed - functionality integrated into SmartPDFDownloader
+from ._AuthenticatedBrowserStrategy import AuthenticatedBrowserStrategy
+from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
 from .._Paper import Paper
 
 logger = logging.getLogger(__name__)
@@ -253,7 +255,7 @@ class SmartPDFDownloader:
         self.config = config or ScholarConfig()
         
         # Initialize components with config
-        self.browser_manager = BrowserManager(headless=True, scholar_config=self.config)
+        self.browser_manager = BrowserManager(config=self.config)
         self.auth_manager = AuthenticationManager(config=self.config)
         self.url_resolver = DOIToURLResolver(config=self.config)
         # Initialize with path manager for proper directory structure
@@ -268,7 +270,17 @@ class SmartPDFDownloader:
             'download_wait': self.config.resolve('pdf_download_wait', default=2, type=int)
         }
         
-        # Initialize download agents with screenshot capability and downloader reference
+        # Initialize authenticated download strategy for paywalled content
+        self.strategy = AuthenticatedBrowserStrategy(config=self.config)
+        self.strategies = [self.strategy]  # Single strategy approach
+        
+        # Initialize Zotero translator runner
+        translator_dir_str = self.config.resolve('zotero_translators_dir', 
+                                                 default='/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/zotero_translators')
+        translator_dir = Path(translator_dir_str)
+        self.zotero_runner = ZoteroTranslatorRunner(translator_dir=translator_dir)
+        
+        # Legacy agents for backward compatibility
         self.agents = [
             DirectDownloadAgent(downloader=self),
             BrowserDownloadAgent(self.browser_manager, self.capture_systematic_screenshot_async, downloader=self),
@@ -277,6 +289,7 @@ class SmartPDFDownloader:
         
         # Simplified tracking: Use organized directory structure
         # No need for centralized JSON progress files - each paper's directory contains its status
+        self.progress = {}  # Initialize progress tracking
         
     def is_paper_download(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
         """
@@ -364,6 +377,64 @@ class SmartPDFDownloader:
         except Exception as e:
             logger.debug(f"Failed to capture systematic screenshot for {description}: {e}")
 
+    async def run_all_zotero_translators_async(self, url: str) -> Dict[str, Any]:
+        """
+        Run all available Zotero translators on a URL to identify useful information.
+        
+        Args:
+            url: URL to analyze
+            
+        Returns:
+            Dictionary with extracted data from all translators
+        """
+        logger.info(f"Running all Zotero translators on: {url}")
+        
+        all_results = {}
+        
+        # Get all available translators
+        for translator_name, translator_info in self.zotero_runner._translators.items():
+            try:
+                logger.debug(f"Trying translator: {translator_info['label']}")
+                result = await self.zotero_runner.run_translator_async(url, translator_info)
+                
+                if result.get('success') and result.get('items'):
+                    # Extract useful information
+                    extracted_info = {
+                        'translator': translator_info['label'],
+                        'items_count': len(result['items']),
+                        'items': []
+                    }
+                    
+                    for item in result['items']:
+                        item_info = {
+                            'title': item.get('title'),
+                            'itemType': item.get('itemType'),
+                            'doi': item.get('DOI'),
+                            'url': item.get('url'),
+                            'pdf_attachments': [
+                                att for att in item.get('attachments', [])
+                                if att.get('mimeType') == 'application/pdf'
+                            ],
+                            'creators': item.get('creators', []),
+                            'publicationTitle': item.get('publicationTitle'),
+                            'date': item.get('date'),
+                            'pages': item.get('pages'),
+                            'volume': item.get('volume'),
+                            'issue': item.get('issue')
+                        }
+                        extracted_info['items'].append(item_info)
+                    
+                    all_results[translator_name] = extracted_info
+                    logger.info(f"✅ {translator_info['label']}: {len(result['items'])} items")
+                else:
+                    logger.debug(f"❌ {translator_info['label']}: No items extracted")
+                    
+            except Exception as e:
+                logger.debug(f"❌ {translator_info['label']} failed: {e}")
+                
+        logger.info(f"Completed translator analysis. {len(all_results)} translators succeeded.")
+        return all_results
+
     async def download_single(self, paper: Paper) -> Tuple[bool, Optional[Path]]:
         """
         Download a single paper using multiple strategies.
@@ -430,10 +501,41 @@ class SmartPDFDownloader:
         filename = f"{first_author}-{year}-{journal_clean}.pdf"
         output_path = storage_paths["storage_path"] / filename
         
+        # Run Zotero translators to gather information
+        for url in urls:
+            logger.info(f"Analyzing with Zotero translators: {url}")
+            translator_results = await self.run_all_zotero_translators_async(url)
+            
+            # Save translator results
+            translator_info_file = storage_paths["storage_path"] / "zotero_translator_results.json"
+            try:
+                with open(translator_info_file, 'w') as f:
+                    json.dump(translator_results, f, indent=2, default=str)
+                logger.info(f"Translator results saved: {translator_info_file}")
+            except Exception as e:
+                logger.warning(f"Failed to save translator results: {e}")
+            
+            break  # Only analyze the first URL with translators
+        
         for url in urls:
             logger.info(f"Trying URL: {url}")
             
-            # Sort agents by priority
+            # Try modern strategies first
+            for strategy in self.strategies:
+                if await strategy.can_download(url, paper_info):
+                    logger.info(f"Trying {strategy.__class__.__name__} strategy...")
+                    
+                    try:
+                        result_path = await strategy.download(url, output_path, paper_info)
+                        if result_path and result_path.exists():
+                            content = result_path.read_bytes()
+                            if len(content) > 1000 and content.startswith(b'%PDF'):
+                                logger.success(f"Downloaded: {output_path.name} ({len(content)/1024:.1f} KB)")
+                                return True, output_path
+                    except Exception as e:
+                        logger.debug(f"Strategy {strategy.__class__.__name__} failed: {e}")
+            
+            # Fall back to legacy agents
             agents = sorted(self.agents, key=lambda a: a.priority, reverse=True)
             
             for agent in agents:
@@ -622,6 +724,19 @@ class SmartPDFDownloader:
         logger.info(f"Downloaded {success_count}/{len(papers)} PDFs")
         
         return results
+
+    def get_strategy_info(self) -> Dict[str, Any]:
+        """Get information about this downloader."""
+        return {
+            'name': 'SmartPDFDownloader',
+            'description': 'Downloads PDFs from paywalled journals using authenticated browser access',
+            'strategy': 'AuthenticatedBrowserStrategy',
+            'focus': 'Paywalled academic content with institutional authentication',
+            'zotero_translators': len(self.zotero_runner._translators),
+            'extensions': ['Zotero Connector', 'Lean Library', 'Captcha Solvers'],
+            'authentication': 'OpenAthens, Shibboleth, EZProxy',
+            'config': str(self.config)
+        }
         
     def download_from_bibtex(
         self,
@@ -638,15 +753,16 @@ class SmartPDFDownloader:
         Returns:
             Dict mapping paper IDs to (success, path) tuples
         """
-        import bibtexparser
+        import sys
+        sys.path.append('/home/ywatanabe/proj/scitex_repo')
+        from scholar.utils._parsebibtex_safe import parsebibtex_safe
         
-        # Load BibTeX
-        with open(bibtex_path, 'r', encoding='utf-8') as f:
-            bib_db = bibtexparser.load(f)
+        # Load BibTeX with safe parsing
+        entries = parsebibtex_safe(bibtex_path)
             
         # Convert to Paper objects
         papers = []
-        for entry in bib_db.entries:
+        for entry in entries:
             paper = Paper(
                 title=entry.get('title', '').strip('{}'),
                 authors=entry.get('author', '').split(' and '),

@@ -12,7 +12,7 @@ Command-line tools for academic paper management and metadata enrichment.
 ## Commands
 
 
-python -m scitex.scholar open-chrome
+python -m scitex.scholar chrome
 
 ### DOI Resolution for a Single Entry
 ```bash

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAC Collection - PDF Download Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.secondary {
+            background: #2196F3;
+        }
+        button.secondary:hover {
+            background: #1976D2;
+        }
+        button.warning {
+            background: #ff9800;
+        }
+        button.warning:hover {
+            background: #f57c00;
+        }
+        .paper-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .paper-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 30px 30px 1fr 100px;
+            align-items: center;
+            gap: 15px;
+        }
+        .paper-card.has-pdf {
+            background: #e8f5e9;
+        }
+        .paper-card.no-pdf {
+            background: #fff3e0;
+        }
+        .status-icon {
+            font-size: 20px;
+            text-align: center;
+        }
+        .paper-info {
+            flex-grow: 1;
+        }
+        .paper-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .paper-journal {
+            color: #666;
+            font-size: 14px;
+        }
+        .paper-doi {
+            color: #999;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .paper-actions {
+            text-align: right;
+        }
+        .paper-actions a {
+            color: #2196F3;
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid #2196F3;
+            border-radius: 3px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .paper-actions a:hover {
+            background: #2196F3;
+            color: white;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .filter-tab {
+            padding: 8px 16px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .filter-tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        #selected-count {
+            margin-left: 20px;
+            color: #666;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 PAC Collection - PDF Download Dashboard</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="pdf-count">0</div>
+                <div class="stat-label">PDFs Downloaded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="missing-count">0</div>
+                <div class="stat-label">Missing PDFs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-count">0</div>
+                <div class="stat-label">Total Papers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="coverage">0%</div>
+                <div class="stat-label">Coverage</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>🎮 Batch Actions</h3>
+            <button onclick="selectAll()">Select All Missing</button>
+            <button onclick="selectNone()">Clear Selection</button>
+            <button class="secondary" onclick="openSelected()">Open Selected in Tabs</button>
+            <button class="warning" onclick="openSelectedBatch(5)">Open in Batches (5)</button>
+            <span id="selected-count">0 selected</span>
+            
+            <div class="filter-tabs" style="margin-top: 20px;">
+                <div class="filter-tab active" onclick="filterPapers('all', event)">All Papers</div>
+                <div class="filter-tab" onclick="filterPapers('missing', event)">Missing PDFs</div>
+                <div class="filter-tab" onclick="filterPapers('has-pdf', event)">Has PDF</div>
+            </div>
+        </div>
+
+        <div id="paper-grid" class="paper-grid">
+            <!-- Papers will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Embedded paper data
+        const papers = [
+  {
+    "name": "Aazhang-2017-IEEE-Transactions-on-Signal-Processing",
+    "journal": "IEEE Transactions on Signal Processing",
+    "doi": null,
+    "title": "Mutual Information in Frequency and Its Application to Measure Cross-Frequency Coupling in Epilepsy",
+    "has_pdf": false,
+    "id": "Aazhang_2017_IEEE_Transactions_on_Signal_Processing"
+  },
+  {
+    "name": "Agarwal-2018-MATEC-Web-of-Conferences",
+    "journal": "MATEC Web of Conferences",
+    "doi": "10.1051/matecconf/201821003016",
+    "title": "Epileptic Seizure Prediction over EEG Data using Hybrid CNN-SVM Model with Edge Computing Services",
+    "has_pdf": true,
+    "id": "Agarwal_2018_MATEC_Web_of_Conferences"
+  },
+  {
+    "name": "Ahmad-2020-2020-IEEE-Region-10-Symposium-TENSYMP",
+    "journal": "2020 IEEE Region 10 Symposium (TENSYMP)",
+    "doi": "10.1109/tensymp50017.2020.9230899",
+    "title": "Prediction of Epileptic Seizures using Support Vector Machine and Regularization",
+    "has_pdf": false,
+    "id": "Ahmad_2020_2020_IEEE_Region_10_Symposium_TENSYMP"
+  },
+  {
+    "name": "Alhudhaif-2021-PeerJ-Computer-Science",
+    "journal": "PeerJ Computer Science",
+    "doi": "10.7717/peerj-cs.523",
+    "title": "A novel multi-class imbalanced EEG signals classification based on the adaptive synthetic sampling (ADASYN) approach",
+    "has_pdf": true,
+    "id": "Alhudhaif_2021_PeerJ_Computer_Science"
+  },
+  {
+    "name": "Alotaiby-2017-Computational-Intelligence-and-Neuroscience",
+    "journal": "Computational Intelligence and Neuroscience",
+    "doi": "10.1155/2017/1240323",
+    "title": "Epileptic Seizure Prediction Using CSP and LDA for Scalp EEG Signals",
+    "has_pdf": false,
+    "id": "Alotaiby_2017_Computational_Intelligence_and_Neuroscience"
+  },
+  {
+    "name": "Alvarado-Rojas-2011-2011-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society",
+    "journal": "2011 Annual International Conference of the IEEE Engineering in Medicine and Biology Society",
+    "doi": "10.1109/iembs.2011.6090471",
+    "title": "Probing cortical excitability using cross-frequency coupling in intracranial EEG recordings: A new method for seizure prediction",
+    "has_pdf": false,
+    "id": "Alvarado_Rojas_2011_2011_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_and_Biology_Society"
+  },
+  {
+    "name": "Alvarado-Rojas-2014-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/srep04545",
+    "title": "Slow modulations of high-frequency activity (40\u2013140 Hz) discriminate preictal changes in human focal epilepsy",
+    "has_pdf": true,
+    "id": "Alvarado_Rojas_2014_Scientific_Reports"
+  },
+  {
+    "name": "Amiri-2016-Frontiers-in-Human-Neuroscience",
+    "journal": "Frontiers in Human Neuroscience",
+    "doi": "10.3389/fnhum.2016.00387",
+    "title": "Phase-Amplitude Coupling Is Elevated in Deep Sleep and in the Onset Zone of Focal Epileptic Seizures",
+    "has_pdf": true,
+    "id": "Amiri_2016_Frontiers_in_Human_Neuroscience"
+  },
+  {
+    "name": "Asano-2023-Nature-Communications",
+    "journal": "Nature Communications",
+    "doi": "10.21203/rs.3.rs-2799931/v1",
+    "title": "Developmental atlas of phase-amplitude coupling between physiologic high-frequency oscillations and slow waves",
+    "has_pdf": true,
+    "id": "Asano_2023_Nature_Communications"
+  },
+  {
+    "name": "Ashokkumar-2023-Wireless-Personal-Communications",
+    "journal": "Wireless Personal Communications",
+    "doi": "10.1007/s11277-022-10154-w",
+    "title": "Quantifying Functional Connectivity Network Through Synchronization and Graph Theory Approaches for Seizure Prediction",
+    "has_pdf": true,
+    "id": "Ashokkumar_2023_Wireless_Personal_Communications"
+  },
+  {
+    "name": "Assi-2018-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-018-33969-9",
+    "title": "Bispectrum Features and Multilayer Perceptron Classifier to Enhance Seizure Prediction",
+    "has_pdf": true,
+    "id": "Assi_2018_Scientific_Reports"
+  },
+  {
+    "name": "Bosl-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.675728",
+    "title": "Prediction of Seizure Recurrence. A Note of Caution",
+    "has_pdf": true,
+    "id": "Bosl_2021_Frontiers_in_Neurology"
+  },
+  {
+    "name": "Chang-2018-Nature-Neuroscience",
+    "journal": "Nature Neuroscience",
+    "doi": "10.1038/s41593-018-0278-y",
+    "title": "Loss of neuronal network resilience precedes seizures and determines the ictogenic nature of interictal synaptic perturbations",
+    "has_pdf": true,
+    "id": "Chang_2018_Nature_Neuroscience"
+  },
+  {
+    "name": "Cmpora-2019-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-019-56548-y",
+    "title": "Seizure localization using pre ictal phase-amplitude coupling in intracranial electroencephalography",
+    "has_pdf": true,
+    "id": "Cmpora_2019_Scientific_Reports"
+  },
+  {
+    "name": "Edakawa-2016-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/srep25422",
+    "title": "Detection of Epileptic Seizures Using Phase\u2013Amplitude Coupling in Intracranial Electroencephalography",
+    "has_pdf": true,
+    "id": "Edakawa_2016_Scientific_Reports"
+  },
+  {
+    "name": "El-Samie-2014-EURASIP-Journal-on-Advances-in-Signal-Processing",
+    "journal": "EURASIP Journal on Advances in Signal Processing",
+    "doi": "10.1186/1687-6180-2014-183",
+    "title": "EEG seizure detection and prediction algorithms: a survey",
+    "has_pdf": true,
+    "id": "El_Samie_2014_EURASIP_Journal_on_Advances_in_Signal_Processing"
+  },
+  {
+    "name": "Gagliano-2018-Epilepsy-Research",
+    "journal": "Epilepsy Research",
+    "doi": "10.1016/j.eplepsyres.2017.11.009",
+    "title": "Bilateral preictal signature of phase-amplitude coupling in canine epilepsy",
+    "has_pdf": false,
+    "id": "Gagliano_2018_Epilepsy_Research"
+  },
+  {
+    "name": "Gagliano-2019-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-019-52152-2",
+    "title": "Bispectrum and Recurrent Neural Networks: Improved Classification of Interictal and Preictal States",
+    "has_pdf": true,
+    "id": "Gagliano_2019_Scientific_Reports"
+  },
+  {
+    "name": "Garcia-2024-2024-46th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC",
+    "journal": "2024 46th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC)",
+    "doi": "10.1109/embc53108.2024.10782382",
+    "title": "Respiratory Signal Extraction from ECG using a Phase-Amplitude Cross-Frequency Coupling Index",
+    "has_pdf": false,
+    "id": "Garcia_2024_2024_46th_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_and_Biology_Society_EMBC"
+  },
+  {
+    "name": "Ghiasvand-2020-The-Neuroscience-Journal-of-Shefaye-Khatam",
+    "journal": "The Neuroscience Journal of Shefaye Khatam",
+    "doi": "10.52547/shefa.9.1.110",
+    "title": "Epileptic Seizure Prediction from Spectral, Temporal, and Spatial Features of EEG Signals Using Deep Learning Algorithms",
+    "has_pdf": true,
+    "id": "Ghiasvand_2020_The_Neuroscience_Journal_of_Shefaye_Khatam"
+  },
+  {
+    "name": "Grigorovsky-2020-Brain-Communications",
+    "journal": "Brain Communications",
+    "doi": "10.1093/braincomms/fcaa182",
+    "title": "Delta-gamma phase-amplitude coupling as a biomarker of postictal generalized EEG suppression",
+    "has_pdf": false,
+    "id": "Grigorovsky_2020_Brain_Communications"
+  },
+  {
+    "name": "Hasan-2017-Applied-Bionics-and-Biomechanics",
+    "journal": "Applied Bionics and Biomechanics",
+    "doi": "10.1155/2017/6848014",
+    "title": "Prediction of Epileptic Seizure by Analysing Time Series EEG Signal Using k-NN Classifier",
+    "has_pdf": false,
+    "id": "Hasan_2017_Applied_Bionics_and_Biomechanics"
+  },
+  {
+    "name": "Jin-2022-2022-41st-Chinese-Control-Conference-CCC",
+    "journal": "2022 41st Chinese Control Conference (CCC)",
+    "doi": "10.23919/ccc55666.2022.9902624",
+    "title": "Neural Oscillations and Synchronous Analysis in ECoG during Propofol Anesthesia",
+    "has_pdf": false,
+    "id": "Jin_2022_2022_41st_Chinese_Control_Conference_CCC"
+  },
+  {
+    "name": "Kapoor-2022-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s23010423",
+    "title": "Epileptic Seizure Prediction Based on Hybrid Seek Optimization Tuned Ensemble Classifier Using EEG Signals",
+    "has_pdf": true,
+    "id": "Kapoor_2022_Sensors"
+  },
+  {
+    "name": "Li-2021-Brain-Sciences",
+    "journal": "Brain Sciences",
+    "doi": "10.3390/brainsci11081066",
+    "title": "Prediction of Epilepsy Based on Tensor Decomposition and Functional Brain Network",
+    "has_pdf": true,
+    "id": "Li_2021_Brain_Sciences"
+  },
+  {
+    "name": "Li-2021-IEEE-Transactions-on-Biomedical-Engineering",
+    "journal": "IEEE Transactions on Biomedical Engineering",
+    "doi": "10.1109/TBME.2021.3090027",
+    "title": "Propofol Anesthesia Decreased the Efficiency of Long-Range Cortical Interaction in Humans",
+    "has_pdf": false,
+    "id": "Li_2021_IEEE_Transactions_on_Biomedical_Engineering"
+  },
+  {
+    "name": "Li-2023-Frontiers-in-Neuroscience",
+    "journal": "Frontiers in Neuroscience",
+    "doi": "10.3389/fnins.2023.1153568",
+    "title": "Phase-amplitude coupling-based adaptive filters for neural signal decoding",
+    "has_pdf": true,
+    "id": "Li_2023_Frontiers_in_Neuroscience"
+  },
+  {
+    "name": "Li-2023-Frontiers-in-Physiology",
+    "journal": "Frontiers in Physiology",
+    "doi": "10.3389/fphys.2022.1085530",
+    "title": "Classifying epileptic phase-amplitude coupling in SEEG using complex-valued convolutional neural network",
+    "has_pdf": true,
+    "id": "Li_2023_Frontiers_in_Physiology"
+  },
+  {
+    "name": "Liu-2016-Conference-proceedings-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-IEEE-Engineering-in-Medicine-and-Biology-Society-Annual-Conference",
+    "journal": "Conference proceedings : ... Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual Conference",
+    "doi": "10.1109/embc.2016.7590876",
+    "title": "Phase-amplitude coupling analysis for seizure evolvement using Hilbert Huang Transform.",
+    "has_pdf": false,
+    "id": "Liu_2016_Conference_proceedings_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_and_Biology_Society_IEEE_Engineering_in_Medicine_and_Biology_Society_Annual_Conference"
+  },
+  {
+    "name": "Liu-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.764821",
+    "title": "Epileptogenic Zone Location of Temporal Lobe Epilepsy by Cross-Frequency Coupling Analysis",
+    "has_pdf": true,
+    "id": "Liu_2021_Frontiers_in_Neurology"
+  },
+  {
+    "name": "Liu-2024-Frontiers-in-Neuroinformatics",
+    "journal": "Frontiers in Neuroinformatics",
+    "doi": "10.3389/fninf.2024.1354436",
+    "title": "Epileptic seizure prediction based on EEG using pseudo-three-dimensional CNN",
+    "has_pdf": true,
+    "id": "Liu_2024_Frontiers_in_Neuroinformatics"
+  },
+  {
+    "name": "Ma-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.718683",
+    "title": "Phase\u2013Amplitude Coupling and Epileptogenic Zone Localization of Frontal Epilepsy Based on Intracranial EEG",
+    "has_pdf": true,
+    "id": "Ma_2021_Frontiers_in_Neurology"
+  },
+  {
+    "name": "Marcoleta-2020-Biomedical-Physics-amp-Engineering-Express",
+    "journal": "Biomedical Physics &amp; Engineering Express",
+    "doi": "10.1088/2057-1976/ab9fed",
+    "title": "Distributed mixed signal demultiplexer for electrocorticography electrodes",
+    "has_pdf": true,
+    "id": "Marcoleta_2020_Biomedical_Physics_amp_Engineering_Express"
+  },
+  {
+    "name": "Marzulli-2025-Frontiers-in-Human-Neuroscience",
+    "journal": "Frontiers in Human Neuroscience",
+    "doi": "10.3389/fnhum.2025.1521491",
+    "title": "Classifying mental motor tasks from chronic ECoG-BCI recordings using phase-amplitude coupling features",
+    "has_pdf": true,
+    "id": "Marzulli_2025_Frontiers_in_Human_Neuroscience"
+  },
+  {
+    "name": "Mendoza-Cardenas-2021-2021-10th-International-IEEE-EMBS-Conference-on-Neural-Engineering-NER",
+    "journal": "2021 10th International IEEE/EMBS Conference on Neural Engineering (NER)",
+    "doi": "10.1109/ner49283.2021.9441220",
+    "title": "Searching for waveforms on spatially-filtered epileptic ECoG",
+    "has_pdf": false,
+    "id": "Mendoza_Cardenas_2021_2021_10th_International_IEEE_EMBS_Conference_on_Neural_Engineering_NER"
+  },
+  {
+    "name": "Mendoza-Cardenas-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc46164.2021.9629913",
+    "title": "Shift-invariant waveform learning on epileptic ECoG",
+    "has_pdf": false,
+    "id": "Mendoza_Cardenas_2021_2021_43rd_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_amp_Biology_Society_EMBC"
+  },
+  {
+    "name": "Miao-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc46164.2021.9630941",
+    "title": "Seizure Onset Zone Identification Based on Phase-Amplitude Coupling of Interictal Electrocorticogram",
+    "has_pdf": false,
+    "id": "Miao_2021_2021_43rd_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_amp_Biology_Society_EMBC"
+  },
+  {
+    "name": "Miao-2021-Cognitive-Neurodynamics",
+    "journal": "Cognitive Neurodynamics",
+    "doi": "10.1101/2021.10.27.21265585",
+    "title": "Seizure Onset Zone Identification Using Phase-Amplitude Coupling and Multiple Machine Learning Approaches for Interictal Electrocorticogram",
+    "has_pdf": true,
+    "id": "Miao_2021_Cognitive_Neurodynamics"
+  },
+  {
+    "name": "Mierlo-2014-Progress-in-Neurobiology",
+    "journal": "Progress in Neurobiology",
+    "doi": "10.1016/j.pneurobio.2014.06.004",
+    "title": "Functional brain connectivity from EEG in epilepsy: Seizure prediction and epileptogenic focus localization",
+    "has_pdf": false,
+    "id": "Mierlo_2014_Progress_in_Neurobiology"
+  },
+  {
+    "name": "Mukamel-2014-The-Journal-of-Neuroscience",
+    "journal": "The Journal of Neuroscience",
+    "doi": "10.1523/jneurosci.5813-12.2014",
+    "title": "A Transition in Brain State during Propofol-Induced Unconsciousness",
+    "has_pdf": true,
+    "id": "Mukamel_2014_The_Journal_of_Neuroscience"
+  },
+  {
+    "name": "Natu-2022-Computational-and-Mathematical-Methods-in-Medicine",
+    "journal": "Computational and Mathematical Methods in Medicine",
+    "doi": "10.1155/2022/7751263",
+    "title": "Review on Epileptic Seizure Prediction: Machine Learning and Deep Learning Approaches",
+    "has_pdf": false,
+    "id": "Natu_2022_Computational_and_Mathematical_Methods_in_Medicine"
+  },
+  {
+    "name": "Parvez-2016-IEEE-Transactions-on-Neural-Systems-and-Rehabilitation-Engineering",
+    "journal": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+    "doi": "10.1109/tnsre.2015.2458982",
+    "title": "Epileptic Seizure Prediction by Exploiting Spatiotemporal Relationship of EEG Signals Using Phase Correlation",
+    "has_pdf": false,
+    "id": "Parvez_2016_IEEE_Transactions_on_Neural_Systems_and_Rehabilitation_Engineering"
+  },
+  {
+    "name": "Pilet-2025-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-025-02679-4",
+    "title": "Predicting seizure onset zones from interictal intracranial EEG using functional connectivity and machine learning",
+    "has_pdf": true,
+    "id": "Pilet_2025_Scientific_Reports"
+  },
+  {
+    "name": "Raghavan-2024-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-024-67120-8",
+    "title": "Gamma amplitude-envelope correlations are strongly elevated within hyperexcitable networks in focal epilepsy",
+    "has_pdf": true,
+    "id": "Raghavan_2024_Scientific_Reports"
+  },
+  {
+    "name": "Ramachandran-2018-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s18061698",
+    "title": "Towards an Online Seizure Advisory System\u2014An Adaptive Seizure Prediction Framework Using Active Learning Heuristics",
+    "has_pdf": true,
+    "id": "Ramachandran_2018_Sensors"
+  },
+  {
+    "name": "Richner-2019-Journal-of-Neural-Engineering",
+    "journal": "Journal of Neural Engineering",
+    "doi": "10.1088/1741-2552/ab335b",
+    "title": "Phase relationship between micro-electrocorticography and cortical neurons",
+    "has_pdf": false,
+    "id": "Richner_2019_Journal_of_Neural_Engineering"
+  },
+  {
+    "name": "Rong-2020-Engineering",
+    "journal": "Engineering",
+    "doi": "10.1016/j.eng.2019.08.015",
+    "title": "Artificial Intelligence in Healthcare: Review and Prediction Case Studies",
+    "has_pdf": false,
+    "id": "Rong_2020_Engineering"
+  },
+  {
+    "name": "Salimpour-2019-Frontiers-in-Neuroscience",
+    "journal": "Frontiers in Neuroscience",
+    "doi": "10.3389/fnins.2019.00125",
+    "title": "Cross-Frequency Coupling Based Neuromodulation for Treating Neurological Disorders",
+    "has_pdf": true,
+    "id": "Salimpour_2019_Frontiers_in_Neuroscience"
+  },
+  {
+    "name": "Schelter-2007",
+    "journal": "",
+    "doi": null,
+    "title": "Welcome to the 3rd International Workshop on Seizure Prediction in Epilepsy!",
+    "has_pdf": false,
+    "id": "Schelter_2007"
+  },
+  {
+    "name": "Sebaei-2024-South-Eastern-European-Journal-of-Public-Health",
+    "journal": "South Eastern European Journal of Public Health",
+    "doi": "10.70135/seejph.vi.1681",
+    "title": "Value of Quantitative Intraoperative Electrocorticography During Anterior Temporal Lobectomy in Temporal Lobe Epilepsy Patients",
+    "has_pdf": false,
+    "id": "Sebaei_2024_South_Eastern_European_Journal_of_Public_Health"
+  },
+  {
+    "name": "Seo-2020-Mathematics",
+    "journal": "Mathematics",
+    "doi": "10.3390/math8040481",
+    "title": "Pattern Recognition in Epileptic EEG Signals via Dynamic Mode Decomposition",
+    "has_pdf": true,
+    "id": "Seo_2020_Mathematics"
+  },
+  {
+    "name": "Shirzadi-2024-Diagnostics",
+    "journal": "Diagnostics",
+    "doi": "10.3390/diagnostics14202255",
+    "title": "AML-DECODER: Advanced Machine Learning for HD-sEMG Signal Classification\u2014Decoding Lateral Epicondylitis in Forearm Muscles",
+    "has_pdf": true,
+    "id": "Shirzadi_2024_Diagnostics"
+  },
+  {
+    "name": "Sivathamboo-2020-IEEE-Reviews-in-Biomedical-Engineering",
+    "journal": "IEEE Reviews in Biomedical Engineering",
+    "doi": null,
+    "title": "Machine Learning for Predicting Epileptic Seizures Using EEG Signals: A Review",
+    "has_pdf": false,
+    "id": "Sivathamboo_2020_IEEE_Reviews_in_Biomedical_Engineering"
+  },
+  {
+    "name": "Song-2022-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s22176458",
+    "title": "An Intelligent Epileptic Prediction System Based on Synchrosqueezed Wavelet Transform and Multi-Level Feature CNN for Smart Healthcare IoT",
+    "has_pdf": true,
+    "id": "Song_2022_Sensors"
+  },
+  {
+    "name": "Sun-2022-Acta-Epileptologica",
+    "journal": "Acta Epileptologica",
+    "doi": "10.1186/s42494-022-00113-0",
+    "title": "Synchronization clusters located on epileptic onset zones in neocortical epilepsy",
+    "has_pdf": false,
+    "id": "Sun_2022_Acta_Epileptologica"
+  },
+  {
+    "name": "Tang-2015-Bio-Medical-Materials-and-Engineering",
+    "journal": "Bio-Medical Materials and Engineering",
+    "doi": "10.3233/bme-151401",
+    "title": "An epileptic focus location method based on ECoG",
+    "has_pdf": false,
+    "id": "Tang_2015_Bio_Medical_Materials_and_Engineering"
+  },
+  {
+    "name": "Ujma-2022-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.21203/rs.3.rs-1705700/v1",
+    "title": "The sleep EEG envelope: a novel, neuronal firing-based human biomarker",
+    "has_pdf": false,
+    "id": "Ujma_2022_Scientific_Reports"
+  },
+  {
+    "name": "Wang-2020-2020-42nd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2020 42nd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc44109.2020.9175273",
+    "title": "Classifying cross-frequency coupling pattern in epileptogenic tissues by convolutional neural network",
+    "has_pdf": false,
+    "id": "Wang_2020_2020_42nd_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_amp_Biology_Society_EMBC"
+  },
+  {
+    "name": "Watson-2015-BMC-Neuroscience",
+    "journal": "BMC Neuroscience",
+    "doi": "10.1186/1471-2202-16-s1-p38",
+    "title": "A phase-locked loop epilepsy network emulator for localizing, forecasting, and controlling ictal activity",
+    "has_pdf": true,
+    "id": "Watson_2015_BMC_Neuroscience"
+  },
+  {
+    "name": "Winter-2020-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-020-71359-2",
+    "title": "The value of intra-operative electrographic biomarkers for tailoring during epilepsy surgery: from group-level to patient-level analysis",
+    "has_pdf": true,
+    "id": "Winter_2020_Scientific_Reports"
+  },
+  {
+    "name": "Xie-2017-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-017-07823-3",
+    "title": "Portable wireless electrocorticography system with a flexible microelectrodes array for epilepsy treatment",
+    "has_pdf": true,
+    "id": "Xie_2017_Scientific_Reports"
+  },
+  {
+    "name": "Yanagisawa-2012-The-Journal-of-Neuroscience",
+    "journal": "The Journal of Neuroscience",
+    "doi": "10.1523/jneurosci.2929-12.2012",
+    "title": "Regulation of Motor Representation by Phase\u2013Amplitude Coupling in the Sensorimotor Cortex",
+    "has_pdf": false,
+    "id": "Yanagisawa_2012_The_Journal_of_Neuroscience"
+  },
+  {
+    "name": "Yekutieli-2018-Epilepsy-Journal",
+    "journal": "Epilepsy Journal",
+    "doi": "10.4172/2472-0895.1000120",
+    "title": "ECoG Correlation Variation for Epilepsy Research",
+    "has_pdf": false,
+    "id": "Yekutieli_2018_Epilepsy_Journal"
+  },
+  {
+    "name": "Yuan-2015-2015-IEEE-International-Conference-on-Digital-Signal-Processing-DSP",
+    "journal": "2015 IEEE International Conference on Digital Signal Processing (DSP)",
+    "doi": "10.1109/icdsp.2015.7251854",
+    "title": "A seizure prediction method based on efficient features and BLDA",
+    "has_pdf": false,
+    "id": "Yuan_2015_2015_IEEE_International_Conference_on_Digital_Signal_Processing_DSP"
+  },
+  {
+    "name": "Zhang-2024-International-Journal-of-Surgery",
+    "journal": "International Journal of Surgery",
+    "doi": "10.1097/js9.0000000000002022",
+    "title": "Brain\u2013computer interfaces: the innovative key to unlocking neurological conditions",
+    "has_pdf": false,
+    "id": "Zhang_2024_International_Journal_of_Surgery"
+  },
+  {
+    "name": "Zhou-2016-2016-38th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC",
+    "journal": "Conference proceedings : ... Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual Conference",
+    "doi": "10.1109/embc.2016.7590876",
+    "title": "Phase-amplitude coupling analysis for seizure evolvement using Hilbert Huang Transform.",
+    "has_pdf": false,
+    "id": "Zhou_2016_2016_38th_Annual_International_Conference_of_the_IEEE_Engineering_in_Medicine_and_Biology_Society_EMBC"
+  }
+];
+        
+        let currentFilter = 'all';
+
+        function updateStats() {
+            const withPdf = papers.filter(p => p.has_pdf).length;
+            const missing = papers.filter(p => !p.has_pdf).length;
+            const total = papers.length;
+            const coverage = Math.round((withPdf / total) * 100);
+
+            document.getElementById('pdf-count').textContent = withPdf;
+            document.getElementById('missing-count').textContent = missing;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('coverage').textContent = coverage + '%';
+        }
+
+        function renderPapers() {
+            const grid = document.getElementById('paper-grid');
+            let filteredPapers = papers;
+
+            if (currentFilter === 'missing') {
+                filteredPapers = papers.filter(p => !p.has_pdf);
+            } else if (currentFilter === 'has-pdf') {
+                filteredPapers = papers.filter(p => p.has_pdf);
+            }
+
+            grid.innerHTML = filteredPapers.map((paper, index) => {
+                const cardClass = paper.has_pdf ? 'has-pdf' : 'no-pdf';
+                const icon = paper.has_pdf ? '✅' : '❌';
+                const checkboxId = 'cb_' + index + '_' + (paper.id || index);
+                const checkbox = !paper.has_pdf ? 
+                    `<input type="checkbox" class="paper-checkbox" id="${checkboxId}" data-doi="${paper.doi || ''}" data-name="${paper.name}">` : 
+                    '<span></span>';
+
+                return `
+                    <div class="paper-card ${cardClass}">
+                        ${checkbox}
+                        <div class="status-icon">${icon}</div>
+                        <div class="paper-info">
+                            <div class="paper-title">${paper.name}</div>
+                            <div class="paper-journal">${paper.journal || 'Unknown Journal'}</div>
+                            <div class="paper-doi">DOI: ${paper.doi || 'N/A'}</div>
+                        </div>
+                        <div class="paper-actions">
+                            ${paper.doi && paper.doi !== '' ? `<a href="https://doi.org/${paper.doi}" target="_blank">Open DOI</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateSelectedCount();
+        }
+
+        function filterPapers(filter, event) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderPapers();
+        }
+
+        function selectAll() {
+            document.querySelectorAll('.paper-checkbox').forEach(cb => {
+                cb.checked = true;
+            });
+            updateSelectedCount();
+        }
+
+        function selectNone() {
+            document.querySelectorAll('.paper-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.paper-checkbox:checked');
+            document.getElementById('selected-count').textContent = `${checkboxes.length} selected`;
+        }
+
+        function getSelectedDOIs() {
+            const selected = [];
+            const selectedInfo = [];
+            document.querySelectorAll('.paper-checkbox:checked').forEach(cb => {
+                const doi = cb.dataset.doi;
+                const name = cb.dataset.name;
+                if (doi && doi !== '' && doi !== 'None') {
+                    selected.push({doi: doi, name: name});
+                } else {
+                    selectedInfo.push(name + ' (no DOI)');
+                }
+            });
+            
+            if (selectedInfo.length > 0) {
+                console.log('Papers without DOIs:', selectedInfo);
+            }
+            
+            return selected;
+        }
+
+        function openSelected() {
+            const selected = getSelectedDOIs();
+            if (selected.length === 0) {
+                alert('No papers with valid DOIs selected. Some papers may not have DOI entries.');
+                return;
+            }
+            if (selected.length > 20) {
+                if (!confirm(`This will open ${selected.length} tabs. Continue?`)) {
+                    return;
+                }
+            }
+            selected.forEach(item => {
+                window.open(`https://doi.org/${item.doi}`, '_blank');
+            });
+        }
+
+        function openSelectedBatch(batchSize = 5) {
+            const selected = getSelectedDOIs();
+            if (selected.length === 0) {
+                alert('No papers with valid DOIs selected. Some papers may not have DOI entries.');
+                return;
+            }
+
+            let currentBatch = 0;
+            
+            function openNextBatch() {
+                const start = currentBatch * batchSize;
+                const end = Math.min(start + batchSize, selected.length);
+                
+                if (start >= selected.length) {
+                    alert('All batches opened!');
+                    return;
+                }
+
+                console.log(`Opening batch ${currentBatch + 1}: papers ${start + 1} to ${end}`);
+                
+                for (let i = start; i < end; i++) {
+                    console.log(`Opening: ${selected[i].name}`);
+                    window.open(`https://doi.org/${selected[i].doi}`, '_blank');
+                }
+
+                currentBatch++;
+                
+                if (end < selected.length) {
+                    setTimeout(() => {
+                        if (confirm(`Batch ${currentBatch} opened. Open next batch (${Math.min(batchSize, selected.length - end)} papers)?`)) {
+                            openNextBatch();
+                        }
+                    }, 2000);
+                }
+            }
+
+            openNextBatch();
+        }
+
+        // Event listener for checkboxes
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('paper-checkbox')) {
+                updateSelectedCount();
+            }
+        });
+
+        // Initialize on page load
+        console.log(`Loaded ${papers.length} papers`);
+        updateStats();
+        renderPapers();
+    </script>
+</body>
+</html>

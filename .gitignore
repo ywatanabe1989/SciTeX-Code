@@ -849,3 +849,5 @@ ide-extensions/
 ./docs/to_claude
 ./src/scitex/docs/to_claude
 src/scitex/docs
+.dev
+.dev

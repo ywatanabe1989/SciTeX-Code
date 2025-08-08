@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 15:11:37 (ywatanabe)"
+# Timestamp: "2025-08-07 15:34:10 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/resolve_and_enrich.py
 # ----------------------------------------
 from __future__ import annotations
@@ -17,8 +17,6 @@ import sys
 from pathlib import Path
 
 from scitex import logging
-from scitex.scholar.doi._SingleDOIResolver import SingleDOIResolver
-from scitex.scholar.enrichment import MetadataEnricher
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +83,9 @@ python -m scitex.scholar resolve-and-enrich --project myproject --summary""",
 
 
 def main():
+    from ..metadata.doi._SingleDOIResolver import SingleDOIResolver
+    from ..metadata.enrichment import MetadataEnricher
+
     parser = create_parser()
     args = parser.parse_args()
 
@@ -250,5 +251,8 @@ def display_project_summary(resolver: SingleDOIResolver):
 
 if __name__ == "__main__":
     main()
+
+
+# python -m scitex.scholar.cli.resolve_and_enrich
 
 # EOF

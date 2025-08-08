@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 21:59:52 (ywatanabe)"
+# Timestamp: "2025-08-06 16:55:39 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/open_url/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,12 +13,12 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 import random
+import time
 from typing import List, Union
 
 from scitex import logging
 
 """OpenURL resolver for finding full-text access through institutional libraries."""
-
 
 from typing import Any, Dict, Optional
 from urllib.parse import urlencode
@@ -82,33 +82,37 @@ class OpenURLResolver:
             config: ScholarConfig instance (creates new if None)
         """
         self.auth_manager = auth_manager
-        
+
         # Initialize config
         if config is None:
             config = ScholarConfig()
         self.config = config
-        
+
         # Resolve resolver URL from config
         self.resolver_url = self.config.resolve(
             "openurl_resolver_url", resolver_url, None, str
         )
-        
+
         # Create BrowserManager with simplified configuration
         self.browser = BrowserManager(
-            auth_manager=auth_manager, 
+            auth_manager=auth_manager,
             browser_mode=browser_mode,
-            config=self.config
+            config=self.config,
         )
 
         self.timeout = 30
         self._link_finder = ResolverLinkFinder()
-        
+
         # Screenshot capture setup (optional, controlled by config)
-        self.capture_screenshots = self.config.resolve("capture_screenshots", None, False, bool)
+        self.capture_screenshots = self.config.resolve(
+            "capture_screenshots", None, False, bool
+        )
         if self.capture_screenshots:
             from datetime import datetime
-            
-            self.screenshot_dir = self.config.paths.get_screenshots_dir() / "openurl"
+
+            self.screenshot_dir = (
+                self.config.paths.get_screenshots_dir() / "openurl"
+            )
             self.screenshot_dir.mkdir(parents=True, exist_ok=True)
             self.session_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -642,7 +646,7 @@ class OpenURLResolver:
         logger.info(f"Starting resolve and download for: {filename}")
 
         # Create fresh context for this operation
-        browser, context = await self.browser.get_authenticate_async_context()
+        browser, context = await self.browser.get_authenticated_browser_and_context_async()
         page = await context.new_page()
 
         try:
@@ -659,8 +663,8 @@ class OpenURLResolver:
             await page.wait_for_timeout(2000)
 
             # Try GO button method
-            go_button_result = await self._find_and_click_publisher_go_button_async(
-                page, doi
+            go_button_result = (
+                await self._find_and_click_publisher_go_button_async(page, doi)
             )
 
             if (
@@ -674,8 +678,10 @@ class OpenURLResolver:
                 )
 
                 # Try to download PDF
-                download_result = await self._download_pdf_async_from_publisher_page(
-                    popup, filename, download_dir
+                download_result = (
+                    await self._download_pdf_async_from_publisher_page(
+                        popup, filename, download_dir
+                    )
                 )
 
                 # Close popup
@@ -743,7 +749,7 @@ class OpenURLResolver:
             logger.warning("DOI is required for reliable resolution")
 
         # Create fresh context for each resolution
-        browser, context = await self.browser.get_authenticate_async_context()
+        browser, context = await self.browser.get_authenticated_browser_and_context_async()
         page = await context.new_page()
 
         openurl = self.build_openurl(
@@ -811,8 +817,8 @@ class OpenURLResolver:
             logger.info("Looking for full-text link on resolver page...")
 
             # First try our GO button method
-            go_button_result = await self._find_and_click_publisher_go_button_async(
-                page, doi
+            go_button_result = (
+                await self._find_and_click_publisher_go_button_async(page, doi)
             )
             if go_button_result["success"]:
                 # Clean up popup if it exists
@@ -1114,13 +1120,13 @@ if __name__ == "__main__":
             print("\n=== Test 1: Article with access ===")
             result = await resolver._resolve_single_async(
                 doi="10.1002/hipo.22488",
-                title="Hippocampal sharp wave-ripple: A cognitive biomarker for episodic memory and planning",
-                authors=["Buzsáki, György"],
-                journal="Hippocampus",
-                year=2015,
-                volume=25,
-                issue=10,
-                pages="1073-1188",
+                # title="Hippocampal sharp wave-ripple: A cognitive biomarker for episodic memory and planning",
+                # authors=["Buzsáki, György"],
+                # journal="Hippocampus",
+                # year=2015,
+                # volume=25,
+                # issue=10,
+                # pages="1073-1188",
             )
             print(f"Result: {result}")
 
@@ -1133,9 +1139,19 @@ if __name__ == "__main__":
             )
             print(f"Result: {result}")
 
+            time.sleep(600)
+
     asyncio.run(main())
 
-
 # python -m scitex.scholar.open_url._OpenURLResolver
+
+# Is it a resolver url?
+# https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1002/hipo.22488
+
+# EOF
+# https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1038/s41593-025-01990-7
+
+# https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1002/hipo.22488
+# https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.doi=10.1038/s41593-025-02020-2
 
 # EOF

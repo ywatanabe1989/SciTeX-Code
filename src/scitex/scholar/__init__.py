@@ -20,7 +20,7 @@ Quick Start:
 
 # Import configuration
 from .config import ScholarConfig
-from .doi import DOIResolver
+from .metadata.doi import DOIResolver
 from .auth import AuthenticationManager
 
 __all__ = [
@@ -48,7 +48,7 @@ __all__ = [
 # )
 
 # # Import enrichment functionality
-# from .enrichment._MetadataEnricher import (
+# from .metadata.enrichment._MetadataEnricher import (
 #     MetadataEnricher,
 #     _enrich_papers_with_all,
 #     _enrich_papers_with_impact_factors,
@@ -243,9 +243,9 @@ __all__ = [
 #     # ShibbolethAuthenticator,
 #     # EZProxyAuthenticator,
 # )
-# from .doi._SingleDOIResovler import SingleDOIResolver
+# from .metadata.doi._SingleDOIResovler import SingleDOIResolver
 # from .open_url import OpenURLResolver, ResumableOpenURLResolver
-# from .enrichment import (
+# from .metadata.enrichment import (
 #     MetadataEnricher,
 #     JCR_YEAR,
 # )

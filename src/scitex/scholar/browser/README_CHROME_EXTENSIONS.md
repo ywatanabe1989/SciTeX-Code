@@ -5,13 +5,13 @@ This module provides automated Chrome extension management for the Scholar workf
 ## Quick Start
 
 ```python
-from scitex.scholar.browser import ChromeExtensionManager, SeleniumBrowserManager
+from scitex.scholar.browser import ChromeProfileManager, SeleniumBrowserManager
 
 # 1. Setup Chrome profile with extensions
-profile_manager = ChromeExtensionManager("scholar_default")
+profile_manager = ChromeProfileManager(profile_name="extension")
 
 # Check installed extensions
-status = profile_manager.check_extensions_installed_async()
+status = profile_manager.check_extensions_installed()
 print(status)
 
 # Install extensions interactively (one-time setup)

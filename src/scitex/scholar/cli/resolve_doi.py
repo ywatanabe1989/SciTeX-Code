@@ -17,7 +17,7 @@ import argparse
 import asyncio
 import sys
 
-from ..doi import DOIResolver
+from ..metadata.doi import DOIResolver
 
 
 def create_parser():

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 15:05:22 (ywatanabe)"
+# Timestamp: "2025-08-07 15:43:47 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -70,13 +70,32 @@ def main():
     #     finally:
     #         sys.argv = original_argv
 
-    elif args.command == "open-chrome":
-        from .cli.open_chrome import main_async as open_chrome_main_async
+    elif args.command == "chrome":
+        from .cli.chrome import main_async as chrome_main_async
 
         original_argv = sys.argv
-        sys.argv = ["open-chrome"] + remaining
+        sys.argv = ["chrome"] + remaining
         try:
-            asyncio.run(open_chrome_main_async())
+            asyncio.run(chrome_main_async())
+        finally:
+            sys.argv = original_argv
+
+    # elif args.command == "download":
+    #     from .download.__main__ import main as download_main
+
+    #     original_argv = sys.argv
+    #     sys.argv = ["download"] + remaining
+    #     try:
+    #         download_main()
+    #     finally:
+    #         sys.argv = original_argv
+    elif args.command == "download":
+        from .cli.download_pdf import main as download_main
+
+        original_argv = sys.argv
+        sys.argv = ["download"] + remaining
+        try:
+            download_main()
         finally:
             sys.argv = original_argv
 

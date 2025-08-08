@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-06 15:14:43 (ywatanabe)"
+# Timestamp: "2025-08-07 17:06:36 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -54,6 +54,7 @@ capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}
 # ----------------------------------------
 # browser:
 # ----------------------------------------
+chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
 # browser_backend: ${SCITEX_SCHOLAR_BROWSER_BACKEND:-"local"}
 # use_lean_library: ${SCITEX_SCHOLAR_USE_LEAN_LIBRARY:-true}
 # lean_library_browser_profile: ${SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE:-null}

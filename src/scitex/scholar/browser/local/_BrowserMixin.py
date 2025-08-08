@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 04:22:32 (ywatanabe)"
+# Timestamp: "2025-08-07 20:04:42 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -159,14 +159,14 @@ class BrowserMixin:
             headless=is_headless
         )
 
-        # Smart viewport sizing based on mode
-        if "viewport" not in context_options:
-            if self.mode == "stealth":
-                # For stealth mode: use minimal viewport to avoid detection
-                context_options["viewport"] = {"width": 1, "height": 1}
-            else:  # interactive mode
-                # For interactive mode: use human-friendly size
-                context_options["viewport"] = {"width": 1280, "height": 720}
+        # # Smart viewport sizing based on mode
+        # if "viewport" not in context_options:
+        #     if self.mode == "stealth":
+        #         # For stealth mode: use minimal viewport to avoid detection
+        #         context_options["viewport"] = {"width": 1, "height": 1}
+        #     else:  # interactive mode
+        #         # For interactive mode: use human-friendly size
+        #         context_options["viewport"] = {"width": 1280, "height": 720}
 
         context = await browser.new_context(**context_options)
         await context.add_init_script(
@@ -175,7 +175,9 @@ class BrowserMixin:
         # await self.cookie_acceptor.inject_auto_acceptor_async(context)
         return browser, context
 
-    async def get_session_async(self, timeout: int = 30) -> aiohttp.ClientSession:
+    async def get_session_async(
+        self, timeout: int = 30
+    ) -> aiohttp.ClientSession:
         """Get or create basic aiohttp session."""
         if (
             not hasattr(self, "_session")
