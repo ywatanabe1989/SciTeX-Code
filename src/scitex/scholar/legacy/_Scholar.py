@@ -29,16 +29,16 @@ from typing import Any, Dict, List, Optional, Union
 from scitex import logging
 
 # PDF extraction is now handled by scitex.io
-from ..errors import (
+from scitex.errors import (
     BibTeXEnrichmentError,
     ConfigurationError,
     ScholarError,
     SciTeXWarning,
 )
 from ..io import load
-from ._Paper import Paper
-from ._Papers import Papers
-from .config import ScholarConfig
+from scitex.scholar.core import Paper
+from .core._Papers import Papers
+from scitex.scholar.config import ScholarConfig
 from .metadata.doi._SingleDOIResolver import SingleDOIResolver
 from .download._PDFDownloader import PDFDownloader
 from .metadata.enrichment._MetadataEnricher import MetadataEnricher
@@ -598,7 +598,7 @@ class Scholar:
         """
         bibtex_path = Path(bibtex_path)
         if not bibtex_path.exists():
-            from ..errors import PathNotFoundError
+            from scitex.errors import PathNotFoundError
 
             raise PathNotFoundError(str(bibtex_path))
 

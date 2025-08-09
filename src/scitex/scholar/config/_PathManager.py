@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 18:47:55 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
+# Timestamp: "2025-08-09 01:52:59 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -500,6 +500,20 @@ class PathManager:
         """Get the base Scholar library path (backward compatibility method)."""
         return self.library_dir
 
+    def get_library_dir(
+        self,
+        project: Optional[str] = None,
+    ) -> Path:
+        """Get library directory"""
+        if project:
+            assert (
+                project.upper() != "MASTER"
+            ), f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
+
+            return self._ensure_directory(self.library_dir / project)
+        else:
+            return self._ensure_directory(self.library_dir)
+
     def get_library_master_dir(self) -> Path:
         """Get the MASTER directory for internal storage.
 
@@ -508,35 +522,14 @@ class PathManager:
         """
         return self._ensure_directory(self.library_dir / "MASTER")
 
-    def get_library_dir(self, project: str = "default") -> Path:
-        """Get library directory for a specific project.
-
-        Args:
-            project: Project name (default: "default")
-
-        Returns:
-            Path to the project's library directory
-        """
-        assert project, "Project name cannot be empty"
-
-        # Prevent using any variant of "master"/"MASTER" as user project names
-        assert (
-            project.upper() != "MASTER"
-        ), f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
-
-        # Internal code should use get_collection_dir("MASTER") for master storage
-        # This method is for user projects only
-
-        project = self._sanitize_collection_name(project)
-        return self._ensure_directory(self.library_dir / project)
-
     # Enhanced methods with tidiness constraints (automatically ensure directories exist)
     def get_chrome_cache_dir(self, profile_name: str) -> Path:
         return self._ensure_directory(self.cache_dir / "chrome" / profile_name)
 
-    def get_auth_cache_dir(self, auth_type: str) -> Path:
-        auth_type = self._sanitize_filename(auth_type)
-        return self._ensure_directory(self.cache_dir / "auth" / auth_type)
+    def get_auth_cache_dir(
+        self,
+    ) -> Path:
+        return self._ensure_directory(self.cache_dir / "auth")
 
     def get_collection_dir(self, collection_name: str) -> Path:
         collection_name = self._sanitize_collection_name(collection_name)
@@ -595,11 +588,14 @@ class PathManager:
             "unique_id": unique_id,
         }
 
-    def get_screenshots_dir(self, screenshot_type: str = "general") -> Path:
-        screenshot_type = self._sanitize_filename(screenshot_type)
-        return self._ensure_directory(
-            self.workspace_dir / "screenshots" / screenshot_type
-        )
+    def get_screenshots_dir(self, category: Optional[str] = None) -> Path:
+        if category:
+            category = self._sanitize_filename(category)
+            return self._ensure_directory(
+                self.workspace_dir / "screenshots" / category
+            )
+        else:
+            return self._ensure_directory(self.workspace_dir / "screenshots")
 
     def get_downloads_dir(self) -> Path:
         return self._ensure_directory(self.workspace_dir / "downloads")
@@ -764,7 +760,7 @@ Tidiness Constraints:
         structure = f"""{base}/
 ├── cache/ (.cache_dir) [Max: {self.constraints.max_cache_size_mb}MB, {self.constraints.cache_retention_days}d retention]
 │   ├── chrome/
-│   │   └── <profile_name>/ (get_auth_cache_dir(auth_type))
+│   │   └── <profile_name>/ (get_chrome_cache_dir(auth_type))
 │   ├── auth/
 │   │   └── <auth_type>/ (get_auth_cache_dir(auth_type))
 │   └── <cache_type>/
@@ -784,7 +780,7 @@ Tidiness Constraints:
 │   ├── downloads/ (get_downloads_dir()) [Max: {self.constraints.max_downloads_size_mb}MB, {self.constraints.downloads_retention_days}d retention]
 │   ├── logs/ (get_workspace_logs_dir())
 │   └── screenshots/ [Max: {self.constraints.max_screenshots_size_mb}MB, {self.constraints.screenshots_retention_days}d retention]
-│       └── <screenshot_type>/ (get_screenshots_dir(screenshot_type))
+│       └── <category>/ (get_screenshots_dir(category))
 └── backup/ (.backup_dir)"""
 
         print(structure)

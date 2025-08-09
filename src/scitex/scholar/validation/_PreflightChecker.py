@@ -22,7 +22,7 @@ try:
 except ImportError:
     async_playwright = None
 
-from ...errors import ScholarError, SciTeXWarning
+from scitex.errors import ScholarError, SciTeXWarning
 
 
 class PreflightChecker:

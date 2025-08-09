@@ -24,8 +24,8 @@ from typing import Any, Dict, List, Optional, Union
 
 from scitex import logging
 
-from ...errors import SearchError
-from .._Paper import Paper
+from scitex.errors import SearchError
+from scitex.scholar.core import Paper
 from ._BaseSearchEngine import BaseSearchEngine
 from .local._LocalSearchEngine import LocalSearchEngine
 from .local._VectorSearchEngine import VectorSearchEngine

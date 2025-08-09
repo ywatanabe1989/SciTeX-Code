@@ -24,7 +24,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 
-from ..config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 __DIR__ = os.path.dirname(os.path.abspath(__file__))
 zotero_translators_dir = os.path.join(__DIR__, "zotero_translators")

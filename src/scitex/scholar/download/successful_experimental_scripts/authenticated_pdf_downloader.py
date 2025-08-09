@@ -21,9 +21,9 @@ except ImportError:
     CRAWL4AI_AVAILABLE = False
 
 from scitex.scholar.auth._AuthenticationManager import AuthenticationManager
-from scitex.scholar.browser.local._BrowserManager import BrowserManager
+from scitex.scholar.browser import BrowserManager
 from scitex.scholar.download._ZoteroTranslatorRunner import ZoteroTranslatorRunner
-from scitex.scholar.config._ScholarConfig import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 from scitex.logging import getLogger
 
 logger = getLogger(__name__)

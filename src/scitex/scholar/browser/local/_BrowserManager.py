@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 23:24:26 (ywatanabe)"
+# Timestamp: "2025-08-09 00:22:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -20,7 +20,7 @@ from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from scitex import logging
 
-from ...config._ScholarConfig import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 from ._BrowserMixin import BrowserMixin
 from .utils._ChromeProfileManager import ChromeProfileManager
 from .utils._CookieAutoAcceptor import CookieAutoAcceptor
@@ -468,7 +468,7 @@ class BrowserManager(BrowserMixin):
             logger.success(f"Saved: {path}")
         except Exception as e:
             logger.fail(f"Screenshot failed for {path}: {e}")
-    
+
     async def start_periodic_screenshots_async(
         self,
         page,
@@ -479,50 +479,57 @@ class BrowserManager(BrowserMixin):
     ):
         """
         Start taking periodic screenshots in the background.
-        
+
         Args:
             page: The page to screenshot
             prefix: Prefix for screenshot filenames
             interval_seconds: Seconds between screenshots
             duration_seconds: Total duration to take screenshots (0 = infinite)
             verbose: Whether to log each screenshot
-            
+
         Returns:
             asyncio.Task that can be cancelled to stop screenshots
         """
+
         async def take_periodic_screenshots():
-            screenshots_dir = self.config.get_screenshots_dir(screenshot_type="log")
+            screenshots_dir = self.config.get_screenshots_dir(
+                screenshot_type="log"
+            )
             elapsed = 0
             step = 0
-            
+
             while duration_seconds == 0 or elapsed < duration_seconds:
                 step += 1
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Include milliseconds
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[
+                    :-3
+                ]  # Include milliseconds
                 fname = f"{prefix}_step{step:03d}_{timestamp}"
                 path = os.path.join(
                     str(screenshots_dir),
                     f"{fname}-{self.browser_mode}.png",
                 )
-                
+
                 try:
                     await page.screenshot(path=path)
                     if verbose:
                         logger.debug(f"Screenshot {step}: {fname}")
                     elif step == 1:
-                        logger.info(f"Started periodic screenshots: {prefix}_*")
+                        logger.info(
+                            f"Started periodic screenshots: {prefix}_*"
+                        )
                 except Exception as e:
                     if verbose:
                         logger.debug(f"Screenshot {step} failed: {e}")
-                
+
                 await asyncio.sleep(interval_seconds)
                 elapsed += interval_seconds
-            
+
             logger.info(f"Completed {step} periodic screenshots for {prefix}")
-        
+
         # Start the task in background
         task = asyncio.create_task(take_periodic_screenshots())
         return task
-    
+
     async def stop_periodic_screenshots_async(self, task: asyncio.Task):
         """Stop periodic screenshots task."""
         if task and not task.done():
@@ -541,7 +548,7 @@ if __name__ == "__main__":
 
     async def main(browser_mode="interactive"):
         """Example usage of BrowserManager with stealth features."""
-        from ...auth import AuthenticationManager
+        from scitex.scholar.auth import AuthenticationManager
 
         auth_manager = AuthenticationManager()
         browser_manager = BrowserManager(

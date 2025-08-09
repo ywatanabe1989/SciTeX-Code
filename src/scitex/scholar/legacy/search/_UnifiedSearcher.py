@@ -31,8 +31,8 @@ import aiohttp
 import xml.etree.ElementTree as ET
 from urllib.parse import quote_plus
 
-from .._Paper import Paper
-from ...errors import SearchError
+from scitex.scholar.core import Paper
+from scitex.errors import SearchError
 from ..utils._paths import get_scholar_dir
 
 logger = logging.getLogger(__name__)
@@ -1086,7 +1086,7 @@ class UnifiedSearcher:
         
         # Handle config parameter
         if config is not None:
-            from ..config import ScholarConfig
+            from scitex.scholar.config import ScholarConfig
             if not isinstance(config, ScholarConfig):
                 raise TypeError("config must be a ScholarConfig instance")
             self.config = config

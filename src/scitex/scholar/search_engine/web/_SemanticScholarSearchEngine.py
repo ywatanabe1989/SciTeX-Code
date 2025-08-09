@@ -24,9 +24,9 @@ import aiohttp
 
 from scitex import logging
 
-from ....errors import SearchError
-from ..._Paper import Paper
-from ...config import ScholarConfig
+from scitex.errors import SearchError
+from scitex.scholar.core import Paper
+from scitex.scholar.config import ScholarConfig
 from .._BaseSearchEngine import BaseSearchEngine
 
 logger = logging.getLogger(__name__)

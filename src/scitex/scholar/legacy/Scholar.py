@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Union
 
 from scitex import logging
 
-from ._Paper import Paper
+from scitex.scholar.core import Paper
 from .database._StorageIntegratedDB import StorageIntegratedDB
 from .metadata.doi._SingleDOIResolver import SingleDOIResolver
 from .download._BrowserDownloadHelper import BrowserDownloadHelper

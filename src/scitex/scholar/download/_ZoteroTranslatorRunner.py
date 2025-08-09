@@ -28,7 +28,7 @@ from playwright.async_api import Page, async_playwright
 
 from scitex import logging
 
-from ...errors import PathNotFoundError, TranslatorError
+from scitex.errors import PathNotFoundError, TranslatorError
 
 logger = logging.getLogger(__name__)
 

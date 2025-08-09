@@ -17,7 +17,7 @@ from typing import Dict, Optional
 
 from scitex import logging
 
-from ...config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 from ._BaseSSOAutomator import BaseSSOAutomator
 
 logger = logging.getLogger(__name__)

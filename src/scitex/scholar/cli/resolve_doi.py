@@ -17,7 +17,7 @@ import argparse
 import asyncio
 import sys
 
-from ..metadata.doi import DOIResolver
+from scitex.scholar.metadata.doi import DOIResolver
 
 
 def create_parser():

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 16:57:34 (ywatanabe)"
+# Timestamp: "2025-08-09 00:24:51 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_ChromeProfileManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,7 +18,7 @@ from typing import Dict, Optional
 
 from scitex import logging
 
-from ....config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 

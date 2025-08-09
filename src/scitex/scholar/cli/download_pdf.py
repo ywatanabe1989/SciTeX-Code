@@ -25,7 +25,7 @@ import sys
 
 from scitex import logging
 
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 from ..download._SmartPDFDownloader import SmartPDFDownloader
 
 logger = logging.getLogger(__name__)

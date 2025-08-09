@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import httpx
-from scitex.scholar.browser.local import BrowserManager
+from scitex.scholar.browser import BrowserManager
 from scitex.scholar.auth import AuthenticationManager
 from scitex import logging
 

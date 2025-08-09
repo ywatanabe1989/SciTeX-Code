@@ -18,9 +18,9 @@ from typing import List, Dict, Any, Optional
 import aiohttp
 
 from .._BaseSearchEngine import BaseSearchEngine
-from ..._Paper import Paper
-from ....errors import SearchError
-from ...config import ScholarConfig
+from scitex.scholar.core import Paper
+from scitex.errors import SearchError
+from scitex.scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 

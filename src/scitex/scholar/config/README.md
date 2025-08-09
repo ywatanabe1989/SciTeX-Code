@@ -1,13 +1,15 @@
 <!-- ---
-!-- Timestamp: 2025-08-02 19:55:21
+!-- Timestamp: 2025-08-09 01:30:11
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/README.md
 !-- --- -->
 
-1. `CascadeConfig` - Universal config resolver with precedence hierarchy
-2. `ScholarConfig` - Scholar-specific wrapper using CascadeConfig
-3. `PathManager` - Directory structure management
-4. Flattened YAML - No unnecessary nesting
+## Cascading Config Environment Variables
+Configurations has precedence of:
+1. Direct Specification
+2. Configuration
+3. Environmental Varibales
+Example can be seen at `./config/default.yaml`
 
 ## Usage
 ```python
@@ -16,5 +18,11 @@ api_key = config.cascade.resolve("semantic_scholar_api_key")
 is_debug = config.cascade.resolve("debug_mode", type=bool)
 download_dir = config.path_manager.get_downloads_dir()
 ```
+
+## Modules
+1. `CascadeConfig` - Universal config resolver with precedence hierarchy
+2. `ScholarConfig` - Scholar-specific wrapper using CascadeConfig
+3. `PathManager` - Directory structure management
+4. Flattened YAML - No unnecessary nesting
 
 <!-- EOF -->

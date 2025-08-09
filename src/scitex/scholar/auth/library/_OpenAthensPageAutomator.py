@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:19:31 (ywatanabe)"
+# Timestamp: "2025-08-09 01:21:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,8 +18,9 @@ from typing import Optional
 
 from playwright.async_api import BrowserContext, Page
 
+from scitex.scholar.config import ScholarConfig
+
 from ...browser._BrowserUtils import BrowserUtils
-from ...config import ScholarConfig
 from ..sso_automation._BaseSSOAutomator import BaseSSOAutomator
 
 
@@ -341,7 +342,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
 
                 if not self.is_sso_page(current_url):
                     self.logger.success(
-                        f"Redirected to institution SSO: {current_url}"
+                        f"Redirected to institution SSO: {current_url[:50]}..."
                     )
                     return True
 

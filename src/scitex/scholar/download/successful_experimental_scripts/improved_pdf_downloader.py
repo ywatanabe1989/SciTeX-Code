@@ -8,7 +8,7 @@ from typing import Optional, Dict, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from scitex.scholar.browser.local import BrowserManager
+from scitex.scholar.browser import BrowserManager
 from scitex.scholar.auth import AuthenticationManager
 from scitex.scholar.download.run_zotero_translators import find_translator_for_url, execute_translator
 from scitex import logging

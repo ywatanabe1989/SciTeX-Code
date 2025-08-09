@@ -24,7 +24,7 @@ from typing import Any, Dict, Optional
 
 from scitex import logging
 
-from ...config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 from ._SessionManager import SessionManager
 
 logger = logging.getLogger(__name__)

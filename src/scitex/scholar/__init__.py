@@ -16,12 +16,12 @@ Quick Start:
 """
 
 # # Import main class
-# from ._Scholar import Scholar, search, search_quick, enrich_bibtex
+# from .core._Scholar import Scholar, search, search_quick, enrich_bibtex
 
 # Import configuration
-from .config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 from .metadata.doi import DOIResolver
-from .auth import AuthenticationManager
+from scitex.scholar.auth import AuthenticationManager
 
 __all__ = [
     "ScholarConfig",
@@ -30,8 +30,8 @@ __all__ = [
 ]
 
 # # Import core classes for advanced users
-# from ._Paper import Paper
-# from ._Papers import Papers
+# from scitex.scholar.core import Paper
+# from .core._Papers import Papers
 
 # # DOI resolver is available via: python -m scitex.scholar.resolve_doi_asyncs
 # from . import doi
@@ -228,7 +228,7 @@ __all__ = [
 # #         else:
 # #             return Scholar
 
-# #     from ..errors import ScholarError
+# #     from scitex.errors import ScholarError
 # #     raise ScholarError(
 # #         f"Module attribute not found: '{name}'",
 # #         context={"module": __name__, "attribute": name},

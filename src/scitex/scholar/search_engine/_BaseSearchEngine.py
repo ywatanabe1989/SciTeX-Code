@@ -22,7 +22,7 @@ import asyncio
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 
 
 class BaseSearchEngine(ABC):

@@ -20,7 +20,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 
-from ..config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 # --- CONFIGURATION ---
 __DIR__ = os.path.dirname(os.path.abspath(__file__))
@@ -252,7 +252,7 @@ def find_translator_for_url(
 # Example usage would be in your _BrowserManager.py
 if __name__ == "__main__":
     from scitex.scholar.auth import AuthenticationManager
-    from scitex.scholar.browser.local import BrowserManager
+    from scitex.scholar.browser import BrowserManager
 
     async def demo():
         auth_manager = AuthenticationManager()

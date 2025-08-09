@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from urllib.parse import urlparse
 
-from ...errors import PDFDownloadError, ScholarError
+from scitex.errors import PDFDownloadError, ScholarError
 
 
 class DownloadErrorDiagnostics:

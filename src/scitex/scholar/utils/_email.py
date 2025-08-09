@@ -25,7 +25,7 @@ from typing import List, Optional, Union
 
 from scitex.logging import getLogger
 
-from ..config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 logger = getLogger(__name__)
 

@@ -17,7 +17,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 
-from ..config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 # --- CONFIGURATION ---
 __DIR__ = os.path.dirname(os.path.abspath(__file__))

@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Union
 
 from scitex import logging
 from .lookup import get_default_lookup
-from ._Paper import Paper
+from scitex.scholar.core import Paper
 from .storage import EnhancedStorageManager
 
 logger = logging.getLogger(__name__)

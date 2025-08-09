@@ -31,8 +31,8 @@ from playwright.async_api import async_playwright
 
 from scitex import logging
 
-from ....errors import ScholarError
-from ...config import ScholarConfig
+from scitex.errors import ScholarError
+from scitex.scholar.config import ScholarConfig
 from .._BrowserAuthenticator import BrowserAuthenticator
 from ._BaseAuthenticator import BaseAuthenticator
 from ._CacheManager import CacheManager

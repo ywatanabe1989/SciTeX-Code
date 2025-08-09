@@ -17,8 +17,8 @@ from scitex import logging
 from typing import List, Optional
 
 from .._BaseSearchEngine import BaseSearchEngine
-from ..._Paper import Paper
-from ....errors import SearchError
+from scitex.scholar.core import Paper
+from scitex.errors import SearchError
 
 logger = logging.getLogger(__name__)
 

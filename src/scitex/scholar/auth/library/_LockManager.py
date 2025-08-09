@@ -25,7 +25,7 @@ from typing import Optional
 
 from scitex import logging
 
-from ....errors import ScholarError
+from scitex.errors import ScholarError
 
 logger = logging.getLogger(__name__)
 

@@ -37,15 +37,15 @@ from scitex import logging
 
 # Handle both module and script execution
 try:
-    from ..browser.local import BrowserManager
-    from ..auth import AuthenticationManager
-    from ..config import ScholarConfig
+    from scitex.scholar.browser import BrowserManager
+    from scitex.scholar.auth import AuthenticationManager
+    from scitex.scholar.config import ScholarConfig
     from .run_zotero_translators import find_translator_for_url, execute_translator
 except ImportError:
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-    from scitex.scholar.browser.local import BrowserManager
+    from scitex.scholar.browser import BrowserManager
     from scitex.scholar.auth import AuthenticationManager
     from scitex.scholar.config import ScholarConfig
     from scitex.scholar.download.run_zotero_translators import find_translator_for_url, execute_translator

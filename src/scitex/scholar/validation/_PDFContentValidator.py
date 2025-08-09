@@ -23,7 +23,7 @@ except ImportError:
     import pymupdf as fitz
 
 from scitex import logging
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 
 logger = logging.getLogger(__name__)
 

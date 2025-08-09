@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-08-06 14:43:41
+!-- Timestamp: 2025-08-09 03:40:26
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/README.md
 !-- --- -->
 
 # Scholar DOI Resolution System
@@ -10,44 +10,50 @@ A comprehensive, production-ready DOI resolution system with multiple academic s
 
 ## 🚀 Quick Start
 
-### Unified Python API (Recommended)
+### Simple, Reliable Methods (Recommended)
+
 ```python
-from scitex.scholar.doi import DOIResolver
+from scitex.scholar.metadata.doi import BibTeXDOIResolver, SingleDOIResolver
 
-resolver = DOIResolver()
+# Method 1: Resolve DOIs from BibTeX file (most common use case)
+resolver = BibTeXDOIResolver()
+results = await resolver.resolve_from_bibtex("papers.bib", project="my_research")
 
-# Single DOI
-result = await resolver.resolve_async("10.1038/nature12373")
+# Method 2: Find DOI for a single paper by title/authors
+single_resolver = SingleDOIResolver()
+doi = await single_resolver.resolve_by_title(
+    title="Deep Learning",
+    authors=["LeCun, Y.", "Bengio, Y.", "Hinton, G."],
+    year=2015
+)
 
-# Multiple DOIs
-results = await resolver.resolve_async(["10.1038/nature1", "10.1126/science.abc"])
+# Method 3: Enrich papers that already have DOIs
+from scitex.scholar.metadata.enrichment import MetadataEnricher
+enricher = MetadataEnricher()
+enriched = await enricher.enrich_papers_with_metadata(papers)
+```
 
-# BibTeX file
-results = await resolver.resolve_async("papers.bib")
+### ⚠️ What NOT to do
+```python
+# DON'T: Pass a DOI to "resolve" it - DOIs are already resolved!
+# This is redundant and will cause unnecessary API calls:
+resolver.resolve_async("10.1126/science.aao0702")  # ❌ Wrong
 
-# BibTeX content string
-bibtex_content = """
-@article{smith2023,
-    title={Machine Learning},
-    author={Smith, J.},
-    year={2023}
-}
-"""
-results = await resolver.resolve_async(bibtex_content)
+# DO: Use DOIs directly or fetch their metadata
+doi = "10.1126/science.aao0702"  # ✅ DOI is already resolved
+metadata = await enricher.fetch_metadata_for_doi(doi)  # ✅ Fetch metadata if needed
 ```
 
 ### Command Line Interface
 ```bash
-# Demo the unified API
-python -m scitex.scholar.doi --demo
+# Resolve DOIs from a BibTeX file
+python -m scitex.scholar.cli.resolve_dois --bibtex papers.bib --project my_research
 
-# Resolve specific input
-python -m scitex.scholar.doi "10.1038/nature12373"
-python -m scitex.scholar.doi "papers.bib"
+# Find DOI for a specific paper
+python -m scitex.scholar.cli.resolve_dois --title "Deep Learning" --year 2015
 
-# Legacy command-line interface (still supported)
-python -m scitex.scholar.cli.resolve_doi_asyncs --title "Deep Learning" --year 2015
-python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib --enhanced --resume
+# Resume interrupted batch processing
+python -m scitex.scholar.cli.resolve_dois --bibtex papers.bib --resume
 ```
 
 ## 🏗️ System Architecture
@@ -86,7 +92,7 @@ Scholar Library Integration
 
 #### ✅ **Utility-Based Architecture**
 - **TextNormalizer** - LaTeX/Unicode handling, fuzzy title matching
-- **URLDOIExtractor** - DOI extraction from multiple URL patterns  
+- **URLDOISource** - DOI extraction from multiple URL patterns  
 - **PubMedConverter** - PMID to DOI conversion via E-utilities
 - **Shared utilities** across all source classes (Phase 1 refactoring completed)
 
@@ -98,30 +104,34 @@ Scholar Library Integration
 
 ## 📖 Usage Guide
 
-### Simple Unified API
+### Clear, Purpose-Built Methods
 
-The new unified `DOIResolver` automatically detects input types and uses the appropriate resolution strategy:
+Use the right tool for the right job:
 
 ```python
-from scitex.scholar.doi import DOIResolver
-
-# One resolver handles everything
-resolver = DOIResolver()
-
-# Automatic input type detection:
-await resolver.resolve_async("10.1038/nature12373")         # Single DOI string
-await resolver.resolve_async(["doi1", "doi2", "doi3"])      # List of DOIs  
-await resolver.resolve_async("research_papers.bib")         # BibTeX file path
-await resolver.resolve_async("@article{...}")               # Raw BibTeX content
-
-# All methods support common parameters:
-results = await resolver.resolve_async(
+# 1. BibTeX file -> DOIs (batch resolution)
+from scitex.scholar.metadata.doi import BibTeXDOIResolver
+resolver = BibTeXDOIResolver(project="my_research")
+results = await resolver.resolve_from_bibtex(
     "papers.bib",
-    project="my_research",           # Scholar library project name
     max_workers=8,                   # Concurrent processing
-    sources=["crossref", "pubmed"],  # Specific sources only
-    resume=True                      # Resume from previous run
+    sources=["crossref", "pubmed"],  # Specific sources
+    resume=True                      # Resume from interruption
 )
+
+# 2. Paper metadata -> DOI (single resolution)
+from scitex.scholar.metadata.doi import SingleDOIResolver
+resolver = SingleDOIResolver()
+doi = await resolver.resolve_by_title(
+    title="Machine Learning Fundamentals",
+    authors=["Smith, J."],
+    year=2023
+)
+
+# 3. DOI -> Enriched metadata
+from scitex.scholar.metadata.enrichment import MetadataEnricher
+enricher = MetadataEnricher()
+metadata = await enricher.fetch_metadata_for_doi("10.1038/nature12373")
 ```
 
 ### Advanced Usage (Legacy API)
@@ -130,8 +140,8 @@ For fine-grained control, the internal resolvers are still available:
 
 ```python
 # Advanced users can still access specific resolvers
-from scitex.scholar.doi._SingleDOIResolver import SingleDOIResolver
-from scitex.scholar.doi._BibTeXDOIResolver import BibTeXDOIResolver
+from scitex.scholar.doi.resolvers._SingleDOIResolver import SingleDOIResolver
+from scitex.scholar.doi.resolvers._BibTeXDOIResolver import BibTeXDOIResolver
 
 # But most users should use the unified DOIResolver instead
 ```
@@ -247,7 +257,7 @@ Resolving DOIs: [=========>          ] 45/75 (60.0%) ✓42 ✗3  2.1 items/s  el
 
 **Utility Consolidation:**
 - ✅ Eliminated 150+ lines of duplicate code across source files
-- ✅ All sources now use shared `TextNormalizer`, `URLDOIExtractor`, `PubMedConverter`
+- ✅ All sources now use shared `TextNormalizer`, `URLDOISource`, `PubMedConverter`
 - ✅ Enhanced `BaseDOISource` with lazy-loaded utility access
 - ✅ Consistent text processing and DOI extraction across all sources
 
@@ -320,22 +330,26 @@ python -m scitex.scholar.cli.resolve_doi_asyncs --bibtex papers.bib --resume
 
 ## ✨ API Design Philosophy
 
-The unified `DOIResolver` follows the **"pit of success"** design pattern:
+**Clear intent over magic**: Each method has a single, clear purpose:
 
-- **Progressive disclosure**: Simple common cases require minimal code
-- **Automatic input detection**: No need to choose between different resolver classes
-- **Consistent interface**: Same method signature for all input types
-- **Backward compatibility**: Legacy resolvers still available for advanced users
+- **`resolve_by_title()`**: Find DOI when you have paper metadata
+- **`resolve_from_bibtex()`**: Process BibTeX files to add missing DOIs
+- **`fetch_metadata_for_doi()`**: Get metadata when you already have a DOI
+
+**Why explicit methods are better:**
+- ✅ **No ambiguity**: You know exactly what will happen
+- ✅ **Better error messages**: Failures are easier to understand
+- ✅ **Predictable performance**: No surprise API calls
+- ✅ **Easier to test**: Each method has clear inputs/outputs
 
 ```python
-# Before: Complex API with multiple classes
-from scitex.scholar.doi import SingleDOIResolver, BibTeXDOIResolver
-single_resolver = SingleDOIResolver(project="test")
-batch_resolver = BibTeXDOIResolver(project="test") 
+# Bad: "Magic" API that guesses what you want
+resolver.resolve(something)  # What does this do? Hard to tell!
 
-# After: Simple unified API
-from scitex.scholar.doi import DOIResolver
-resolver = DOIResolver()  # Handles everything automatically
+# Good: Clear, purpose-built methods
+resolver.resolve_by_title(title="...")     # Obviously searches for DOI
+resolver.resolve_from_bibtex("file.bib")   # Obviously processes BibTeX
+enricher.fetch_metadata_for_doi(doi)       # Obviously fetches metadata
 ```
 
 ---

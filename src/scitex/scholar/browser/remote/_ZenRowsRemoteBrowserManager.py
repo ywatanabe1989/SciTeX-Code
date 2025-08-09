@@ -405,7 +405,7 @@ if __name__ == "__main__":
         # Test 1: Regular browser (baseline) - if available
         print("\nChecking if we can import local browser for comparison...")
         try:
-            from scitex.scholar.browser.local import BrowserManager
+            from scitex.scholar.browser import BrowserManager
             
             print("Initializing regular browser for baseline comparison...")
             regular_manager = BrowserManager(headless=False)

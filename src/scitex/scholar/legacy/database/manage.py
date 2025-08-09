@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from _PaperDatabase import PaperDatabase
+from core._PaperDatabase import PaperDatabase
 from _ScholarDatabaseIntegration import ScholarDatabaseIntegration
 import logging
 
@@ -167,7 +167,7 @@ def validate_pdfs(args):
     for entry in entries:
         if entry.pdf_path and Path(entry.pdf_path).exists():
             # Create paper object for validation
-            from _Paper import Paper
+            from scitex.scholar.core import Paper
             paper = Paper(
                 title=entry.title,
                 authors=entry.authors,

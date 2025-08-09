@@ -23,8 +23,8 @@ from typing import Any, Dict, List, Optional
 
 from scitex import logging
 
-from ...errors import AuthenticationError
-from ..config import ScholarConfig
+from scitex.errors import AuthenticationError
+from scitex.scholar.config import ScholarConfig
 from .library._BaseAuthenticator import BaseAuthenticator
 from .library._EZProxyAuthenticator import EZProxyAuthenticator
 from .library._OpenAthensAuthenticator import OpenAthensAuthenticator

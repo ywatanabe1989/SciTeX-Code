@@ -28,7 +28,7 @@ except ImportError:
     Page = None
     Browser = None
 
-from ....errors import ScholarError
+from scitex.errors import ScholarError
 from ._BaseAuthenticator import BaseAuthenticator
 
 logger = logging.getLogger(__name__)

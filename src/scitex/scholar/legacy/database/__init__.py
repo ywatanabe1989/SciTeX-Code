@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Database module for organizing research papers."""
 
-from ._PaperDatabase import PaperDatabase
+from .core._PaperDatabase import PaperDatabase
 from ._DatabaseEntry import DatabaseEntry
 from ._DatabaseIndex import DatabaseIndex
 # from ._ScholarDatabaseIntegration import ScholarDatabaseIntegration

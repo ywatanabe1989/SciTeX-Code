@@ -20,7 +20,7 @@ from typing import List, Optional
 import numpy as np
 
 from .._BaseSearchEngine import BaseSearchEngine
-from ..._Paper import Paper
+from scitex.scholar.core import Paper
 from ...utils._paths import get_scholar_dir
 
 logger = logging.getLogger(__name__)

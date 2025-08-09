@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-01 12:15:04
+!-- Timestamp: 2025-08-09 00:27:22
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/README.md
 !-- --- -->
@@ -12,44 +12,60 @@
 - It abstracts the complexities of browser creation, configuration (like headless mode or proxies), and clean teardown.
 - All specific managers inherit from a base `_BrowserManager` class.
 
-## General Usage Pattern
+## Usage
 
 - All browser managers are designed for asynchronous use and should be properly closed to release resources.
 
 ```python
 import asyncio
-# Assuming ZenRowsProxyManager is the desired implementation
-from scitex.scholar.browser.local import ZenRowsProxyManager
+from scitex.scholar.browser import BrowserManager
+from scitex.scholar.auth import AuthenticationManager
 
-async def main():
-    # 1. Initialize the manager
-    #    This can be configured (e.g., headless=False)
-    manager = ZenRowsProxyManager(headless=True)
+browser_manager = BrowserManager(
+    chrome_profile_name="system",
+    browser_mode=browser_mode,
+    auth_manager=AuthenticationManager(),
+)
 
-    try:
-        # 2. Get a browser instance
-        browser = await manager.get_browser_async()
-        page = await browser.new_page()
+browser, context = (
+    await browser_manager.get_authenticated_browser_and_context_async()
+)
 
-        # 3. Perform browser actions
-        await page.goto("https://www.google.com")
-        print(await page.title())
-
-        await page.close()
-
-    finally:
-        # 4. Ensure the manager is closed to terminate the browser
-        await manager.close()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+page = await context.new_page()
 ```
 
-## Browser extentions
-- [Lean Library](https://chromewebstore.google.com/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa?hl=en)
-- [Zotero Connector](https://chromewebstore.google.com/detail/zotero-connector/ekhagklcjbdpajgpjgmbionohlpdbjgc?hl=en)
-- [Accept all cookies](https://chromewebstore.google.com/detail/accept-all-cookies/ofpnikijgfhlmmjlpkfaifhhdonchhoi?hl=en)
-- [Captcha Solver](https://chromewebstore.google.com/detail/captcha-solver-auto-recog/ifibfemgeogfhoebkmokieepdoobkbpo?hl=en)
-  - $SCITEX_SCHOLAR_2CAPTCHA_API_KEY
+## Browser Extensions [./utils/_ChromeExtensionmanager](./utils/_ChromeExtensionmanager)
+
+``` python
+EXTENSIONS = {
+    "zotero_connector": {
+        "id": "ekhagklcjbdpajgpjgmbionohlpdbjgc",
+        "name": "Zotero Connector",
+    },
+    "lean_library": {
+        "id": "hghakoefmnkhamdhenpbogkeopjlkpoa",
+        "name": "Lean Library",
+    },
+    "popup_blocker": {
+        "id": "bkkbcggnhapdmkeljlodobbkopceiche",
+        "name": "Pop-up Blocker",
+    },
+    "accept_cookies": {
+        "id": "ofpnikijgfhlmmjlpkfaifhhdonchhoi",
+        "name": "Accept all cookies",
+    },
+    # May be enough
+    "captcha_solver": {
+        "id": "hlifkpholllijblknnmbfagnkjneagid",
+        "name": "CAPTCHA Solver",
+    },
+    # May not be beneficial
+    "2captcha_solver": {
+        "id": "ifibfemgeogfhoebkmokieepdoobkbpo",
+        "name": "2Captcha Solver",
+        "description": "reCAPTCHA v2/v3 solving (may need API for advanced features)",
+    },
+}
+```
 
 <!-- EOF -->

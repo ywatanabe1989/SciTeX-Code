@@ -18,7 +18,7 @@ from typing import Optional, List, Dict, Any
 from enum import Enum
 
 from scitex import logging
-from ..config import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 

@@ -27,11 +27,11 @@ from typing import Any, Dict, List, Optional
 
 from scitex import logging
 
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 from ..download import SmartPDFDownloader
 from ..utils import PDFContentValidator, PDFQualityAnalyzer
 from ._DatabaseEntry import DatabaseEntry
-from ._PaperDatabase import PaperDatabase
+from .core._PaperDatabase import PaperDatabase
 
 logger = logging.getLogger(__name__)
 

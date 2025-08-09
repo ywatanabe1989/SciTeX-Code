@@ -23,15 +23,15 @@ from playwright.async_api import async_playwright, Page, Browser, Download
 import aiohttp
 
 from scitex import logging
-from ..auth import AuthenticationManager
-from ..browser.local import BrowserManager
-from ..config import ScholarConfig
+from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.browser import BrowserManager
+from scitex.scholar.config import ScholarConfig
 from ..open_url import DOIToURLResolver
 from ..utils._screenshot_capturer import ScreenshotCapturer
 # PDFDownloader removed - functionality integrated into SmartPDFDownloader
 from ._AuthenticatedBrowserStrategy import AuthenticatedBrowserStrategy
 from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 
 logger = logging.getLogger(__name__)
 

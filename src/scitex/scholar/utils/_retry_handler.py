@@ -14,7 +14,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
 import logging
 
-from ...errors import PDFDownloadError, ScholarError
+from scitex.errors import PDFDownloadError, ScholarError
 
 
 logger = logging.getLogger(__name__)

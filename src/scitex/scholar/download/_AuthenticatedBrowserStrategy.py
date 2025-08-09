@@ -21,9 +21,9 @@ from urllib.parse import urlparse
 
 from scitex.logging import getLogger
 from ._BaseDownloadStrategy import BaseDownloadStrategy
-from ..browser.local._BrowserManager import BrowserManager
+from scitex.scholar.browser import BrowserManager
 from ..auth._AuthenticationManager import AuthenticationManager  
-from ..config._ScholarConfig import ScholarConfig
+from scitex.scholar.config import ScholarConfig
 
 logger = getLogger(__name__)
 

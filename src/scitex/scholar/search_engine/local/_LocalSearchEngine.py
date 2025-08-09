@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 from .._BaseSearchEngine import BaseSearchEngine
-from ..._Paper import Paper
+from scitex.scholar.core import Paper
 from ...utils._paths import get_scholar_dir
 
 logger = logging.getLogger(__name__)

@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Optional
 
-from .._Paper import Paper
+from scitex.scholar.core import Paper
 from ._PDFContentValidator import PDFContentValidator
 from ._PDFQualityAnalyzer import PDFQualityAnalyzer
 
