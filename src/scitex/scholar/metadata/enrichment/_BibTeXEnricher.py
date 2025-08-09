@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-05 17:01:26 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/enrichment/_BibTeXEnricher.py
+# Timestamp: "2025-08-09 17:33:48 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/enrichment/_BibTeXEnricher.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/enrichment/_BibTeXEnricher.py"
+    "./src/scitex/scholar/metadata/enrichment/_BibTeXEnricher.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-
-# Time-stamp: "2025-08-01 13:25:00"
-# Author: Claude
 
 """
 Enrich BibTeX entries with additional metadata.
@@ -33,14 +30,14 @@ from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.customization import convert_to_unicode
 
 from scitex import logging
-
 from scitex.scholar.config import ScholarConfig
-from ..doi._SingleDOIResolver import SingleDOIResolver
+
 from ...search_engine import (
     CrossRefSearchEngine,
     PubMedSearchEngine,
     SemanticScholarSearchEngine,
 )
+from ..doi._SingleDOIResolver import SingleDOIResolver
 
 logger = logging.getLogger(__name__)
 

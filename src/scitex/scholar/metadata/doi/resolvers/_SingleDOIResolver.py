@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 12:21:07 (ywatanabe)"
+# Timestamp: "2025-08-09 17:49:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations

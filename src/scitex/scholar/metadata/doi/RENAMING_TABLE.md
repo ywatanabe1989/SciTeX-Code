@@ -1,4 +1,13 @@
+<!-- ---
+!-- Timestamp: 2025-08-09 17:22:16
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/RENAMING_TABLE.md
+!-- --- -->
+
 # Method Renaming Table - xxx2yyy Pattern
+
+
+rename.sh resolve_async title2doi_async .
 
 ## Core Resolution Methods
 
@@ -99,3 +108,5 @@ doi = await resolver.title2doi("Deep Learning", year=2015)  # Obviously searches
 valid = await resolver.validate_doi("10.1126/science.aao0702")  # Obviously validates
 dois = await resolver.bibtex2dois("papers.bib")  # Obviously processes BibTeX
 ```
+
+<!-- EOF -->
