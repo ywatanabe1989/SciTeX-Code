@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 01:52:59 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_PathManager.py
+# Timestamp: "2025-08-11 10:12:43 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -100,6 +100,7 @@ class PathManager:
         subdirs = [
             self.cache_dir / "chrome",
             self.cache_dir / "auth",
+            self.cache_dir / "doi_resolution",
             self.workspace_dir / "downloads",
             self.workspace_dir / "logs",
             self.workspace_dir / "screenshots",
@@ -531,9 +532,38 @@ class PathManager:
     ) -> Path:
         return self._ensure_directory(self.cache_dir / "auth")
 
+    def get_doi_resolution_cache_dir(
+        self,
+    ) -> Path:
+        return self._ensure_directory(self.cache_dir / "doi_resolution")
+
+    def get_doi_resolution_progress_path(
+        self, provided_path: Optional[Path] = None
+    ) -> Path:
+        """Resolve progress file path with automatic generation if needed.
+
+        Args:
+            provided_path: Explicitly provided progress file path
+
+        Returns:
+            Resolved progress file path
+        """
+        if provided_path:
+            return Path(str(provided_path))
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return (
+            self.get_workspace_logs_dir()
+            / f"doi_resolution_{timestamp}.progress.json"
+        )
+
     def get_collection_dir(self, collection_name: str) -> Path:
         collection_name = self._sanitize_collection_name(collection_name)
         return self._ensure_directory(self.library_dir / collection_name)
+
+    def get_collection_info_dir(self, collection_name: str) -> Path:
+        correction_dir = self.get_collection_dir(collection_name)
+        return self._ensure_directory(correction_dir / "info")
 
     def get_paper_storage_paths(
         self, paper_info: Dict, collection_name: str = "default"
@@ -599,6 +629,9 @@ class PathManager:
 
     def get_downloads_dir(self) -> Path:
         return self._ensure_directory(self.workspace_dir / "downloads")
+
+    def get_workspace_dir(self) -> Path:
+        return self._ensure_directory(self.workspace_dir)
 
     def get_workspace_logs_dir(self) -> Path:
         return self._ensure_directory(self.workspace_dir / "logs")

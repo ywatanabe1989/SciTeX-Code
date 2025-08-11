@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:35:43 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/strategies/_SourceResolutionStrategy.py
+# Timestamp: "2025-08-11 07:39:55 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceResolutionStrategy.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/strategies/_SourceResolutionStrategy.py"
+    "./src/scitex/scholar/metadata/doi/sources/_SourceResolutionStrategy.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -25,33 +25,23 @@ import time
 from typing import Any, Dict, List, Optional, Type
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
 
 from ..utils._RateLimitHandler import RateLimitHandler
-from ..sources._SourceRotationManager import SourceRotationManager
-from ..sources import (
-    ArXivSource,
-    BaseDOISource,
-    CrossRefSource,
-    OpenAlexSource,
-    PubMedSource,
-    SemanticScholarSource,
-    URLDOISource,
-)
+from ._ArXivSource import ArXivSource
+from ._BaseDOISource import BaseDOISource
+from ._CrossRefSource import CrossRefSource
+from ._OpenAlexSource import OpenAlexSource
+from ._PubMedSource import PubMedSource
+from ._SemanticScholarSource import SemanticScholarSource
+from ._SourceRotationManager import SourceRotationManager
+from ._URLDOISource import URLDOISource
 
 logger = logging.getLogger(__name__)
 
 
 class SourceResolutionStrategy:
     """Strategy for resolving DOIs from multiple API sources with intelligent selection."""
-
-    # Default source order (URL extractor first for immediate recovery)
-    DEFAULT_SOURCES = [
-        "url_doi_source",
-        "crossref",
-        "semantic_scholar",
-        "pubmed",
-        "openalex",
-    ]
 
     # Source registry
     SOURCE_CLASSES: Dict[str, Type[BaseDOISource]] = {
@@ -67,24 +57,43 @@ class SourceResolutionStrategy:
         self,
         sources: Optional[List[str]] = None,
         rate_limit_handler: Optional[RateLimitHandler] = None,
-        source_rotation_manager: Optional[SourceRotationManager] = None,
-        email_config: Optional[Dict[str, str]] = None,
+        email_crossref: Optional[str] = None,
+        email_pubmed: Optional[str] = None,
+        email_openalex: Optional[str] = None,
+        email_semantic_scholar: Optional[str] = None,
+        email_arxiv: Optional[str] = None,
+        config: Optional[ScholarConfig] = None,
     ):
         """Initialize source resolution strategy.
 
         Args:
             sources: List of source names to use (None for default sources)
             rate_limit_handler: Rate limit handler instance
-            source_rotation_manager: Source rotation manager instance
             email_config: Email configuration for sources (source_name -> email)
         """
-        self.sources = sources or self.DEFAULT_SOURCES.copy()
-        self.rate_limit_handler = rate_limit_handler
-        self.source_rotation_manager = source_rotation_manager
+        self.config = config or ScholarConfig()
 
-        # Email configuration with defaults
-        self.email_config = email_config or {}
-        self._default_email = "research@example.com"
+        # Souces
+        self.sources = self.config.resolve("sources", sources)
+
+        # Emails
+        self.crossref_email = self.config.resolve(
+            "crossref_email", email_crossref
+        )
+        self.pubmed_email = self.config.resolve("pubmed_email", email_pubmed)
+        self.openalex_email = self.config.resolve(
+            "openalex_email", email_openalex
+        )
+        self.semantic_scholar_email = self.config.resolve(
+            "semantic_scholar_email",
+            email_semantic_scholar,
+        )
+        self.arxiv_email = self.config.resolve("arxiv_email", email_arxiv)
+
+        self.rate_limit_handler = rate_limit_handler
+        self.source_rotation_manager = SourceRotationManager(
+            self.rate_limit_handler
+        )
 
         # Initialize source instances cache
         self._source_instances: Dict[str, BaseDOISource] = {}
@@ -93,52 +102,14 @@ class SourceResolutionStrategy:
             f"SourceResolutionStrategy initialized with sources: {self.sources}"
         )
 
-    def _get_source(self, name: str) -> Optional[BaseDOISource]:
-        """Get or create source instance."""
-        if name not in self._source_instances:
-            source_class = self.SOURCE_CLASSES.get(name)
-            if source_class:
-                # Get appropriate email for each source
-                email_map = {
-                    "crossref": self.email_config.get(
-                        "crossref", self._default_email
-                    ),
-                    "pubmed": self.email_config.get(
-                        "pubmed", self._default_email
-                    ),
-                    "openalex": self.email_config.get(
-                        "openalex", self._default_email
-                    ),
-                    "semantic_scholar": self.email_config.get(
-                        "semantic_scholar", self._default_email
-                    ),
-                    "semantic_scholar": self.email_config.get(
-                        "semantic_scholar", self._default_email
-                    ),
-                    "arxiv": self.email_config.get(
-                        "arxiv", self._default_email
-                    ),
-                }
+    def _is_doi(self, input_str: str) -> bool:
+        """Check if input string is a DOI."""
+        return bool(re.match(r"^10\.\d{4,}/[^\s]+$", input_str))
 
-                # URLDOISource doesn't need email parameter
-                if name == "url_doi_source":
-                    source_instance = source_class()
-                else:
-                    email = email_map.get(name, self._default_email)
-                    source_instance = source_class(email)
-
-                # Inject rate limit handler into source
-                if self.rate_limit_handler:
-                    source_instance.set_rate_limit_handler(
-                        self.rate_limit_handler
-                    )
-
-                self._source_instances[name] = source_instance
-        return self._source_instances.get(name)
-
-    async def resolve_from_sources(
+    async def metadata2metadata_async(
         self,
         title: str,
+        doi: Optional[int] = None,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
         sources: Optional[List[str]] = None,
@@ -158,11 +129,15 @@ class SourceResolutionStrategy:
         Returns:
             Dict with 'doi', 'source', and optional 'metadata' keys if found, None otherwise
         """
-        if not title:
-            return None
+        if self._is_doi(title) and (doi is None):
+            logger.warn(
+                f"DOI detected instead of title. Handling {title} as doi"
+            )
+            doi = title
+            title = ""
 
         # Try CorpusID resolution if URL contains CorpusID
-        corpus_result = await self._try_corpus_id_resolution(
+        corpus_result = await self._corpusid2metadata_async(
             url, title, year, authors
         )
         if corpus_result:
@@ -172,20 +147,18 @@ class SourceResolutionStrategy:
         paper_info = {"title": title, "year": year, "authors": authors}
 
         # Get sources to use
-        sources_list = sources or self.sources
+        sources = self.config.resolve("sources", sources)
 
         # Get available sources (not rate limited)
         if self.rate_limit_handler:
             available_sources = self.rate_limit_handler.get_available_sources(
-                sources_list
+                sources
             )
 
             if not available_sources:
                 # All sources are rate limited - get wait time for earliest available
                 next_available_time = (
-                    self.rate_limit_handler.get_next_available_time(
-                        sources_list
-                    )
+                    self.rate_limit_handler.get_next_available_time(sources)
                 )
                 wait_time = max(0, next_available_time - time.time())
 
@@ -198,9 +171,7 @@ class SourceResolutionStrategy:
                     )
                     # Retry with updated availability
                     available_sources = (
-                        self.rate_limit_handler.get_available_sources(
-                            sources_list
-                        )
+                        self.rate_limit_handler.get_available_sources(sources)
                     )
 
                 if not available_sources:
@@ -209,7 +180,7 @@ class SourceResolutionStrategy:
                     )
                     return None
         else:
-            available_sources = sources_list
+            available_sources = sources
 
         # Get optimal source order using intelligent selection
         if self.source_rotation_manager:
@@ -227,7 +198,13 @@ class SourceResolutionStrategy:
 
         # Try primary sources with enhanced error handling and performance tracking
         primary_result = await self._try_sources(
-            optimal_sources, title, year, authors, url, paper_info, **kwargs
+            optimal_sources,
+            title,
+            year,
+            authors,
+            url,
+            paper_info,
+            **kwargs,
         )
 
         if primary_result:
@@ -238,7 +215,7 @@ class SourceResolutionStrategy:
             tried_sources = optimal_sources
             fallback_sources = (
                 self.source_rotation_manager.get_fallback_sources(
-                    tried_sources, sources_list
+                    tried_sources, sources
                 )
             )
 
@@ -248,7 +225,7 @@ class SourceResolutionStrategy:
                 )
 
                 fallback_result = await self._try_sources(
-                    fallback_sources[:2],
+                    fallback_sources,
                     title,
                     year,
                     authors,
@@ -266,13 +243,77 @@ class SourceResolutionStrategy:
             if self.source_rotation_manager and fallback_sources
             else []
         )
-        logger.warning(
-            f"DOI not found after searching {len(all_tried)} sources: {title[:50]}..."
+        logger.fail(
+            f"DOI not found after searching {len(all_tried)} sources ({all_tried}): {title[:50]}..."
         )
 
         return None
 
-    async def _try_corpus_id_resolution(
+    def get_available_sources(self) -> List[str]:
+        """Get list of currently available (non-rate-limited) sources."""
+        if self.rate_limit_handler:
+            return self.rate_limit_handler.get_available_sources(self.sources)
+        return self.sources.copy()
+
+    def get_source_statistics(self) -> Dict[str, Any]:
+        """Get statistics about source performance."""
+        stats = {
+            "configured_sources": self.sources.copy(),
+            "instantiated_sources": list(self._source_instances.keys()),
+            "available_sources": self.get_available_sources(),
+        }
+
+        # Add rate limiting stats if available
+        if self.rate_limit_handler:
+            stats["rate_limit_stats"] = (
+                self.rate_limit_handler.get_statistics()
+            )
+
+        # Add source rotation stats if available
+        if self.source_rotation_manager:
+            stats["rotation_stats"] = (
+                self.source_rotation_manager.get_statistics()
+            )
+
+        # Add individual source stats
+        source_details = {}
+        for name, source in self._source_instances.items():
+            source_details[name] = source.get_request_stats()
+        stats["source_details"] = source_details
+
+        return stats
+
+    def _get_source(self, name: str) -> Optional[BaseDOISource]:
+        """Get or create source instance."""
+        if name not in self._source_instances:
+            source_class = self.SOURCE_CLASSES.get(name)
+            if source_class:
+                # Get appropriate email for each source
+                email_map = {
+                    "crossref": self.crossref_email,
+                    "pubmed": self.pubmed_email,
+                    "openalex": self.openalex_email,
+                    "semantic_scholar": self.semantic_scholar_email,
+                    "arxiv": self.arxiv_email,
+                }
+
+                # URLDOISource doesn't need email parameter
+                if name == "url_doi_source":
+                    source_instance = source_class()
+                else:
+                    email = email_map.get(name)
+                    source_instance = source_class(email)
+
+                # Inject rate limit handler into source
+                if self.rate_limit_handler:
+                    source_instance.set_rate_limit_handler(
+                        self.rate_limit_handler
+                    )
+
+                self._source_instances[name] = source_instance
+        return self._source_instances.get(name)
+
+    async def _corpusid2metadata_async(
         self,
         url: Optional[str],
         title: str,
@@ -505,40 +546,6 @@ class SourceResolutionStrategy:
             )
             return None
 
-    def get_available_sources(self) -> List[str]:
-        """Get list of currently available (non-rate-limited) sources."""
-        if self.rate_limit_handler:
-            return self.rate_limit_handler.get_available_sources(self.sources)
-        return self.sources.copy()
-
-    def get_source_statistics(self) -> Dict[str, Any]:
-        """Get statistics about source performance."""
-        stats = {
-            "configured_sources": self.sources.copy(),
-            "instantiated_sources": list(self._source_instances.keys()),
-            "available_sources": self.get_available_sources(),
-        }
-
-        # Add rate limiting stats if available
-        if self.rate_limit_handler:
-            stats["rate_limit_stats"] = (
-                self.rate_limit_handler.get_statistics()
-            )
-
-        # Add source rotation stats if available
-        if self.source_rotation_manager:
-            stats["rotation_stats"] = (
-                self.source_rotation_manager.get_statistics()
-            )
-
-        # Add individual source stats
-        source_details = {}
-        for name, source in self._source_instances.items():
-            source_details[name] = source.get_request_stats()
-        stats["source_details"] = source_details
-
-        return stats
-
 
 if __name__ == "__main__":
     import asyncio
@@ -574,7 +581,7 @@ if __name__ == "__main__":
         for paper in test_papers:
             print(f"\n   🔍 Searching: {paper['title'][:50]}...")
             try:
-                result = await strategy.resolve_from_sources(
+                result = await strategy.metadata2metadata_async(
                     title=paper["title"],
                     year=paper.get("year"),
                     authors=paper.get("authors"),
@@ -597,7 +604,7 @@ if __name__ == "__main__":
         print("\n2. Testing CorpusID resolution:")
         corpus_url = "https://www.semanticscholar.org/paper/Attention-Is-All-You-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776?p2df&CorpusId:13756489"
 
-        corpus_result = await strategy.resolve_from_sources(
+        corpus_result = await strategy.metadata2metadata_async(
             title="Attention is All You Need", year=2017, url=corpus_url
         )
 
@@ -631,7 +638,9 @@ if __name__ == "__main__":
         print(
             "3. With rate limiting: SourceResolutionStrategy(rate_limit_handler=handler)"
         )
-        print("4. Async resolve: await strategy.resolve_from_sources(title)")
+        print(
+            "4. Async resolve: await strategy.metadata2metadata_async(title)"
+        )
         print(
             "5. Strategy handles source rotation and rate limiting automatically"
         )

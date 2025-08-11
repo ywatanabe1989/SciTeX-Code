@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 19:39:26 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/sources/_PubMedSource.py
+# Timestamp: "2025-08-10 05:05:48 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_PubMedSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/doi/sources/_PubMedSource.py"
+    "./src/scitex/scholar/metadata/doi/sources/_PubMedSource.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import requests
 
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
+
+import requests
 
 """
 PubMed DOI source implementation.
@@ -21,16 +21,17 @@ PubMed DOI source implementation.
 This module provides DOI resolution through the PubMed/NCBI E-utilities API.
 """
 
-from scitex import logging
 import xml.etree.ElementTree as ET
-from typing import List
-from typing import Optional
-from tenacity import retry
+from typing import List, Optional
+
 from tenacity import (
+    retry,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
 )
+
+from scitex import logging
 
 from ._BaseDOISource import BaseDOISource
 
@@ -49,8 +50,6 @@ class PubMedSource(BaseDOISource):
     def session(self):
         """Lazy load session."""
         if self._session is None:
-            import requests
-
             self._session = requests.Session()
         return self._session
 
@@ -263,27 +262,27 @@ class PubMedSource(BaseDOISource):
                     issn = None
                     volume = None
                     issue = None
-                    
+
                     # Full journal title
                     journal_elem = root.find(".//Journal/Title")
                     if journal_elem is not None:
                         journal = journal_elem.text
-                    
+
                     # Abbreviated journal title
                     iso_abbrev_elem = root.find(".//Journal/ISOAbbreviation")
                     if iso_abbrev_elem is not None:
                         short_journal = iso_abbrev_elem.text
-                    
+
                     # ISSN
                     issn_elem = root.find(".//Journal/ISSN")
                     if issn_elem is not None:
                         issn = issn_elem.text
-                    
+
                     # Volume and Issue
                     volume_elem = root.find(".//JournalIssue/Volume")
                     if volume_elem is not None:
                         volume = volume_elem.text
-                    
+
                     issue_elem = root.find(".//JournalIssue/Issue")
                     if issue_elem is not None:
                         issue = issue_elem.text

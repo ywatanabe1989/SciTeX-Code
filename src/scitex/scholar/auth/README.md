@@ -38,7 +38,7 @@ sequenceDiagram
     participant AuthenticationManager
     participant OpenAthensAuthenticator
     participant SessionManager
-    participant CacheManager
+    participant AuthCacheManager
     participant LockManager
     participant BrowserAuthenticator
 
@@ -50,8 +50,8 @@ sequenceDiagram
     else Session is invalid or force=True
         AuthenticationManager->>LockManager: acquire_lock_async()
         LockManager-->>AuthenticationManager: lock acquired
-        AuthenticationManager->>CacheManager: load_session_async()
-        CacheManager-->>AuthenticationManager: returns cached session if available
+        AuthenticationManager->>AuthCacheManager: load_session_async()
+        AuthCacheManager-->>AuthenticationManager: returns cached session if available
         alt Cached session is valid
             AuthenticationManager->>SessionManager: set_session_data()
             SessionManager-->>AuthenticationManager: session updated
@@ -67,8 +67,8 @@ sequenceDiagram
                 BrowserAuthenticator-->>OpenAthensAuthenticator: returns cookies
                 OpenAthensAuthenticator->>SessionManager: set_session_data()
                 SessionManager-->>OpenAthensAuthenticator: session updated
-                OpenAthensAuthenticator->>CacheManager: save_session_async()
-                CacheManager-->>OpenAthensAuthenticator: session saved
+                OpenAthensAuthenticator->>AuthCacheManager: save_session_async()
+                AuthCacheManager-->>OpenAthensAuthenticator: session saved
                 OpenAthensAuthenticator-->>AuthenticationManager: returns success
                 AuthenticationManager-->>User: returns success
             else Login failed

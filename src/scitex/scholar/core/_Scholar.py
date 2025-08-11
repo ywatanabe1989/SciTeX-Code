@@ -274,7 +274,7 @@ class Scholar:
         items: Union[List[str], List[Paper], Papers, str, Paper],
         download_dir: Optional[Union[str, Path]] = None,
         force: bool = False,
-        max_worker_asyncs: int = 4,
+        max_worker: int = 4,
         show_async_progress: bool = True,
         acknowledge_ethical_usage: Optional[bool] = None,
         verify_auth_live: bool = True,
@@ -296,7 +296,7 @@ class Scholar:
                 - Papers collection
             download_dir: Directory to save PDFs (default: workspace_dir/pdfs)
             force: Force re-download even if files exist
-            max_worker_asyncs: Maximum concurrent downloads
+            max_worker: Maximum concurrent downloads
             show_async_progress: Show download progress
             acknowledge_ethical_usage: Acknowledge ethical usage terms for Sci-Hub (default: from config)
             verify_auth_live: If True, performs live verification of OpenAthens authentication
@@ -367,7 +367,7 @@ class Scholar:
         self._pdf_downloader.acknowledge_ethical_usage = (
             acknowledge_ethical_usage
         )
-        self._pdf_downloader.max_concurrent = max_worker_asyncs
+        self._pdf_downloader.max_concurrent = max_worker
 
         # Check OpenAthens authentication first if enabled
         if self.config.resolve("openathens_enabled", None, True, bool):
@@ -707,7 +707,7 @@ class Scholar:
 
             # Extract authors
             authors_str = fields.get("author", "")
-            authors = self._parse_bibtex_authors(authors_str)
+            authors = self._parse_authors(authors_str)
 
             # Extract Semantic Scholar Corpus ID if URL is from api.semanticscholar.org
             url = fields.get("url", "")
@@ -759,7 +759,7 @@ class Scholar:
             logger.warning(f"Failed to convert BibTeX entry: {e}")
             return None
 
-    def _parse_bibtex_authors(self, authors_str: str) -> List[str]:
+    def _parse_authors(self, authors_str: str) -> List[str]:
         """Parse BibTeX author string into list of author names."""
         if not authors_str:
             return []

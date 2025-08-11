@@ -1,28 +1,38 @@
-# Timestamp: "2025-08-07 17:06:36 (ywatanabe)"
+# Timestamp: "2025-08-10 11:43:38 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
 # feature
 # ----------------------------------------
-scholar_dir: ${SCITEX_DIR:-"~/.scitex"}  
+scholar_dir: ${SCITEX_DIR:-"~/.scitex"}
+project: ${SCITEX_SCHOLAR_PROJECT:-"MASTER"}
 debug_mode: ${SCITEX_SCHOLAR_DEBUG_MODE:-false}
 enable_auto_enrich: ${SCITEX_SCHOLAR_AUTO_ENRICH:-true}
 enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
-default_search_sources:
-- pubmed
-- semantic_scholar
-- google_scholar
-- crossref
-- arxiv
+
+# ----------------------------------------
+# Search Engines
+# ----------------------------------------
+sources:
+  - url_doi_source
+  - crossref  
+  - pubmed
+  - semantic_scholar
+  - openalex  
+  - arxiv
+  - google_scholar  
+
 default_search_limit: 20
-max_worker_asyncs: 3
+max_workers: 4
 verify_ssl: true
+
 
 # ----------------------------------------
 # api
 # ----------------------------------------
 semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
 crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
+pubmed_api_key: ${SCITEX_SCHOLAR_PUBMED_API_KEY:-null}
 twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}  
 # zotero_library_id: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID:-null}
 # zotero_api_key: ${SCITEX_SCHOLAR_ZOTERO_API_KEY:-null}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 05:07:35 (ywatanabe)"
+# Timestamp: "2025-08-10 12:07:54 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_CascadeConfig.py
 # ----------------------------------------
 from __future__ import annotations
@@ -106,7 +106,7 @@ class CascadeConfig:
 
         return final_value
 
-    def print_resolutions(self):
+    def print(self):
         """Print how each config was resolved"""
         if not self.resolution_log:
             print("No configurations resolved yet")
@@ -115,9 +115,15 @@ class CascadeConfig:
         print("Configuration Resolution Log:")
         print("-" * 50)
         for entry in self.resolution_log:
-            print(
-                f"{entry['key']:<20} = {entry['value']:<20} ({entry['source']})"
-            )
+            if isinstance(entry["key"], str):
+                _key = entry["key"][:20]
+            else:
+                _key = entry["key"]
+            if isinstance(entry["value"], str):
+                _value = entry["value"][:20]
+            else:
+                _value = entry["value"]
+            print(f"{_key} = {_value} ({entry['source']})")
 
     def clear_log(self):
         """Clear resolution log"""

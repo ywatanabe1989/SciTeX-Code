@@ -7,20 +7,18 @@
 """Batch DOI resolution components.
 
 This module contains focused, single-responsibility classes for batch DOI resolution:
-- BatchProgressManager: Progress tracking and persistence
-- MetadataEnhancer: Paper metadata processing and validation
-- BatchConfigurationManager: Configuration resolution and validation
-- LibraryStructureCreator: Scholar library organization and management
+- ProgressManagerForBatchDOIResolution: Progress tracking and persistence
+- MetadataHandlerForBatchDOIResolution: Paper metadata processing and validation
+- SourceStatsManagerForBatchDOIResolution: Configuration resolution and validation
+- LibraryManager: Scholar library organization and management
 """
 
-from ._BatchProgressManager import BatchProgressManager
-from ._MetadataEnhancer import MetadataEnhancer
-from ._BatchConfigurationManager import BatchConfigurationManager
-from ._LibraryStructureCreator import LibraryStructureCreator
+from ._ProgressManagerForBatchDOIResolution import ProgressManagerForBatchDOIResolution
+from ._MetadataHandlerForBatchDOIResolution import MetadataHandlerForBatchDOIResolution
+from ._SourceStatsManagerForBatchDOIResolution import SourceStatsManagerForBatchDOIResolution
 
 __all__ = [
-    "BatchProgressManager",
-    "MetadataEnhancer", 
-    "BatchConfigurationManager",
-    "LibraryStructureCreator",
+    "ProgressManagerForBatchDOIResolution",
+    "MetadataHandlerForBatchDOIResolution",
+    "SourceStatsManagerForBatchDOIResolution",
 ]

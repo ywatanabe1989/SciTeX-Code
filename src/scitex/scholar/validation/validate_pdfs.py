@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 13:32:07 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/scholar/validation/validate_pdfs.py
+# Timestamp: "2025-08-10 10:26:31 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/validation/validate_pdfs.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./scholar/validation/validate_pdfs.py"
+    "./src/scitex/scholar/validation/validate_pdfs.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """Command-line tool for validating download PDFs."""
 
 import argparse
@@ -20,6 +21,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from scitex.scholar.core import Paper
+
 from ._PDFContentValidator import PDFContentValidator
 from ._PDFQualityAnalyzer import PDFQualityAnalyzer
 

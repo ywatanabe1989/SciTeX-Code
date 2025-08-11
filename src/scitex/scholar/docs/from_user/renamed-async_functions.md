@@ -233,7 +233,7 @@ File: utils/_GeneralizedPDFDetector.py
  217   5     async def detect_pdf_candidates(self, page, doi: str = "", url: str = "") -> List[PDFCandidate]:
  386   5     async def download_best_pdf(self, page, candidates: List[PDFCandidate], 
 
-File: doi/batch/_LibraryStructureCreator.py
+File: doi/batch/_LibraryManager.py
  182   5     async def resolve_and_create_library_structure_async(
 
 File: utils/_screenshot_capturer.py
@@ -271,7 +271,7 @@ File: doi/_BatchDOIResolver.py
  506   5     async def main():
 
 File: doi/strategies/_SourceResolutionStrategy.py
- 118   5     async def resolve_from_sources(
+ 118   5     async def metadata2metadata_async(
  222   5     async def _try_corpus_id_resolution(
  276   5     async def _try_sources(
  360   5     async def _search_source_async(
@@ -286,8 +286,8 @@ File: doi/_SourceRotationManager.py
 
 File: doi/utils/pubmed_converter.py
  105   5     async def _apply_rate_limiting_async(self):
- 187   5     async def pmid_to_doi_async(self, pmid: Union[str, int]) -> Optional[str]:
- 327   5     async def extract_from_bibtex_entries_async(self, entries: List[Dict]) -> Dict[str, str]:
+ 187   5     async def pmid2doi_async(self, pmid: Union[str, int]) -> Optional[str]:
+ 327   5     async def bibtex_entries2dois_async(self, entries: List[Dict]) -> Dict[str, str]:
 
 File: doi/_RateLimitHandler.py
  422   5     async def wait_with_countdown_async(self, wait_time: float, source: str = "API"):
@@ -338,7 +338,7 @@ File: browser/remote/_CaptchaHandler.py
  357   5     async def _submit_captcha_async(self, params: Dict[str, Any]) -> Optional[str]:
  379   5     async def _get_captcha_result_async(self, task_id: str) -> Optional[str]:
 
-File: auth/_CacheManager.py
+File: auth/_AuthCacheManager.py
   64   5     async def save_session_async(self, session_manager: SessionManager) -> bool:
   88   5     async def load_session_async(self, session_manager: SessionManager) -> bool:
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 13:59:59 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_CacheManager.py
+# Timestamp: "2025-08-10 09:29:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_AuthCacheManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/auth/library/_CacheManager.py"
+    "./src/scitex/scholar/auth/library/_AuthCacheManager.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -23,14 +23,14 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from scitex import logging
-
 from scitex.scholar.config import ScholarConfig
+
 from ._SessionManager import SessionManager
 
 logger = logging.getLogger(__name__)
 
 
-class CacheManager:
+class AuthCacheManager:
     """Handles session cache operations for authentication providers."""
 
     def __init__(

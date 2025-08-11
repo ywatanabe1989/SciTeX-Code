@@ -1043,7 +1043,7 @@ class Papers:
         scholar=None,
         download_dir: Optional[Union[str, Path]] = None,
         force: bool = False,
-        max_worker_asyncs: int = 4,
+        max_worker: int = 4,
         show_async_progress: bool = True,
         **kwargs,
     ) -> Dict[str, Any]:
@@ -1054,7 +1054,7 @@ class Papers:
             scholar: Scholar instance to use for downloading. If None, creates a new instance.
             download_dir: Directory to save PDFs (default: uses scholar's workspace)
             force: Force re-download even if files exist
-            max_worker_asyncs: Maximum concurrent downloads
+            max_worker: Maximum concurrent downloads
             show_async_progress: Show download progress
             **kwargs: Additional arguments passed to downloader
 
@@ -1083,7 +1083,7 @@ class Papers:
             self,
             download_dir=download_dir,
             force=force,
-            max_worker_asyncs=max_worker_asyncs,
+            max_worker=max_worker,
             show_async_progress=show_async_progress,
             **kwargs,
         )

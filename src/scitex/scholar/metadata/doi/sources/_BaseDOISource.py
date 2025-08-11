@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 08:10:00 (ywatanabe)"
-# File: ./src/scitex/scholar/doi/sources/_BaseDOISource.py
+# Timestamp: "2025-08-11 06:49:55 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_BaseDOISource.py
 # ----------------------------------------
 from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/metadata/doi/sources/_BaseDOISource.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
 """
 Abstract base class for DOI sources with enhanced rate limit handling.
@@ -16,12 +22,14 @@ import asyncio
 import re
 import time
 from abc import ABC, abstractmethod
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import requests
+
 from scitex import logging
 
 logger = logging.getLogger(__name__)
+
 
 class BaseDOISource(ABC):
     """Abstract base class for DOI sources with enhanced rate limit handling."""
@@ -31,7 +39,7 @@ class BaseDOISource(ABC):
         self.rate_limit_handler = None  # Will be injected by SingleDOIResolver
         self.last_request_time = 0.0
         self._request_count = 0
-        
+
         # Lazy-loaded utilities - will be initialized when first accessed
         self._text_normalizer = None
         self._url_doi_extractor = None
@@ -63,72 +71,82 @@ class BaseDOISource(ABC):
     def set_rate_limit_handler(self, handler):
         """Set the rate limit handler for this source."""
         self.rate_limit_handler = handler
-        
+
     @property
     def text_normalizer(self):
         """Get TextNormalizer utility with lazy loading."""
         if self._text_normalizer is None:
-            from ..utils import create_text_normalizer
-            self._text_normalizer = create_text_normalizer(ascii_fallback=False)
+            from ..utils import TextNormalizer
+
+            self._text_normalizer = TextNormalizer(ascii_fallback=False)
         return self._text_normalizer
-        
+
     @property
     def url_doi_extractor(self):
         """Get URLDOISource utility with lazy loading."""
         if self._url_doi_extractor is None:
             from ..utils import URLDOISource
+
             self._url_doi_extractor = URLDOISource()
         return self._url_doi_extractor
-        
+
     @property
     def pubmed_converter(self):
         """Get PubMedConverter utility with lazy loading."""
         if self._pubmed_converter is None:
             from ..utils import PubMedConverter
+
             self._pubmed_converter = PubMedConverter()
         return self._pubmed_converter
 
-    def _make_request_with_retry(self, 
-                                url: str, 
-                                params: Optional[dict] = None,
-                                headers: Optional[dict] = None,
-                                timeout: float = 30.0,
-                                max_retries: int = 3) -> Optional[requests.Response]:
+    def _make_request_with_retry(
+        self,
+        url: str,
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        timeout: float = 30.0,
+        max_retries: int = 3,
+    ) -> Optional[requests.Response]:
         """Make HTTP request with automatic rate limit handling and retries.
-        
+
         Args:
             url: Request URL
             params: Query parameters
             headers: Request headers
             timeout: Request timeout
             max_retries: Maximum number of retries
-            
+
         Returns:
             Response object or None if all retries failed
         """
-        session = getattr(self, 'session', requests)
-        
+        session = getattr(self, "session", requests)
+
         for attempt in range(max_retries + 1):
             try:
                 # Apply rate limiting before request
                 self._apply_rate_limiting()
-                
+
                 # Make the request
                 self._request_count += 1
                 self.last_request_time = time.time()
-                
-                response = session.get(url, params=params, headers=headers, timeout=timeout)
-                
+
+                response = session.get(
+                    url, params=params, headers=headers, timeout=timeout
+                )
+
                 # Check for rate limits
                 if self.rate_limit_handler:
-                    rate_limit_info = self.rate_limit_handler.detect_rate_limit(
-                        source=self.name.lower(),
-                        response=response
+                    rate_limit_info = (
+                        self.rate_limit_handler.detect_rate_limit(
+                            source=self.name.lower(), response=response
+                        )
                     )
-                    
+
                     if rate_limit_info:
-                        self.rate_limit_handler.record_rate_limit(rate_limit_info)
-                        
+                        self.rate_limit_handler.record_rate_limit(
+                            rate_limit_info
+                        )
+
                         # If this isn't the last attempt, wait and retry
                         if attempt < max_retries:
                             logger.info(
@@ -142,18 +160,24 @@ class BaseDOISource(ABC):
                                 f"Max retries exceeded for {self.name} due to rate limiting"
                             )
                             return None
-                
+
                 # Check for successful response
                 if response.status_code == 200:
                     if self.rate_limit_handler:
-                        self.rate_limit_handler.record_success(self.name.lower())
+                        self.rate_limit_handler.record_success(
+                            self.name.lower()
+                        )
                         # Record success for adaptive rate limiting
-                        self.rate_limit_handler.record_request_outcome(self.name.lower(), success=True)
+                        self.rate_limit_handler.record_request_outcome(
+                            self.name.lower(), success=True
+                        )
                     return response
                 elif response.status_code in [429, 503, 502, 504]:
                     # Server errors that might be temporary
                     if attempt < max_retries:
-                        wait_time = min(2 ** attempt, 30)  # Exponential backoff, max 30s
+                        wait_time = min(
+                            2**attempt, 30
+                        )  # Exponential backoff, max 30s
                         logger.info(
                             f"Server error {response.status_code} on attempt {attempt + 1}, "
                             f"waiting {wait_time}s before retry"
@@ -161,101 +185,142 @@ class BaseDOISource(ABC):
                         time.sleep(wait_time)
                         continue
                     else:
-                        logger.warning(f"Server error {response.status_code} after max retries")
+                        logger.warning(
+                            f"Server error {response.status_code} after max retries"
+                        )
                         return response  # Return for caller to handle
                 else:
                     # Other HTTP errors
-                    logger.debug(f"HTTP {response.status_code} from {self.name}: {url}")
+                    logger.debug(
+                        f"HTTP {response.status_code} from {self.name}: {url}"
+                    )
                     return response
-                    
+
             except requests.exceptions.Timeout as e:
                 if self.rate_limit_handler:
-                    rate_limit_info = self.rate_limit_handler.detect_rate_limit(
-                        source=self.name.lower(),
-                        exception=e
+                    rate_limit_info = (
+                        self.rate_limit_handler.detect_rate_limit(
+                            source=self.name.lower(), exception=e
+                        )
                     )
                     if rate_limit_info and attempt < max_retries:
-                        self.rate_limit_handler.record_rate_limit(rate_limit_info)
+                        self.rate_limit_handler.record_rate_limit(
+                            rate_limit_info
+                        )
                         logger.info(
                             f"Timeout on attempt {attempt + 1}, waiting {rate_limit_info.wait_time:.1f}s"
                         )
                         time.sleep(rate_limit_info.wait_time)
                         continue
-                
+
                 if attempt < max_retries:
-                    wait_time = min(2 ** attempt, 15)
-                    logger.info(f"Timeout on attempt {attempt + 1}, waiting {wait_time}s")
+                    wait_time = min(2**attempt, 15)
+                    logger.info(
+                        f"Timeout on attempt {attempt + 1}, waiting {wait_time}s"
+                    )
                     time.sleep(wait_time)
                     continue
                 else:
-                    logger.warning(f"Timeout after {max_retries + 1} attempts for {self.name}")
+                    logger.warning(
+                        f"Timeout after {max_retries + 1} attempts for {self.name}"
+                    )
                     if self.rate_limit_handler:
-                        self.rate_limit_handler.record_failure(self.name.lower(), e)
+                        self.rate_limit_handler.record_failure(
+                            self.name.lower(), e
+                        )
                         # Record failure for adaptive rate limiting
-                        self.rate_limit_handler.record_request_outcome(self.name.lower(), success=False)
+                        self.rate_limit_handler.record_request_outcome(
+                            self.name.lower(), success=False
+                        )
                     return None
-                    
+
             except requests.exceptions.RequestException as e:
                 if attempt < max_retries:
-                    wait_time = min(2 ** attempt, 15)
+                    wait_time = min(2**attempt, 15)
                     logger.info(
                         f"Request error on attempt {attempt + 1}: {e}, waiting {wait_time}s"
                     )
                     time.sleep(wait_time)
                     continue
                 else:
-                    logger.warning(f"Request failed after {max_retries + 1} attempts: {e}")
+                    logger.warning(
+                        f"Request failed after {max_retries + 1} attempts: {e}"
+                    )
                     if self.rate_limit_handler:
-                        self.rate_limit_handler.record_failure(self.name.lower(), e)
+                        self.rate_limit_handler.record_failure(
+                            self.name.lower(), e
+                        )
                         # Record failure for adaptive rate limiting
-                        self.rate_limit_handler.record_request_outcome(self.name.lower(), success=False)
+                        self.rate_limit_handler.record_request_outcome(
+                            self.name.lower(), success=False
+                        )
                     return None
-            
+
             except Exception as e:
                 logger.error(f"Unexpected error in {self.name}: {e}")
                 if self.rate_limit_handler:
-                    self.rate_limit_handler.record_failure(self.name.lower(), e)
+                    self.rate_limit_handler.record_failure(
+                        self.name.lower(), e
+                    )
                     # Record failure for adaptive rate limiting
-                    self.rate_limit_handler.record_request_outcome(self.name.lower(), success=False)
+                    self.rate_limit_handler.record_request_outcome(
+                        self.name.lower(), success=False
+                    )
                 return None
-        
+
         return None
 
     def _apply_rate_limiting(self):
         """Apply rate limiting before making a request."""
         if not self.rate_limit_handler:
-            logger.error(f"No rate limit handler set for {self.name}. This should not happen!")
+            logger.error(
+                f"No rate limit handler set for {self.name}. This should not happen!"
+            )
             return
-        
+
         # Use advanced rate limiting with adaptive delays
-        wait_time = self.rate_limit_handler.get_wait_time_for_source(self.name.lower())
+        wait_time = self.rate_limit_handler.get_wait_time_for_source(
+            self.name.lower()
+        )
         if wait_time > 0:
-            logger.debug(f"Rate limiting {self.name}: waiting {wait_time:.1f}s")
+            logger.debug(
+                f"Rate limiting {self.name}: waiting {wait_time:.1f}s"
+            )
             time.sleep(wait_time)
 
     async def _apply_rate_limiting_async(self):
         """Apply rate limiting before making a request (async version)."""
         if not self.rate_limit_handler:
-            logger.error(f"No rate limit handler set for {self.name}. This should not happen!")
+            logger.error(
+                f"No rate limit handler set for {self.name}. This should not happen!"
+            )
             return
-        
-        # Use advanced rate limiting with countdown and adaptive delays
-        wait_time = self.rate_limit_handler.get_wait_time_for_source(self.name.lower())
-        if wait_time > 0:
-            await self.rate_limit_handler.wait_with_countdown_async(wait_time, self.name)
 
-    async def search_async(self,
-                          title: str,
-                          year: Optional[int] = None,
-                          authors: Optional[List[str]] = None) -> Optional[str]:
+        # Use advanced rate limiting with countdown and adaptive delays
+        wait_time = self.rate_limit_handler.get_wait_time_for_source(
+            self.name.lower()
+        )
+        if wait_time > 0:
+            await self.rate_limit_handler.wait_with_countdown_async(
+                wait_time, self.name
+            )
+
+    async def search_async(
+        self,
+        title: str,
+        year: Optional[int] = None,
+        authors: Optional[List[str]] = None,
+    ) -> Optional[str]:
         """Async version of search method."""
         # Apply rate limiting
         await self._apply_rate_limiting_async()
-        
+
         # Run sync search in executor
         loop = asyncio.get_event_loop()
         try:
-            result = await loop.run_in_executor(None, self.search, title, year, authors)
+            result = await loop.run_in_executor(
+                None, self.search, title, year, authors
+            )
             return result
         except Exception as e:
             logger.error(f"Error in async search for {self.name}: {e}")
@@ -266,9 +331,9 @@ class BaseDOISource(ABC):
     def get_request_stats(self) -> dict:
         """Get request statistics for this source."""
         return {
-            'total_requests': self._request_count,
-            'last_request_time': self.last_request_time,
-            'rate_limit_delay': self.rate_limit_delay
+            "total_requests": self._request_count,
+            "last_request_time": self.last_request_time,
+            "rate_limit_delay": self.rate_limit_delay,
         }
 
     def extract_doi_from_url(self, url: str) -> Optional[str]:
@@ -290,10 +355,12 @@ class BaseDOISource(ABC):
 
         return None
 
-    def _is_title_match(self, title1: str, title2: str, threshold: float = 0.6) -> bool:
+    def _is_title_match(
+        self, title1: str, title2: str, threshold: float = 0.6
+    ) -> bool:
         """
         Check if two titles match using the enhanced TextNormalizer utility.
-        
+
         DEPRECATED: Use self.text_normalizer.is_title_match() directly in new code.
         This method is kept for backward compatibility.
         """

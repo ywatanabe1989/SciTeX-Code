@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-08-09 17:22:19
+!-- Timestamp: 2025-08-10 06:30:24
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/README.md
 !-- --- -->
 
 # Scholar DOI Resolution System
@@ -13,11 +13,17 @@ A comprehensive, production-ready DOI resolution system with multiple academic s
 ### Simple, Reliable Methods (Recommended)
 
 ```python
+from scitex.scholar.metadata.doi import DOIResolver
+
+DOIResolver.resolve_async("/home/ywatanabe/win/downloads/papers.bib")
+
+
+
 from scitex.scholar.metadata.doi import BibTeXDOIResolver, SingleDOIResolver
 
 # Method 1: Resolve DOIs from BibTeX file (most common use case)
 resolver = BibTeXDOIResolver()
-results = await resolver.resolve_from_bibtex("papers.bib", project="my_research")
+results = await resolver.resolve_from_bibtex("/home/ywatanabe/win/downloads/", project="my_research")
 
 # Method 2: Find DOI for a single paper by title/authors
 single_resolver = SingleDOIResolver()

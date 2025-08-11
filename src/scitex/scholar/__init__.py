@@ -70,7 +70,7 @@ __all__ = [
 #     dois,
 #     download_dir=None,
 #     force=False,
-#     max_worker_asyncs=4,
+#     max_worker=4,
 #     show_async_progress=True,
 #     acknowledge_ethical_usage=None,
 #     **kwargs
@@ -85,7 +85,7 @@ __all__ = [
 #         dois: DOI strings (list or single string) or Papers/Paper objects
 #         download_dir: Directory to save PDFs
 #         force: Force re-download
-#         max_worker_asyncs: Maximum concurrent downloads
+#         max_worker: Maximum concurrent downloads
 #         show_async_progress: Show download progress
 #         acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
 #         **kwargs: Additional arguments
@@ -103,7 +103,7 @@ __all__ = [
 #         dois,
 #         download_dir=download_dir,
 #         force=force,
-#         max_worker_asyncs=max_worker_asyncs,
+#         max_worker=max_worker,
 #         show_async_progress=show_async_progress,
 #         acknowledge_ethical_usage=acknowledge_ethical_usage,
 #         **kwargs

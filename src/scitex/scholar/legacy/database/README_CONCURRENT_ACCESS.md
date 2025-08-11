@@ -44,7 +44,7 @@ storage/
        paper_dir = storage_dir / "by_key" / storage_key
        # Each worker_async operates independently
        
-   with ProcessPoolExecutor(max_worker_asyncs=8) as executor:
+   with ProcessPoolExecutor(max_worker=8) as executor:
        executor.map(process_paper, all_storage_keys)
    ```
 

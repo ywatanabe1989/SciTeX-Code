@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:28:21 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_SemanticScholarSource.py
+# Timestamp: "2025-08-10 05:13:34 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SemanticScholarSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -69,19 +69,6 @@ class SemanticScholarSource(BaseDOISource):
     def rate_limit_delay(self) -> float:
         return self._rate_limit_delay
 
-    def _is_title_match(
-        self, query_title: str, paper_title: str, threshold: float = 0.8
-    ) -> bool:
-        """Enhanced title matching using TextNormalizer utility."""
-        is_match = self.text_normalizer.is_title_match(
-            query_title, paper_title, threshold
-        )
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f"Title match result: {is_match}")
-            logger.debug(f"Query: {query_title}")
-            logger.debug(f"Paper: {paper_title}")
-        return is_match
-
     @retry(
         stop=stop_after_attempt(5),
         wait=wait_exponential(multiplier=1.5, min=2, max=60),
@@ -125,71 +112,6 @@ class SemanticScholarSource(BaseDOISource):
 
         logger.debug("No DOI found in Semantic Scholar results")
         return None
-
-    def _extract_doi_from_paper(
-        self,
-        paper: dict,
-        query_title: str,
-        query_year: Optional[int],
-        query_authors: Optional[List[str]] = None,
-    ) -> Optional[str]:
-        """Extract DOI from paper with multiple validation strategies."""
-        paper_title = paper.get("title", "")
-        paper_year = paper.get("year")
-
-        # Title matching using enhanced method
-        if not self._is_title_match(query_title, paper_title):
-            logger.debug(f"Title mismatch: '{paper_title}' vs '{query_title}'")
-            return None
-
-        # Year validation (allow 2 year difference)
-        if query_year and paper_year:
-            try:
-                paper_year_int = (
-                    int(paper_year)
-                    if isinstance(paper_year, str)
-                    else paper_year
-                )
-                query_year_int = (
-                    int(query_year)
-                    if isinstance(query_year, str)
-                    else query_year
-                )
-                if abs(paper_year_int - query_year_int) > 2:
-                    logger.debug(
-                        f"Year mismatch: {paper_year_int} vs {query_year_int}"
-                    )
-                    return None
-            except (ValueError, TypeError):
-                pass
-
-        # Extract DOI from multiple sources
-        external_ids = paper.get("externalIds", {})
-
-        # Primary DOI field
-        if external_ids and "DOI" in external_ids:
-            doi = external_ids["DOI"]
-            if doi:
-                return self._clean_doi(doi)
-
-        # Alternative DOI sources
-        for field in ["doi", "DOI"]:
-            if field in paper and paper[field]:
-                return self._clean_doi(paper[field])
-
-        # Extract from URL using utility
-        paper_url = paper.get("url", "")
-        if paper_url:
-            doi = self.url_doi_extractor.extract_doi_from_url(paper_url)
-            if doi:
-                return doi
-
-        logger.debug(f"No DOI found in paper: {paper_title}")
-        return None
-
-    def _clean_doi(self, doi: str) -> str:
-        """Clean and normalize DOI."""
-        return doi.strip() if doi else doi
 
     def get_abstract(self, doi: str) -> Optional[str]:
         """Get abstract from Semantic Scholar by DOI."""
@@ -271,6 +193,84 @@ class SemanticScholarSource(BaseDOISource):
                     ),
                 }
         return None
+
+    def _is_title_match(
+        self, query_title: str, paper_title: str, threshold: float = 0.8
+    ) -> bool:
+        """Enhanced title matching using TextNormalizer utility."""
+        is_match = self.text_normalizer.is_title_match(
+            query_title, paper_title, threshold
+        )
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f"Title match result: {is_match}")
+            logger.debug(f"Query: {query_title}")
+            logger.debug(f"Paper: {paper_title}")
+        return is_match
+
+    def _extract_doi_from_paper(
+        self,
+        paper: dict,
+        query_title: str,
+        query_year: Optional[int],
+        query_authors: Optional[List[str]] = None,
+    ) -> Optional[str]:
+        """Extract DOI from paper with multiple validation strategies."""
+        paper_title = paper.get("title", "")
+        paper_year = paper.get("year")
+
+        # Title matching using enhanced method
+        if not self._is_title_match(query_title, paper_title):
+            logger.debug(f"Title mismatch: '{paper_title}' vs '{query_title}'")
+            return None
+
+        # Year validation (allow 2 year difference)
+        if query_year and paper_year:
+            try:
+                paper_year_int = (
+                    int(paper_year)
+                    if isinstance(paper_year, str)
+                    else paper_year
+                )
+                query_year_int = (
+                    int(query_year)
+                    if isinstance(query_year, str)
+                    else query_year
+                )
+                if abs(paper_year_int - query_year_int) > 2:
+                    logger.debug(
+                        f"Year mismatch: {paper_year_int} vs {query_year_int}"
+                    )
+                    return None
+            except (ValueError, TypeError):
+                pass
+
+        # Extract DOI from multiple sources
+        external_ids = paper.get("externalIds", {})
+
+        # Primary DOI field
+        if external_ids and "DOI" in external_ids:
+            doi = external_ids["DOI"]
+            if doi:
+                return self._clean_doi(doi)
+
+        # Alternative DOI sources
+        for field in ["doi", "DOI"]:
+            if field in paper and paper[field]:
+                return self._clean_doi(paper[field])
+
+        # Extract from URL using utility
+        paper_url = paper.get("url", "")
+        if paper_url:
+            doi = self.url_doi_extractor.extract_doi_from_url(paper_url)
+            if doi:
+                return doi
+
+        logger.debug(f"No DOI found in paper: {paper_title}")
+        return None
+
+    def _clean_doi(self, doi: str) -> str:
+        """Clean and normalize DOI."""
+        return doi.strip() if doi else doi
 
     @retry(
         stop=stop_after_attempt(3),

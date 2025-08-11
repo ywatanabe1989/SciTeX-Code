@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:02:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_ScholarConfig.py
+# Timestamp: "2025-08-11 09:29:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_ScholarConfig.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -46,9 +46,9 @@ class ScholarConfig:
         """Get value from config dict only"""
         return self.cascade.get(key)
 
-    def print_resolutions(self):
+    def print(self):
         """Print how each config was resolved"""
-        return self.cascade.print_resolutions()
+        return self.cascade.print()
 
     def clear_log(self):
         """Clear resolution log"""
@@ -116,6 +116,20 @@ class ScholarConfig:
         """Get Chrome cache directory"""
         return self.path_manager.get_chrome_cache_dir(profile_name)
 
+    def get_doi_resolution_cache_dir(
+        self,
+    ) -> Path:
+        """Get DOI resolution cache directory"""
+        return self.path_manager.get_doi_resolution_cache_dir()
+
+    def get_doi_resolution_progress_path(
+        self, provided_path: Optional[Path] = None
+    ) -> Path:
+        """Resolve progress file path with automatic generation if needed."""
+        return self.path_manager.get_doi_resolution_progress_path(
+            provided_path
+        )
+
     def get_screenshots_dir(self, category: Optional[str] = None) -> Path:
         """Get screenshots directory"""
         return self.path_manager.get_screenshots_dir(category)
@@ -129,5 +143,9 @@ class ScholarConfig:
     def get_downloads_dir(self) -> Path:
         """Get downloads directory"""
         return self.path_manager.get_downloads_dir()
+
+    def get_workspace_dir(self) -> Path:
+        """Get workspace directory"""
+        return self.path_manager.get_workspace_dir()
 
 # EOF

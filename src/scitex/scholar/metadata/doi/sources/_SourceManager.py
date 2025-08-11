@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:54:43 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/core/_SourceManager.py
+# Timestamp: "2025-08-11 06:40:06 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/core/_SourceManager.py"
+    "./src/scitex/scholar/metadata/doi/sources/_SourceManager.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -16,16 +16,15 @@ __DIR__ = os.path.dirname(__FILE__)
 from typing import Dict, List, Optional, Type
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
 
-from ..sources import (
-    ArXivSource,
-    BaseDOISource,
-    CrossRefSource,
-    OpenAlexSource,
-    PubMedSource,
-    SemanticScholarSource,
-    URLDOISource,
-)
+from ._ArXivSource import ArXivSource
+from ._BaseDOISource import BaseDOISource
+from ._CrossRefSource import CrossRefSource
+from ._OpenAlexSource import OpenAlexSource
+from ._PubMedSource import PubMedSource
+from ._SemanticScholarSource import SemanticScholarSource
+from ._URLDOISource import URLDOISource
 
 logger = logging.getLogger(__name__)
 
@@ -41,15 +40,6 @@ class SourceManager:
     - Source-specific configuration
     """
 
-    # Default source order (URL extractor first for immediate recovery)
-    DEFAULT_SOURCES = [
-        "url_doi_source",
-        "crossref",
-        "semantic_scholar",
-        "pubmed",
-        "openalex",
-    ]
-
     # Source registry
     SOURCE_CLASSES: Dict[str, Type[BaseDOISource]] = {
         "url_doi_source": URLDOISource,
@@ -63,8 +53,14 @@ class SourceManager:
     def __init__(
         self,
         sources: List[str],
-        email_config: Dict[str, str],
+        # Emails
+        email_crossref: Optional[str] = None,
+        email_pubmed: Optional[str] = None,
+        email_openalex: Optional[str] = None,
+        email_semantic_scholar: Optional[str] = None,
+        email_arxiv: Optional[str] = None,
         rate_limit_handler=None,
+        config: Optional[ScholarConfig] = None,
     ):
         """Initialize source manager.
 
@@ -73,8 +69,22 @@ class SourceManager:
             email_config: Dictionary mapping source names to email addresses
             rate_limit_handler: Rate limit handler to inject into sources
         """
-        self.sources = sources or self.DEFAULT_SOURCES
-        self.email_config = email_config or {}
+        self.config = config or ScholarConfig()
+        self.sources = self.config.resolve("sources", sources)
+        # Emails
+        self.crossref_email = self.config.resolve(
+            "crossref_email", email_crossref
+        )
+        self.pubmed_email = self.config.resolve("pubmed_email", email_pubmed)
+        self.openalex_email = self.config.resolve(
+            "openalex_email", email_openalex
+        )
+        self.semantic_scholar_email = self.config.resolve(
+            "semantic_scholar_email",
+            email_semantic_scholar,
+        )
+        self.arxiv_email = self.config.resolve("arxiv_email", email_arxiv)
+
         self.rate_limit_handler = rate_limit_handler
 
         # Initialize source instances cache
@@ -98,26 +108,28 @@ class SourceManager:
 
         return self._source_instances.get(name)
 
-    def _create_source_instance(self, name: str) -> Optional[BaseDOISource]:
+    def _create_source_instance(
+        self, source_name: str
+    ) -> Optional[BaseDOISource]:
         """Create a new source instance with proper configuration.
 
         Args:
-            name: Source name
+            source_name: Source name
 
         Returns:
             Configured source instance or None if source not found
         """
-        source_class = self.SOURCE_CLASSES.get(name)
+        source_class = self.SOURCE_CLASSES.get(source_name)
         if not source_class:
-            logger.warning(f"Unknown source: {name}")
+            logger.warning(f"Unknown source: {source_name}")
             return None
 
         try:
             # URLDOISource doesn't need email parameter
-            if name == "url_doi_source":
+            if source_name == "url_doi_source":
                 source_instance = source_class()
             else:
-                email = self._get_email_for_source(name)
+                email = self._get_email_for_source(source_name)
                 source_instance = source_class(email)
 
             # Inject rate limit handler into source
@@ -125,56 +137,54 @@ class SourceManager:
                 source_instance.set_rate_limit_handler(self.rate_limit_handler)
 
             # Configure source-specific rate limiting parameters
-            self._configure_source_specific_settings(source_instance, name)
+            self._configure_source_specific_settings(
+                source_instance, source_name
+            )
 
-            logger.debug(f"Created source instance: {name}")
+            logger.debug(f"Created source instance: {source_name}")
             return source_instance
 
         except Exception as e:
-            logger.error(f"Error creating source {name}: {e}")
+            logger.error(f"Error creating source {source_name}: {e}")
             return None
 
-    def _get_email_for_source(self, name: str) -> str:
+    def _get_email_for_source(self, source_name: str) -> str:
         """Get appropriate email for a source.
 
         Args:
-            name: Source name
+            source_name: Source source_name
 
         Returns:
             Email address for the source
         """
-        # Map source names to email config keys
+        # Map source source_names to email config keys
         email_map = {
-            "crossref": "crossref",
-            "pubmed": "pubmed",
-            "openalex": "openalex",
-            "semantic_scholar": "semantic_scholar",
-            "arxiv": "arxiv",
+            "crossref": self.crossref_email,
+            "pubmed": self.pubmed_email,
+            "openalex": self.openalex_email,
+            "semantic_scholar": self.semantic_scholar_email,
+            "arxiv": self.arxiv_email,
         }
-
-        config_key = email_map.get(name)
-        if config_key and config_key in self.email_config:
-            return self.email_config[config_key]
-
-        # Fallback email
-        return "research@example.com"
+        return email_map[source_name]
 
     def _configure_source_specific_settings(
-        self, source_instance: BaseDOISource, name: str
+        self, source_instance: BaseDOISource, source_name: str
     ):
         """Configure source-specific settings like rate limits.
 
         Args:
             source_instance: Source instance to configure
-            name: Source name for specific configuration
+            source_name: Source name for specific configuration
         """
         if not self.rate_limit_handler:
             return
 
         # Configure source-specific rate limiting parameters
-        if name.lower() == "pubmed":
+        if source_name.lower() == "pubmed":
             # NCBI requires max 3 requests per second (0.35s delay)
-            state = self.rate_limit_handler.get_source_state(name.lower())
+            state = self.rate_limit_handler.get_source_state(
+                source_name.lower()
+            )
             state.base_delay = 0.35
             state.adaptive_delay = 0.35
             logger.debug(
@@ -188,9 +198,9 @@ class SourceManager:
             List of all configured source instances
         """
         return [
-            self.get_source(name)
-            for name in self.sources
-            if self.get_source(name)
+            self.get_source(source_name)
+            for source_name in self.sources
+            if self.get_source(source_name)
         ]
 
     def get_available_source_names(self) -> List[str]:
@@ -294,7 +304,8 @@ class SourceManager:
         email_dependent_sources = [
             name
             for name in self.sources
-            if name not in ["url_doi_source"] and name in self._source_instances
+            if name not in ["url_doi_source"]
+            and name in self._source_instances
         ]
 
         for name in email_dependent_sources:
@@ -306,9 +317,6 @@ class SourceManager:
 
 
 if __name__ == "__main__":
-    # Example usage
-    from pathlib import Path
-
     # Test email configuration
     email_config = {
         "crossref": "test@example.com",

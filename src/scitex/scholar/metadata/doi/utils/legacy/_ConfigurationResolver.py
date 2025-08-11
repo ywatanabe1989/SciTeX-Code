@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 12:21:09 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/core/_ConfigurationResolver.py
+# Timestamp: "2025-08-10 11:40:31 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/utils/legacy/_ConfigurationResolver.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/core/_ConfigurationResolver.py"
+    "./src/scitex/scholar/metadata/doi/utils/legacy/_ConfigurationResolver.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -121,9 +121,7 @@ class ConfigurationResolver:
         Returns:
             Resolved list of source names
         """
-        resolved_sources = self.config.resolve(
-            "doi_sources", sources, self.DEFAULT_SOURCES, list
-        )
+        resolved_sources = self.config.resolve("sources", sources)
 
         logger.debug(f"Resolved sources configuration: {resolved_sources}")
         return resolved_sources
@@ -142,7 +140,9 @@ class ConfigurationResolver:
         )
 
         # Add other API keys as needed
-        # api_keys["crossref"] = self.config.resolve("crossref_api_key", None, None, str)
+        api_keys["crossref"] = self.config.resolve(
+            "crossref_api_key", None, None, str
+        )
 
         logger.debug(
             f"Resolved API keys: {list(k for k, v in api_keys.items() if v is not None)}"
@@ -171,7 +171,8 @@ class ConfigurationResolver:
             Dictionary with rate limiting configuration
         """
         rate_limit_config = {
-            "state_file": self.config.path_manager.get_workspace_logs_dir()
+            "state_file": self.config.get_workspace__dir()
+            / "logs"
             / "rate_limit_state.json",
             "default_delay": self.config.resolve(
                 "rate_limit_default_delay", None, 1.0, float
@@ -210,65 +211,65 @@ class ConfigurationResolver:
         logger.debug("Created enrichment configuration")
         return enrichment_config
 
-    def validate_configuration(
-        self, email_config: Dict[str, str], sources: List[str], project: str
-    ) -> Dict[str, Any]:
-        """Validate complete configuration and return validation results.
+    # def validate_configuration(
+    #     self, email_config: Dict[str, str], sources: List[str], project: str
+    # ) -> Dict[str, Any]:
+    #     """Validate complete configuration and return validation results.
 
-        Args:
-            email_config: Email configuration to validate
-            sources: Source list to validate
-            project: Project name to validate
+    #     Args:
+    #         email_config: Email configuration to validate
+    #         sources: Source list to validate
+    #         project: Project name to validate
 
-        Returns:
-            Dictionary with validation results
-        """
-        validation = {
-            "valid": True,
-            "warnings": [],
-            "errors": [],
-            "email_validation": {},
-            "sources_validation": {},
-        }
+    #     Returns:
+    #         Dictionary with validation results
+    #     """
+    #     validation = {
+    #         "valid": True,
+    #         "warnings": [],
+    #         "errors": [],
+    #         "email_validation": {},
+    #         "sources_validation": {},
+    #     }
 
-        # Validate email addresses
-        for service, email in email_config.items():
-            if not email or email == "research@example.com":
-                validation["warnings"].append(
-                    f"Using default email for {service}: {email}"
-                )
-                validation["email_validation"][service] = "default"
-            elif "@" not in email or "." not in email:
-                validation["errors"].append(
-                    f"Invalid email format for {service}: {email}"
-                )
-                validation["email_validation"][service] = "invalid"
-                validation["valid"] = False
-            else:
-                validation["email_validation"][service] = "valid"
+    #     # Validate email addresses
+    #     for service, email in email_config.items():
+    #         if not email or email == "research@example.com":
+    #             validation["warnings"].append(
+    #                 f"Using default email for {service}: {email}"
+    #             )
+    #             validation["email_validation"][service] = "default"
+    #         elif "@" not in email or "." not in email:
+    #             validation["errors"].append(
+    #                 f"Invalid email format for {service}: {email}"
+    #             )
+    #             validation["email_validation"][service] = "invalid"
+    #             validation["valid"] = False
+    #         else:
+    #             validation["email_validation"][service] = "valid"
 
-        # Validate sources
-        if not sources:
-            validation["errors"].append("No sources configured")
-            validation["valid"] = False
-        else:
-            from ._SourceManager import SourceManager
+    #     # Validate sources
+    #     if not sources:
+    #         validation["errors"].append("No sources configured")
+    #         validation["valid"] = False
+    #     else:
+    #         from ._SourceManager import SourceManager
 
-            available_sources = SourceManager.SOURCE_CLASSES.keys()
+    #         available_sources = SourceManager.SOURCE_CLASSES.keys()
 
-            for source in sources:
-                if source not in available_sources:
-                    validation["errors"].append(f"Unknown source: {source}")
-                    validation["sources_validation"][source] = "unknown"
-                    validation["valid"] = False
-                else:
-                    validation["sources_validation"][source] = "valid"
+    #         for source in sources:
+    #             if source not in available_sources:
+    #                 validation["errors"].append(f"Unknown source: {source}")
+    #                 validation["sources_validation"][source] = "unknown"
+    #                 validation["valid"] = False
+    #             else:
+    #                 validation["sources_validation"][source] = "valid"
 
-        # Validate project name
-        if not project or not project.strip():
-            validation["warnings"].append("Empty project name, using 'master'")
+    #     # Validate project name
+    #     if not project or not project.strip():
+    #         validation["warnings"].append("Empty project name, using 'master'")
 
-        return validation
+    #     return validation
 
     def get_configuration_summary(
         self,

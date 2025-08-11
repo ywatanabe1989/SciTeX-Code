@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 17:49:52 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
+# Timestamp: "2025-08-11 09:56:56 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -14,14 +14,19 @@ __DIR__ = os.path.dirname(__FILE__)
 """Clean, optimized DOI resolver with focused single-responsibility components."""
 
 import asyncio
+import re
 from typing import Any, Dict, List, Optional
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
+from scitex.scholar.storage._LibraryCacheManager import LibraryCacheManager
 
-from ..core import ConfigurationResolver, ResultCacheManager, SourceManager
+from ..sources._SourceManager import SourceManager
+from ..sources._SourceResolutionStrategy import SourceResolutionStrategy
 from ..sources._SourceRotationManager import SourceRotationManager
-from ..strategies import ResolutionOrchestrator
-from ..utils._RateLimitHandler import RateLimitHandler
+from ..utils import PubMedConverter, RateLimitHandler, TextNormalizer, URLDOIExtractor
+
+# from ..utils._RateLimitHandler import RateLimitHandler
 
 logger = logging.getLogger(__name__)
 
@@ -31,24 +36,24 @@ class SingleDOIResolver:
 
     Now uses focused single-responsibility components:
     - SourceManager: Source instantiation, rotation, and lifecycle management
-    - ResultCacheManager: DOI caching, result persistence, and retrieval
+    - LibraryCacheManager: DOI caching, result persistence, and retrieval
     - ConfigurationResolver: Email resolution, source configuration, validation
     """
 
     def __init__(
         self,
+        sources: Optional[List[str]] = None,
+        project: str = None,
+        # Emails
         email_crossref: Optional[str] = None,
         email_pubmed: Optional[str] = None,
         email_openalex: Optional[str] = None,
         email_semantic_scholar: Optional[str] = None,
         email_arxiv: Optional[str] = None,
-        sources: Optional[List[str]] = None,
-        config: Optional[Any] = None,
-        project: str = "MASTER",
-        # Dependency injection for testability and modularity
-        config_resolver: Optional[ConfigurationResolver] = None,
-        source_manager: Optional[SourceManager] = None,
-        cache_manager: Optional[ResultCacheManager] = None,
+        # API Keys
+        semantic_scholar_api_key: str = None,
+        crossref_api_key: str = None,
+        config: Optional[ScholarConfig] = None,
     ):
         """Initialize resolver with specified sources and dependency injection.
 
@@ -61,211 +66,145 @@ class SingleDOIResolver:
             sources: List of source names to use (None for default sources)
             config: ScholarConfig object (None to create default)
             project: Project name for Scholar library storage (default: "master")
-            config_resolver: ConfigurationResolver instance (created if None)
+            # config_resolver: ConfigurationResolver instance (created if None)
             source_manager: SourceManager instance (created if None)
-            cache_manager: ResultCacheManager instance (created if None)
+            cache_manager: LibraryCacheManager instance (created if None)
         """
-        # Initialize configuration resolver first
-        self.config_resolver = config_resolver or ConfigurationResolver(config)
-        self.config = self.config_resolver.config
+        self.config = config or ScholarConfig()
+        self.project = self.config.resolve("project", project)
+        self.sources = self.config.resolve("sources", sources)
 
-        # Resolve all configuration using the resolver
-        resolved_config = self.config_resolver.resolve_all_configuration(
-            email_crossref,
-            email_pubmed,
-            email_openalex,
+        # Emails
+        self.crossref_email = self.config.resolve(
+            "crossref_email", email_crossref
+        )
+        self.pubmed_email = self.config.resolve("pubmed_email", email_pubmed)
+        self.openalex_email = self.config.resolve(
+            "openalex_email", email_openalex
+        )
+        self.semantic_scholar_email = self.config.resolve(
+            "semantic_scholar_email",
             email_semantic_scholar,
-            email_arxiv,
-            sources,
-            project,
+        )
+        self.arxiv_email = self.config.resolve("arxiv_email", email_arxiv)
+
+        # API Keys
+        self.semantic_scholar_api_key = self.config.resolve(
+            "semantic_scholar_api_key", semantic_scholar_api_key
+        )
+        self.crossref_api_key = self.config.resolve(
+            "crossref_api_key", crossref_api_key
         )
 
-        # Extract resolved values
-        self.email_config = resolved_config["email_config"]
-        self.sources = resolved_config["sources"]
-        self.project = resolved_config["project"]
-        self.api_keys = resolved_config["api_keys"]
-        self.rate_limit_config = resolved_config["rate_limit_config"]
-        self.enrichment_config = resolved_config["enrichment_config"]
+        # Utilities
+        self.url_doi_extractor = URLDOIExtractor()
+        self.pubmed_converter = PubMedConverter(email=self.pubmed_email)
+        self.text_normalizer = TextNormalizer()
 
-        # Set up backward compatibility properties
-        self.email_crossref = self.email_config["crossref"]
-        self.email_pubmed = self.email_config["pubmed"]
-        self.email_openalex = self.email_config["openalex"]
-        self.email_semantic_scholar = self.email_config["semantic_scholar"]
-        self.email_arxiv = self.email_config["arxiv"]
-
-        # Initialize rate limit handling
-        self.rate_limit_handler = RateLimitHandler(
-            state_file=self.rate_limit_config["state_file"]
+        # Initialize classes
+        self._rate_limit_handler = RateLimitHandler()
+        self._source_rotation_manager = SourceRotationManager(
+            self._rate_limit_handler
         )
-        self.source_rotation_manager = SourceRotationManager(
-            self.rate_limit_handler
-        )
-
-        # Initialize source manager
-        self.source_manager = source_manager or SourceManager(
+        self._source_manager = SourceManager(
             sources=self.sources,
-            email_config=self.email_config,
-            rate_limit_handler=self.rate_limit_handler,
+            email_crossref=email_crossref,
+            email_pubmed=email_pubmed,
+            email_openalex=email_openalex,
+            email_semantic_scholar=email_semantic_scholar,
+            email_arxiv=email_arxiv,
+            rate_limit_handler=self._rate_limit_handler,
         )
 
-        # Initialize result cache manager
-        self.cache_manager = cache_manager or ResultCacheManager(
-            config=self.config, project=self.project
-        )
-
-        # Initialize ResolutionOrchestrator with existing components
-        self.orchestrator = ResolutionOrchestrator(
-            config=self.config,
-            project=self.project,
+        self._source_strategy = SourceResolutionStrategy(
             sources=self.sources,
-            rate_limit_handler=self.rate_limit_handler,
-            source_rotation_manager=self.source_rotation_manager,
-            email_config=self.email_config,
-            enrichment_config=self.enrichment_config,
+            rate_limit_handler=self._rate_limit_handler,
+            email_crossref=email_crossref,
+            email_pubmed=email_pubmed,
+            email_openalex=email_openalex,
+            email_semantic_scholar=email_semantic_scholar,
+            email_arxiv=email_arxiv,
         )
 
-        # Log configuration for debugging
-        logger.debug(
-            f"SingleDOIResolver initialized with sources: {self.sources}"
-        )
-        logger.debug(f"Email configuration: {list(self.email_config.keys())}")
-        logger.debug(
-            f"Rate limit state file: {self.rate_limit_config['state_file']}"
-        )
-        logger.info(
-            "SingleDOIResolver initialized with focused single-responsibility components"
+        self._library_cache_manager = LibraryCacheManager(
+            project=self.project, config=self.config
         )
 
-    # Delegate methods to maintain backward compatibility
-
-    def _get_source(self, name: str):
-        """Get or create source instance (delegated to source manager)."""
-        return self.source_manager.get_source(name)
-
-    def _check_scholar_library(
-        self, title: str, year: Optional[int] = None
-    ) -> Optional[str]:
-        """Check if DOI already exists in master Scholar library (delegated to cache manager)."""
-        return self.cache_manager.check_scholar_library(title, year)
-
-    def _save_to_scholar_library(
-        self,
-        title: str,
-        doi: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        source: str = None,
-        metadata: Optional[Dict] = None,
-        bibtex_source: Optional[str] = None,
-    ):
-        """Save resolved DOI to master Scholar library (delegated to cache manager)."""
-        return self.cache_manager.save_to_scholar_library(
-            title, doi, year, authors, source, metadata, bibtex_source
-        )
-
-    def _save_unresolved_entry(
+    async def metadata2doi_async(
         self,
         title: str,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
-        bibtex_source: Optional[str] = None,
-    ):
-        """Save unresolved entry to master Scholar library (delegated to cache manager)."""
-        return self.cache_manager.save_unresolved_entry(
-            title, year, authors, bibtex_source
-        )
-
-    def copy_bibtex_to_library(
-        self, bibtex_path: str, project_name: Optional[str] = None
-    ) -> str:
-        """Copy BibTeX file to Scholar library for reference (delegated to cache manager)."""
-        return self.cache_manager.copy_bibtex_to_library(
-            bibtex_path, project_name
-        )
-
-    def get_unresolved_entries(
-        self, project_name: Optional[str] = None
-    ) -> List[Dict]:
-        """Get list of unresolved entries from Scholar library (delegated to cache manager)."""
-        return self.cache_manager.get_unresolved_entries(project_name)
-
-    def _create_project_symlink(self, paper_id: str, readable_name: str):
-        """Create project symlink to master paper directory (delegated to cache manager)."""
-        return self.cache_manager._create_project_symlink(
-            paper_id, readable_name
-        )
-
-    def _ensure_project_symlink(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-    ):
-        """Ensure project symlink exists for a paper (delegated to cache manager)."""
-        return self.cache_manager._ensure_project_symlink(title, year, authors)
-
-    # Core resolution methods (main business logic)
-
-    async def resolve_async(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
+        bibtex_entry: Optional[Dict] = None,
         skip_cache: bool = False,
     ) -> Optional[Dict[str, Any]]:
-        """Resolve DOI asynchronously with caching."""
-        # Check Scholar library cache first (unless skipping cache)
+        """
+        Resolve DOI asynchronously with caching.
+
+        Args:
+            title: Paper title
+            year: Publication year (optional)
+            authors: Author list (optional)
+            sources: Specific sources to use (optional)
+            bibtex_entry: Full BibTeX bibtex_entry for utility extraction (optional)
+
+        Returns:
+            Dict with 'doi' and 'source' keys if found, None otherwise
+        """
+
+        # Phase 0: Normalize search parameters for better accuracy
+        title, authors = self._normalize_search_parameters(title, authors)
+
+        # Check cache first unless explicitly skipped
         if not skip_cache:
-            cached_doi = self._check_scholar_library(title, year)
+            cached_doi = self._library_cache_manager.is_doi_stored(
+                title,
+                year,
+            )
             if cached_doi:
                 logger.info(f"DOI found in cache: {cached_doi}")
-                return {
-                    "doi": cached_doi,
-                    "source": "scholar_library_cache",
-                    "title": title,
-                }
+                return {"doi": cached_doi, "source": "cache", "title": title}
 
-        # Use ResolutionOrchestrator for the actual resolution
-        try:
-            result = await self.orchestrator.resolve_doi_async(
-                title=title,
-                year=year,
-                authors=authors,
-                sources=sources or self.sources,
-            )
-
-            if result and result.get("doi"):
-                # Save to Scholar library cache
-                self._save_to_scholar_library(
+        # Phase 1: Try utility extraction if bibtex_entry is provided
+        if bibtex_entry:
+            utility_result = self._try_utility_extraction(bibtex_entry)
+            if utility_result:
+                # Save to Scholar library for persistence
+                self._library_cache_manager.save_entry(
                     title=title,
-                    doi=result["doi"],
+                    doi=utility_result["doi"],
                     year=year,
                     authors=authors,
-                    source=result.get("source"),
-                    metadata=result.get("metadata"),
+                    source=utility_result["source"],
+                    metadata=None,  # No additional metadata from utilities
+                    bibtex_source=None,
                 )
+                return utility_result
 
-                logger.success(f"DOI resolved and cached: {result['doi']}")
-                return result
-            else:
-                # Save as unresolved entry
-                self._save_unresolved_entry(title, year, authors)
-                logger.warning(f"DOI resolution failed for: {title[:50]}...")
-                return None
+        # Phase 2: Resolve from sources
+        result = await self._source_strategy.metadata2metadata_async(
+            title=title, year=year, authors=authors
+        )
 
-        except Exception as e:
-            logger.error(f"Error during DOI resolution: {e}")
-            return None
+        # Cache successful or failed resolution
+        self._library_cache_manager.save_entry(
+            title=title,
+            doi=result.get("doi") if result else None,
+            year=year,
+            authors=authors,
+            source=result.get("source") if result else None,
+            metadata=result.get("metadata") if result else None,
+            bibtex_source=result.get("bibtex_source") if result else None,
+        )
 
-    def resolve(
+        return result
+
+    def metadata2doi(
         self,
         title: str,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
+        bibtex_entry: Optional[Dict] = None,
         skip_cache: bool = False,
     ) -> Optional[Dict[str, Any]]:
         """Synchronous wrapper for resolve_async."""
@@ -279,83 +218,22 @@ class SingleDOIResolver:
                 return None
             else:
                 return loop.run_until_complete(
-                    self.resolve_async(
-                        title, year, authors, sources, skip_cache
+                    self.metadata2doi_async(
+                        title, year, authors, bibtex_entry, skip_cache
                     )
                 )
         except RuntimeError:
             # No event loop, create one
             return asyncio.run(
-                self.resolve_async(title, year, authors, sources, skip_cache)
-            )
-
-    def get_abstract(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-    ) -> Optional[str]:
-        """Get abstract for a paper using ResolutionOrchestrator."""
-        try:
-            # Use the main resolve_async method to get metadata with abstract
-            result = asyncio.run(
-                self.orchestrator.resolve_async(
-                    title=title,
-                    year=year,
-                    authors=authors,
-                    enable_enrichment=True,
+                self.metadata2doi_async(
+                    title, year, authors, bibtex_entry, skip_cache
                 )
             )
-            if result and result.get("metadata"):
-                return result["metadata"].get("abstract")
-            return None
-        except Exception as e:
-            logger.error(f"Error getting abstract: {e}")
-            return None
 
-    def get_comprehensive_metadata(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-    ) -> Optional[Dict[str, Any]]:
-        """Get comprehensive metadata using ResolutionOrchestrator."""
-        try:
-            # Use the main resolve_async method to get complete metadata
-            result = asyncio.run(
-                self.orchestrator.resolve_async(
-                    title=title,
-                    year=year,
-                    authors=authors,
-                    enable_enrichment=True,
-                )
-            )
-            if result:
-                # Return the metadata portion, removing orchestrator-specific fields
-                metadata = result.get("metadata", {})
-                if metadata:
-                    return metadata
-                # If no separate metadata, return the core fields
-                return {
-                    "doi": result.get("doi"),
-                    "title": title,
-                    "year": year,
-                    "authors": authors,
-                    "source": result.get("source"),
-                }
-            return None
-        except Exception as e:
-            logger.error(f"Error getting comprehensive metadata: {e}")
-            return None
-
-    # Utility methods
-
-    def extract_dois_from_text(self, text: str) -> List[str]:
+    def text2dois(self, text: str) -> List[str]:
         """Extract DOIs from text using URL extractor source."""
         try:
-            url_doi_source = self.source_manager.get_source("url_doi_source")
+            url_doi_source = self._source_manager.get_source("url_doi_source")
             if url_doi_source and hasattr(
                 url_doi_source, "extract_dois_from_text"
             ):
@@ -365,90 +243,136 @@ class SingleDOIResolver:
             logger.error(f"Error extracting DOIs from text: {e}")
             return []
 
-    def validate_doi(self, doi: str) -> bool:
-        """Validate DOI format using URL extractor source."""
-        try:
-            url_doi_source = self.source_manager.get_source("url_doi_source")
-            if url_doi_source and hasattr(url_doi_source, "validate_doi"):
-                return url_doi_source.validate_doi(doi)
+    def _validate_doi(self, input_str: str) -> bool:
+        """Check if input string is a DOI."""
+        return bool(re.match(r"^10\.\d{4,}/[^\s]+$", input_str))
 
-            # Fallback validation
-            import re
+    def _try_utility_extraction(self, bibtex_entry: Dict) -> Optional[Dict]:
+        """
+        Try to extract DOI using Phase 1 utilities.
 
-            doi_pattern = r"^10\.\d{4,9}/[-._;()/:\w\[\]]+$"
-            return bool(re.match(doi_pattern, doi))
-        except Exception as e:
-            logger.error(f"Error validating DOI: {e}")
-            return False
+        Args:
+            bibtex_entry: BibTeX bibtex_entry dictionary
 
-    # Statistics and monitoring
+        Returns:
+            Dict with 'doi' and 'source' keys if found, None otherwise
+        """
+        # Try URL extraction first (fastest)
+        doi = self.url_doi_extractor.bibtex_entry2doi(bibtex_entry)
+        if doi:
+            logger.info(f"Phase 1 recovery via URL extraction: {doi}")
+            return {"doi": doi, "source": "url_extraction"}
 
-    def get_workflow_statistics(self) -> Dict[str, Any]:
-        """Get comprehensive workflow statistics."""
-        try:
-            # Get statistics from all components
-            source_stats = self.source_manager.get_source_statistics()
-            cache_stats = self.cache_manager.get_cache_statistics()
-            rate_limit_stats = self.rate_limit_handler.get_statistics()
+        # Try PubMed conversion (network call but very reliable)
+        doi = self.pubmed_converter.bibtex_entry2doi(bibtex_entry)
+        if doi:
+            logger.info(f"Phase 1 recovery via PubMed conversion: {doi}")
+            return {"doi": doi, "source": "pubmed_conversion"}
 
-            # Get orchestrator statistics if available
-            orchestrator_stats = {}
-            if hasattr(self.orchestrator, "get_statistics"):
-                orchestrator_stats = self.orchestrator.get_statistics()
+        return None
 
-            return {
-                "sources": source_stats,
-                "cache": cache_stats,
-                "rate_limiting": rate_limit_stats,
-                "orchestrator": orchestrator_stats,
-                "configuration": self.config_resolver.get_configuration_summary(
-                    self.email_config,
-                    self.sources,
-                    self.project,
-                    self.api_keys,
-                ),
-            }
-        except Exception as e:
-            logger.error(f"Error getting workflow statistics: {e}")
-            return {"error": str(e)}
+    def _normalize_search_parameters(
+        self, title: str, authors: Optional[List[str]] = None
+    ) -> tuple[str, Optional[List[str]]]:
+        """
+        Normalize search parameters for better accuracy.
 
-    def reset_statistics(self) -> None:
-        """Reset all statistics."""
-        try:
-            self.rate_limit_handler.reset_statistics()
-            if hasattr(self.orchestrator, "reset_statistics"):
-                self.orchestrator.reset_statistics()
-            logger.info("Statistics reset")
-        except Exception as e:
-            logger.error(f"Error resetting statistics: {e}")
+        Args:
+            title: Paper title
+            authors: Author list
 
-    def validate_configuration(self) -> Dict[str, Any]:
-        """Validate complete resolver configuration."""
-        try:
-            # Get validation from all components
-            config_validation = self.config_resolver.validate_configuration(
-                self.email_config, self.sources, self.project
-            )
-            source_validation = (
-                self.source_manager.validate_source_configuration()
+        Returns:
+            Tuple of (normalized_title, normalized_authors)
+        """
+
+        # Normalize title
+        normalized_title = self.text_normalizer.normalize_title(title)
+
+        # Normalize authors
+        normalized_authors = None
+        if authors:
+            normalized_authors = [
+                self.text_normalizer.normalize_author_name(author)
+                for author in authors
+            ]
+
+        # Log if changes were made
+        if normalized_title != title:
+            logger.debug(f"Title normalized: '{title}' → '{normalized_title}'")
+
+        if authors and normalized_authors and normalized_authors != authors:
+            logger.debug(
+                f"Authors normalized: {authors} → {normalized_authors}"
             )
 
-            # Combine validations
-            combined_validation = {
-                "valid": config_validation["valid"]
-                and source_validation["valid"],
-                "warnings": config_validation["warnings"]
-                + source_validation["warnings"],
-                "errors": config_validation["errors"]
-                + source_validation["errors"],
-                "configuration": config_validation,
-                "sources": source_validation,
-            }
+        return normalized_title, normalized_authors
 
-            return combined_validation
-        except Exception as e:
-            logger.error(f"Error validating configuration: {e}")
-            return {"valid": False, "errors": [str(e)]}
+    # def _get_workflow_statistics(self) -> Dict[str, Any]:
+    #     """Get comprehensive workflow statistics."""
+    #     try:
+    #         # Get statistics from all components
+    #         source_stats = self._source_manager.get_source_statistics()
+    #         cache_stats = self._library_cache_manager.get_cache_statistics()
+    #         rate_limit_stats = self._rate_limit_handler.get_statistics()
+
+    #         # Get orchestrator statistics if available
+    #         orchestrator_stats = {}
+    #         if hasattr(self.orchestrator, "get_statistics"):
+    #             orchestrator_stats = self.orchestrator.get_statistics()
+
+    #         return {
+    #             "sources": source_stats,
+    #             "cache": cache_stats,
+    #             "rate_limiting": rate_limit_stats,
+    #             "orchestrator": orchestrator_stats,
+    #             "configuration": self.config_resolver.get_configuration_summary(
+    #                 self.email_config,
+    #                 self.sources,
+    #                 self.project,
+    #                 self.api_keys,
+    #             ),
+    #         }
+    #     except Exception as e:
+    #         logger.error(f"Error getting workflow statistics: {e}")
+    #         return {"error": str(e)}
+
+    # def reset_statistics(self) -> None:
+    #     """Reset all statistics."""
+    #     try:
+    #         self._rate_limit_handler.reset_statistics()
+    #         if hasattr(self.orchestrator, "reset_statistics"):
+    #             self.orchestrator.reset_statistics()
+    #         logger.info("Statistics reset")
+    #     except Exception as e:
+    #         logger.error(f"Error resetting statistics: {e}")
+
+    # def _validate_configuration(self) -> Dict[str, Any]:
+    #     """Validate complete resolver configuration."""
+    #     try:
+    #         # Get validation from all components
+    #         config_validation = self.config_resolver.validate_configuration(
+    #             self.email_config, self.sources, self.project
+    #         )
+    #         source_validation = (
+    #             self._source_manager.validate_source_configuration()
+    #         )
+
+    #         # Combine validations
+    #         combined_validation = {
+    #             "valid": config_validation["valid"]
+    #             and source_validation["valid"],
+    #             "warnings": config_validation["warnings"]
+    #             + source_validation["warnings"],
+    #             "errors": config_validation["errors"]
+    #             + source_validation["errors"],
+    #             "configuration": config_validation,
+    #             "sources": source_validation,
+    #         }
+
+    #         return combined_validation
+    #     except Exception as e:
+    #         logger.error(f"Error validating configuration: {e}")
+    #         return {"valid": False, "errors": [str(e)]}
 
 
 if __name__ == "__main__":
@@ -457,49 +381,17 @@ if __name__ == "__main__":
     async def main():
         """Example usage of refactored SingleDOIResolver."""
 
-        print("=" * 60)
-        print("Refactored SingleDOIResolver Test")
-        print("=" * 60)
-
-        # Initialize resolver
-        resolver = SingleDOIResolver(
-            email_crossref="test@example.com",
-            email_pubmed="test@example.com",
-            sources=["url_doi_source", "crossref"],
-            project="test_project",
+        single_doi_resolver = SingleDOIResolver()
+        found_doi = await single_doi_resolver.metadata2doi_async(
+            title="Direct modulation index: A measure of phase amplitude coupling for neurophysiology data",
+            year=None,
         )
-
-        # Validate configuration
-        validation = resolver.validate_configuration()
-        print(f"Configuration valid: {validation['valid']}")
-        if validation["warnings"]:
-            print(f"Warnings: {validation['warnings']}")
-
-        # Test resolution (with a simple example)
-        print("\nTesting DOI resolution...")
-        test_title = "Machine Learning Applications in Bioinformatics"
-
-        try:
-            result = await resolver.resolve_async(title=test_title, year=2023)
-
-            if result:
-                print(f"✅ DOI found: {result.get('doi', 'None')}")
-                print(f"✅ Source: {result.get('source', 'Unknown')}")
-            else:
-                print("❌ No DOI found")
-
-        except Exception as e:
-            print(f"❌ Error during resolution: {e}")
-
-        # Get statistics
-        stats = resolver.get_workflow_statistics()
-        print(f"\nWorkflow Statistics:")
-        print(f"Cache stats: {stats.get('cache', {})}")
-        print(f"Sources configured: {len(stats.get('sources', {}))}")
-
-        print("\n✅ Refactored SingleDOIResolver test completed!")
+        dir(single_doi_resolver)
+        __import__("ipdb").set_trace()
 
     if __name__ == "__main__":
         asyncio.run(main())
+
+# python -m scitex.scholar.metadata.doi.resolvers._SingleDOIResolver
 
 # EOF

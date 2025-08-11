@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 19:40:14 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/sources/_OpenAlexSource.py
+# Timestamp: "2025-08-11 06:55:59 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_OpenAlexSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/doi/sources/_OpenAlexSource.py"
+    "./src/scitex/scholar/metadata/doi/sources/_OpenAlexSource.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-import requests
 
-from typing import Any
-from typing import Dict
+from typing import Any, Dict
+
+import requests
 
 """
 OpenAlex DOI source implementation.
@@ -21,15 +21,16 @@ OpenAlex DOI source implementation.
 This module provides DOI resolution through the OpenAlex API.
 """
 
-from scitex import logging
-from typing import List
-from typing import Optional
-from tenacity import retry
+from typing import List, Optional
+
 from tenacity import (
+    retry,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
 )
+
+from scitex import logging
 
 from ._BaseDOISource import BaseDOISource
 
@@ -40,6 +41,7 @@ class OpenAlexSource(BaseDOISource):
     """OpenAlex - free and open alternative to proprietary databases."""
 
     def __init__(self, email: str = "research@example.com"):
+        super().__init__()  # Initialize base class
         self.email = email
         self._session = None
 
@@ -47,8 +49,6 @@ class OpenAlexSource(BaseDOISource):
     def session(self):
         """Lazy load session."""
         if self._session is None:
-            import requests
-
             self._session = requests.Session()
             self._session.headers.update(
                 {"User-Agent": f"SciTeX/1.0 (mailto:{self.email})"}
@@ -151,7 +151,7 @@ class OpenAlexSource(BaseDOISource):
                 journal = None
                 issn = None
                 publisher = None
-                
+
                 host_venue = work.get("host_venue", {})
                 if host_venue:
                     journal = host_venue.get("display_name")

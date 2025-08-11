@@ -95,7 +95,7 @@ def main():
 
     try:
         resolver = SingleDOIResolver(
-            project=args.project, max_worker_asyncs=args.worker_asyncs
+            project=args.project, max_worker=args.worker_asyncs
         )
 
         if args.summary:
@@ -243,9 +243,9 @@ def display_project_summary(resolver: SingleDOIResolver):
     print(f"  Entries with DOI: {summary['entries_with_doi']}")
     print(f"  Resolved by SciTeX: {summary['entries_resolved_by_scitex']}")
 
-    if summary["doi_sources"]:
+    if summary["sources"]:
         print(f"\nDOI Sources:")
-        for source, count in summary["doi_sources"].items():
+        for source, count in summary["sources"].items():
             print(f"  {source}: {count}")
 
 

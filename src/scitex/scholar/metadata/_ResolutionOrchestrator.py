@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:32:11 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/strategies/_ResolutionOrchestrator.py
+# Timestamp: "2025-08-11 07:00:09 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_ResolutionOrchestrator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/strategies/_ResolutionOrchestrator.py"
+    "./src/scitex/scholar/metadata/doi/resolvers/_ResolutionOrchestrator.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -15,10 +15,10 @@ __DIR__ = os.path.dirname(__FILE__)
 Resolution orchestrator for DOI resolution and metadata enrichment.
 
 This orchestrator coordinates the entire paper resolution workflow:
-1. Library Check (ScholarLibraryStrategy)
+1. Library Check (LibraryManager)
 2. Source Resolution (SourceResolutionStrategy)
 3. Metadata Enrichment (existing EnricherPipeline)
-4. Library Save (ScholarLibraryStrategy)
+4. Library Save (LibraryManager)
 
 Extracted from SingleDOIResolver to follow Single Responsibility Principle and
 integrate with existing enrichment infrastructure.
@@ -29,8 +29,9 @@ import time
 from typing import Any, Dict, List, Optional
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
+from scitex.scholar.storage_LibraryManager import LibraryManager
 
-from ._ScholarLibraryStrategy import ScholarLibraryStrategy
 from ._SourceResolutionStrategy import SourceResolutionStrategy
 
 logger = logging.getLogger(__name__)
@@ -41,8 +42,8 @@ class ResolutionOrchestrator:
 
     def __init__(
         self,
-        config: Any,
-        project: str = "master",
+        project: str = None,
+        config: Optional[ScholarConfig] = None,
         sources: Optional[List[str]] = None,
         rate_limit_handler: Optional[Any] = None,
         source_rotation_manager: Optional[Any] = None,
@@ -64,7 +65,7 @@ class ResolutionOrchestrator:
         self.project = project
 
         # Initialize strategies
-        self.library_strategy = ScholarLibraryStrategy(config, project)
+        self.library_manager = LibraryManager(config, project)
         self.source_strategy = SourceResolutionStrategy(
             sources=sources,
             rate_limit_handler=rate_limit_handler,
@@ -158,7 +159,7 @@ class ResolutionOrchestrator:
 
         try:
             # Phase 1: Check Scholar Library for existing DOI
-            existing_doi = self.library_strategy.check_library_for_doi(
+            existing_doi = self.library_manager.check_library_for_doi(
                 title, year
             )
             if existing_doi:
@@ -173,14 +174,14 @@ class ResolutionOrchestrator:
             # Phase 2: Source Resolution
             logger.debug(f"Resolving from sources: {title[:50]}...")
             resolution_result = (
-                await self.source_strategy.resolve_from_sources(
+                await self.source_strategy.metadata2metadata_async(
                     title=title, year=year, authors=authors, url=url, **kwargs
                 )
             )
 
             if not resolution_result or not resolution_result.get("doi"):
                 # Resolution failed - save as unresolved
-                self.library_strategy.save_unresolved_paper(
+                self.library_manager.save_unresolved_paper(
                     title=title,
                     year=year,
                     authors=authors,
@@ -209,7 +210,7 @@ class ResolutionOrchestrator:
                 )
 
             # Phase 4: Save to Scholar Library
-            paper_id = self.library_strategy.save_resolved_paper(
+            paper_id = self.library_manager.save_resolved_paper(
                 title=title,
                 doi=doi,
                 year=year,
@@ -239,7 +240,7 @@ class ResolutionOrchestrator:
             )
 
             # Save as unresolved with error details
-            self.library_strategy.save_unresolved_paper(
+            self.library_manager.save_unresolved_paper(
                 title=title,
                 year=year,
                 authors=authors,

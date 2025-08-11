@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:31:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/_RateLimitHandler.py
+# Timestamp: "2025-08-11 05:25:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/utils/_RateLimitHandler.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/_RateLimitHandler.py"
+    "./src/scitex/scholar/metadata/doi/utils/_RateLimitHandler.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -31,6 +31,7 @@ from typing import Dict, List, Optional
 import requests
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -129,13 +130,23 @@ class RateLimitHandler:
         },
     }
 
-    def __init__(self, state_file: Optional[Path] = None):
+    def __init__(
+        self,
+        config: Optional[ScholarConfig] = None,
+        # default_delay: Optional[float] = None,
+        # enable_adaptive_delay: Optinoal[bool] = None,
+        # max_retries: Optional[bool] = None,
+    ):
+        # def __init__(self, state_file: Optional[Path] = None):
         """Initialize rate limit handler.
 
         Args:
             state_file: Path to save/load source states
         """
-        self.state_file = state_file
+        self.config = config or ScholarConfig()
+        self.state_file = (
+            self.config.get_workspace_dir() / "logs" / "rate_limit_state.json"
+        )
         self.source_states: Dict[str, SourceState] = {}
         self.global_backoff = 0.0
         self.last_request_time = 0.0

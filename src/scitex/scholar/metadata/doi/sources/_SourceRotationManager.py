@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:46:33 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_SourceRotationManager.py
+# Timestamp: "2025-08-11 06:48:21 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceRotationManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -415,19 +415,19 @@ class SourceRotationManager:
         return successes / len(recent)
 
     def get_fallback_sources(
-        self, original_sources: List[str], all_sources: List[str]
+        self, tried_sources: List[str], all_sources: List[str]
     ) -> List[str]:
         """Get fallback sources when primary sources fail.
 
         Args:
-            original_sources: Sources that were originally tried
+            tried_sources: Sources that were originally tried
             all_sources: All available source names
 
         Returns:
             List of fallback sources to try
         """
         # Get sources not yet tried
-        untried_sources = [s for s in all_sources if s not in original_sources]
+        untried_sources = [s for s in all_sources if s not in tried_sources]
 
         # Filter by availability
         available_fallbacks = self.rate_limit_handler.get_available_sources(

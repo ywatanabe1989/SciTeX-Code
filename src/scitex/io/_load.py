@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:50:18 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py
+# Timestamp: "2025-08-11 05:54:51 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_load.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/io/_load.py"
@@ -11,17 +12,20 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import glob
+from pathlib import Path
 from typing import Any
 
 from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
 from ._load_cache import (
-    get_cached_data,
     cache_data,
-    get_cache_info,
     configure_cache,
-    load_npy_cached
+    get_cache_info,
+    get_cached_data,
+    load_npy_cached,
 )
+from ._load_modules._bibtex import _load_bibtex
+
 # from ._load_modules._catboost import _load_catboost
 from ._load_modules._con import _load_con
 from ._load_modules._docx import _load_docx
@@ -42,11 +46,14 @@ from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
 from ._load_modules._yaml import _load_yaml
 from ._load_modules._zarr import _load_zarr
-from ._load_modules._bibtex import _load_bibtex
 
 
 def load(
-    lpath: str, show: bool = False, verbose: bool = False, cache: bool = True, **kwargs
+    lpath: str,
+    show: bool = False,
+    verbose: bool = False,
+    cache: bool = True,
+    **kwargs,
 ) -> Any:
     """
     Load data from various file formats.
@@ -94,6 +101,7 @@ def load(
     >>> image = load('image.png')
     >>> model = load('model.pth')
     """
+
     lpath = clean_path(lpath)
 
     # Convert Path objects to strings to avoid AttributeError on string methods
@@ -129,8 +137,6 @@ def load(
 
             if env_type == "jupyter":
                 # Try notebook output directories
-                import re
-                from pathlib import Path
 
                 # Get current directory name
                 cwd = Path.cwd()
@@ -163,7 +169,7 @@ def load(
             raise FileNotFoundError(
                 f"{lpath} not found. Searched in current directory and notebook output directories."
             )
-    
+
     # Try to get from cache first
     if cache:
         cached_data = get_cached_data(lpath)
@@ -234,22 +240,22 @@ def load(
     }
 
     ext = lpath.split(".")[-1] if "." in lpath else ""
-    
+
     # Special handling for numpy files with caching
     if cache and ext in ["npy", "npz"]:
         return load_npy_cached(lpath, **kwargs)
-    
+
     loader = preserve_doc(loaders_dict.get(ext, _load_txt))
 
     try:
         result = loader(lpath, **kwargs)
-        
+
         # Cache the result if caching is enabled
         if cache:
             cache_data(lpath, result)
             if verbose:
                 print(f"[Cache STORED] Cached data for: {lpath}")
-        
+
         return result
     except (ValueError, FileNotFoundError) as e:
         raise ValueError(f"Error loading file {lpath}: {str(e)}")

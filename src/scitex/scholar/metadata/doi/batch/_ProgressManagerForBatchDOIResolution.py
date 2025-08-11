@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 23:25:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/doi/batch/_BatchProgressManager.py
+# Timestamp: "2025-08-11 05:48:42 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/batch/_ProgressManagerForBatchDOIResolution.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/metadata/doi/batch/_ProgressManagerForBatchDOIResolution.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """Progress tracking and persistence for batch DOI resolution."""
@@ -10,16 +17,16 @@ import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from scitex import logging
 
 logger = logging.getLogger(__name__)
 
 
-class BatchProgressManager:
+class ProgressManagerForBatchDOIResolution:
     """Handles progress tracking, persistence, and ETA calculation for batch DOI resolution.
-    
+
     Responsibilities:
     - Load/save progress data from/to files
     - Track successful and failed resolutions
@@ -27,17 +34,21 @@ class BatchProgressManager:
     - Atomic file operations for progress persistence
     """
 
-    def __init__(self, progress_file: Path, title_normalizer=None):
+    def __init__(
+        self, doi_resolution_progress_file: Path, title_normalizer=None
+    ):
         """Initialize progress manager.
-        
+
         Args:
-            progress_file: Path to progress file
+            doi_resolution_progress_file: Path to progress file
             title_normalizer: Function to normalize titles (for backward compatibility)
         """
-        self.progress_file = Path(progress_file)
+        self.doi_resolution_progress_file = Path(doi_resolution_progress_file)
         self.progress_data = self._load_progress()
         self._start_time = time.time()
-        self._title_normalizer = title_normalizer or self._default_normalize_title
+        self._title_normalizer = (
+            title_normalizer or self._default_normalize_title
+        )
 
     def _default_normalize_title(self, title: str) -> str:
         """Default title normalization for backward compatibility."""
@@ -51,11 +62,13 @@ class BatchProgressManager:
 
     def _load_progress(self) -> Dict[str, Any]:
         """Load or create progress data with enhanced fields."""
-        if self.progress_file.exists():
+        if self.doi_resolution_progress_file.exists():
             try:
-                with open(self.progress_file, "r") as f:
+                with open(self.doi_resolution_progress_file, "r") as f:
                     data = json.load(f)
-                logger.info(f"Resuming from: {self.progress_file}")
+                logger.info(
+                    f"Resuming from: {self.doi_resolution_progress_file}"
+                )
 
                 # Migrate old format if needed
                 if "source_performance" not in data:
@@ -91,11 +104,11 @@ class BatchProgressManager:
         """Save progress atomically."""
         self.progress_data["last_updated"] = datetime.now().isoformat()
 
-        temp_file = self.progress_file.with_suffix(".tmp")
+        temp_file = self.doi_resolution_progress_file.with_suffix(".tmp")
         try:
             with open(temp_file, "w") as f:
                 json.dump(self.progress_data, f, indent=2)
-            temp_file.replace(self.progress_file)
+            temp_file.replace(self.doi_resolution_progress_file)
         except Exception as e:
             logger.error(f"Failed to save progress: {e}")
             if temp_file.exists():
@@ -124,7 +137,9 @@ class BatchProgressManager:
         self.progress_data["statistics"]["failed"] += 1
         self.progress_data["statistics"]["processed"] += 1
 
-    def update_progress_skipped(self, title: str, reason: str = "already_resolved"):
+    def update_progress_skipped(
+        self, title: str, reason: str = "already_resolved"
+    ):
         """Update progress for skipped resolution."""
         paper_key = self._title_normalizer(title)
         self.progress_data["papers"][paper_key] = {
@@ -163,19 +178,19 @@ class BatchProgressManager:
         stats = self.progress_data["statistics"]
         processed = stats["processed"]
         total = stats["total"]
-        
+
         if processed == 0 or total == 0:
             return None
-            
+
         elapsed = time.time() - self._start_time
         rate = processed / elapsed  # papers per second
         remaining = total - processed
-        
+
         if rate <= 0:
             return None
-            
+
         eta_seconds = remaining / rate
-        
+
         # Format ETA nicely
         if eta_seconds < 60:
             return f"{eta_seconds:.0f}s"
@@ -188,7 +203,7 @@ class BatchProgressManager:
         """Get comprehensive progress summary."""
         stats = self.progress_data["statistics"]
         eta = self.calculate_eta()
-        
+
         return {
             "total": stats["total"],
             "processed": stats["processed"],
@@ -196,9 +211,15 @@ class BatchProgressManager:
             "failed": stats["failed"],
             "skipped": stats["skipped"],
             "rate_limited": stats["rate_limited"],
-            "success_rate": stats["resolved"] / stats["processed"] if stats["processed"] > 0 else 0,
+            "success_rate": (
+                stats["resolved"] / stats["processed"]
+                if stats["processed"] > 0
+                else 0
+            ),
             "eta": eta,
-            "progress_file": str(self.progress_file),
+            "doi_resolution_progress_file": str(
+                self.doi_resolution_progress_file
+            ),
         }
 
     def mark_completed(self):
@@ -231,14 +252,18 @@ class BatchProgressManager:
 
     def add_processing_time(self, duration: float):
         """Add a processing time measurement for ETA calculation."""
-        self.progress_data["processing_times"].append({
-            "duration": duration,
-            "timestamp": datetime.now().isoformat(),
-        })
-        
+        self.progress_data["processing_times"].append(
+            {
+                "duration": duration,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
+
         # Keep only recent measurements (last 100) for performance
         if len(self.progress_data["processing_times"]) > 100:
-            self.progress_data["processing_times"] = self.progress_data["processing_times"][-100:]
+            self.progress_data["processing_times"] = self.progress_data[
+                "processing_times"
+            ][-100:]
 
     def update_source_performance(self, source: str, success: bool):
         """Update source performance statistics."""
@@ -248,7 +273,7 @@ class BatchProgressManager:
                 "successes": 0,
                 "success_rate": 0.0,
             }
-        
+
         perf = self.progress_data["source_performance"][source]
         perf["attempts"] += 1
         if success:
@@ -257,28 +282,38 @@ class BatchProgressManager:
 
 
 if __name__ == "__main__":
-    # Example usage
-    from pathlib import Path
-    
-    progress_file = Path("/tmp/test_progress.json")
-    manager = BatchProgressManager(progress_file)
-    
-    # Simulate batch processing
-    manager.set_total_papers(5)
-    
-    # Process some papers
-    manager.update_progress_success("Test Paper 1", "10.1000/test1")
-    manager.update_progress_failure("Test Paper 2")
-    manager.update_progress_skipped("Test Paper 3", "duplicate")
-    
-    manager.save_progress()
-    
-    # Show summary
-    summary = manager.get_progress_summary()
-    print("Progress Summary:")
-    for key, value in summary.items():
-        print(f"  {key}: {value}")
-    
-    # Clean up
-    if progress_file.exists():
-        progress_file.unlink()
+
+    def main():
+        # Example usage
+        from pathlib import Path
+
+        doi_resolution_progress_file = Path("/tmp/test_progress.json")
+        manager = ProgressManagerForBatchDOIResolution(
+            doi_resolution_progress_file
+        )
+
+        # Simulate batch processing
+        manager.set_total_papers(5)
+
+        # Process some papers
+        manager.update_progress_success("Test Paper 1", "10.1000/test1")
+        manager.update_progress_failure("Test Paper 2")
+        manager.update_progress_skipped("Test Paper 3", "duplicate")
+
+        manager.save_progress()
+
+        # Show summary
+        summary = manager.get_progress_summary()
+        print("Progress Summary:")
+        for key, value in summary.items():
+            print(f"  {key}: {value}")
+
+        # Clean up
+        if doi_resolution_progress_file.exists():
+            doi_resolution_progress_file.unlink()
+
+    main()
+
+# python -m scitex.scholar.metadata.doi.batch._ProgressManagerForBatchDOIResolution
+
+# EOF

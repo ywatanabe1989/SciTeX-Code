@@ -22,51 +22,18 @@ This package provides utilities to enhance DOI resolution by:
 All utilities are designed to be pluggable, testable, and independent.
 """
 
-from .url_doi_extractor import URLDOISource
-from .pubmed_converter import PubMedConverter
-from .text_normalizer import TextNormalizer
+from ._PubMedConverter import PubMedConverter, pmid2doi
+from ._RateLimitHandler import RateLimitHandler
+from ._TextNormalizer import TextNormalizer
+from ._URLDOIExtractor import URLDOIExtractor
 
 __all__ = [
-    "URLDOISource",
     "PubMedConverter",
+    "pmid2doi",
+    "RateLimitHandler",
     "TextNormalizer",
+    "URLDOIExtractor",
 ]
-
-# Convenience function for quick access
-def create_doi_utilities(
-    ascii_fallback: bool = False,
-    email: str = None,
-    api_key: str = None
-) -> tuple[URLDOISource, PubMedConverter, TextNormalizer]:
-    """
-    Create all DOI utilities with consistent configuration.
-
-    Args:
-        ascii_fallback: Enable ASCII fallback for text normalization
-        email: Email for PubMed API requests
-        api_key: API key for PubMed (optional)
-
-    Returns:
-        Tuple of (URLDOISource, PubMedConverter, TextNormalizer)
-    """
-    url_doi_source = URLDOISource()
-    pubmed_converter = PubMedConverter(email=email, api_key=api_key)
-    text_normalizer = TextNormalizer(ascii_fallback=ascii_fallback)
-
-    return url_doi_source, pubmed_converter, text_normalizer
-
-# Convenience function for creating just a text normalizer with title matching
-def create_text_normalizer(ascii_fallback: bool = False) -> TextNormalizer:
-    """
-    Create a TextNormalizer for title matching and text processing.
-
-    Args:
-        ascii_fallback: Enable ASCII fallback for text normalization
-
-    Returns:
-        Configured TextNormalizer instance
-    """
-    return TextNormalizer(ascii_fallback=ascii_fallback)
 
 
 # EOF

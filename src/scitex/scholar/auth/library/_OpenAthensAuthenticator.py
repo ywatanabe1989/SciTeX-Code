@@ -18,7 +18,7 @@ to enable legal PDF downloads via institutional subscriptions.
 
 This refactored version uses smaller, focused helper classes:
 - SessionManager: Handles session state and validation
-- CacheManager: Handles session caching operations
+- AuthCacheManager: Handles session caching operations
 - LockManager: Handles concurrent authentication prevention
 - BrowserAuthenticator: Handles browser-based authentication
 """
@@ -35,7 +35,7 @@ from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
 from .._BrowserAuthenticator import BrowserAuthenticator
 from ._BaseAuthenticator import BaseAuthenticator
-from ._CacheManager import CacheManager
+from ._AuthCacheManager import AuthCacheManager
 from ._LockManager import LockManager
 from ._SessionManager import SessionManager
 
@@ -56,7 +56,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
     This refactored authenticator:
     1. Uses SessionManager for session state management
-    2. Uses CacheManager for session persistence
+    2. Uses AuthCacheManager for session persistence
     3. Uses LockManager for concurrent authentication prevention
     4. Uses BrowserAuthenticator for browser-based operations
     5. Maintains backward compatibility with original interface
@@ -104,7 +104,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
         # Initialize helper components
         self.session_manager = SessionManager(default_expiry_hours=8)
-        self.cache_manager = CacheManager(
+        self.cache_manager = AuthCacheManager(
             "openathens", self.scholar_config, self.email
         )
 

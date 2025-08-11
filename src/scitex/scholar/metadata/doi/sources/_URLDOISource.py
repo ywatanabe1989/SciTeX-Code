@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 02:50:42 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/utils/_URLDOISource.py
+# Timestamp: "2025-08-10 09:35:53 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/utils/_URLDOISource.py"
+    "./src/scitex/scholar/metadata/doi/sources/_URLDOISource.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -18,7 +18,9 @@ This source extracts DOIs from URL fields in BibTeX entries,
 providing immediate recovery for papers with DOI URLs.
 """
 
+import random
 import re
+import time
 from typing import List, Optional
 
 import requests
@@ -87,7 +89,7 @@ class URLDOISource(BaseDOISource):
         # Try PubMed ID conversion using the utility
         pmid = self._extract_pubmed_id(url)
         if pmid:
-            doi = self.pubmed_converter.pmid_to_doi(pmid)
+            doi = self.pubmed_converter.pmid2doi(pmid)
             if doi:
                 logger.info(f"Converted PubMed ID {pmid} to DOI: {doi}")
                 return doi
@@ -187,9 +189,6 @@ class URLDOISource(BaseDOISource):
 
     def _lookup_semantic_scholar_doi(self, semantic_id: str) -> Optional[str]:
         """Look up DOI from Semantic Scholar ID with enhanced API support."""
-        import random
-        import time
-
         max_retries = 3
         base_delay = 0.5 if self.api_key else 2.0  # Faster with API key
 

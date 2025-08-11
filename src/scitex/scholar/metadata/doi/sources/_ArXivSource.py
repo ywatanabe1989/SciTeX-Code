@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-27 20:46:55 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/sources/_ArXivSource.py
+# Timestamp: "2025-08-11 06:55:43 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_ArXivSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/doi/sources/_ArXivSource.py"
+    "./src/scitex/scholar/metadata/doi/sources/_ArXivSource.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from scitex import logging
 from typing import Any, Dict, List, Optional
 
 import feedparser
 import requests
+
+from scitex import logging
 
 from ._BaseDOISource import BaseDOISource
 
@@ -26,6 +27,7 @@ class ArXivSource(BaseDOISource):
     """ArXiv source for open access papers."""
 
     def __init__(self, email: str = "research@example.com"):
+        super().__init__()  # Initialize base class
         self.email = email
         self._session = None
         self.base_url = "http://export.arxiv.org/api/query"
@@ -150,7 +152,7 @@ class ArXivSource(BaseDOISource):
                     return metadata
 
         except Exception as exc:
-            logger.debug(f"ArXiv metadata error: {exc}")
+            logger.warn(f"ArXiv metadata error: {exc}")
 
         return None
 
