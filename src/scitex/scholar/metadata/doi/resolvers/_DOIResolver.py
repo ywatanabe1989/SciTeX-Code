@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 09:58:52 (ywatanabe)"
+# Timestamp: "2025-08-11 13:17:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,16 +10,13 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-from typing import Union
 
-from typing import Any
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple, Union
 
 """Unified DOI resolver with automatic input type detection."""
 
 from pathlib import Path
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
 import bibtexparser
 

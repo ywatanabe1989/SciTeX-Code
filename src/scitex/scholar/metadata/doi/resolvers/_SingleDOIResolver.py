@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 09:56:56 (ywatanabe)"
+# Timestamp: "2025-08-11 13:30:05 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -163,6 +163,12 @@ class SingleDOIResolver:
             )
             if cached_doi:
                 logger.info(f"DOI found in cache: {cached_doi}")
+
+                # Ensure symlink creation for cache hits
+                self._library_cache_manager._ensure_project_symlink(
+                    title=title, year=year, authors=authors
+                )
+
                 return {"doi": cached_doi, "source": "cache", "title": title}
 
         # Phase 1: Try utility extraction if bibtex_entry is provided

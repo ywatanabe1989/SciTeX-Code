@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 10:07:32 (ywatanabe)"
+# Timestamp: "2025-08-11 13:32:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_BibTeXDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -105,6 +105,21 @@ class BibTeXDOIResolver:
                         "journal": bibtex_entry.get("journal", ""),
                     }
                 )
+                # Create symlink for existing DOIs
+                title = bibtex_entry.get("title", "").strip("{}")
+                year = bibtex_entry.get("year", "")
+                authors_str = bibtex_entry.get("author", "")
+                authors = (
+                    [auth_.strip() for auth_ in authors_str.split(" and ")]
+                    if authors_str
+                    else []
+                )
+
+                self._library_cache_manager._ensure_project_symlink(
+                    title=title,
+                    year=int(year) if year and year.isdigit() else None,
+                    authors=authors if authors else None,
+                )
                 continue
 
             if bibtex_entry_id in self.progress["processed"]:
@@ -174,6 +189,21 @@ class BibTeXDOIResolver:
                 if result and result.get("doi"):
                     doi = result["doi"]
                     source = result.get("source", "unknown")
+
+                    # Ensure symlink creation even for cache hits
+                    if source == "cache":
+                        self.single_doi_resolver._library_cache_manager._ensure_project_symlink(
+                            title=title,
+                            year=(
+                                int(year) if year and year.isdigit() else None
+                            ),
+                            authors=(
+                                normalized_authors
+                                if normalized_authors
+                                else None
+                            ),
+                        )
+
                     bibtex_entry["doi"] = doi
                     bibtex_entry["doi_source"] = source
                     self.progress["processed"][bibtex_entry_id] = doi

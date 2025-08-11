@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 13:22:46 (ywatanabe)"
+# Timestamp: "2025-08-11 10:13:34 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/storage/_LibraryCacheManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -64,13 +64,18 @@ class LibraryCacheManager:
             DOI string if found in library, None otherwise
         """
         try:
+            # Check for null/empty title
             if not title:
                 return None
 
+            # Strategy: Search through all papers in master collection by title match
+            # since we don't know the DOI yet (chicken-and-egg problem with paper ID generation)
             master_dir = self.config.path_manager.get_collection_dir("master")
+
             if not master_dir.exists():
                 return None
 
+            # Search through all 8-digit paper directories
             title_lower = title.lower().strip()
             for paper_dir in master_dir.iterdir():
                 if paper_dir.is_dir() and len(paper_dir.name) == 8:
@@ -79,39 +84,33 @@ class LibraryCacheManager:
                         try:
                             with open(metadata_file, "r") as f:
                                 metadata = json.load(f)
-                            stored_title = (
-                                metadata.get("title", "").lower().strip()
-                            )
-                            stored_year = metadata.get("year")
-                            stored_doi = metadata.get("doi")
-
-                            title_match = stored_title == title_lower
-                            year_match = (
-                                year is None
-                                or stored_year is None
-                                or stored_year == year
-                            )
-
-                            if title_match and year_match and stored_doi:
-                                logger.info(
-                                    f"DOI found in master Scholar library: {stored_doi} (paper_id: {paper_dir.name})"
+                                stored_title = (
+                                    metadata.get("title", "").lower().strip()
                                 )
-                                # Ensure project symlink exists when cache hit occurs
-                                self._ensure_project_symlink(
-                                    title=title,
-                                    year=year,
-                                    authors=metadata.get("authors", []),
-                                    paper_id=paper_dir.name,
+                                stored_year = metadata.get("year")
+                                stored_doi = metadata.get("doi")
+
+                                # Match by title (and optionally year)
+                                title_match = stored_title == title_lower
+                                year_match = (
+                                    year is None
+                                    or stored_year is None
+                                    or stored_year == year
                                 )
-                                return stored_doi
+
+                                if title_match and year_match and stored_doi:
+                                    logger.info(
+                                        f"DOI found in master Scholar library: {stored_doi} (paper_id: {paper_dir.name})"
+                                    )
+                                    return stored_doi
 
                         except (json.JSONDecodeError, KeyError) as e:
                             logger.debug(
                                 f"Error reading metadata from {metadata_file}: {e}"
                             )
                             continue
-            return None
 
+            return None
         except Exception as e:
             logger.debug(f"Error checking master Scholar library: {e}")
             return None
@@ -339,6 +338,8 @@ class LibraryCacheManager:
             )
 
             # Create project symlink if not master project
+            # if self.project != "master":
+            #     self._ensure_project_symlink(title, year, authors, paper_id)
             self._ensure_project_symlink(title, year, authors, paper_id)
 
             return True
@@ -346,6 +347,47 @@ class LibraryCacheManager:
         except Exception as e:
             logger.error(f"Error saving unresolved entry: {e}")
             return False
+
+    # def _create_project_symlink(
+    #     self,
+    #     paper_id: str,
+    #     readable_name: str,
+    #     project: Optional[str] = None,
+    # ) -> bool:
+    #     """Create project symlink to master paper directory.
+
+    #     Args:
+    #         paper_id: 8-digit paper ID
+    #         readable_name: Human-readable paper name
+
+    #     Returns:
+    #         True if symlink created successfully, False otherwise
+    #     """
+    #     try:
+    #         # Get paths
+    #         master_paper_dir = (
+    #             self.config.path_manager.get_collection_dir("master")
+    #             / paper_id
+    #         )
+    #         project = project or self.project
+    #         if project in ["master", "MASTER"]:
+    #             project = project + "-human-readable"
+    #         project_dir = self.config.path_manager.get_collection_dir(project)
+
+    #         # Create symlink
+    #         symlink_path = project_dir / readable_name
+    #         if not symlink_path.exists():
+    #             symlink_path.symlink_to(master_paper_dir)
+    #             logger.success(
+    #                 f"Created project symlink: {symlink_path} -> {master_paper_dir}"
+    #             )
+    #             return True
+
+    #         return True
+
+    #     except Exception as e:
+    #         logger.warn(f"Error creating project symlink: {e}")
+    #         return False
 
     def _create_project_symlink(
         self,
