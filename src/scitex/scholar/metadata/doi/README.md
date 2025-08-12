@@ -234,14 +234,14 @@ Resolving DOIs: [=========>          ] 45/75 (60.0%) ✓42 ✗3  2.1 items/s  el
 ### Directory Structure
 ```
 ~/.scitex/scholar/library/
-├── master/                    # Master paper collection
+├── MASTER/                    # Master paper collection
 │   ├── 8DIGITS_PAPERID/
 │   │   ├── metadata.json     # Paper metadata with DOI
 │   │   ├── attachments/      # PDFs and supplementary files  
 │   │   └── screenshots/      # Download process screenshots
 │   └── ...
 └── project_name/             # Project-specific symlinks
-    ├── AUTHOR-YEAR-JOURNAL -> ../master/8DIGITS_PAPERID/
+    ├── AUTHOR-YEAR-JOURNAL -> ../MASTER/8DIGITS_PAPERID/
     └── ...
 ```
 

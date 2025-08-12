@@ -27,6 +27,7 @@ import pandas as pd
 
 from scitex import logging
 from scitex.errors import ScholarError
+from scitex.scholar.config import ScholarConfig
 
 from ._Paper import Paper
 
@@ -45,6 +46,8 @@ class Papers:
         papers: List[Paper],
         auto_deduplicate: bool = True,
         source_priority: List[str] = None,
+        config: Optional[ScholarConfig] = None,
+        project: Optional[str] = None,
     ):
         """
         Initialize collection with list of papers.
@@ -53,7 +56,11 @@ class Papers:
             papers: List of Paper objects
             auto_deduplicate: Automatically remove duplicates (default: True)
             source_priority: List of sources in priority order for deduplication
+            config: Scholar configuration
+            project: Project name for library integration
         """
+        self.config = config or ScholarConfig()
+        self.project = project
         self._papers = papers
         self._enriched = False
         self._df_cache = None
@@ -1398,6 +1405,212 @@ class Papers:
             bibtex_entries.append(paper._to_bibtex(include_enriched))
 
         return "\n\n".join(bibtex_entries)
+
+    def save_to_library(self, force: bool = False, progress: bool = True) -> Dict[str, int]:
+        """Save all papers to the Scholar library system.
+        
+        Args:
+            force: Overwrite existing metadata if True
+            progress: Show progress information
+            
+        Returns:
+            Dictionary with save statistics
+        """
+        results = {"saved": 0, "skipped": 0, "errors": 0}
+        
+        if progress:
+            from tqdm import tqdm
+            iterator = tqdm(self._papers, desc="Saving to library")
+        else:
+            iterator = self._papers
+            
+        for paper in iterator:
+            try:
+                if paper.save_to_library(force=force):
+                    results["saved"] += 1
+                else:
+                    results["skipped"] += 1
+            except Exception as e:
+                logger.error(f"Failed to save paper to library: {e}")
+                results["errors"] += 1
+        
+        if progress:
+            logger.info(f"Library save complete: {results}")
+        
+        return results
+
+    @classmethod
+    def from_project(cls, project: str, config: Optional[ScholarConfig] = None) -> "Papers":
+        """Load papers from a project in the Scholar library.
+        
+        Args:
+            project: Project name
+            config: Scholar configuration
+            
+        Returns:
+            Papers collection from the project
+        """
+        config = config or ScholarConfig()
+        project_dir = config.get_library_dir() / project
+        papers = []
+        
+        if not project_dir.exists():
+            logger.warning(f"Project directory not found: {project_dir}")
+            return cls(papers, config=config, project=project)
+        
+        # Load papers from symlinks in project directory
+        for item in project_dir.iterdir():
+            if item.is_symlink() and item.resolve().parent.name == "MASTER":
+                library_id = item.resolve().name
+                # Use LibraryManager to load paper data
+                from scitex.scholar.storage import LibraryManager
+                library_manager = LibraryManager(project=project, config=config)
+                
+                metadata_path = config.get_library_dir() / "MASTER" / library_id / "metadata.json"
+                if metadata_path.exists():
+                    try:
+                        import json
+                        with open(metadata_path, 'r') as f:
+                            data = json.load(f)
+                        paper = Paper(**data)
+                        papers.append(paper)
+                    except Exception as e:
+                        logger.warning(f"Failed to load paper {library_id}: {e}")
+                        continue
+        
+        logger.info(f"Loaded {len(papers)} papers from project: {project}")
+        return cls(papers, config=config, project=project)
+
+    @classmethod
+    def from_library_search(cls, query: str, config: Optional[ScholarConfig] = None, project: Optional[str] = None) -> "Papers":
+        """Search papers in the Scholar library.
+        
+        Args:
+            query: Search query (matches title, authors, keywords)
+            config: Scholar configuration
+            project: Optional project filter
+            
+        Returns:
+            Papers collection matching the query
+        """
+        config = config or ScholarConfig()
+        master_dir = config.get_library_dir() / "MASTER"
+        papers = []
+        
+        if not master_dir.exists():
+            return cls(papers, config=config, project=project)
+        
+        query_lower = query.lower()
+        
+        for paper_dir in master_dir.iterdir():
+            if not paper_dir.is_dir():
+                continue
+                
+            # Load paper metadata directly
+            metadata_path = paper_dir / "metadata.json"
+            if not metadata_path.exists():
+                continue
+                
+            try:
+                import json
+                with open(metadata_path, 'r') as f:
+                    data = json.load(f)
+                paper = Paper(**data)
+            except Exception:
+                continue
+            
+            # Check if query matches paper metadata
+            search_text = ""
+            if paper.title:
+                search_text += paper.title.lower() + " "
+            if paper.authors:
+                search_text += " ".join(paper.authors).lower() + " "
+            if paper.keywords:
+                search_text += " ".join(paper.keywords).lower() + " "
+            if paper.abstract:
+                search_text += paper.abstract.lower() + " "
+            
+            if query_lower in search_text:
+                papers.append(paper)
+        
+        logger.info(f"Found {len(papers)} papers matching '{query}'")
+        return cls(papers, config=config, project=project)
+
+    def create_project_symlinks(self, force: bool = False) -> Dict[str, int]:
+        """Create project symlinks for all papers in the collection.
+        
+        Args:
+            force: Recreate existing symlinks
+            
+        Returns:
+            Dictionary with creation statistics
+        """
+        if not self.project:
+            logger.warning("No project specified for symlink creation")
+            return {"created": 0, "skipped": 0, "errors": 0}
+        
+        from scitex.scholar.storage import LibraryManager
+        library_manager = LibraryManager(project=self.project, config=self.config)
+        
+        results = {"created": 0, "skipped": 0, "errors": 0}
+        
+        for paper in self._papers:
+            if not paper.library_id:
+                results["skipped"] += 1
+                continue
+                
+            try:
+                # Create human-readable symlink name
+                if paper.authors and paper.year and paper.journal:
+                    first_author = paper.authors[0].split()[-1] if paper.authors else "Unknown"
+                    year = paper.year
+                    journal = paper.journal.replace(" ", "-")
+                    symlink_name = f"{first_author}-{year}-{journal}"
+                else:
+                    symlink_name = paper.library_id
+                
+                project_dir = self.config.get_library_dir() / self.project
+                project_dir.mkdir(exist_ok=True)
+                
+                symlink_path = project_dir / symlink_name
+                target_path = Path("../MASTER") / paper.library_id
+                
+                if symlink_path.exists() and not force:
+                    results["skipped"] += 1
+                    continue
+                
+                if symlink_path.exists():
+                    symlink_path.unlink()
+                
+                symlink_path.symlink_to(target_path)
+                results["created"] += 1
+                
+            except Exception as e:
+                logger.error(f"Failed to create symlink for {paper.library_id}: {e}")
+                results["errors"] += 1
+        
+        logger.info(f"Symlink creation complete: {results}")
+        return results
+
+    def to_library_summary(self) -> pd.DataFrame:
+        """Create a summary DataFrame of papers in the library.
+        
+        Returns:
+            DataFrame with library statistics
+        """
+        data = []
+        for paper in self._papers:
+            data.append({
+                "library_id": paper.library_id,
+                "doi": paper.doi,
+                "title": paper.title[:50] + "..." if paper.title and len(paper.title) > 50 else paper.title,
+                "first_author": paper.authors[0] if paper.authors else None,
+                "year": paper.year,
+                "journal": paper.journal,
+                "has_pdf": bool(paper.pdf_path),
+            })
+        
+        return pd.DataFrame(data)
 
 
 # Export all classes and functions

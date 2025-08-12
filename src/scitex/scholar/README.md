@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-09 00:46:17
+!-- Timestamp: 2025-08-12 18:52:31
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -9,6 +9,13 @@
 
 A comprehensive Python library for scientific literature management with automatic enrichment of journal impact factors and citation counts.
 
+## Literature review as BibTeX
+[AI2 Scholar QA](https://scholarqa.allen.ai/chat/)
+Expand -> Export All Citations
+
+python -m scitex.scholar.metadata.doi.resolvers._DOIResolver
+python -m scitex.scholar.metadata.enrichment._LibraryEnricher
+ 
 
 ## Core Objects
 

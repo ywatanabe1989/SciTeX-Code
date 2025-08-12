@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 09:23:35 (ywatanabe)"
+# Timestamp: "2025-08-11 16:01:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/storage/_LibraryManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -45,6 +45,7 @@ class LibraryManager:
         self, title: str, year: Optional[int] = None
     ) -> Optional[str]:
         """Check if DOI already exists in master Scholar library."""
+
         try:
             for paper_dir in self.library_master_dir.iterdir():
                 if not paper_dir.is_dir():
@@ -253,7 +254,7 @@ class LibraryManager:
 
         logger.info(f"Saved paper to master Scholar library: {paper_id}")
 
-        if self.project != "master":
+        if self.project in ["master", "MASTER"]:
             self._ensure_project_symlink(
                 title, year, authors, paper_id, master_storage_path
             )
@@ -608,6 +609,7 @@ class LibraryManager:
         self, master_storage_path: Path, project: str, readable_name: str
     ) -> Optional[Path]:
         """Create symlink in project directory pointing to master storage."""
+
         try:
             project_dir = self.config.path_manager.get_library_dir(project)
             symlink_path = project_dir / readable_name
@@ -621,7 +623,7 @@ class LibraryManager:
                     f"Created project symlink: {symlink_path} -> {relative_path}"
                 )
             else:
-                logger.debug(f"Project symlink already exists: {symlink_path}")
+                logger.info(f"Project symlink already exists: {symlink_path}")
 
             return symlink_path
 
@@ -745,6 +747,46 @@ class LibraryManager:
 
         return bibtex
 
+    # def _ensure_project_symlink(
+    #     self,
+    #     title: str,
+    #     year: Optional[int] = None,
+    #     authors: Optional[List[str]] = None,
+    #     paper_id: str = None,
+    #     master_storage_path: Path = None,
+    # ) -> None:
+    #     """Ensure project symlink exists for paper in master library."""
+    #     try:
+    #         if not paper_id or not master_storage_path:
+    #             return
+
+    #         project_lib_path = (
+    #             self.config.path_manager.get_scholar_library_path()
+    #             / self.project
+    #         )
+    #         project_lib_path.mkdir(parents=True, exist_ok=True)
+
+    #         paper_info = {
+    #             "title": title,
+    #             "year": year,
+    #             "authors": authors or [],
+    #         }
+    #         readable_paths = self.config.path_manager.get_paper_storage_paths(
+    #             paper_info=paper_info, collection_name=self.project
+    #         )
+    #         readable_name = readable_paths["readable_name"]
+    #         symlink_path = project_lib_path / readable_name
+
+    #         relative_path = f"../MASTER/{paper_id}"
+    #         if not symlink_path.exists():
+    #             symlink_path.symlink_to(relative_path)
+    #             logger.info(
+    #                 f"Created project symlink: {readable_name} -> {relative_path}"
+    #             )
+
+    #     except Exception as exc_:
+    #         logger.debug(f"Error creating project symlink: {exc_}")
+
     def _ensure_project_symlink(
         self,
         title: str,
@@ -753,7 +795,7 @@ class LibraryManager:
         paper_id: str = None,
         master_storage_path: Path = None,
     ) -> None:
-        """Ensure project symlink exists for paper in master library."""
+
         try:
             if not paper_id or not master_storage_path:
                 return
@@ -774,14 +816,13 @@ class LibraryManager:
             )
             readable_name = readable_paths["readable_name"]
             symlink_path = project_lib_path / readable_name
-
             relative_path = f"../MASTER/{paper_id}"
+
             if not symlink_path.exists():
                 symlink_path.symlink_to(relative_path)
                 logger.info(
                     f"Created project symlink: {readable_name} -> {relative_path}"
                 )
-
         except Exception as exc_:
             logger.debug(f"Error creating project symlink: {exc_}")
 

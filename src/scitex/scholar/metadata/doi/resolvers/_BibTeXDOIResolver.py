@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 13:32:58 (ywatanabe)"
+# Timestamp: "2025-08-12 14:43:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_BibTeXDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -71,7 +71,7 @@ class BibTeXDOIResolver:
     async def bibtex_file2dois_async(
         self,
         bibtex_input_path,
-        project_name: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> Tuple[int, int, int]:
         """Resolve DOIs for all entries in BibTeX file."""
 
@@ -84,7 +84,7 @@ class BibTeXDOIResolver:
 
         # Copy to library for future reference
         self._library_cache_manager.copy_bibtex_to_library(
-            bibtex_input_path, project_name
+            bibtex_input_path, project
         )
 
         pending_bibtex_entries = []
@@ -105,7 +105,8 @@ class BibTeXDOIResolver:
                         "journal": bibtex_entry.get("journal", ""),
                     }
                 )
-                # Create symlink for existing DOIs
+
+                # Save existing DOIs to library (creates JSON + symlinks)
                 title = bibtex_entry.get("title", "").strip("{}")
                 year = bibtex_entry.get("year", "")
                 authors_str = bibtex_entry.get("author", "")
@@ -115,10 +116,28 @@ class BibTeXDOIResolver:
                     else []
                 )
 
-                self._library_cache_manager._ensure_project_symlink(
+                normalized_authors = []
+                for author in authors:
+                    if "," in author:
+                        parts = author.split(",", 1)
+                        if len(parts) == 2:
+                            last, first = parts[0].strip(), parts[1].strip()
+                            normalized_authors.append(f"{first} {last}")
+                        else:
+                            normalized_authors.append(author)
+                    else:
+                        normalized_authors.append(author)
+
+                # Always save to library - this creates metadata.json and symlinks
+                self.single_doi_resolver._library_cache_manager.save_entry(
                     title=title,
+                    doi=bibtex_entry["doi"],
                     year=int(year) if year and year.isdigit() else None,
-                    authors=authors if authors else None,
+                    authors=normalized_authors if normalized_authors else None,
+                    source=str(bibtex_input_path),
+                    metadata={"journal": bibtex_entry.get("journal")},
+                    bibtex_source="bibtex",
+                    force_symlink=True,
                 )
                 continue
 
@@ -190,19 +209,19 @@ class BibTeXDOIResolver:
                     doi = result["doi"]
                     source = result.get("source", "unknown")
 
-                    # Ensure symlink creation even for cache hits
-                    if source == "cache":
-                        self.single_doi_resolver._library_cache_manager._ensure_project_symlink(
-                            title=title,
-                            year=(
-                                int(year) if year and year.isdigit() else None
-                            ),
-                            authors=(
-                                normalized_authors
-                                if normalized_authors
-                                else None
-                            ),
-                        )
+                    # Always save to library - this creates metadata.json and symlinks
+                    self.single_doi_resolver._library_cache_manager.save_entry(
+                        title=title,
+                        doi=doi,
+                        year=int(year) if year and year.isdigit() else None,
+                        authors=(
+                            normalized_authors if normalized_authors else None
+                        ),
+                        source=source,
+                        metadata=result.get("metadata"),
+                        bibtex_source="bibtex",
+                        force_symlink=True,
+                    )
 
                     bibtex_entry["doi"] = doi
                     bibtex_entry["doi_source"] = source
@@ -222,6 +241,20 @@ class BibTeXDOIResolver:
                         f"Resolved DOI for '{title}': {doi} (via {source})"
                     )
                 else:
+                    # Save unresolved entry to library
+                    self.single_doi_resolver._library_cache_manager.save_entry(
+                        title=title,
+                        doi=None,
+                        year=int(year) if year and year.isdigit() else None,
+                        authors=(
+                            normalized_authors if normalized_authors else None
+                        ),
+                        source=None,
+                        metadata=None,
+                        bibtex_source="bibtex",
+                        force_symlink=True,
+                    )
+
                     self.progress["processed"][bibtex_entry_id] = "not_found"
                     self.results["not_found"].append(
                         {

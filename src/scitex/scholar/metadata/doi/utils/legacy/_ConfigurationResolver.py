@@ -160,7 +160,7 @@ class ConfigurationResolver:
         Returns:
             Resolved project name
         """
-        resolved_project = project or "master"
+        resolved_project = project or "MASTER"
         logger.debug(f"Resolved project: {resolved_project}")
         return resolved_project
 
@@ -267,7 +267,7 @@ class ConfigurationResolver:
 
     #     # Validate project name
     #     if not project or not project.strip():
-    #         validation["warnings"].append("Empty project name, using 'master'")
+    #         validation["warnings"].append("Empty project name, using 'MASTER'")
 
     #     return validation
 

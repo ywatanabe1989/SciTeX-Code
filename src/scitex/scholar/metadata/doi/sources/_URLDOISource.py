@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-10 09:35:53 (ywatanabe)"
+# Timestamp: "2025-08-12 13:41:46 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -115,7 +115,7 @@ class URLDOISource(BaseDOISource):
     @property
     def name(self) -> str:
         """Return source name."""
-        return "url_doi_source"
+        return "from_url"
 
     @property
     def rate_limit_delay(self) -> float:

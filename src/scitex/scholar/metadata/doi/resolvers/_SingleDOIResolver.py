@@ -65,7 +65,7 @@ class SingleDOIResolver:
             email_arxiv: Email for ArXiv API (None to use config)
             sources: List of source names to use (None for default sources)
             config: ScholarConfig object (None to create default)
-            project: Project name for Scholar library storage (default: "master")
+            project: Project name for Scholar library storage (default: "MASTER")
             # config_resolver: ConfigurationResolver instance (created if None)
             source_manager: SourceManager instance (created if None)
             cache_manager: LibraryCacheManager instance (created if None)

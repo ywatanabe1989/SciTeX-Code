@@ -23,10 +23,16 @@ from scitex.scholar.config import ScholarConfig
 from .metadata.doi import DOIResolver
 from scitex.scholar.auth import AuthenticationManager
 
+# Import core classes
+from .core import Paper, Papers, Scholar
+
 __all__ = [
     "ScholarConfig",
-    "DOIResolver",
+    "DOIResolver", 
     "AuthenticationManager",
+    "Paper",
+    "Papers", 
+    "Scholar",
 ]
 
 # # Import core classes for advanced users

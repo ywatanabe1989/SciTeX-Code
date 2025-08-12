@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 10:12:43 (ywatanabe)"
+# Timestamp: "2025-08-11 15:52:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -501,28 +501,6 @@ class PathManager:
         """Get the base Scholar library path (backward compatibility method)."""
         return self.library_dir
 
-    def get_library_dir(
-        self,
-        project: Optional[str] = None,
-    ) -> Path:
-        """Get library directory"""
-        if project:
-            assert (
-                project.upper() != "MASTER"
-            ), f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
-
-            return self._ensure_directory(self.library_dir / project)
-        else:
-            return self._ensure_directory(self.library_dir)
-
-    def get_library_master_dir(self) -> Path:
-        """Get the MASTER directory for internal storage.
-
-        Returns:
-            Path to the MASTER storage directory where actual papers are stored
-        """
-        return self._ensure_directory(self.library_dir / "MASTER")
-
     # Enhanced methods with tidiness constraints (automatically ensure directories exist)
     def get_chrome_cache_dir(self, profile_name: str) -> Path:
         return self._ensure_directory(self.cache_dir / "chrome" / profile_name)
@@ -557,66 +535,88 @@ class PathManager:
             / f"doi_resolution_{timestamp}.progress.json"
         )
 
-    def get_collection_dir(self, collection_name: str) -> Path:
-        collection_name = self._sanitize_collection_name(collection_name)
-        return self._ensure_directory(self.library_dir / collection_name)
+    # def get_library_dir(self, collection_name: str) -> Path:
+    #     collection_name = self._sanitize_collection_name(collection_name)
+    #     return self._ensure_directory(self.library_dir / collection_name)
 
-    def get_collection_info_dir(self, collection_name: str) -> Path:
-        correction_dir = self.get_collection_dir(collection_name)
-        return self._ensure_directory(correction_dir / "info")
+    # def get_library_info_dir(self, collection_name: str) -> Path:
+    #     correction_dir = self.get_library_dir(collection_name)
+    #     return self._ensure_directory(correction_dir / "info")
+
+    def get_library_info_dir(self, project: str) -> Path:
+        library_dir = self.get_library_dir(project)
+        return self._ensure_directory(library_dir / "info")
+
+    def get_library_dir(
+        self,
+        project: Optional[str] = None,
+    ) -> Path:
+        """Get library directory"""
+        if not project:
+            return self._ensure_directory(self.library_dir)
+        else:
+            assert (
+                project.upper() != "MASTER"
+            ), f"Project name '{project}' is reserved for internal storage use. Please choose a different name."
+
+            return self._ensure_directory(self.library_dir / project)
+
+    def get_library_master_dir(self) -> Path:
+        """Get the MASTER directory for internal storage.
+
+        Returns:
+            Path to the MASTER storage directory where actual papers are stored
+        """
+        return self._ensure_directory(self.library_dir / "MASTER")
 
     def get_paper_storage_paths(
-        self, paper_info: Dict, collection_name: str = "default"
-    ) -> Dict[str, Path]:
+        self,
+        doi: Optional[str] = None,
+        title: Optional[str] = None,
+        authors: Optional[List[str]] = None,
+        journal: Optional[str] = None,
+        year: Optional[int] = None,
+        project: str = "default",
+    ) -> tuple[Path, str, str]:
+
         # Sanitize inputs
-        collection_name = self._sanitize_collection_name(collection_name)
+        project_name = self._sanitize_collection_name(project)
 
         # Generate unique ID using DOI if available, otherwise metadata
-        unique_id = self._generate_paper_id(paper_info)
+        paper_id = self._generate_paper_id(
+            doi=doi, title=title, authors=authors, year=year
+        )
 
-        # Create storage path (always use collection_dir, no special human-readable dirs)
-        collection_dir = self.get_collection_dir(collection_name)
-        storage_path = self._ensure_directory(collection_dir / unique_id)
+        # Create storage path
+        project_dir = (
+            self.get_library_master_dir()
+            if project.upper() == "MASTER"
+            else self.get_library_dir(project)
+        )
+        storage_path = self._ensure_directory(project_dir / paper_id)
 
-        # Generate readable name for potential symlinks (but don't create readable_path here)
+        # Generate readable name for potential symlinks
         first_author = "Unknown"
-        if paper_info.get("authors"):
-            authors = paper_info["authors"]
-            if isinstance(authors, list) and authors:
-                # If it's a list, take the first author and parse it
-                author_str = str(authors[0])
-                if "," in author_str:
-                    # Format: "Last, First" -> take "Last"
-                    first_author = author_str.split(",")[0].strip()
-                else:
-                    # Format: "First Last" -> take "Last"
-                    first_author = author_str.split()[-1]
-            elif isinstance(authors, str) and authors:
-                # If it's a string, extract last name directly
-                # Handle formats like "Kapoor, A." or "John Smith"
-                if "," in authors:
-                    # Format: "Last, First" -> take "Last"
-                    first_author = authors.split(",")[0].strip()
-                else:
-                    # Format: "First Last" -> take "Last"
-                    first_author = authors.split()[-1]
-            first_author = self._hyphenate_for_symlinks(first_author)
+        if authors and len(authors) > 0:
+            author_str = str(authors[0])
+            if "," in author_str:
+                first_author = author_str.split(",")[0].strip()
+            else:
+                first_author = author_str.split()[-1]
 
-        year = paper_info.get("year", "Unknown")
-        journal = paper_info.get("journal", "Unknown")
+        first_author = self._hyphenate_for_symlinks(first_author)
 
-        # Expand common journal abbreviations and use hyphens for readability
-        journal_expanded = self._expand_journal_name(journal)
+        # Handle journal and year
+        journal_safe = journal or "Unknown"
+        year_safe = str(year) if year else "Unknown"
+
+        journal_expanded = self._expand_journal_name(journal_safe)
         journal_clean = self._hyphenate_for_symlinks(journal_expanded)
 
-        readable_name = f"{first_author}-{year}-{journal_clean}"
+        readable_name = f"{first_author}-{year_safe}-{journal_clean}"
         readable_name = self._hyphenate_for_symlinks(readable_name)
 
-        return {
-            "storage_path": storage_path,
-            "readable_name": readable_name,  # Just the name, not a path
-            "unique_id": unique_id,
-        }
+        return storage_path, readable_name, paper_id
 
     def get_screenshots_dir(self, category: Optional[str] = None) -> Path:
         if category:
@@ -676,71 +676,108 @@ class PathManager:
             self.library_dir / collection_name / "logs"
         )
 
-    def _generate_paper_id(self, paper_info: Dict) -> str:
-        """
-        Generate unique 8-digit paper ID using deterministic strategy.
+    # def _generate_paper_id(self, doi="", title="", authors=[], year="") -> str:
+    #     """
+    #     Generate unique 8-digit paper ID using deterministic strategy.
 
-        Priority:
-        1. If DOI exists: Use DOI for consistent identification
-        2. If no DOI: Use title + first author + year for deterministic hash
+    #     Priority:
+    #     1. If DOI exists: Use DOI for consistent identification
+    #     2. If no DOI: Use title + first author + year for deterministic hash
 
-        Args:
-            paper_info: Dictionary containing paper metadata
+    #     Args:
+    #         paper_info: Dictionary containing paper metadata
 
-        Returns:
-            8-character uppercase hexadecimal string
-        """
-        doi = paper_info.get("doi") or ""
-        if isinstance(doi, str):
-            doi = doi.strip()
+    #     Returns:
+    #         8-character uppercase hexadecimal string
+    #     """
+
+    #     if isinstance(doi, str):
+    #         doi = doi.strip()
+
+    #     if doi:
+    #         # Use DOI for consistent identification across systems
+    #         # Remove common DOI prefixes and normalize
+    #         clean_doi = doi.replace("https://doi.org/", "").replace(
+    #             "http://dx.doi.org/", ""
+    #         )
+    #         content = f"DOI:{clean_doi}"
+    #         logger.debug(f"Generating ID from DOI: {clean_doi}")
+    #     else:
+    #         # Use deterministic metadata combination
+    #         if isinstance(title, str):
+    #             title = title.strip().lower()
+    #         else:
+    #             title = ""
+
+    #         # Get first author's last name
+    #         first_author = "unknown"
+    #         if authors and len(authors) > 0:
+    #             author_parts = str(authors[0]).strip().split()
+    #             if author_parts:
+    #                 # Take last part as last name
+    #                 first_author = author_parts[-1].lower()
+
+    #         # Clean title (remove common words and normalize)
+    #         title_clean = re.sub(
+    #             r"\b(the|and|of|in|on|at|to|for|with|by)\b", "", title
+    #         )
+    #         title_clean = re.sub(
+    #             r"[^\w\s]", "", title_clean
+    #         )  # Remove punctuation
+    #         title_clean = re.sub(
+    #             r"\s+", " ", title_clean
+    #         ).strip()  # Normalize spaces
+
+    #         content = f"META:{title_clean}:{first_author}:{year}"
+    #         logger.debug(
+    #             f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}..."
+    #         )
+
+    #     # Generate hash and take first 8 characters
+    #     hash_obj = hashlib.md5(content.encode("utf-8"))
+    #     paper_id = hash_obj.hexdigest()[:8].upper()
+
+    #     # Ensure it's a valid directory name
+    #     return self._sanitize_filename(paper_id)
+    def _generate_paper_id(
+        self, doi=None, title=None, authors=None, year=None
+    ) -> str:
+        """Generate unique 8-digit paper ID using deterministic strategy."""
+
+        # Normalize inputs
+        doi = doi.strip() if isinstance(doi, str) and doi else None
+        title = title.strip() if isinstance(title, str) and title else ""
+        year = str(year) if year else ""
 
         if doi:
-            # Use DOI for consistent identification across systems
-            # Remove common DOI prefixes and normalize
             clean_doi = doi.replace("https://doi.org/", "").replace(
                 "http://dx.doi.org/", ""
             )
             content = f"DOI:{clean_doi}"
             logger.debug(f"Generating ID from DOI: {clean_doi}")
         else:
-            # Use deterministic metadata combination
-            title = paper_info.get("title") or ""
-            if isinstance(title, str):
-                title = title.strip().lower()
-            else:
-                title = ""
-            authors = paper_info.get("authors", [])
-            year = paper_info.get("year", "")
-
             # Get first author's last name
             first_author = "unknown"
             if authors and len(authors) > 0:
                 author_parts = str(authors[0]).strip().split()
                 if author_parts:
-                    # Take last part as last name
                     first_author = author_parts[-1].lower()
 
-            # Clean title (remove common words and normalize)
+            # Clean title
             title_clean = re.sub(
-                r"\b(the|and|of|in|on|at|to|for|with|by)\b", "", title
+                r"\b(the|and|of|in|on|at|to|for|with|by)\b", "", title.lower()
             )
-            title_clean = re.sub(
-                r"[^\w\s]", "", title_clean
-            )  # Remove punctuation
-            title_clean = re.sub(
-                r"\s+", " ", title_clean
-            ).strip()  # Normalize spaces
+            title_clean = re.sub(r"[^\w\s]", "", title_clean)
+            title_clean = re.sub(r"\s+", " ", title_clean).strip()
 
             content = f"META:{title_clean}:{first_author}:{year}"
             logger.debug(
                 f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}..."
             )
 
-        # Generate hash and take first 8 characters
         hash_obj = hashlib.md5(content.encode("utf-8"))
         paper_id = hash_obj.hexdigest()[:8].upper()
 
-        # Ensure it's a valid directory name
         return self._sanitize_filename(paper_id)
 
     def get_storage_stats(self) -> Dict[str, Dict[str, Union[float, int]]]:

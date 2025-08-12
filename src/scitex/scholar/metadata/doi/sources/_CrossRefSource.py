@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 06:55:36 (ywatanabe)"
+# Timestamp: "2025-08-12 13:54:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_CrossRefSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -154,6 +154,8 @@ class CrossRefSource(BaseDOISource):
 
             for item in items:
                 item_title = " ".join(item.get("title", []))
+                if item_title.endswith("."):
+                    item_title = item_title[:-1]
                 if self._is_title_match(title, item_title):
                     # Extract publication year from multiple sources
                     pub_year = None

@@ -158,6 +158,13 @@ class OpenAlexSource(BaseDOISource):
                     issn = host_venue.get("issn_l")  # Linking ISSN
                     publisher = host_venue.get("publisher")
 
+                # Special handling for ArXiv papers
+                if doi and doi.startswith("10.48550/arxiv"):
+                    if not journal:  # Only set if no journal was found
+                        journal = "arXiv"
+                    if not publisher:
+                        publisher = "arXiv"
+
                 return {
                     "doi": doi,
                     "title": work_title,

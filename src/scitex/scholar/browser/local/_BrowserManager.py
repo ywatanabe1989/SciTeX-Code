@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 00:22:38 (ywatanabe)"
+# Timestamp: "2025-08-12 19:16:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -19,8 +19,8 @@ from datetime import datetime
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from scitex import logging
-
 from scitex.scholar.config import ScholarConfig
+
 from ._BrowserMixin import BrowserMixin
 from .utils._ChromeProfileManager import ChromeProfileManager
 from .utils._CookieAutoAcceptor import CookieAutoAcceptor
@@ -228,6 +228,7 @@ class BrowserManager(BrowserMixin):
             await self.auth_manager.ensure_authenticate_async()
             await self._ensure_playwright_started_async()
             await self._ensure_extensions_installed_async()
+            self._verify_xvfb_running()
             await self._launch_persistent_context_async()
         return self._persistent_browser
 

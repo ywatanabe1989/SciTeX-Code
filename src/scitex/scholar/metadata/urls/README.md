@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-08-09 01:09:26
+!-- Timestamp: 2025-08-12 19:17:04
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/urls/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/urls/README.md
 !-- --- -->
 
 # URL Module - Unified URL Handling for Scholar

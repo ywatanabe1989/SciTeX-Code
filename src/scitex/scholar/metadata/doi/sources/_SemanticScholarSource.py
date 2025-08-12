@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-10 05:13:34 (ywatanabe)"
+# Timestamp: "2025-08-12 13:41:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SemanticScholarSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -63,7 +63,7 @@ class SemanticScholarSource(BaseDOISource):
 
     @property
     def name(self) -> str:
-        return "SemanticScholar"
+        return "semantic_scholar"
 
     @property
     def rate_limit_delay(self) -> float:
@@ -192,6 +192,39 @@ class SemanticScholarSource(BaseDOISource):
                         extracted_authors if extracted_authors else None
                     ),
                 }
+        return None
+
+    def get_metadata_by_doi(self, doi: str) -> Optional[Dict[str, Any]]:
+        """Get comprehensive metadata by DOI."""
+        url = f"{self.base_url}/paper/DOI:{doi}"
+        params = {
+            "fields": "title,year,authors,abstract,venue,citationCount,fieldsOfStudy,externalIds"
+        }
+
+        try:
+            response = self.session.get(url, params=params, timeout=30)
+            if response.status_code == 200:
+                data = response.json()
+
+                # Extract authors
+                authors = []
+                for author in data.get("authors", []):
+                    if author.get("name"):
+                        authors.append(author["name"])
+
+                return {
+                    "doi": doi,
+                    "title": data.get("title"),
+                    "abstract": data.get("abstract"),
+                    "journal": data.get("venue"),
+                    "year": data.get("year"),
+                    "authors": authors if authors else None,
+                    "keywords": data.get("fieldsOfStudy"),
+                    "citation_count": data.get("citationCount"),
+                }
+        except Exception as e:
+            logger.debug(f"Semantic Scholar DOI lookup failed: {e}")
+
         return None
 
     def _is_title_match(

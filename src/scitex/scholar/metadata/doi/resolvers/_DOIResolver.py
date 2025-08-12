@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 13:17:16 (ywatanabe)"
+# Timestamp: "2025-08-12 19:22:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_DOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -103,12 +103,12 @@ class DOIResolver:
     async def bibtex_file2dois_async(
         self,
         bibtex_input_path: Union[str, Path],
-        project_name: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> Tuple[int, int, int]:
         """Resolve DOIs for all entries in BibTeX file."""
         return await self._bibtex_doi_resolver.bibtex_file2dois_async(
             bibtex_input_path,
-            project_name=project_name,
+            project=project,
         )
 
     # Batch methods - delegate to BatchDOIResolver
@@ -120,82 +120,6 @@ class DOIResolver:
         )
 
 
-#     async def _bibtex_file2storage_async(
-#         self, file_path: Path, **kwargs
-#     ) -> List[Dict[str, Any]]:
-#         """Resolve DOIs from BibTeX file."""
-
-#         # Parse BibTeX file
-#         try:
-#             with open(file_path, "r", encoding="utf-8") as f:
-#                 bib_database = bibtexparser.load(f)
-#         except Exception as e:
-#             logger.error(f"Failed to parse BibTeX file {file_path}: {e}")
-#             return []
-
-#         # Convert BibTeX entries to paper dictionaries
-#         papers = []
-#         for entry in bib_database.entries:
-#             paper = {
-#                 "title": entry.get("title", ""),
-#                 "authors": [entry.get("author", "")],
-#                 "year": entry.get("year", ""),
-#                 "journal": entry.get("journal", ""),
-#                 "doi": entry.get("doi", ""),
-#             }
-#             # Clean up title (remove BibTeX braces)
-#             if paper["title"]:
-#                 paper["title"] = paper["title"].strip("{}")
-#             papers.append(paper)
-
-#         logger.info(f"Loaded {len(papers)} entries from {file_path}")
-
-#         # Use LibraryManager for proper storage
-#         project = kwargs.get("project", "default")
-#         sources = kwargs.get("sources", None)
-#         source_filename = file_path.stem
-
-#         single_resolver = SingleDOIResolver(config=self.config)
-#         library_manager = LibraryManager(
-#             config=self.config, doi_resolver=single_resolver
-#         )
-
-#         try:
-#             results = await library_manager.resolve_and_create_library_structure_with_source_async(
-#                 papers=papers,
-#                 project=project,
-#                 sources=sources,
-#                 bibtex_source_filename=source_filename,
-#             )
-#             logger.success(
-#                 f"Processed {len(results)}/{len(papers)} papers with new storage architecture"
-#             )
-#             return list(results.values())
-#         except Exception as e:
-#             logger.error(f"LibraryManager failed: {e}")
-#             return []
-
-#     def _is_file_path(self, input_str: str) -> bool:
-#         """Check if string looks like a file path."""
-#         if input_str.endswith((".bib", ".bibtex")):
-#             return True
-#         try:
-#             return Path(input_str).is_file()
-#         except (OSError, ValueError):
-#             return False
-
-#     def _is_bibtex_content(self, input_str: str) -> bool:
-#         """Check if string looks like BibTeX content."""
-#         bibtex_indicators = [
-#             "@article",
-#             "@book",
-#             "@inproceedings",
-#             "@misc",
-#             "@techreport",
-#         ]
-#         input_lower = input_str.lower()
-#         return any(indicator in input_lower for indicator in bibtex_indicators)
-
 if __name__ == "__main__":
     import asyncio
 
@@ -206,48 +130,47 @@ if __name__ == "__main__":
         print("=" * 50)
 
         # Initialize resolver
-        resolver = DOIResolver(
-            project="demo", email_crossref="demo@example.com"
-        )
+        resolver = DOIResolver(project="hippocampus")
 
-        # 1. Single paper resolution
-        print("\n1. Single Paper Resolution:")
-        result = await resolver.metadata2doi_async(
-            title="Attention is All You Need",
-            year=2017,
-            authors=["Vaswani", "Shazeer"],
-        )
-        print(f"   Result: {result}")
+        # # 1. Single paper resolution
+        # print("\n1. Single Paper Resolution:")
+        # result = await resolver.metadata2doi_async(
+        #     title="Attention is All You Need",
+        #     year=2017,
+        #     authors=["Vaswani", "Shazeer"],
+        # )
+        # print(f"   Result: {result}")
 
-        # 2. Text DOI extraction
-        print("\n2. DOI Extraction from Text:")
-        sample_text = "See DOI: 10.1038/nature12373 for details"
-        dois = resolver.text2dois(sample_text)
-        print(f"   Found DOIs: {dois}")
+        # # 2. Text DOI extraction
+        # print("\n2. DOI Extraction from Text:")
+        # sample_text = "See DOI: 10.1038/nature12373 for details"
+        # dois = resolver.text2dois(sample_text)
+        # print(f"   Found DOIs: {dois}")
 
-        # 3. Batch paper processing
-        print("\n3. Batch Paper Processing:")
-        papers = [
-            {
-                "title": "BERT: Pre-training of Deep Bidirectional Transformers",
-                "year": 2018,
-                "authors": ["Devlin", "Chang"],
-            },
-            {
-                "title": "Language Models are Few-Shot Learners",
-                "year": 2020,
-                "authors": ["Brown", "Mann"],
-            },
-        ]
+        # # 3. Batch paper processing
+        # print("\n3. Batch Paper Processing:")
+        # papers = [
+        #     {
+        #         "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+        #         "year": 2018,
+        #         "authors": ["Devlin", "Chang"],
+        #     },
+        #     {
+        #         "title": "Language Models are Few-Shot Learners",
+        #         "year": 2020,
+        #         "authors": ["Brown", "Mann"],
+        #     },
+        # ]
 
-        batch_results = await resolver.papers2title_and_dois_async(papers)
-        print(f"   Resolved {len(batch_results)} papers")
-        for title, doi in batch_results.items():
-            print(f"   - {title[:40]}... → {doi}")
+        # batch_results = await resolver.papers2title_and_dois_async(papers)
+        # print(f"   Resolved {len(batch_results)} papers")
+        # for title, doi in batch_results.items():
+        #     print(f"   - {title[:40]}... → {doi}")
 
         # 4. BibTeX file processing
         total, resolved, failed = await resolver.bibtex_file2dois_async(
-            "/home/ywatanabe/win/downloads/papers.bib"
+            # "/home/ywatanabe/win/downloads/papers.bib"
+            "/home/ywatanabe/win/downloads/hippocampus.bib"
         )
         print("\n4. BibTeX File Processing:")
         print("   # For BibTeX files, use:")
@@ -260,6 +183,10 @@ if __name__ == "__main__":
         print("=" * 50)
 
     asyncio.run(main())
+
+# rm ~/.scitex/scholar/workspace/logs/* -f
+# rm ~/.scitex/scholar/cache/doi_resolution/* -f
+# rm ~/.scitex/scholar/library/{hippocampus,MASTER} -rf
 
 # python -m scitex.scholar.metadata.doi.resolvers._DOIResolver
 

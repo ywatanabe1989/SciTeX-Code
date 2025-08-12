@@ -53,8 +53,6 @@ class Paper:
         citation_count: Optional[int] = None,
         impact_factor: Optional[float] = None,
         journal_quartile: Optional[str] = None,
-        journal_rank: Optional[int] = None,
-        h_index: Optional[int] = None,
         # URLs
         url: Optional[str] = None,
         pdf_url: Optional[str] = None,
@@ -64,8 +62,13 @@ class Paper:
         source: Optional[str] = None,
         # Extension point
         metadata: Optional[Dict[str, Any]] = None,
+        # Library integration (minimal)
+        library_id: Optional[str] = None,
     ):
         """Initialize paper with comprehensive metadata."""
+
+        # Library integration (minimal)
+        self.library_id = library_id
 
         # Extension point
         self._additional_metadata = metadata or {}
@@ -91,8 +94,6 @@ class Paper:
         self._set_field_with_source("citation_count", citation_count)
         self._set_field_with_source("impact_factor", impact_factor)
         self._set_field_with_source("journal_quartile", journal_quartile)
-        self._set_field_with_source("journal_rank", journal_rank)
-        self._set_field_with_source("h_index", h_index)
 
         # URLs
         self._set_field_with_source("url", url)
@@ -343,45 +344,6 @@ class Paper:
             text = text.replace(old, new)
         return text
 
-        """Convert paper to dictionary format."""
-        base_dict = {
-            "doi": self.doi,
-            "doi_source": getattr(self, "doi_source", None),
-            "title": self.title,
-            "title_source": getattr(self, "title_source", None),
-            "authors": self.authors,
-            "authors_source": getattr(self, "authors_source", None),
-            "journal": self.journal,
-            "journal_source": getattr(self, "journal_source", None),
-            "year": self.year,
-            "year_source": getattr(self, "year_source", None),
-            "abstract": self.abstract,
-            "abstract_source": getattr(self, "abstract_source", None),
-            "pmid": self.pmid,
-            "pmid_source": getattr(self, "pmid_source", None),
-            "arxiv_id": self.arxiv_id,
-            "arxiv_id_source": getattr(self, "arxiv_id_source", None),
-            "keywords": self.keywords,
-            "keywords_source": getattr(self, "keywords_source", None),
-            "citation_count": self.citation_count,
-            "citation_count_source": getattr(
-                self, "citation_count_source", None
-            ),
-            "impact_factor": self.impact_factor,
-            "impact_factor_source": getattr(
-                self, "impact_factor_source", None
-            ),
-            "journal_quartile": self.journal_quartile,
-            "journal_quartile_source": getattr(
-                self, "journal_quartile_source", None
-            ),
-            "pdf_url": self.pdf_url,
-            "pdf_url_source": getattr(self, "pdf_url_source", None),
-            "pdf_path": str(self.pdf_path) if self.pdf_path else None,
-        }
-
-        return {**self._additional_metadata, **base_dict}
-
     def to_dict(self) -> Dict[str, Any]:
         """Convert paper to dictionary format."""
         return {
@@ -408,6 +370,8 @@ class Paper:
             "pdf_path": str(self.pdf_path) if self.pdf_path else None,
             # Source information
             "source": self.source,
+            # Library integration
+            "library_id": self.library_id,
             # Extension metadata
             **self._additional_metadata
         }
