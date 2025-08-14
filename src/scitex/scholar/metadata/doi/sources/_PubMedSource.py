@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 10:53:10 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_PubMedSource.py
+# Timestamp: "2025-08-14 18:28:23 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_PubMedSource_v01-not-doi-accepted.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/sources/_PubMedSource.py"
+    "./src/scitex/scholar/metadata/doi/sources/_PubMedSource_v01-not-doi-accepted.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
+import time
 from typing import Any, Dict
 
 import requests
@@ -59,186 +60,34 @@ class PubMedSource(BaseDOISource):
     def name(self) -> str:
         return "PubMed"
 
-    # @retry(
-    #     stop=stop_after_attempt(3),
-    #     wait=wait_exponential(multiplier=1, min=2, max=30),
-    #     retry=retry_if_exception_type(requests.RequestException),
-    # )
     # def search(
     #     self,
-    #     title: str,
+    #     title: Optional[str] = None,
     #     year: Optional[int] = None,
     #     authors: Optional[List[str]] = None,
+    #     max_results=1,
+    #     doi: Optional[str] = None,
+    #     pmid: Optional[str] = None,
+    #     return_as: Optional[str] = "dict",
     # ) -> Optional[Dict[str, Any]]:
     #     """Get comprehensive metadata from PubMed."""
-    #     query_parts = [f"{title}[Title]"]
-    #     if year:
-    #         query_parts.append(f"{year}[pdat]")
-    #     query = " AND ".join(query_parts)
+    #     assert return_as in [
+    #         "dict",
+    #         "json",
+    #     ], "return_as must be either of 'dict' or 'json'"
 
-    #     search_url = (
-    #         "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-    #     )
-    #     search_params = {
-    #         "db": "pubmed",
-    #         "term": query,
-    #         "retmode": "json",
-    #         "retmax": 5,
-    #         "email": self.email,
-    #     }
-
-    #     response = self.session.get(
-    #         search_url, params=search_params, timeout=30
-    #     )
-    #     response.raise_for_status()
-
-    #     data = response.json()
-    #     pmids = data.get("esearchresult", {}).get("idlist", [])
-
-    #     for pmid in pmids:
-    #         metadata = self._fetch_metadata_for_pmid(pmid, title)
-    #         if metadata:
-    #             return metadata
-    #     return None
-
-    # def _fetch_doi_for_pmid(
-    #     self, pmid: str, expected_title: str
-    # ) -> Optional[str]:
-    #     """Fetch DOI for a specific PMID."""
-    #     fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-    #     fetch_params = {
-    #         "db": "pubmed",
-    #         "id": pmid,
-    #         "retmode": "xml",
-    #         "email": self.email,
-    #     }
-
-    #     try:
-    #         response = self.session.get(
-    #             fetch_url, params=fetch_params, timeout=30
-    #         )
-    #         if response.status_code == 200:
-    #             root = ET.fromstring(response.text)
-
-    #             # Verify title match
-    #             title_elem = root.find(".//ArticleTitle")
-    #             if title_elem is not None and title_elem.text:
-    #                 if self._is_title_match(expected_title, title_elem.text):
-    #                     # Extract DOI
-    #                     for id_elem in root.findall(".//ArticleId"):
-    #                         if id_elem.get("IdType") == "doi":
-    #                             return id_elem.text
-    #     except Exception as e:
-    #         logger.debug(f"PubMed fetch error: {e}")
-
-    #     return None
-
-    # def _fetch_metadata_for_pmid(
-    #     self, pmid: str, expected_title: str
-    # ) -> Optional[Dict[str, Any]]:
-    #     """Fetch comprehensive metadata for a specific PMID."""
-    #     fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-    #     fetch_params = {
-    #         "db": "pubmed",
-    #         "id": pmid,
-    #         "retmode": "xml",
-    #         "email": self.email,
-    #     }
-
-    #     response = self.session.get(fetch_url, params=fetch_params, timeout=30)
-    #     if response.status_code == 200:
-    #         root = ET.fromstring(response.text)
-
-    #         # Check title match
-    #         title_elem = root.find(".//ArticleTitle")
-    #         if title_elem is not None and title_elem.text:
-    #             if self._is_title_match(expected_title, title_elem.text):
-
-    #                 # Extract DOI
-    #                 doi = None
-    #                 for id_elem in root.findall(".//ArticleId"):
-    #                     if id_elem.get("IdType") == "doi":
-    #                         doi = id_elem.text
-    #                         break
-
-    #                 # Extract year
-    #                 year = None
-    #                 date_elem = root.find(".//PubDate/Year")
-    #                 if date_elem is not None:
-    #                     year = int(date_elem.text)
-
-    #                 # Extract comprehensive journal information
-    #                 journal = None
-    #                 short_journal = None
-    #                 issn = None
-    #                 volume = None
-    #                 issue = None
-
-    #                 # Full journal title
-    #                 journal_elem = root.find(".//Journal/Title")
-    #                 if journal_elem is not None:
-    #                     journal = journal_elem.text
-
-    #                 # Abbreviated journal title
-    #                 iso_abbrev_elem = root.find(".//Journal/ISOAbbreviation")
-    #                 if iso_abbrev_elem is not None:
-    #                     short_journal = iso_abbrev_elem.text
-
-    #                 # ISSN
-    #                 issn_elem = root.find(".//Journal/ISSN")
-    #                 if issn_elem is not None:
-    #                     issn = issn_elem.text
-
-    #                 # Volume and Issue
-    #                 volume_elem = root.find(".//JournalIssue/Volume")
-    #                 if volume_elem is not None:
-    #                     volume = volume_elem.text
-
-    #                 issue_elem = root.find(".//JournalIssue/Issue")
-    #                 if issue_elem is not None:
-    #                     issue = issue_elem.text
-
-    #                 # Extract authors
-    #                 authors = []
-    #                 for author_elem in root.findall(".//Author"):
-    #                     lastname = author_elem.find("LastName")
-    #                     forename = author_elem.find("ForeName")
-    #                     if lastname is not None:
-    #                         if forename is not None:
-    #                             authors.append(
-    #                                 f"{forename.text} {lastname.text}"
-    #                             )
-    #                         else:
-    #                             authors.append(lastname.text)
-
-    #                 # Extract abstract
-    #                 abstract = None
-    #                 abstract_elem = root.find(".//AbstractText")
-    #                 if abstract_elem is not None:
-    #                     abstract = abstract_elem.text
-
-    #                 return {
-    #                     "doi": doi,
-    #                     "title": title_elem.text,
-    #                     "journal": journal,
-    #                     "journal_source": "pubmed",
-    #                     "short_journal": short_journal,
-    #                     "issn": issn,
-    #                     "volume": volume,
-    #                     "issue": issue,
-    #                     "year": year,
-    #                     "abstract": abstract,
-    #                     "authors": authors if authors else None,
-    #                 }
-
-    #     return None
-
+    #     if pmid:
+    #         return self._search_by_pmid(pmid, return_as)
+    #     else:
+    #         return self._search_by_metadata(title, year, authors, return_as)
     def search(
         self,
-        title: str,
+        title: Optional[str] = None,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
         max_results=1,
+        doi: Optional[str] = None,
+        pmid: Optional[str] = None,
         return_as: Optional[str] = "dict",
     ) -> Optional[Dict[str, Any]]:
         """Get comprehensive metadata from PubMed."""
@@ -247,6 +96,20 @@ class PubMedSource(BaseDOISource):
             "json",
         ], "return_as must be either of 'dict' or 'json'"
 
+        if pmid:
+            return self._search_by_pmid(pmid, return_as)
+        elif doi:
+            return self._search_by_doi(doi, return_as)
+        else:
+            return self._search_by_metadata(title, year, authors, return_as)
+
+    def _search_by_metadata(
+        self,
+        title: str,
+        year: Optional[int] = None,
+        authors: Optional[List[str]] = None,
+        return_as: Optional[str] = "dict",
+    ) -> Optional[Dict[str, Any]]:
         query_parts = [f"{title}[Title]"]
         if year:
             query_parts.append(f"{year}[pdat]")
@@ -262,7 +125,6 @@ class PubMedSource(BaseDOISource):
             "retmax": 5,
             "email": self.email,
         }
-
         response = self.session.get(
             search_url, params=search_params, timeout=30
         )
@@ -271,18 +133,57 @@ class PubMedSource(BaseDOISource):
         pmids = data.get("esearchresult", {}).get("idlist", [])
 
         for pmid in pmids:
-            metadata = self._fetch_metadata_for_pmid(pmid, title)
-            if metadata:
-                metadata = to_complete_metadata_structure(metadata)
+            metadata = self._search_by_pmid(pmid, "dict")
+
+            if (
+                metadata
+                and metadata.get("basic")
+                and metadata.get("basic").get("title")
+                and self._is_title_match(
+                    title, metadata.get("basic").get("title")
+                )
+            ):
                 if return_as == "dict":
                     return metadata
                 if return_as == "json":
                     return json.dumps(metadata, indent=2)
 
+    def _search_by_doi(
+        self,
+        doi: str,
+        return_as: Optional[str] = "dict",
+    ) -> Optional[Dict[str, Any]]:
+        """Search by DOI using PubMed database"""
+        doi = doi.replace("https://doi.org/", "").replace(
+            "http://doi.org/", ""
+        )
+
+        search_url = (
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+        )
+        search_params = {
+            "db": "pubmed",
+            "term": f'"{doi}"[doi]',
+            "retmode": "json",
+            "retmax": 1,
+            "email": self.email,
+        }
+
+        response = self.session.get(
+            search_url, params=search_params, timeout=30
+        )
+        response.raise_for_status()
+        data = response.json()
+        pmids = data.get("esearchresult", {}).get("idlist", [])
+
+        if pmids:
+            return self._search_by_pmid(pmids[0], return_as)
         return None
 
-    def _fetch_metadata_for_pmid(
-        self, pmid: str, expected_title: str
+    def _search_by_pmid(
+        self,
+        pmid: str,
+        return_as: Optional[str] = "dict",
     ) -> Optional[Dict[str, Any]]:
         """Fetch comprehensive metadata for a specific PMID."""
         fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
@@ -294,112 +195,115 @@ class PubMedSource(BaseDOISource):
         }
 
         response = self.session.get(fetch_url, params=fetch_params, timeout=30)
-        if response.status_code == 200:
-            root = ET.fromstring(response.text)
-            title_elem = root.find(".//ArticleTitle")
+        response.raise_for_status()
 
-            if title_elem is not None and title_elem.text:
-                if self._is_title_match(expected_title, title_elem.text):
-                    # Extract data
-                    doi = None
-                    for id_elem in root.findall(".//ArticleId"):
-                        if id_elem.get("IdType") == "doi":
-                            doi = id_elem.text
-                            break
+        root = ET.fromstring(response.text)
 
-                    year = None
-                    date_elem = root.find(".//PubDate/Year")
-                    if date_elem is not None:
-                        year = int(date_elem.text)
+        # Extract data
+        doi = None
+        for id_elem in root.findall(".//ArticleId"):
+            if id_elem.get("IdType") == "doi":
+                doi = id_elem.text
+                break
 
-                    journal = None
-                    journal_elem = root.find(".//Journal/Title")
-                    if journal_elem is not None:
-                        journal = journal_elem.text
+        title = None
+        title_elem = root.find(".//ArticleTitle")
+        if title_elem is not None:
+            title = title_elem.text.rstrip(".")
 
-                    short_journal = None
-                    iso_abbrev_elem = root.find(".//Journal/ISOAbbreviation")
-                    if iso_abbrev_elem is not None:
-                        short_journal = iso_abbrev_elem.text
+        year = None
+        date_elem = root.find(".//PubDate/Year")
+        if date_elem is not None:
+            year = int(date_elem.text)
 
-                    issn = None
-                    issn_elem = root.find(".//Journal/ISSN")
-                    if issn_elem is not None:
-                        issn = issn_elem.text
+        journal = None
+        journal_elem = root.find(".//Journal/Title")
+        if journal_elem is not None:
+            journal = journal_elem.text
 
-                    volume = None
-                    volume_elem = root.find(".//JournalIssue/Volume")
-                    if volume_elem is not None:
-                        volume = volume_elem.text
+        short_journal = None
+        iso_abbrev_elem = root.find(".//Journal/ISOAbbreviation")
+        if iso_abbrev_elem is not None:
+            short_journal = iso_abbrev_elem.text
 
-                    issue = None
-                    issue_elem = root.find(".//JournalIssue/Issue")
-                    if issue_elem is not None:
-                        issue = issue_elem.text
+        issn = None
+        issn_elem = root.find(".//Journal/ISSN")
+        if issn_elem is not None:
+            issn = issn_elem.text
 
-                    authors = []
-                    for author_elem in root.findall(".//Author"):
-                        lastname = author_elem.find("LastName")
-                        forename = author_elem.find("ForeName")
-                        if lastname is not None:
-                            if forename is not None:
-                                authors.append(
-                                    f"{forename.text} {lastname.text}"
-                                )
-                            else:
-                                authors.append(lastname.text)
+        volume = None
+        volume_elem = root.find(".//JournalIssue/Volume")
+        if volume_elem is not None:
+            volume = volume_elem.text
 
-                    abstract = None
-                    abstract_elem = root.find(".//AbstractText")
-                    if abstract_elem is not None:
-                        abstract = abstract_elem.text
+        issue = None
+        issue_elem = root.find(".//JournalIssue/Issue")
+        if issue_elem is not None:
+            issue = issue_elem.text
 
-                    mesh_terms = []
-                    for mesh_elem in root.findall(
-                        ".//MeshHeading/DescriptorName"
-                    ):
-                        if mesh_elem.text:
-                            mesh_terms.append(mesh_elem.text)
+        authors = []
+        for author_elem in root.findall(".//Author"):
+            lastname = author_elem.find("LastName")
+            forename = author_elem.find("ForeName")
+            if lastname is not None:
+                if forename is not None:
+                    authors.append(f"{forename.text} {lastname.text}")
+                else:
+                    authors.append(lastname.text)
 
-                    return {
-                        "id": {
-                            "doi": doi,
-                            "doi_source": self.name if doi else None,
-                            "pmid": pmid,
-                            "pmid_source": self.name,
-                        },
-                        "basic": {
-                            "title": title_elem.text,
-                            "title_source": self.name,
-                            "year": year,
-                            "year_source": self.name if year else None,
-                            "abstract": abstract,
-                            "abstract_source": self.name if abstract else None,
-                            "authors": authors if authors else None,
-                            "authors_source": self.name if authors else None,
-                        },
-                        "publication": {
-                            "journal": journal,
-                            "journal_source": self.name if journal else None,
-                            "short_journal": short_journal,
-                            "short_journal_source": (
-                                self.name if short_journal else None
-                            ),
-                            "issn": issn,
-                            "issn_source": self.name if issn else None,
-                            "volume": volume,
-                            "volume_source": self.name if volume else None,
-                            "issue": issue,
-                            "issue_source": self.name if issue else None,
-                        },
-                        "url": {
-                            "doi": f"https://doi.org/{doi}" if doi else None,
-                            "doi_source": self.name if doi else None,
-                        },
-                        "system": {
-                            f"searched_by_{self.name}": True,
-                        },
-                    }
+        abstract = None
+        abstract_elem = root.find(".//AbstractText")
+        if abstract_elem is not None:
+            abstract = abstract_elem.text
+
+        mesh_terms = []
+        for mesh_elem in root.findall(".//MeshHeading/DescriptorName"):
+            if mesh_elem.text:
+                mesh_terms.append(mesh_elem.text)
+
+        metadata = {
+            "id": {
+                "doi": doi,
+                "doi_source": self.name if doi else None,
+                "pmid": pmid,
+                "pmid_source": self.name,
+            },
+            "basic": {
+                "title": title,
+                "title_source": self.name if title else None,
+                "year": year,
+                "year_source": self.name if year else None,
+                "abstract": abstract,
+                "abstract_source": self.name if abstract else None,
+                "authors": authors if authors else None,
+                "authors_source": self.name if authors else None,
+            },
+            "publication": {
+                "journal": journal,
+                "journal_source": self.name if journal else None,
+                "short_journal": short_journal,
+                "short_journal_source": (self.name if short_journal else None),
+                "issn": issn,
+                "issn_source": self.name if issn else None,
+                "volume": volume,
+                "volume_source": self.name if volume else None,
+                "issue": issue,
+                "issue_source": self.name if issue else None,
+            },
+            "url": {
+                "doi": f"https://doi.org/{doi}" if doi else None,
+                "doi_source": self.name if doi else None,
+            },
+            "system": {
+                f"searched_by_{self.name}": True,
+            },
+        }
+
+        metadata = to_complete_metadata_structure(metadata)
+        if return_as == "dict":
+            return metadata
+        if return_as == "json":
+            return json.dumps(metadata, indent=2)
 
         return None
 
@@ -407,12 +311,37 @@ class PubMedSource(BaseDOISource):
 if __name__ == "__main__":
     from pprint import pprint
 
+    TITLE = "Hippocampal ripples down-regulate synapses"
+    DOI = "10.1126/science.aao0702"
+    PMID = "29439023"
+
     # Example: PubMed search
     source = PubMedSource("test@example.com")
+    outputs = {}
 
-    # Get comprehensive metadata
-    metadata = source.search("Hippocampal ripples down-regulate synapses")
+    # Search by title
+    outputs["metadata_by_title_dict"] = source.search(title=TITLE)
+    outputs["metadata_by_title_json"] = source.search(
+        title=TITLE, return_as="json"
+    )
 
-    pprint(metadata)
+    # Search by DOI
+    outputs["metadata_by_doi_dict"] = source.search(doi=DOI)
+    outputs["metadata_by_doi_json"] = source.search(doi=DOI, return_as="json")
+
+    # Search by PubMed ID
+    outputs["metadata_by_pmid_dict"] = source.search(pmid=PMID)
+    outputs["metadata_by_pmid_json"] = source.search(
+        pmid=PMID, return_as="json"
+    )
+
+    for k, v in outputs.items():
+        print("----------------------------------------")
+        print(k)
+        print("----------------------------------------")
+        pprint(v)
+        time.sleep(1)
+
+# python -m scitex.scholar.metadata.doi.sources._PubMedSource
 
 # EOF

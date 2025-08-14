@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 10:55:00 (ywatanabe)"
+# Timestamp: "2025-08-14 16:39:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,7 +15,7 @@ import json
 import random
 import re
 import time
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 import requests
 
@@ -61,15 +61,68 @@ class URLDOISource(BaseDOISource):
 
     def search(
         self,
-        title: str,
-        year: Optional[int] = None,
+        title: Optional[str] = None,
+        year: Optional[Union[int, str]] = None,
         authors: Optional[List[str]] = None,
+        doi: Optional[str] = None,
         max_results=1,
         return_as: Optional[str] = "dict",
         url: Optional[str] = None,
         **kwargs,
-    ) -> Optional[str]:
-        """Extract DOI from URL field if available."""
+    ) -> Optional[Dict]:
+        """When doi is provided, all the information other than doi is ignored"""
+        if doi:
+            return self._search_by_doi(doi, return_as)
+        else:
+            return self._search_by_url(
+                title, year, authors, max_results, return_as, url
+            )
+
+    def _search_by_doi(self, doi: str, return_as: str) -> Optional[Dict]:
+        """Search by DOI directly"""
+        doi = doi.replace("https://doi.org/", "").replace(
+            "http://doi.org/", ""
+        )
+
+        try:
+            assert return_as in [
+                "dict",
+                "json",
+            ], "return_as must be either of 'dict' or 'json'"
+
+            metadata = {
+                "id": {
+                    "doi": doi,
+                    "doi_source": self.name,
+                },
+                "url": {
+                    "doi": f"https://doi.org/{doi}",
+                    "doi_source": self.name,
+                },
+                "system": {
+                    f"searched_by_{self.name}": True,
+                },
+            }
+
+            metadata = to_complete_metadata_structure(metadata)
+            if return_as == "dict":
+                return metadata
+            if return_as == "json":
+                return json.dumps(metadata, indent=2)
+        except Exception as exc:
+            logger.warn(f"URL DOI search error: {exc}")
+            return None
+
+    def _search_by_url(
+        self,
+        title: Optional[str] = None,
+        year: Optional[Union[int, str]] = None,
+        authors: Optional[List[str]] = None,
+        max_results: int = 1,
+        return_as: str = "dict",
+        url: Optional[str] = None,
+    ) -> Optional[Dict]:
+        """Extract DOI from URL field if available"""
         if not url:
             return None
 
@@ -132,6 +185,7 @@ class URLDOISource(BaseDOISource):
                     if return_as == "json":
                         return json.dumps(metadata, indent=2)
 
+            # Continue with other extractions (IEEE, Semantic Scholar)
             ieee_id = self._extract_ieee_id(url)
             if ieee_id:
                 doi = self._lookup_ieee_doi(ieee_id)
@@ -193,10 +247,9 @@ class URLDOISource(BaseDOISource):
                         return json.dumps(metadata, indent=2)
 
             return None
-
         except Exception as exc:
             logger.warn(f"URL DOI extraction error: {exc}")
-        return None
+            return None
 
     def _extract_pubmed_id(self, url: str) -> Optional[str]:
         for pattern in self.pubmed_patterns:
@@ -304,21 +357,46 @@ class URLDOISource(BaseDOISource):
 if __name__ == "__main__":
     from pprint import pprint
 
+    TITLE = "Test Paper"
+    DOI = "10.1038/nature14539"
+    URL = "https://doi.org/10.1002/hbm.26190"
+
     source = URLDOISource("test@example.com")
+    outputs = {}
 
-    test_urls = [
-        "https://doi.org/10.1002/hbm.26190",
-        "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\&arnumber=10040734",
-        "https://www.ncbi.nlm.nih.gov/pubmed/33841115",
-        "https://api.semanticscholar.org/CorpusId:3626970",
-    ]
+    # Search by DOI
+    outputs["metadata_by_doi_dict"] = source.search(doi=DOI)
+    outputs["metadata_by_doi_json"] = source.search(doi=DOI, return_as="json")
 
-    for url in test_urls:
-        metadata = source.search("Test Paper", url=url)
-        print(f"URL: {url}")
-        pprint(metadata)
-        print()
+    # Search by URL
+    outputs["metadata_by_url_dict"] = source.search(title=TITLE, url=URL)
+    outputs["metadata_by_url_json"] = source.search(
+        title=TITLE, url=URL, return_as="json"
+    )
 
+    for k, v in outputs.items():
+        print("----------------------------------------")
+        print(k)
+        print("----------------------------------------")
+        pprint(v)
+        time.sleep(1)
+# if __name__ == "__main__":
+#     from pprint import pprint
+
+#     source = URLDOISource("test@example.com")
+
+#     test_urls = [
+#         "https://doi.org/10.1002/hbm.26190",
+#         "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\&arnumber=10040734",
+#         "https://www.ncbi.nlm.nih.gov/pubmed/33841115",
+#         "https://api.semanticscholar.org/CorpusId:3626970",
+#     ]
+
+#     for url in test_urls:
+#         metadata = source.search("Test Paper", url=url)
+#         print(f"URL: {url}")
+#         pprint(metadata)
+#         print()
 
 # python -m scitex.scholar.metadata.doi.sources._URLDOISource
 
