@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-12 19:16:18 (ywatanabe)"
+# Timestamp: "2025-08-14 06:03:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/_BrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -542,6 +542,39 @@ class BrowserManager(BrowserMixin):
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)
+
+    async def close(self):
+        """Close browser while preserving authentication and extension data."""
+        try:
+            if (
+                self._persistent_context
+                and not self._persistent_context.browser.is_connected()
+            ):
+                logger.debug("Browser already closed")
+                return
+
+            if self._persistent_context:
+                await self._persistent_context.close()
+                logger.info("Closed persistent browser context")
+
+            if (
+                self._persistent_browser
+                and self._persistent_browser.is_connected()
+            ):
+                await self._persistent_browser.close()
+                logger.info("Closed persistent browser")
+
+            if self._persistent_playwright:
+                await self._persistent_playwright.stop()
+                logger.info("Stopped Playwright instance")
+
+        except Exception as e:
+            logger.warning(f"Error during browser cleanup: {e}")
+        finally:
+            # Reset references but keep auth_manager and chrome_profile_manager
+            self._persistent_context = None
+            self._persistent_browser = None
+            self._persistent_playwright = None
 
 
 if __name__ == "__main__":

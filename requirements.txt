@@ -179,3 +179,4 @@ scholarly
 crawl4ai
 pytesseract
 pyautogui
+pymed

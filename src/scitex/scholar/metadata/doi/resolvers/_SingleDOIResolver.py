@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 13:30:05 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
+# Timestamp: "2025-08-14 06:21:36 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/resolvers/_SingleDOIResolver.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -24,7 +24,13 @@ from scitex.scholar.storage._LibraryCacheManager import LibraryCacheManager
 from ..sources._SourceManager import SourceManager
 from ..sources._SourceResolutionStrategy import SourceResolutionStrategy
 from ..sources._SourceRotationManager import SourceRotationManager
-from ..utils import PubMedConverter, RateLimitHandler, TextNormalizer, URLDOIExtractor
+from ..utils import (
+    PubMedConverter,
+    RateLimitHandler,
+    TextNormalizer,
+    URLDOIExtractor,
+    to_complete_metadata_structure,
+)
 
 # from ..utils._RateLimitHandler import RateLimitHandler
 
@@ -187,7 +193,7 @@ class SingleDOIResolver:
                 )
                 return utility_result
 
-        # Phase 2: Resolve from sources
+        # Phase 2: Resolve from sources # we need to fix this to have flattened metadata
         result = await self._source_strategy.metadata2metadata_async(
             title=title, year=year, authors=authors
         )

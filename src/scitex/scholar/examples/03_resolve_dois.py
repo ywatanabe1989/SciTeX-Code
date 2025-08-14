@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-12 19:23:32 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/resolve_dois.py
+# Timestamp: "2025-08-14 06:08:19 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_resolve_dois.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/examples/resolve_dois.py"
+    "./src/scitex/scholar/examples/03_resolve_dois.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 import asyncio
 
 from scitex.scholar.metadata import DOIResolver
@@ -24,14 +25,15 @@ async def main():
     # Initialize resolver
     resolver = DOIResolver(project="hippocampus")
 
-    # # 1. Single paper resolution
-    # print("\n1. Single Paper Resolution:")
-    # result = await resolver.metadata2doi_async(
-    #     title="Attention is All You Need",
-    #     year=2017,
-    #     authors=["Vaswani", "Shazeer"],
-    # )
-    # print(f"   Result: {result}")
+    # 1. Single paper resolution
+    print("\n1. Single Paper Resolution:")
+    result = await resolver.metadata2doi_async(
+        title="Attention is All You Need",
+        year=2017,
+        authors=["Vaswani", "Shazeer"],
+    )
+    print(f"   Result: {result}")
+    __import__("ipdb").set_trace()
 
     # # 2. Text DOI extraction
     # print("\n2. DOI Extraction from Text:")
@@ -76,5 +78,7 @@ async def main():
 
 
 asyncio.run(main())
+
+# python -m scitex.scholar.examples.03_resolve_dois
 
 # EOF

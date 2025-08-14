@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 06:49:55 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_BaseDOISource.py
+# Timestamp: "2025-08-14 09:25:40 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_BaseDOISource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -28,14 +28,17 @@ import requests
 
 from scitex import logging
 
+from ..utils import PubMedConverter, TextNormalizer, URLDOIExtractor
+
 logger = logging.getLogger(__name__)
 
 
 class BaseDOISource(ABC):
     """Abstract base class for DOI sources with enhanced rate limit handling."""
 
-    def __init__(self):
+    def __init__(self, email: str = "research@example.com"):
         """Initialize base source."""
+        self.email = email
         self.rate_limit_handler = None  # Will be injected by SingleDOIResolver
         self.last_request_time = 0.0
         self._request_count = 0
@@ -44,6 +47,7 @@ class BaseDOISource(ABC):
         self._text_normalizer = None
         self._url_doi_extractor = None
         self._pubmed_converter = None
+        self._session = None
 
     @abstractmethod
     def search(
@@ -55,18 +59,11 @@ class BaseDOISource(ABC):
         """Search for DOI by title."""
         pass
 
-    @abstractmethod
-    def get_abstract(self, doi: str) -> Optional[str]:
-        """Get abstract by DOI."""
-        pass
-
     @property
     @abstractmethod
     def name(self) -> str:
         """Source name for logging."""
         pass
-
-    # Note: rate_limit_delay property removed - now using RateLimitHandler exclusively
 
     def set_rate_limit_handler(self, handler):
         """Set the rate limit handler for this source."""
@@ -76,8 +73,6 @@ class BaseDOISource(ABC):
     def text_normalizer(self):
         """Get TextNormalizer utility with lazy loading."""
         if self._text_normalizer is None:
-            from ..utils import TextNormalizer
-
             self._text_normalizer = TextNormalizer(ascii_fallback=False)
         return self._text_normalizer
 
@@ -85,19 +80,28 @@ class BaseDOISource(ABC):
     def url_doi_extractor(self):
         """Get URLDOISource utility with lazy loading."""
         if self._url_doi_extractor is None:
-            from ..utils import URLDOISource
-
-            self._url_doi_extractor = URLDOISource()
+            self._url_doi_extractor = URLDOIExtractor()
         return self._url_doi_extractor
 
     @property
     def pubmed_converter(self):
         """Get PubMedConverter utility with lazy loading."""
         if self._pubmed_converter is None:
-            from ..utils import PubMedConverter
-
             self._pubmed_converter = PubMedConverter()
         return self._pubmed_converter
+
+    @property
+    def session(self):
+        """Lazy load session with user agent."""
+        if self._session is None:
+            self._session = requests.Session()
+            user_agent = self._get_user_agent()
+            self._session.headers.update({"User-Agent": user_agent})
+        return self._session
+
+    def _get_user_agent(self) -> str:
+        """Get user agent string. Override in subclasses if needed."""
+        return f"SciTeX/1.0 (mailto:{self.email})"
 
     def _make_request_with_retry(
         self,

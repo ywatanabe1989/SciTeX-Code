@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-08-10 06:30:24
+!-- Timestamp: 2025-08-14 11:04:39
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/README.md
 !-- --- -->
 
 # Scholar DOI Resolution System
@@ -14,6 +14,7 @@ A comprehensive, production-ready DOI resolution system with multiple academic s
 
 ```python
 from scitex.scholar.metadata.doi import DOIResolver
+await DOIResolver().metadata2doi_async("Attention is All You Need")
 
 DOIResolver.resolve_async("/home/ywatanabe/win/downloads/papers.bib")
 

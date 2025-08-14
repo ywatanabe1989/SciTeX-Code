@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 06:55:59 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_OpenAlexSource.py
+# Timestamp: "2025-08-14 10:53:20 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_OpenAlexSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -11,27 +11,12 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from typing import Any, Dict
-
-import requests
-
-"""
-OpenAlex DOI source implementation.
-
-This module provides DOI resolution through the OpenAlex API.
-"""
-
+import json
 from typing import List, Optional
-
-from tenacity import (
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential,
-)
 
 from scitex import logging
 
+from ..utils import to_complete_metadata_structure
 from ._BaseDOISource import BaseDOISource
 
 logger = logging.getLogger(__name__)
@@ -41,19 +26,8 @@ class OpenAlexSource(BaseDOISource):
     """OpenAlex - free and open alternative to proprietary databases."""
 
     def __init__(self, email: str = "research@example.com"):
-        super().__init__()  # Initialize base class
-        self.email = email
-        self._session = None
-
-    @property
-    def session(self):
-        """Lazy load session."""
-        if self._session is None:
-            self._session = requests.Session()
-            self._session.headers.update(
-                {"User-Agent": f"SciTeX/1.0 (mailto:{self.email})"}
-            )
-        return self._session
+        super().__init__(email)
+        self.base_url = "https://api.openalex.org/works"
 
     @property
     def name(self) -> str:
@@ -61,125 +35,243 @@ class OpenAlexSource(BaseDOISource):
 
     @property
     def rate_limit_delay(self) -> float:
-        return 0.1  # OpenAlex is generous
+        return 0.1
 
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=2, max=30),
-        retry=retry_if_exception_type(requests.RequestException),
-    )
     def search(
         self,
         title: str,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
+        max_results=1,
+        return_as: Optional[str] = "dict",
     ) -> Optional[str]:
-        """Search OpenAlex for DOI."""
-        url = "https://api.openalex.org/works"
-
-        filters = [f'title.search:"{title}"']
-        if year:
-            filters.append(f"publication_year:{year}")
-
-        params = {
-            "filter": ",".join(filters),
-            "per_page": 5,
-            "mailto": self.email,
-        }
-
-        response = self.session.get(url, params=params, timeout=30)
-        response.raise_for_status()
-
-        data = response.json()
-        results = data.get("results", [])
-
-        for work in results:
-            work_title = work.get("title", "")
-            if work_title and self._is_title_match(title, work_title):
-                doi_url = work.get("doi", "")
-                if doi_url:
-                    return doi_url.replace("https://doi.org/", "")
-        return None
-
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=2, max=30),
-        retry=retry_if_exception_type(requests.RequestException),
-    )
-    def get_metadata(
-        self,
-        title: str,
-        year: Optional[int] = None,
-        authors: Optional[List[str]] = None,
-    ) -> Optional[Dict[str, Any]]:
         """Get comprehensive metadata from OpenAlex."""
-        url = "https://api.openalex.org/works"
-
-        filters = [f'title.search:"{title}"']
-        if year:
-            filters.append(f"publication_year:{year}")
-
         params = {
-            "filter": ",".join(filters),
+            "search": title,
             "per_page": 5,
-            "mailto": self.email,
         }
 
-        response = self.session.get(url, params=params, timeout=30)
-        response.raise_for_status()
+        if year:
+            params["filter"] = f"publication_year:{year}"
 
-        data = response.json()
-        results = data.get("results", [])
+        try:
+            assert return_as in [
+                "dict",
+                "json",
+            ], "return_as must be either of 'dict' or 'json'"
 
-        for work in results:
-            work_title = work.get("title", "")
-            if work_title and self._is_title_match(title, work_title):
-                doi_url = work.get("doi", "")
-                doi = (
-                    doi_url.replace("https://doi.org/", "")
-                    if doi_url
-                    else None
-                )
+            response = self.session.get(
+                self.base_url, params=params, timeout=30
+            )
+            response.raise_for_status()
 
-                authors_list = []
-                for authorship in work.get("authorships", []):
-                    author = authorship.get("author", {})
-                    if author.get("display_name"):
-                        authors_list.append(author["display_name"])
+            data = response.json()
+            results = data.get("results", [])
 
-                # Extract comprehensive journal/venue information
-                journal = None
-                issn = None
-                publisher = None
+            for work in results:
+                work_title = work.get("title", "")
+                if work_title and work_title.endswith("."):
+                    work_title = work_title[:-1]
 
-                host_venue = work.get("host_venue", {})
-                if host_venue:
-                    journal = host_venue.get("display_name")
-                    issn = host_venue.get("issn_l")  # Linking ISSN
-                    publisher = host_venue.get("publisher")
+                if work_title and self._is_title_match(title, work_title):
 
-                # Special handling for ArXiv papers
-                if doi and doi.startswith("10.48550/arxiv"):
-                    if not journal:  # Only set if no journal was found
-                        journal = "arXiv"
-                    if not publisher:
-                        publisher = "arXiv"
+                    doi_url = work.get("doi", "")
+                    doi = (
+                        doi_url.replace("https://doi.org/", "")
+                        if doi_url
+                        else None
+                    )
+                    indexed_in = work.get("indexed_in", [])
+                    if indexed_in:
+                        indexed_in = ", ".join(indexed_in)
+                    source = f"{self.name} ({indexed_in})"
 
-                return {
-                    "doi": doi,
-                    "title": work_title,
-                    "journal": journal,
-                    "journal_source": "openalex",
-                    "issn": issn,
-                    "publisher": publisher,
-                    "year": work.get("publication_year"),
-                    "abstract": None,  # OpenAlex doesn't provide abstracts
-                    "authors": authors_list if authors_list else None,
-                }
-        return None
+                    # Extract IDs
+                    ids = work.get("ids", {})
+                    pmid_url = ids.get("pmid", "")
+                    pmid = (
+                        pmid_url.replace(
+                            "https://pubmed.ncbi.nlm.nih.gov/", ""
+                        )
+                        if pmid_url
+                        else None
+                    )
 
-    def get_abstract(self, doi: str) -> Optional[str]:
-        """OpenAlex doesn't provide abstracts."""
-        return None
+                    extracted_authors = []
+                    for authorship in work.get("authorships", []):
+                        author = authorship.get("author", {})
+                        if author.get("display_name"):
+                            extracted_authors.append(author["display_name"])
+
+                    journal = None
+                    issn = None
+                    publisher = None
+                    volume = None
+                    issue = None
+                    first_page = None
+                    last_page = None
+
+                    primary_location = work.get("primary_location", {})
+                    if primary_location and primary_location.get("source"):
+                        pdf_url = primary_location.get("pdf_url", None)
+                        _source = primary_location["source"]
+                        journal = _source.get("display_name")
+                        issn = _source.get("issn_l")
+                        if _source.get("host_organization_name"):
+                            publisher = _source["host_organization_name"]
+
+                    if not journal:
+                        host_venue = work.get("host_venue", {})
+                        if host_venue:
+                            journal = host_venue.get("display_name")
+                            issn = host_venue.get("issn_l")
+                            publisher = host_venue.get("publisher")
+
+                    biblio = work.get("biblio", {})
+                    if biblio:
+                        volume = biblio.get("volume")
+                        issue = biblio.get("issue")
+                        first_page = biblio.get("first_page")
+                        last_page = biblio.get("last_page")
+
+                    if doi and doi.startswith("10.48550/arxiv"):
+                        if not journal:
+                            journal = "arXiv"
+                        if not publisher:
+                            publisher = "arXiv"
+
+                    citation_count = work.get("cited_by_count")
+                    citation_count_by_year = work.get("counts_by_year")
+                    if citation_count_by_year:
+                        citation_count_by_year = {
+                            str(dd["year"]): dd["cited_by_count"]
+                            for dd in citation_count_by_year
+                        }
+                    citation_counts = {
+                        "total": citation_count,
+                        **citation_count_by_year,
+                    }
+
+                    url_publisher = None
+                    if primary_location:
+                        url_publisher = primary_location.get(
+                            "landing_page_url"
+                        )
+
+                    # Extract keywords
+                    keywords = []
+                    for keyword in work.get("keywords", []):
+                        if keyword.get("display_name"):
+                            keywords.append(keyword["display_name"])
+
+                    metadata = {
+                        "id": {
+                            "doi": doi if doi else None,
+                            "doi_source": source if doi else None,
+                            "pmid": pmid if pmid else None,
+                            "pmid_source": source if pmid else None,
+                        },
+                        "basic": {
+                            "title": work_title if work_title else None,
+                            "title_source": source if work_title else None,
+                            "year": (
+                                work.get("publication_year")
+                                if work.get("publication_year")
+                                else None
+                            ),
+                            "year_source": (
+                                source
+                                if work.get("publication_year")
+                                else None
+                            ),
+                            "authors": (
+                                extracted_authors
+                                if extracted_authors
+                                else None
+                            ),
+                            "authors_source": (
+                                source if extracted_authors else None
+                            ),
+                            "keywords": keywords if keywords else None,
+                            "keywords_source": source if keywords else None,
+                            "type": (
+                                work.get("type")
+                                if work.get("type", None)
+                                else None
+                            ),
+                            "type_source": (
+                                source if work.get("type") else None
+                            ),
+                        },
+                        "citation_count": {
+                            **citation_counts,
+                        },
+                        "publication": {
+                            "journal": journal if journal else None,
+                            "journal_source": source if journal else None,
+                            "issn": issn if issn else None,
+                            "issn_source": source if issn else None,
+                            "publisher": publisher if publisher else None,
+                            "publisher_source": (
+                                source if publisher else None
+                            ),
+                            "volume": volume if volume else None,
+                            "volume_source": source if volume else None,
+                            "issue": issue if issue else None,
+                            "issue_source": source if issue else None,
+                            "first_page": first_page if first_page else None,
+                            "first_page_source": (
+                                source if first_page else None
+                            ),
+                            "last_page": last_page if last_page else None,
+                            "last_page_source": (
+                                source if last_page else None
+                            ),
+                        },
+                        "url": {
+                            "doi": f"https://doi.org/{doi}" if doi else None,
+                            "doi_source": source if doi else None,
+                            "pdf": pdf_url if pdf_url else None,
+                            "pdf_source": source if pdf_url else None,
+                            "publisher": (
+                                url_publisher if url_publisher else None
+                            ),
+                            "publisher_source": (
+                                source if url_publisher else None
+                            ),
+                        },
+                        "system": {
+                            f"searched_by_{self.name}": True,
+                        },
+                    }
+
+                    metadata = to_complete_metadata_structure(metadata)
+
+                    if return_as == "dict":
+                        return metadata
+                    if return_as == "json":
+                        return json.dumps(metadata, indent=2)
+
+                    return metadata
+
+        except Exception as exc:
+            logger.warn(f"OpenAlex metadata error: {exc}")
+            return None
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+
+    source = OpenAlexSource("test@example.com")
+
+    metadata = source.search("Neural Network and Deep Learning", year=2015)
+    pprint(metadata)
+
+    metadata_json = source.search(
+        "Neural Network and Deep Learning", year=2015, return_as="json"
+    )
+    print(metadata_json)
+
+# python -m scitex.scholar.metadata.doi.sources._OpenAlexSource
 
 # EOF

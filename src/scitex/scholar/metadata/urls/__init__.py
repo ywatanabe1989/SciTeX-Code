@@ -31,7 +31,7 @@ from ._URLMetadataHandler import (
 __all__ = [
     # Main abstracted interface
     "URLHandler",
-    
+
     # Backward compatibility
     "URLMetadataHandler",
     "add_urls_to_paper",

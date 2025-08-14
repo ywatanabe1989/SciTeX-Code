@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-12 13:41:46 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
+# Timestamp: "2025-08-14 10:55:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -11,13 +11,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""
-URL-based DOI extractor for immediate paper recovery.
-
-This source extracts DOIs from URL fields in BibTeX entries,
-providing immediate recovery for papers with DOI URLs.
-"""
-
+import json
 import random
 import re
 import time
@@ -27,50 +21,51 @@ import requests
 
 from scitex import logging
 
-from ..sources._BaseDOISource import BaseDOISource
+from ..utils import to_complete_metadata_structure
+from ._BaseDOISource import BaseDOISource
 
 logger = logging.getLogger(__name__)
 
 
 class URLDOISource(BaseDOISource):
-    """Extract DOIs from URL fields - immediate recovery for 14+ papers."""
+    """Extract DOIs from URL fields - immediate recovery for papers."""
 
-    def __init__(self):
-        """Initialize URL DOI extractor."""
-        super().__init__()
-
-        # Check for Semantic Scholar API key for enhanced CorpusId resolution
+    def __init__(self, email: str = "research@example.com"):
+        super().__init__(email)
         self.api_key = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
-        if self.api_key:
-            logger.info(
-                "Using Semantic Scholar API key for enhanced CorpusId resolution"
-            )
 
-        # IEEE-specific patterns (not handled by utils)
         self.ieee_patterns = [
             r"ieeexplore\.ieee\.org/document/(\d+)",
             r"ieeexplore\.ieee\.org/abstract/document/(\d+)",
             r"ieeexplore\.ieee\.org/stamp/stamp\.jsp\?arnumber=(\d+)",
         ]
 
-        # PubMed ID patterns for conversion (handled by utils, but need for extraction)
         self.pubmed_patterns = [
             r"pubmed/(\d+)",
             r"ncbi\.nlm\.nih\.gov/pubmed/(\d+)",
             r"PMID:(\d+)",
         ]
 
-        # Semantic Scholar patterns (not handled by utils)
         self.semantic_patterns = [
             r"semanticscholar\.org/paper/([^/?]+)",
             r"CorpusId:(\d+)",
         ]
+
+    @property
+    def name(self) -> str:
+        return "URL"
+
+    @property
+    def rate_limit_delay(self) -> float:
+        return 0.0
 
     def search(
         self,
         title: str,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
+        max_results=1,
+        return_as: Optional[str] = "dict",
         url: Optional[str] = None,
         **kwargs,
     ) -> Optional[str]:
@@ -78,52 +73,132 @@ class URLDOISource(BaseDOISource):
         if not url:
             return None
 
-        logger.debug(f"Extracting DOI from URL: {url}")
+        try:
+            assert return_as in [
+                "dict",
+                "json",
+            ], "return_as must be either of 'dict' or 'json'"
 
-        # Try direct DOI extraction first using the utility
-        doi = self.url_doi_extractor.extract_doi_from_url(url)
-        if doi:
-            logger.info(f"Extracted DOI from URL: {doi}")
-            return doi
-
-        # Try PubMed ID conversion using the utility
-        pmid = self._extract_pubmed_id(url)
-        if pmid:
-            doi = self.pubmed_converter.pmid2doi(pmid)
+            doi = self.url_doi_extractor.extract_doi_from_url(url)
             if doi:
-                logger.info(f"Converted PubMed ID {pmid} to DOI: {doi}")
-                return doi
+                metadata = {
+                    "id": {
+                        "doi": doi,
+                        "doi_source": self.name,
+                    },
+                    "basic": {
+                        "title": title if title else None,
+                        "title_source": "input" if title else None,
+                    },
+                    "url": {
+                        "doi": "https://doi.org/" + doi,
+                        "doi_source": self.name,
+                        "publisher": url,
+                        "publisher_source": self.name,
+                    },
+                }
+                metadata = to_complete_metadata_structure(metadata)
+                if return_as == "dict":
+                    return metadata
+                if return_as == "json":
+                    return json.dumps(metadata, indent=2)
 
-        # Try IEEE lookup (custom logic)
-        ieee_id = self._extract_ieee_id(url)
-        if ieee_id:
-            doi = self._lookup_ieee_doi(ieee_id)
-            if doi:
-                logger.info(f"Found DOI via IEEE: {doi}")
-                return doi
+            pmid = self._extract_pubmed_id(url)
+            if pmid:
+                doi = self.pubmed_converter.pmid2doi(pmid)
+                if doi:
+                    metadata = {
+                        "id": {
+                            "doi": doi,
+                            "doi_source": self.name,
+                            "pmid": pmid,
+                            "pmid_source": self.name,
+                        },
+                        "basic": {
+                            "title": title if title else None,
+                            "title_source": "input" if title else None,
+                        },
+                        "url": {
+                            "publisher": url,
+                            "publisher_source": self.name,
+                        },
+                        "system": {
+                            f"searched_by_{self.name}": True,
+                        },
+                    }
+                    metadata = to_complete_metadata_structure(metadata)
+                    if return_as == "dict":
+                        return metadata
+                    if return_as == "json":
+                        return json.dumps(metadata, indent=2)
 
-        # Try Semantic Scholar lookup (custom logic)
-        semantic_id = self._extract_semantic_scholar_id(url)
-        if semantic_id:
-            doi = self._lookup_semantic_scholar_doi(semantic_id)
-            if doi:
-                logger.info(f"Found DOI via Semantic Scholar: {doi}")
-                return doi
+            ieee_id = self._extract_ieee_id(url)
+            if ieee_id:
+                doi = self._lookup_ieee_doi(ieee_id)
+                if doi:
+                    metadata = {
+                        "id": {
+                            "doi": doi,
+                            "doi_source": self.name,
+                        },
+                        "basic": {
+                            "title": title if title else None,
+                            "title_source": "input" if title else None,
+                        },
+                        "url": {
+                            "doi": "https://doi.org/" + doi,
+                            "doi_source": self.name,
+                            "publisher": url,
+                            "publisher_source": self.name,
+                        },
+                        "system": {
+                            f"searched_by_{self.name}": True,
+                        },
+                    }
+                    metadata = to_complete_metadata_structure(metadata)
+                    if return_as == "dict":
+                        return metadata
+                    if return_as == "json":
+                        return json.dumps(metadata, indent=2)
 
+            semantic_id = self._extract_semantic_scholar_id(url)
+            if semantic_id:
+                doi = self._lookup_semantic_scholar_doi(semantic_id)
+                if doi:
+                    metadata = {
+                        "id": {
+                            "doi": doi,
+                            "doi_source": self.name,
+                            "scholar_id": semantic_id,
+                            "scholar_id_source": self.name,
+                        },
+                        "basic": {
+                            "title": title if title else None,
+                            "title_source": "input" if title else None,
+                        },
+                        "url": {
+                            "doi": "https://doi.org/" + doi,
+                            "doi_source": self.name,
+                            "publisher": url,
+                            "publisher_source": self.name,
+                        },
+                        "system": {
+                            f"searched_by_{self.name}": True,
+                        },
+                    }
+                    metadata = to_complete_metadata_structure(metadata)
+                    if return_as == "dict":
+                        return metadata
+                    if return_as == "json":
+                        return json.dumps(metadata, indent=2)
+
+            return None
+
+        except Exception as exc:
+            logger.warn(f"URL DOI extraction error: {exc}")
         return None
 
-    @property
-    def name(self) -> str:
-        """Return source name."""
-        return "from_url"
-
-    @property
-    def rate_limit_delay(self) -> float:
-        """No rate limiting needed for URL extraction."""
-        return 0.0
-
     def _extract_pubmed_id(self, url: str) -> Optional[str]:
-        """Extract PubMed ID from URL."""
         for pattern in self.pubmed_patterns:
             match = re.search(pattern, url, re.IGNORECASE)
             if match:
@@ -131,7 +206,6 @@ class URLDOISource(BaseDOISource):
         return None
 
     def _extract_ieee_id(self, url: str) -> Optional[str]:
-        """Extract IEEE document ID from URL."""
         for pattern in self.ieee_patterns:
             match = re.search(pattern, url, re.IGNORECASE)
             if match:
@@ -139,7 +213,6 @@ class URLDOISource(BaseDOISource):
         return None
 
     def _extract_semantic_scholar_id(self, url: str) -> Optional[str]:
-        """Extract Semantic Scholar ID from URL."""
         for pattern in self.semantic_patterns:
             match = re.search(pattern, url, re.IGNORECASE)
             if match:
@@ -147,63 +220,40 @@ class URLDOISource(BaseDOISource):
         return None
 
     def _lookup_ieee_doi(self, ieee_id: str) -> Optional[str]:
-        """Look up DOI from IEEE document ID."""
         try:
-            # IEEE Xplore API approach
-            # Note: IEEE provides DOIs in their metadata
             url = f"https://ieeexplore.ieee.org/document/{ieee_id}"
-
             response = requests.get(url, timeout=10, allow_redirects=True)
             if response.status_code == 200:
-                # Extract DOI from page content
                 content = response.text
-
-                # Look for DOI patterns in the HTML
                 doi_patterns = [
                     r'"doi":"([^"]+)"',
                     r'doi\.org/([^"\'>\s]+)',
                     r"DOI:\s*([^\s<]+)",
                     r'"DOI":"([^"]+)"',
                 ]
-
                 for pattern in doi_patterns:
                     match = re.search(pattern, content, re.IGNORECASE)
                     if match:
                         doi = match.group(1)
                         if doi and not doi.startswith("http"):
                             return self._clean_doi(doi)
-
-                # IEEE typically uses 10.1109 prefix
-                # Generate DOI pattern for IEEE papers
-                if ieee_id.isdigit():
-                    # Some IEEE papers follow predictable DOI patterns
-                    potential_doi = (
-                        f"10.1109/ACCESS.{ieee_id}"  # Example pattern
-                    )
-                    return potential_doi
-
-        except Exception as e:
-            logger.debug(f"IEEE lookup failed for {ieee_id}: {e}")
-
+        except Exception as exc:
+            logger.debug(f"IEEE lookup failed for {ieee_id}: {exc}")
         return None
 
     def _lookup_semantic_scholar_doi(self, semantic_id: str) -> Optional[str]:
-        """Look up DOI from Semantic Scholar ID with enhanced API support."""
         max_retries = 3
-        base_delay = 0.5 if self.api_key else 2.0  # Faster with API key
+        base_delay = 0.5 if self.api_key else 2.0
 
         for attempt in range(max_retries):
             try:
-                # Try Semantic Scholar API
-                if semantic_id.isdigit():  # CorpusId
+                if semantic_id.isdigit():
                     url = f"https://api.semanticscholar.org/graph/v1/paper/CorpusId:{semantic_id}"
-                else:  # Paper ID
+                else:
                     url = f"https://api.semanticscholar.org/graph/v1/paper/{semantic_id}"
 
                 params = {"fields": "externalIds,title,authors"}
-
-                # Set up headers with API key if available
-                headers = {"User-Agent": "SciTeX/1.0 (research@scitex.ai)"}
+                headers = {"User-Agent": f"SciTeX/1.0 (mailto:{self.email})"}
                 if self.api_key:
                     headers["x-api-key"] = self.api_key
 
@@ -211,87 +261,65 @@ class URLDOISource(BaseDOISource):
                     url, params=params, headers=headers, timeout=15
                 )
 
-                if response.status_code == 429:  # Rate limited
+                if response.status_code == 429:
                     if attempt < max_retries - 1:
-                        # Exponential backoff with jitter
                         delay = (base_delay * (2**attempt)) + random.uniform(
                             0.5, 1.5
                         )
-                        logger.info(
-                            f"Rate limited on Semantic Scholar CorpusId {semantic_id}, retrying in {delay:.1f}s..."
-                        )
                         time.sleep(delay)
                         continue
-                    else:
-                        logger.warning(
-                            f"Rate limited on Semantic Scholar CorpusId {semantic_id}, giving up after {max_retries} attempts"
-                        )
-                        return None
+                    return None
 
                 if response.status_code == 404:
-                    logger.debug(
-                        f"Semantic Scholar ID {semantic_id} not found"
-                    )
                     return None
 
                 if response.status_code == 200:
                     data = response.json()
                     external_ids = data.get("externalIds", {})
                     doi = external_ids.get("DOI")
-
                     if doi:
-                        logger.info(
-                            f"Successfully resolved Semantic Scholar ID {semantic_id} → DOI: {doi}"
-                        )
                         return self._clean_doi(doi)
-                    else:
-                        # Check for ArXiv as fallback
-                        arxiv_id = external_ids.get("ArXiv")
-                        if arxiv_id:
-                            logger.info(
-                                f"Semantic Scholar ID {semantic_id} has ArXiv ID: {arxiv_id} (no DOI)"
-                            )
-                        else:
-                            logger.debug(
-                                f"Semantic Scholar ID {semantic_id} found but no DOI or ArXiv available"
-                            )
-                        return None
+                    return None
 
                 response.raise_for_status()
 
-            except requests.HTTPError as e:
-                if e.response and e.response.status_code == 429:
-                    continue  # Will retry with backoff
+            except requests.HTTPError as exc:
+                if exc.response and exc.response.status_code == 429:
+                    continue
                 logger.debug(
-                    f"Semantic Scholar HTTP error for {semantic_id}: {e}"
+                    f"Semantic Scholar HTTP error for {semantic_id}: {exc}"
                 )
                 return None
-            except Exception as e:
+            except Exception as exc:
                 logger.debug(
-                    f"Semantic Scholar lookup failed for {semantic_id}: {e}"
+                    f"Semantic Scholar lookup failed for {semantic_id}: {exc}"
                 )
                 return None
-
         return None
 
-    def get_abstract(self, doi: str) -> Optional[str]:
-        """URL extractor doesn't provide abstracts."""
-        return None
-
-    @property
-    def requires_email(self) -> bool:
-        """URL extraction doesn't require email."""
-        return False
-
-    def __str__(self) -> str:
-        """String representation."""
-        total_patterns = len(
-            self.ieee_patterns + self.pubmed_patterns + self.semantic_patterns
-        )
-        return f"URLDOISource(enhanced_patterns={total_patterns}, uses_utils=True)"
+    def _clean_doi(self, doi: str) -> str:
+        return doi.strip() if doi else doi
 
 
-# Export
-__all__ = ["URLDOISource"]
+if __name__ == "__main__":
+    from pprint import pprint
+
+    source = URLDOISource("test@example.com")
+
+    test_urls = [
+        "https://doi.org/10.1002/hbm.26190",
+        "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\&arnumber=10040734",
+        "https://www.ncbi.nlm.nih.gov/pubmed/33841115",
+        "https://api.semanticscholar.org/CorpusId:3626970",
+    ]
+
+    for url in test_urls:
+        metadata = source.search("Test Paper", url=url)
+        print(f"URL: {url}")
+        pprint(metadata)
+        print()
+
+
+# python -m scitex.scholar.metadata.doi.sources._URLDOISource
 
 # EOF

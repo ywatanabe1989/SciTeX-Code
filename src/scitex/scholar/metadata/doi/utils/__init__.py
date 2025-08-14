@@ -26,6 +26,7 @@ from ._PubMedConverter import PubMedConverter, pmid2doi
 from ._RateLimitHandler import RateLimitHandler
 from ._TextNormalizer import TextNormalizer
 from ._URLDOIExtractor import URLDOIExtractor
+from ._to_complete_metadata_structure import to_complete_metadata_structure
 
 __all__ = [
     "PubMedConverter",
@@ -33,6 +34,7 @@ __all__ = [
     "RateLimitHandler",
     "TextNormalizer",
     "URLDOIExtractor",
+    "to_complete_metadata_structure",
 ]
 
 
