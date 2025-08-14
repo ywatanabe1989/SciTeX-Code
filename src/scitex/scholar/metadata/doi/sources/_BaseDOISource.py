@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 09:25:40 (ywatanabe)"
+# Timestamp: "2025-08-14 20:09:47 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_BaseDOISource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -65,6 +65,10 @@ class BaseDOISource(ABC):
         """Source name for logging."""
         pass
 
+    @property
+    def rate_limit_delay(self) -> float:
+        return 1.0
+
     def set_rate_limit_handler(self, handler):
         """Set the rate limit handler for this source."""
         self.rate_limit_handler = handler
@@ -92,11 +96,11 @@ class BaseDOISource(ABC):
 
     @property
     def session(self):
-        """Lazy load session with user agent."""
         if self._session is None:
             self._session = requests.Session()
-            user_agent = self._get_user_agent()
-            self._session.headers.update({"User-Agent": user_agent})
+            self._session.headers.update(
+                {"User-Agent": self._get_user_agent()}
+            )
         return self._session
 
     def _get_user_agent(self) -> str:
@@ -360,7 +364,7 @@ class BaseDOISource(ABC):
         return None
 
     def _is_title_match(
-        self, title1: str, title2: str, threshold: float = 0.6
+        self, title1: str, title2: str, threshold: float = 0.95
     ) -> bool:
         """
         Check if two titles match using the enhanced TextNormalizer utility.

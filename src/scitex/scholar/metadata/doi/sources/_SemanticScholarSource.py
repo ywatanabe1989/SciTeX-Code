@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 18:19:33 (ywatanabe)"
+# Timestamp: "2025-08-14 21:14:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_SemanticScholarSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -86,6 +86,7 @@ class SemanticScholarSource(BaseDOISource):
         corpus_id: Optional[str] = None,
         max_results=1,
         return_as: Optional[str] = "dict",
+        **kwargs,
     ) -> Optional[Dict]:
         """When doi or corpus_id is provided, all other information is ignored"""
         if doi:
@@ -155,7 +156,6 @@ class SemanticScholarSource(BaseDOISource):
             return None
 
         self._handle_rate_limit()
-
         url = f"{self.base_url}/paper/search"
         params = {
             "query": title,
@@ -172,16 +172,44 @@ class SemanticScholarSource(BaseDOISource):
 
             if response.status_code == 429:
                 raise requests.ConnectionError("Rate limit exceeded")
-
             response.raise_for_status()
+
             data = response.json()
             papers = data.get("data", [])
 
             for paper in papers:
                 paper_title = paper.get("title", "")
-                if self._is_title_match(title, paper_title):
-                    return self._extract_metadata_from_paper(paper, return_as)
+                paper_year = paper.get("year")
+                paper_authors = [
+                    author.get("name", "")
+                    for author in paper.get("authors", [])
+                ]
+
+                # Check title match
+                if not self._is_title_match(title, paper_title):
+                    continue
+
+                # Check year match if provided
+                if year and paper_year and int(year) != int(paper_year):
+                    continue
+
+                # Check author match if provided
+                if authors and paper_authors:
+                    # Check if any provided author appears in paper authors
+                    author_match = any(
+                        any(
+                            provided_author.lower() in paper_author.lower()
+                            for paper_author in paper_authors
+                        )
+                        for provided_author in authors
+                    )
+                    if not author_match:
+                        continue
+
+                return self._extract_metadata_from_paper(paper, return_as)
+
             return None
+
         except requests.ConnectionError:
             raise
         except Exception as exc:
@@ -238,7 +266,6 @@ class SemanticScholarSource(BaseDOISource):
         """Extract metadata from Semantic Scholar paper"""
         paper_title = paper.get("title", "")
         paper_year = paper.get("year")
-
         extracted_authors = []
         for author in paper.get("authors", []):
             if author.get("name"):
@@ -246,38 +273,38 @@ class SemanticScholarSource(BaseDOISource):
 
         external_ids = paper.get("externalIds", {})
         doi = external_ids.get("DOI")
-        scholar_id = external_ids.get("CorpusId")
+        corpus_id = external_ids.get("CorpusId")
 
         metadata = {
             "id": {
                 "doi": doi,
-                "doi_source": self.name if doi else None,
-                "scholar_id": scholar_id,
-                "scholar_id_source": self.name if scholar_id else None,
+                "doi_sources": [self.name] if doi else None,
+                "corpus_id": corpus_id,
+                "corpus_id_sources": [self.name] if corpus_id else None,
             },
             "basic": {
                 "title": paper_title if paper_title else None,
-                "title_source": self.name if paper_title else None,
+                "title_sources": [self.name] if paper_title else None,
                 "year": paper_year if paper_year else None,
-                "year_source": self.name if paper_year else None,
+                "year_sources": [self.name] if paper_year else None,
                 "abstract": (
                     paper.get("abstract") if paper.get("abstract") else None
                 ),
-                "abstract_source": (
-                    self.name if paper.get("abstract") else None
+                "abstract_sources": (
+                    [self.name] if paper.get("abstract") else None
                 ),
                 "authors": extracted_authors if extracted_authors else None,
-                "authors_source": self.name if extracted_authors else None,
+                "authors_sources": [self.name] if extracted_authors else None,
             },
             "publication": {
                 "journal": paper.get("venue") if paper.get("venue") else None,
-                "journal_source": self.name if paper.get("venue") else None,
+                "journal_sources": [self.name] if paper.get("venue") else None,
             },
             "url": {
                 "doi": f"https://doi.org/{doi}" if doi else None,
-                "doi_source": self.name if doi else None,
+                "doi_sources": [self.name] if doi else None,
                 "publisher": paper.get("url") if paper.get("url") else None,
-                "publisher_source": self.name if paper.get("url") else None,
+                "publisher_sources": [self.name] if paper.get("url") else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,
@@ -285,6 +312,7 @@ class SemanticScholarSource(BaseDOISource):
         }
 
         metadata = to_complete_metadata_structure(metadata)
+
         if return_as == "dict":
             return metadata
         if return_as == "json":
@@ -310,15 +338,15 @@ if __name__ == "__main__":
         title=TITLE, return_as="json"
     )
 
-    # Search by DOI
-    outputs["metadata_by_doi_dict"] = source.search(doi=DOI)
-    outputs["metadata_by_doi_json"] = source.search(doi=DOI, return_as="json")
+    # # Search by DOI
+    # outputs["metadata_by_doi_dict"] = source.search(doi=DOI)
+    # outputs["metadata_by_doi_json"] = source.search(doi=DOI, return_as="json")
 
-    # Search by Corpus ID
-    outputs["metadata_by_corpus_id_dict"] = source.search(corpus_id=CORPUS_ID)
-    outputs["metadata_by_corpus_id_json"] = source.search(
-        corpus_id=CORPUS_ID, return_as="json"
-    )
+    # # Search by Corpus ID
+    # outputs["metadata_by_corpus_id_dict"] = source.search(corpus_id=CORPUS_ID)
+    # outputs["metadata_by_corpus_id_json"] = source.search(
+    #     corpus_id=CORPUS_ID, return_as="json"
+    # )
 
     for k, v in outputs.items():
         print("----------------------------------------")

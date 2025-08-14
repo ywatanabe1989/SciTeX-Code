@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 06:40:06 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceManager.py
+# Timestamp: "2025-08-14 18:33:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_SourceManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -66,7 +66,6 @@ class SourceManager:
 
         Args:
             sources: List of source names to manage
-            email_config: Dictionary mapping source names to email addresses
             rate_limit_handler: Rate limit handler to inject into sources
         """
         self.config = config or ScholarConfig()
@@ -292,45 +291,23 @@ class SourceManager:
 
         return validation
 
-    def update_email_config(self, email_config: Dict[str, str]):
-        """Update email configuration and reload affected sources.
-
-        Args:
-            email_config: New email configuration dictionary
-        """
-        self.email_config.update(email_config)
-
-        # Reload sources that use email configuration
-        email_dependent_sources = [
-            name
-            for name in self.sources
-            if name not in ["url_doi_source"]
-            and name in self._source_instances
-        ]
-
-        for name in email_dependent_sources:
-            self.reload_source(name)
-
-        logger.info(
-            f"Updated email configuration and reloaded {len(email_dependent_sources)} sources"
-        )
-
 
 if __name__ == "__main__":
-    # Test email configuration
-    email_config = {
-        "crossref": "test@example.com",
-        "pubmed": "test@example.com",
-        "openalex": "test@example.com",
-        "semantic_scholar": "test@example.com",
-        "arxiv": "test@example.com",
-    }
+    # # Test email configuration
+    # email_config = {
+    #     "crossref": "test@example.com",
+    #     "pubmed": "test@example.com",
+    #     "openalex": "test@example.com",
+    #     "semantic_scholar": "test@example.com",
+    #     "arxiv": "test@example.com",
+    # }
 
-    # Initialize source manager
-    manager = SourceManager(
-        sources=["crossref", "pubmed", "url_doi_source"],
-        email_config=email_config,
-    )
+    # # Initialize source manager
+    # manager = SourceManager(
+    #     sources=["crossref", "pubmed", "url_doi_source"],
+    #     email_config=email_config,
+    # )
+    manager = SourceManager(sources=["crossref", "pubmed", "url_doi_source"])
 
     print("Source Manager Test:")
     print(f"Available sources: {manager.get_available_source_names()}")
@@ -348,5 +325,8 @@ if __name__ == "__main__":
     # Test source statistics
     stats = manager.get_source_statistics()
     print(f"Source statistics: {stats}")
+
+
+# python -m scitex.scholar.metadata.doi.sources._SourceManager
 
 # EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 06:48:21 (ywatanabe)"
+# Timestamp: "2025-08-14 19:00:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceRotationManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -494,10 +494,8 @@ if __name__ == "__main__":
         print("=" * 60)
 
         # Create rate limit handler and rotation manager
-        from ._RateLimitHandler import RateLimitHandler
-
         state_file = Path("/tmp/test_source_rotation.json")
-        rate_handler = RateLimitHandler(state_file=state_file)
+        rate_handler = RateLimitHandler()
         rotation_manager = SourceRotationManager(rate_handler)
 
         print("✅ SourceRotationManager initialized")
@@ -597,6 +595,6 @@ if __name__ == "__main__":
 
     asyncio.run(test_source_rotation_manager())
 
-# python -m scitex.scholar.doi._SourceRotationManager
+# python -m scitex.scholar.metadata.doi.sources._SourceRotationManager
 
 # EOF

@@ -180,3 +180,4 @@ crawl4ai
 pytesseract
 pyautogui
 pymed
+thefuzz

@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 18:28:23 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_PubMedSource_v01-not-doi-accepted.py
+# Timestamp: "2025-08-14 21:32:19 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_PubMedSource.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/sources/_PubMedSource_v01-not-doi-accepted.py"
+    "./src/scitex/scholar/metadata/doi/sources/_PubMedSource.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import time
 from typing import Any, Dict
-
-import requests
 
 """
 PubMed DOI source implementation.
@@ -50,36 +48,9 @@ class PubMedSource(BaseDOISource):
         self._session = None
 
     @property
-    def session(self):
-        """Lazy load session."""
-        if self._session is None:
-            self._session = requests.Session()
-        return self._session
-
-    @property
     def name(self) -> str:
         return "PubMed"
 
-    # def search(
-    #     self,
-    #     title: Optional[str] = None,
-    #     year: Optional[int] = None,
-    #     authors: Optional[List[str]] = None,
-    #     max_results=1,
-    #     doi: Optional[str] = None,
-    #     pmid: Optional[str] = None,
-    #     return_as: Optional[str] = "dict",
-    # ) -> Optional[Dict[str, Any]]:
-    #     """Get comprehensive metadata from PubMed."""
-    #     assert return_as in [
-    #         "dict",
-    #         "json",
-    #     ], "return_as must be either of 'dict' or 'json'"
-
-    #     if pmid:
-    #         return self._search_by_pmid(pmid, return_as)
-    #     else:
-    #         return self._search_by_metadata(title, year, authors, return_as)
     def search(
         self,
         title: Optional[str] = None,
@@ -89,6 +60,7 @@ class PubMedSource(BaseDOISource):
         doi: Optional[str] = None,
         pmid: Optional[str] = None,
         return_as: Optional[str] = "dict",
+        **kwargs,
     ) -> Optional[Dict[str, Any]]:
         """Get comprehensive metadata from PubMed."""
         assert return_as in [
@@ -264,35 +236,37 @@ class PubMedSource(BaseDOISource):
         metadata = {
             "id": {
                 "doi": doi,
-                "doi_source": self.name if doi else None,
+                "doi_sources": [self.name] if doi else None,
                 "pmid": pmid,
-                "pmid_source": self.name,
+                "pmid_sources": [self.name],
             },
             "basic": {
                 "title": title,
-                "title_source": self.name if title else None,
+                "title_sources": [self.name] if title else None,
                 "year": year,
-                "year_source": self.name if year else None,
+                "year_sources": [self.name] if year else None,
                 "abstract": abstract,
-                "abstract_source": self.name if abstract else None,
+                "abstract_sources": [self.name] if abstract else None,
                 "authors": authors if authors else None,
-                "authors_source": self.name if authors else None,
+                "authors_sources": [self.name] if authors else None,
             },
             "publication": {
                 "journal": journal,
-                "journal_source": self.name if journal else None,
+                "journal_sources": [self.name] if journal else None,
                 "short_journal": short_journal,
-                "short_journal_source": (self.name if short_journal else None),
+                "short_journal_sources": (
+                    [self.name] if short_journal else None
+                ),
                 "issn": issn,
-                "issn_source": self.name if issn else None,
+                "issn_sources": [self.name] if issn else None,
                 "volume": volume,
-                "volume_source": self.name if volume else None,
+                "volume_sources": [self.name] if volume else None,
                 "issue": issue,
-                "issue_source": self.name if issue else None,
+                "issue_sources": [self.name] if issue else None,
             },
             "url": {
                 "doi": f"https://doi.org/{doi}" if doi else None,
-                "doi_source": self.name if doi else None,
+                "doi_sources": [self.name] if doi else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,

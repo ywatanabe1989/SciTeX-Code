@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 16:39:32 (ywatanabe)"
+# Timestamp: "2025-08-14 21:15:30 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_URLDOISource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -93,11 +93,11 @@ class URLDOISource(BaseDOISource):
             metadata = {
                 "id": {
                     "doi": doi,
-                    "doi_source": self.name,
+                    "doi_sources": [self.name] if doi else None,
                 },
                 "url": {
                     "doi": f"https://doi.org/{doi}",
-                    "doi_source": self.name,
+                    "doi_sources": [self.name] if doi else None,
                 },
                 "system": {
                     f"searched_by_{self.name}": True,
@@ -137,17 +137,17 @@ class URLDOISource(BaseDOISource):
                 metadata = {
                     "id": {
                         "doi": doi,
-                        "doi_source": self.name,
+                        "doi_sources": [self.name],
                     },
                     "basic": {
                         "title": title if title else None,
-                        "title_source": "input" if title else None,
+                        "title_sources": ["input"] if title else None,
                     },
                     "url": {
                         "doi": "https://doi.org/" + doi,
-                        "doi_source": self.name,
+                        "doi_sources": [self.name],
                         "publisher": url,
-                        "publisher_source": self.name,
+                        "publisher_sources": [self.name],
                     },
                 }
                 metadata = to_complete_metadata_structure(metadata)
@@ -163,17 +163,17 @@ class URLDOISource(BaseDOISource):
                     metadata = {
                         "id": {
                             "doi": doi,
-                            "doi_source": self.name,
+                            "doi_sources": [self.name],
                             "pmid": pmid,
-                            "pmid_source": self.name,
+                            "pmid_sources": [self.name],
                         },
                         "basic": {
                             "title": title if title else None,
-                            "title_source": "input" if title else None,
+                            "title_sources": ["input"] if title else None,
                         },
                         "url": {
                             "publisher": url,
-                            "publisher_source": self.name,
+                            "publisher_sources": [self.name],
                         },
                         "system": {
                             f"searched_by_{self.name}": True,
@@ -193,17 +193,17 @@ class URLDOISource(BaseDOISource):
                     metadata = {
                         "id": {
                             "doi": doi,
-                            "doi_source": self.name,
+                            "doi_sources": [self.name],
                         },
                         "basic": {
                             "title": title if title else None,
-                            "title_source": "input" if title else None,
+                            "title_sources": ["input"] if title else None,
                         },
                         "url": {
                             "doi": "https://doi.org/" + doi,
-                            "doi_source": self.name,
+                            "doi_sources": [self.name],
                             "publisher": url,
-                            "publisher_source": self.name,
+                            "publisher_sources": [self.name],
                         },
                         "system": {
                             f"searched_by_{self.name}": True,
@@ -215,26 +215,26 @@ class URLDOISource(BaseDOISource):
                     if return_as == "json":
                         return json.dumps(metadata, indent=2)
 
-            semantic_id = self._extract_semantic_scholar_id(url)
+            semantic_id = self._extract_semantic_corpus_id(url)
             if semantic_id:
                 doi = self._lookup_semantic_scholar_doi(semantic_id)
                 if doi:
                     metadata = {
                         "id": {
                             "doi": doi,
-                            "doi_source": self.name,
-                            "scholar_id": semantic_id,
-                            "scholar_id_source": self.name,
+                            "doi_sources": [self.name],
+                            "corpus_id": semantic_id,
+                            "corpus_id_sources": [self.name],
                         },
                         "basic": {
                             "title": title if title else None,
-                            "title_source": "input" if title else None,
+                            "title_sources": ["input"] if title else None,
                         },
                         "url": {
                             "doi": "https://doi.org/" + doi,
-                            "doi_source": self.name,
+                            "doi_sources": [self.name],
                             "publisher": url,
-                            "publisher_source": self.name,
+                            "publisher_sources": [self.name],
                         },
                         "system": {
                             f"searched_by_{self.name}": True,
@@ -265,7 +265,7 @@ class URLDOISource(BaseDOISource):
                 return match.group(1)
         return None
 
-    def _extract_semantic_scholar_id(self, url: str) -> Optional[str]:
+    def _extract_semantic_corpus_id(self, url: str) -> Optional[str]:
         for pattern in self.semantic_patterns:
             match = re.search(pattern, url, re.IGNORECASE)
             if match:

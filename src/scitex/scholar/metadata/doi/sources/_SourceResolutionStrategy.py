@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 07:39:55 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/doi/sources/_SourceResolutionStrategy.py
+# Timestamp: "2025-08-14 19:15:03 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_SourceResolutionStrategy.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -56,12 +56,12 @@ class SourceResolutionStrategy:
     def __init__(
         self,
         sources: Optional[List[str]] = None,
-        rate_limit_handler: Optional[RateLimitHandler] = None,
         email_crossref: Optional[str] = None,
         email_pubmed: Optional[str] = None,
         email_openalex: Optional[str] = None,
         email_semantic_scholar: Optional[str] = None,
         email_arxiv: Optional[str] = None,
+        rate_limit_handler: Optional[RateLimitHandler] = None,
         config: Optional[ScholarConfig] = None,
     ):
         """Initialize source resolution strategy.
@@ -90,7 +90,12 @@ class SourceResolutionStrategy:
         )
         self.arxiv_email = self.config.resolve("arxiv_email", email_arxiv)
 
-        self.rate_limit_handler = rate_limit_handler
+        # Rate Limit Handler
+        self.rate_limit_handler = rate_limit_handler or RateLimitHandler(
+            config
+        )
+
+        # Source Rotation Manager
         self.source_rotation_manager = SourceRotationManager(
             self.rate_limit_handler
         )
@@ -102,18 +107,16 @@ class SourceResolutionStrategy:
             f"SourceResolutionStrategy initialized with sources: {self.sources}"
         )
 
-    def _is_doi(self, input_str: str) -> bool:
-        """Check if input string is a DOI."""
-        return bool(re.match(r"^10\.\d{4,}/[^\s]+$", input_str))
-
     async def metadata2metadata_async(
         self,
-        title: str,
-        doi: Optional[int] = None,
-        year: Optional[int] = None,
+        title: Optional[str] = None,
         authors: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
+        doi: Optional[str] = None,
+        pmid: Optional[str] = None,
+        corpus_id: Optional[str] = None,
         url: Optional[str] = None,
+        year: Optional[int] = None,
+        sources: Optional[List[str]] = None,
         **kwargs,
     ) -> Optional[Dict]:
         """Resolve DOI from sources with intelligent source rotation and rate limit handling.
@@ -129,12 +132,6 @@ class SourceResolutionStrategy:
         Returns:
             Dict with 'doi', 'source', and optional 'metadata' keys if found, None otherwise
         """
-        if self._is_doi(title) and (doi is None):
-            logger.warn(
-                f"DOI detected instead of title. Handling {title} as doi"
-            )
-            doi = title
-            title = ""
 
         # Try CorpusID resolution if URL contains CorpusID
         corpus_result = await self._corpusid2metadata_async(
@@ -190,9 +187,8 @@ class SourceResolutionStrategy:
                 )
             )
         else:
-            optimal_sources = available_sources[
-                :3
-            ]  # Fallback to first 3 sources
+            # Fallback to first 3 sources
+            optimal_sources = available_sources[:3]
 
         logger.debug(f"Trying sources in optimal order: {optimal_sources}")
 
@@ -490,17 +486,17 @@ class SourceResolutionStrategy:
             loop = asyncio.get_event_loop()
             # Pass URL and kwargs to URLDOISource, regular params to others
             if hasattr(source, "name") and source.name == "url_doi_source":
-                doi = await loop.run_in_executor(
+                result = await loop.run_in_executor(
                     None, source.search, title, year, authors, url, **kwargs
                 )
             else:
-                doi = await loop.run_in_executor(
+                result = await loop.run_in_executor(
                     None, source.search, title, year, authors
                 )
 
-            if doi:
-                logger.success(f"Found DOI via {source.name}: {doi}")
-                return doi
+            if result:
+                logger.success(f"Found DOI via {source.name}")
+                return result
             else:
                 logger.debug(f"No DOI found via {source.name}")
                 return None
@@ -553,18 +549,11 @@ if __name__ == "__main__":
 
     async def test_source_resolution_strategy():
         """Test the source resolution strategy functionality."""
-        print("=" * 60)
-        print("SourceResolutionStrategy Test")
-        print("=" * 60)
 
         # Create strategy with default configuration
         strategy = SourceResolutionStrategy()
 
-        print("✅ SourceResolutionStrategy initialized")
-        print(f"   Configured sources: {strategy.sources}")
-
         # Test DOI resolution
-        print("\n1. Testing DOI resolution:")
         test_papers = [
             {
                 "title": "Attention is All You Need",
@@ -579,75 +568,61 @@ if __name__ == "__main__":
         ]
 
         for paper in test_papers:
-            print(f"\n   🔍 Searching: {paper['title'][:50]}...")
-            try:
-                result = await strategy.metadata2metadata_async(
-                    title=paper["title"],
-                    year=paper.get("year"),
-                    authors=paper.get("authors"),
-                )
+            # print(f"\n   🔍 Searching: {paper['title'][:50]}...")
+            result = await strategy.metadata2metadata_async(
+                title=paper["title"],
+                year=paper.get("year"),
+                authors=paper.get("authors"),
+            )
 
-                if result:
-                    print(f"   ✅ Found: {result.get('doi')}")
-                    print(f"   📊 Source: {result.get('source')}")
-                    if result.get("metadata"):
-                        print(
-                            f"   📄 Metadata keys: {list(result['metadata'].keys())}"
-                        )
-                else:
-                    print(f"   ❌ No DOI found")
+        # # Test CorpusID resolution
+        # print("\n2. Testing CorpusID resolution:")
+        # corpus_url = "https://www.semanticscholar.org/paper/Attention-Is-All-You-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776?p2df&CorpusId:13756489"
 
-            except Exception as e:
-                print(f"   ⚠️ Error: {e}")
+        # corpus_result = await strategy.metadata2metadata_async(
+        #     title="Attention is All You Need", year=2017, url=corpus_url
+        # )
 
-        # Test CorpusID resolution
-        print("\n2. Testing CorpusID resolution:")
-        corpus_url = "https://www.semanticscholar.org/paper/Attention-Is-All-You-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776?p2df&CorpusId:13756489"
+        # if corpus_result:
+        #     print(f"   ✅ CorpusID resolution: {corpus_result.get('doi')}")
+        #     print(f"   📊 Source: {corpus_result.get('source')}")
+        # else:
+        #     print(f"   ℹ️ CorpusID resolution not available or failed")
 
-        corpus_result = await strategy.metadata2metadata_async(
-            title="Attention is All You Need", year=2017, url=corpus_url
-        )
+        # # Test source availability
+        # print("\n3. Testing source availability:")
+        # available = strategy.get_available_sources()
+        # print(f"   Available sources: {available}")
 
-        if corpus_result:
-            print(f"   ✅ CorpusID resolution: {corpus_result.get('doi')}")
-            print(f"   📊 Source: {corpus_result.get('source')}")
-        else:
-            print(f"   ℹ️ CorpusID resolution not available or failed")
+        # # Show statistics
+        # print("\n4. Strategy statistics:")
+        # stats = strategy.get_source_statistics()
+        # print(f"   Configured sources: {len(stats['configured_sources'])}")
+        # print(f"   Instantiated sources: {len(stats['instantiated_sources'])}")
+        # print(f"   Available sources: {len(stats['available_sources'])}")
 
-        # Test source availability
-        print("\n3. Testing source availability:")
-        available = strategy.get_available_sources()
-        print(f"   Available sources: {available}")
+        # for source, details in stats["source_details"].items():
+        #     print(f"   {source}: {details['total_requests']} requests")
 
-        # Show statistics
-        print("\n4. Strategy statistics:")
-        stats = strategy.get_source_statistics()
-        print(f"   Configured sources: {len(stats['configured_sources'])}")
-        print(f"   Instantiated sources: {len(stats['instantiated_sources'])}")
-        print(f"   Available sources: {len(stats['available_sources'])}")
-
-        for source, details in stats["source_details"].items():
-            print(f"   {source}: {details['total_requests']} requests")
-
-        print("\n✅ SourceResolutionStrategy test completed!")
-        print("\nUsage patterns:")
-        print("1. Basic: strategy = SourceResolutionStrategy()")
-        print(
-            "2. Custom sources: SourceResolutionStrategy(sources=['crossref', 'pubmed'])"
-        )
-        print(
-            "3. With rate limiting: SourceResolutionStrategy(rate_limit_handler=handler)"
-        )
-        print(
-            "4. Async resolve: await strategy.metadata2metadata_async(title)"
-        )
-        print(
-            "5. Strategy handles source rotation and rate limiting automatically"
-        )
+        # print("\n✅ SourceResolutionStrategy test completed!")
+        # print("\nUsage patterns:")
+        # print("1. Basic: strategy = SourceResolutionStrategy()")
+        # print(
+        #     "2. Custom sources: SourceResolutionStrategy(sources=['crossref', 'pubmed'])"
+        # )
+        # print(
+        #     "3. With rate limiting: SourceResolutionStrategy(rate_limit_handler=handler)"
+        # )
+        # print(
+        #     "4. Async resolve: await strategy.metadata2metadata_async(title)"
+        # )
+        # print(
+        #     "5. Strategy handles source rotation and rate limiting automatically"
+        # )
 
     asyncio.run(test_source_resolution_strategy())
 
 
-# python -m scitex.scholar.doi.strategies._SourceResolutionStrategy
+# python -m scitex.scholar.metadata.doi.sources._SourceResolutionStrategy
 
 # EOF

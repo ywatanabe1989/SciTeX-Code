@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 16:51:56 (ywatanabe)"
+# Timestamp: "2025-08-14 21:19:10 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_ArXivSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -39,7 +39,6 @@ class ArXivSource(BaseDOISource):
     def __init__(self, email: str = "research@example.com"):
         super().__init__()
         self.email = email
-        # self._session = None
         self.base_url = "http://export.arxiv.org/api/query"
 
     def _get_user_agent(self) -> str:
@@ -62,6 +61,7 @@ class ArXivSource(BaseDOISource):
         doi: Optional[str] = None,
         max_results=1,
         return_as: Optional[str] = "dict",
+        **kwargs,
     ) -> Optional[Dict]:
         """When doi is provided, all the information other than doi is ignored"""
         if doi:
@@ -193,38 +193,41 @@ class ArXivSource(BaseDOISource):
         title = entry.get("title")
         if title and title.endswith("."):
             title = title[:-1]
-
         abstract = entry.get("summary")
         authors = [author.get("name") for author in entry.get("authors")]
         url_publisher = entry.get("link")
         doi = self._scrape_doi(url_publisher)
 
+        # Generate ArXiv DOI if not found
+        if not doi:
+            doi = f"10.48550/arxiv.{arxiv_id.lower()}"
+
         metadata = {
             "id": {
-                "doi": doi if doi else None,
-                "doi_source": self.name if doi else None,
-                "arxiv_id": arxiv_id if arxiv_id else None,
-                "arxiv_id_source": self.name if arxiv_id else None,
+                "doi": doi,
+                "doi_sources": [self.name],
+                "arxiv_id": arxiv_id,
+                "arxiv_id_sources": [self.name],
             },
             "basic": {
                 "title": title if title else None,
-                "title_source": self.name if title else None,
+                "title_sources": [self.name] if title else None,
                 "year": year if year else None,
-                "year_source": self.name if year else None,
+                "year_sources": [self.name] if year else None,
                 "abstract": abstract.replace("\n", " ") if abstract else None,
-                "abstract_source": self.name if abstract else None,
+                "abstract_sources": [self.name] if abstract else None,
                 "authors": authors if authors else None,
-                "authors_source": self.name if authors else None,
+                "authors_sources": [self.name] if authors else None,
             },
             "publication": {
                 "journal": self.name,
-                "journal_source": self.name,
+                "journal_sources": [self.name],
             },
             "url": {
-                "doi": "https://doi.org/" + doi if doi else None,
-                "doi_source": self.name if doi else None,
+                "doi": f"https://doi.org/{doi}",
+                "doi_sources": [self.name],
                 "publisher": url_publisher if url_publisher else None,
-                "publisher_source": self.name if url_publisher else None,
+                "publisher_sources": [self.name] if url_publisher else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,
@@ -232,10 +235,64 @@ class ArXivSource(BaseDOISource):
         }
 
         metadata = to_complete_metadata_structure(metadata)
+
         if return_as == "dict":
             return metadata
         if return_as == "json":
             return json.dumps(metadata, indent=2)
+
+    # def _extract_metadata_from_entry(
+    #     self, entry, return_as: str
+    # ) -> Optional[Dict]:
+    #     """Extract metadata from ArXiv entry"""
+    #     arxiv_id = entry.id.split("/abs/")[-1].split("v")[0]
+    #     year = entry.get("published", "")[:4]
+    #     title = entry.get("title")
+    #     if title and title.endswith("."):
+    #         title = title[:-1]
+
+    #     abstract = entry.get("summary")
+    #     authors = [author.get("name") for author in entry.get("authors")]
+    #     url_publisher = entry.get("link")
+    #     doi = self._scrape_doi(url_publisher)
+
+    #     metadata = {
+    #         "id": {
+    #             "doi": doi if doi else None,
+    #             "doi_sources": [self.name] if doi else None,
+    #             "arxiv_id": arxiv_id if arxiv_id else None,
+    #             "arxiv_id_sources": [self.name] if arxiv_id else None,
+    #         },
+    #         "basic": {
+    #             "title": title if title else None,
+    #             "title_sources": [self.name] if title else None,
+    #             "year": year if year else None,
+    #             "year_sources": [self.name] if year else None,
+    #             "abstract": abstract.replace("\n", " ") if abstract else None,
+    #             "abstract_sources": [self.name] if abstract else None,
+    #             "authors": authors if authors else None,
+    #             "authors_sources": [self.name] if authors else None,
+    #         },
+    #         "publication": {
+    #             "journal": self.name,
+    #             "journal_sources": [self.name],
+    #         },
+    #         "url": {
+    #             "doi": "https://doi.org/" + doi if doi else None,
+    #             "doi_sources": [self.name] if doi else None,
+    #             "publisher": url_publisher if url_publisher else None,
+    #             "publisher_sources": [self.name] if url_publisher else None,
+    #         },
+    #         "system": {
+    #             f"searched_by_{self.name}": True,
+    #         },
+    #     }
+
+    #     metadata = to_complete_metadata_structure(metadata)
+    #     if return_as == "dict":
+    #         return metadata
+    #     if return_as == "json":
+    #         return json.dumps(metadata, indent=2)
 
 
 if __name__ == "__main__":

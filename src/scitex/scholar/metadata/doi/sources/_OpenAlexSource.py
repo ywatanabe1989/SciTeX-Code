@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 18:04:43 (ywatanabe)"
+# Timestamp: "2025-08-14 21:26:55 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_OpenAlexSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,6 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import json
 import time
+from typing import Dict, List, Optional, Union
 
 from scitex import logging
 
@@ -37,9 +38,6 @@ class OpenAlexSource(BaseDOISource):
     def rate_limit_delay(self) -> float:
         return 0.1
 
-    import time
-    from typing import Dict, List, Optional, Union
-
     def search(
         self,
         title: Optional[str] = None,
@@ -48,6 +46,7 @@ class OpenAlexSource(BaseDOISource):
         doi: Optional[str] = None,
         max_results=1,
         return_as: Optional[str] = "dict",
+        **kwargs,
     ) -> Optional[Dict]:
         """When doi is provided, all the information other than doi is ignored"""
         if doi:
@@ -194,9 +193,9 @@ class OpenAlexSource(BaseDOISource):
 
         if doi and doi.startswith("10.48550/arxiv"):
             if not journal:
-                journal = "arXiv"
+                journal = "arXiv (Cornell University)"
             if not publisher:
-                publisher = "arXiv"
+                publisher = "Cornell University"
 
         citation_count = work.get("cited_by_count")
         citation_count_by_year = work.get("counts_by_year")
@@ -205,14 +204,21 @@ class OpenAlexSource(BaseDOISource):
                 str(dd["year"]): dd["cited_by_count"]
                 for dd in citation_count_by_year
             }
-        citation_counts = {
-            "total": citation_count,
-            **citation_count_by_year,
-        }
+            citation_counts = {
+                "total": citation_count,
+                **citation_count_by_year,
+            }
+            citation_counts_sources = {
+                f"{k}_sources": [self.name] for k, v in citation_counts.items()
+            }
+            citation_counts.update(citation_counts_sources)
 
         url_publisher = None
         if primary_location:
             url_publisher = primary_location.get("landing_page_url")
+        if doi and doi.startswith("10.48550/arxiv") and not url_publisher:
+            arxiv_id = doi.replace("10.48550/arxiv.", "")
+            url_publisher = f"http://arxiv.org/abs/{arxiv_id}"
 
         keywords = []
         for keyword in work.get("keywords", []):
@@ -222,54 +228,54 @@ class OpenAlexSource(BaseDOISource):
         metadata = {
             "id": {
                 "doi": doi if doi else None,
-                "doi_source": self.name if doi else None,
+                "doi_sources": [self.name] if doi else None,
                 "pmid": pmid if pmid else None,
-                "pmid_source": self.name if pmid else None,
+                "pmid_sources": [self.name] if pmid else None,
             },
             "basic": {
                 "title": work_title if work_title else None,
-                "title_source": self.name if work_title else None,
+                "title_sources": [self.name] if work_title else None,
                 "year": (
                     work.get("publication_year")
                     if work.get("publication_year")
                     else None
                 ),
-                "year_source": (
-                    self.name if work.get("publication_year") else None
+                "year_sources": (
+                    [self.name] if work.get("publication_year") else None
                 ),
                 "authors": extracted_authors if extracted_authors else None,
-                "authors_source": self.name if extracted_authors else None,
+                "authors_sources": [self.name] if extracted_authors else None,
                 "keywords": keywords if keywords else None,
-                "keywords_source": self.name if keywords else None,
+                "keywords_sources": [self.name] if keywords else None,
                 "type": work.get("type") if work.get("type", None) else None,
-                "type_source": self.name if work.get("type") else None,
+                "type_sources": [self.name] if work.get("type") else None,
             },
             "citation_count": {
                 **citation_counts,
             },
             "publication": {
                 "journal": journal if journal else None,
-                "journal_source": self.name if journal else None,
+                "journal_sources": [self.name] if journal else None,
                 "issn": issn if issn else None,
-                "issn_source": self.name if issn else None,
+                "issn_sources": [self.name] if issn else None,
                 "publisher": publisher if publisher else None,
-                "publisher_source": self.name if publisher else None,
+                "publisher_sources": [self.name] if publisher else None,
                 "volume": volume if volume else None,
-                "volume_source": self.name if volume else None,
+                "volume_sources": [self.name] if volume else None,
                 "issue": issue if issue else None,
-                "issue_source": self.name if issue else None,
+                "issue_sources": [self.name] if issue else None,
                 "first_page": first_page if first_page else None,
-                "first_page_source": self.name if first_page else None,
+                "first_page_sources": [self.name] if first_page else None,
                 "last_page": last_page if last_page else None,
-                "last_page_source": self.name if last_page else None,
+                "last_page_sources": [self.name] if last_page else None,
             },
             "url": {
                 "doi": f"https://doi.org/{doi}" if doi else None,
-                "doi_source": self.name if doi else None,
+                "doi_sources": [self.name] if doi else None,
                 "pdf": pdf_url if pdf_url else None,
-                "pdf_source": self.name if pdf_url else None,
+                "pdf_sources": [self.name] if pdf_url else None,
                 "publisher": url_publisher if url_publisher else None,
-                "publisher_source": self.name if url_publisher else None,
+                "publisher_sources": [self.name] if url_publisher else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,

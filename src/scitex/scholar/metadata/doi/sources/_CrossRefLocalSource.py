@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 16:23:42 (ywatanabe)"
+# Timestamp: "2025-08-14 21:15:33 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_CrossRefLocalSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -54,6 +54,7 @@ class CrossRefLocalSource(BaseDOISource):
         title: str,
         year: Optional[int] = None,
         authors: Optional[List[str]] = None,
+        **kwargs,
     ) -> Optional[str]:
         """Search local CrossRef database for DOI."""
         if not title:
@@ -140,7 +141,7 @@ class CrossRefLocalSource(BaseDOISource):
                         "year": row.get("published_year"),
                         "publisher": row.get("publisher"),
                         "abstract": row.get("abstract"),
-                        "journal_source": "crossref_local",
+                        "journal_sources": [self.name],
                     }
 
         except Exception as e:

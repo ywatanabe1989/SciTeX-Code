@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 17:57:49 (ywatanabe)"
+# Timestamp: "2025-08-14 21:26:40 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_CrossRefSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -46,6 +46,7 @@ class CrossRefSource(BaseDOISource):
         doi: Optional[str] = None,
         max_results=5,
         return_as: Optional[str] = "dict",
+        **kwargs,
     ) -> Optional[Dict]:
         """When doi is provided, all the information other than doi is ignored"""
         if doi:
@@ -157,37 +158,41 @@ class CrossRefSource(BaseDOISource):
         metadata = {
             "id": {
                 "doi": item.get("DOI"),
-                "doi_source": self.name if item.get("DOI") else None,
+                "doi_sources": [self.name] if item.get("DOI") else None,
             },
             "basic": {
                 "title": item_title if item_title else None,
-                "title_source": self.name if item_title else None,
+                "title_sources": [self.name] if item_title else None,
                 "year": pub_year if pub_year else None,
-                "year_source": self.name if pub_year else None,
+                "year_sources": [self.name] if pub_year else None,
                 "abstract": (
                     item.get("abstract") if item.get("abstract") else None
                 ),
-                "abstract_source": self.name if item.get("abstract") else None,
+                "abstract_sources": (
+                    [self.name] if item.get("abstract") else None
+                ),
                 "authors": extracted_authors if extracted_authors else None,
-                "authors_source": self.name if extracted_authors else None,
+                "authors_sources": [self.name] if extracted_authors else None,
             },
             "publication": {
                 "journal": journal if journal else None,
-                "journal_source": self.name if journal else None,
+                "journal_sources": [self.name] if journal else None,
                 "short_journal": short_journal if short_journal else None,
-                "short_journal_source": self.name if short_journal else None,
+                "short_journal_sources": (
+                    [self.name] if short_journal else None
+                ),
                 "publisher": (
                     item.get("publisher") if item.get("publisher") else None
                 ),
-                "publisher_source": (
-                    self.name if item.get("publisher") else None
+                "publisher_sources": (
+                    [self.name] if item.get("publisher") else None
                 ),
                 "volume": item.get("volume") if item.get("volume") else None,
-                "volume_source": self.name if item.get("volume") else None,
+                "volume_sources": [self.name] if item.get("volume") else None,
                 "issue": item.get("issue") if item.get("issue") else None,
-                "issue_source": self.name if item.get("issue") else None,
+                "issue_sources": [self.name] if item.get("issue") else None,
                 "issn": issn if issn else None,
-                "issn_source": self.name if issn else None,
+                "issn_sources": [self.name] if issn else None,
             },
             "url": {
                 "doi": (
@@ -195,7 +200,7 @@ class CrossRefSource(BaseDOISource):
                     if item.get("DOI")
                     else None
                 ),
-                "doi_source": self.name if item.get("DOI") else None,
+                "doi_sources": [self.name] if item.get("DOI") else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,
