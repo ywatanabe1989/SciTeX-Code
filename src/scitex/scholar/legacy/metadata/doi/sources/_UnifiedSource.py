@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:37:27 (ywatanabe)"
+# Timestamp: "2025-08-15 10:39:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/sources/_UnifiedSource.py
 # ----------------------------------------
 from __future__ import annotations
@@ -33,12 +33,12 @@ class UnifiedSource:
 
     def __init__(self, sources: List[str] = None):
         self.sources = sources or [
+            "URL",
             "Semantic_Scholar",
             "CrossRef",
             "OpenAlex",
             "PubMed",
             "arXiv",
-            "URL",
         ]
         self._source_instances = {}
         self.rotation_manager = None
@@ -46,12 +46,12 @@ class UnifiedSource:
     def _get_source(self, name: str):
         if name not in self._source_instances:
             source_classes = {
+                "URL": URLDOISource,
                 "CrossRef": CrossRefSource,
                 "OpenAlex": OpenAlexSource,
                 "PubMed": PubMedSource,
                 "Semantic_Scholar": SemanticScholarSource,
                 "arXiv": ArXivSource,
-                "URL": URLDOISource,
             }
             if name in source_classes:
                 if name == "url_doi_source":
@@ -321,12 +321,12 @@ class UnifiedSource:
         """Merge two metadata structures with source priority."""
         merged = base.copy()
         source_priority = {
+            "URL": 5,
             "CrossRef": 4,
             "OpenAlex": 3,
             "Semantic_Scholar": 2,
             "PubMed": 1,
             "arXiv": 1,
-            "URL": 1,
         }
 
         for section, section_data in additional.items():

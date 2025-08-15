@@ -26,7 +26,7 @@ import sys
 from scitex import logging
 
 from scitex.scholar.core import Paper
-from ..download._SmartPDFDownloader import SmartPDFDownloader
+from ..download._SmartScholarPDFDownloader import SmartScholarPDFDownloader
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +160,7 @@ def main():
         import asyncio
         from pathlib import Path
 
-        downloader = SmartPDFDownloader()
+        downloader = SmartScholarPDFDownloader()
         bibtex_path = Path(args.file)
 
         if not bibtex_path.exists():
@@ -189,7 +189,7 @@ def main():
     elif args.command == "paper":
         import asyncio
 
-        downloader = SmartPDFDownloader()
+        downloader = SmartScholarPDFDownloader()
 
         # Create paper object
         if args.doi:
@@ -217,7 +217,7 @@ def main():
             return 1
 
     elif args.command == "info":
-        downloader = SmartPDFDownloader()
+        downloader = SmartScholarPDFDownloader()
         info = downloader.get_strategy_info()
 
         print(f"\n🎯 SciTeX Scholar - Paywalled PDF Downloader")

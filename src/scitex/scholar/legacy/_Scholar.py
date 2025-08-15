@@ -40,10 +40,10 @@ from scitex.scholar.core import Paper
 from .core._Papers import Papers
 from scitex.scholar.config import ScholarConfig
 from .metadata.doi._SingleDOIResolver import SingleDOIResolver
-from .download._PDFDownloader import PDFDownloader
+from .download._ScholarPDFDownloader import ScholarPDFDownloader
 from .metadata.enrichment._MetadataEnricher import MetadataEnricher
 
-# SmartPDFDownloader removed - using PDFDownloader directly
+# SmartScholarPDFDownloader removed - using ScholarPDFDownloader directly
 from .search._UnifiedSearcher import UnifiedSearcher
 from .utils._paths import get_scholar_dir
 
@@ -312,7 +312,7 @@ class Scholar:
             >>> # Download single DOI
             >>> scholar.download_pdf_asyncs("10.1234/example")
         """
-        # Use the integrated PDFDownloader instead of standalone SciHubDownloader
+        # Use the integrated ScholarPDFDownloader instead of standalone SciHubDownloader
 
         # Set default download directory
         if download_dir is None:
@@ -352,7 +352,7 @@ class Scholar:
                 "download_files": {},
             }
 
-        # Update PDFDownloader settings
+        # Update ScholarPDFDownloader settings
         self._pdf_downloader.acknowledge_ethical_usage = (
             acknowledge_ethical_usage
         )
@@ -1079,8 +1079,8 @@ class Scholar:
             "debug_mode": self.config.resolve('debug_mode', None, False, bool),
         }
 
-        # Update to use PDFDownloader with new configuration
-        self._pdf_downloader = PDFDownloader(
+        # Update to use ScholarPDFDownloader with new configuration
+        self._pdf_downloader = ScholarPDFDownloader(
             download_dir=(
                 Path(self.config.resolve('pdf_dir', None, None, str)).expanduser()
                 if self.config.resolve('pdf_dir', None, None, str)
@@ -1377,8 +1377,8 @@ class Scholar:
                 "debug_mode": self.config.resolve('debug_mode', None, False, bool),
             }
 
-        # Initialize PDFDownloader with config
-        self._pdf_downloader = PDFDownloader(
+        # Initialize ScholarPDFDownloader with config
+        self._pdf_downloader = ScholarPDFDownloader(
             download_dir=(
                 Path(self.config.resolve('pdf_dir', None, None, str)).expanduser()
                 if self.config.resolve('pdf_dir', None, None, str)

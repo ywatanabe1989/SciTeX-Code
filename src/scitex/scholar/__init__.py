@@ -20,19 +20,27 @@ Quick Start:
 
 # Import configuration
 from scitex.scholar.config import ScholarConfig
-from .metadata.doi import DOIResolver
 from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.browser import BrowserManager
+from scitex.scholar.engines import ScholarEngine
+from scitex.scholar.url import ScholarURLFinder
+from scitex.scholar.download import ScholarPDFDownloader
+# from .metadata.doi import DOIResolver
 
 # Import core classes
-from .core import Paper, Papers, Scholar
+from .core import Paper, Papers#, Scholar
 
 __all__ = [
     "ScholarConfig",
-    "DOIResolver", 
+    "ScholarEngine",
+    "ScholarURLFinder",
     "AuthenticationManager",
+    "BrowserManager",
+    # "DOIResolver",
+
     "Paper",
-    "Papers", 
-    "Scholar",
+    "Papers",
+    # "Scholar",
 ]
 
 # # Import core classes for advanced users
@@ -62,12 +70,12 @@ __all__ = [
 # )
 
 # # PDF download functionality
-# from .download._PDFDownloader import (
-#     PDFDownloader,
+# from .download._ScholarPDFDownloader import (
+#     ScholarPDFDownloader,
 #     download_pdf_async,
 #     download_pdf_asyncs_async,
 # )
-# from .download._SmartPDFDownloader import SmartPDFDownloader
+# from .download._SmartScholarPDFDownloader import SmartScholarPDFDownloader
 
 # # Browser-based download functionality removed - simplified structure
 
@@ -149,7 +157,7 @@ __all__ = [
 #     'MetadataEnricher',
 
 #     # PDF download functionality
-#     'PDFDownloader',
+#     'ScholarPDFDownloader',
 #     'download_pdf_async',
 #     'download_pdf_asyncs_async',
 
@@ -202,7 +210,7 @@ __all__ = [
 # #         'get_scholar_dir': 'Scholar().workspace_dir',
 # #         'LocalSearchEngine': 'Scholar',
 # #         'VectorSearchEngine': 'Scholar',
-# #         'PDFDownloader': 'Scholar',
+# #         'ScholarPDFDownloader': 'Scholar',
 # #         'search_papers': 'search',
 # #         'SemanticScholarPaper': 'Paper',
 # #         'PaperMetadata': 'Paper',

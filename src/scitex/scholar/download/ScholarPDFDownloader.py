@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-12 20:13:10 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/_PDFDownloader.py
+# Timestamp: "2025-08-15 18:21:35 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/download/_PDFDownloader.py"
+    "./src/scitex/scholar/download/ScholarPDFDownloader.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -17,14 +17,16 @@ from typing import List, Optional
 from playwright.async_api import BrowserContext
 
 from scitex import logging
-from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.browser import BrowserManager
-from scitex.scholar.metadata.urls import URLHandler
+from scitex.scholar import AuthenticationManager, BrowserManager, ScholarURLFinder
+
+# from scitex.scholar.auth import AuthenticationManager
+# from scitex.scholar.browser import BrowserManager
+# from scitex.scholar.metadata.urls import ScholarURLFinder
 
 logger = logging.getLogger(__name__)
 
 
-class PDFDownloader:
+class ScholarPDFDownloader:
     def __init__(
         self,
         chrome_profile_name: str = "system",
@@ -45,7 +47,7 @@ class PDFDownloader:
         browser, self.context = (
             await self.browser_manager.get_authenticated_browser_and_context_async()
         )
-        self.url_handler = URLHandler(self.context)
+        self.url_handler = ScholarURLFinder(self.context)
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -87,23 +89,25 @@ class PDFDownloader:
 
     async def download_from_doi(self, doi: str, output_dir: str = "/tmp/"):
         output_dir = Path(str(output_dir))
-        urls = await self.url_handler.get_all_urls(doi=doi)
+        urls = await self.url_handler.find_urls(doi=doi)
         pdf_urls = [url_pdf_entry["url"] for url_pdf_entry in urls["url_pdf"]]
         await self.download_pdfs_direct(pdf_urls)
 
 
 if __name__ == "__main__":
-
-    async def main(doi, output_dir):
-        async with PDFDownloader() as downloader:
-            await downloader.download_from_doi(doi, output_dir=output_dir)
-
-    # async def main(doi, output_dir):
-    #     downloader = PDFDownloader()
-    #     await downloader.download_from_doi(doi, output_dir=output_dir)
-
     import asyncio
 
-    asyncio.run(main("10.1523/jneurosci.2929-12.2012", "/tmp/"))
+    async def main_async():
+        from scitex.scholar import ScholarPDFDownloader
+
+        DOI = "10.1523/jneurosci.2929-12.2012"
+        OUTPUT_DIR = "/tmp/"
+
+        async with ScholarPDFDownloader() as downloader:
+            await downloader.download_from_doi(doi, output_dir=output_dir)
+
+    asyncio.run(main_async())
+
+# python -m scholar.download._ScholarPDFDownloader
 
 # EOF

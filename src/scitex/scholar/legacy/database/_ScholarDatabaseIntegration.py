@@ -28,7 +28,7 @@ from typing import Any, Dict, List, Optional
 from scitex import logging
 
 from scitex.scholar.core import Paper
-from ..download import SmartPDFDownloader
+from ..download import SmartScholarPDFDownloader
 from ..utils import PDFContentValidator, PDFQualityAnalyzer
 from ._DatabaseEntry import DatabaseEntry
 from .core._PaperDatabase import PaperDatabase
@@ -223,7 +223,7 @@ class ScholarDatabaseIntegration:
                 return Path(entry.pdf_path)
 
             # Download PDF
-            downloader = SmartPDFDownloader()
+            downloader = SmartScholarPDFDownloader()
             success, pdf_path = await downloader.download_single(paper)
 
             if success and pdf_path:

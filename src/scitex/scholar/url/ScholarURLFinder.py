@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 00:49:18 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/urls/_handler.py
+# Timestamp: "2025-08-15 18:22:27 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/urls/_handler.py"
+    "./src/scitex/scholar/url/ScholarURLFinder.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-URLHandler - Main entry point for URL operations
+ScholarURLFinder - Main entry point for URL operations
 
 Provides a clean API that wraps the functional modules.
 Users can use this for convenience or directly import the functions.
@@ -25,13 +25,16 @@ from typing import Any, Dict, List, Optional
 from playwright.async_api import BrowserContext, Page
 
 from scitex import logging
+from scitex.scholar.config import ScholarConfig
 
 # Import functional modules
-from ._finder import find_all_urls, find_pdf_urls, find_supplementary_urls
-from ._resolver import (
+from .helpers import (
     build_url_doi,
     doi_to_url_publisher,
     extract_doi_from_url,
+    find_all_urls,
+    find_pdf_urls,
+    find_supplementary_urls,
     generate_openurl_query,
     resolve_all_urls,
     resolve_openurl,
@@ -40,7 +43,7 @@ from ._resolver import (
 logger = logging.getLogger(__name__)
 
 
-class URLHandler:
+class ScholarURLFinder:
     """
     Main entry point for all URL operations.
 
@@ -48,106 +51,87 @@ class URLHandler:
     for direct use when needed.
     """
 
-    def __init__(self, context: BrowserContext = None):
+    def __init__(
+        self,
+        context: BrowserContext,
+        openurl_resolver_url=None,
+        config=None,
+    ):
         """
         Initialize URL handler.
 
         Args:
             context: Authenticated browser context (optional)
         """
+        self.config = config or ScholarConfig()
+        self.openurl_resolver_url = self.config.resolve(
+            "openurl_resolver_url", openurl_resolver_url
+        )
         self.context = context
 
-    async def get_all_urls(
+    async def find_urls(
         self,
-        doi: str = None,
-        title: str = None,
-        metadata: Dict = None,
-        page: Page = None,
+        doi: str,
+        page: Optional[Page] = None,
     ) -> Dict[str, Any]:
-        """
-        Get all URL types for a paper.
-
-        Args:
-            doi: DOI string
-            title: Paper title (for OpenURL)
-            metadata: Full metadata dict (for OpenURL)
-            page: Current page (for PDF extraction)
-
-        Returns:
-            Dict with all resolved URLs
-        """
+        """Get all URL types for a doi."""
         urls = {}
+        urls["url_doi"] = build_url_doi(doi)
 
-        # If we have metadata, use it
-        if metadata:
-            # Use the functional resolver
-            urls = await resolve_all_urls(metadata, self.context)
+        # Try to get PDF URLs from publisher page
+        if not page:
+            page = await self.context.new_page()
 
-        # If we have a DOI, resolve it
-        elif doi:
-            urls["url_doi"] = build_url_doi(doi)
+        try:
+            url_publisher = await doi_to_url_publisher(doi, self.context)
+            if url_publisher:
+                urls["url_publisher"] = url_publisher
 
-            if self.context:
                 try:
-                    url_publisher = await doi_to_url_publisher(
-                        doi, self.context
+                    await page.goto(
+                        url_publisher,
+                        wait_until="domcontentloaded",
+                        timeout=30000,
                     )
-                    if url_publisher:
-                        urls["url_publisher"] = url_publisher
-
-                        # Try to get PDF URLs from publisher page
-                        page = await self.context.new_page()
-                        try:
-                            await page.goto(
-                                url_publisher,
-                                wait_until="domcontentloaded",
-                                timeout=30000,
-                            )
-                            pdf_urls = await find_pdf_urls(page)
-                            if pdf_urls:
-                                urls["url_pdf"] = pdf_urls
-                        except Exception as e:
-                            logger.warning(
-                                f"Failed to navigate to publisher URL: {e}"
-                            )
-                            # Try with networkidle instead
-                            try:
-                                await page.goto(
-                                    url_publisher,
-                                    wait_until="networkidle",
-                                    timeout=30000,
-                                )
-                                pdf_urls = await find_pdf_urls(page)
-                                if pdf_urls:
-                                    urls["url_pdf"] = pdf_urls
-                            except Exception as e2:
-                                logger.error(
-                                    f"Could not access publisher page: {e2}"
-                                )
-
-                        # Extract all URLs from page before closing
-                        if page:
-                            try:
-                                page_urls = await find_all_urls(page)
-                                if page_urls.get("pdf"):
-                                    urls["url_pdf"] = page_urls["pdf"]
-                                if page_urls.get("supplementary"):
-                                    urls["url_supplementary"] = page_urls[
-                                        "supplementary"
-                                    ]
-                            except Exception as e:
-                                logger.error(
-                                    f"Error extracting URLs from page: {e}"
-                                )
-
-                        # Now close the page
-                        try:
-                            await page.close()
-                        except:
-                            pass  # Page might already be closed
-
+                    pdf_urls = await find_pdf_urls(page)
+                    if pdf_urls:
+                        urls["url_pdf"] = pdf_urls
                 except Exception as e:
-                    logger.error(f"Error resolving DOI {doi}: {e}")
+                    logger.warning(f"Failed to navigate to publisher URL: {e}")
+                    # Try with networkidle instead
+                    try:
+                        await page.goto(
+                            url_publisher,
+                            wait_until="networkidle",
+                            timeout=30000,
+                        )
+                        pdf_urls = await find_pdf_urls(page)
+                        if pdf_urls:
+                            urls["url_pdf"] = pdf_urls
+                    except Exception as e2:
+                        logger.error(f"Could not access publisher page: {e2}")
+
+                # Extract all URLs from page before closing
+                if page:
+                    try:
+                        page_urls = await find_all_urls(page)
+                        if page_urls.get("pdf"):
+                            urls["url_pdf"] = page_urls["pdf"]
+                        if page_urls.get("supplementary"):
+                            urls["url_supplementary"] = page_urls[
+                                "supplementary"
+                            ]
+                    except Exception as e:
+                        logger.error(f"Error extracting URLs from page: {e}")
+
+                # Now close the page
+                try:
+                    await page.close()
+                except:
+                    pass  # Page might already be closed
+
+        except Exception as e:
+            logger.error(f"Error resolving DOI {doi}: {e}")
 
         return urls
 
@@ -195,7 +179,9 @@ class URLHandler:
                 logger.error(f"Error finding PDF URLs: {e}")
                 return []
 
-    def generate_openurl(self, metadata: Dict) -> Optional[str]:
+    def generate_openurl(
+        self, metadata: Dict, openurl_resolver_url: str
+    ) -> Optional[str]:
         """
         Generate OpenURL query from metadata.
 
@@ -205,7 +191,7 @@ class URLHandler:
         Returns:
             OpenURL query string
         """
-        return generate_openurl_query(metadata)
+        return generate_openurl_query(metadata, openurl_resolver_url)
 
     async def resolve_openurl_async(self, openurl_query: str) -> Optional[str]:
         """
@@ -291,31 +277,42 @@ class URLHandler:
         return extract_doi_from_url(url)
 
 
-# Convenience functions for direct use without instantiating the class
+if __name__ == "__main__":
 
+    async def main_async():
+        from pprint import pprint
 
-async def get_all_urls(
-    doi: str = None,
-    title: str = None,
-    metadata: Dict = None,
-    context: BrowserContext = None,
-) -> Dict[str, Any]:
-    """
-    Convenience function to get all URLs without instantiating URLHandler.
+        from scitex.scholar import (
+            AuthenticationManager,
+            BrowserManager,
+            ScholarURLFinder,
+        )
 
-    See URLHandler.get_all_urls for details.
-    """
-    handler = URLHandler(context)
-    return await handler.get_all_urls(doi, title, metadata)
+        # Initialize with authenticated browser context
+        auth_manager = AuthenticationManager()
+        browser_manager = BrowserManager(
+            auth_manager=auth_manager,
+            browser_mode="stealth",
+            chrome_profile_name="system",
+        )
+        browser, context = (
+            await browser_manager.get_authenticated_browser_and_context_async()
+        )
 
+        # Create URL handler
+        url_finder = ScholarURLFinder(context)
 
-def update_metadata_urls(metadata_path: Path, urls: Dict) -> bool:
-    """
-    Convenience function to update metadata without instantiating URLHandler.
+        # Get all URLs for a paper
+        doi = "10.1038/s41467-023-44201-2"
+        urls = await url_finder.find_urls(
+            doi=doi,
+        )
+        pprint(urls)
 
-    See URLHandler.update_metadata for details.
-    """
-    handler = URLHandler()
-    return handler.update_metadata(metadata_path, urls)
+    import asyncio
+
+    asyncio.run(main_async())
+
+# python -m scholar.url.ScholarURLFinder
 
 # EOF

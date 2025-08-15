@@ -1,1 +1,1 @@
-from ._PDFDownloader import PDFDownloader
+from .ScholarPDFDownloader import ScholarPDFDownloader

@@ -48,8 +48,8 @@ class OpenAthensAuthenticator:
         """Download PDF using authenticate_async session."""
 ```
 
-### 3. Integration with PDFDownloader
-Modify `_PDFDownloader.py` to try OpenAthens before Sci-Hub:
+### 3. Integration with ScholarPDFDownloader
+Modify `_ScholarPDFDownloader.py` to try OpenAthens before Sci-Hub:
 
 ```python
 async def download_pdf_async(self, doi: str) -> Optional[Path]:
@@ -101,7 +101,7 @@ High - This addresses a key limitation where legitimate institutional users cann
 ## Next Steps
 1. Review and approve feature design
 2. Implement OpenAthensAuthenticator class
-3. Integrate with PDFDownloader
+3. Integrate with ScholarPDFDownloader
 4. Add configuration options
 5. Create tests and documentation
 6. Deploy and get user feedback

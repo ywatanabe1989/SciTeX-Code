@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 00:50:56 (ywatanabe)"
+# Timestamp: "2025-08-15 16:14:54 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/urls/_resolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -253,7 +253,7 @@ def extract_doi_from_url(url: str) -> Optional[str]:
 
 # Convenience function to resolve all URL types
 async def resolve_all_urls(
-    metadata: Dict, context: BrowserContext = None
+    metadata: Dict, openurl_resolver_url: str, context: BrowserContext = None
 ) -> Dict[str, any]:
     """
     Resolve all URL types from metadata.
@@ -280,7 +280,7 @@ async def resolve_all_urls(
                 urls["url_publisher"] = url_publisher
 
     # Generate OpenURL query
-    openurl_query = generate_openurl_query(metadata)
+    openurl_query = generate_openurl_query(metadata, openurl_resolver_url)
     if openurl_query:
         urls["url_openurl_query"] = openurl_query
 

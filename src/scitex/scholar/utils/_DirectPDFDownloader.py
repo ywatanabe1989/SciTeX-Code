@@ -17,7 +17,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
-class DirectPDFDownloader:
+class DirectScholarPDFDownloader:
     """
     Downloads PDFs by jumping directly to PDF URLs with authenticate_async browser context.
     
@@ -29,7 +29,7 @@ class DirectPDFDownloader:
     
     def __init__(self, capture_screenshots: bool = True):
         """
-        Initialize DirectPDFDownloader with screenshot capabilities.
+        Initialize DirectScholarPDFDownloader with screenshot capabilities.
         
         Args:
             capture_screenshots: Whether to automatically capture screenshots during downloads
@@ -336,5 +336,5 @@ class DirectPDFDownloader:
 # Convenience function
 async def download_pdf_asyncs_direct(page, pdf_urls: List[str], download_dir: Path) -> List[Tuple[str, Path, bool, Optional[str]]]:
     """Convenience function for direct PDF downloads."""
-    downloader = DirectPDFDownloader()
+    downloader = DirectScholarPDFDownloader()
     return await downloader.download_multiple_pdfs(page, pdf_urls, download_dir)

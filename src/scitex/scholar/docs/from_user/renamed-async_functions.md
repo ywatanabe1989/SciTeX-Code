@@ -222,7 +222,7 @@ File: utils/_CheckpointScreenshotter.py
  262   1 async def take_error_checkpoint(screenshotter: CheckpointScreenshotter, page, error_desc: str) -> str:
  267   1 async def take_info_checkpoint(screenshotter: CheckpointScreenshotter, page, description: str) -> dict:
 
-File: utils/_DirectPDFDownloader.py
+File: utils/_DirectScholarPDFDownloader.py
   39   5     async def _capture_download_screenshot(self, page, download_path: Path, stage: str) -> Optional[str]:
   73   5     async def download_pdf_async_direct(self, 
  104  13             async def handle_response(response):
@@ -607,7 +607,7 @@ File: download/_ScreenshotDownloadHelper.py
  258   5     async def _check_for_captcha_async(self, page: Page) -> bool:
  277   5     async def _try_download_button(self, page: Page) -> bool:
 
-File: download/_SmartPDFDownloader.py
+File: download/_SmartScholarPDFDownloader.py
   46   5     async def can_handle_async(self, paper: Paper, url: str) -> bool:
   50   5     async def download(self, paper: Paper, url: str, output_path: Path) -> bool:
   71   5     async def can_handle_async(self, paper: Paper, url: str) -> bool:
@@ -651,7 +651,7 @@ File: open_url/_ResolverLinkFinder.py
  272   5     async def click_and_wait_async(self, page: Page, link: ElementHandle) -> bool:
  317   1 async def find_and_click_resolver_link_async(page: Page, doi: str) -> Optional[str]:
 
-File: download/_PDFDownloader.py
+File: download/_ScholarPDFDownloader.py
  278   5     async def download_pdf_async(
  370   5     async def _download_from_doi_async(
  484   5     async def _get_authenticate_asyncd_session_async(self) -> Optional[Dict[str, Any]]:
