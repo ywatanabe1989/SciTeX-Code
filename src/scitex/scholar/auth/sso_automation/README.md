@@ -37,11 +37,11 @@ sso_automation/
 
 ```python
 from scitex.scholar.open_url import OpenURLResolver
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.auth import ScholarAuthManager
 
 # The resolver will auto-detect institution from URL
 resolver = OpenURLResolver(
-    auth_manager=AuthenticationManager(),
+    auth_manager=ScholarAuthManager(),
     resolver_url="https://unimelb.hosted.exlibrisgroup.com/sfxlcl41"
 )
 
@@ -54,7 +54,7 @@ result = await resolver._resolve_single_async(doi="10.1038/nature12373")
 ```python
 from scitex.scholar.sso_automation import UniversityOfMelbourneSSOAutomator
 from scitex.scholar.open_url import OpenURLResolver
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.auth import ScholarAuthManager
 
 # Create SSO automator manually
 sso_automator = UniversityOfMelbourneSSOAutomator(
@@ -64,7 +64,7 @@ sso_automator = UniversityOfMelbourneSSOAutomator(
 
 # Pass to resolver
 resolver = OpenURLResolver(
-    auth_manager=AuthenticationManager(),
+    auth_manager=ScholarAuthManager(),
     resolver_url="https://unimelb.hosted.exlibrisgroup.com/sfxlcl41",
     sso_automator=sso_automator
 )

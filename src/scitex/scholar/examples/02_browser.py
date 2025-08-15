@@ -13,15 +13,15 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 
-from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.browser import BrowserManager
+from scitex.scholar.auth import ScholarAuthManager
+from scitex.scholar.browser import ScholarBrowserManager
 
 
 async def main_async():
-    browser_manager = BrowserManager(
+    browser_manager = ScholarBrowserManager(
         chrome_profile_name="system",
         browser_mode="interactive",
-        auth_manager=AuthenticationManager(),
+        auth_manager=ScholarAuthManager(),
     )
 
     browser, context = (

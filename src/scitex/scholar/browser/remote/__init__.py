@@ -12,8 +12,8 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Remote browser managers for ZenRows services
 
-from ._ZenRowsRemoteBrowserManager import ZenRowsRemoteBrowserManager
+from ._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
 
-__all__ = ["ZenRowsRemoteBrowserManager"]
+__all__ = ["ZenRowsRemoteScholarBrowserManager"]
 
 # EOF

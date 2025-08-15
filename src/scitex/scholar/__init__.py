@@ -20,8 +20,8 @@ Quick Start:
 
 # Import configuration
 from scitex.scholar.config import ScholarConfig
-from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.browser import BrowserManager
+from scitex.scholar.auth import ScholarAuthManager
+from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.engines import ScholarEngine
 from scitex.scholar.url import ScholarURLFinder
 from scitex.scholar.download import ScholarPDFDownloader
@@ -34,8 +34,8 @@ __all__ = [
     "ScholarConfig",
     "ScholarEngine",
     "ScholarURLFinder",
-    "AuthenticationManager",
-    "BrowserManager",
+    "ScholarAuthManager",
+    "ScholarBrowserManager",
     # "DOIResolver",
 
     "Paper",
@@ -164,7 +164,7 @@ __all__ = [
 #     # Browser-based functionality
 
 #     # Authentication
-#     'AuthenticationManager',
+#     'ScholarAuthManager',
 #     # 'OpenAthensAuthenticator',
 #     # 'ShibbolethAuthenticator',
 #     # 'EZProxyAuthenticator',
@@ -252,7 +252,7 @@ __all__ = [
 
 # # Import new modules
 # from .auth import (
-#     AuthenticationManager,
+#     ScholarAuthManager,
 #     # OpenAthensAuthenticator,
 #     # ShibbolethAuthenticator,
 #     # EZProxyAuthenticator,

@@ -42,7 +42,7 @@
 
   # Use Scraping Browser for complex sites
   if needs_javascript_interaction:
-      manager = ZenRowsRemoteBrowserManager()
+      manager = ZenRowsRemoteScholarBrowserManager()
       browser = await manager.get_browser_async()
 
   # Use API Client for simple requests with country needs  
@@ -52,7 +52,7 @@
 
   # Use regular browser for debugging
   else:
-      manager = BrowserManager()
+      manager = ScholarBrowserManager()
 
   But if you want to simplify and your academic use cases mostly need browser interaction, you could remove
   _ZenRowsAPIClient.py and just note in documentation that country-specific routing requires the API mode.

@@ -12,13 +12,13 @@
 
 ``` python
 from scitex.scholar.metadata.urls import ScholarURLFinder
-from scitex.scholar.browser import BrowserManager
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.browser import ScholarBrowserManager
+from scitex.scholar.auth import ScholarAuthManager
 
-browser_manager = BrowserManager(
+browser_manager = ScholarBrowserManager(
     chrome_profile_name="system",
     browser_mode="interactive",
-    auth_manager=AuthenticationManager(),
+    auth_manager=ScholarAuthManager(),
 )
 
 browser, context = (
@@ -45,7 +45,7 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def download_pdf_direct(context: BrowserContext, pdf_url: str, output_path: Path):
+async def download_from_url(context: BrowserContext, pdf_url: str, output_path: Path):
     """
     Download PDF using request context (bypasses Chrome PDF viewer).
     
@@ -64,7 +64,7 @@ async def download_pdf_direct(context: BrowserContext, pdf_url: str, output_path
     return False
 
 for ii_pdf, url_pdf in enumerate(urls["url_pdf"]):
-    success = await download_pdf_direct(context, url_pdf, f"/tmp/tmp_{ii_pdf}.pdf")
+    success = await download_from_url(context, url_pdf, f"/tmp/tmp_{ii_pdf}.pdf")
     if success:
         logger.success(f"Downloaded: {url_pdf}")
     else:

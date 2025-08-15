@@ -12,7 +12,7 @@ Your Local Browser (with OpenURLResolver): You go to the festival gate and show_
 The ZenRows API (with ZenRowsOpenURLResolver): You are outside the festival. You ask a delivery driver (the ZenRows API 🚚) to go to a specific stall for you. You can give them a picture of your wristband (your auth cookies), but when the security guard at the stall (the resolver's JavaScript 🔐) tries to scan it, their machine says it's invalid because it's not the real wristband from the main gate. The driver is stuck.
 
 The Technical Reason
-Your AuthenticationManager uses a real browser (Playwright) to log you in. This creates a rich authentication context, which includes:
+Your ScholarAuthManager uses a real browser (Playwright) to log you in. This creates a rich authentication context, which includes:
 
 Cookies
 
@@ -650,7 +650,7 @@ Let's clarify the two different problems being solved:
 
 Your Current Workflow (OpenURLResolver)	The Article's Workflow (e.g., GitHub Login)
 Goal: Use an existing, live browser session (already logged in via OpenAthens) to access paywalled content.	Goal: Perform a brand new login from scratch by submitting a username, password, and CSRF token.
-Method: You perform a manual, one-time login, and the AuthenticationManager caches the session cookies for reuse.	Method: The script automates the entire login sequence by scraping tokens from the login page and submitting a POST request.
+Method: You perform a manual, one-time login, and the ScholarAuthManager caches the session cookies for reuse.	Method: The script automates the entire login sequence by scraping tokens from the login page and submitting a POST request.
 Why ZenRows is Limited Here: Your authenticate_async "magic wristband" session is tied to your local browser. ZenRows can't clone this complex session on its remote servers.	Why ZenRows Excels Here: ZenRows can easily automate this because it's just a sequence of HTTP requests and JavaScript actions. It can visit the login page, grab the tokens, and submit the form for you.
 
 Export to Sheets

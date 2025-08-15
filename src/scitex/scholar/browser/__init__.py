@@ -11,13 +11,15 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from .local._BrowserManager import BrowserManager
-# from .remote._ZenRowsRemoteBrowserManager import ZenRowsRemoteBrowserManager
+from .local.ScholarBrowserManager import ScholarBrowserManager
+from .BrowserUtils import BrowserUtils
+# from .remote._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
 # from .remote._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
 __all__ = [
-    "BrowserManager",
-    # "ZenRowsRemoteBrowserManager",
+    "ScholarBrowserManager",
+    "BrowserUtils",
+    # "ZenRowsRemoteScholarBrowserManager",
     # "ZenRowsAPIBrowser",
 ]
 

@@ -13,12 +13,12 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.auth import ScholarAuthManager
 
 
 async def main_async():
     # Setup authentication manager
-    auth_manager = AuthenticationManager(
+    auth_manager = ScholarAuthManager(
         email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL")
     )
 

@@ -14,14 +14,14 @@ This module provides authentication through various institutional systems:
 
 ## Quick Start
 
-### AuthenticationManager
+### ScholarAuthManager
 
 ```python
 import os
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.auth import ScholarAuthManager
 
 # Setup authentication manager
-auth_manager = AuthenticationManager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
+auth_manager = ScholarAuthManager(email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL"))
 
 # Authenticate
 await auth_manager.ensure_authenticate_async()
@@ -35,29 +35,29 @@ is_authenticate_async = await auth_manager.is_authenticate_async()
 ``` mermaid
 sequenceDiagram
     participant User
-    participant AuthenticationManager
+    participant ScholarAuthManager
     participant OpenAthensAuthenticator
     participant SessionManager
     participant AuthCacheManager
     participant LockManager
     participant BrowserAuthenticator
 
-    User->>AuthenticationManager: authenticate_async(force=False)
-    AuthenticationManager->>SessionManager: has_valid_session_data()
-    SessionManager-->>AuthenticationManager: returns session status
+    User->>ScholarAuthManager: authenticate_async(force=False)
+    ScholarAuthManager->>SessionManager: has_valid_session_data()
+    SessionManager-->>ScholarAuthManager: returns session status
     alt Session is valid
-        AuthenticationManager-->>User: returns success
+        ScholarAuthManager-->>User: returns success
     else Session is invalid or force=True
-        AuthenticationManager->>LockManager: acquire_lock_async()
-        LockManager-->>AuthenticationManager: lock acquired
-        AuthenticationManager->>AuthCacheManager: load_session_async()
-        AuthCacheManager-->>AuthenticationManager: returns cached session if available
+        ScholarAuthManager->>LockManager: acquire_lock_async()
+        LockManager-->>ScholarAuthManager: lock acquired
+        ScholarAuthManager->>AuthCacheManager: load_session_async()
+        AuthCacheManager-->>ScholarAuthManager: returns cached session if available
         alt Cached session is valid
-            AuthenticationManager->>SessionManager: set_session_data()
-            SessionManager-->>AuthenticationManager: session updated
-            AuthenticationManager-->>User: returns success
+            ScholarAuthManager->>SessionManager: set_session_data()
+            SessionManager-->>ScholarAuthManager: session updated
+            ScholarAuthManager-->>User: returns success
         else No valid cached session
-            AuthenticationManager->>OpenAthensAuthenticator: _perform_browser_authentication_async()
+            ScholarAuthManager->>OpenAthensAuthenticator: _perform_browser_authentication_async()
             OpenAthensAuthenticator->>BrowserAuthenticator: navigate_to_login_async()
             BrowserAuthenticator-->>OpenAthensAuthenticator: returns page
             OpenAthensAuthenticator->>BrowserAuthenticator: wait_for_login_completion_async()
@@ -69,14 +69,14 @@ sequenceDiagram
                 SessionManager-->>OpenAthensAuthenticator: session updated
                 OpenAthensAuthenticator->>AuthCacheManager: save_session_async()
                 AuthCacheManager-->>OpenAthensAuthenticator: session saved
-                OpenAthensAuthenticator-->>AuthenticationManager: returns success
-                AuthenticationManager-->>User: returns success
+                OpenAthensAuthenticator-->>ScholarAuthManager: returns success
+                ScholarAuthManager-->>User: returns success
             else Login failed
-                OpenAthensAuthenticator-->>AuthenticationManager: returns failure
-                AuthenticationManager-->>User: returns failure
+                OpenAthensAuthenticator-->>ScholarAuthManager: returns failure
+                ScholarAuthManager-->>User: returns failure
             end
         end
-        AuthenticationManager->>LockManager: release_lock_async()
+        ScholarAuthManager->>LockManager: release_lock_async()
     end
 ```
 

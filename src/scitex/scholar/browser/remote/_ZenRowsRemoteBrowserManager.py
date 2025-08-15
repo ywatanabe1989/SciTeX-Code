@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-31 22:08:31 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/remote/_ZenRowsRemoteBrowserManager.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/remote/_ZenRowsRemoteScholarBrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/browser/remote/_ZenRowsRemoteBrowserManager.py"
+    "./src/scitex/scholar/browser/remote/_ZenRowsRemoteScholarBrowserManager.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -26,7 +26,7 @@ from ._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 logger = logging.getLogger(__name__)
 
 
-class ZenRowsRemoteBrowserManager:
+class ZenRowsRemoteScholarBrowserManager:
     """
     Manages a connection to the remote ZenRows Scraping Browser service.
     """
@@ -115,7 +115,7 @@ class ZenRowsRemoteBrowserManager:
         if self.auth_manager is None:
             err_msg = (
                 "Authentication manager is not set. "
-                "Initialize BrowserManager with an auth_manager to use this method."
+                "Initialize ScholarBrowserManager with an auth_manager to use this method."
             )
             raise ValueError(err_msg)
 
@@ -300,7 +300,7 @@ if __name__ == "__main__":
     import os
 
     async def main():
-        """Comprehensive test of ZenRowsRemoteBrowserManager with comparisons."""
+        """Comprehensive test of ZenRowsRemoteScholarBrowserManager with comparisons."""
         import json
         from pathlib import Path
         from datetime import datetime
@@ -405,10 +405,10 @@ if __name__ == "__main__":
         # Test 1: Regular browser (baseline) - if available
         print("\nChecking if we can import local browser for comparison...")
         try:
-            from scitex.scholar.browser import BrowserManager
+            from scitex.scholar.browser import ScholarBrowserManager
             
             print("Initializing regular browser for baseline comparison...")
-            regular_manager = BrowserManager(headless=False)
+            regular_manager = ScholarBrowserManager(headless=False)
             regular_results = await test_browser_async("Regular Browser", regular_manager)
             all_results["Regular Browser"] = regular_results
         except Exception as e:
@@ -418,7 +418,7 @@ if __name__ == "__main__":
         # Test 2: ZenRows Remote Browser (default settings)
         print("\nInitializing ZenRows Remote Browser...")
         try:
-            zenrows_manager = ZenRowsRemoteBrowserManager()
+            zenrows_manager = ZenRowsRemoteScholarBrowserManager()
             zenrows_results = await test_browser_async("ZenRows Remote", zenrows_manager)
             all_results["ZenRows Remote"] = zenrows_results
         except Exception as e:
@@ -428,7 +428,7 @@ if __name__ == "__main__":
         # Test 3: ZenRows Remote Browser with country (if supported)
         print("\nInitializing ZenRows Remote Browser with AU country...")
         try:
-            zenrows_au_manager = ZenRowsRemoteBrowserManager(proxy_country='au')
+            zenrows_au_manager = ZenRowsRemoteScholarBrowserManager(proxy_country='au')
             zenrows_au_results = await test_browser_async("ZenRows Remote AU", zenrows_au_manager)
             all_results["ZenRows Remote AU"] = zenrows_au_results
         except Exception as e:
@@ -499,14 +499,14 @@ if __name__ == "__main__":
         print("Remote Browser for complex JavaScript sites.")
 
     # async def main():
-    #     """Example usage of ZenRowsRemoteBrowserManager."""
+    #     """Example usage of ZenRowsRemoteScholarBrowserManager."""
     #     # Get API key from environment or use a test key
     #     api_key = os.getenv(
     #         "SCITEX_SCHOLAR_ZENROWS_API_KEY", "your_api_key_here"
     #     )
 
     #     # Initialize remote browser manager
-    #     async with ZenRowsRemoteBrowserManager(api_key=api_key) as manager:
+    #     async with ZenRowsRemoteScholarBrowserManager(api_key=api_key) as manager:
     #         try:
     #             # Connect to ZenRows Scraping Browser
     #             browser = await manager.connect()
@@ -567,6 +567,6 @@ if __name__ == "__main__":
     # Run the example
     asyncio.run(main())
 
-# python -m scitex.scholar.browser.remote._ZenRowsRemoteBrowserManager
+# python -m scitex.scholar.browser.remote._ZenRowsRemoteScholarBrowserManager
 
 # EOF

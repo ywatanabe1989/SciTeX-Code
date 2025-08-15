@@ -11,17 +11,17 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from ._BrowserManager import BrowserManager
+from .ScholarBrowserManager import ScholarBrowserManager
 # from ._ChromeProfileManager import ChromeProfileManager
-# from ._SeleniumBrowserManager import SeleniumBrowserManager
-# from ._HybridBrowserManager import HybridBrowserManager
+# from ._SeleniumScholarBrowserManager import SeleniumScholarBrowserManager
+# from ._HybridScholarBrowserManager import HybridScholarBrowserManager
 
 __all__ = [
-    "BrowserManager",
-    # "ZenRowsBrowserManager",
+    "ScholarBrowserManager",
+    # "ZenRowsScholarBrowserManager",
     # "ChromeProfileManager",
-    # "SeleniumBrowserManager",
-    # "HybridBrowserManager"
+    # "SeleniumScholarBrowserManager",
+    # "HybridScholarBrowserManager"
 ]
 
 # EOF

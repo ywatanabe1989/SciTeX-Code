@@ -1,30 +1,19 @@
 <!-- ---
-!-- Timestamp: 2025-08-09 00:27:22
+!-- Timestamp: 2025-08-15 18:45:03
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/README.md
 !-- --- -->
-
-# Browser Managers
-
-## Overview
-
-- The BrowserManager provides a consistent interface for managing browser instances (e.g., Playwright) for web scraping.
-- It abstracts the complexities of browser creation, configuration (like headless mode or proxies), and clean teardown.
-- All specific managers inherit from a base `_BrowserManager` class.
 
 ## Usage
 
-- All browser managers are designed for asynchronous use and should be properly closed to release resources.
-
 ```python
 import asyncio
-from scitex.scholar.browser import BrowserManager
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar import ScholarBrowserManager, ScholarAuthManager
 
-browser_manager = BrowserManager(
+browser_manager = ScholarBrowserManager(
     chrome_profile_name="system",
-    browser_mode=browser_mode,
-    auth_manager=AuthenticationManager(),
+    browser_mode="stealth", # "interactive"
+    auth_manager=ScholarAuthManager(),
 )
 
 browser, context = (
@@ -59,7 +48,7 @@ EXTENSIONS = {
         "id": "hlifkpholllijblknnmbfagnkjneagid",
         "name": "CAPTCHA Solver",
     },
-    # May not be beneficial
+    # Might not be beneficial
     "2captcha_solver": {
         "id": "ifibfemgeogfhoebkmokieepdoobkbpo",
         "name": "2Captcha Solver",

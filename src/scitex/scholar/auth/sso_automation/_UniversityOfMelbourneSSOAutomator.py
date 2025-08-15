@@ -17,7 +17,7 @@ from typing import Optional
 
 from playwright.async_api import Page, TimeoutError
 
-from ...browser._BrowserUtils import BrowserUtils
+from scitex.scholar.browser import BrowserUtils
 from scitex.scholar.config import ScholarConfig
 from ._BaseSSOAutomator import BaseSSOAutomator
 

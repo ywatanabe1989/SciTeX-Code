@@ -49,7 +49,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # from pathlib import Path
 
 # from scitex import logging
-# from scitex.scholar.auth import AuthenticationManager
+# from scitex.scholar.auth import ScholarAuthManager
 # from .._ResumableOpenURLResolver import ResumableOpenURLResolver
 
 # logger = logging.getLogger(__name__)
@@ -179,7 +179,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # async def _async_main_async(args, dois):
 #     """Async main function."""
 #     # Create auth manager
-#     auth_manager = AuthenticationManager()
+#     auth_manager = ScholarAuthManager()
 
 #     # Authenticate if requested
 #     if args.authenticate_async:

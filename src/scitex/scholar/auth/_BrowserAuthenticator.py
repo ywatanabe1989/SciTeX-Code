@@ -24,7 +24,7 @@ from playwright.async_api import Browser, Page, async_playwright
 
 from scitex import logging
 
-from ..browser._BrowserUtils import BrowserUtils
+from scitex.scholar.browser import BrowserUtils
 from ..browser.local._BrowserMixin import BrowserMixin
 
 logger = logging.getLogger(__name__)

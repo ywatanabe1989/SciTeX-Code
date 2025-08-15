@@ -367,7 +367,7 @@ File: auth/sso_automation/_UniversityOfMelbourneSSOAutomator.py
  259   5     async def _wait_for_completion_async(self, page: Page) -> bool:
  293   5     async def _take_debug_screenshot_async(self, page: Page):
 
-File: browser/remote/_ZenRowsRemoteBrowserManager.py
+File: browser/remote/_ZenRowsRemoteScholarBrowserManager.py
   74   5     async def get_browser_async(self) -> Browser:
  110   5     async def get_authenticate_asyncd_context(
  149   5     async def new_page(self, context: Optional[BrowserContext] = None) -> Any:
@@ -389,7 +389,7 @@ File: auth/_EZProxyAuthenticator.py
  380   5     async def get_session_async_info_async(self) -> Dict[str, Any]:
  424   5     async def create_authenticate_asyncd_browser(self) -> tuple[Browser, Any]:
 
-File: auth/_BrowserUtils.py
+File: auth/BrowserUtils.py
   32   5     async def reliable_fill_async(page: Page, selector: str, value: str) -> bool:
   72   5     async def reliable_click_async(page: Page, selector: str) -> bool:
  109   5     async def wait_for_element_async(page: Page, selector: str, timeout: int = 5000) -> bool:
@@ -401,7 +401,7 @@ File: auth/_LockManager.py
  132   5     async def __aenter__(self):
  138   5     async def __aexit__(self, exc_type, exc_val, exc_tb):
 
-File: auth/_AuthenticationManager.py
+File: auth/ScholarAuthManager.py
  132   5     async def ensure_authenticate_asyncd(
  144   5     async def is_authenticate_asyncd(self, verify_live: bool = True) -> bool:
  162   5     async def authenticate_async(
@@ -578,7 +578,7 @@ File: open_url/_OpenURLResolver.py
 1078   1 async def try_openurl_resolver_async(
 1104   5     async def main():
 
-File: browser/local/_BrowserManager.py
+File: browser/local/_ScholarBrowserManager.py
   99   5     async def get_authenticate_asyncd_context(
  145   5     async def _create_stealth_context_async(
  164   5     async def get_shared_browser_with_profile_async(self) -> Browser:
@@ -589,7 +589,7 @@ File: browser/local/_BrowserManager.py
  248   5     async def check_lean_library_active_async(self, page, url, timeout_sec=5):
  264  15     #         async def __aenter__(self):
  281  15     #         async def __aexit__(self, exc_type, exc_val, exc_tb):
- 287   5     async def take_screenshot_safe_async(
+ 287   5     async def take_screenshot_async(
  298   5     async def __aexit__(self, exc_type, exc_val, exc_tb):
  304   5     async def main(browser_mode="interactive"):
 
@@ -885,7 +885,7 @@ func_names=(
     "_ensure_extensions_installed_async"
     "_launch_persistent_context_async"
     "_apply_stealth_scripts_async"
-    "take_screenshot_safe_async"
+    "take_screenshot_async"
     "download_with_screenshots"
     "handle_download"
     "_capture_screenshot_async"

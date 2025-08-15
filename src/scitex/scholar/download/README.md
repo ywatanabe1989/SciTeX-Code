@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-15 18:10:48
+!-- Timestamp: 2025-08-15 19:54:28
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/README.md
 !-- --- -->
@@ -7,7 +7,7 @@
 ## Usage
 
 ``` python
-async def main():
+async def main_async():
     from scitex.scholar import ScholarPDFDownloader
 
     DOI = "10.1523/jneurosci.2929-12.2012"
@@ -18,7 +18,7 @@ async def main():
 
 import asyncio
 
-asyncio.run(main()
+asyncio.run(main_async())
 ```
 
 <!-- EOF -->

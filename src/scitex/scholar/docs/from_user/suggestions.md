@@ -38,7 +38,7 @@ A single, consolidated script to perform the full workflow:
 import os
 import asyncio
 from scitex.scholar.open_url import OpenURLResolver
-from scitex.scholar.auth import AuthenticationManager
+from scitex.scholar.auth import ScholarAuthManager
 from scitex import logging
 
 # Set up logging to see what's happening
@@ -50,7 +50,7 @@ async def main():
     
     # 1. Initialize the Authentication Manager
     # This will use the local browser + ZenRows proxy method.
-    auth_manager = AuthenticationManager(
+    auth_manager = ScholarAuthManager(
         email_openathens=os.getenv("SCITEX_SCHOLAR_OPENATHENS_EMAIL")
     )
     

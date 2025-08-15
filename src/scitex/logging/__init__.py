@@ -89,21 +89,90 @@ class SciTeXFormatter(logging.Formatter):
     #     return super().format(record)
 
 # Configure default logging
-def configure_logging(level=logging.INFO):
-    """Configure default logging settings for SciTeX."""
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(
-        SciTeXFormatter(
-            # fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            fmt='%(levelname)s: %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
-    )
+# Global level variable
+_GLOBAL_LEVEL = None
 
+def set_level(level):
+    """Set global log level for all SciTeX loggers."""
+    global _GLOBAL_LEVEL
+
+    level_map = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warning": logging.WARNING,
+        "error": logging.ERROR,
+        "critical": logging.CRITICAL,
+        "success": SUCCESS,
+        "fail": FAIL,
+    }
+
+    if isinstance(level, str):
+        level = level_map.get(level.lower(), level)
+
+    _GLOBAL_LEVEL = level
+    logging.getLogger().setLevel(level)
+
+    # Update all existing handlers
+    for handler in logging.getLogger().handlers:
+        handler.setLevel(level)
+
+def get_level():
+    """Get current global log level."""
+    return _GLOBAL_LEVEL or logging.getLogger().level
+
+def configure_logging(level="info"):
+    """Configure default logging settings for SciTeX."""
+    level_map = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warning": logging.WARNING,
+        "error": logging.ERROR,
+        "critical": logging.CRITICAL,
+        "success": SUCCESS,
+        "fail": FAIL,
+    }
+
+    if isinstance(level, str):
+        level = level_map.get(level.lower(), level)
+
+    set_level(level)
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(SciTeXFormatter(
+        fmt='%(levelname)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    ))
     logging.basicConfig(level=level, handlers=[handler])
 
+# def configure_logging(level="info"):
+#     """Configure default logging settings for SciTeX."""
+#     level_map = {
+#         "debug": logging.DEBUG,
+#         "info": logging.INFO,
+#         "warning": logging.WARNING,
+#         "error": logging.ERROR,
+#         "critical": logging.CRITICAL,
+#         "success": SUCCESS,
+#         "fail": FAIL,
+#     }
+#     if isinstance(level, str):
+#         level = level_map.get(level.lower(), level)
+#     else:
+#         level = level
+
+#     handler = logging.StreamHandler(sys.stdout)
+#     handler.setFormatter(
+#         SciTeXFormatter(
+#             # fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#             fmt='%(levelname)s: %(message)s',
+#             datefmt='%Y-%m-%d %H:%M:%S'
+#         )
+#     )
+
+#     logging.basicConfig(level=level, handlers=[handler])
+
 # Auto-configure logging on import
-configure_logging()
+configure_logging(level=logging.INFO)
 
 # Re-export logging functions to maintain compatibility with standard logging
 getLogger = logging.getLogger

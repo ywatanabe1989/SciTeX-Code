@@ -1,9 +1,9 @@
 """Authentication module for Scholar."""
 
-from ._AuthenticationManager import AuthenticationManager
+from .ScholarAuthManager import ScholarAuthManager
 
 __all__ = [
-    "AuthenticationManager",
+    "ScholarAuthManager",
 ]
 
 # EOF

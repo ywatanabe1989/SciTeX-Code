@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 16:14:54 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/urls/_resolver.py
+# Timestamp: "2025-08-15 22:01:33 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_resolve_functions.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/urls/_resolver.py"
+    "./src/scitex/scholar/url/helpers/_resolve_functions.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+import re
 
 """
 URL Resolver Functions
@@ -158,58 +160,94 @@ def generate_openurl_query(
     return None
 
 
+from ._ResolverLinkFinder import ResolverLinkFinder
+
+
 async def resolve_openurl(
     openurl_query: str, context: BrowserContext
 ) -> Optional[str]:
-    """
-    Resolve OpenURL query to final authenticated URL.
-
-    Args:
-        openurl_query: OpenURL query string
-        context: Authenticated browser context
-
-    Returns:
-        Final URL after OpenURL resolution and authentication
-    """
-    if not context:
-        logger.error("Browser context required for OpenURL resolution")
-        return None
-
     page = await context.new_page()
     try:
-        logger.info("Resolving OpenURL...")
-        await page.goto(openurl_query, wait_until="networkidle", timeout=30000)
+        await page.goto(
+            openurl_query, wait_until="domcontentloaded", timeout=60000
+        )
+        await page.wait_for_timeout(3000)
 
-        # Wait for any redirects/authentication
-        await asyncio.sleep(3)
+        # Debug all links on the page
+        links_info = await page.evaluate(
+            """
+            () => {
+                return Array.from(document.querySelectorAll('a[href]')).map(link => ({
+                    href: link.href,
+                    text: link.textContent.trim(),
+                    classes: link.className,
+                    id: link.id
+                }));
+            }
+        """
+        )
 
-        # Check if we need to click a "Go" or "Access" button
-        go_buttons = [
-            'button:has-text("Go")',
-            'button:has-text("Access")',
-            'a:has-text("Full Text")',
-            'a:has-text("View Article")',
-        ]
+        for link_info in links_info:
+            logger.debug(
+                f"Link: {link_info['text'][:30]} -> {link_info['href'][:60]}"
+            )
 
-        for selector in go_buttons:
-            try:
-                button = page.locator(selector).first
-                if await button.is_visible():
-                    await button.click()
-                    await asyncio.sleep(3)
-                    break
-            except:
-                pass
+        doi_match = re.search(r"doi=([^&]+)", openurl_query)
+        doi = doi_match.group(1) if doi_match else ""
 
-        resolved_url = page.url
-        logger.info(f"OpenURL resolved to: {resolved_url}")
-        return resolved_url
+        finder = ResolverLinkFinder()
+        link = await finder.find_link(page, doi)
+
+        if link:
+            success = await finder.click_and_wait(page, link)
+            if success:
+                return page.url
+
+        return None
 
     except Exception as e:
         logger.error(f"OpenURL resolution failed: {e}")
-        return None
     finally:
         await page.close()
+
+    return None
+
+
+async def _wait_for_captcha_resolution_async(page: Page, max_wait: int = 60):
+    """Wait for CAPTCHA to be resolved by extensions or manual intervention."""
+    for attempt in range(max_wait):
+        # Check if CAPTCHA is still present
+        captcha_present = await page.evaluate(
+            """
+            () => {
+                // Common CAPTCHA indicators
+                const captchaElements = [
+                    'iframe[src*="captcha"]',
+                    'iframe[src*="recaptcha"]',
+                    '.cf-challenge-form',
+                    '[data-captcha]',
+                    '#captcha'
+                ];
+
+                return captchaElements.some(selector => {
+                    const element = document.querySelector(selector);
+                    return element && element.offsetParent !== null;
+                });
+            }
+        """
+        )
+
+        if not captcha_present:
+            logger.success("CAPTCHA resolved")
+            return True
+
+        if attempt % 10 == 0:
+            logger.info(f"Waiting for CAPTCHA resolution... ({attempt}s)")
+
+        await page.wait_for_timeout(1000)
+
+    logger.error("CAPTCHA resolution timeout")
+    return False
 
 
 def build_url_doi(doi: str) -> str:

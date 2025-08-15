@@ -39,8 +39,8 @@ from scitex.io import load
 from scitex.scholar.config import ScholarConfig
 
 # Updated imports for current architecture
-from scitex.scholar.auth import AuthenticationManager
-from scitex.scholar.browser import BrowserManager
+from scitex.scholar.auth import ScholarAuthManager
+from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.metadata.doi import DOIResolver
 from scitex.scholar.metadata.enrichment import LibraryEnricher
 from scitex.scholar.storage import LibraryManager
@@ -133,17 +133,17 @@ class Scholar:
         return self._doi_resolver
 
     @property
-    def auth_manager(self) -> AuthenticationManager:
+    def auth_manager(self) -> ScholarAuthManager:
         """Get authentication manager service."""
         if self._auth_manager is None:
-            self._auth_manager = AuthenticationManager()
+            self._auth_manager = ScholarAuthManager()
         return self._auth_manager
 
     @property
-    def browser_manager(self) -> BrowserManager:
+    def browser_manager(self) -> ScholarBrowserManager:
         """Get browser manager service."""
         if self._browser_manager is None:
-            self._browser_manager = BrowserManager(
+            self._browser_manager = ScholarBrowserManager(
                 auth_manager=self.auth_manager,
                 chrome_profile_name="system",
                 browser_mode="stealth"

@@ -20,7 +20,7 @@ from playwright.async_api import BrowserContext, Page
 
 from scitex.scholar.config import ScholarConfig
 
-from ...browser._BrowserUtils import BrowserUtils
+from scitex.scholar.browser improt BrowserUtils
 from ..sso_automation._BaseSSOAutomator import BaseSSOAutomator
 
 
