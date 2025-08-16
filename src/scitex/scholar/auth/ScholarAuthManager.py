@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 18:41:05 (ywatanabe)"
+# Timestamp: "2025-08-16 16:40:51 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/ScholarAuthManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -63,10 +63,8 @@ class ScholarAuthManager:
             config: ScholarConfig instance (creates new if None)
         """
         # Initialize config
-        if config is None:
-            config = ScholarConfig()
-        self.config = config
-
+        self.config = config or ScholarConfig()
+        self.auth_session = None
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
@@ -99,10 +97,12 @@ class ScholarAuthManager:
     ) -> bool:
         if await self.is_authenticate_async(verify_live=verify_live):
             return True
+
         if await self.authenticate_async(
             provider_name=provider_name, **kwargs
         ):
             return True
+
         raise AuthenticationError("Authentication not ensured")
 
     async def is_authenticate_async(self, verify_live: bool = True) -> bool:
@@ -138,33 +138,89 @@ class ScholarAuthManager:
         else:
             raise AuthenticationError("No authentication provider configured")
 
-        result = await provider.authenticate_async(**kwargs)
-        if result and provider_name:
+        self.auth_session = await provider.authenticate_async(**kwargs)
+        if self.auth_session and provider_name:
             self.active_provider = provider_name
-            logger.success(f"Authentication succeeded by {provider_name}.")
-        return result
+
+        logger.success(f"Authentication succeeded by {provider_name}.")
+
+        return self.auth_session
 
     async def get_auth_headers_async(self) -> Dict[str, str]:
         """Get authentication headers from active provider."""
+        await self.ensure_authenticate_async()
         provider = self.get_active_provider()
-        if not provider:
-            raise AuthenticationError("No active authentication provider")
+        # if not provider:
+        #     raise AuthenticationError("No active authentication provider")
 
-        if not await provider.is_authenticate_async():
-            raise AuthenticationError("Not authenticate_async")
+        # if not await provider.is_authenticate_async():
+        #     raise AuthenticationError("Not authenticate_async")
 
         return await provider.get_auth_headers_async()
 
-    async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
+    async def get_auth_options(self) -> dict:
+        await self.ensure_authenticate_async()
+        if self.auth_session and "cookies" in self.auth_session:
+            return {"storage_state": {"cookies": self.auth_session["cookies"]}}
+        return {}
+
+    # async def get_auth_cookies_async(self) -> List[Dict[str, Any]]:
+    #     """Get authentication cookies from active provider."""
+    #     provider = self.get_active_provider()
+    #     if not provider:
+    #         raise AuthenticationError("No active authentication provider")
+
+    #     if not await provider.is_authenticate_async():
+    #         raise AuthenticationError("Not authenticate_async")
+
+    #     authenticated_cookies = await provider.get_auth_cookies_async()
+
+    #     return authenticated_cookies
+
+    async def get_auth_cookies_async(
+        self, essential_only: bool = True
+    ) -> List[Dict[str, Any]]:
         """Get authentication cookies from active provider."""
+        await self.ensure_authenticate_async()
         provider = self.get_active_provider()
-        if not provider:
-            raise AuthenticationError("No active authentication provider")
+        # if not provider:
+        #     raise AuthenticationError("No active authentication provider")
+        # if not await provider.is_authenticate_async():
+        #     raise AuthenticationError("Not authenticate_async")
 
-        if not await provider.is_authenticate_async():
-            raise AuthenticationError("Not authenticate_async")
+        authenticated_cookies = await provider.get_auth_cookies_async()
 
-        return await provider.get_auth_cookies_async()
+        if not essential_only:
+            return authenticated_cookies
+
+        # Filter by provider type
+        if self.active_provider == "openathens":
+            essential_names = [
+                "oa-session",
+                "oa-xsrf-token",
+                "oatmpsid",
+                "oalastorg",
+            ]
+        elif self.active_provider == "ezproxy":
+            essential_names = ["ezproxy", "session_id"]  # adjust as needed
+        elif self.active_provider == "shibboleth":
+            essential_names = [
+                "shib_session",
+                "_shibsession_",
+            ]  # adjust as needed
+        else:
+            return authenticated_cookies
+
+        filtered_cookies = [
+            cookie
+            for cookie in authenticated_cookies
+            if cookie["name"] in essential_names
+        ]
+
+        logger.info(
+            f"Filtered to {len(filtered_cookies)} essential cookies for {self.active_provider}"
+        )
+        return filtered_cookies
 
     def _register_provider(
         self, name: str, provider: BaseAuthenticator
@@ -208,6 +264,7 @@ class ScholarAuthManager:
                 logger.warning(f"Error logging out from {provider}: {e}")
 
         self.active_provider = None
+        self.auth_session = None
 
     def list_providers(self) -> List[str]:
         """List all registered providers."""

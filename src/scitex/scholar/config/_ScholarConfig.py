@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 18:54:56 (ywatanabe)"
+# Timestamp: "2025-08-16 23:09:48 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_ScholarConfig.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,13 +37,6 @@ class ScholarConfig:
         self.cascade = CascadeConfig(config_data, "SCITEX_SCHOLAR_")
         self._setup_path_manager()
 
-    # def __getattr__(self, name):
-    #     """Delegate all get_ methods to path_manager"""
-    #     if name.startswith("get_") and hasattr(self.path_manager, name):
-    #         return getattr(self.path_manager, name)
-    #     raise AttributeError(
-    #         f"'{self.__class__.__name__}' object has no attribute '{name}'"
-    #     )
     def __getattr__(self, name):
         """Delegate all get_ methods to path_manager"""
         if name.startswith("get_") and hasattr(self.path_manager, name):

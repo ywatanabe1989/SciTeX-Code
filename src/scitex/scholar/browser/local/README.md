@@ -46,7 +46,7 @@ async def run_main():
         page = await browser.new_page()
 
         # Go to a site that reveals the IP address
-        await page.goto("http://httpbin.org/ip")
+        await page.goto("http://httpbin.org/ip", wait_until="domcontentloaded", timeout=30000)
 
         # The output should show_async an IP address from the ZenRows network
         content = await page.content()

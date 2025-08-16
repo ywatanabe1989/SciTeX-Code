@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-11 15:52:38 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_PathManager.py
+# Timestamp: "2025-08-16 23:42:13 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -13,6 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import hashlib
 import re
+import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -501,9 +502,60 @@ class PathManager:
         """Get the base Scholar library path (backward compatibility method)."""
         return self.library_dir
 
-    # Enhanced methods with tidiness constraints (automatically ensure directories exist)
     def get_chrome_cache_dir(self, profile_name: str) -> Path:
+        """Get Chrome cache directory, syncing system profile if needed."""
+        if profile_name == "system":
+            self._sync_system_chrome_profile(profile_name)
+
         return self._ensure_directory(self.cache_dir / "chrome" / profile_name)
+
+    def _sync_system_chrome_profile(self, profile_name: str) -> bool:
+        """Sync system Chrome profile to cache directory with time-based preservation."""
+        if profile_name != "system":
+            return True
+
+        system_profile = Path(os.getenv("HOME")) / ".config" / "google-chrome"
+        cache_profile = self.cache_dir / "chrome" / "system"
+
+        if not system_profile.exists():
+            logger.warning("System Chrome profile not found")
+            return False
+
+        # Check if cache is newer than system profile
+        if cache_profile.exists():
+            system_mtime = system_profile.stat().st_mtime
+            cache_mtime = cache_profile.stat().st_mtime
+
+            if cache_mtime > system_mtime:
+                logger.debug(
+                    "Cache is newer than system profile, skipping sync"
+                )
+                return True
+
+        logger.info(
+            f"Syncing system profile to cache: {system_profile} -> {cache_profile}"
+        )
+
+        try:
+            subprocess.run(
+                [
+                    "rsync",
+                    "-av",
+                    "--delete",
+                    f"{system_profile}/",
+                    f"{cache_profile}/",
+                ],
+                check=True,
+                capture_output=True,
+            )
+            logger.info("System Chrome profile synced successfully")
+            return True
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Chrome profile sync failed: {e}")
+            return False
+        except FileNotFoundError:
+            logger.error("rsync not found - please install rsync")
+            return False
 
     def get_auth_cache_dir(
         self,
@@ -676,69 +728,6 @@ class PathManager:
             self.library_dir / collection_name / "logs"
         )
 
-    # def _generate_paper_id(self, doi="", title="", authors=[], year="") -> str:
-    #     """
-    #     Generate unique 8-digit paper ID using deterministic strategy.
-
-    #     Priority:
-    #     1. If DOI exists: Use DOI for consistent identification
-    #     2. If no DOI: Use title + first author + year for deterministic hash
-
-    #     Args:
-    #         paper_info: Dictionary containing paper metadata
-
-    #     Returns:
-    #         8-character uppercase hexadecimal string
-    #     """
-
-    #     if isinstance(doi, str):
-    #         doi = doi.strip()
-
-    #     if doi:
-    #         # Use DOI for consistent identification across systems
-    #         # Remove common DOI prefixes and normalize
-    #         clean_doi = doi.replace("https://doi.org/", "").replace(
-    #             "http://dx.doi.org/", ""
-    #         )
-    #         content = f"DOI:{clean_doi}"
-    #         logger.debug(f"Generating ID from DOI: {clean_doi}")
-    #     else:
-    #         # Use deterministic metadata combination
-    #         if isinstance(title, str):
-    #             title = title.strip().lower()
-    #         else:
-    #             title = ""
-
-    #         # Get first author's last name
-    #         first_author = "unknown"
-    #         if authors and len(authors) > 0:
-    #             author_parts = str(authors[0]).strip().split()
-    #             if author_parts:
-    #                 # Take last part as last name
-    #                 first_author = author_parts[-1].lower()
-
-    #         # Clean title (remove common words and normalize)
-    #         title_clean = re.sub(
-    #             r"\b(the|and|of|in|on|at|to|for|with|by)\b", "", title
-    #         )
-    #         title_clean = re.sub(
-    #             r"[^\w\s]", "", title_clean
-    #         )  # Remove punctuation
-    #         title_clean = re.sub(
-    #             r"\s+", " ", title_clean
-    #         ).strip()  # Normalize spaces
-
-    #         content = f"META:{title_clean}:{first_author}:{year}"
-    #         logger.debug(
-    #             f"Generating ID from metadata: {first_author}-{year}-{title_clean[:30]}..."
-    #         )
-
-    #     # Generate hash and take first 8 characters
-    #     hash_obj = hashlib.md5(content.encode("utf-8"))
-    #     paper_id = hash_obj.hexdigest()[:8].upper()
-
-    #     # Ensure it's a valid directory name
-    #     return self._sanitize_filename(paper_id)
     def _generate_paper_id(
         self, doi=None, title=None, authors=None, year=None
     ) -> str:

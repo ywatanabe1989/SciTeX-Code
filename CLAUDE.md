@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-07 07:14:31
+!-- Timestamp: 2025-08-16 00:43:21
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/CLAUDE.md
 !-- --- -->
@@ -235,6 +235,11 @@ we do not need journal_rank and h_index
   - [x] Is it possible to prepare a summary table to show the results of from_bibtex?
   - [x] For exmaple, ~/.scitex/scholar/library/pac/info/files-bib/summary.csv
   - [x] For exmaple, ~/.scitex/scholar/library/pac/info/filesname-2-bib/summary.csv
+
+## Papers for development
+We need to avoid regression using variety of samples. For paywalled/open-access papers, use the followings respectively:
+- `~/proj/scitex_repo/scholar/docs/papers_paywalled.json`
+- `~/proj/scitex_repo/scholar/docs/papers_openaccess.json`
 
 ## Technical Debt - Storage Architecture
 **Issue**: Current storage structure mixes master storage with project directories

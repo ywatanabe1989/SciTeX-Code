@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 01:21:13 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
+# Timestamp: "2025-08-16 00:10:09 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -18,9 +18,9 @@ from typing import Optional
 
 from playwright.async_api import BrowserContext, Page
 
+from scitex.scholar.browser import BrowserUtils
 from scitex.scholar.config import ScholarConfig
 
-from scitex.scholar.browser improt BrowserUtils
 from ..sso_automation._BaseSSOAutomator import BaseSSOAutomator
 
 

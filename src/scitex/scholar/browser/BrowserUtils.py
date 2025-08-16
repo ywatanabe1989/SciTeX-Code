@@ -427,7 +427,7 @@ class BrowserUtils:
 
             elif action == "navigate":
                 try:
-                    await page.goto(value)
+                    await page.goto(value, wait_until="domcontentloaded", timeout=30000)
                     await page.wait_for_load_state("networkidle")
                 except Exception as e:
                     logger.error(f"Navigation failed: {e}")
@@ -449,7 +449,7 @@ async def main():
         page = await browser.new_page()
 
         print("=== GitHub Login Sequence ===")
-        await page.goto("https://github.com/login")
+        await page.goto("https://github.com/login", wait_until="domcontentloaded", timeout=30000)
         await page.wait_for_load_state("networkidle")
         await asyncio.sleep(2)
 
@@ -472,7 +472,7 @@ async def main():
             await asyncio.sleep(3)
 
         print("\n=== Google Search Demo ===")
-        await page.goto("https://google.com")
+        await page.goto("https://google.com", wait_until="domcontentloaded", timeout=30000)
         await page.wait_for_load_state("networkidle")
         await asyncio.sleep(2)
 

@@ -348,7 +348,7 @@ if __name__ == "__main__":
                             page = await browser.new_page()
                         
                         # Navigate with timeout
-                        await page.goto(url, timeout=30000, wait_until="domcontentloaded")
+                        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
                         
                         if test_name in ["ip", "headers"]:
                             # Extract text content
@@ -520,7 +520,7 @@ if __name__ == "__main__":
 
     #             # Navigate to a site with anti-bot protection
     #             print("Navigating to protected site...")
-    #             await page.goto("https://httpbin.org/headers")
+    #             await page.goto("https://httpbin.org/headers", wait_until="domcontentloaded", timeout=30000)
 
     #             # Get page content
     #             content = await page.content()
@@ -543,7 +543,7 @@ if __name__ == "__main__":
 
     #             # Example: Navigate to a site that requires authentication
     #             print("\nNavigating to academic site...")
-    #             await page.goto("https://scholar.google.com")
+    #             await page.goto("https://scholar.google.com", wait_until="domcontentloaded", timeout=30000)
     #             await page.wait_for_timeout(2000)
 
     #             # Take screenshot
@@ -552,7 +552,7 @@ if __name__ == "__main__":
 
     #             # Example: Handle dynamic content
     #             print("\nTesting dynamic content handling...")
-    #             await page.goto("https://example.com")
+    #             await page.goto("https://example.com", wait_until="domcontentloaded", timeout=30000)
     #             title = await page.title()
     #             print(f"Page title: {title}")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 22:05:39 (ywatanabe)"
+# Timestamp: "2025-08-16 02:47:40 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -132,7 +132,7 @@ class ScholarURLFinder:
             should_close = False
 
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            await page.goto(url, wait_until="networkidle", timeout=30000)
             return await find_pdf_urls(page)
         except:
             return []
@@ -187,7 +187,7 @@ class ScholarURLFinder:
             should_close = False
 
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            await page.goto(url, wait_until="networkidle", timeout=30000)
             pdf_urls = await find_pdf_urls(page)
             if pdf_urls:
                 urls["url_pdf"] = pdf_urls
@@ -235,7 +235,7 @@ class ScholarURLFinder:
             page = await self.context.new_page()
             try:
                 await page.goto(
-                    page_or_url, wait_until="domcontentloaded", timeout=30000
+                    page_or_url, wait_until="networkidle", timeout=30000
                 )
                 return await find_pdf_urls(page)
             except Exception as e:
@@ -374,8 +374,8 @@ if __name__ == "__main__":
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             auth_manager=auth_manager,
-            browser_mode="stealth",
-            # browser_mode="interactive",
+            # browser_mode="stealth",
+            browser_mode="interactive",
             chrome_profile_name="system",
         )
         browser, context = (
@@ -386,9 +386,9 @@ if __name__ == "__main__":
         url_finder = ScholarURLFinder(context)
 
         # Get all URLs for a paper
-        # doi = "10.1038/s41467-023-44201-2"
+        # doi = "10.1038/s41467-023-44201-2"  # Nature Communications - WORKS!
         # doi = "10.1126/science.aao0702" # JASTAR detects unusual traffic
-        doi = "10.1016/j.cell.2025.07.007"  # Cell detects unusual traffic; captcha repeatedly shown
+        doi = "10.1016/j.cell.2025.07.007"  # Cell/Elsevier - Testing
         urls = await url_finder.find_urls(
             doi=doi,
         )
@@ -396,7 +396,7 @@ if __name__ == "__main__":
 
     asyncio.run(main_async())
 
-# python -m scholar.url.ScholarURLFinder
+# python -m scitex.scholar.url.ScholarURLFinder
 
 # {'pdf_urls': [{'reliability': 'low',
 #                'source': 'publisher_pattern',

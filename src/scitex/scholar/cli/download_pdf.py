@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:42:06 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/download_pdf.py
+# Timestamp: "2025-08-16 23:56:08 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/cli/download_pdf.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -24,9 +24,7 @@ import argparse
 import sys
 
 from scitex import logging
-
 from scitex.scholar.core import Paper
-from ..download._SmartScholarPDFDownloader import SmartScholarPDFDownloader
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 00:24:51 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_ChromeProfileManager.py
+# Timestamp: "2025-08-16 23:40:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_ChromeProfileManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from scitex import logging
-
 from scitex.scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
@@ -46,7 +45,6 @@ class ChromeProfileManager:
         "2captcha_solver": {
             "id": "ifibfemgeogfhoebkmokieepdoobkbpo",
             "name": "2Captcha Solver",
-            "description": "reCAPTCHA v2/v3 solving (may need API for advanced features)",
         },
         "captcha_solver": {
             "id": "hlifkpholllijblknnmbfagnkjneagid",
@@ -62,14 +60,8 @@ class ChromeProfileManager:
         self.config = config or ScholarConfig()
         assert profile_name in self.AVAILABLE_PROFILE_NAMES
 
-        if profile_name == "system":
-            self.profile_name = "system"
-            self.profile_dir = (
-                Path(os.getenv("HOME")) / ".config" / "google-chrome"
-            )
-        else:
-            self.profile_name = profile_name
-            self.profile_dir = self.config.get_chrome_cache_dir(profile_name)
+        self.profile_name = profile_name
+        self.profile_dir = self.config.get_chrome_cache_dir(profile_name)
 
     def _get_extension_statuses(self, profile_dir: Path) -> Dict[str, bool]:
         """Get detailed status of each extension."""
@@ -130,25 +122,6 @@ class ChromeProfileManager:
 
         return installed_count == len(self.EXTENSIONS)
 
-    def _get_profile_dir_with_system_handling(self) -> Path:
-        """Get appropriate profile directory for automation."""
-        if self.profile_name == "system":
-            return self.profile_dir
-
-        if self.check_extensions_installed(self.profile_dir, verbose=False):
-            logger.info(
-                f"Using custom profile with extensions: {self.profile_dir}"
-            )
-            return self.profile_dir
-        else:
-            system_profile_dir = (
-                Path(os.getenv("HOME")) / ".config" / "google-chrome"
-            )
-            logger.info(
-                f"Extensions not found, using system profile: {system_profile_dir}"
-            )
-            return system_profile_dir
-
     def _get_installed_extension_paths(self, profile_dir: Path) -> list[str]:
         """Get paths to installed extensions for --load-extension argument."""
         extension_paths = []
@@ -173,8 +146,9 @@ class ChromeProfileManager:
 
     def get_extension_args(self):
         """Get extension args using appropriate profile directory."""
-        profile_dir = self._get_profile_dir_with_system_handling()
-        extension_paths = self._get_installed_extension_paths(profile_dir)
+        # profile_dir = self._get_profile_dir_with_system_handling()
+
+        extension_paths = self._get_installed_extension_paths(self.profile_dir)
 
         extension_args = []
         if extension_paths:
@@ -189,7 +163,7 @@ class ChromeProfileManager:
                 ]
             )
             logger.info(
-                f"Loading {len(extension_paths)} extensions from {profile_dir}"
+                f"Loading {len(extension_paths)} extensions from {self.profile_dir}"
             )
 
         return extension_args

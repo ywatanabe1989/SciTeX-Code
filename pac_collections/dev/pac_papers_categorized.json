@@ -1,0 +1,539 @@
+{
+  "total": 55,
+  "categories": {
+    "pubmed": [
+      {
+        "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations: Comparison of Phase-Locking Value, Mean Vector Length, Modulation Index, and Generalized-Linear-Modeling-Cross-Frequency-Coupling",
+        "author": "Mareike J. H{\\\"u",
+        "year": "2019",
+        "journal": "Frontiers in Neuroscience",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/31275096"
+      },
+      {
+        "title": "Measuring phase-amplitude coupling between neuronal oscillations of different frequencies.",
+        "author": "A. Tort and Robert W. Komorowski and H. Eichenbaum and N. Kopell",
+        "year": "2010",
+        "journal": "Journal of neurophysiology",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/20463205"
+      },
+      {
+        "title": "Tensorpac: An open-source Python toolbox for tensor-based phase-amplitude coupling measurement in electrophysiological brain signals",
+        "author": "Etienne Combrisson and T. Nest and A. Brovelli and Robin A. A. Ince and Juan L. P. Soto and A. Guillot and K. Jerbi",
+        "year": "2020",
+        "journal": "PLoS Computational Biology",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/33119593"
+      },
+      {
+        "title": "Phase\u2013Amplitude Coupling, Mental Health and Cognition: Implications for Adolescence",
+        "author": "D. Sacks and P. Schwenn and L. McLoughlin and J. Lagopoulos and D. Hermens",
+        "year": "2021",
+        "journal": "Frontiers in Human Neuroscience",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/33841115"
+      },
+      {
+        "title": "Phase-amplitude coupling of Go/Nogo task-related neuronal oscillation decreases for humans with insufficient sleep.",
+        "author": "Peng Zhang and Chuancai Sun and Zhongqi Liu and Qianxiang Zhou",
+        "year": "2023",
+        "journal": "Sleep",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/37707941"
+      },
+      {
+        "title": "EEG phase-amplitude coupling to stratify encephalopathy severity in the developing brain",
+        "author": "Xinlong Wang and H. Liu and Srinivas Kota and Yudhajit Das and Yulun Liu and Rong Zhang and L. Chalak",
+        "year": "2021",
+        "journal": "Computer methods and programs in biomedicine",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/34959157"
+      },
+      {
+        "title": "Decreased Phase\u2013Amplitude Coupling Between the mPFC and BLA During Exploratory Behaviour in Chronic Unpredictable Mild Stress-Induced Depression Model of Rats",
+        "author": "Zihe Wang and Qi-Lai Cao and Wenwen Bai and Xuyuan Zheng and Tiaotiao Liu",
+        "year": "2021",
+        "journal": "Frontiers in Behavioral Neuroscience",
+        "url": "https://www.ncbi.nlm.nih.gov/pubmed/34975430"
+      }
+    ],
+    "sciencedirect": [
+      {
+        "title": "The functional role of cross-frequency coupling",
+        "author": "R. Canolty and R. Knight",
+        "year": "2010",
+        "journal": "Trends in Cognitive Sciences",
+        "url": "https://www.sciencedirect.com/science/article/pii/S1364661310002068?dgcid=api\\_sd\\_search-api-endpoint"
+      },
+      {
+        "title": "Untangling cross-frequency coupling in neuroscience",
+        "author": "Juhan Aru and Jaan Aru and V. Priesemann and M. Wibral and Raul Vicente",
+        "year": "2014",
+        "journal": "Current Opinion in Neurobiology",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0959438814001640?dgcid=api\\_sd\\_search-api-endpoint"
+      },
+      {
+        "title": "Toward a proper estimation of phase\u2013amplitude coupling in neural oscillations",
+        "author": "Dino Dvo\u0159{\\'a",
+        "year": "2014",
+        "journal": "Journal of Neuroscience Methods",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0165027014000132?dgcid=api\\_sd\\_search-api-endpoint"
+      },
+      {
+        "title": "Phase-Amplitude Coupling: A General Mechanism for Memory Processing and Synaptic Plasticity?",
+        "author": "T. Bergmann and J. Born",
+        "year": "2018",
+        "journal": "Neuron",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0896627317311704?dgcid=api\\_sd\\_search-api-endpoint"
+      },
+      {
+        "title": "Temporal-spatial characteristics of phase-amplitude coupling in electrocorticogram for human temporal lobe epilepsy",
+        "author": "Ruihua Zhang and Ye Ren and Chunyan Liu and Na Xu and Xiaoli Li and F. Cong and T. Ristaniemi and Yuping Wang",
+        "year": "2017",
+        "journal": "Clinical Neurophysiology",
+        "url": "https://www.sciencedirect.com/science/article/pii/S138824571730216X?dgcid=api\\_sd\\_search-api-endpoint"
+      }
+    ],
+    "ieee": [
+      {
+        "title": "Variational Phase-Amplitude Coupling Characterizes Signatures of Anterior Cortex Under Emotional Processing",
+        "author": "Chu Zhang and C. Yeh and Wenbin Shi",
+        "year": "2023",
+        "journal": "IEEE Journal of Biomedical and Health Informatics",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=10040734"
+      },
+      {
+        "title": "Event-Related Phase-Amplitude Coupling During Working Memory of Musical Chords",
+        "author": "Ting Huang and Hsien-Ming Ding and Y. Tseng",
+        "year": "2021",
+        "journal": "IEEE Access",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9488237"
+      },
+      {
+        "title": "Granger Causality Based Directional Phase-Amplitude Coupling Measure",
+        "author": "T. T. Munia and Selin Aviyente",
+        "year": "2021",
+        "journal": "ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9414004"
+      },
+      {
+        "title": "Seizure Onset Zone Identification Based on Phase-Amplitude Coupling of Interictal Electrocorticogram",
+        "author": "Yao Miao and Y. Iimura and H. Sugano and Kosuke Fukumori and Takuhei Shoji and Toshihisa Tanaka",
+        "year": "2021",
+        "journal": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine \\& Biology Society (EMBC)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9630941"
+      },
+      {
+        "title": "Computing Phase Amplitude Coupling in EEGLAB: PACTools",
+        "author": "Ram{\\'o",
+        "year": "2020",
+        "journal": "2020 IEEE 20th International Conference on Bioinformatics and Bioengineering (BIBE)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9288037"
+      },
+      {
+        "title": "REPAC: Reliable Estimation of Phase-Amplitude Coupling in Brain Networks",
+        "author": "Giulia Cisotto",
+        "year": "2020",
+        "journal": "ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9414749"
+      },
+      {
+        "title": "Phase-dependent Stimulation for Modulating Phase-amplitude Coupling: A Computational Modeling Approach",
+        "author": "Y. Salimpour and A. Nayak and E. Naydanova and Min Jae Kim and Brian Y. Hwang and Kelly A. Mills and P. Kudela and W. Anderson",
+        "year": "2020",
+        "journal": "2020 42nd Annual International Conference of the IEEE Engineering in Medicine \\& Biology Society (EMBC)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9175966"
+      },
+      {
+        "title": "A Mutual Information Measure of Phase-Amplitude Coupling using High Dimensional Sparse Models",
+        "author": "Andrew S. Perley and Todd P. Coleman",
+        "year": "2022",
+        "journal": "2022 44th Annual International Conference of the IEEE Engineering in Medicine \\& Biology Society (EMBC)",
+        "url": "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\\&arnumber=9871816"
+      }
+    ],
+    "other": [
+      {
+        "title": "Generative models, linguistic communication and active inference",
+        "author": "Karl J. Friston and Thomas Parr and Y. Yufik and Noor Sajid and E. Holmes",
+        "year": "2020",
+        "journal": "Neuroscience and Biobehavioral Reviews",
+        "url": "https://api.semanticscholar.org/CorpusId:220603864"
+      },
+      {
+        "title": "Statistical Inference for Modulation Index in Phase-Amplitude Coupling",
+        "author": "Marco Pinto-Orellana and H. Ombao and Beth A. Lopour",
+        "year": "2023",
+        "journal": "",
+        "url": "https://api.semanticscholar.org/CorpusId:263829747"
+      },
+      {
+        "title": "Different Methods to Estimate the Phase of Neural Rhythms Agree But Only During Times of Low Uncertainty",
+        "author": "Anirudh Wodeyar and Fran\u00e7ois A Marshall and C. Chu and Uri T. Eden and Mark A. Kramer",
+        "year": "2023",
+        "journal": "eNeuro",
+        "url": "https://api.semanticscholar.org/CorpusId:264098986"
+      },
+      {
+        "title": "Modelling Brain Connectivity Networks by Graph Embedding for Dyslexia Diagnosis",
+        "author": "M. Formoso and A. Ortiz and F. J. Mart'inez-Murcia and N. Gallego-Molina and J. Luque",
+        "year": "2021",
+        "journal": "ArXiv",
+        "url": "https://api.semanticscholar.org/CorpusId:233209974"
+      },
+      {
+        "title": "Estimating Phase Amplitude Coupling between Neural Oscillations Based on Permutation and Entropy",
+        "author": "Liyong Yin and Fan Tian and R. Hu and Zhaohui Li and F. Yin",
+        "year": "2021",
+        "journal": "Entropy",
+        "url": "https://api.semanticscholar.org/CorpusId:237322109"
+      },
+      {
+        "title": "Time-Frequency Based Phase-Amplitude Coupling Measure For Neuronal Oscillations",
+        "author": "T. T. Munia and Selin Aviyente",
+        "year": "2019",
+        "journal": "Scientific Reports",
+        "url": "https://api.semanticscholar.org/CorpusId:201651743"
+      },
+      {
+        "title": "Effect of Phase Clustering Bias on Phase-Amplitude Coupling for Emotional EEG.",
+        "author": "Tingyu Sheng and Qiansheng Feng and Zhiguo Luo and Shaokai Zhao and Minpeng Xu and Dong Ming and Ye Yan and Erwei Yin",
+        "year": "2024",
+        "journal": "Journal of integrative neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:267970715"
+      },
+      {
+        "title": "Direct modulation index: A measure of phase amplitude coupling for neurophysiology data",
+        "author": "Maximilian Scherer and Tianlu Wang and R. Guggenberger and L. Milosevic and A. Gharabaghi",
+        "year": "2022",
+        "journal": "Human Brain Mapping",
+        "url": "https://doi.org/10.1002/hbm.26190"
+      },
+      {
+        "title": "Analyzing human sleep EEG: A methodological primer with code implementation.",
+        "author": "Roy Cox and J. Fell",
+        "year": "2020",
+        "journal": "Sleep medicine reviews",
+        "url": "https://api.semanticscholar.org/CorpusId:220907907"
+      },
+      {
+        "title": "Alpha and high gamma phase amplitude coupling during motor imagery and weighted cross-frequency coupling to extract discriminative cross-frequency patterns",
+        "author": "Dae-Cheol Gwon and M. Ahn",
+        "year": "2021",
+        "journal": "NeuroImage",
+        "url": "https://api.semanticscholar.org/CorpusId:235917686"
+      },
+      {
+        "title": "Long term effects of cueing procedural memory reactivation during NREM sleep",
+        "author": "Martyna Rakowska and Mahmoud E. A. Abdellahi and Paulina Bagrowska and Miguel Navarrete and P. Lewis",
+        "year": "2021",
+        "journal": "Neuroimage",
+        "url": "https://api.semanticscholar.org/CorpusId:237541152"
+      },
+      {
+        "title": "Discriminating Valid from Spurious Indices of Phase-Amplitude Coupling",
+        "author": "O. Jensen and E. Spaak and Hyojin Park",
+        "year": "2016",
+        "journal": "eNeuro",
+        "url": "https://api.semanticscholar.org/CorpusId:9897413"
+      },
+      {
+        "title": "Cross\u2010Frequency Couplings Reveal Mice Visual Cortex Selectivity to Grating Orientations",
+        "author": "Zahra Ebrahimvand and M. Daliri",
+        "year": "2025",
+        "journal": "Brain and Behavior",
+        "url": "https://api.semanticscholar.org/CorpusId:276988304"
+      },
+      {
+        "title": "The Functional Interactions between Cortical Regions through Theta-Gamma Coupling during Resting-State and a Visual Working Memory Task",
+        "author": "Ji-Seon Ahn and Jaeseok Heo and Jooyoung Oh and Deokjong Lee and K. Jhung and Jae-Jin Kim and Jin Young Park",
+        "year": "2022",
+        "journal": "Brain Sciences",
+        "url": "https://api.semanticscholar.org/CorpusId:246968436"
+      },
+      {
+        "title": "Complex network modelling of EEG band coupling in dyslexia: An exploratory analysis of auditory processing and diagnosis",
+        "author": "N. Gallego-Molina and Andr{\\'e",
+        "year": "2021",
+        "journal": "Knowledge-Based Systems",
+        "url": "https://api.semanticscholar.org/CorpusId:263786486"
+      },
+      {
+        "title": "Shifts in Gamma Phase\u2013Amplitude Coupling Frequency from Theta to Alpha Over Posterior Cortex During Visual Tasks",
+        "author": "Bradley Voytek and R. Canolty and A. Shestyuk and N. Crone and J. Parvizi and R. Knight",
+        "year": "2010",
+        "journal": "Frontiers in Human Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:7724159"
+      },
+      {
+        "title": "The bispectrum and its relationship to phase-amplitude coupling",
+        "author": "Christopher K. Kovach and H. Oya and H. Kawasaki",
+        "year": "2017",
+        "journal": "NeuroImage",
+        "url": "https://api.semanticscholar.org/CorpusId:3670544"
+      },
+      {
+        "title": "The Detection of Phase Amplitude Coupling during Sensory Processing",
+        "author": "Robert A. Seymour and Gina Rippon and Klaus Kessler",
+        "year": "2017",
+        "journal": "Frontiers in Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:19922713"
+      },
+      {
+        "title": "Measuring Phase-Amplitude Coupling Based on the Jensen-Shannon Divergence and Correlation Matrix",
+        "author": "Zhaohui Li and Xiaochen Bai and R. Hu and Xiaoli Li",
+        "year": "2021",
+        "journal": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+        "url": "https://api.semanticscholar.org/CorpusId:235776537"
+      },
+      {
+        "title": "Oscillatory Activity and Phase\u2013Amplitude Coupling in the Human Medial Frontal Cortex during Decision Making",
+        "author": "Michael X. Cohen and C. Elger and J. Fell",
+        "year": "2009",
+        "journal": "Journal of Cognitive Neuroscience",
+        "url": "https://doi.org/10.1162/jocn.2008.21020"
+      },
+      {
+        "title": "Heterogeneous profiles of coupled sleep oscillations in human hippocampus",
+        "author": "Roy Cox and Theodor R{\\\"u",
+        "year": "2019",
+        "journal": "Neuroimage",
+        "url": "https://api.semanticscholar.org/CorpusId:109858184"
+      },
+      {
+        "title": "Multivariate Analysis of Bivariate Phase-Amplitude Coupling in EEG Data Using Tensor Robust PCA",
+        "author": "T. T. Munia and Selin Aviyente",
+        "year": "2021",
+        "journal": "IEEE transactions on neural systems and rehabilitation engineering : a publication of the IEEE Engineering in Medicine and Biology Society",
+        "url": "https://api.semanticscholar.org/CorpusId:235675330"
+      },
+      {
+        "title": "Phase\u2013Amplitude Coupling in Human Electrocorticography Is Spatially Distributed and Phase Diverse",
+        "author": "Roemer van der Meij and M. Kahana and E. Maris",
+        "year": "2012",
+        "journal": "The Journal of Neuroscience",
+        "url": "https://doi.org/10.1523/JNEUROSCI.4816-11.2012"
+      },
+      {
+        "title": "The olfactory bulb theta rhythm follows all frequencies of diaphragmatic respiration in the freely behaving rat",
+        "author": "Daniel Rojas-L{\\'i",
+        "year": "2014",
+        "journal": "Frontiers in Behavioral Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:17638335"
+      },
+      {
+        "title": "Phase\u2010amplitude coupling of sleep slow oscillatory and spindle activity correlates with overnight memory consolidation",
+        "author": "C. Mikutta and B. Feige and J. Maier and E. Hertenstein and J. Holz and D. Riemann and C. Nissen",
+        "year": "2019",
+        "journal": "Journal of Sleep Research",
+        "url": "https://doi.org/10.1111/jsr.12835"
+      },
+      {
+        "title": "Phase-amplitude coupling profiles differ in frontal and auditory cortices",
+        "author": "Francisco Garc{\\'i",
+        "year": "2020",
+        "journal": "bioRxiv",
+        "url": "https://api.semanticscholar.org/CorpusId:218571850"
+      },
+      {
+        "title": "A Canonical Circuit for Generating Phase-Amplitude Coupling",
+        "author": "Angela C. E. Onslow and Matthew W. Jones and R. Bogacz",
+        "year": "2014",
+        "journal": "PLoS ONE",
+        "url": "https://api.semanticscholar.org/CorpusId:157901"
+      },
+      {
+        "title": "CFC delta-beta is related with mixed features and response to treatment in bipolar II depression",
+        "author": "S. Kesebir and R. M. Demirer and N. Tarhan",
+        "year": "2019",
+        "journal": "Heliyon",
+        "url": "https://api.semanticscholar.org/CorpusId:196556378"
+      },
+      {
+        "title": "Timing of phase\u2010amplitude coupling is essential for neuronal and functional maturation of audiovisual integration in adolescents",
+        "author": "Takefumi Ohki and T. Matsuda and A. Gunji and Y. Takei and Ryusuke Sakuma and Y. Kaneko and M. Inagaki and T. Hanakawa and Kazuhiro Ueda and M. Fukuda and K. Hiraki",
+        "year": "2019",
+        "journal": "Brain and Behavior",
+        "url": "https://api.semanticscholar.org/CorpusId:216596437"
+      },
+      {
+        "title": "Cross-frequency coupling within and between the human thalamus and neocortex",
+        "author": "Thomas H. B. FitzGerald and A. Valent{\\'i",
+        "year": "2013",
+        "journal": "Frontiers in Human Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:14588601"
+      },
+      {
+        "title": "Topology, Cross-Frequency, and Same-Frequency Band Interactions Shape the Generation of Phase-Amplitude Coupling in a Neural Mass Model of a Cortical Column",
+        "author": "R. Sotero",
+        "year": "2016",
+        "journal": "PLoS Computational Biology",
+        "url": "https://api.semanticscholar.org/CorpusId:3626970"
+      },
+      {
+        "title": "Modeling the Generation of Phase-Amplitude Coupling in Cortical Circuits: From Detailed Networks to Neural Mass Models",
+        "author": "R. Sotero",
+        "year": "2015",
+        "journal": "BioMed Research International",
+        "url": "https://api.semanticscholar.org/CorpusId:2399970"
+      },
+      {
+        "title": "Phase resetting in human auditory cortex to visual speech",
+        "author": "P. M{\\'e",
+        "year": "2018",
+        "journal": "bioRxiv",
+        "url": "https://api.semanticscholar.org/CorpusId:91810493"
+      },
+      {
+        "title": "Cross\u2010regional phase amplitude coupling supports the encoding of episodic memories",
+        "author": "David X. Wang and Kelsey Schmitt and S. Seger and C. Davila and B. Lega",
+        "year": "2021",
+        "journal": "Hippocampus",
+        "url": "https://doi.org/10.1002/hipo.23309"
+      },
+      {
+        "title": "Cross-Frequency Phase-Amplitude Coupling between Hippocampal Theta and Gamma Oscillations during Recall Destabilizes Memory and Renders It Susceptible to Reconsolidation Disruption",
+        "author": "Andressa Radiske and M. C. Gonzalez and Sergio Conde-Ocazionez and J. I. Rossato and C. K{\\\"o",
+        "year": "2020",
+        "journal": "The Journal of Neuroscience",
+        "url": "https://doi.org/10.1523/JNEUROSCI.0259-20.2020"
+      },
+      {
+        "title": "EEG Phase-Amplitude Coupling Strength and Phase Preference: Association with Age over the First Three Years after Birth",
+        "author": "Michael G. Mariscal and A. Levin and Laurel J. Gabard-Durnam and Wanze Xie and H. Tager-Flusberg and C. Nelson",
+        "year": "2021",
+        "journal": "eNeuro",
+        "url": "https://doi.org/10.1523/ENEURO.0264-20.2021"
+      },
+      {
+        "title": "Theta-gamma phase amplitude coupling in a hippocampal CA1 microcircuit",
+        "author": "A. Ponzi and S. Dura-Bernal and M. Migliore",
+        "year": "2023",
+        "journal": "PLOS Computational Biology",
+        "url": "https://pdfs.semanticscholar.org/8544/7fef2080fa46fe3f62e148f22c02d97631b9.pdf"
+      },
+      {
+        "title": "How to design optimal brain stimulation to modulate phase-amplitude coupling?",
+        "author": "Benoit Duchet and R. Bogacz",
+        "year": "2024",
+        "journal": "Journal of neural engineering",
+        "url": "https://doi.org/10.1088/1741-2552\\%2Fad5b1a"
+      },
+      {
+        "title": "Phase-Amplitude Coupling and Phase Synchronization Between Medial Temporal, Frontal and Posterior Brain Regions Support Episodic Autobiographical Memory Recall",
+        "author": "N. Roehri and Lucie Br{\\'e",
+        "year": "2021",
+        "journal": "Brain Topography",
+        "url": "https://doi.org/10.1007/s10548-022-00890-4"
+      },
+      {
+        "title": "Phase-Amplitude Coupling Brain Networks in Children with Attention-Deficit/Hyperactivity Disorder",
+        "author": "Xingping Liu and Ling Sun and Dujuan Zhang and Shanshan Wang and Shengjing Hu and Bei Fang and Guoli Yan and Guanghong Sui and Qiangwei Huang and Suogang Wang",
+        "year": "2022",
+        "journal": "Clinical EEG and Neuroscience",
+        "url": "https://doi.org/10.1177/15500594221086195"
+      },
+      {
+        "title": "Phase-amplitude coupling and infraslow (<1 Hz) frequencies in the rat brain: relationship to resting state fMRI",
+        "author": "G. Thompson and W. Pan and J. Billings and J. Grooms and S. Shakil and D. Jaeger and S. Keilholz",
+        "year": "2014",
+        "journal": "Frontiers in Integrative Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:1195192"
+      },
+      {
+        "title": "Addressing Pitfalls in Phase-Amplitude Coupling Analysis with an Extended Modulation Index Toolbox",
+        "author": "G. Jurkiewicz and M. Hunt and J. \u017bygierewicz",
+        "year": "2020",
+        "journal": "Neuroinformatics",
+        "url": "https://doi.org/10.1007/s12021-020-09487-3"
+      },
+      {
+        "title": "Multitaper estimates of phase-amplitude coupling",
+        "author": "K. Lepage and C. N. Fleming and M. Witcher and S. Vijayan",
+        "year": "2021",
+        "journal": "Journal of Neural Engineering",
+        "url": "https://doi.org/10.1088/1741-2552\\%2Fac1deb"
+      },
+      {
+        "title": "What Can Local Transfer Entropy Tell Us about Phase-Amplitude Coupling in Electrophysiological Signals?",
+        "author": "Ram{\\'o",
+        "year": "2020",
+        "journal": "Entropy",
+        "url": "https://pdfs.semanticscholar.org/2f98/b8624c8505473e95ffbceebaae21a3380ad0.pdf"
+      },
+      {
+        "title": "Generation of phase-amplitude coupling of neurophysiological signals in a neural mass model of a cortical column",
+        "author": "R. Sotero",
+        "year": "2015",
+        "journal": "bioRxiv",
+        "url": "https://api.semanticscholar.org/CorpusId:14415201"
+      },
+      {
+        "title": "Phase-amplitude coupling in neuronal oscillator networks",
+        "author": "Yuzhen Qin and Tommaso Menara and D. Bassett and F. Pasqualetti",
+        "year": "2020",
+        "journal": "arXiv: Neurons and Cognition",
+        "url": "https://arxiv.org/pdf/2012.04217.pdf"
+      },
+      {
+        "title": "Parametric estimation of spectrum driven by an exogenous signal",
+        "author": "Tom Dupr{\\'e",
+        "year": "2017",
+        "journal": "2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "url": "https://api.semanticscholar.org/CorpusId:31776345"
+      },
+      {
+        "title": "Understanding phase-amplitude coupling from bispectral analysis",
+        "author": "Coen S. Zandvoort and G. Nolte",
+        "year": "2020",
+        "journal": "bioRxiv",
+        "url": "https://doi.org/10.1101/2020.03.20.000745"
+      },
+      {
+        "title": "Influence of White and Gray Matter Connections on Endogenous Human Cortical Oscillations",
+        "author": "Ammar H. Hawasli and DoHyun Kim and N. M. Ledbetter and S. Dahiya and D. Barbour and E. Leuthardt",
+        "year": "2016",
+        "journal": "Frontiers in Human Neuroscience",
+        "url": "https://api.semanticscholar.org/CorpusId:11725868"
+      },
+      {
+        "title": "Dyconnmap: Dynamic connectome mapping\u2014A neuroimaging python module",
+        "author": "Avraam D. Marimpis and S. Dimitriadis and R. Goebel",
+        "year": "2021",
+        "journal": "Human Brain Mapping",
+        "url": "https://api.semanticscholar.org/CorpusId:235796871"
+      },
+      {
+        "title": "Boosting Generalization in Bio-signal Classification by Learning the Phase-Amplitude Coupling",
+        "author": "Abdelhak Lemkhenter and Paolo Favaro",
+        "year": "2020",
+        "journal": "Pattern Recognition",
+        "url": "https://api.semanticscholar.org/CorpusId:221739189"
+      },
+      {
+        "title": "Implicit Analysis of Perceptual Multimedia Experience Based on Physiological Response: A Review",
+        "author": "Jong-Seok Lee and Seong-eun Moon",
+        "year": "2017",
+        "journal": "IEEE Transactions on Multimedia",
+        "url": "https://api.semanticscholar.org/CorpusId:25121813"
+      },
+      {
+        "title": "medRxiv",
+        "author": "Fleming C. Peck and A. Naples and S. Webb and Raphael A Bernier and K. Chawarska and Geraldine Dawson and S. Faja and S. Jeste and M. Murias and Charles A. Nelson and F. Shic and Catherine Sugar and D. \u015eent{\\\"u",
+        "year": "2022",
+        "journal": "",
+        "url": "https://doi.org/10.1101/2022.09.25.22279830"
+      },
+      {
+        "title": "Phase-Amplitude Coupling in Spontaneous Mouse Behavior",
+        "author": "Daniel T Thengone and K. Gagnidze and D. Pfaff and A. Proekt",
+        "year": "2016",
+        "journal": "PLoS ONE",
+        "url": "https://api.semanticscholar.org/CorpusId:7675931"
+      },
+      {
+        "title": "Dissociated cortical phase- and amplitude-coupling patterns in the human brain",
+        "author": "M. Siems and M. Siegel",
+        "year": "2018",
+        "journal": "bioRxiv",
+        "url": "https://api.semanticscholar.org/CorpusId:92394688"
+      }
+    ]
+  },
+  "timestamp": "2025-08-16 22:00:29"
+}

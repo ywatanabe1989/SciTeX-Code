@@ -1,0 +1,56 @@
+{
+  "downloaded": [],
+  "failed": [],
+  "skipped": [
+    {
+      "title": "Quantification of Phase-Amplitude Coupling in Neuronal Oscillations: Comparison of Phase-Locking Value, Mean Vector Length, Modulation Index, and Generalized-Linear-Modeling-Cross-Frequency-Coupling",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Measuring phase-amplitude coupling between neuronal oscillations of different frequencies.",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Tensorpac: An open-source Python toolbox for tensor-based phase-amplitude coupling measurement in electrophysiological brain signals",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Phase\u2013Amplitude Coupling, Mental Health and Cognition: Implications for Adolescence",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Phase-amplitude coupling of Go/Nogo task-related neuronal oscillation decreases for humans with insufficient sleep.",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "EEG phase-amplitude coupling to stratify encephalopathy severity in the developing brain",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Decreased Phase\u2013Amplitude Coupling Between the mPFC and BLA During Exploratory Behaviour in Chronic Unpredictable Mild Stress-Induced Depression Model of Rats",
+      "category": "pubmed",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "The functional role of cross-frequency coupling",
+      "category": "sciencedirect",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Untangling cross-frequency coupling in neuroscience",
+      "category": "sciencedirect",
+      "reason": "Requires authentication or manual download"
+    },
+    {
+      "title": "Toward a proper estimation of phase\u2013amplitude coupling in neural oscillations",
+      "category": "sciencedirect",
+      "reason": "Requires authentication or manual download"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 22:01:33 (ywatanabe)"
+# Timestamp: "2025-08-16 02:16:39 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_resolve_functions.py
 # ----------------------------------------
 from __future__ import annotations
@@ -98,9 +98,6 @@ def generate_openurl_query(
     """
     params = []
 
-    # Add source identifier
-    params.append("sid=scitex")
-
     # Add DOI if available
     if metadata.get("doi"):
         params.append(f"doi={metadata['doi']}")
@@ -167,30 +164,13 @@ async def resolve_openurl(
     openurl_query: str, context: BrowserContext
 ) -> Optional[str]:
     page = await context.new_page()
+    initial_url = openurl_query
+
     try:
         await page.goto(
             openurl_query, wait_until="domcontentloaded", timeout=60000
         )
         await page.wait_for_timeout(3000)
-
-        # Debug all links on the page
-        links_info = await page.evaluate(
-            """
-            () => {
-                return Array.from(document.querySelectorAll('a[href]')).map(link => ({
-                    href: link.href,
-                    text: link.textContent.trim(),
-                    classes: link.className,
-                    id: link.id
-                }));
-            }
-        """
-        )
-
-        for link_info in links_info:
-            logger.debug(
-                f"Link: {link_info['text'][:30]} -> {link_info['href'][:60]}"
-            )
 
         doi_match = re.search(r"doi=([^&]+)", openurl_query)
         doi = doi_match.group(1) if doi_match else ""
@@ -199,10 +179,80 @@ async def resolve_openurl(
         link = await finder.find_link(page, doi)
 
         if link:
-            success = await finder.click_and_wait(page, link)
-            if success:
-                return page.url
+            logger.info("Found resolver link, attempting to click...")
 
+            # Check if it's a JavaScript link (SFX)
+            href = await link.get_attribute("href") or ""
+            if href.startswith("javascript:"):
+                # Handle SFX JavaScript links that open in new window/tab
+                initial_pages = len(context.pages)
+
+                # Click the link
+                await link.click()
+                await page.wait_for_timeout(2000)
+
+                # Check if new page opened
+                current_pages = context.pages
+                if len(current_pages) > initial_pages:
+                    # New page opened
+                    new_page = current_pages[-1]
+
+                    # Wait for new page to load
+                    await new_page.wait_for_load_state(
+                        "domcontentloaded", timeout=30000
+                    )
+                    await new_page.wait_for_timeout(3000)
+
+                    # Follow authentication redirects if needed
+                    current_url = new_page.url
+                    if (
+                        "auth.elsevier.com" in current_url
+                        or "login.openathens" in current_url
+                    ):
+                        logger.info("Following authentication redirect...")
+                        # Don't wait for networkidle as it may never settle
+                        # Just wait for the URL to change away from auth pages
+                        try:
+                            for i in range(30):  # Wait up to 30 seconds
+                                await new_page.wait_for_timeout(1000)
+                                current_url = new_page.url
+                                if (
+                                    "auth.elsevier.com" not in current_url
+                                    and "login.openathens" not in current_url
+                                ):
+                                    logger.info(
+                                        f"Redirected to: {current_url[:80]}..."
+                                    )
+                                    break
+                                if i % 5 == 0:
+                                    logger.debug(
+                                        f"Still on auth page, waiting... ({i}s)"
+                                    )
+                        except Exception as e:
+                            logger.debug(
+                                f"Auth redirect monitoring error: {e}"
+                            )
+                        current_url = new_page.url
+
+                    final_url = current_url
+                    logger.success(f"Resolved via new tab: {final_url}")
+
+                    # Close the new page
+                    await new_page.close()
+
+                    return final_url
+                else:
+                    # Check if current page navigated
+                    await page.wait_for_timeout(3000)
+                    if page.url != initial_url:
+                        return page.url
+            else:
+                # Regular link - use standard click and wait
+                success = await finder.click_and_wait(page, link)
+                if success:
+                    return page.url
+
+        logger.warning("Could not resolve OpenURL")
         return None
 
     except Exception as e:

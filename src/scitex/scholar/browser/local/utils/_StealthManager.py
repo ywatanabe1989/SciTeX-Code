@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 20:01:40 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_StealthManager.py
+# Timestamp: "2025-08-16 16:19:28 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_StealthManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -20,6 +20,18 @@ from scitex import logging
 
 logger = logging.getLogger(__name__)
 
+# User Agent(Old)	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36
+# WebDriver(New)	missing (passed)
+# WebDriver Advanced	passed
+# Chrome(New)	present (passed)
+# Permissions(New)	prompt
+# Plugins Length(Old)	5
+# Plugins is of type PluginArray	passed
+# Languages(Old)	en-US,en,ja
+# WebGL Vendor	Google Inc. (AMD)
+# WebGL Renderer	ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001636) Direct3D11 vs_5_0 ps_5_0, D3D11)
+# Broken Image Dimensions	16x16
+
 
 class StealthManager:
     def __init__(
@@ -32,9 +44,10 @@ class StealthManager:
 
     def get_random_user_agent(self) -> str:
         user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
             # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
             # "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            # "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
             # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
             # "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
             # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
@@ -85,7 +98,7 @@ class StealthManager:
                 "Cache-Control": "max-age=0",
                 "Sec-Ch-Ua": '"Google Chrome";v="132", "Chromium";v="132", "Not_A Brand";v="24"',
                 "Sec-Ch-Ua-Mobile": "?0",
-                "Sec-Ch-Ua-Platform": '"Linux"',
+                "Sec-Ch-Ua-Platform": '"Windows"',
                 "Sec-Fetch-Dest": "document",
                 "Sec-Fetch-Mode": "navigate",
                 "Sec-Fetch-Site": "none",
@@ -127,7 +140,6 @@ class StealthManager:
             "--disable-component-update",
             "--disable-domain-reliability",
             "--disable-background-mode",
-            # "--disable-extensions-http-throttling",
             "--disable-ipc-flooding-protection",
             # Browser behavior normalization
             "--disable-sync",
@@ -138,8 +150,12 @@ class StealthManager:
             "--no-default-browser-check",
             "--disable-infobars",
             "--disable-notifications",
+            # POPUP BLOCKING - Add these lines
+            "--block-new-web-contents",
             "--disable-popup-blocking",
-            "--disable-prompt-on-repost",
+            "--suppress-message-center-popups",
+            "--disable-session-crashed-bubble",
+            "--disable-features=UserAgentClientHint,TranslateSubFrames,AutofillServerCommunication",
             # Performance and timing
             "--disable-background-timer-throttling",
             "--disable-backgrounding-occluded-windows",
@@ -174,9 +190,9 @@ class StealthManager:
             "--disable-search-engine-choice-screen",
             "--disable-features=PrivacySandboxSettings4",
             "--disable-features=AutofillServerCommunication",
-            # Keep this one:
             "--enable-extensions",
         ]
+
         # Apply window size and position based on mode
         if self.spoof_dimension:
             # 1x1 window completely off-screen for true invisibility
@@ -224,24 +240,24 @@ class StealthManager:
             "X-Real-IP": f"{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}",
         }
 
-    def get_advanced_stealth_options(self) -> dict:
-        """Get comprehensive stealth options for maximum evasion."""
-        base_options = self.get_stealth_options()
-        base_options.update(
-            {
-                "extra_http_headers": self.get_network_evasion_headers(),
-                "bypass_csp": True,
-                "ignore_default_args": ["--enable-automation"],
-                "geolocation": {
-                    "latitude": 40.7128,
-                    "longitude": -74.0060,
-                },  # NYC coordinates
-                "timezone_id": "America/New_York",
-                "locale": "en-US",
-                "permissions": ["geolocation", "notifications"],
-            }
-        )
-        return base_options
+    # def get_advanced_stealth_options(self) -> dict:
+    #     """Get comprehensive stealth options for maximum evasion."""
+    #     base_options = self.get_stealth_options()
+    #     base_options.update(
+    #         {
+    #             "extra_http_headers": self.get_network_evasion_headers(),
+    #             "bypass_csp": True,
+    #             "ignore_default_args": ["--enable-automation"],
+    #             "geolocation": {
+    #                 "latitude": 40.7128,
+    #                 "longitude": -74.0060,
+    #             },  # NYC coordinates
+    #             "timezone_id": "America/New_York",
+    #             "locale": "en-US",
+    #             "permissions": ["geolocation", "notifications"],
+    #         }
+    #     )
+    #     return base_options
 
     # async def inject_stealth_scripts(self, page: Page):
     #     """Inject JavaScript to override browser fingerprinting detection."""
@@ -624,6 +640,14 @@ class StealthManager:
             }
         };
     }
+
+    // === Camvas FINGERPRINTING PROTECTION ===
+    const getImageData = HTMLCanvasElement.prototype.toDataURL;
+    HTMLCanvasElement.prototype.toDataURL = function(type) {
+        const shift = Math.floor(Math.random() * 10) - 5;
+        const originalImageData = getImageData.apply(this, arguments);
+        return originalImageData;
+    };
 
     // === WEBGL FINGERPRINTING PROTECTION ===
     const glContexts = ['webgl', 'webgl2', 'experimental-webgl', 'experimental-webgl2'];
@@ -1041,13 +1065,33 @@ if __name__ == "__main__":
 
             # Create context with stealth options (browser context options)
             stealth_options = stealth_manager.get_stealth_options()
-            context = await browser.new_context(
-                viewport=stealth_options["viewport"],
-                user_agent=stealth_options["user_agent"],
-                extra_http_headers=stealth_options["extra_http_headers"],
-                ignore_https_errors=stealth_options["ignore_https_errors"],
-                java_script_enabled=stealth_options["java_script_enabled"],
-            )
+            context_options = {
+                "viewport": stealth_options["viewport"],
+                "user_agent": stealth_options["user_agent"],
+                "extra_http_headers": stealth_options["extra_http_headers"],
+                "ignore_https_errors": stealth_options["ignore_https_errors"],
+                "java_script_enabled": stealth_options["java_script_enabled"],
+                # "permissions": [
+                #     "geolocation",
+                #     "notifications",
+                #     "camera",
+                #     "microphone",
+                # ],
+                # "geolocation": {
+                #     "latitude": -37.7819337,
+                #     "longitude": 144.8741606,
+                # },
+            }
+            context = await browser.new_context(**context_options)
+            # context = await browser.new_context(
+            #     viewport=stealth_options["viewport"],
+            #     user_agent=stealth_options["user_agent"],
+            #     extra_http_headers=stealth_options["extra_http_headers"],
+            #     ignore_https_errors=stealth_options["ignore_https_errors"],
+            #     java_script_enabled=stealth_options["java_script_enabled"],
+            #     "permissions": ["geolocation", "notifications", "camera", "microphone"],
+            #     "geolocation": {"latitude": -37.7819337, "longitude": 144.8741606},
+            # )
 
             # Inject stealth scripts
             await context.add_init_script(stealth_manager.get_init_script())
@@ -1057,7 +1101,11 @@ if __name__ == "__main__":
 
             # Test 1: Bot detection site
             print("Testing stealth on bot detection site...")
-            await page.goto("https://bot.sannysoft.com/")
+            await page.goto(
+                "https://bot.sannysoft.com/",
+                wait_until="domcontentloaded",
+                timeout=30000,
+            )
             await stealth_manager.human_delay_async(2000, 3000)
 
             # Take screenshot
@@ -1066,7 +1114,11 @@ if __name__ == "__main__":
 
             # Test 2: Human-like interactions
             print("\nTesting human-like behavior...")
-            await page.goto("https://www.google.com")
+            await page.goto(
+                "https://www.google.com",
+                wait_until="domcontentloaded",
+                timeout=30000,
+            )
 
             # Human-like mouse movement
             await stealth_manager.human_mouse_move_async(page)
@@ -1083,7 +1135,10 @@ if __name__ == "__main__":
                 print("Typed search query with human-like delays")
 
             # Test 3: Check fingerprint
-            await page.goto("https://fingerprintjs.github.io/fingerprintjs/")
+            await page.goto(
+                "https://fingerprintjs.github.io/fingerprintjs/",
+                wait_until="domcontentloaded",
+            )
             await stealth_manager.human_delay_async(3000, 4000)
 
             # Extract some detection results

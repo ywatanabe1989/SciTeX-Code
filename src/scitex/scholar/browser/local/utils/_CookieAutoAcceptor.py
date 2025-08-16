@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-04 00:52:57 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/local/utils/_CookieAutoAcceptor.py
+# Timestamp: "2025-08-16 01:57:11 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_CookieAutoAcceptor.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -33,6 +33,8 @@ class CookieAutoAcceptor:
             "OK",
             "Continue",
             "Agree",
+            "Continue without an account",
+            "Don't ask again",
         ]
 
         self.selectors = [

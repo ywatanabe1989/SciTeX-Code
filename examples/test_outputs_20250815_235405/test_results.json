@@ -1,0 +1,238 @@
+[
+  {
+    "name": "Nature Open Access",
+    "doi": "10.1038/s41467-023-44201-2",
+    "publisher": "Nature/Springer",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1038/s41467-023-44201-2",
+      "url_publisher": "https://www.nature.com/articles/s41467-023-44201-2",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1038/s41467-023-44201-2",
+      "url_openurl_resolved": "https://www.nature.com/articles/s41467-023-44201-2",
+      "pdf_urls": [
+        {
+          "url": "https://www.nature.com/articles/s41467-023-44201-2.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM1_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM2_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM3_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41467-023-44201-2.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM1_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM2_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-44201-2/MediaObjects/41467_2023_44201_MOESM3_ESM.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        }
+      ],
+      "url_final_pdf": "https://www.nature.com/articles/s41467-023-44201-2.pdf"
+    },
+    "pdf_downloaded": true,
+    "errors": []
+  },
+  {
+    "name": "Cell Paywalled",
+    "doi": "10.1016/j.cell.2025.07.007",
+    "publisher": "Elsevier",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1016/j.cell.2025.07.007",
+      "url_publisher": "https://linkinghub.elsevier.com/retrieve/pii/S0092867425007962",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1016/j.cell.2025.07.007",
+      "url_openurl_resolved": "https://www.cell.com/cell/abstract/S0092-8674(25)00796-2?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS0092867425007962%3Fshowall%3Dtrue"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "Unexpected publisher domain",
+      "No PDF URL found"
+    ]
+  },
+  {
+    "name": "Science AAAS",
+    "doi": "10.1126/science.aao0702",
+    "publisher": "AAAS",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1126/science.aao0702",
+      "url_publisher": "https://www.science.org/doi/10.1126/science.aao0702",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1126/science.aao0702",
+      "pdf_urls": [
+        {
+          "url": "https://www.science.org/doi/suppl/10.1126/science.aao0702/suppl_file/aao0702_norimoto_sm.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://www.science.org/doi/suppl/10.1126/science.aao0702/suppl_file/aao0702_norimoto_sm.revision.1.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://www.science.org/doi/pdf/10.1126/science.aao0702?download=true",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://www.science.org/doi/pdf/10.1126/science.aao0702",
+          "source": "direct_link",
+          "reliability": "medium"
+        }
+      ],
+      "url_final_pdf": "https://www.science.org/doi/suppl/10.1126/science.aao0702/suppl_file/aao0702_norimoto_sm.pdf"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "OpenURL not resolved",
+      "PDF download failed"
+    ]
+  },
+  {
+    "name": "PNAS Open",
+    "doi": "10.1073/pnas.2100961118",
+    "publisher": "PNAS",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1073/pnas.2100961118",
+      "url_publisher": "https://doi.org/10.1073/pnas.2100961118",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1073/pnas.2100961118"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "Unexpected publisher domain",
+      "OpenURL not resolved",
+      "No PDF URL found"
+    ]
+  },
+  {
+    "name": "Frontiers Open",
+    "doi": "10.3389/fnins.2023.1131469",
+    "publisher": "Frontiers",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.3389/fnins.2023.1131469",
+      "url_publisher": "https://doi.org/10.3389/fnins.2023.1131469",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.3389/fnins.2023.1131469"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "Unexpected publisher domain",
+      "OpenURL not resolved",
+      "No PDF URL found"
+    ]
+  },
+  {
+    "name": "IEEE Engineering",
+    "doi": "10.1109/TBME.2021.3137753",
+    "publisher": "IEEE",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1109/TBME.2021.3137753",
+      "url_publisher": "https://doi.org/10.1109/TBME.2021.3137753",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1109/TBME.2021.3137753"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "Unexpected publisher domain",
+      "OpenURL not resolved",
+      "No PDF URL found"
+    ]
+  },
+  {
+    "name": "Wiley Neuroscience",
+    "doi": "10.1002/hbm.25835",
+    "publisher": "Wiley",
+    "success": true,
+    "urls": {
+      "url_doi": "https://doi.org/10.1002/hbm.25835",
+      "url_publisher": "https://onlinelibrary.wiley.com/doi/10.1002/hbm.25835",
+      "url_openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1002/hbm.25835",
+      "pdf_urls": [
+        {
+          "url": "https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fhbm.25835&file=hbm25835-sup-0001-Supinfo.pdf",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://onlinelibrary.wiley.com/doi/pdf/10.1002/hbm.25835",
+          "source": "direct_link",
+          "reliability": "medium"
+        },
+        {
+          "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/hbm.25835",
+          "source": "publisher_pattern",
+          "reliability": "low"
+        }
+      ],
+      "url_final_pdf": "https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fhbm.25835&file=hbm25835-sup-0001-Supinfo.pdf"
+    },
+    "pdf_downloaded": false,
+    "errors": [
+      "OpenURL not resolved",
+      "PDF download failed"
+    ]
+  },
+  {
+    "name": "Oxford Academic",
+    "doi": "10.1093/brain/awab446",
+    "publisher": "Oxford University Press",
+    "success": false,
+    "urls": {},
+    "pdf_downloaded": false,
+    "errors": [
+      "BrowserContext.new_page: Target page, context or browser has been closed"
+    ]
+  },
+  {
+    "name": "PLOS Open",
+    "doi": "10.1371/journal.pone.0261947",
+    "publisher": "PLOS",
+    "success": false,
+    "urls": {},
+    "pdf_downloaded": false,
+    "errors": [
+      "BrowserContext.new_page: Target page, context or browser has been closed"
+    ]
+  },
+  {
+    "name": "MDPI Open",
+    "doi": "10.3390/s22093346",
+    "publisher": "MDPI",
+    "success": false,
+    "urls": {},
+    "pdf_downloaded": false,
+    "errors": [
+      "BrowserContext.new_page: Target page, context or browser has been closed"
+    ]
+  }
+]

@@ -181,3 +181,8 @@ pytesseract
 pyautogui
 pymed
 thefuzz
+
+opencv-python
+pillow
+numpy
+pytesseract

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-08 10:03:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/metadata/urls/_ZoteroTranslatorRunner.py
+# Timestamp: "2025-08-15 23:57:37 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_ZoteroTranslatorRunner.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/urls/_ZoteroTranslatorRunner.py"
+    "./src/scitex/scholar/url/helpers/_ZoteroTranslatorRunner.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -35,8 +35,11 @@ class ZoteroTranslatorRunner:
 
     def __init__(self, translator_dir: Optional[Path] = None):
         """Initialize with translator directory."""
-        self.translator_dir = translator_dir or (
-            Path(__DIR__) / "zotero_translators"
+        # self.translator_dir = translator_dir or (
+        #     Path(__DIR__) / "zotero_translators"
+        # )
+        self.translator_dir = (
+            Path(os.path.dirname(__file__)) / "zotero_translators"
         )
         self._translators = self._load_translators()
 
@@ -60,26 +63,26 @@ class ZoteroTranslatorRunner:
 
                 # Extract metadata JSON - it's always at the beginning and ends with }\n
                 # Find the first line that's just "}" after the opening "{"
-                lines = content.split('\n')
+                lines = content.split("\n")
                 json_end_idx = -1
                 brace_count = 0
-                
+
                 for i, line in enumerate(lines):
-                    if line.strip() == '{':
+                    if line.strip() == "{":
                         brace_count = 1
                     elif brace_count > 0:
-                        brace_count += line.count('{') - line.count('}')
+                        brace_count += line.count("{") - line.count("}")
                         if brace_count == 0:
                             json_end_idx = i
                             break
-                
+
                 if json_end_idx == -1:
                     continue
-                
+
                 # Extract and parse metadata
-                metadata_str = '\n'.join(lines[:json_end_idx + 1])
+                metadata_str = "\n".join(lines[: json_end_idx + 1])
                 # Remove trailing commas before closing braces
-                metadata_str = re.sub(r',(\s*})', r'\1', metadata_str)
+                metadata_str = re.sub(r",(\s*})", r"\1", metadata_str)
                 metadata = json.loads(metadata_str)
 
                 # Only keep web translators
@@ -87,7 +90,7 @@ class ZoteroTranslatorRunner:
                     "target"
                 ):
                     # Extract JavaScript code (after metadata)
-                    js_code = '\n'.join(lines[json_end_idx + 1:]).lstrip()
+                    js_code = "\n".join(lines[json_end_idx + 1 :]).lstrip()
 
                     # Remove test cases section
                     test_idx = js_code.find("/** BEGIN TEST CASES **/")

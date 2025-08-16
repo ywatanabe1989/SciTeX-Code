@@ -13,12 +13,14 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from .local.ScholarBrowserManager import ScholarBrowserManager
 from .BrowserUtils import BrowserUtils
+from .PlaywrightVision import PlaywrightVision
 # from .remote._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
 # from .remote._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
 __all__ = [
     "ScholarBrowserManager",
     "BrowserUtils",
+    "PlaywrightVision",
     # "ZenRowsRemoteScholarBrowserManager",
     # "ZenRowsAPIBrowser",
 ]

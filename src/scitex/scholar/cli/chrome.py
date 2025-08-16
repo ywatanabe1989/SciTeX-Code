@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 17:27:48 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/chrome.py
+# Timestamp: "2025-08-16 23:48:09 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/cli/chrome.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -25,6 +25,7 @@ def create_parser():
     )
     parser.add_argument(
         "--url",
+        type=str,
         default="https://google.com",
         help="URL to launch (default: https://google.com)",
     )
@@ -33,6 +34,12 @@ def create_parser():
         type=int,
         default=3600,
         help="Timeout in seconds (default: 3600)",
+    )
+    parser.add_argument(
+        "--profile_name",
+        type=str,
+        default="system",
+        help="Profile name to use (default: system)",
     )
     return parser
 
@@ -49,7 +56,7 @@ async def main_async():
     await auth_manager.ensure_authenticate_async()
 
     browser_manager = ScholarBrowserManager(
-        chrome_profile_name="system",
+        chrome_profile_name=args.profile_name,
         browser_mode="interactive",
         auth_manager=auth_manager,
     )
@@ -64,8 +71,8 @@ async def main_async():
         # Add timeout and wait for network to be mostly idle
         await page.goto(
             args.url,
-            wait_until="domcontentloaded",  # Don't wait for all resources
-            timeout=30000,  # 30 second timeout
+            wait_until="domcontentloaded",
+            timeout=30000,
         )
         logger.success(f"Successfully loaded {args.url}")
 

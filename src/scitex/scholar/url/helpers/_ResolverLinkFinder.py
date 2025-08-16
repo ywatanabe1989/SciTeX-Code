@@ -161,33 +161,43 @@ class ResolverLinkFinder:
             
         logger.debug(f"Looking for links to domains: {expected_domains}")
         
-        # Get all links
-        all_links = await page.query_selector_all('a[href]')
+        # Get all links (including JavaScript links)
+        all_links = await page.query_selector_all('a')
         
         for link in all_links:
             href = await link.get_attribute('href')
-            if not href:
-                continue
-                
-            # Parse domain from href
-            try:
-                parsed = urlparse(href)
-                domain = parsed.netloc.lower()
-                
-                # Check if domain matches any expected domain
-                for expected in expected_domains:
-                    if expected in domain:
-                        text = await link.inner_text() or ""
-                        logger.info(f"Found domain match: {domain} (text: '{text[:50]}')")
-                        
-                        # Verify it's not an abstract/preview link
-                        if not any(bad in text.lower() for bad in ['abstract', 'preview', 'summary']):
-                            return link
-                        else:
-                            logger.debug(f"Skipping abstract/preview link: {text}")
+            text = await link.inner_text() or ""
+            
+            # Check for SFX JavaScript links that mention publisher names
+            if href and href.startswith("javascript:"):
+                # Check text for publisher names
+                text_lower = text.lower()
+                if "10.1038" in doi and ("nature" in text_lower or "springer" in text_lower):
+                    if "nature.com" in text_lower or "fully open" in text_lower:
+                        logger.info(f"Found SFX Nature link: {text[:50]}")
+                        return link
+                elif "10.1016" in doi and ("elsevier" in text_lower or "sciencedirect" in text_lower):
+                    logger.info(f"Found SFX Elsevier link: {text[:50]}")
+                    return link
+            elif href:
+                # Parse domain from regular href
+                try:
+                    parsed = urlparse(href)
+                    domain = parsed.netloc.lower()
+                    
+                    # Check if domain matches any expected domain
+                    for expected in expected_domains:
+                        if expected in domain:
+                            logger.info(f"Found domain match: {domain} (text: '{text[:50]}')")
                             
-            except Exception as e:
-                logger.debug(f"Error parsing URL {href}: {e}")
+                            # Verify it's not an abstract/preview link
+                            if not any(bad in text.lower() for bad in ['abstract', 'preview', 'summary']):
+                                return link
+                            else:
+                                logger.debug(f"Skipping abstract/preview link: {text}")
+                                
+                except Exception as e:
+                    logger.debug(f"Error parsing URL {href}: {e}")
                 
         return None
     

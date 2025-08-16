@@ -132,7 +132,7 @@ class BrowserMixin:
         self.contexts.append(context)
         self.pages.append(page)
         if url:
-            await page.goto(url)
+            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
         return page
 
     async def close_page(self, page_index):
