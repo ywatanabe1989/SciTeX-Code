@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-17 02:47:58 (ywatanabe)"
+# Timestamp: "2025-08-17 02:52:12 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -343,8 +343,8 @@ if __name__ == "__main__":
 
         browser_manager = ScholarBrowserManager(
             chrome_profile_name="system",
-            browser_mode="interactive",
-            # browser_mode="stealth",
+            # browser_mode="interactive",
+            browser_mode="stealth",
             auth_manager=ScholarAuthManager(),
             use_zenrows_proxy=False,
         )
@@ -354,9 +354,8 @@ if __name__ == "__main__":
         pdf_downloader = ScholarPDFDownloader(context)
 
         # Parameters
-        PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"  # Option 1 Response not OK: 403
-        # PDF_URL = "https://www.cambridgeenglish.org/Images/269898-ielts-academic-faqs.pdf"  # Option 1 successed
-        OUTPUT_PATH = "/tmp/hippocampal_ripples.pdf"
+        PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
+        OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
 
         # Main
         saved_path = await pdf_downloader.download_from_url(
