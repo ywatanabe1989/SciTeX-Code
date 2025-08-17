@@ -31,7 +31,7 @@ Each paper entry in the Scholar library needs to track multiple types of URLs fo
   - Source: OpenURL resolver
 
 ### 3. Download URLs
-- **`pdf_urls`**: Array of direct PDF download URLs
+- **`urls_pdf`**: Array of direct PDF download URLs
   - Purpose: Direct links to PDF files (may require authentication)
   - Examples: 
     - `https://www.nature.com/articles/s41593-025-01990-7.pdf`
@@ -137,7 +137,7 @@ Each paper entry in the Scholar library needs to track multiple types of URLs fo
     },
     
     "download": {
-      "pdf_urls": [
+      "urls_pdf": [
         {
           "url": "https://www.nature.com/articles/...pdf",
           "source": "zotero_translator",
@@ -185,7 +185,7 @@ Each paper entry in the Scholar library needs to track multiple types of URLs fo
   "url_resolution_status": {
     "doi_resolved": true,
     "openurl_resolved": true,
-    "pdf_urls_found": true,
+    "urls_pdf_found": true,
     "pdf_downloaded": false,
     "last_updated": "2025-08-08T00:00:00Z"
   }

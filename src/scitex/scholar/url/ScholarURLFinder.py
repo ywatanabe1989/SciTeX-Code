@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 02:47:40 (ywatanabe)"
+# Timestamp: "2025-08-17 20:17:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -27,16 +27,16 @@ from playwright.async_api import BrowserContext, Page
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
 
+# from .helpers import # resolve_all_urls
+# from .helpers import # find_supplementary_urls
 # Import functional modules
 from .helpers import (
     build_url_doi,
     doi_to_url_publisher,
     extract_doi_from_url,
     find_all_urls,
-    find_pdf_urls,
-    find_supplementary_urls,
+    find_urls_pdf,
     generate_openurl_query,
-    resolve_all_urls,
     resolve_openurl,
 )
 
@@ -50,6 +50,13 @@ class ScholarURLFinder:
     Wraps functional modules for convenience while keeping them accessible
     for direct use when needed.
     """
+
+    URL_TYPES = [
+        "urls_pdf",
+        "url_doi" "url_openurl_query",
+        "url_openurl_resolved",
+        "url_publisher",
+    ]
 
     def __init__(
         self,
@@ -100,24 +107,22 @@ class ScholarURLFinder:
                     urls["url_openurl_resolved"] = resolved_url
 
         # Step 5: Collect PDF URLs from all sources
-        pdf_urls = []
+        urls_pdf = []
 
         # Try OpenURL resolved first (authenticated)
         if urls.get("url_openurl_resolved"):
             pdfs = await self._get_pdfs_from_url(
                 urls["url_openurl_resolved"], page
             )
-            pdf_urls.extend(pdfs)
+            urls_pdf.extend(pdfs)
 
         # Try publisher URL
         if urls.get("url_publisher"):
             pdfs = await self._get_pdfs_from_url(urls["url_publisher"], page)
-            pdf_urls.extend(pdfs)
+            urls_pdf.extend(pdfs)
 
-        if pdf_urls:
-            urls["pdf_urls"] = pdf_urls
-            # Step 6: Determine final PDF URL (first working one)
-            urls["url_final_pdf"] = pdf_urls[0]["url"]
+        if urls_pdf:
+            urls["urls_pdf"] = urls_pdf
 
         return urls
 
@@ -133,7 +138,7 @@ class ScholarURLFinder:
 
         try:
             await page.goto(url, wait_until="networkidle", timeout=30000)
-            return await find_pdf_urls(page)
+            return await find_urls_pdf(page)
         except:
             return []
         finally:
@@ -188,16 +193,16 @@ class ScholarURLFinder:
 
         try:
             await page.goto(url, wait_until="networkidle", timeout=30000)
-            pdf_urls = await find_pdf_urls(page)
-            if pdf_urls:
-                urls["url_pdf"] = pdf_urls
+            urls_pdf = await find_urls_pdf(page)
+            if urls_pdf:
+                urls["url_pdf"] = urls_pdf
         except Exception as e:
             logger.warning(f"Failed with domcontentloaded: {e}")
             try:
                 await page.goto(url, wait_until="networkidle", timeout=30000)
-                pdf_urls = await find_pdf_urls(page)
-                if pdf_urls:
-                    urls["url_pdf"] = pdf_urls
+                urls_pdf = await find_urls_pdf(page)
+                if urls_pdf:
+                    urls["url_pdf"] = urls_pdf
             except Exception as e2:
                 logger.error(f"Could not access URL {url}: {e2}")
 
@@ -216,7 +221,7 @@ class ScholarURLFinder:
             except:
                 pass
 
-    async def find_pdf_urls_async(self, page_or_url) -> List[Dict]:
+    async def find_urls_pdf_async(self, page_or_url) -> List[Dict]:
         """
         Find PDF URLs from a page or URL.
 
@@ -224,7 +229,7 @@ class ScholarURLFinder:
             page_or_url: Page object or URL string
 
         Returns:
-            List of dicts with url, source, and reliability
+            List of dicts with url and source
         """
         if isinstance(page_or_url, str):
             # Create a page and navigate
@@ -237,7 +242,7 @@ class ScholarURLFinder:
                 await page.goto(
                     page_or_url, wait_until="networkidle", timeout=30000
                 )
-                return await find_pdf_urls(page)
+                return await find_urls_pdf(page)
             except Exception as e:
                 logger.warning(
                     f"Failed with domcontentloaded, trying networkidle: {e}"
@@ -246,7 +251,7 @@ class ScholarURLFinder:
                     await page.goto(
                         page_or_url, wait_until="networkidle", timeout=30000
                     )
-                    return await find_pdf_urls(page)
+                    return await find_urls_pdf(page)
                 except Exception as e2:
                     logger.error(f"Could not navigate to {page_or_url}: {e2}")
                     return []
@@ -255,7 +260,7 @@ class ScholarURLFinder:
         else:
             # Assume it's a Page object
             try:
-                return await find_pdf_urls(page_or_url)
+                return await find_urls_pdf(page_or_url)
             except Exception as e:
                 logger.error(f"Error finding PDF URLs: {e}")
                 return []
@@ -386,8 +391,6 @@ if __name__ == "__main__":
         url_finder = ScholarURLFinder(context)
 
         # Get all URLs for a paper
-        # doi = "10.1038/s41467-023-44201-2"  # Nature Communications - WORKS!
-        # doi = "10.1126/science.aao0702" # JASTAR detects unusual traffic
         doi = "10.1016/j.cell.2025.07.007"  # Cell/Elsevier - Testing
         urls = await url_finder.find_urls(
             doi=doi,
@@ -397,14 +400,5 @@ if __name__ == "__main__":
     asyncio.run(main_async())
 
 # python -m scitex.scholar.url.ScholarURLFinder
-
-# {'pdf_urls': [{'reliability': 'low',
-#                'source': 'publisher_pattern',
-#                'url': 'https://www.science.org/doi/pdf/10.1126/science.aao0702?__cf_chl_rt_tk=MQWwH4rcB41rJGgGU18B6sf9yDHJ7qawCCFjzbcOErk-1755255956-1.0.1.1-pgSi0dwKpjHeOoroSsorMWbmQ0Blog.EcwfFBYkAbcQ'}],
-#  'url_doi': 'https://doi.org/10.1126/science.aao0702',
-#  'url_final_pdf': 'https://www.science.org/doi/pdf/10.1126/science.aao0702?__cf_chl_rt_tk=MQWwH4rcB41rJGgGU18B6sf9yDHJ7qawCCFjzbcOErk-1755255956-1.0.1.1-pgSi0dwKpjHeOoroSsorMWbmQ0Blog.EcwfFBYkAbcQ',
-#  'url_openurl_query': 'https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1126/science.aao0702',
-#  'url_openurl_resolved': 'https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?sid=scitex&doi=10.1126/science.aao0702',
-#  'url_publisher': 'https://www.science.org/doi/10.1126/science.aao0702'}
 
 # EOF

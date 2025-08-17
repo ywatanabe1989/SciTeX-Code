@@ -122,7 +122,7 @@ class ZoteroTranslatorRunner:
                 continue
         return None
 
-    async def extract_pdf_urls_async(self, page: Page) -> List[str]:
+    async def extract_urls_pdf_async(self, page: Page) -> List[str]:
         """
         Execute Zotero translator on page to extract PDF URLs.
 
@@ -289,7 +289,7 @@ class ZoteroTranslatorRunner:
 
 
 # Convenience function for use in finder
-async def find_pdf_urls_with_translator(page: Page) -> List[str]:
+async def find_urls_pdf_with_translator(page: Page) -> List[str]:
     """
     Find PDF URLs by executing Zotero translator.
 
@@ -300,6 +300,6 @@ async def find_pdf_urls_with_translator(page: Page) -> List[str]:
         List of PDF URLs found by translator
     """
     runner = ZoteroTranslatorRunner()
-    return await runner.extract_pdf_urls_async(page)
+    return await runner.extract_urls_pdf_async(page)
 
 # EOF

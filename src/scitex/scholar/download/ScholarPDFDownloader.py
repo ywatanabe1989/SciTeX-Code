@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-17 02:52:12 (ywatanabe)"
+# Timestamp: "2025-08-17 20:53:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -28,6 +28,170 @@ logger = logging.getLogger(__name__)
 # 1. `timeout=60_000` - Maximum wait time for operation to complete
 # 2. `page.wait_for_timeout(5_000)` - Fixed delay (like sleep but async)
 # 3. `time.sleep()` - Blocks entire thread (avoid in async code)
+
+
+class ScholarPDFDownloader:
+    def __init__(
+        self,
+        context: BrowserContext,
+    ):
+        self.context = context
+        self.url_finder = ScholarURLFinder(self.context)
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    async def download_from_url(
+        self, pdf_url: str, output_path: Union[str, Path]
+    ) -> Optional[Path]:
+        """
+        Main download method that tries all options in order.
+        Returns the path if successful, None otherwise.
+        """
+
+        # Output path with parent directory ensured
+        if isinstance(output_path, str):
+            output_path = Path(output_path)
+        if not str(output_path).endswith(".pdf"):
+            output_path = Path(str(output_path) + ".pdf")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Try each download method in order of reliability/speed
+        try_download_methods = [
+            (
+                "From Response Body",
+                self._try_download_from_response_body_async,
+            ),
+            (
+                "Chrome PDF",
+                self._try_download_from_chrome_pdf_viewer_async,
+            ),
+        ]
+
+        for method_name, method_func in try_download_methods:
+            logger.info(f"Trying method: {method_name}")
+            is_downloaded = await method_func(pdf_url, output_path)
+            if is_downloaded:
+                logger.success(f"Successfully downloaded using: {method_name}")
+                return is_downloaded
+            else:
+                logger.warning(f"Method failed: {method_name}")
+
+        logger.fail(f"All download methods failed for {pdf_url}")
+        return None
+
+    async def _try_download_from_response_body_async(
+        self, pdf_url: str, output_path: Path
+    ) -> Optional[Path]:
+        """Download PDF from HTTP response body."""
+        page = None
+        try:
+            logger.info("Trying to download from response body")
+            page = await self.context.new_page()
+
+            response = await page.goto(
+                pdf_url, wait_until="load", timeout=60_000
+            )
+            await page.wait_for_timeout(5_000)
+
+            if not response.ok:
+                logger.fail(
+                    f"Page not reached: {pdf_url} (reason: {response.status})"
+                )
+                await page.close()
+                return None
+
+            content = await response.body()
+
+            if content[:4] == b"%PDF":
+                with open(output_path, "wb") as file_:
+                    file_.write(content)
+                size_MiB = len(content) / 1024 / 1024
+                logger.success(
+                    f"Response body download: {output_path} ({size_MiB:.2f} MiB)"
+                )
+                await page.close()
+                return output_path
+
+            await page.close()
+            return None
+
+        except Exception as ee:
+            logger.warn("Failed download from response body")
+            if page is not None:
+                await page.close()
+            return None
+
+    async def _try_download_from_chrome_pdf_viewer_async(
+        self, pdf_url: str, output_path: Path
+    ) -> Optional[Path]:
+        """Download PDF from Chrome PDF viewer."""
+        page = None
+        try:
+            page = await self.context.new_page()
+            await page.goto(pdf_url, wait_until="load", timeout=60_000)
+
+            if not await detect_pdf_viewer_async(page):
+                await page.close()
+                return None
+
+            await show_grid_async(page)
+            await click_center_async(page)
+
+            is_downloaded = (
+                await click_download_button_from_chrome_pdf_viewer_async(
+                    page, output_path
+                )
+            )
+            await page.close()
+
+            if is_downloaded:
+                logger.success("Downloaded via Chrome PDF Viewer")
+                return output_path
+            else:
+                logger.fail("Failed via Chrome PDF Viewer")
+                return None
+
+        except Exception as ee:
+            logger.fail(f"Chrome PDF Viewer failed: {str(ee)}")
+            if page:
+                await page.close()
+            return None
+
+    async def download_from_urls(
+        self, pdf_urls: List[str], output_dir: Union[str, Path] = "/tmp/"
+    ) -> List[Path]:
+        """Download multiple PDFs."""
+        output_paths = [
+            Path(str(output_dir)) / os.path.basename(pdf_url)
+            for pdf_url in pdf_urls
+        ]
+
+        saved_paths = []
+        for ii_pdf, (url_pdf, output_path) in enumerate(
+            zip(pdf_urls, output_paths), 1
+        ):
+            logger.info(f"Downloading PDF {ii_pdf}/{len(pdf_urls)}: {url_pdf}")
+            saved_path = await self.download_from_url(url_pdf, output_path)
+            if saved_path:
+                saved_paths.append(saved_path)
+
+        logger.info(
+            f"Downloaded {len(saved_paths)}/{len(pdf_urls)} PDFs successfully"
+        )
+        return saved_paths
+
+    async def download_from_doi(
+        self, doi: str, output_dir: str = "/tmp/"
+    ) -> List[Path]:
+        """Download PDFs for a given DOI."""
+        output_dir = Path(str(output_dir))
+        urls = await self.url_finder.find_urls(doi=doi)
+        pdf_urls = [url_pdf_entry["url"] for url_pdf_entry in urls["url_pdf"]]
+        saved_paths = await self.download_from_urls(
+            pdf_urls, output_dir=output_dir
+        )
+        return saved_paths
 
 
 async def detect_pdf_viewer_async(page):
@@ -145,192 +309,6 @@ async def click_download_button_from_chrome_pdf_viewer_async(
         return False
 
 
-async def download_from_response_body_async(
-    page, pdf_url: str, output_path: Path
-) -> Optional[Path]:
-    """Download PDF from HTTP response body."""
-    response = await page.goto(pdf_url, wait_until="load", timeout=60_000)
-    await page.wait_for_timeout(5_000)
-    content = await response.body()
-
-    if content[:4] == b"%PDF":
-        with open(output_path, "wb") as file_:
-            file_.write(content)
-        size_MiB = len(content) / 1024 / 1024
-        logger.success(
-            f"Response body download: {output_path} ({size_MiB:.2f} MiB)"
-        )
-        return output_path
-
-    return None
-
-
-# async def click_download_button_from_chrome_pdf_viewer_async(page, spath_pdf):
-#     # Set up download handling
-#     async with page.expect_download() as download_info:
-#         x_download_button = 1820
-#         y_download_button = 30
-#         await page.mouse.click(x_download_button, y_download_button)
-
-#     download = await download_info.value
-#     # spath_pdf = f"/tmp/downloaded{int(time.time())}.pdf"
-#     await download.save_as(spath_pdf)
-#     # Verify file exists
-#     if os.path.exists(spath_pdf):
-#         file_size_MB = os.path.getsize(spath_pdf) / 1e6
-#         logger.success(f"Downloaded: {spath_pdf} ({file_size_MB} MB)")
-#         return True
-#     else:
-#         logger.fail("Download failed")
-#         return False
-
-
-class ScholarPDFDownloader:
-    def __init__(
-        self,
-        context: BrowserContext,
-    ):
-        self.context = context
-        self.url_finder = ScholarURLFinder(self.context)
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-    async def download_from_url(
-        self, pdf_url: str, output_path: Union[str, Path]
-    ) -> Optional[Path]:
-        """
-        Main download method that tries all options in order.
-        Returns the path if successful, None otherwise.
-        """
-        if isinstance(output_path, str):
-            output_path = Path(output_path)
-
-        if not str(output_path).endswith(".pdf"):
-            output_path = Path(str(output_path) + ".pdf")
-
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-
-        # Try each download method in order of reliability/speed
-        download_methods = [
-            (
-                "Development",
-                self._try_download_from_url_with_option_00_development,
-            ),
-        ]
-
-        for method_name, method_func in download_methods:
-            logger.info(f"Trying method: {method_name}")
-            result = await method_func(pdf_url, output_path)
-            if result:
-                logger.success(f"Successfully downloaded using: {method_name}")
-                return result
-            else:
-                logger.warning(f"Method failed: {method_name}")
-
-        logger.fail(f"All download methods failed for {pdf_url}")
-        return None
-
-    async def download_from_urls(
-        self, pdf_urls: List[str], output_dir: Union[str, Path] = "/tmp/"
-    ) -> List[Path]:
-        """Download multiple PDFs."""
-        output_paths = [
-            Path(str(output_dir)) / os.path.basename(pdf_url)
-            for pdf_url in pdf_urls
-        ]
-
-        saved_paths = []
-        for ii_pdf, (url_pdf, output_path) in enumerate(
-            zip(pdf_urls, output_paths), 1
-        ):
-            logger.info(f"Downloading PDF {ii_pdf}/{len(pdf_urls)}: {url_pdf}")
-            saved_path = await self.download_from_url(url_pdf, output_path)
-            if saved_path:
-                saved_paths.append(saved_path)
-
-        logger.info(
-            f"Downloaded {len(saved_paths)}/{len(pdf_urls)} PDFs successfully"
-        )
-        return saved_paths
-
-    async def download_from_doi(
-        self, doi: str, output_dir: str = "/tmp/"
-    ) -> List[Path]:
-        """Download PDFs for a given DOI."""
-        output_dir = Path(str(output_dir))
-        urls = await self.url_finder.find_urls(doi=doi)
-        pdf_urls = [url_pdf_entry["url"] for url_pdf_entry in urls["url_pdf"]]
-        saved_paths = await self.download_from_urls(
-            pdf_urls, output_dir=output_dir
-        )
-        return saved_paths
-
-    # async def _try_download_from_url_with_option_00_development(
-    #     self, pdf_url: str, output_path: Path
-    # ) -> Optional[Path]:
-    #     try:
-    #         logger.info(f"[Option 0] Development: {pdf_url}")
-    #         page = await self.context.new_page()
-
-    #         # Try direct download first
-    #         result = await download_from_response_body_async(
-    #             page, pdf_url, output_path
-    #         )
-    #         if result:
-    #             await page.close()
-    #             return result
-
-    #         # Try PDF viewer detection
-    #         if await detect_pdf_viewer_async(page):
-    #             await show_grid_async(page)
-    #             await click_center_async(page)
-    #             is_downloaded = await click_download_button_from_chrome_pdf_viewer_async(
-    #                     page, output_path
-    #                 )
-    #             )
-    #             if is_downloaded:
-    #                 return output_path
-
-    #     except Exception as e:
-    #         logger.error(f"[Option 0] Failed: {e}")
-    #         return None
-    async def _try_download_from_url_with_option_00_development(
-        self, pdf_url: str, output_path: Path
-    ) -> Optional[Path]:
-        try:
-            logger.info(f"[Option 0] Development: {pdf_url}")
-            page = await self.context.new_page()
-
-            # Try direct download first
-            result = await download_from_response_body_async(
-                page, pdf_url, output_path
-            )
-            if result:
-                await page.close()
-                return result
-
-            # Try PDF viewer detection
-            if await detect_pdf_viewer_async(page):
-                await show_grid_async(page)
-                await click_center_async(page)
-                is_downloaded = (
-                    await click_download_button_from_chrome_pdf_viewer_async(
-                        page, output_path
-                    )
-                )
-                await page.close()
-                if is_downloaded:
-                    return output_path
-
-            await page.close()
-            return None
-
-        except Exception as ee:
-            logger.error(f"[Option 0] Failed: {ee}")
-            return None
-
-
 if __name__ == "__main__":
     import asyncio
 
@@ -343,7 +321,6 @@ if __name__ == "__main__":
 
         browser_manager = ScholarBrowserManager(
             chrome_profile_name="system",
-            # browser_mode="interactive",
             browser_mode="stealth",
             auth_manager=ScholarAuthManager(),
             use_zenrows_proxy=False,

@@ -128,11 +128,11 @@ for ii_pdf, url_pdf in enumerate(urls["url_pdf"]):
   "url_final_pdf": "https://www-nature-com.eu1.proxy.openathens.net/articles/s41593-025-01990-7.pdf",
   "url_final_pdf_source": "DirectRequest",
   
-  "pdf_urls": [
+  "urls_pdf": [
     "https://www.nature.com/articles/s41593-025-01990-7.pdf",
     "https://www-nature-com.eu1.proxy.openathens.net/articles/s41593-025-01990-7.pdf"
   ],
-  "pdf_urls_source": "MultipleStrategies",
+  "urls_pdf_source": "MultipleStrategies",
   
   "pdf_downloaded": false,
   "pdf_download_attempts": [],
@@ -152,7 +152,7 @@ for ii_pdf, url_pdf in enumerate(urls["url_pdf"]):
    ↓
 4. Submit to resolver → url_openurl_resolved (authenticated)
    ↓
-5. Find PDF URLs (multiple strategies) → pdf_urls[]
+5. Find PDF URLs (multiple strategies) → urls_pdf[]
    ↓
 6. Test & download PDFs → url_final_pdf
 ```

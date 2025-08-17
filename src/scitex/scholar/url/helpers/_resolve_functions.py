@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 02:16:39 (ywatanabe)"
+# Timestamp: "2025-08-17 19:45:09 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_resolve_functions.py
 # ----------------------------------------
 from __future__ import annotations
@@ -327,7 +327,6 @@ def extract_doi_from_url(url: str) -> Optional[str]:
     Returns:
         DOI string if found
     """
-    import re
 
     # Pattern for DOI
     doi_pattern = r"10\.\d{4,}(?:\.\d+)*/[-._;()/:\w]+"
