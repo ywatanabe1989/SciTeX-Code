@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-17 02:53:53 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/05_download_pdf.py
+# Timestamp: "2025-08-17 21:03:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/05_download_pdf.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -40,6 +40,16 @@ async def main_async():
         PDF_URL,
         output_path=OUTPUT_PATH,
     )
+
+    # INFO: Trying method: From Response Body
+    # INFO: Trying to download from response body
+    # INFO: Extension cleanup completed
+    # WARNING: Method failed: From Response Body
+    # INFO: Trying method: Chrome PDF
+    # INFO: PDF viewer detected
+    # SUCCESS: Downloaded: /tmp/hippocampal_ripples-by-stealth.pdf (1.5 MB)
+    # SUCCESS: Downloaded via Chrome PDF Viewer
+    # SUCCESS: Successfully downloaded using: Chrome PDF
 
 
 asyncio.run(main_async())
