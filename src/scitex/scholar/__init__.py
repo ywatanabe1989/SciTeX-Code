@@ -25,10 +25,8 @@ from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.engines import ScholarEngine
 from scitex.scholar.url import ScholarURLFinder
 from scitex.scholar.download import ScholarPDFDownloader
-# from .metadata.doi import DOIResolver
-
-# Import core classes
 from .core import Paper, Papers#, Scholar
+from . import utils
 
 __all__ = [
     "ScholarConfig",
@@ -36,11 +34,12 @@ __all__ = [
     "ScholarURLFinder",
     "ScholarAuthManager",
     "ScholarBrowserManager",
-    # "DOIResolver",
 
     "Paper",
     "Papers",
     # "Scholar",
+
+    "utils",
 ]
 
 # # Import core classes for advanced users

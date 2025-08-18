@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 23:42:13 (ywatanabe)"
+# Timestamp: "2025-08-18 09:04:15 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -101,7 +101,9 @@ class PathManager:
         subdirs = [
             self.cache_dir / "chrome",
             self.cache_dir / "auth",
-            self.cache_dir / "doi_resolution",
+            self.cache_dir / "search",
+            self.cache_dir / "url_finder",
+            self.cache_dir / "pdf_downloader",
             self.workspace_dir / "downloads",
             self.workspace_dir / "logs",
             self.workspace_dir / "screenshots",
@@ -562,10 +564,25 @@ class PathManager:
     ) -> Path:
         return self._ensure_directory(self.cache_dir / "auth")
 
-    def get_doi_resolution_cache_dir(
+    def get_search_cache_dir(
         self,
     ) -> Path:
-        return self._ensure_directory(self.cache_dir / "doi_resolution")
+        return self._ensure_directory(self.cache_dir / "search")
+
+    def get_url_finder_cache_dir(
+        self,
+    ) -> Path:
+        return self._ensure_directory(self.cache_dir / "url_finder")
+
+    def get_pdf_downloader_cache_dir(
+        self,
+    ) -> Path:
+        return self._ensure_directory(self.cache_dir / "pdf_downloader")
+
+    # def get_doi_resolution_cache_dir(
+    #     self,
+    # ) -> Path:
+    #     return self._ensure_directory(self.cache_dir / "doi_resolution")
 
     def get_doi_resolution_progress_path(
         self, provided_path: Optional[Path] = None

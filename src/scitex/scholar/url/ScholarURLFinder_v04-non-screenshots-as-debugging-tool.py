@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 15:42:54 (ywatanabe)"
+# Timestamp: "2025-08-18 06:35:27 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -20,7 +20,6 @@ Users can use this for convenience or directly import the functions.
 
 import asyncio
 import json
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -187,47 +186,12 @@ class ScholarURLFinder:
                 )
                 batch_results.append({})
             else:
-                # logger.info(
-                #     f"Batch URL finder found for DOI {ii_result}: {result}"
-                # )
                 batch_results.append(result or {})
-
-        # Success Rate
-        n_dois = len(dois)
-        if n_dois:
-            n_found = sum(
-                1
-                for result in results
-                if not isinstance(result, Exception)
-                and result
-                and result.get("urls_pdf")
-            )
-            msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
-            if n_found == n_dois:
-                logger.success(msg)
-            else:
-                logger.warn(msg)
-
-        # # Success Rate
-        # n_dois = len(dois)
-        # if n_dois:
-        #     try:
-        #         n_found = sum(
-        #             [
-        #                 True if result and result.get("urls_pdf") else False
-        #                 for result in results
-        #             ]
-        #         )
-        #     msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
-        #     if n_found == n_dois:
-        #         logger.success(msg)
-        #     else:
-        #         logger.warn(msg)
 
         return batch_results
 
     async def _get_pdfs_from_url(
-        self, url: str, page: Optional[Page], doi: str = None
+        self, url: str, page: Optional[Page]
     ) -> List[Dict]:
         """Get PDF URLs from a specific URL."""
         if not page:
@@ -237,22 +201,9 @@ class ScholarURLFinder:
             should_close = False
 
         try:
-            # await page.goto(url, wait_until="networkidle", timeout=30000)
-            await page.goto(url, wait_until="domcontentloaded", timeout=30_000)
-
-            pdfs = await find_urls_pdf(page)
-
-            # Take screenshot if no PDFs found
-            if not pdfs:
-                await self._take_debug_screenshot(page, "no_pdfs_found", doi)
-
-            return pdfs
-        except Exception as e:
-            # Take screenshot on error
-            try:
-                await self._take_debug_screenshot(page, "page_error", doi)
-            except:
-                pass
+            await page.goto(url, wait_until="networkidle", timeout=30000)
+            return await find_urls_pdf(page)
+        except:
             return []
         finally:
             if should_close:
@@ -261,108 +212,46 @@ class ScholarURLFinder:
                 except:
                     pass
 
-    # async def _take_debug_screenshot(
-    #     self, page: Page, context: str, doi: str = None
-    # ):
-    #     """Take screenshot for debugging when PDFs not found."""
-    #     try:
-    #         screenshot_dir = self.config.get_screenshots_dir("url_finder")
-    #         screenshot_dir.mkdir(parents=True, exist_ok=True)
-
-    #         # Generate filename with timestamp and context
-    #         from datetime import datetime
-
-    #         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #         doi_clean = (
-    #             doi.replace("/", "_").replace(":", "_") if doi else "unknown"
-    #         )
-    #         filename = f"{timestamp}_{context}_{doi_clean}.png"
-
-    #         screenshot_path = screenshot_dir / filename
-    #         await page.screenshot(path=str(screenshot_path), full_page=True)
-    #         logger.success(f"Debug screenshot saved: {filename}")
-
-    #     except Exception as e:
-    #         logger.fail(f"Failed to take debug screenshot: {e}")
-    async def _take_debug_screenshot(
-        self, page: Page, context: str, doi: str = None
-    ):
-        """Take screenshot for debugging when PDFs not found."""
-        try:
-            screenshot_dir = self.config.get_screenshots_dir("url_finder")
-            screenshot_dir.mkdir(parents=True, exist_ok=True)
-
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            doi_clean = (
-                doi.replace("/", "_").replace(":", "_") if doi else "unknown"
-            )
-            filename = f"{timestamp}_{context}_{doi_clean}.png"
-            screenshot_path = screenshot_dir / filename
-
-            # Skip font loading wait
-            await page.screenshot(
-                path=str(screenshot_path), full_page=True, timeout=10000
-            )
-            logger.success(f"Debug screenshot saved: {filename}")
-
-        except Exception as e:
-            logger.fail(f"Failed to take debug screenshot: {e}")
-
     async def find_urls_pdf_async(self, page_or_url) -> List[Dict]:
-        """Find PDF URLs from a page or URL."""
+        """Find PDF URLs from a page or URL.
+
+        Args:
+            page_or_url: Page object or URL string
+
+        Returns:
+            List of dicts with url and source
+        """
         if isinstance(page_or_url, str):
+            # Create a page and navigate
             if not self.context:
                 logger.error("Browser context required to navigate to URL")
                 return []
-
             page = await self.context.new_page()
             try:
-                # await page.goto(
-                #     page_or_url, wait_until="networkidle", timeout=30000
-                # )
                 await page.goto(
-                    page_or_url, wait_until="domcontentloaded", timeout=30000
+                    page_or_url, wait_until="networkidle", timeout=30000
                 )
-
-                pdfs = await find_urls_pdf(page)
-
-                # Take screenshot if no PDFs found
-                if not pdfs:
-                    await self._take_debug_screenshot(
-                        page, "no_pdfs_url", page_or_url
-                    )
-
-                return pdfs
+                return await find_urls_pdf(page)
             except Exception as e:
-                logger.warning(f"Failed with networkidle: {e}")
+                logger.warning(
+                    f"Failed with domcontentloaded, trying networkidle: {e}"
+                )
                 try:
-                    await self._take_debug_screenshot(
-                        page, "navigation_error", page_or_url
+                    await page.goto(
+                        page_or_url, wait_until="networkidle", timeout=30000
                     )
-                except:
-                    pass
-                return []
+                    return await find_urls_pdf(page)
+                except Exception as e2:
+                    logger.error(f"Could not navigate to {page_or_url}: {e2}")
+                    return []
             finally:
                 await page.close()
         else:
+            # Assume it's a Page object
             try:
-                pdfs = await find_urls_pdf(page_or_url)
-
-                # Take screenshot if no PDFs found
-                if not pdfs:
-                    await self._take_debug_screenshot(
-                        page_or_url, "no_pdfs_page"
-                    )
-
-                return pdfs
+                return await find_urls_pdf(page_or_url)
             except Exception as e:
                 logger.error(f"Error finding PDF URLs: {e}")
-                try:
-                    await self._take_debug_screenshot(
-                        page_or_url, "pdf_search_error"
-                    )
-                except:
-                    pass
                 return []
 
     def generate_openurl(

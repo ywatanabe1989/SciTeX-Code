@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 16:16:30 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
+# Timestamp: "2025-08-18 06:41:37 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine_v01-no-cache.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/engines/ScholarEngine.py"
+    "./src/scitex/scholar/engines/ScholarEngine_v01-no-cache.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -35,135 +35,19 @@ class ScholarEngine:
     """Aggregates metadata from multiple engines for enrichment."""
 
     def __init__(
-        self,
-        engines: List[str] = None,
-        config: ScholarConfig = None,
-        use_cache=True,
-        clear_cache=False,
+        self, engines: List[str] = None, config: ScholarConfig = None
     ):
         self.config = config if config else ScholarConfig()
         self.engines = config.resolve("engines", engines)
-        self.use_cache = config.resolve("use_cache_search", use_cache)
         self._engine_instances = {}
         self.rotation_manager = None
-
-        # Initialize cache
-        self._setup_cache(clear_cache)
-
-    def _setup_cache(self, clear_cache=False):
-        """Setup cache directory and files."""
-        self.cache_dir = self.config.get_search_cache_dir()
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.cache_file = self.cache_dir / "search_results.json"
-
-        if clear_cache and self.cache_file.exists():
-            self.cache_file.unlink()
-            logger.info("Cleared engine search cache")
-
-        self._load_cache()
-
-    def _load_cache(self):
-        """Load cache from file."""
-        if self.use_cache and self.cache_file.exists():
-            try:
-                import json
-
-                with open(self.cache_file, "r") as f:
-                    self._cache = json.load(f)
-            except:
-                self._cache = {}
-        else:
-            self._cache = {}
-
-    def _save_cache(self):
-        """Save cache to file."""
-        if self.use_cache:
-            try:
-                import json
-
-                with open(self.cache_file, "w") as f:
-                    json.dump(self._cache, f, indent=2)
-            except Exception as e:
-                logger.warning(f"Failed to save engine cache: {e}")
-
-    def _get_cache_key(self, title: str = None, doi: str = None, **kwargs):
-        """Generate cache key for search parameters."""
-        params = {"title": title, "doi": doi, **kwargs}
-        # Remove None values
-        params = {k: v for k, v in params.items() if v is not None}
-        # Create hash from sorted params
-        import json
-
-        param_str = json.dumps(params, sort_keys=True)
-        return hashlib.md5(param_str.encode()).hexdigest()
-
-    # # Working but not showing fail message, at least when cache is enabled
-    # async def search_async(
-    #     self, title: str = None, doi: str = None, **kwargs
-    # ) -> Dict[str, Dict]:
-    #     """Search all engines and return combined results."""
-    #     # Check cache first
-    #     cache_key = self._get_cache_key(title, doi, **kwargs)
-    #     if self.use_cache and cache_key in self._cache:
-    #         logger.debug(f"Using cached search result")
-    #         return self._cache[cache_key]
-
-    #     self._last_query_title = title
-    #     self._attempted_engines = set()
-
-    #     if self.rotation_manager:
-    #         paper_info = {"title": title, **kwargs}
-    #         engine_order = self.rotation_manager.get_optimal_engine_order(
-    #             paper_info, self.engines, max_engines=len(self.engines)
-    #         )
-    #     else:
-    #         engine_order = self.engines
-
-    #     tasks = []
-    #     for engine_name in engine_order:
-    #         engine = self._get_engine(engine_name)
-    #         if engine:
-    #             self._attempted_engines.add(engine_name)
-    #             task = self._search_engine_with_timeout(
-    #                 engine, engine_name, title, doi, **kwargs
-    #             )
-    #             tasks.append(task)
-
-    #     results = await asyncio.gather(*tasks, return_exceptions=True)
-
-    #     engine_results = {}
-    #     for ii, (engine_name, result) in enumerate(zip(engine_order, results)):
-    #         if isinstance(result, Exception):
-    #             logger.fail(f"Error from {engine_name}: {result}")
-    #             # when cache is enabled this seems not shown
-    #             continue
-    #         if result:
-    #             print(
-    #                 f"{engine_name} returned title: {result.get('basic', {}).get('title', 'N/A')}"
-    #             )
-    #             engine_results[engine_name] = result
-
-    #     combined_result = self._combine_metadata(engine_results)
-
-    #     # Cache result
-    #     if self.use_cache and combined_result:
-    #         self._cache[cache_key] = combined_result
-    #         self._save_cache()
-
-    #     return combined_result
 
     async def search_async(
         self, title: str = None, doi: str = None, **kwargs
     ) -> Dict[str, Dict]:
         """Search all engines and return combined results."""
-        # Check cache first
-        cache_key = self._get_cache_key(title, doi, **kwargs)
-        if self.use_cache and cache_key in self._cache:
-            logger.debug(f"Using cached search result")
-            return self._cache[cache_key]
-
         self._last_query_title = title
-        self._attempted_engines = set()
+        self._attempted_engines = set()  # Track all attempted engines
 
         if self.rotation_manager:
             paper_info = {"title": title, **kwargs}
@@ -196,132 +80,7 @@ class ScholarEngine:
                 )
                 engine_results[engine_name] = result
 
-        combined_result = self._combine_metadata(engine_results)
-
-        # Log failure if no results found
-        if not combined_result:
-            query_str = (
-                f"title: {title}"
-                if title
-                else f"doi: {doi}" if doi else "unknown query"
-            )
-            logger.fail(f"No metadata found for {query_str}")
-
-        # Cache result
-        if self.use_cache and combined_result:
-            self._cache[cache_key] = combined_result
-            self._save_cache()
-
-        return combined_result
-
-    # async def search_batch_async(
-    #     self,
-    #     titles: List[str] = None,
-    #     dois: List[str] = None,
-    # ) -> List[Dict[str, Dict]]:
-    #     """Search multiple papers in batch with parallel processing."""
-    #     if dois:
-    #         batched_meatadata = [await self.search_async(doi) for doi in dois]
-    #         dois = [
-    #             metadata.get("id", {}).get("doi")
-    #             for metadata in batched_metadata
-    #             if metadata and metadata.get("id")
-    #         ]
-    #         logger.warn(f"Search engines found {}/{} dois from publications (= {success_rate}%)") # implement this
-
-    #         return batched_metadata
-
-    #     if titles:
-    #         batched_meatadta = [await self.search_async(title) for title in titles]
-    #         dois = [
-    #             metadata.get("id", {}).get("doi")
-    #             for metadata in batched_metadata
-    #             if metadata and metadata.get("id")
-    #         ]
-    #         logger.warn(f"Search engines found {}/{} dois from publications (= {success_rate}%)") # implement this
-
-    #         return batched_metadata
-    # async def search_batch_async(
-    #     self,
-    #     titles: List[str] = None,
-    #     dois: List[str] = None,
-    # ) -> List[Dict[str, Dict]]:
-    #     """Search multiple papers in batch with parallel processing."""
-
-    #     def _print_stats(dois, results):
-    #         failed_queries = []
-    #         found_dois = []
-
-    #         for ii, (doi, result) in enumerate(zip(dois, results)):
-    #             if isinstance(result, Exception):
-    #                 failed_queries.append((doi, str(result)))
-    #             elif result and result.get("id", {}).get("doi"):
-    #                 found_dois.append(result.get("id", {}).get("doi"))
-    #             else:
-    #                 failed_queries.append((doi, "No metadata found"))
-
-    #         n_total = len(dois)
-    #         n_found = len(found_dois)
-    #         success_rate = (
-    #             round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         )
-
-    #         msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         if n_found == n_total:
-    #             logger.success(msg)
-    #         else:
-    #             logger.warn(msg)
-    #             for doi, error in failed_queries:
-    #                 logger.fail(f"Failed DOI '{doi}': {error}")
-
-    #     if dois:
-    #         batched_metadata = [
-    #             await self.search_async(doi=doi) for doi in dois
-    #         ]
-    #         _print_stats(batched_metadata)
-    #         # # fixme; this might be not useful but we would like to show success rate so that we should change check fields other than doi here
-    #         # found_dois = [
-    #         #     metadata.get("id", {}).get("doi")
-    #         #     for metadata in batched_metadata
-    #         #     if metadata and metadata.get("id", {}).get("doi")
-    #         # ]
-    #         # n_total = len(dois)
-    #         # n_found = len(found_dois)
-    #         # success_rate = (
-    #         #     round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         # )
-
-    #         # msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         # if n_found == n_total:
-    #         #     logger.success(msg)
-    #         # else:
-    #         #     logger.warn(msg)
-    #         return batched_metadata
-
-    #     if titles:
-    #         batched_metadata = [
-    #             await self.search_async(title=title) for title in titles
-    #         ]
-    #         _print_stats(batched_metadata)
-    #         # found_dois = [
-    #         #     metadata.get("id", {}).get("doi")
-    #         #     for metadata in batched_metadata
-    #         #     if metadata and metadata.get("id", {}).get("doi")
-    #         # ]
-    #         # n_total = len(titles)
-    #         # n_found = len(found_dois)
-    #         # success_rate = (
-    #         #     round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         # )
-
-    #         # msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         # if n_found == n_total:
-    #         #     logger.success(msg)
-    #         # else:
-    #         #     logger.warn(msg)
-    #         return batched_metadata
-
-    #     return []
+        return self._combine_metadata(engine_results)
 
     async def search_batch_async(
         self,
@@ -329,47 +88,11 @@ class ScholarEngine:
         dois: List[str] = None,
     ) -> List[Dict[str, Dict]]:
         """Search multiple papers in batch with parallel processing."""
-
-        def _print_stats(queries, results):
-            failed_queries = []
-            found_count = 0
-
-            for query, result in zip(queries, results):
-                if isinstance(result, Exception):
-                    failed_queries.append((query, str(result)))
-                elif result and result.get("id", {}).get("doi"):
-                    found_count += 1
-                else:
-                    failed_queries.append((query, "No metadata found"))
-
-            n_total = len(queries)
-            success_rate = (
-                round(100.0 * found_count / n_total, 1) if n_total > 0 else 0.0
-            )
-
-            msg = f"Search engines found {found_count}/{n_total} DOIs from publications (= {success_rate}%)"
-            if found_count == n_total:
-                logger.success(msg)
-            else:
-                logger.warn(msg)
-                for query, error in failed_queries:
-                    logger.fail(f"Failed query '{query}': {error}")
-
         if dois:
-            batched_metadata = [
-                await self.search_async(doi=doi) for doi in dois
-            ]
-            _print_stats(dois, batched_metadata)
-            return batched_metadata
+            return [await self.search_async(doi) for doi in dois]
 
         if titles:
-            batched_metadata = [
-                await self.search_async(title=title) for title in titles
-            ]
-            _print_stats(titles, batched_metadata)
-            return batched_metadata
-
-        return []
+            return [await self.search_async(title) for title in titles]
 
     def _get_engine(self, name: str):
         if name not in self._engine_instances:
@@ -686,7 +409,7 @@ if __name__ == "__main__":
         DOI = "10.1038/nature14539"
 
         # Example: Unified Engine
-        engine = ScholarEngine(use_cache=False)
+        engine = ScholarEngine()
         outputs = {}
 
         # Search by Title

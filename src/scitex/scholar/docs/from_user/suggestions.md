@@ -85,7 +85,7 @@ async def main():
     logger.info("--- Resolution Complete ---")
     for doi, result in zip(dois_to_resolve, results):
         if result and result.get("success"):
-            logger.success(f"✓ {doi} -> {result.get('final_url')}")
+            logger.success(f"{doi} -> {result.get('final_url')}")
         else:
             logger.error(f"✗ {doi} -> FAILED ({result.get('access_type', 'Unknown Error')})")
 

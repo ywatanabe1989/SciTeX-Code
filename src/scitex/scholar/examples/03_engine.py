@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-17 21:05:27 (ywatanabe)"
+# Timestamp: "2025-08-18 07:13:59 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_engine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,7 +24,7 @@ async def main_async():
     DOI = "10.1038/nature14539"
 
     # Example: Unified Engine
-    engine = ScholarEngine()
+    engine = ScholarEngine(use_cache=False)
     outputs = {}
 
     # Search by Title

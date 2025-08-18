@@ -472,7 +472,7 @@ class StealthManager:
             return True
 
         except Exception as e:
-            logger.warning(
+            logger.warn(
                 f"Cloudflare challenge handling timeout or error: {e}"
             )
 

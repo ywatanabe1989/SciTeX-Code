@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-17 21:04:28 (ywatanabe)"
+# Timestamp: "2025-08-18 07:14:17 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_url.py
 # ----------------------------------------
 from __future__ import annotations
@@ -22,7 +22,6 @@ async def main_async():
     auth_manager = ScholarAuthManager()
     browser_manager = ScholarBrowserManager(
         auth_manager=auth_manager,
-        # browser_mode="stealth",
         browser_mode="interactive",
         chrome_profile_name="system",
     )
@@ -31,7 +30,7 @@ async def main_async():
     )
 
     # Create URL handler
-    url_finder = ScholarURLFinder(context)
+    url_finder = ScholarURLFinder(context, use_cache=False)
 
     # Find URLs for a paper
     doi = "10.1126/science.aao0702"  # Hippocampal...

@@ -84,7 +84,7 @@ class PlaywrightVision:
             # Wait a bit before retrying
             await asyncio.sleep(0.5)
 
-        logger.warning(f"Image not found within {timeout}ms")
+        logger.warn(f"Image not found within {timeout}ms")
         return False
 
     async def find_text_and_click(
@@ -147,7 +147,7 @@ class PlaywrightVision:
 
             await asyncio.sleep(0.5)
 
-        logger.warning(f"Text '{text_to_find}' not found within {timeout}ms")
+        logger.warn(f"Text '{text_to_find}' not found within {timeout}ms")
         return False
 
     async def find_download_button_and_click(self) -> bool:
@@ -206,7 +206,7 @@ class PlaywrightVision:
                 # For now, return True optimistically
                 return True
 
-        logger.warning("No download button found using computer vision")
+        logger.warn("No download button found using computer vision")
         return False
 
     def _find_image_in_screenshot(

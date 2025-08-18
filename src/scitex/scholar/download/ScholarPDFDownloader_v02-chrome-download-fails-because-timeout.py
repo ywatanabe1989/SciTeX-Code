@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 09:05:04 (ywatanabe)"
+# Timestamp: "2025-08-18 08:13:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,7 +13,6 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 import base64
-import hashlib
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -36,23 +35,13 @@ class ScholarPDFDownloader:
         self,
         context: BrowserContext,
         config: ScholarConfig = None,
-        use_cache=False,
     ):
         self.config = config if config else ScholarConfig()
         self.context = context
         self.url_finder = ScholarURLFinder(self.context, config=config)
-        self.use_cache = self.config.resolve(
-            "use_cache_pdf_downloader", use_cache
-        )
-        self.cache_dir = self.config.get_pdf_downloader_cache_dir()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         pass
-
-    def get_cache_path(self, pdf_url: str) -> Path:
-        """Generate cache path from PDF URL hash."""
-        url_hash = hashlib.md5(pdf_url.encode()).hexdigest()
-        return self.cache_dir / f"{url_hash}.pdf"
 
     async def download_from_dois_batch(
         self,
@@ -91,92 +80,41 @@ class ScholarPDFDownloader:
 
         return batch_results
 
-    # async def download_from_url(
-    #     self, pdf_url: str, output_path: Union[str, Path]
-    # ) -> Optional[Path]:
-    #     """
-    #     Main download method that tries all options in order.
-    #     Returns the path if successful, None otherwise.
-    #     """
-    #     if not pdf_url:
-    #         logger.warn(f"PDF URL passed but not valid: {pdf_url}")
-    #         return False
-
-    #     # Output path with parent directory ensured
-    #     if isinstance(output_path, str):
-    #         output_path = Path(output_path)
-    #     if not str(output_path).endswith(".pdf"):
-    #         output_path = Path(str(output_path) + ".pdf")
-    #     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    #     # Try each download method in order of reliability/speed
-    #     try_download_methods = [
-    #         (
-    #             "From Response Body",
-    #             self._try_download_from_response_body_async,
-    #         ),
-    #         ("Direct Download", self._try_direct_download_async),
-    #         (
-    #             "Chrome PDF",
-    #             self._try_download_from_chrome_pdf_viewer_async,
-    #         ),
-    #     ]
-
-    #     for method_name, method_func in try_download_methods:
-    #         logger.info(f"Trying method: {method_name}")
-    #         is_downloaded = await method_func(pdf_url, output_path)
-    #         if is_downloaded:
-    #             return is_downloaded
-
-    #     logger.fail(f"All download methods failed for {pdf_url}")
-    #     return None
     async def download_from_url(
         self, pdf_url: str, output_path: Union[str, Path]
     ) -> Optional[Path]:
-        """Main download method with caching support."""
+        """
+        Main download method that tries all options in order.
+        Returns the path if successful, None otherwise.
+        """
         if not pdf_url:
             logger.warn(f"PDF URL passed but not valid: {pdf_url}")
-            return None
+            return False
 
-        # Output path setup
+        # Output path with parent directory ensured
         if isinstance(output_path, str):
             output_path = Path(output_path)
         if not str(output_path).endswith(".pdf"):
             output_path = Path(str(output_path) + ".pdf")
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Check cache first
-        cache_path = self.get_cache_path(pdf_url)
-        if cache_path.exists() and cache_path.stat().st_size > 1024:
-            # Copy from cache to output path
-            import shutil
-
-            shutil.copy2(cache_path, output_path)
-            size_MiB = output_path.stat().st_size / 1024 / 1024
-            logger.info(
-                f"Cache hit: {pdf_url} -> {output_path} ({size_MiB:.2f} MiB)"
-            )
-            return output_path
-
-        # Try download methods
+        # Try each download method in order of reliability/speed
         try_download_methods = [
             (
                 "From Response Body",
                 self._try_download_from_response_body_async,
             ),
-            ("Direct Download", self._try_direct_download_async),
-            ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
+            (
+                "Chrome PDF",
+                self._try_download_from_chrome_pdf_viewer_async,
+            ),
         ]
 
         for method_name, method_func in try_download_methods:
             logger.info(f"Trying method: {method_name}")
             is_downloaded = await method_func(pdf_url, output_path)
             if is_downloaded:
-                # Save to cache
-                import shutil
-
-                shutil.copy2(output_path, cache_path)
-                return output_path
+                return is_downloaded
 
         logger.fail(f"All download methods failed for {pdf_url}")
         return None
@@ -229,7 +167,7 @@ class ScholarPDFDownloader:
         """Download PDF from HTTP response body."""
         page = None
         try:
-            logger.info(f"Trying to download {pdf_url} from response body")
+            logger.info("Trying to download from response body")
             page = await self.context.new_page()
 
             # Set up download handler for auto-downloads
@@ -251,7 +189,7 @@ class ScholarPDFDownloader:
             if download_path and download_path.exists():
                 size_MiB = download_path.stat().st_size / 1024 / 1024
                 logger.success(
-                    f"Auto-download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
+                    f"Auto-download: {output_path} ({size_MiB:.2f} MiB)"
                 )
                 await page.close()
                 return output_path
@@ -283,66 +221,17 @@ class ScholarPDFDownloader:
                     file_.write(content)
                 size_MiB = len(content) / 1024 / 1024
                 logger.success(
-                    f"Response body download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
+                    f"Response body download: {output_path} ({size_MiB:.2f} MiB)"
                 )
                 await page.close()
                 return output_path
 
-            logger.info("Failed download from response body")
+            logger.warn("Failed download from response body")
             await page.close()
             return None
 
         except Exception as ee:
-            logger.info("Failed download from response body")
-            if page is not None:
-                await page.close()
-            return None
-
-    async def _try_direct_download_async(
-        self, pdf_url: str, output_path: Path
-    ) -> Optional[Path]:
-        """Handle direct download that triggers ERR_ABORTED."""
-        page = None
-        try:
-            logger.info(f"Trying direct download from {pdf_url}")
-            page = await self.context.new_page()
-
-            # Set up download handler
-            download_occurred = False
-
-            async def handle_download(download):
-                nonlocal download_occurred
-                await download.save_as(output_path)
-                download_occurred = True
-
-            page.on("download", handle_download)
-
-            # Try to navigate - expect ERR_ABORTED for direct downloads
-            try:
-                await page.goto(pdf_url, wait_until="load", timeout=10_000)
-            except Exception as ee:
-                if "ERR_ABORTED" in str(ee):
-                    logger.info(
-                        "ERR_ABORTED detected - likely direct download"
-                    )
-                    # Wait for download to complete
-                    await page.wait_for_timeout(5_000)
-                else:
-                    raise ee
-
-            await page.close()
-
-            if download_occurred and output_path.exists():
-                size_MiB = output_path.stat().st_size / 1024 / 1024
-                logger.success(
-                    f"Direct download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
-                )
-                return output_path
-
-            return None
-
-        except Exception as ee:
-            logger.warn(f"Direct download failed: {ee}")
+            logger.warn("Failed download from response body")
             if page is not None:
                 await page.close()
             return None
@@ -371,20 +260,14 @@ class ScholarPDFDownloader:
             await page.close()
 
             if is_downloaded:
-                logger.success(
-                    f"Downloaded via Chrome PDF Viewer: from {pdf_url} to {output_path}"
-                )
+                logger.success("Downloaded via Chrome PDF Viewer")
                 return output_path
             else:
-                logger.fail(
-                    f"Failed via Chrome PDF Viewer: from {pdf_url} to {output_path}"
-                )
+                logger.fail("Failed via Chrome PDF Viewer")
                 return None
 
         except Exception as ee:
-            logger.fail(
-                f"Chrome PDF Viewer failed to download from {pdf_url} to {output_path}: {str(ee)}"
-            )
+            logger.fail(f"Chrome PDF Viewer failed: {str(ee)}")
             if page:
                 await page.close()
             return None
@@ -505,40 +388,6 @@ async def click_center_async(page):
     return clicked
 
 
-# async def click_download_button_from_chrome_pdf_viewer_async(
-#     page, spath_pdf
-# ) -> Optional[Path]:
-#     """Download PDF from Chrome PDF viewer using percentage-based coordinates."""
-#     try:
-#         spath_pdf = str(spath_pdf)
-#         viewport = page.viewport_size
-#         width = viewport["width"]
-#         height = viewport["height"]
-
-#         # Download button typically at top-right (95% width, 3% height)
-#         x_percent = 95
-#         y_percent = 3
-
-#         x_download = int(width * x_percent / 100)
-#         y_download = int(height * y_percent / 100)
-
-#         async with page.expect_download() as download_info:
-#             await page.mouse.click(x_download, y_download)
-
-#         download = await download_info.value
-#         await download.save_as(spath_pdf)
-
-#         if os.path.exists(spath_pdf):
-#             file_size_MB = os.path.getsize(spath_pdf) / 1e6
-#             logger.success(f"Downloaded: {spath_pdf} ({file_size_MB:.1f} MB)")
-#             return True
-
-#         return False
-
-
-#     except Exception as ee:
-#         logger.error(f"Chrome page download failed: {ee}")
-#         return False
 async def click_download_button_from_chrome_pdf_viewer_async(
     page, spath_pdf
 ) -> Optional[Path]:
@@ -552,19 +401,15 @@ async def click_download_button_from_chrome_pdf_viewer_async(
         # Download button typically at top-right (95% width, 3% height)
         x_percent = 95
         y_percent = 3
+
         x_download = int(width * x_percent / 100)
         y_download = int(height * y_percent / 100)
 
-        async with page.expect_download(timeout=30_000) as download_info:
+        async with page.expect_download() as download_info:
             await page.mouse.click(x_download, y_download)
-            # Wait a bit for download to initiate
-            await page.wait_for_timeout(2_000)
 
         download = await download_info.value
         await download.save_as(spath_pdf)
-
-        # Wait for file to be fully written
-        await page.wait_for_timeout(3_000)
 
         if os.path.exists(spath_pdf):
             file_size_MB = os.path.getsize(spath_pdf) / 1e6

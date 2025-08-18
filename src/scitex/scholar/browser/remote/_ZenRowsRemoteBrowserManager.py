@@ -131,7 +131,7 @@ class ZenRowsRemoteScholarBrowserManager:
             await self.cookie_acceptor.inject_auto_acceptor_async(context)
             logger.info("Injected cookie auto-acceptor")
         except Exception as e:
-            logger.warning(f"Failed to inject cookie acceptor: {e}")
+            logger.warn(f"Failed to inject cookie acceptor: {e}")
 
         if self.auth_manager and await self.auth_manager.is_authenticate_async():
             try:

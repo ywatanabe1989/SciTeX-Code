@@ -32,7 +32,7 @@ class CaptchaHandler:
         """Initialize with 2Captcha API key."""
         self.api_key = api_key or os.getenv("SCITEX_SCHOLAR_2CAPTCHA_API_KEY")
         if not self.api_key:
-            logger.warning("2Captcha API key not configured - CAPTCHA solving disabled")
+            logger.warn("2Captcha API key not configured - CAPTCHA solving disabled")
         
         self.base_url = "http://2captcha.com"
         self.timeout = 180  # 3 minutes max wait time
@@ -61,7 +61,7 @@ class CaptchaHandler:
         elif await self._has_hcaptcha_async(page):
             return await self._solve_hcaptcha_async(page)
         else:
-            logger.warning("Unknown captcha type detected")
+            logger.warn("Unknown captcha type detected")
             return False
     
     async def _detect_captcha_async(self, page: Page) -> bool:

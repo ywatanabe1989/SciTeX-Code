@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 07:10:48 (ywatanabe)"
+# Timestamp: "2025-08-16 19:41:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/ScholarBrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -502,28 +502,8 @@ class ScholarBrowserManager(BrowserMixin):
             "--disable-component-extensions-with-background-pages",
         ]
 
-        screenshot_args = [
-            "--no-sandbox",
-            "--disable-blink-features=AutomationControlled",
-            "--disable-features=VizDisplayCompositor",
-            "--disable-web-security",
-            "--disable-features=TranslateUI",
-            "--disable-ipc-flooding-protection",
-            "--font-render-hinting=none",
-            "--disable-font-subpixel-positioning",
-            "--disable-remote-fonts",
-            "--disable-background-timer-throttling",
-            "--disable-backgrounding-occluded-windows",
-            "--disable-renderer-backgrounding",
-            "--disable-font-loading-api",
-        ]
-
         launch_args = (
-            extension_args
-            + stealth_args
-            + no_welcome_args
-            + pdf_download_args
-            + screenshot_args
+            extension_args + stealth_args + no_welcome_args + pdf_download_args
         )
 
         # Debug: Show window args for stealth mode

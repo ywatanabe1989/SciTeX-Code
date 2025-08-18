@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 16:34:26 (ywatanabe)"
+# Timestamp: "2025-08-18 04:41:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/_AuthenticationStrategyResolver.py
 # ----------------------------------------
 from __future__ import annotations

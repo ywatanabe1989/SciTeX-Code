@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 09:05:04 (ywatanabe)"
+# Timestamp: "2025-08-18 08:26:45 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,7 +13,6 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 import base64
-import hashlib
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -36,23 +35,13 @@ class ScholarPDFDownloader:
         self,
         context: BrowserContext,
         config: ScholarConfig = None,
-        use_cache=False,
     ):
         self.config = config if config else ScholarConfig()
         self.context = context
         self.url_finder = ScholarURLFinder(self.context, config=config)
-        self.use_cache = self.config.resolve(
-            "use_cache_pdf_downloader", use_cache
-        )
-        self.cache_dir = self.config.get_pdf_downloader_cache_dir()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         pass
-
-    def get_cache_path(self, pdf_url: str) -> Path:
-        """Generate cache path from PDF URL hash."""
-        url_hash = hashlib.md5(pdf_url.encode()).hexdigest()
-        return self.cache_dir / f"{url_hash}.pdf"
 
     async def download_from_dois_batch(
         self,
@@ -91,92 +80,42 @@ class ScholarPDFDownloader:
 
         return batch_results
 
-    # async def download_from_url(
-    #     self, pdf_url: str, output_path: Union[str, Path]
-    # ) -> Optional[Path]:
-    #     """
-    #     Main download method that tries all options in order.
-    #     Returns the path if successful, None otherwise.
-    #     """
-    #     if not pdf_url:
-    #         logger.warn(f"PDF URL passed but not valid: {pdf_url}")
-    #         return False
-
-    #     # Output path with parent directory ensured
-    #     if isinstance(output_path, str):
-    #         output_path = Path(output_path)
-    #     if not str(output_path).endswith(".pdf"):
-    #         output_path = Path(str(output_path) + ".pdf")
-    #     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    #     # Try each download method in order of reliability/speed
-    #     try_download_methods = [
-    #         (
-    #             "From Response Body",
-    #             self._try_download_from_response_body_async,
-    #         ),
-    #         ("Direct Download", self._try_direct_download_async),
-    #         (
-    #             "Chrome PDF",
-    #             self._try_download_from_chrome_pdf_viewer_async,
-    #         ),
-    #     ]
-
-    #     for method_name, method_func in try_download_methods:
-    #         logger.info(f"Trying method: {method_name}")
-    #         is_downloaded = await method_func(pdf_url, output_path)
-    #         if is_downloaded:
-    #             return is_downloaded
-
-    #     logger.fail(f"All download methods failed for {pdf_url}")
-    #     return None
     async def download_from_url(
         self, pdf_url: str, output_path: Union[str, Path]
     ) -> Optional[Path]:
-        """Main download method with caching support."""
+        """
+        Main download method that tries all options in order.
+        Returns the path if successful, None otherwise.
+        """
         if not pdf_url:
             logger.warn(f"PDF URL passed but not valid: {pdf_url}")
-            return None
+            return False
 
-        # Output path setup
+        # Output path with parent directory ensured
         if isinstance(output_path, str):
             output_path = Path(output_path)
         if not str(output_path).endswith(".pdf"):
             output_path = Path(str(output_path) + ".pdf")
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Check cache first
-        cache_path = self.get_cache_path(pdf_url)
-        if cache_path.exists() and cache_path.stat().st_size > 1024:
-            # Copy from cache to output path
-            import shutil
-
-            shutil.copy2(cache_path, output_path)
-            size_MiB = output_path.stat().st_size / 1024 / 1024
-            logger.info(
-                f"Cache hit: {pdf_url} -> {output_path} ({size_MiB:.2f} MiB)"
-            )
-            return output_path
-
-        # Try download methods
+        # Try each download method in order of reliability/speed
         try_download_methods = [
             (
                 "From Response Body",
                 self._try_download_from_response_body_async,
             ),
             ("Direct Download", self._try_direct_download_async),
-            ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
+            (
+                "Chrome PDF",
+                self._try_download_from_chrome_pdf_viewer_async,
+            ),
         ]
 
         for method_name, method_func in try_download_methods:
             logger.info(f"Trying method: {method_name}")
             is_downloaded = await method_func(pdf_url, output_path)
             if is_downloaded:
-                # Save to cache
-                import shutil
-
-                shutil.copy2(output_path, cache_path)
-                return output_path
+                return is_downloaded
 
         logger.fail(f"All download methods failed for {pdf_url}")
         return None

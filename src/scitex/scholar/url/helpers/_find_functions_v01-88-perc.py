@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 16:45:57 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_find_functions.py
+# Timestamp: "2025-08-18 17:54:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_find_functions_v01-88-perc.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/url/helpers/_find_functions.py"
+    "./src/scitex/scholar/url/helpers/_find_functions_v01-88-perc.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -202,21 +202,6 @@ async def _find_direct_pdf_links(page: Page) -> List[str]:
                 'a[href*="/pdf/"]',
                 'a[href*="/doi/pdf/"]',
                 'a[href*="type=printable"]'
-                // ++ Add Selectors for Major Publishers ++
-                // For ScienceDirect (Elsevier)
-                'a.PdfLink', // Main PDF link
-                'a.article-tools-pdf-link',
-
-                // For Wiley Online Library
-                'a#article-pdf-link',
-                'a.pdf-download',
-
-                // For SpringerLink
-                'a[data-track-action="download pdf"]',
-                'a.c-pdf-download__link',
-
-                // For Oxford Academic
-                'a.al-link.pdf-link',
             ];
 
             downloadSelectors.forEach(selector => {

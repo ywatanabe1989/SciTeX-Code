@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 23:57:37 (ywatanabe)"
+# Timestamp: "2025-08-18 07:23:55 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_ZoteroTranslatorRunner.py
 # ----------------------------------------
 from __future__ import annotations
@@ -106,7 +106,7 @@ class ZoteroTranslatorRunner:
                 logger.fail(f"Failed to load {js_file.name}: {e}")
                 continue
 
-        logger.success(f"Loaded {len(translators)} Zotero translators")
+        logger.info(f"Loaded {len(translators)} Zotero translators")
         return translators
 
     def find_translator_for_url(self, url: str) -> Optional[Dict]:
@@ -274,13 +274,15 @@ class ZoteroTranslatorRunner:
                 [translator["code"], translator["label"]],
             )
 
-            if result.get("success"):
+            if result.get("success") and len(result.get("urls", [])):
                 logger.success(
-                    f"Zotero Translator extracted {len(result.get('urls', []))} URLs"
+                    f"Zotero Translator extracted {len(result.get('urls', []))} URLs from {page.url}"
                 )
                 return result.get("urls", [])
             else:
-                logger.warning(f"Translator execution failed")
+                logger.warning(
+                    f"Zotero Translator did not extracted any URLs from {page.url}"
+                )
                 return []
 
         except Exception as e:

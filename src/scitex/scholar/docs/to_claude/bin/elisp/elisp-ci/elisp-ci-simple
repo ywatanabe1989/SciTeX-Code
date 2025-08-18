@@ -70,7 +70,7 @@ run_tests() {
             --eval "(require 'ert)" \
             --eval "(load-file \"$test_file\")" \
             --eval "(ert-run-tests-batch-and-exit)" 2>/dev/null; then
-            log "INFO" "✓ $test_file passed"
+            log "INFO" "$test_file passed"
         else
             log "ERROR" "✗ $test_file failed"
             ((failed++))
