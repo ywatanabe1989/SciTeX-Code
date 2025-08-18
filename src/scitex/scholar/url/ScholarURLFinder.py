@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 15:42:54 (ywatanabe)"
+# Timestamp: "2025-08-18 18:59:49 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -152,7 +152,7 @@ class ScholarURLFinder:
         return urls
 
     async def find_urls_batch(
-        self, dois: List[str], max_concurrent: int = 5
+        self, dois: List[str], max_concurrent: int = 8
     ) -> List[Dict[str, Any]]:
         """Get all URL types for multiple DOIs in batch with parallel processing."""
         if not dois:

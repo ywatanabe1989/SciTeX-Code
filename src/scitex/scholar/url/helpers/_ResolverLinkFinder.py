@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 08:30:56 (ywatanabe)"
+# Timestamp: "2025-08-18 18:25:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_ResolverLinkFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -26,6 +26,8 @@ from typing import List, Optional
 from urllib.parse import urlparse
 
 from playwright.async_api import ElementHandle, Page
+
+from scitex.scholar import ScholarConfig
 
 logger = logging.getLogger(__name__)
 
@@ -61,58 +63,74 @@ class ResolverLinkFinder:
         "10.3390": ["mdpi.com"],  # MDPI
     }
 
-    # Common resolver page structures
-    STRUCTURE_SELECTORS = [
-        # SFX (ExLibris) - used by many universities
-        "div#fulltext a",
-        "div.sfx-fulltext a",
-        "div.results-title > a",
-        "td.object-cell a",
-        ".getFullTxt a",
-        'div[id*="fulltext"] a',
-        'div[class*="fulltext"] a',
-        # Primo (ExLibris)
-        "prm-full-view-service-container a",
-        "span.availability-status-available a",
-        # Summon (ProQuest)
-        ".summon-fulltext-link",
-        "a.summon-link",
-        # EDS (EBSCO)
-        "a.fulltext-link",
-        ".ft-link a",
-        # Generic patterns
-        "a.full-text-link",
-        "a.fulltext",
-        "a#full-text-link",
-        ".access-link a",
-        ".available-link a",
-    ]
+    # # Common resolver page structures
+    # STRUCTURE_SELECTORS = [
+    #     # SFX (ExLibris) - used by many universities
+    #     "div#fulltext a",
+    #     "div.sfx-fulltext a",
+    #     "div.results-title > a",
+    #     "td.object-cell a",
+    #     ".getFullTxt a",
+    #     'div[id*="fulltext"] a',
+    #     'div[class*="fulltext"] a',
+    #     # Primo (ExLibris)
+    #     "prm-full-view-service-container a",
+    #     "span.availability-status-available a",
+    #     # Summon (ProQuest)
+    #     ".summon-fulltext-link",
+    #     "a.summon-link",
+    #     # EDS (EBSCO)
+    #     "a.fulltext-link",
+    #     ".ft-link a",
+    #     # Generic patterns
+    #     "a.full-text-link",
+    #     "a.fulltext",
+    #     "a#full-text-link",
+    #     ".access-link a",
+    #     ".available-link a",
+    # ]
 
-    # Text patterns in priority order
-    TEXT_PATTERNS = [
-        # Most specific
-        "View full text at",
-        "Available from Nature",
-        "Available from ScienceDirect",
-        "Available from Wiley",
-        "Full text available from",
-        # Common patterns
-        "View full text",
-        "Full Text from Publisher",
-        "Get full text",
-        "Access full text",
-        "Go to article",
-        "Access article",
-        # Generic but reliable
-        "Full Text",
-        "Full text",
-        "Article",
-        "View",
-        "PDF",
-        "Download",
-    ]
+    # # Text patterns in priority order
+    # TEXT_PATTERNS = [
+    #     # Most specific
+    #     "View full text at",
+    #     "Available from Nature",
+    #     "Available from ScienceDirect",
+    #     "Available from Wiley",
+    #     "Full text available from",
+    #     # Common patterns
+    #     "View full text",
+    #     "Full Text from Publisher",
+    #     "Get full text",
+    #     "Access full text",
+    #     "Go to article",
+    #     "Access article",
+    #     # Generic but reliable
+    #     "Full Text",
+    #     "Full text",
+    #     "Article",
+    #     "View",
+    #     "PDF",
+    #     "Download",
+    # ]
 
-    def __init__(self):
+    def __init__(
+        self,
+        structure_selectors: List[str] = None,
+        text_patterns: List[str] = None,
+        negative_keywords: List[str] = None,
+        config: ScholarConfig = None,
+    ):
+        self.config = config or ScholarConfig()
+        self.structure_selectors = self.config.resolve(
+            "structure_selectors", structure_selectors
+        )
+        self.text_patterns = self.config.resolve(
+            "text_patterns", text_patterns
+        )
+        self.negative_keywords = self.config.resolve(
+            "negative_keywords", negative_keywords
+        )
         self._doi_pattern = re.compile(r"10\.\d{4,}/[-._;()/:\w]+")
 
     def get_expected_domains(self, doi: str) -> List[str]:
@@ -237,51 +255,44 @@ class ResolverLinkFinder:
 
     async def _find_by_structure(self, page: Page) -> Optional[ElementHandle]:
         """Strategy 2: Find link by page structure."""
-        for selector in self.STRUCTURE_SELECTORS:
+        structure_selectors = self.config.resolve(
+            "structure_selectors",
+            default=[
+                "div#fulltext a",
+                "div.sfx-fulltext a",
+                "div.results-title > a",
+            ],
+        )
+
+        for selector in structure_selectors:
             try:
-                # Try to find elements matching selector
                 elements = await page.query_selector_all(selector)
-
                 if elements:
-                    logger.debug(
-                        f"Found {len(elements)} elements with selector: {selector}"
-                    )
-
-                    # Return first visible link with href
                     for element in elements:
                         if await element.is_visible():
                             href = await element.get_attribute("href")
                             if href and href.strip():
-                                text = await element.inner_text() or ""
-                                logger.debug(
-                                    f"Found structural match: '{text[:50]}' -> {href[:100]}"
-                                )
                                 return element
-
             except Exception as e:
                 logger.debug(f"Error with selector {selector}: {e}")
-
         return None
 
     async def _find_by_text(self, page: Page) -> Optional[ElementHandle]:
         """Strategy 3: Find link by text patterns."""
-        for pattern in self.TEXT_PATTERNS:
+        text_patterns = self.config.resolve(
+            "text_patterns", default=["View full text at", "Full Text", "PDF"]
+        )
+
+        for pattern in text_patterns:
             try:
-                # Use Playwright's text selector
                 selector = f'a:has-text("{pattern}")'
                 link = await page.query_selector(selector)
-
                 if link and await link.is_visible():
                     href = await link.get_attribute("href")
                     if href and href.strip():
-                        logger.debug(
-                            f"Found text match: '{pattern}' -> {href[:100]}"
-                        )
                         return link
-
             except Exception as e:
                 logger.debug(f"Error with text pattern '{pattern}': {e}")
-
         return None
 
     async def click_and_wait(self, page: Page, link: ElementHandle) -> bool:

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-08-18 17:52:44
+!-- Timestamp: 2025-08-18 19:27:40
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/IMPROVEMENT_SUGGESTIONS.md
 !-- --- -->
@@ -264,5 +264,69 @@ Highest Priority: Fix the "Page Closed" bug in your OpenURL resolver logic by pr
 Second Priority: Implement a two-step process for ScienceDirect to navigate from abstract pages to full-text/PDF pages before running your selectors.
 
 Addressing these two navigation issues will allow your improved selectors to run on the correct pages, which should significantly increase your success rate.
+
+
+########################################
+########################################
+########################################
+
+
+
+Yes, I can analyze the progress based on the new log file.
+
+You've made some progress, as the success rate has 
+
+increased slightly from 88.0% to 90.7% (68/75 PDFs found). This is a positive step. The script is now successfully finding PDFs for some Elsevier (
+
+sciencedirect.com) and Cell Press (cell.com) articles that were previously failing.
+
+However, the core underlying problems persist, preventing a more significant improvement.
+
+✅ Analysis of Progress & Successes
+Zotero Translators are Working on Complex Sites: You now have confirmed successes where the Zotero translator is correctly extracting PDF links from authenticated Elsevier and Cell Press pages. This is a significant win because it shows your authentication is working and the core strategy is sound when it can get to the right page.
+
+
+
+Publisher Patterns Remain Robust: Simple publisher-specific URL transformations (e.g., for Frontiers, PLOS, IEEE) continue to work reliably, providing a solid baseline success rate.
+
+
+
+
+Direct Link Scraping is Effective: Your updated selectors are successfully finding direct links on pages for publishers like SAGE and Oxford University Press (academic.oup.com), which were failing in the previous log.
+
+
+❗️ Remaining Core Issues
+The reason the success rate isn't higher is that the same two critical issues are still causing many lookups to fail before your improved selectors can even run.
+
+1. "Page Closed" Errors on Resolver Links (Highest Priority)
+This remains the biggest issue. The log is still showing multiple instances of the script failing when it tries to follow a link from your university's resolver.
+
+
+Symptom: ERROR: OpenURL resolution failed: Page.goto: Target page, context or browser has been closed.
+
+
+Root Cause: The script clicks a link on the resolver page that opens the publisher's site in a new browser tab. The code isn't correctly handling this new tab, and the original tab is being closed prematurely, causing the operation to crash. This accounts for most of the completely missed PDFs.
+
+2. Landing on Abstract Pages
+Even when the script successfully navigates to a publisher like ScienceDirect, it often lands on an abstract page (e.g., one with 
+
+/abs/ in the URL) where there is no direct PDF link. Your new selectors can't find a link that doesn't exist on the current page.
+
+
+
+Symptom: FAIL: Not found any PDF URLs from https://www.sciencedirect.com/science/article/abs/pii/....
+
+
+Root Cause: The resolver is correctly authenticating you but is sending you to the abstract page. The script lacks a mechanism to perform a second click on the "View PDF" button to get to the page where the actual PDF is available.
+
+🎯 Next Steps to Increase Success Rate
+Fix the New Tab Handling: This is essential. Modifying the resolve_openurl function in url/helpers/_resolve_functions.py to correctly manage new tabs (using context.expect_page()) will solve the majority of the outright failures.
+
+Implement Two-Step Clicks: Enhance your PDF finding logic to check if it has landed on an abstract page. If so, it should then search for and click a "View PDF" or similar link before running the final PDF selectors.
+
+
+Refine Negative Keywords: You correctly identified that the script was clicking a "Cookie Policy" link. Adding keywords like 
+
+cookie to a negative list (as previously suggested) will prevent this and make the resolver logic more robust.
 
 <!-- EOF -->

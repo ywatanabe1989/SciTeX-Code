@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 16:45:57 (ywatanabe)"
+# Timestamp: "2025-08-18 18:46:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_find_functions.py
 # ----------------------------------------
 from __future__ import annotations
@@ -20,16 +20,20 @@ No classes, just functions that do one thing well.
 
 
 from typing import Dict, List
-from urllib.parse import urljoin
 
 from playwright.async_api import Page
 
 from scitex import logging
+from scitex.scholar import ScholarConfig
+
+from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
 
 logger = logging.getLogger(__name__)
 
 
-async def find_urls_pdf(page: Page, base_url: str = None) -> List[Dict]:
+async def find_urls_pdf(
+    page: Page, base_url: str = None, config: ScholarConfig = None
+) -> List[Dict]:
     """
     Find PDF URLs in a web page using multiple strategies without double counts.
 
@@ -37,9 +41,16 @@ async def find_urls_pdf(page: Page, base_url: str = None) -> List[Dict]:
         page: Playwright page object
         base_url: Base URL for relative links
 
+    Strategies:
+        1: Try Zotero translator FIRST (most reliable)
+        2: Find direct PDF links (fallback if no translator)
+        3: Check for publisher patterns (additional URLs)
+
     Returns:
         List of dicts with url and source info
     """
+    config = config or ScholarConfig()
+
     if base_url is None:
         base_url = page.url
 
@@ -59,7 +70,7 @@ async def find_urls_pdf(page: Page, base_url: str = None) -> List[Dict]:
             )
 
     # Strategy 2: Find direct PDF links (fallback if no translator)
-    direct_links = await _find_direct_pdf_links(page)
+    direct_links = await _find_direct_pdf_links(page, config)
     for url in direct_links:
         if url not in seen_urls:
             seen_urls.add(url)
@@ -96,166 +107,137 @@ async def find_urls_pdf(page: Page, base_url: str = None) -> List[Dict]:
     return urls_pdf
 
 
-async def find_supplementary_urls(page: Page) -> List[Dict]:
-    """
-    Find supplementary material URLs in a web page.
+async def find_supplementary_urls(
+    page: Page, config: ScholarConfig = None
+) -> List[Dict]:
+    """Find supplementary material URLs in a web page."""
+    config = config or ScholarConfig()
+    supplementary_selectors = config.resolve(
+        "supplementary_selectors",
+        default=[
+            'a[href*="supplementary"]',
+            'a[href*="supplement"]',
+            'a[href*="additional"]',
+        ],
+    )
 
-    Args:
-        page: Playwright page object
-
-    Returns:
-        List of dicts with url, description, type and source
-    """
     try:
         supplementary = await page.evaluate(
-            """
-            () => {
-                const results = [];
+            f"""() => {{
+            const results = [];
+            const selectors = {supplementary_selectors};
+            const seen_urls = new Set();
 
-                // Common supplementary selectors
-                const selectors = [
-                    'a[href*="supplementary"]',
-                    'a[href*="supplement"]',
-                    'a[href*="additional"]',
-                    'a[href*="supporting"]',
-                    'a[href*="SI"]',
-                    'a[href*="ESM"]'
-                ];
-
-                const seen_urls = new Set();
-
-                selectors.forEach(selector => {
-                    document.querySelectorAll(selector).forEach(link => {
-                        if (link.href && !seen_urls.has(link.href)) {
-                            seen_urls.add(link.href);
-
-                            // Determine file type from URL
-                            let type = 'unknown';
-                            const url_lower = link.href.toLowerCase();
-                            if (url_lower.includes('.pdf')) type = 'pdf';
-                            else if (url_lower.includes('.xlsx') || url_lower.includes('.xls')) type = 'excel';
-                            else if (url_lower.includes('.docx') || url_lower.includes('.doc')) type = 'word';
-                            else if (url_lower.includes('.zip')) type = 'archive';
-                            else if (url_lower.includes('.mp4') || url_lower.includes('.avi')) type = 'video';
-
-                            results.push({
-                                url: link.href,
-                                description: link.textContent.trim(),
-                                type: type,
-                                source: 'href_pattern',
-                            });
-                        }
-                    });
-                });
-
-                return results;
-            }
-        """
-        )
-
-        logger.success(
-            f"Found {len(supplementary)} supplementary URLs by href pattern matching"
+            selectors.forEach(selector => {{
+                document.querySelectorAll(selector).forEach(link => {{
+                    if (link.href && !seen_urls.has(link.href)) {{
+                        seen_urls.add(link.href);
+                        results.push({{
+                            url: link.href,
+                            description: link.textContent.trim(),
+                            source: 'href_pattern'
+                        }});
+                    }}
+                }});
+            }});
+            return results;
+        }}"""
         )
         return supplementary
-
     except Exception as e:
         logger.error(f"Error finding supplementary URLs: {e}")
         return []
 
 
-async def _find_direct_pdf_links(page: Page) -> List[str]:
+async def _find_direct_pdf_links(
+    page: Page, config: ScholarConfig = None
+) -> List[str]:
     """Find direct PDF links in the page."""
+    config = config or ScholarConfig()
+
     try:
         all_urls = set()
 
-        # Try dropdown interaction first
-        dropdown_urls = await _handle_download_dropdown(page)
+        dropdown_urls = await _find_pdf_urls_from_dropdown(page, config)
         all_urls.update(dropdown_urls)
 
-        # Find static PDF links
-        static_urls = await page.evaluate(
-            """() => {
-            const urls = new Set();
+        href_urls = await _find_pdf_urls_from_href(page, config)
+        all_urls.update(href_urls)
 
-            // Find all links ending with .pdf
-            document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
-                urls.add(link.href);
-            });
-
-            // Find PDF links in article paths
-            document.querySelectorAll('a[href*="/pdf"]').forEach(link => {
-                if (link.href.includes('/articles/') ||
-                    link.href.includes('/doi/') ||
-                    link.href.includes('/document/')) {
-                    urls.add(link.href);
-                }
-            });
-
-            // Find download buttons/links
-            const downloadSelectors = [
-                'a[data-track-action*="download"]',
-                'button[data-track-action*="download"]',
-                'a:has-text("Download PDF")',
-                'button:has-text("Download PDF")',
-                'a[download][href*="pdf"]',
-                '.pdf-download-btn',
-                'a[href*="/pdf/"]',
-                'a[href*="/doi/pdf/"]',
-                'a[href*="type=printable"]'
-                // ++ Add Selectors for Major Publishers ++
-                // For ScienceDirect (Elsevier)
-                'a.PdfLink', // Main PDF link
-                'a.article-tools-pdf-link',
-
-                // For Wiley Online Library
-                'a#article-pdf-link',
-                'a.pdf-download',
-
-                // For SpringerLink
-                'a[data-track-action="download pdf"]',
-                'a.c-pdf-download__link',
-
-                // For Oxford Academic
-                'a.al-link.pdf-link',
-            ];
-
-            downloadSelectors.forEach(selector => {
-                try {
-                    document.querySelectorAll(selector).forEach(elem => {
-                        const href = elem.getAttribute('href') || elem.dataset.href;
-                        if (href) {
-                            const fullUrl = new URL(href, window.location.href).href;
-                            if (fullUrl.includes('pdf') || fullUrl.includes('printable')) {
-                                urls.add(fullUrl);
-                            }
-                        }
-                    });
-                } catch {}
-            });
-
-            return Array.from(urls);
-        }"""
-        )
-
-        all_urls.update(static_urls)
         return list(all_urls)
-
     except:
         return []
 
 
-async def _handle_download_dropdown(page: Page) -> List[str]:
+async def _find_pdf_urls_from_href(
+    page: Page, config: ScholarConfig = None
+) -> List[str]:
+    """Find PDF URLs from href attributes using configured selectors."""
+    config = config or ScholarConfig()
+    download_selectors = config.resolve(
+        "download_selectors",
+        default=[
+            'a[data-track-action*="download"]',
+            'a:has-text("Download PDF")',
+            "a.PdfLink",
+        ],
+    )
+
+    static_urls = await page.evaluate(
+        f"""() => {{
+        const urls = new Set();
+
+        document.querySelectorAll('a[href$=".pdf"]').forEach(link => {{
+            urls.add(link.href);
+        }});
+
+        const downloadSelectors = {download_selectors};
+        downloadSelectors.forEach(selector => {{
+            try {{
+                document.querySelectorAll(selector).forEach(elem => {{
+                    const href = elem.getAttribute('href') || elem.dataset.href;
+                    if (href) {{
+                        const fullUrl = new URL(href, window.location.href).href;
+                        if (fullUrl.includes('pdf') || fullUrl.includes('printable')) {{
+                            urls.add(fullUrl);
+                        }}
+                    }}
+                }});
+            }} catch {{}}
+        }});
+
+        return Array.from(urls);
+    }}"""
+    )
+
+    return static_urls
+
+
+async def _find_pdf_urls_from_dropdown(
+    page: Page, config: ScholarConfig = None
+) -> List[str]:
     """Handle download dropdown interaction for any publisher."""
-    try:
-        # Generic dropdown triggers
-        dropdown_selectors = [
+    config = config or ScholarConfig()
+    dropdown_selectors = config.resolve(
+        "dropdown_selectors",
+        default=[
             'button:has-text("Download")',
             '.dropdown-toggle:has-text("Download")',
-            '[data-toggle="dropdown"]:has-text("Download")',
             ".download-dropdown",
-            'button[aria-label*="Download"]',
-        ]
+        ],
+    )
 
+    dropdown_pdf_selectors = config.resolve(
+        "download_selectors",
+        default=[
+            'a[href*="pdf"]',
+            'a[href*="file"][href*="printable"]',
+            'a:has-text("PDF")',
+            'a[download*="pdf"]',
+        ],
+    )
+
+    try:
         for selector in dropdown_selectors:
             try:
                 await page.click(selector, timeout=2000)
@@ -264,29 +246,19 @@ async def _handle_download_dropdown(page: Page) -> List[str]:
             except:
                 continue
 
-        # Look for PDF links in dropdown
         pdf_urls = await page.evaluate(
-            """() => {
+            f"""() => {{
             const urls = [];
-            const pdfSelectors = [
-                'a[href*="pdf"]',
-                'a[href*="file"][href*="printable"]',
-                'a:has-text("PDF")',
-                'a[download*="pdf"]'
-            ];
-
-            pdfSelectors.forEach(selector => {
-                document.querySelectorAll(selector).forEach(link => {
+            const pdfSelectors = {dropdown_pdf_selectors};
+            pdfSelectors.forEach(selector => {{
+                document.querySelectorAll(selector).forEach(link => {{
                     if (link.href) urls.push(link.href);
-                });
-            });
-
+                }});
+            }});
             return [...new Set(urls)];
-        }"""
+        }}"""
         )
-
         return pdf_urls
-
     except:
         return []
 
@@ -354,21 +326,6 @@ def _get_publisher_pdf_patterns(url: str) -> List[str]:
                 + "&type=printable"
             )
 
-    # elif "plos.org" in url and "/article" in url:
-    #     # Extract article ID and construct PDF URL
-    #     if "?id=" in url:
-    #         article_id = url.split("?id=")[-1].split("&")[0]
-    #         base_url = url.split("/article")[0]
-    #         urls_pdf.append(
-    #             f"{base_url}/article/file?id={article_id}&type=printable"
-    #         )
-    #     elif "/article/" in url:
-    #         # Alternative pattern for newer PLOS URLs
-    #         urls_pdf.append(
-    #             url.replace("/article/", "/article/file?id=").split("?")[0]
-    #             + "&type=printable"
-    #         )
-
     if len(urls_pdf) > 0:
         logger.success(
             f"Publisher-specific pattern matching found {len(urls_pdf)} PDF URLs from {url}"
@@ -393,7 +350,6 @@ async def _find_with_zotero_translator(page: Page, url: str) -> List[str]:
         List of PDF URLs extracted by Zotero translator
     """
     try:
-        from ._ZoteroTranslatorRunner import ZoteroTranslatorRunner
 
         runner = ZoteroTranslatorRunner()
 

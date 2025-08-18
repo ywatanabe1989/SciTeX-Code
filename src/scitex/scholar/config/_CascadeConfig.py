@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-10 12:07:54 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/_CascadeConfig.py
+# Timestamp: "2025-08-18 18:36:53 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_CascadeConfig.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -102,7 +102,7 @@ class CascadeConfig:
             }
         )
 
-        logger.info(f"{key} resolved as {display_value}")
+        # logger.info(f"{key} resolved as {display_value}")
 
         return final_value
 

@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-18 09:03:06 (ywatanabe)"
+# Timestamp: "2025-08-18 17:56:39 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -91,5 +91,118 @@ chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
 # zenrows_proxy_country: ${SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY:-"us"}
 # enable_captcha_solving: ${SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING:-true}
 # google_scholar_timeout: ${SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT:-10}
+
+# ----------------------------------------
+# URL Finder
+# ----------------------------------------
+# Resolver link selectors in priority order
+structure_selectors:
+  # SFX (ExLibris) - used by many universities
+  - "div#fulltext a"
+  - "div.sfx-fulltext a" 
+  - "div.results-title > a"
+  - "td.object-cell a"
+  - ".getFullTxt a"
+  - 'div[id*="fulltext"] a'
+  - 'div[class*="fulltext"] a'
+  
+  # Primo (ExLibris)
+  - "prm-full-view-service-container a"
+  - "span.availability-status-available a"
+  
+  # Summon (ProQuest)
+  - ".summon-fulltext-link"
+  - "a.summon-link"
+  
+  # EDS (EBSCO)
+  - "a.fulltext-link"
+  - ".ft-link a"
+  
+  # Generic patterns
+  - "a.full-text-link"
+  - "a.fulltext"
+  - "a#full-text-link"
+  - ".access-link a"
+  - ".available-link a"
+
+text_patterns:
+  # Most specific
+  - "View full text at"
+  - "Available from Nature"
+  - "Available from ScienceDirect"
+  - "Available from Wiley"
+  - "Full text available from"
+  
+  # Common patterns
+  - "View full text"
+  - "Full Text from Publisher"
+  - "Get full text"
+  - "Access full text"
+  - "Go to article"
+  - "Access article"
+  
+  # Generic but reliable
+  - "Full Text"
+  - "Full text"
+  - "Article"
+  - "View"
+  - "PDF"
+  - "Download"
+
+negative_keywords:
+  - "cookie"
+  - "policy"
+  - "about us"
+  - "privacy"
+  - "terms"
+  - "abstract"
+  - "preview"
+  - "summary"
+
+
+
+# PDF download selectors for direct link finding
+download_selectors:
+  # Generic download patterns
+  - 'a[data-track-action*="download"]'
+  - 'button[data-track-action*="download"]'
+  - 'a:has-text("Download PDF")'
+  - 'button:has-text("Download PDF")'
+  - 'a[download][href*="pdf"]'
+  - '.pdf-download-btn'
+  - 'a[href*="/pdf/"]'
+  - 'a[href*="/doi/pdf/"]'
+  - 'a[href*="type=printable"]'
+
+  # Publisher-specific selectors
+  # ScienceDirect (Elsevier)
+  - 'a.PdfLink'
+  - 'a.article-tools-pdf-link'
+  
+  # Wiley Online Library
+  - 'a#article-pdf-link'
+  - 'a.pdf-download'
+  
+  # SpringerLink
+  - 'a[data-track-action="download pdf"]'
+  - 'a.c-pdf-download__link'
+  
+  # Oxford Academic
+  - 'a.al-link.pdf-link'
+
+dropdown_selectors:
+  - 'button:has-text("Download")'
+  - '.dropdown-toggle:has-text("Download")'
+  - '[data-toggle="dropdown"]:has-text("Download")'
+  - ".download-dropdown"
+  - 'button[aria-label*="Download"]'
+
+supplementary_selectors:
+  - 'a[href*="supplementary"]'
+  - 'a[href*="supplement"]'
+  - 'a[href*="additional"]'
+  - 'a[href*="supporting"]'
+  - 'a[href*="SI"]'
+  - 'a[href*="ESM"]'
 
 # EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 07:41:05 (ywatanabe)"
+# Timestamp: "2025-08-18 18:36:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/config/_ScholarConfig.py
 # ----------------------------------------
 from __future__ import annotations
@@ -98,7 +98,7 @@ class ScholarConfig:
                     return value or "null"
 
             content = re.sub(r"\$\{([^}]+)\}", env_replacer, content)
-            logger.info(f"ScholarConfig object configured with: {path}")
+            # logger.info(f"ScholarConfig object configured with: {path}")
             return yaml.safe_load(content)
         except Exception as e:
             raise ScholarError(
