@@ -1,9 +1,7 @@
-from ._find_functions import find_all_urls, find_urls_pdf, find_supplementary_urls
-from ._resolve_functions import (
-    build_url_doi,
-    doi_to_url_publisher,
+from .finders import find_pdf_urls, find_supplementary_urls
+from .resolvers._resolve_functions import (
+    normalize_doi_as_http,
+    resolve_publisher_url_by_navigating_to_doi_page,
     extract_doi_from_url,
-    generate_openurl_query,
-    resolve_all_urls,
     resolve_openurl,
 )

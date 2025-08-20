@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-18 17:56:39 (ywatanabe)"
+# Timestamp: "2025-08-20 08:50:10 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -49,10 +49,6 @@ semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
 crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
 pubmed_api_key: ${SCITEX_SCHOLAR_PUBMED_API_KEY:-null}
 twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}  
-# zotero_library_id: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID:-null}
-# zotero_api_key: ${SCITEX_SCHOLAR_ZOTERO_API_KEY:-null}
-# zotero_library_type: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE:-"user"}
-# zenrows_api_key: ${SCITEX_SCHOLAR_ZENROWS_API_KEY:-null}
 
 # ----------------------------------------
 # auth:
@@ -80,23 +76,107 @@ capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}
 # browser:
 # ----------------------------------------
 chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
-# browser_backend: ${SCITEX_SCHOLAR_BROWSER_BACKEND:-"local"}
-# use_lean_library: ${SCITEX_SCHOLAR_USE_LEAN_LIBRARY:-true}
-# lean_library_browser_profile: ${SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE:-null}
-# user_agent: "SciTeX-Scholar/1.0"
-# zenrows_proxy_username: ${SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME:-null}
-# zenrows_proxy_password: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD:-null}
-# zenrows_proxy_domain: ${SCITEX_SCHOLAR_ZENROWS_PROXY_DOMAIN:-"superproxy.zenrows.com"}
-# zenrows_proxy_port: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PORT:-"1337"}
-# zenrows_proxy_country: ${SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY:-"us"}
-# enable_captcha_solving: ${SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING:-true}
-# google_scholar_timeout: ${SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT:-10}
 
 # ----------------------------------------
 # URL Finder
 # ----------------------------------------
+
+# DOI prefix to publisher domain mapping
+doi_to_domain:
+  "10.1038":  # Nature Publishing Group
+    - "nature.com"
+    - "springernature.com"
+  "10.1016":  # Elsevier
+    - "sciencedirect.com"
+    - "elsevier.com"
+  "10.1002":  # Wiley
+    - "wiley.com"
+    - "onlinelibrary.wiley.com"
+  "10.1007":  # Springer
+    - "springer.com"
+    - "link.springer.com"
+  "10.1126":  # Science/AAAS
+    - "science.org"
+    - "sciencemag.org"
+  "10.1021":  # ACS Publications
+    - "acs.org"
+    - "pubs.acs.org"
+  "10.1111":  # Wiley (alternative)
+    - "wiley.com"
+    - "onlinelibrary.wiley.com"
+  "10.1080":  # Taylor & Francis
+    - "tandfonline.com"
+  "10.1177":  # SAGE
+    - "sagepub.com"
+    - "journals.sagepub.com"
+  "10.1093":  # Oxford
+    - "oup.com"
+    - "academic.oup.com"
+  "10.1109":  # IEEE
+    - "ieee.org"
+    - "ieeexplore.ieee.org"
+  "10.1371":  # PLOS
+    - "plos.org"
+    - "journals.plos.org"
+  "10.1073":  # PNAS
+    - "pnas.org"
+  "10.1136":  # BMJ
+    - "bmj.com"
+  "10.3389":  # Frontiers
+    - "frontiersin.org"
+  "10.3390":  # MDPI
+    - "mdpi.com"
+
+# Available from patterns - high priority for OpenURL resolvers
+openurl_available_from_patterns:
+  # University of Melbourne specific patterns (based on screenshot)
+  # Put these first since they are most specific to your use case
+  - "Available from American Association for the Advancement of Science"
+  - "Available from JSTOR Archival Journals and Primary Sources Collection"
+  - "Available from JSTOR Health & General Sciences"
+  
+  # Publisher-specific patterns (most reliable)
+  - "Available from Nature"
+  - "Available from Nature Publishing Group"
+  - "Available from ScienceDirect"
+  - "Available from Elsevier"
+  - "Available from Wiley"
+  - "Available from Wiley Online Library"
+  - "Available from Springer"
+  - "Available from SpringerLink"
+  - "Available from Taylor & Francis"
+  - "Available from SAGE"
+  - "Available from SAGE Publications"
+  - "Available from Oxford"
+  - "Available from Oxford Academic"
+  - "Available from IEEE"
+  - "Available from IEEE Xplore"
+  - "Available from PLOS"
+  - "Available from PLOS ONE"
+  - "Available from BMJ"
+  - "Available from Frontiers"
+  - "Available from MDPI"
+  - "Available from American Chemical Society"
+  - "Available from ACS"
+  - "Available from ACS Publications"
+  - "Available from PNAS"
+  - "Available from Science"
+  - "Available from AAAS"
+
+# available_from_patterns:
+#   # Generic available patterns
+#   - "Full text available from"
+#   - "View full text at"
+#   - "Access full text from"
+#   - "Get full text from"
+
 # Resolver link selectors in priority order
 structure_selectors:
+  # University of Melbourne specific (based on screenshots)
+  - 'tr:has-text("Available from") a:has-text("GO")'  # GO button in row with "Available from"
+  - 'td a[href*="javascript:openSFXMenuLink"]:has-text("GO")'  # SFX GO buttons
+  - 'a[title="Navigate to target in new window"]'  # Links with this title attribute
+  
   # SFX (ExLibris) - used by many universities
   - "div#fulltext a"
   - "div.sfx-fulltext a" 
@@ -126,13 +206,6 @@ structure_selectors:
   - ".available-link a"
 
 text_patterns:
-  # Most specific
-  - "View full text at"
-  - "Available from Nature"
-  - "Available from ScienceDirect"
-  - "Available from Wiley"
-  - "Full text available from"
-  
   # Common patterns
   - "View full text"
   - "Full Text from Publisher"
@@ -148,6 +221,7 @@ text_patterns:
   - "View"
   - "PDF"
   - "Download"
+  - "GO"  # Common button text in OpenURL resolvers
 
 negative_keywords:
   - "cookie"
@@ -158,7 +232,12 @@ negative_keywords:
   - "abstract"
   - "preview"
   - "summary"
-
+  - "citation"
+  - "cite this"
+  - "request"
+  - "interlibrary"
+  - "inter library"
+  - "loan"
 
 
 # PDF download selectors for direct link finding
@@ -204,5 +283,51 @@ supplementary_selectors:
   - 'a[href*="supporting"]'
   - 'a[href*="SI"]'
   - 'a[href*="ESM"]'
+
+pdf_view_selectors:
+  - 'a:has-text("View PDF")'
+  - 'a:has-text("PDF")'
+  - "a.pdf-link"
+  - 'a[href*="/pdf/"]'
+  - 'button:has-text("PDF")'
+  - 'a#ViewPDF'
+  - 'div#accessbar a'
+
+# Deny patterns for filtering out unwanted elements
+deny_selectors:
+  # Navigation and UI elements
+  - 'aside *'
+  - '.sidebar *'
+  - '.navigation *'
+  - '.footer *'
+  - '.header *'
+  # Recommendation sections
+  - '.recommended *'
+  - '.related-articles *'
+  - '.you-may-also-like *'
+  # Social and sharing
+  - '.social-share *'
+  - '.share-buttons *'
+  # Issue/Volume downloads (not single article)
+  - 'a:has-text("Download Issue")'
+  - 'a:has-text("Download Volume")'
+  - 'a:has-text("Full Issue")'
+
+deny_classes:
+  - "recommended"
+  - "sidebar"
+  - "footer-content"
+  - "social-share"
+  - "issue-download"
+  - "volume-download"
+
+deny_text_patterns:
+  - "Download Issue"
+  - "Download Volume" 
+  - "Full Issue"
+  - "Complete Issue"
+  - "Entire Issue"
+  - "Subscribe"
+  - "Sign up"
 
 # EOF

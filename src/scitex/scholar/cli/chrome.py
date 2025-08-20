@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 23:48:09 (ywatanabe)"
+# Timestamp: "2025-08-18 23:46:05 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/cli/chrome.py
 # ----------------------------------------
 from __future__ import annotations
@@ -66,22 +66,17 @@ async def main_async():
     )
     page = await context.new_page()
 
+    print(f"args.url: {args.url}")
+
     logger.info(f"Navigating to {args.url}")
     try:
         # Add timeout and wait for network to be mostly idle
         await page.goto(
             args.url,
-            wait_until="domcontentloaded",
+            wait_until="networkidle",
             timeout=30000,
         )
         logger.success(f"Successfully loaded {args.url}")
-
-        # Wait a bit more for dynamic content
-        try:
-            await page.wait_for_load_state("networkidle", timeout=10000)
-            logger.success("Page fully loaded (network idle)")
-        except Exception as e:
-            logger.warn(f"Network not idle after 10s, continuing anyway: {e}")
 
     except Exception as e:
         logger.error(f"Failed to load {args.url}: {e}")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 18:57:51 (ywatanabe)"
+# Timestamp: "2025-08-18 23:29:37 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/99_fullpipeline-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -63,9 +63,11 @@ async def main_async():
     url_finder = ScholarURLFinder(
         context,
         config=config,
-        use_cache=False,
+        use_cache=True,
     )
-    # pdf_downloader = ScholarPDFDownloader(context, config=config)
+    pdf_downloader = ScholarPDFDownloader(
+        context, config=config, use_cache=USE_CACHE
+    )
 
     # 1. Search for metadata
     print("----------------------------------------")
@@ -85,7 +87,8 @@ async def main_async():
     ]
     batched_urls = await url_finder.find_urls_batch(dois=dois)
     pprint(batched_urls)
-    __import__("ipdb").set_trace()
+
+    # [pprint(urls.get("urls_pdf")) for urls in batched_urls]
 
     # 3. Download PDFs
     print("----------------------------------------")
@@ -107,17 +110,20 @@ async def main_async():
         if pdf_url:
 
             # # This fails; I think the shared context between url_finder and pdf_downloader might cause problem
-            # browser_manager = ScholarBrowserManager(
-            #     chrome_profile_name="system",
-            #     browser_mode=BROWSER_MODE,
-            #     auth_manager=ScholarAuthManager(config=config),
-            #     config=config,
-            # )
-            # browser, context = (
-            #     await browser_manager.get_authenticated_browser_and_context_async()
-            # )
+            browser_manager = ScholarBrowserManager(
+                chrome_profile_name="system",
+                # browser_mode=BROWSER_MODE,
+                browser_mode="interactive",
+                auth_manager=ScholarAuthManager(config=config),
+                config=config,
+            )
+            browser, context = (
+                await browser_manager.get_authenticated_browser_and_context_async()
+            )
 
-            pdf_downloader = ScholarPDFDownloader(context, config=config)
+            pdf_downloader = ScholarPDFDownloader(
+                context, config=config, use_cache=False
+            )
             is_downloaded = await pdf_downloader.download_from_url(
                 pdf_url, output_path
             )

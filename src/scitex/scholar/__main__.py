@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:43:47 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
+# Timestamp: "2025-08-18 23:50:41 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -35,53 +35,34 @@ def main():
         )
 
     if len(sys.argv) == 1:
+        parser = argparse.ArgumentParser(prog="python -m scitex.scholar")
         parser.print_help()
         return
 
-    args, remaining = parser.parse_known_args()
+    command = sys.argv[1] if len(sys.argv) > 1 else None
 
-    if args.command == "resolve-and-enrich":
-        from .cli.resolve_and_enrich import main as enhanced_main
-
-        original_argv = sys.argv
-        sys.argv = ["resolve-and-enrich"] + remaining
-        try:
-            enhanced_main()
-        finally:
-            sys.argv = original_argv
-
-    # elif args.command == "enrich-bibtex":
-    #     from .cli.enrich_bibtex import main as enrich_main
+    # if args.command == "resolve-and-enrich":
+    #     from .cli.resolve_and_enrich import main as enhanced_main
 
     #     original_argv = sys.argv
-    #     sys.argv = ["enrich-bibtex"] + remaining
+    #     sys.argv = ["resolve-and-enrich"] + remaining
     #     try:
-    #         enrich_main()
+    #         enhanced_main()
     #     finally:
     #         sys.argv = original_argv
 
-    # elif args.command == "resolve-doi":
-    #     from .cli.resolve_doi import main as resolve_main
-
-    #     original_argv = sys.argv
-    #     sys.argv = ["resolve-doi"] + remaining
-    #     try:
-    #         asyncio.run(resolve_main())
-    #     finally:
-    #         sys.argv = original_argv
-
-    elif args.command == "chrome":
+    if command == "chrome":
         from .cli.chrome import main_async as chrome_main_async
 
         original_argv = sys.argv
-        sys.argv = ["chrome"] + remaining
+        sys.argv = sys.argv[1:]  # Pass all args after command name
         try:
             asyncio.run(chrome_main_async())
         finally:
             sys.argv = original_argv
 
     # elif args.command == "download":
-    #     from .download.__main__ import main as download_main
+    #     from .cli.download_pdf import main as download_main
 
     #     original_argv = sys.argv
     #     sys.argv = ["download"] + remaining
@@ -89,15 +70,6 @@ def main():
     #         download_main()
     #     finally:
     #         sys.argv = original_argv
-    elif args.command == "download":
-        from .cli.download_pdf import main as download_main
-
-        original_argv = sys.argv
-        sys.argv = ["download"] + remaining
-        try:
-            download_main()
-        finally:
-            sys.argv = original_argv
 
     else:
         parser.print_help()

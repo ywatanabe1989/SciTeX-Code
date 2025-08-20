@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 02:12:33 (ywatanabe)"
+# Timestamp: "2025-08-19 11:48:05 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/dev.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,7 +15,7 @@ from scitex.scholar import ScholarAuthManager
 from scitex.scholar import ScholarBrowserManager
 from scitex.scholar import ScholarURLFinder
 from scitex.scholar.url.helpers._find_functions import (
-    _find_with_zotero_translator,
+    _find_pdf_urls_by_zotero_translators,
 )
 
 # Initialize with authenticated browser context
@@ -34,7 +34,7 @@ page = await context.new_page()
 await page.goto("https://www.science.org/doi/10.1126/science.aao0702")
 
 
-translator_urls = await _find_with_zotero_translator(
+translator_urls = await _find_pdf_urls_by_zotero_translators(
     page, "https://doi.org/10.1016/j.neubiorev.2020.07.005"
 )
 

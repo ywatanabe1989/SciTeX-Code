@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 16:16:30 (ywatanabe)"
+# Timestamp: "2025-08-19 08:52:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -42,8 +42,8 @@ class ScholarEngine:
         clear_cache=False,
     ):
         self.config = config if config else ScholarConfig()
-        self.engines = config.resolve("engines", engines)
-        self.use_cache = config.resolve("use_cache_search", use_cache)
+        self.engines = self.config.resolve("engines", engines)
+        self.use_cache = self.config.resolve("use_cache_search", use_cache)
         self._engine_instances = {}
         self.rotation_manager = None
 

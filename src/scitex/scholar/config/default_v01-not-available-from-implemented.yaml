@@ -1,0 +1,255 @@
+# Timestamp: "2025-08-19 13:31:46 (ywatanabe)"
+# File: ./src/scitex/scholar/config/default.yaml
+
+# ----------------------------------------
+# feature
+# ----------------------------------------
+scholar_dir: ${SCITEX_DIR:-"~/.scitex"}
+project: ${SCITEX_SCHOLAR_PROJECT:-"MASTER"}
+debug_mode: ${SCITEX_SCHOLAR_DEBUG_MODE:-false}
+enable_auto_enrich: ${SCITEX_SCHOLAR_AUTO_ENRICH:-true}
+enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
+
+# ----------------------------------------
+# Search Engines
+# ----------------------------------------
+# sources:
+#   - url_doi_source
+#   - crossref  
+#   - pubmed
+#   - semantic_scholar
+#   - openalex  
+#   - arxiv
+#   - google_scholar  
+
+engines:
+  - URL
+  - Semantic_Scholar
+  - CrossRef
+  - OpenAlex
+  - PubMed
+  - arXiv
+  
+default_search_limit: 20
+max_workers: 4
+verify_ssl: true
+
+# ----------------------------------------
+# cache
+# ----------------------------------------
+use_cache_search: true
+use_cache_url_finder: true
+use_cache_pdf_downloader: true
+
+
+# ----------------------------------------
+# api
+# ----------------------------------------
+semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
+crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
+pubmed_api_key: ${SCITEX_SCHOLAR_PUBMED_API_KEY:-null}
+twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}  
+# zotero_library_id: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_ID:-null}
+# zotero_api_key: ${SCITEX_SCHOLAR_ZOTERO_API_KEY:-null}
+# zotero_library_type: ${SCITEX_SCHOLAR_ZOTERO_LIBRARY_TYPE:-"user"}
+# zenrows_api_key: ${SCITEX_SCHOLAR_ZENROWS_API_KEY:-null}
+
+# ----------------------------------------
+# auth:
+# ----------------------------------------
+# Search Engine
+pubmed_email: ${SCITEX_SCHOLAR_PUBMED_EMAIL:-null}
+crossref_email: ${SCITEX_SCHOLAR_CROSSREF_EMAIL:-null}
+# Auth
+openathens_enabled: ${SCITEX_SCHOLAR_OPENATHENS_ENABLED:-true}
+openathens_email: ${SCITEX_SCHOLAR_OPENATHENS_EMAIL:-null}
+ezproxy_email: ${SCITEX_SCHOLAR_EZPROXY_EMAIL:-null}
+shibboleth_email: ${SCITEX_SCHOLAR_SHIBBOLETH_EMAIL:-null}  
+openurl_resolver_url: ${SCITEX_SCHOLAR_OPENURL_RESOLVER_URL:-null}
+sso_username: ${SCITEX_SCHOLAR_SSO_USERNAME:-null}
+sso_password: ${SCITEX_SCHOLAR_SSO_PASSWORD:-null}
+
+# Notification settings
+notification_email: ${UNIMELB_EMAIL:-null}
+notification_from_email: ${SCITEX_EMAIL_AGENT:-"agent@scitex.ai"}
+
+# Screenshot settings
+capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}  
+
+# ----------------------------------------
+# browser:
+# ----------------------------------------
+chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
+# browser_backend: ${SCITEX_SCHOLAR_BROWSER_BACKEND:-"local"}
+# use_lean_library: ${SCITEX_SCHOLAR_USE_LEAN_LIBRARY:-true}
+# lean_library_browser_profile: ${SCITEX_SCHOLAR_LEAN_LIBRARY_BROWSER_PROFILE:-null}
+# user_agent: "SciTeX-Scholar/1.0"
+# zenrows_proxy_username: ${SCITEX_SCHOLAR_ZENROWS_PROXY_USERNAME:-null}
+# zenrows_proxy_password: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PASSWORD:-null}
+# zenrows_proxy_domain: ${SCITEX_SCHOLAR_ZENROWS_PROXY_DOMAIN:-"superproxy.zenrows.com"}
+# zenrows_proxy_port: ${SCITEX_SCHOLAR_ZENROWS_PROXY_PORT:-"1337"}
+# zenrows_proxy_country: ${SCITEX_SCHOLAR_ZENROWS_PROXY_COUNTRY:-"us"}
+# enable_captcha_solving: ${SCITEX_SCHOLAR_ENABLE_CAPTCHA_SOLVING:-true}
+# google_scholar_timeout: ${SCITEX_SCHOLAR_GOOGLE_SCHOLAR_TIMEOUT:-10}
+
+# ----------------------------------------
+# URL Finder
+# ----------------------------------------
+# Resolver link selectors in priority order
+structure_selectors:
+  # SFX (ExLibris) - used by many universities
+  - "div#fulltext a"
+  - "div.sfx-fulltext a" 
+  - "div.results-title > a"
+  - "td.object-cell a"
+  - ".getFullTxt a"
+  - 'div[id*="fulltext"] a'
+  - 'div[class*="fulltext"] a'
+  
+  # Primo (ExLibris)
+  - "prm-full-view-service-container a"
+  - "span.availability-status-available a"
+  
+  # Summon (ProQuest)
+  - ".summon-fulltext-link"
+  - "a.summon-link"
+  
+  # EDS (EBSCO)
+  - "a.fulltext-link"
+  - ".ft-link a"
+  
+  # Generic patterns
+  - "a.full-text-link"
+  - "a.fulltext"
+  - "a#full-text-link"
+  - ".access-link a"
+  - ".available-link a"
+
+text_patterns:
+  # Most specific
+  - "View full text at"
+  - "Available from Nature"
+  - "Available from ScienceDirect"
+  - "Available from Wiley"
+  - "Full text available from"
+  
+  # Common patterns
+  - "View full text"
+  - "Full Text from Publisher"
+  - "Get full text"
+  - "Access full text"
+  - "Go to article"
+  - "Access article"
+  
+  # Generic but reliable
+  - "Full Text"
+  - "Full text"
+  - "Article"
+  - "View"
+  - "PDF"
+  - "Download"
+
+negative_keywords:
+  - "cookie"
+  - "policy"
+  - "about us"
+  - "privacy"
+  - "terms"
+  - "abstract"
+  - "preview"
+  - "summary"
+
+
+# American Association for the Advancement of Science  
+
+# PDF download selectors for direct link finding
+download_selectors:
+  # Generic download patterns
+  - 'a[data-track-action*="download"]'
+  - 'button[data-track-action*="download"]'
+  - 'a:has-text("Download PDF")'
+  - 'button:has-text("Download PDF")'
+  - 'a[download][href*="pdf"]'
+  - '.pdf-download-btn'
+  - 'a[href*="/pdf/"]'
+  - 'a[href*="/doi/pdf/"]'
+  - 'a[href*="type=printable"]'
+
+  # Publisher-specific selectors
+  # ScienceDirect (Elsevier)
+  - 'a.PdfLink'
+  - 'a.article-tools-pdf-link'
+  
+  # Wiley Online Library
+  - 'a#article-pdf-link'
+  - 'a.pdf-download'
+  
+  # SpringerLink
+  - 'a[data-track-action="download pdf"]'
+  - 'a.c-pdf-download__link'
+  
+  # Oxford Academic
+  - 'a.al-link.pdf-link'
+
+dropdown_selectors:
+  - 'button:has-text("Download")'
+  - '.dropdown-toggle:has-text("Download")'
+  - '[data-toggle="dropdown"]:has-text("Download")'
+  - ".download-dropdown"
+  - 'button[aria-label*="Download"]'
+
+supplementary_selectors:
+  - 'a[href*="supplementary"]'
+  - 'a[href*="supplement"]'
+  - 'a[href*="additional"]'
+  - 'a[href*="supporting"]'
+  - 'a[href*="SI"]'
+  - 'a[href*="ESM"]'
+
+pdf_view_selectors:
+  - 'a:has-text("View PDF")'
+  - 'a:has-text("PDF")'
+  - "a.pdf-link"
+  - 'a[href*="/pdf/"]'
+  - 'button:has-text("PDF")'
+  - 'a#ViewPDF'
+  - 'div#accessbar a'
+
+# Deny patterns for filtering out unwanted elements
+deny_selectors:
+  # Navigation and UI elements
+  - 'aside *'
+  - '.sidebar *'
+  - '.navigation *'
+  - '.footer *'
+  - '.header *'
+  # Recommendation sections
+  - '.recommended *'
+  - '.related-articles *'
+  - '.you-may-also-like *'
+  # Social and sharing
+  - '.social-share *'
+  - '.share-buttons *'
+  # Issue/Volume downloads (not single article)
+  - 'a:has-text("Download Issue")'
+  - 'a:has-text("Download Volume")'
+  - 'a:has-text("Full Issue")'
+
+deny_classes:
+  - "recommended"
+  - "sidebar"
+  - "footer-content"
+  - "social-share"
+  - "issue-download"
+  - "volume-download"
+
+deny_text_patterns:
+  - "Download Issue"
+  - "Download Volume" 
+  - "Full Issue"
+  - "Complete Issue"
+  - "Entire Issue"
+  - "Subscribe"
+  - "Sign up"
+
+# EOF

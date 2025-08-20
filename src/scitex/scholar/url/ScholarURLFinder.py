@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 18:59:49 (ywatanabe)"
+# Timestamp: "2025-08-20 09:36:15 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -20,7 +20,6 @@ Users can use this for convenience or directly import the functions.
 
 import asyncio
 import json
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -30,16 +29,16 @@ from scitex import logging
 from scitex.scholar.config import ScholarConfig
 
 from .helpers import (
-    build_url_doi,
-    doi_to_url_publisher,
-    extract_doi_from_url,
-    find_all_urls,
-    find_urls_pdf,
-    generate_openurl_query,
+    find_pdf_urls,
+    normalize_doi_as_http,
     resolve_openurl,
+    resolve_publisher_url_by_navigating_to_doi_page,
 )
 
 logger = logging.getLogger(__name__)
+
+
+from scitex.scholar.browser.utils import take_screenshot
 
 
 class ScholarURLFinder:
@@ -67,6 +66,9 @@ class ScholarURLFinder:
             "openurl_resolver_url", openurl_resolver_url
         )
         self.context = context
+        self._page = None
+
+        # Cache
         self.use_cache = self.config.resolve("use_cache_url_finder", use_cache)
 
         # Use Scholar's URL finder cache directory
@@ -91,10 +93,14 @@ class ScholarURLFinder:
             self._openurl_cache = {}
             self._full_results_cache = {}
 
-    async def find_urls(
-        self, doi: str, page: Optional[Page] = None
-    ) -> Dict[str, Any]:
+    async def get_page(self):
+        if self._page is None or self._page.is_closed():
+            self._page = await self.context.new_page()
+        return self._page
+
+    async def find_urls(self, doi: str) -> Dict[str, Any]:
         """Get all URL types for a doi following resolution pipeline."""
+
         # Check full results cache first
         if self.use_cache and doi in self._full_results_cache:
             logger.info(f"Using cached full results for DOI: {doi}")
@@ -103,7 +109,7 @@ class ScholarURLFinder:
         urls = {}
 
         # Step 1: DOI URL
-        urls["url_doi"] = build_url_doi(doi)
+        urls["url_doi"] = normalize_doi_as_http(doi)
 
         # Step 2: Publisher URL (cached)
         url_publisher = await self._get_cached_publisher_url(doi)
@@ -111,32 +117,25 @@ class ScholarURLFinder:
             urls["url_publisher"] = url_publisher
 
         # Step 3: OpenURL query
-        if self.openurl_resolver_url:
-            metadata = {"doi": doi}
-            openurl_query = generate_openurl_query(
-                metadata, self.openurl_resolver_url
-            )
-            if openurl_query:
-                urls["url_openurl_query"] = openurl_query
+        openurl_results = await self._get_cached_openurl(doi)
+        urls.update(openurl_results)
 
-                # Step 4: OpenURL resolved (cached)
-                resolved_url = await self._get_cached_openurl(openurl_query)
-                if resolved_url:
-                    urls["url_openurl_resolved"] = resolved_url
-
-        # Step 5: Collect PDF URLs
+        logger.info(
+            f"\n{'-'*40}\nScholarURLFinder finding PDF URLs for {doi}...\n{'-'*40}"
+        )
+        # Step 4: Collect PDF URLs
         urls_pdf = []
 
         # Try OpenURL resolved first (authenticated)
         if urls.get("url_openurl_resolved"):
             pdfs = await self._get_pdfs_from_url(
-                urls["url_openurl_resolved"], page
+                urls["url_openurl_resolved"], doi
             )
             urls_pdf.extend(pdfs)
 
         # Try publisher URL
         if urls.get("url_publisher"):
-            pdfs = await self._get_pdfs_from_url(urls["url_publisher"], page)
+            pdfs = await self._get_pdfs_from_url(urls["url_publisher"], doi)
             urls_pdf.extend(pdfs)
 
         if urls_pdf:
@@ -168,7 +167,10 @@ class ScholarURLFinder:
 
                 page = await self.context.new_page()
                 try:
-                    return await self.find_urls(doi=doi, page=page)
+                    return await self.find_urls(doi=doi)
+                except Exception as e:
+                    logger.error(f"Error finding URLs for {doi}: {e}")
+                    return {}
                 finally:
                     await page.close()
 
@@ -183,13 +185,10 @@ class ScholarURLFinder:
         for ii_result, result in enumerate(results):
             if isinstance(result, Exception):
                 logger.debug(
-                    f"Batch URL finding error for DOI {ii_result}: {result}"
+                    f"Batch URL finding error for DOI {dois[ii_result]}: {result}"
                 )
                 batch_results.append({})
             else:
-                # logger.info(
-                #     f"Batch URL finder found for DOI {ii_result}: {result}"
-                # )
                 batch_results.append(result or {})
 
         # Success Rate
@@ -208,107 +207,39 @@ class ScholarURLFinder:
             else:
                 logger.warn(msg)
 
-        # # Success Rate
-        # n_dois = len(dois)
-        # if n_dois:
-        #     try:
-        #         n_found = sum(
-        #             [
-        #                 True if result and result.get("urls_pdf") else False
-        #                 for result in results
-        #             ]
-        #         )
-        #     msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
-        #     if n_found == n_dois:
-        #         logger.success(msg)
-        #     else:
-        #         logger.warn(msg)
-
         return batch_results
 
     async def _get_pdfs_from_url(
-        self, url: str, page: Optional[Page], doi: str = None
+        self,
+        url: str,
+        doi: str,
     ) -> List[Dict]:
         """Get PDF URLs from a specific URL."""
-        if not page:
-            page = await self.context.new_page()
-            should_close = True
-        else:
-            should_close = False
-
         try:
-            # await page.goto(url, wait_until="networkidle", timeout=30000)
+            page = await self.get_page()
             await page.goto(url, wait_until="domcontentloaded", timeout=30_000)
 
-            pdfs = await find_urls_pdf(page)
+            pdfs = await find_pdf_urls(page)
 
             # Take screenshot if no PDFs found
             if not pdfs:
-                await self._take_debug_screenshot(page, "no_pdfs_found", doi)
+                await take_screenshot(
+                    page, "ScholarURLFinder", f"{doi} - No PDFs Found"
+                )
 
             return pdfs
         except Exception as e:
             # Take screenshot on error
             try:
-                await self._take_debug_screenshot(page, "page_error", doi)
+                await take_screenshot(
+                    page, "ScholarURLFinder", f"{doi} - Page Error"
+                )
             except:
                 pass
+            logger.error(f"Error getting PDFs from {url}: {e}")
             return []
-        finally:
-            if should_close:
-                try:
-                    await page.close()
-                except:
-                    pass
 
-    # async def _take_debug_screenshot(
-    #     self, page: Page, context: str, doi: str = None
-    # ):
-    #     """Take screenshot for debugging when PDFs not found."""
-    #     try:
-    #         screenshot_dir = self.config.get_screenshots_dir("url_finder")
-    #         screenshot_dir.mkdir(parents=True, exist_ok=True)
-
-    #         # Generate filename with timestamp and context
-    #         from datetime import datetime
-
-    #         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #         doi_clean = (
-    #             doi.replace("/", "_").replace(":", "_") if doi else "unknown"
-    #         )
-    #         filename = f"{timestamp}_{context}_{doi_clean}.png"
-
-    #         screenshot_path = screenshot_dir / filename
-    #         await page.screenshot(path=str(screenshot_path), full_page=True)
-    #         logger.success(f"Debug screenshot saved: {filename}")
-
-    #     except Exception as e:
-    #         logger.fail(f"Failed to take debug screenshot: {e}")
-    async def _take_debug_screenshot(
-        self, page: Page, context: str, doi: str = None
-    ):
-        """Take screenshot for debugging when PDFs not found."""
-        try:
-            screenshot_dir = self.config.get_screenshots_dir("url_finder")
-            screenshot_dir.mkdir(parents=True, exist_ok=True)
-
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            doi_clean = (
-                doi.replace("/", "_").replace(":", "_") if doi else "unknown"
-            )
-            filename = f"{timestamp}_{context}_{doi_clean}.png"
-            screenshot_path = screenshot_dir / filename
-
-            # Skip font loading wait
-            await page.screenshot(
-                path=str(screenshot_path), full_page=True, timeout=10000
-            )
-            logger.success(f"Debug screenshot saved: {filename}")
-
-        except Exception as e:
-            logger.fail(f"Failed to take debug screenshot: {e}")
-
-    async def find_urls_pdf_async(self, page_or_url) -> List[Dict]:
+    async def find_pdf_urls_async(self, page_or_url) -> List[Dict]:
         """Find PDF URLs from a page or URL."""
         if isinstance(page_or_url, str):
             if not self.context:
@@ -317,73 +248,58 @@ class ScholarURLFinder:
 
             page = await self.context.new_page()
             try:
-                # await page.goto(
-                #     page_or_url, wait_until="networkidle", timeout=30000
-                # )
                 await page.goto(
                     page_or_url, wait_until="domcontentloaded", timeout=30000
                 )
 
-                pdfs = await find_urls_pdf(page)
+                pdfs = await find_pdf_urls(page)
 
                 # Take screenshot if no PDFs found
                 if not pdfs:
-                    await self._take_debug_screenshot(
-                        page, "no_pdfs_url", page_or_url
+                    await take_screenshot(
+                        page,
+                        "ScholarURLFinder",
+                        f"No PDFs from URL: {page_or_url[:50]}",
                     )
 
                 return pdfs
             except Exception as e:
-                logger.warning(f"Failed with networkidle: {e}")
+                logger.warning(f"Failed to load page: {e}")
                 try:
-                    await self._take_debug_screenshot(
-                        page, "navigation_error", page_or_url
+                    await take_screenshot(
+                        page, "ScholarURLFinder", "Navigation Error"
                     )
                 except:
                     pass
                 return []
             finally:
                 await page.close()
+
         else:
             try:
-                pdfs = await find_urls_pdf(page_or_url)
+                pdfs = await find_pdf_urls(page_or_url)
 
                 # Take screenshot if no PDFs found
                 if not pdfs:
-                    await self._take_debug_screenshot(
-                        page_or_url, "no_pdfs_page"
+                    await take_screenshot(
+                        page_or_url, "ScholarURLFinder", "No PDFs Page"
                     )
-
                 return pdfs
             except Exception as e:
                 logger.error(f"Error finding PDF URLs: {e}")
                 try:
-                    await self._take_debug_screenshot(
-                        page_or_url, "pdf_search_error"
+                    await take_screenshot(
+                        page_or_url, "ScholarURLFinder", "PDF Search Error"
                     )
                 except:
                     pass
                 return []
 
-    def generate_openurl(
-        self, metadata: Dict, openurl_resolver_url: str
+    async def resolve_openurl_async(
+        self, openurl_query: str, page: Page
     ) -> Optional[str]:
-        """Generate OpenURL query from metadata.
-
-        Args:
-            metadata: Paper metadata
-
-        Returns:
-            OpenURL query string
-        """
-        return generate_openurl_query(metadata, openurl_resolver_url)
-
-    async def resolve_openurl_async(self, openurl_query: str) -> Optional[str]:
         """Resolve OpenURL to final authenticated URL."""
-        if not self.context:
-            logger.error("Browser context required for OpenURL resolution")
-            return None
-        return await resolve_openurl(openurl_query, self.context)
+        return await resolve_openurl(openurl_query, page)
 
     def update_metadata(self, metadata_path: Path, urls: Dict) -> bool:
         """Update metadata file with resolved URLs."""
@@ -419,12 +335,7 @@ class ScholarURLFinder:
             logger.error(f"Failed to read metadata: {e}")
             return {}
 
-    @staticmethod
-    def extract_doi(url: str) -> Optional[str]:
-        """Extract DOI from a URL."""
-        return extract_doi_from_url(url)
-
-    # Cache
+    # Cache methods
     def _clear_all_cache(self):
         """Clear all cache files."""
         cache_files = [
@@ -451,6 +362,7 @@ class ScholarURLFinder:
     def _save_cache(self, cache_file: Path, cache_data: dict):
         """Save cache to file."""
         try:
+            cache_file.parent.mkdir(parents=True, exist_ok=True)
             with open(cache_file, "w") as f:
                 json.dump(cache_data, f, indent=2)
         except Exception as e:
@@ -458,11 +370,15 @@ class ScholarURLFinder:
 
     async def _get_cached_publisher_url(self, doi: str) -> Optional[str]:
         """Get publisher URL with persistent caching."""
+
         if self.use_cache and doi in self._publisher_cache:
             logger.debug(f"Using cached publisher URL for DOI: {doi}")
             return self._publisher_cache[doi]
 
-        result = await doi_to_url_publisher(doi, self.context)
+        page = await self.get_page()
+        result = await resolve_publisher_url_by_navigating_to_doi_page(
+            doi, page
+        )
 
         if self.use_cache:
             self._publisher_cache[doi] = result
@@ -470,19 +386,36 @@ class ScholarURLFinder:
 
         return result
 
-    async def _get_cached_openurl(self, openurl_query: str) -> Optional[str]:
-        """Get resolved OpenURL with persistent caching."""
-        if self.use_cache and openurl_query in self._openurl_cache:
-            logger.debug(f"Using cached OpenURL resolution")
-            return self._openurl_cache[openurl_query]
+    async def _get_cached_openurl(self, doi: str) -> Dict[str, str]:
+        """Get OpenURL results with caching using DOI as key."""
+        results = {}
 
-        result = await resolve_openurl(openurl_query, self.context)
+        if not self.openurl_resolver_url:
+            return results
 
-        if self.use_cache:
-            self._openurl_cache[openurl_query] = result
-            self._save_cache(self.openurl_cache_file, self._openurl_cache)
+        from .helpers.resolvers._OpenURLResolver import OpenURLResolver
 
-        return result
+        resolver = OpenURLResolver(config=self.config)
+
+        openurl_query = resolver._build_query(doi)
+        if openurl_query:
+            results["url_openurl_query"] = openurl_query
+
+        if self.use_cache and doi in self._openurl_cache:
+            logger.debug(f"Using cached OpenURL resolution for DOI: {doi}")
+            resolved_url = self._openurl_cache[doi]
+        else:
+            page = await self.get_page()
+            resolved_url = await resolver.resolve_doi(doi, page)
+
+            if self.use_cache:
+                self._openurl_cache[doi] = resolved_url
+                self._save_cache(self.openurl_cache_file, self._openurl_cache)
+
+        if resolved_url:
+            results["url_openurl_resolved"] = resolved_url
+
+        return results
 
 
 if __name__ == "__main__":
@@ -501,7 +434,7 @@ if __name__ == "__main__":
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             auth_manager=auth_manager,
-            browser_mode="stealth",
+            browser_mode="interactive",
             chrome_profile_name="system",
         )
         browser, context = (
@@ -512,7 +445,8 @@ if __name__ == "__main__":
         url_finder = ScholarURLFinder(context, use_cache=False)
 
         # Get all URLs for a paper
-        doi = "10.1016/j.cell.2025.07.007"  # Cell/Elsevier - Testing
+        doi = "10.1016/j.cell.2025.07.007"
+        doi = "10.1126/science.aao0702"
         urls = await url_finder.find_urls(
             doi=doi,
         )
