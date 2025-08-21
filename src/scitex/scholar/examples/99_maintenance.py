@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:33:33 (ywatanabe)"
+# Timestamp: "2025-08-22 03:04:54 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/99_maintenance.py
 # ----------------------------------------
 from __future__ import annotations
@@ -42,6 +42,8 @@ IO:
 """Imports"""
 import argparse
 
+import pandas as pd
+
 """Warnings"""
 # stx.pd.ignore_SettingWithCopyWarning()
 # warnings.simplefilter("ignore", UserWarning)
@@ -57,10 +59,16 @@ def split_metadata(metadata_json_path):
     metadata = stx.io.load(metadata_json_path)
     print(len(metadata))
     print(metadata[0].keys())
-    for meta in metadata:
-        if meta.get("id"):
 
-    __import__("ipdb").set_trace()
+    out = stx.dict.listed_dict()
+    for meta in metadata:
+        title = meta.get("basic").get("title")
+        doi_url = meta.get("url").get("doi")
+        out["title"].append(title)
+        out["doi_url"].append(doi_url)
+
+    df = pd.DataFrame(out)
+    stx.io.save(df, "./data/scholar/pac_title_and_doi_url.csv")
 
 
 def main(args):

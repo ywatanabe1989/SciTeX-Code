@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:01:45 (ywatanabe)"
+# Timestamp: "2025-08-22 03:35:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_02-url-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -26,7 +26,7 @@ Dependencies:
 
 Input:
 - ./data/scholar/openaccess.bib
-- ./data/scholar/paywalled.bib  
+- ./data/scholar/paywalled.bib
 - ./data/scholar/pac.bib
 
 Output:
@@ -53,10 +53,10 @@ async def process_bibtex_urls(
     use_cache_engines: bool = True,
     use_cache_url_finder: bool = False,
     n_samples: int = None,
-    browser_mode: str = "interactive"
+    browser_mode: str = "interactive",
 ) -> tuple:
     """Process BibTeX file to find URLs for all papers.
-    
+
     Parameters
     ----------
     bibtex_path : str
@@ -69,7 +69,7 @@ async def process_bibtex_urls(
         Number of samples to process
     browser_mode : str, default="interactive"
         Browser mode for URL finding
-        
+
     Returns
     -------
     tuple
@@ -86,11 +86,11 @@ async def process_bibtex_urls(
 
     print(f"📚 Parsing BibTeX file: {bibtex_path}")
     entries = parse_bibtex(bibtex_path)
-    
+
     if n_samples:
         entries = np.random.permutation(entries)[:n_samples].tolist()
         print(f"🔢 Sampling {n_samples} entries")
-    
+
     query_titles = [entry.get("title") for entry in entries]
     print(f"📝 Found {len(query_titles)} paper titles")
     pprint(query_titles)
@@ -133,7 +133,7 @@ async def process_bibtex_urls(
     ]
     batched_urls = await url_finder.find_urls_batch(dois=dois)
     pprint(batched_urls)
-    
+
     return batched_metadata, batched_urls
 
 
@@ -152,23 +152,23 @@ async def main_async(args) -> tuple:
     """
     print("🔗 Scholar BibTeX URL Finding Demonstration")
     print("=" * 40)
-    
+
     bibtex_files = [
         "./data/scholar/openaccess.bib",
-        "./data/scholar/paywalled.bib", 
+        "./data/scholar/paywalled.bib",
         "./data/scholar/pac.bib",
     ]
-    
+
     selected_path = bibtex_files[args.bibtex_index]
-    
+
     results = await process_bibtex_urls(
         bibtex_path=selected_path,
         use_cache_engines=not args.no_cache_engines,
         use_cache_url_finder=not args.no_cache_url_finder,
         n_samples=args.n_samples,
-        browser_mode=args.browser_mode
+        browser_mode=args.browser_mode,
     )
-    
+
     print("✅ BibTeX URL finding demonstration completed")
     return results
 
@@ -200,7 +200,7 @@ def parse_args() -> argparse.Namespace:
         description="Demonstrate batch URL finding for BibTeX files"
     )
     parser.add_argument(
-        "--bibtex_index",
+        "--bibtex-index",
         "-b",
         type=int,
         choices=[0, 1, 2],
@@ -208,28 +208,28 @@ def parse_args() -> argparse.Namespace:
         help="BibTeX file index (0: openaccess, 1: paywalled, 2: pac) (default: %(default)s)",
     )
     parser.add_argument(
-        "--n_samples",
+        "--n-samples",
         "-n",
         type=int,
         default=None,
         help="Number of samples to process (default: %(default)s)",
     )
     parser.add_argument(
-        "--no_cache_engines",
+        "--no-cache-engines",
         "-nce",
         action="store_true",
         default=False,
         help="Disable caching for search engines (default: %(default)s)",
     )
     parser.add_argument(
-        "--no_cache_url_finder",
+        "--no-cache-url-finder",
         "-ncu",
-        action="store_true", 
+        action="store_true",
         default=False,
         help="Disable caching for URL finder (default: %(default)s)",
     )
     parser.add_argument(
-        "--browser_mode",
+        "--browser-mode",
         "-bm",
         type=str,
         choices=["interactive", "stealth"],

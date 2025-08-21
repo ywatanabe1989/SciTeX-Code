@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-20 08:50:10 (ywatanabe)"
+# Timestamp: "2025-08-22 03:25:54 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -134,6 +134,8 @@ openurl_available_from_patterns:
   - "Available from American Association for the Advancement of Science"
   - "Available from JSTOR Archival Journals and Primary Sources Collection"
   - "Available from JSTOR Health & General Sciences"
+  - "Available from PubMed Central"
+  - "Available from American Physiological Society Paid"
   
   # Publisher-specific patterns (most reliable)
   - "Available from Nature"
