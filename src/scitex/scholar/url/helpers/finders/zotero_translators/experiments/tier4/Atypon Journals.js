@@ -1,0 +1,1 @@
+../../Atypon Journals.js

@@ -116,30 +116,51 @@ class ScholarURLFinder:
         if url_publisher:
             urls["url_publisher"] = url_publisher
 
-        # Step 3: OpenURL query
-        openurl_results = await self._get_cached_openurl(doi)
-        urls.update(openurl_results)
-
         logger.info(
             f"\n{'-'*40}\nScholarURLFinder finding PDF URLs for {doi}...\n{'-'*40}"
         )
-        # Step 4: Collect PDF URLs
+        
+        # Step 3: Try PDF extraction from Publisher URL FIRST
         urls_pdf = []
-
-        # Try OpenURL resolved first (authenticated)
-        if urls.get("url_openurl_resolved"):
-            pdfs = await self._get_pdfs_from_url(
-                urls["url_openurl_resolved"], doi
-            )
+        
+        if url_publisher:
+            logger.debug(f"Trying PDF extraction from publisher URL first...")
+            pdfs = await self._get_pdfs_from_url(url_publisher, doi)
             urls_pdf.extend(pdfs)
-
-        # Try publisher URL
-        if urls.get("url_publisher"):
-            pdfs = await self._get_pdfs_from_url(urls["url_publisher"], doi)
-            urls_pdf.extend(pdfs)
+            
+            if urls_pdf:
+                logger.success(f"Found {len(urls_pdf)} PDFs from publisher URL - skipping OpenURL resolution")
+                # Skip OpenURL entirely - we have PDFs!
+                urls["url_openurl_query"] = f"https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi={doi}"
+                urls["url_openurl_resolved"] = "skipped"  # Skipped because PDFs found from publisher
+            
+        # Step 4: Only do OpenURL if no PDFs found from publisher
+        if not urls_pdf:
+            logger.info("No PDFs from publisher URL, resolving OpenURL...")
+            openurl_results = await self._get_cached_openurl(doi)
+            urls.update(openurl_results)
+            
+            # Try PDF extraction from OpenURL resolved URL
+            if urls.get("url_openurl_resolved"):
+                logger.debug(f"Trying PDF extraction from OpenURL resolved URL...")
+                pdfs = await self._get_pdfs_from_url(
+                    urls["url_openurl_resolved"], doi
+                )
+                urls_pdf.extend(pdfs)
+                
+                if pdfs:
+                    logger.info(f"Found {len(pdfs)} PDFs from OpenURL")
 
         if urls_pdf:
-            urls["urls_pdf"] = urls_pdf
+            # Deduplicate PDFs
+            unique_pdfs = []
+            seen_urls = set()
+            for pdf in urls_pdf:
+                pdf_url = pdf.get("url") if isinstance(pdf, dict) else pdf
+                if pdf_url not in seen_urls:
+                    seen_urls.add(pdf_url)
+                    unique_pdfs.append(pdf)
+            urls["urls_pdf"] = unique_pdfs
 
         # Cache full results
         if self.use_cache:

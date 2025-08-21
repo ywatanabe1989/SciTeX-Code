@@ -60,6 +60,11 @@ async function setupZoteroEnvironment() {
                     // RIS translator ID: 32d59d2d-b65a-4da4-b0a3-bdd3cfb979e7
                 },
                 
+                setDocument: function(doc) {
+                    console.log('Setting document for translation');
+                    this._document = doc || document;
+                },
+                
                 setString: function(str) {
                     console.log('Setting string for translation, length:', str?.length);
                     this._string = str;
@@ -162,6 +167,69 @@ async function setupZoteroEnvironment() {
                 
                 getTranslators: function() {
                     return [];
+                },
+                
+                getTranslatorObject: function(callback) {
+                    console.log('Getting translator object for nested translator');
+                    
+                    // Mock Embedded Metadata (em) translator object
+                    const mockTranslator = {
+                        setTranslator: function(id) { 
+                            console.log('Setting nested translator:', id);
+                            this.translatorID = id;
+                        },
+                        setDocument: function(doc) { 
+                            this._document = doc || document; 
+                        },
+                        setString: function(str) { 
+                            this._string = str; 
+                        },
+                        setHandler: function(event, handler) { 
+                            this._handlers = this._handlers || {};
+                            this._handlers[event] = handler; 
+                        },
+                        translate: function() { 
+                            console.log('Running nested translation');
+                            // Trigger handlers if they exist
+                            if (this._handlers && this._handlers.done) {
+                                setTimeout(() => this._handlers.done(this, []), 100);
+                            }
+                        },
+                        getTranslatorObject: function(cb) { 
+                            if (cb) cb(mockTranslator);
+                            return Promise.resolve(mockTranslator);
+                        },
+                        // Add doWeb for Embedded Metadata compatibility
+                        doWeb: async function(doc, url) {
+                            console.log('Embedded Metadata doWeb called for:', url);
+                            // Extract metadata from the page
+                            const item = new Zotero.Item('journalArticle');
+                            
+                            // Try to extract PDF URL from meta tags
+                            const pdfMeta = doc.querySelector('meta[name="citation_pdf_url"]');
+                            if (pdfMeta && pdfMeta.content) {
+                                item.attachments.push({
+                                    url: pdfMeta.content,
+                                    mimeType: 'application/pdf',
+                                    title: 'Full Text PDF'
+                                });
+                            }
+                            
+                            // Extract title
+                            const titleMeta = doc.querySelector('meta[name="citation_title"], meta[property="og:title"]');
+                            if (titleMeta) {
+                                item.title = titleMeta.content;
+                            }
+                            
+                            // Complete the item
+                            item.complete();
+                        }
+                    };
+                    
+                    if (callback) {
+                        callback(mockTranslator);
+                    }
+                    return Promise.resolve(mockTranslator);
                 }
             };
             

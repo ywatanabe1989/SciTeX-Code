@@ -1,8 +1,22 @@
 <!-- ---
-!-- Timestamp: 2025-08-18 08:48:43
+!-- Timestamp: 2025-08-22 03:50:42
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/README.md
 !-- --- -->
+
+## Workflow
+1. Resolve DOI → Publisher URL (always works)
+2. Try PDF extraction from Publisher URL first
+  - If PDF found → Done! (skip OpenURL)
+  - If no PDF → Continue to OpenURL
+3. Only if needed: OpenURL resolution → Authenticated URL
+4. Try PDF extraction from OpenURL-resolved URL
+
+This would be much more efficient because:
+- Many publisher pages have PDFs directly accessible
+- OpenURL resolution takes time (10-15 seconds with redirects)
+- We avoid unnecessary authentication redirects when not needed
+
 
 ## Usage
 

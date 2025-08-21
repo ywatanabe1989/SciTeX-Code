@@ -10,18 +10,59 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
     let translatorError = null;
     
     try {
-        // Execute the translator code in the global scope
-        // This defines detectWeb, doWeb, and any other translator functions
+        // Step 1: Execute the translator code to define its functions/objects
         eval(translatorCode);
         
-        // Check if translator functions exist
-        if (typeof detectWeb !== 'function') {
-            throw new Error('detectWeb function not found in translator');
+        // Step 2: INTELLIGENTLY FIND AND CALL THE CORRECT detectWeb/doWeb functions
+        let detected = false;
+        let doWebFunction = null;
+        let detectWebFunction = null;
+        let contextObject = window; // Default to global context
+        
+        // Pattern 1: Standard global functions (classic translators)
+        if (typeof detectWeb === 'function' && typeof doWeb === 'function') {
+            console.log('Pattern 1: Found global detectWeb and doWeb functions');
+            detectWebFunction = detectWeb;
+            doWebFunction = doWeb;
+        }
+        // Pattern 2: Object-oriented pattern (e.g., 'em' for Embedded Metadata)
+        else if (typeof em === 'object' && em !== null) {
+            if (typeof em.detectWeb === 'function' && typeof em.doWeb === 'function') {
+                console.log('Pattern 2: Found em.detectWeb and em.doWeb methods');
+                detectWebFunction = em.detectWeb;
+                doWebFunction = em.doWeb;
+                contextObject = em;
+            }
+        }
+        // Pattern 3: Check for other common translator objects
+        else {
+            // Check for any object that has detectWeb/doWeb methods
+            const possibleObjects = ['translator', 'trans', 'Translator', 'TRANSLATOR'];
+            for (const objName of possibleObjects) {
+                if (window[objName] && typeof window[objName].detectWeb === 'function') {
+                    console.log(`Pattern 3: Found ${objName}.detectWeb and ${objName}.doWeb methods`);
+                    detectWebFunction = window[objName].detectWeb;
+                    doWebFunction = window[objName].doWeb;
+                    contextObject = window[objName];
+                    break;
+                }
+            }
+        }
+        
+        // Pattern 4: Some translators might just export a single function
+        if (!detectWebFunction && typeof detectWeb === 'function') {
+            detectWebFunction = detectWeb;
+            // Some translators only have detectWeb, not doWeb
+            doWebFunction = typeof doWeb === 'function' ? doWeb : null;
+        }
+        
+        if (!detectWebFunction) {
+            throw new Error('No detectWeb function found in any pattern');
         }
         
         // Run detectWeb to determine if this page is supported
         console.log('Running detectWeb...');
-        const itemType = detectWeb(document, window.location.href);
+        const itemType = detectWebFunction.call(contextObject, document, window.location.href);
         console.log('detectWeb returned:', itemType);
         
         if (!itemType) {
@@ -36,12 +77,11 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
         }
         
         // Run doWeb if available and page is recognized
-        if (typeof doWeb === 'function') {
-            console.log('Running doWeb...');
+        if (doWebFunction) {
+            console.log(`Running doWeb on context: ${contextObject === window ? 'window' : 'object'}...`);
             
-            // Run doWeb with a reasonable timeout
-            // Some translators make async requests and we need to wait for them
-            const doWebPromise = doWeb(document, window.location.href);
+            // Call doWeb with proper context
+            const doWebPromise = doWebFunction.call(contextObject, document, window.location.href);
             const timeoutPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     console.log('doWeb timeout reached (10s), continuing...');
@@ -55,7 +95,7 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
             // Give async operations time to complete
             await new Promise(resolve => setTimeout(resolve, 1000));
         } else {
-            throw new Error('doWeb function not found in translator');
+            console.warn('No doWeb function found - translator may only support detection');
         }
         
     } catch (e) {
@@ -64,7 +104,6 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
     }
     
     // Return whatever the translator collected
-    // Trust the translator completely - no custom filtering
     const pdfUrls = Array.from(urls);
     
     console.log(`Translator collected ${items.length} items and ${pdfUrls.length} URLs`);
@@ -74,7 +113,8 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
         console.warn('No PDF URLs found. This may be due to:');
         console.warn('1. Authentication issues preventing access to full text');
         console.warn('2. The article not having a PDF available');
-        console.warn('3. The publisher blocking automated access');
+        console.warn('3. The translator needing a different pattern we haven\'t implemented');
+        console.warn('4. The publisher blocking automated access');
     }
     
     return {

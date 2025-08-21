@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 03:35:13 (ywatanabe)"
+# Timestamp: "2025-08-22 06:52:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_02-url-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -243,15 +243,16 @@ def parse_args() -> argparse.Namespace:
 
 def run_main() -> None:
     """Initialize scitex framework, run main function, and cleanup."""
-    global CONFIG, CC, sys, plt
+    global CONFIG, CC, sys
 
     import sys
 
-    import matplotlib.pyplot as plt
+    # import matplotlib.pyplot as plt  # Not used
 
     args = parse_args()
+    plt = None  # Placeholder for unused matplotlib
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.session.start(
+    CONFIG, sys.stdout, sys.stderr, plt_unused, CC = stx.session.start(
         sys,
         plt,
         args=args,
@@ -273,5 +274,8 @@ def run_main() -> None:
 
 if __name__ == "__main__":
     run_main()
+
+# /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_02-url-for-bibtex.py --no-cache-url-finder --browser-mode stealth --n-samples 10
+# /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_02-url-for-bibtex.py --no-cache-url-finder --browser-mode stealth
 
 # EOF
