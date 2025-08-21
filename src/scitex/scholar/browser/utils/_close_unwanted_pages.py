@@ -15,9 +15,9 @@ import asyncio
 
 from playwright.async_api import BrowserContext, Page
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 async def close_unwanted_pages(

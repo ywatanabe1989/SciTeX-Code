@@ -16,9 +16,9 @@ import json
 import sys
 from pathlib import Path
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 def create_parser():

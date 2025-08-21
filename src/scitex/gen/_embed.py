@@ -68,12 +68,12 @@ if __name__ == "__main__":
     import scitex
     
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     embed()
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

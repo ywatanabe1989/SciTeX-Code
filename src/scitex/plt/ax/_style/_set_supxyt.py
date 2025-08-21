@@ -106,11 +106,11 @@ def set_supxytc(ax, xlabel=False, ylabel=False, title=False, caption=False, meth
 
 if __name__ == "__main__":
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # (YOUR AWESOME CODE)
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF

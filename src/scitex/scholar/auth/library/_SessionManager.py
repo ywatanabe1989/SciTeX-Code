@@ -21,9 +21,9 @@ import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class SessionManager:

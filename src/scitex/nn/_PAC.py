@@ -302,7 +302,7 @@ class PAC(nn.Module):
 
 if __name__ == "__main__":
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     ts = scitex.gen.TimeStamper()
 

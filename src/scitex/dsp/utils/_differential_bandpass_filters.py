@@ -80,7 +80,7 @@ if __name__ == "__main__":
     import scitex
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, agg=True)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt, agg=True)
 
     # Demo signal
     freqs_hz = [10, 30, 100, 300]

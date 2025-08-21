@@ -22,14 +22,14 @@ from typing import Any, Dict, List, Optional
 
 from playwright.async_api import Page, async_playwright
 
-from scitex import logging
+from scitex import log
 
 # from scitex.scholar.browser import BrowserUtils
 from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
 
 from ..browser.local._BrowserMixin import BrowserMixin
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class BrowserAuthenticator(BrowserMixin):

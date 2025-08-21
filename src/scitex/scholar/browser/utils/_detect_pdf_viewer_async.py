@@ -11,9 +11,9 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 async def detect_pdf_viewer_async(page):

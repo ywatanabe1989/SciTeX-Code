@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:13:53 (ywatanabe)"
+# Timestamp: "2025-08-21 21:42:27 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/resolvers/_OpenURLLinkFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,11 +12,11 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import asyncio
-import logging
 from typing import List
 
 from playwright.async_api import Locator, Page
 
+from scitex import log
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils import (
     click_and_wait,
@@ -24,7 +24,7 @@ from scitex.scholar.browser.utils import (
     take_screenshot,
 )
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class OpenURLLinkFinder:

@@ -110,7 +110,7 @@ if __name__ == "__main__":
     import scitex
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     pac, freqs_pha, freqs_amp = scitex.dsp.pac(
         np.random.rand(1, 16, 24000),

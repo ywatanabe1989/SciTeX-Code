@@ -19,10 +19,10 @@ from playwright.async_api import Page, Frame
 import aiohttp
 import json
 
-from scitex import logging
+from scitex import log
 from scitex.errors import ScholarError
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class CaptchaHandler:

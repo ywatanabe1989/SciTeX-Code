@@ -24,7 +24,7 @@ import re
 import time
 from typing import Any, Dict, List, Optional, Type
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 
 from ._RateLimitHandler import RateLimitHandler
@@ -37,7 +37,7 @@ from ._SemanticScholarEngine import SemanticScholarEngine
 from ._EngineRotationManager import EngineRotationManager
 from ._URLDOIEngine import URLDOIEngine
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class EngineResolutionStrategy:

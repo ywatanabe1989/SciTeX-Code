@@ -26,7 +26,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from scitex import logging
+from scitex import log
 
 # PDF extraction is now handled by scitex.io
 from scitex.errors import (
@@ -51,7 +51,7 @@ from ._Papers import Papers
 # from scitex.scholar.utils._paths import get_scholar_dir
 
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class Scholar:

@@ -248,7 +248,7 @@ if __name__ == "__main__":
     import sys
     import matplotlib.pyplot as plt
     import scitex
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Example usage
     fig, ax = plt.subplots()
@@ -263,6 +263,6 @@ if __name__ == "__main__":
     export_metadata_yaml(fig, 'example_metadata.yaml')
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF

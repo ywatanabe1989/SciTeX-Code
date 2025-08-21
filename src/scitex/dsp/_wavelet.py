@@ -126,7 +126,7 @@ if __name__ == "__main__":
     import numpy as np
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, agg=True)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt, agg=True)
 
     # Parameters
     FS = 512
@@ -201,7 +201,7 @@ if __name__ == "__main__":
     scitex.io.save(fig, "wavelet.png")
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

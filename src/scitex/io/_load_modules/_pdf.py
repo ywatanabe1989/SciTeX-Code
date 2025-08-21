@@ -17,13 +17,13 @@ This module provides comprehensive PDF text extraction capabilities
 for scientific papers, supporting various extraction modes and formats.
 """
 
-from scitex import logging
+from scitex import log
 import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 import hashlib
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 # Try to import PDF libraries in order of preference
 try:

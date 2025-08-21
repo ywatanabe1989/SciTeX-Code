@@ -15,12 +15,12 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from typing import Dict, Optional
 
-from scitex import logging
+from scitex import log
 
 from scitex.scholar.config import ScholarConfig
 from ._BaseSSOAutomator import BaseSSOAutomator
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class SSOAutomator:

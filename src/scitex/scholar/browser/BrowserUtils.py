@@ -23,9 +23,9 @@ circular dependencies.
 
 from playwright.async_api import Browser, BrowserContext, Page, TimeoutError
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class BrowserUtils:

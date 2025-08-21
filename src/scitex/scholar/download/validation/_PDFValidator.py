@@ -19,10 +19,10 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Union
 from datetime import datetime
 
-from scitex import logging
+from scitex import log
 from ._ValidationResult import ValidationResult
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 # Optional imports for PDF processing
 try:

@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse, urljoin, parse_qs
 
-from scitex import logging
+from scitex import log
 
 try:
     from playwright.async_api import async_playwright, Page, Browser
@@ -31,7 +31,7 @@ except ImportError:
 from scitex.errors import ScholarError
 from ._BaseAuthenticator import BaseAuthenticator
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class ShibbolethError(ScholarError):

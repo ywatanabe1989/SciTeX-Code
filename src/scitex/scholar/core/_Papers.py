@@ -25,13 +25,13 @@ from typing import Any, Dict, Iterator, List, Optional, Union
 
 import pandas as pd
 
-from scitex import logging
+from scitex import log
 from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
 
 from ._Paper import Paper
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class Papers:

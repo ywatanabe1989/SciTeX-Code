@@ -12,8 +12,8 @@ Understand all the `scitex` guidelines in this directory
 
 ## MUST HAVE CORRESPONDING OUTPUT DIRECTORY
 - Output directory creation is handled by:
-  - `scitex.gen.start`
-  - `scitex.gen.close`
+  - `scitex.session.start`
+  - `scitex.session.close`
   - `scitex.io.save`
 - If corresponding output directory is not created, that means:
   1. That script does not follow the `scitex` framework

@@ -16,9 +16,9 @@ from typing import Dict
 
 from playwright.async_api import Page, Response
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 async def wait_redirects(

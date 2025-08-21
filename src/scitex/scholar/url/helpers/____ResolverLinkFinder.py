@@ -29,7 +29,7 @@ from playwright.async_api import ElementHandle, Page
 
 from scitex.scholar import ScholarConfig
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class ResolverLinkFinder:

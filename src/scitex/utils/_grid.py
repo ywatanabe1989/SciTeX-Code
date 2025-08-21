@@ -112,7 +112,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as _plt
 
     # Start
-    CONFIG, _sys.stdout, _sys.stderr, _plt, CC = _scitex.gen.start(
+    CONFIG, _sys.stdout, _sys.stderr, _plt, CC = _scitex.session.start(
         _sys, _plt, verbose=False
     )
 
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         print(param_dict)
 
     # Close
-    _scitex.gen.close(CONFIG, verbose=False, notify=False)
+    _scitex.session.close(CONFIG, verbose=False, notify=False)
 
 # EOF
 

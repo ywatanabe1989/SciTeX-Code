@@ -26,11 +26,11 @@ from typing import List, Optional
 
 import requests
 
-from scitex import logging
+from scitex import log
 
 from ..utils import PubMedConverter, TextNormalizer, URLDOIExtractor
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class BaseDOIEngine(ABC):

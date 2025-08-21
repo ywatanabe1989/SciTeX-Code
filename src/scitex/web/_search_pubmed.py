@@ -461,7 +461,7 @@ def run_main() -> None:
     import matplotlib.pyplot as plt
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
         sys,
         verbose=False,
     )
@@ -469,7 +469,7 @@ def run_main() -> None:
     args = parse_args()
     exit_status = search_pubmed(args.query, args.n_entries)
 
-    scitex.gen.close(
+    scitex.session.close(
         CONFIG,
         verbose=False,
         notify=False,

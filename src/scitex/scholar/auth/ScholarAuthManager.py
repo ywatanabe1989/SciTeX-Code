@@ -21,7 +21,7 @@ interface for authentication operations.
 
 from typing import Any, Dict, List, Optional
 
-from scitex import logging
+from scitex import log
 from scitex.errors import AuthenticationError
 from scitex.scholar.config import ScholarConfig
 
@@ -30,7 +30,7 @@ from .library._EZProxyAuthenticator import EZProxyAuthenticator
 from .library._OpenAthensAuthenticator import OpenAthensAuthenticator
 from .library._ShibbolethAuthenticator import ShibbolethAuthenticator
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class ScholarAuthManager:

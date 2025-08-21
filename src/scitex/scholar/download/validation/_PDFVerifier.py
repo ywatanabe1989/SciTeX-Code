@@ -11,7 +11,7 @@ from typing import Dict, Optional, List
 import logging
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class PDFVerifier:

@@ -30,10 +30,10 @@ from typing import Dict, List, Optional
 
 import requests
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class RateLimitType(Enum):

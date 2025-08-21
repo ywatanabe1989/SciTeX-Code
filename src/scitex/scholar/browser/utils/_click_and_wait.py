@@ -15,9 +15,9 @@ from typing import Dict, Optional
 
 from playwright.async_api import Locator
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 async def click_and_wait(

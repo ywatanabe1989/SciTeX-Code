@@ -24,12 +24,12 @@ from tenacity import (
     wait_exponential,
 )
 
-from scitex import logging
+from scitex import log
 
 from ..utils import to_complete_metadata_structure
 from ._BaseDOIEngine import BaseDOIEngine
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 import json
 
 

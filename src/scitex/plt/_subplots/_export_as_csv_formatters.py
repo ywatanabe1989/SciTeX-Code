@@ -106,10 +106,10 @@ if __name__ == "__main__":
     import sys
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
         sys, plt, verbose=False, agg=True
     )
     main()
-    scitex.gen.close(CONFIG, verbose=False, notify=False)
+    scitex.session.close(CONFIG, verbose=False, notify=False)
 
 # EOF

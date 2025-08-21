@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 20:03:16 (ywatanabe)"
+# Timestamp: "2025-08-21 20:44:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/00_config.py
 # ----------------------------------------
 from __future__ import annotations
@@ -245,7 +245,7 @@ def run_main() -> None:
 
     args = parse_args()
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.session.start(
         sys,
         plt,
         args=args,
@@ -256,7 +256,7 @@ def run_main() -> None:
 
     exit_status = main(args)
 
-    stx.gen.close(
+    stx.session.close(
         CONFIG,
         verbose=False,
         notify=False,

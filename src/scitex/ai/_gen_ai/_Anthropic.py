@@ -158,11 +158,11 @@ def main() -> None:
 if __name__ == "__main__":
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
         sys, plt, verbose=False
     )
     main()
-    scitex.gen.close(CONFIG, verbose=False, notify=False)
+    scitex.session.close(CONFIG, verbose=False, notify=False)
 
 
 """

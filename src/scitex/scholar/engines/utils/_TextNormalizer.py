@@ -29,9 +29,9 @@ import string
 import unicodedata
 from typing import Dict, List
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class TextNormalizer:

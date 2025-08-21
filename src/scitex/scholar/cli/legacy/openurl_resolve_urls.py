@@ -48,11 +48,11 @@ __DIR__ = os.path.dirname(__FILE__)
 # import sys
 # from pathlib import Path
 
-# from scitex import logging
+# from scitex import log
 # from scitex.scholar.auth import ScholarAuthManager
 # from .._ResumableOpenURLResolver import ResumableOpenURLResolver
 
-# logger = logging.getLogger(__name__)
+# logger = log.getLogger(__name__)
 
 
 # def main():
@@ -159,7 +159,7 @@ __DIR__ = os.path.dirname(__FILE__)
 #     if args.quiet:
 #         logging.disable(logging.INFO)
 #     elif args.verbose:
-#         logging.getLogger("scitex.scholar").setLevel(logging.DEBUG)
+#         log.getLogger("scitex.scholar").setLevel(logging.DEBUG)
 
 #     try:
 #         # Run async main

@@ -15,7 +15,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from typing import Dict, List, Optional, Type
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 
 from ._ArXivEngine import ArXivEngine
@@ -26,7 +26,7 @@ from ._PubMedEngine import PubMedEngine
 from ._SemanticScholarEngine import SemanticScholarEngine
 from ._URLDOIEngine import URLDOIEngine
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class EngineManager:

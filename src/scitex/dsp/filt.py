@@ -58,7 +58,7 @@ if __name__ == "__main__":
     import torch
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Parametes
     T_SEC = 1
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     scitex.io.save(fig, "psd.png")
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

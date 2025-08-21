@@ -22,12 +22,12 @@ This module provides the base interface that all authenticators
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
-from scitex import logging
+from scitex import log
 
 from scitex.errors import AuthenticationError
 
 """Logger"""
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 """Classes"""
 

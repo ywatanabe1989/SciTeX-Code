@@ -142,7 +142,7 @@ def run_main() -> None:
 
     args = parse_args()
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.session.start(
         sys,
         plt,
         args=args,
@@ -153,7 +153,7 @@ def run_main() -> None:
 
     exit_status = asyncio.run(main_async(args))
 
-    stx.gen.close(
+    stx.session.close(
         CONFIG,
         verbose=False,
         notify=False,

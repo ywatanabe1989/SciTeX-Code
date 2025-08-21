@@ -18,9 +18,9 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Initialize the environment using scitex.gen.start
+# Initialize the environment using scitex.session.start
 # This function sets up logging, fixes random seeds, configures matplotlib, and returns CONFIG and other variables
-CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
     sys,        # System module for I/O redirection
     plt,        # Matplotlib pyplot module for plotting configuration
     verbose=True  # Set to False to suppress detailed output
@@ -42,25 +42,25 @@ scitex.io.save(plt, 'sine_wave_plot.png')
 
 # See scitex.plt.subplots to automatic data tracking and saving in a sigmaplot-compatible format
 
-# Finalize the script using scitex.gen.close
+# Finalize the script using scitex.session.close
 # This function handles cleanup tasks, saves configurations, and can send notifications if enabled
-scitex.gen.close(CONFIG)
+scitex.session.close(CONFIG)
 ```
 
-This script demonstrates the basic usage of `scitex.gen.start` and `scitex.gen.close` for initializing and finalizing your environment when running scripts using the `scitex` package.
+This script demonstrates the basic usage of `scitex.session.start` and `scitex.session.close` for initializing and finalizing your environment when running scripts using the `scitex` package.
 
-- **`scitex.gen.start`**:
+- **`scitex.session.start`**:
   - Sets up logging to capture stdout and stderr.
   - Fixes random seeds for reproducibility.
   - Configures Matplotlib settings.
   - Returns a configuration dictionary (`CONFIG`) and other variables for use in your script.
   
-- **`scitex.gen.close`**:
+- **`scitex.session.close`**:
   - Handles cleanup tasks such as flushing output streams.
   - Saves configuration settings and logs.
   - Optionally sends notifications upon script completion.
 
-By wrapping your main code between `scitex.gen.start` and `scitex.gen.close`, you ensure that your script has a consistent environment and that all resources are properly managed.
+By wrapping your main code between `scitex.session.start` and `scitex.session.close`, you ensure that your script has a consistent environment and that all resources are properly managed.
 
 **Note**: Replace `'sine_wave_plot.png'` with your desired file path or name for saving the plot.
 

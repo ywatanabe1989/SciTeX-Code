@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-08-21 21:43:19 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/log/_logger.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/log/_logger.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 """Enhanced logger class for SciTeX."""
 
 import logging
-from ._levels import SUCCESS, FAIL
+
+from ._levels import FAIL, SUCCESS
 
 
 class SciTeXLogger(logging.Logger):
@@ -24,10 +36,12 @@ def setup_logger_class():
     """Setup the custom logger class."""
     # Set custom logger class before any logger creation
     logging.setLoggerClass(SciTeXLogger)
-    
+
     # Force existing root logger to use custom class
     root = logging.getLogger()
     root.__class__ = SciTeXLogger
 
 
-__all__ = ['SciTeXLogger', 'setup_logger_class']
+__all__ = ["SciTeXLogger", "setup_logger_class"]
+
+# EOF

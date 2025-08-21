@@ -22,10 +22,10 @@ try:
 except ImportError:
     import pymupdf as fitz
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.core import Paper
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class PDFContentValidator:

@@ -23,11 +23,11 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Dict, List
 
-from scitex import logging
+from scitex import log
 
 from ._RateLimitHandler import RateLimitHandler
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 @dataclass

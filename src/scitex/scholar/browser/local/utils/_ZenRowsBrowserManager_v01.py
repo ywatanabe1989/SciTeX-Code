@@ -16,11 +16,11 @@ from typing import Any, Dict
 
 from playwright.async_api import Browser, async_playwright
 
-from scitex import logging
+from scitex import log
 
 from ._BrowserManager import BrowserManager
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class ZenRowsBrowserManager(BrowserManager):

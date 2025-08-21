@@ -165,12 +165,12 @@ def _get_gpu_usage(n_round: int = 1) -> Tuple[float, float]:
 if __name__ == "__main__":
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt, verbose=False)
 
     usage = scitex.resource.get_processor_usages()
     scitex.io.save(usage, "usage.csv")
 
-    scitex.gen.close(CONFIG, verbose=False, notify=False)
+    scitex.session.close(CONFIG, verbose=False, notify=False)
 
 # EOF
 
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 
 # if __name__ == "__main__":
 #     # Start
-#     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+#     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
 #         sys, plt, verbose=False
 #     )
 
@@ -274,7 +274,7 @@ if __name__ == "__main__":
 #     scitex.io.save(usage, "usage.csv")
 
 #     # Close
-#     scitex.gen.close(CONFIG, verbose=False, notify=False)
+#     scitex.session.close(CONFIG, verbose=False, notify=False)
 
 #
 

@@ -22,9 +22,9 @@ except ImportError:
     import pymupdf as fitz
 
 import numpy as np
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 @dataclass

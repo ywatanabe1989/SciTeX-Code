@@ -16,7 +16,7 @@ __DIR__ = os.path.dirname(__FILE__)
 Represents a scientific paper with comprehensive metadata and methods.
 """
 
-from scitex import logging
+from scitex import log
 import re
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -25,7 +25,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from scitex.errors import ScholarError
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class Paper:

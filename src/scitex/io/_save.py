@@ -33,7 +33,7 @@ import inspect
 import os as _os
 from typing import Any
 
-from scitex import logging
+from scitex import log
 
 from .._sh import sh
 from ..path._clean import clean
@@ -65,7 +65,7 @@ from ._save_modules import (
 )
 from ._save_modules._bibtex import save_bibtex
 
-logger = logging.getLogger()
+logger = log.getLogger()
 
 
 def _get_figure_with_data(obj):

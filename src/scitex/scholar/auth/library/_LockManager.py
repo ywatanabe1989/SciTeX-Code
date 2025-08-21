@@ -23,11 +23,11 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from scitex import logging
+from scitex import log
 
 from scitex.errors import ScholarError
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class LockError(ScholarError):

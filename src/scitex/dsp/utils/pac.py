@@ -136,7 +136,7 @@ if __name__ == "__main__":
     import torch
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Parameters
     FS = 512
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     plt.show()
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 """
 /home/ywatanabe/proj/entrance/scitex/dsp/utils/pac.py

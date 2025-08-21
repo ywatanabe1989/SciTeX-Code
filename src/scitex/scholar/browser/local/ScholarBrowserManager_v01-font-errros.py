@@ -20,7 +20,7 @@ from typing import Union
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 
 from ._BrowserMixin import BrowserMixin
@@ -28,7 +28,7 @@ from .utils._ChromeProfileManager import ChromeProfileManager
 from .utils._CookieAutoAcceptor import CookieAutoAcceptor
 from .utils._StealthManager import StealthManager
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 """
 Browser Manager with persistent context support.

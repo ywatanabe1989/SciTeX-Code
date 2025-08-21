@@ -25,7 +25,7 @@ from scitex.scholar.core import Paper
 from ._PDFContentValidator import PDFContentValidator
 from ._PDFQualityAnalyzer import PDFQualityAnalyzer
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 def validate_download_pdfs(

@@ -12,9 +12,9 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 from playwright.async_api import Page
 
-from scitex import logging
+from scitex import log
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 async def click_with_fallbacks(

@@ -14,10 +14,10 @@ if __name__ == "__main__":
     import torch
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, cc = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, cc = scitex.session.start(sys, plt)
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
     """
     /home/ywatanabe/proj/scitex/src/scitex/dsp/template.py

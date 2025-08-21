@@ -18,11 +18,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.utils import TextNormalizer
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class LibraryManager:

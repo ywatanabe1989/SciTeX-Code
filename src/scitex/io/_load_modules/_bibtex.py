@@ -18,11 +18,11 @@ returning structured data that can be used by other SciTeX modules.
 """
 
 import re
-from scitex import logging
+from scitex import log
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 def _load_bibtex(lpath: str, **kwargs) -> List[Dict[str, Any]]:

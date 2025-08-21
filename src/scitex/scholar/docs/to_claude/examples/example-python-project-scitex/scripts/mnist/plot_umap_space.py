@@ -88,7 +88,7 @@ def run_main() -> None:
 
     global CONFIG, CC, sys, plt
     args = parse_args()
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
         sys,
         plt,
         args=args,
@@ -98,7 +98,7 @@ def run_main() -> None:
 
     exit_status = main(args)
 
-    scitex.gen.close(
+    scitex.session.close(
         CONFIG,
         exit_status=exit_status,
     )

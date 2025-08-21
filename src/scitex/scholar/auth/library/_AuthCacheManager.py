@@ -22,12 +22,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from scitex import logging
+from scitex import log
 from scitex.scholar.config import ScholarConfig
 
 from ._SessionManager import SessionManager
 
-logger = logging.getLogger(__name__)
+logger = log.getLogger(__name__)
 
 
 class AuthCacheManager:

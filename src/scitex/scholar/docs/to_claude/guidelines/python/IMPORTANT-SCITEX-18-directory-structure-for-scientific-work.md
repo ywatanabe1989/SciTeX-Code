@@ -21,7 +21,7 @@
         ├── script.py       # Python script
         └── script_out/     # Output directory for this script
             ├── file.ext    # Output files
-            └── logs/       # Logging directory for each run (managed by `scitex.gen.start` and `scitex.gen.close`)
+            └── logs/       # Logging directory for each run (managed by `scitex.session.start` and `scitex.session.close`)
                 ├── RUNNING
                 ├── FINISHED_SUCCESS
                 └── FINISHED_FAILURE

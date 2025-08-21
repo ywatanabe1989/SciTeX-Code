@@ -17,6 +17,9 @@ Modules are imported on-demand to avoid circular dependencies.
 import warnings
 
 # Configure warnings
+# Always show our own deprecation warnings first
+warnings.filterwarnings("always", category=DeprecationWarning, module="scitex.*")
+# Then ignore others
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Version
@@ -70,6 +73,8 @@ gists = _LazyModule("gists")
 errors = _LazyModule("errors")
 units = _LazyModule("units")
 logging = _LazyModule("logging")
+log = _LazyModule("log")
+session = _LazyModule("session")
 
 # Import sh function directly as it's commonly used
 try:
@@ -77,12 +82,10 @@ try:
 except ImportError:
     sh = None
 
-# Common function that's often needed
-def start(*args, **kwargs):
-    """Convenience function to access gen.start"""
-    return gen.start(*args, **kwargs)
+# No convenience function - users should use scitex.session.start directly
 
 __all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path",
-           "dict", "decorators", "start", "__version__", "sh", "errors", "units", "logging"]
+           "dict", "decorators", "__version__", "sh", "errors", "units",
+           "logging", "log", "session"]
 
 # EOF

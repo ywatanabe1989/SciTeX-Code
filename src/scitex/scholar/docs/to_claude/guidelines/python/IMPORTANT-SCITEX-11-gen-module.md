@@ -11,10 +11,10 @@
 ### Environment Management
 ```python
 # Initialize environment (logging, paths, matplotlib, random seed)
-stx.gen.start(...)
+stx.session.start(...)
 
 # Clean up environment
-stx.gen.close(...)
+stx.session.close(...)
 ```
 
 ## Your Understanding Check
