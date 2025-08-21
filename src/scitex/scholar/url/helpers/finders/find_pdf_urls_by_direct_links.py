@@ -96,14 +96,31 @@ async def _find_pdf_urls_by_href(
                 return false;
             }}
 
-            // Rest of existing logic with shouldDenyElement check
+            // Check download selectors
             const downloadSelectors = {download_selectors};
             downloadSelectors.forEach(selector => {{
                 document.querySelectorAll(selector).forEach(elem => {{
                     if (shouldDenyElement(elem)) return;
-                    // ... rest of existing logic
+                    
+                    const href = elem.href || elem.getAttribute('href');
+                    if (href && (href.includes('.pdf') || href.includes('/pdf/'))) {{
+                        urls.add(href);
+                    }}
                 }});
             }});
+            
+            // Also check for common PDF link patterns
+            document.querySelectorAll('a[href*=".pdf"], a[href*="/pdf/"]').forEach(link => {{
+                if (!shouldDenyElement(link) && link.href) {{
+                    urls.add(link.href);
+                }}
+            }});
+            
+            // Check meta tags for PDF URLs
+            const pdfMeta = document.querySelector('meta[name="citation_pdf_url"]');
+            if (pdfMeta && pdfMeta.content) {{
+                urls.add(pdfMeta.content);
+            }}
 
             return Array.from(urls);
         }}"""

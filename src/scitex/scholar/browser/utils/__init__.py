@@ -10,8 +10,10 @@ from ._wait_redirects import wait_redirects
 from ._close_unwanted_pages import close_unwanted_pages
 from ._click_with_fallbacks import click_with_fallbacks
 from ._fill_with_fallbacks import fill_with_fallbacks
+from .JSLoader import JSLoader
 
 __all__ = [
+    "JSLoader",
     "click_center_async",
     "click_download_button_from_chrome_pdf_viewer_async",
     "click_and_wait",

@@ -44,7 +44,7 @@ def is_auth_endpoint(url: str) -> bool:
     
     # Check hostname
     for auth_pattern in AUTH_ENDPOINTS:
-        if parsed.hostname and auth_pattern in parsed.hostname:
+        if auth_pattern in parsed.hostname:
             return True
     
     # Check path
@@ -56,10 +56,6 @@ def is_auth_endpoint(url: str) -> bool:
 
 def is_final_article_url(url: str) -> bool:
     """Check if URL looks like a final article page."""
-    # Exclude chrome extensions and other non-article URLs
-    if url.startswith("chrome-extension://") or url.startswith("about:") or url.startswith("data:"):
-        return False
-    
     indicators = [
         "/science/article/",
         "/articles/",
@@ -237,9 +233,9 @@ async def wait_redirects(
                         logger.debug(f"URL stable for 5s, completing: {current_url[:80]}")
                         navigation_complete.set()
                         break
-                    elif stable_count >= 15:
-                        # Give auth pages more time (15 seconds)
-                        logger.warning(f"Auth page stable for 15s, completing: {current_url[:80]}")
+                    elif stable_count >= 10:
+                        # Even auth pages shouldn't take more than 10s
+                        logger.warning(f"Auth page stable for 10s, completing: {current_url[:80]}")
                         navigation_complete.set()
                         break
     
