@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:12:01 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
+# Timestamp: "2025-08-21 22:25:55 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -95,7 +95,7 @@ async def main_async(args):
     )
     output_path = f"./data/scholar/{output_name}"
 
-    stx.io.save(batched_metadata, output_path)
+    stx.io.save(batched_metadata, output_path, symlink_from_cwd=True)
 
     return batched_metadata
 

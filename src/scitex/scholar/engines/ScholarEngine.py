@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 19:28:08 (ywatanabe)"
+# Timestamp: "2025-08-21 22:41:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -29,6 +29,7 @@ from .individual import (
     SemanticScholarEngine,
     URLDOIEngine,
 )
+from .utils._to_complete_metadata_structure import BASE_STRUCTURE
 
 logger = log.getLogger(__name__)
 
@@ -489,6 +490,8 @@ class ScholarEngine:
                 valid_engines[engine_name] = metadata
 
         if not valid_engines:
+            # return BASE_STRUCTURE.copy()
+            # fixme; return empty metadata structure
             return None
 
         # Start with the first valid engine as base
