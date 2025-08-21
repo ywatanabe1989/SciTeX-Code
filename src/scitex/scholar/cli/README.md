@@ -20,13 +20,13 @@ python -m scitex.scholar chrome
 python -m scitex.scholar resolve-dois --title "Attention is All You Need" --worker_asyncs 8
 
 # Resolve from BibTeX file
-python -m scitex.scholar resolve-dois --bibtex papers.bib --worker_asyncs 8
+python -m scitex.scholar resolve-dois --bibtex pac.bib --worker_asyncs 8
 ```
 
 ### DOI Resolution for a Batch Entries using BibTex
 ```bash
 # Resolve and enrich with project organization
-python -m scitex.scholar resolve-and-enrich --bibtex papers.bib --project myproject
+python -m scitex.scholar resolve-and-enrich --bibtex pac.bib --project myproject
 
 # Show project summary
 python -m scitex.scholar resolve-and-enrich --project myproject --summary
@@ -35,10 +35,10 @@ python -m scitex.scholar resolve-and-enrich --project myproject --summary
 ### BibTeX Enrichment
 ```bash
 # Enrich in-place with backup
-python -m scitex.scholar enrich-bibtex papers.bib --no-abstracts --no-urls
+python -m scitex.scholar enrich-bibtex pac.bib --no-abstracts --no-urls
 
 # Save to new file
-python -m scitex.scholar enrich-bibtex papers.bib enriched.bib --no-abstracts --no-urls
+python -m scitex.scholar enrich-bibtex pac.bib enriched.bib --no-abstracts --no-urls
 ```
 
 ## Features

@@ -105,7 +105,7 @@ class SSOAutomator:
             if key in name_lower:
                 return cls._create_automator(automator_name, **kwargs)
 
-        logger.warning(
+        logger.warn(
             f"No SSO automator found for institution: {institution_name}"
         )
         return None

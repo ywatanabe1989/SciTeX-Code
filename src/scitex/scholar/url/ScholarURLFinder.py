@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 09:36:15 (ywatanabe)"
+# Timestamp: "2025-08-21 15:25:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -150,56 +150,90 @@ class ScholarURLFinder:
 
         return urls
 
+    # # Now, this is not working; probably, we need to prepare multiple contexts or browsers
+    # async def find_urls_batch(
+    #     self, dois: List[str], max_concurrent: int = 4
+    # ) -> List[Dict[str, Any]]:
+    #     """Get all URL types for multiple DOIs in batch with parallel processing."""
+    #     if not dois:
+    #         return []
+
+    #     semaphore = asyncio.Semaphore(max_concurrent)
+
+    #     async def find_urls_with_semaphore(doi: str):
+    #         async with semaphore:
+    #             # Check cache first - no page needed
+    #             if self.use_cache and doi in self._full_results_cache:
+    #                 return self._full_results_cache[doi]
+
+    #             page = await self.context.new_page()
+    #             try:
+    #                 return await self.find_urls(doi=doi)
+    #             except Exception as e:
+    #                 logger.error(f"Error finding URLs for {doi}: {e}")
+    #                 return {}
+    #             finally:
+    #                 await page.close()
+
+    #     # Create tasks for parallel execution
+    #     tasks = [find_urls_with_semaphore(doi) for doi in dois]
+
+    #     # Execute with controlled concurrency
+    #     results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    #     # Process results
+    #     batch_results = []
+    #     for ii_result, result in enumerate(results):
+    #         if isinstance(result, Exception):
+    #             logger.debug(
+    #                 f"Batch URL finding error for DOI {dois[ii_result]}: {result}"
+    #             )
+    #             batch_results.append({})
+    #         else:
+    #             batch_results.append(result or {})
+
+    #     # Success Rate
+    #     n_dois = len(dois)
+    #     if n_dois:
+    #         n_found = sum(
+    #             1
+    #             for result in results
+    #             if not isinstance(result, Exception)
+    #             and result
+    #             and result.get("urls_pdf")
+    #         )
+    #         msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
+    #         if n_found == n_dois:
+    #             logger.success(msg)
+    #         else:
+    #             logger.warn(msg)
+
+    #     return batch_results
+
     async def find_urls_batch(
-        self, dois: List[str], max_concurrent: int = 8
+        self, dois: List[str], max_concurrent: int = 1
     ) -> List[Dict[str, Any]]:
-        """Get all URL types for multiple DOIs in batch with parallel processing."""
+        """Process DOIs sequentially to avoid network issues."""
         if not dois:
             return []
 
-        semaphore = asyncio.Semaphore(max_concurrent)
-
-        async def find_urls_with_semaphore(doi: str):
-            async with semaphore:
-                # Check cache first - no page needed
-                if self.use_cache and doi in self._full_results_cache:
-                    return self._full_results_cache[doi]
-
-                page = await self.context.new_page()
-                try:
-                    return await self.find_urls(doi=doi)
-                except Exception as e:
-                    logger.error(f"Error finding URLs for {doi}: {e}")
-                    return {}
-                finally:
-                    await page.close()
-
-        # Create tasks for parallel execution
-        tasks = [find_urls_with_semaphore(doi) for doi in dois]
-
-        # Execute with controlled concurrency
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Process results
         batch_results = []
-        for ii_result, result in enumerate(results):
-            if isinstance(result, Exception):
-                logger.debug(
-                    f"Batch URL finding error for DOI {dois[ii_result]}: {result}"
-                )
-                batch_results.append({})
-            else:
-                batch_results.append(result or {})
 
-        # Success Rate
+        for doi in dois:
+            try:
+                if self.use_cache and doi in self._full_results_cache:
+                    result = self._full_results_cache[doi]
+                else:
+                    result = await self.find_urls(doi=doi)
+                batch_results.append(result or {})
+            except Exception as e:
+                logger.debug(f"Batch URL finding error for DOI {doi}: {e}")
+                batch_results.append({})
+
         n_dois = len(dois)
         if n_dois:
             n_found = sum(
-                1
-                for result in results
-                if not isinstance(result, Exception)
-                and result
-                and result.get("urls_pdf")
+                1 for result in batch_results if result.get("urls_pdf")
             )
             msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
             if n_found == n_dois:
@@ -295,11 +329,11 @@ class ScholarURLFinder:
                     pass
                 return []
 
-    async def resolve_openurl_async(
-        self, openurl_query: str, page: Page
-    ) -> Optional[str]:
-        """Resolve OpenURL to final authenticated URL."""
-        return await resolve_openurl(openurl_query, page)
+    # async def resolve_openurl_async(
+    #     self, openurl_query: str, page: Page
+    # ) -> Optional[str]:
+    #     """Resolve OpenURL to final authenticated URL."""
+    #     return await resolve_openurl(openurl_query, page)
 
     def update_metadata(self, metadata_path: Path, urls: Dict) -> bool:
         """Update metadata file with resolved URLs."""
@@ -386,26 +420,57 @@ class ScholarURLFinder:
 
         return result
 
-    async def _get_cached_openurl(self, doi: str) -> Dict[str, str]:
-        """Get OpenURL results with caching using DOI as key."""
-        results = {}
+    # async def _get_cached_openurl(self, doi: str) -> Dict[str, str]:
+    #     """Get OpenURL results with caching using DOI as key."""
+    #     results = {}
 
+    #     if not self.openurl_resolver_url:
+    #         return results
+
+    #     from .helpers.resolvers._OpenURLResolver import OpenURLResolver
+
+    #     resolver = OpenURLResolver(config=self.config)
+
+    #     openurl_query = resolver._build_query(doi)
+    #     if openurl_query:
+    #         results["url_openurl_query"] = openurl_query
+
+    #     if self.use_cache and doi in self._openurl_cache:
+    #         logger.debug(f"Using cached OpenURL resolution for DOI: {doi}")
+    #         resolved_url = self._openurl_cache[doi]
+    #     else:
+    #         page = await self.get_page()
+    #         resolved_url = await resolver.resolve_doi(doi, page)
+
+    #         if self.use_cache:
+    #             self._openurl_cache[doi] = resolved_url
+    #             self._save_cache(self.openurl_cache_file, self._openurl_cache)
+
+    #     if resolved_url:
+    #         results["url_openurl_resolved"] = resolved_url
+
+    #     return results
+
+    async def _get_cached_openurl(self, doi: str) -> Dict[str, str]:
+        """Get OpenURL results with caching and delay."""
+        results = {}
         if not self.openurl_resolver_url:
             return results
 
         from .helpers.resolvers._OpenURLResolver import OpenURLResolver
 
         resolver = OpenURLResolver(config=self.config)
-
         openurl_query = resolver._build_query(doi)
+
         if openurl_query:
             results["url_openurl_query"] = openurl_query
 
         if self.use_cache and doi in self._openurl_cache:
-            logger.debug(f"Using cached OpenURL resolution for DOI: {doi}")
             resolved_url = self._openurl_cache[doi]
         else:
             page = await self.get_page()
+            # Add delay to avoid overwhelming resolver
+            await page.wait_for_timeout(5000)
             resolved_url = await resolver.resolve_doi(doi, page)
 
             if self.use_cache:
@@ -414,7 +479,6 @@ class ScholarURLFinder:
 
         if resolved_url:
             results["url_openurl_resolved"] = resolved_url
-
         return results
 
 

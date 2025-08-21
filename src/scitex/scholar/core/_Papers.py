@@ -88,8 +88,8 @@ class Papers:
 
         Examples:
             >>> # From file path
-            >>> collection = Papers.from_bibtex("papers.bib")
-            >>> collection = Papers.from_bibtex(Path("~/refs/papers.bib"))
+            >>> collection = Papers.from_bibtex("pac.bib")
+            >>> collection = Papers.from_bibtex(Path("~/refs/pac.bib"))
 
             >>> # From BibTeX content string
             >>> bibtex_content = '''@article{example2023,

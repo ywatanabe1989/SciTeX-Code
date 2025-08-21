@@ -194,7 +194,7 @@ Examples:
   python -m scitex.scholar.validate_pdfs --pdf-dir ./pdfs
 
   # Validate with BibTeX for title matching
-  python -m scitex.scholar.validate_pdfs --pdf-dir ./pdfs --bibtex papers.bib
+  python -m scitex.scholar.validate_pdfs --pdf-dir ./pdfs --bibtex pac.bib
 
   # Save detailed report
   python -m scitex.scholar.validate_pdfs --pdf-dir ./pdfs --report validation_report.json

@@ -245,7 +245,7 @@ graph TD
 │       ├── Author-Year-Journal -> ../MASTER/<8-DIGIT-ID>
 │       ├── Author-Year-Journal -> ../MASTER/<8-DIGIT-ID>
 │       └── info/
-│           └── papers.bib
+│           └── pac.bib
 ├── README.md
 ├── sso_sessions
 │   ├── openathens_session.json

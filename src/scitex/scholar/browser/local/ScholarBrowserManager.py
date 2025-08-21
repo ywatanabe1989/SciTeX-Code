@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 07:10:48 (ywatanabe)"
+# Timestamp: "2025-08-21 14:22:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/ScholarBrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -21,6 +21,7 @@ from typing import Union
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from scitex import logging
+from scitex.scholar.browser.utils import close_unwanted_pages
 from scitex.scholar.config import ScholarConfig
 
 from ._BrowserMixin import BrowserMixin
@@ -151,10 +152,10 @@ class ScholarBrowserManager(BrowserMixin):
             raise ValueError(
                 "browser_mode must be eighther of 'interactive' or 'stealth'"
             )
-        logger.info("Browser initialized:")
-        logger.info(f"headless: {self.headless}")
-        logger.info(f"spoof_dimension: {self.spoof_dimension}")
-        logger.info(f"viewport_size: {self.viewport_size}")
+        logger.debug("Browser initialized:")
+        logger.debug(f"headless: {self.headless}")
+        logger.debug(f"spoof_dimension: {self.spoof_dimension}")
+        logger.debug(f"viewport_size: {self.viewport_size}")
 
     # async def _get_zenrows_browser_and_context_async(
     #     self,
@@ -210,53 +211,6 @@ class ScholarBrowserManager(BrowserMixin):
             context = await self._new_context_async(browser, **context_options)
 
         return browser, context
-
-    # async def get_authenticated_browser_and_context_async(
-    #     self,
-    # ) -> tuple[Browser, BrowserContext]:
-    #     """Get browser context with authentication cookies and extensions loaded."""
-
-    #     # Ensure auth_manager is passed
-    #     if self.auth_manager is None:
-    #         raise ValueError(
-    #             "Authentication manager is not set. "
-    #             "To use this method, please initialize ScholarBrowserManager with an auth_manager."
-    #         )
-
-    #     # Ensure auth_manager has authenticate_async info
-    #     await self.auth_manager.ensure_authenticate_async()
-
-    #     # Use browser with Chrome profile for extension support
-    #     browser = (
-    #         await self._get_persistent_browser_with_profile_but_not_with_auth_async()
-    #     )
-
-    #     # With persistent context, we already have the profile and extensions loaded
-    #     if hasattr(self, "_persistent_context") and self._persistent_context:
-    #         context = self._persistent_context
-    #         logger.success(
-    #             "Using persistent context with profile and extensions"
-    #         )
-    #     else:
-    #         # Fallback to regular context creation if persistent context not available
-    #         logger.warn("Falling back to regular context creation")
-    #         context_options = {}
-    #         if (
-    #             self.auth_manager
-    #             and await self.auth_manager.is_authenticate_async()
-    #         ):
-    #             try:
-    #                 auth_session = await self.auth_manager.authenticate_async()
-    #                 if auth_session and "cookies" in auth_session:
-    #                     context_options["storage_state"] = {
-    #                         "cookies": auth_session["cookies"]
-    #                     }
-    #             except Exception as e:
-    #                 logger.warn(f"Failed to get auth session: {e}")
-
-    #         context = await self._new_context_async(browser, **context_options)
-
-    #     return browser, context
 
     async def _new_context_async(
         self, browser: Browser, **context_options
@@ -331,13 +285,13 @@ class ScholarBrowserManager(BrowserMixin):
             if lock_file.exists():
                 try:
                     lock_file.unlink()
-                    logger.info(f"Removed Chrome lock file: {lock_file.name}")
+                    logger.debug(f"Removed Chrome lock file: {lock_file.name}")
                     removed_locks += 1
                 except Exception as e:
                     logger.warn(f"Could not remove {lock_file.name}: {e}")
 
         if removed_locks > 0:
-            logger.info(f"Cleaned up {removed_locks} Chrome lock files")
+            logger.debug(f"Cleaned up {removed_locks} Chrome lock files")
             # Wait a moment for the system to release file handles
             time.sleep(1)
 
@@ -351,7 +305,7 @@ class ScholarBrowserManager(BrowserMixin):
                 text=True,
             )
             if result.returncode == 0:
-                logger.info(
+                logger.debug(
                     "Killed lingering Chrome processes for this profile"
                 )
                 time.sleep(2)  # Give processes time to fully terminate
@@ -363,88 +317,46 @@ class ScholarBrowserManager(BrowserMixin):
         self._persistent_context = await self._persistent_playwright.chromium.launch_persistent_context(
             **persistent_context_launch_options
         )
-
-        await self._close_unwanted_extension_pages_async()
-        asyncio.create_task(self._close_unwanted_extension_pages_async())
+        await close_unwanted_pages(self._persistent_context)
+        asyncio.create_task(close_unwanted_pages(self._persistent_context))
+        # await self._close_unwanted_extension_pages_async()
+        # asyncio.create_task(self._close_unwanted_extension_pages_async())
         await self._apply_stealth_scripts_to_persistent_context_async()
         await self._load_auth_cookies_to_persistent_context_async()
         self._persistent_browser = self._persistent_context.browser
 
-    async def _close_unwanted_extension_pages_async(self):
-        await asyncio.sleep(1)
+    # async def _close_unwanted_extension_pages_async(self):
+    #     await asyncio.sleep(1)
 
-        for _ in range(20):
-            try:
-                unwanted_pages = [
-                    page
-                    for page in self._persistent_context.pages
-                    if (
-                        "chrome-extension://" in page.url
-                        or "app.pbapi.xyz" in page.url
-                        or "options.html" in page.url
-                        # or "page:blacnk" in page.url
-                    )
-                ]
+    #     for _ in range(20):
+    #         try:
+    #             unwanted_pages = [
+    #                 page
+    #                 for page in self._persistent_context.pages
+    #                 if (
+    #                     "chrome-extension://" in page.url
+    #                     or "app.pbapi.xyz" in page.url
+    #                     or "options.html" in page.url
+    #                     # or "page:blacnk" in page.url
+    #                 )
+    #             ]
 
-                if not unwanted_pages:
-                    logger.info("Extension cleanup completed")
-                    break
+    #             if not unwanted_pages:
+    #                 logger.debug("Extension cleanup completed")
+    #                 break
 
-                # Ensure context stays alive
-                if len(self._persistent_context.pages) == len(unwanted_pages):
-                    await self._persistent_context.new_page()
+    #             # Ensure context stays alive
+    #             if len(self._persistent_context.pages) == len(unwanted_pages):
+    #                 await self._persistent_context.new_page()
 
-                for page in unwanted_pages:
-                    await page.close()
-                    logger.info(f"Closed unwanted page: {page.url}")
+    #             for page in unwanted_pages:
+    #                 await page.close()
+    #                 logger.debug(f"Closed unwanted page: {page.url}")
 
-            except Exception as e:
-                logger.debug(f"Cleanup attempt failed: {e}")
+    #         except Exception as e:
+    #             logger.debug(f"Cleanup attempt failed: {e}")
 
-            await asyncio.sleep(2)
-
-    # def _set_pdf_download_preferences(self):
-    #     """Set Chrome preferences to disable PDF viewer and force downloads."""
-    #     try:
-    #         import json
-
-    #         profile_dir = Path(self.chrome_profile_manager.profile_dir)
-    #         default_dir = profile_dir / "Default"
-    #         default_dir.mkdir(exist_ok=True)
-
-    #         preferences_file = default_dir / "Preferences"
-
-    #         # Load existing preferences if they exist
-    #         if preferences_file.exists():
-    #             with open(preferences_file, "r") as f:
-    #                 preferences = json.load(f)
-    #         else:
-    #             preferences = {}
-
-    #         # Add PDF download preferences
-    #         preferences.update(
-    #             {
-    #                 "plugins": {
-    #                     "always_open_pdf_externally": True,
-    #                     "open_pdf_in_system_reader": True,
-    #                 },
-    #                 "download": {
-    #                     "prompt_for_download": False,
-    #                     "directory_upgrade": True,
-    #                     "extensions_to_open": "",
-    #                 },
-    #             }
-    #         )
-
-    #         # Write updated preferences
-    #         with open(preferences_file, "w") as f:
-    #             json.dump(preferences, f, indent=2)
-
-    #         logger.success(
-    #             f"Set PDF download preferences in {preferences_file}"
-    #         )
-    #     except Exception as e:
-    #         logger.warn(f"Could not set PDF preferences: {e}")
+    #         await asyncio.sleep(2)
 
     def _verify_xvfb_running(self):
         """Verify Xvfb virtual display is running"""
@@ -459,7 +371,7 @@ class ScholarBrowserManager(BrowserMixin):
                 logger.success(f"Xvfb display :{self.display} is running")
                 return True
             else:
-                logger.info(f"Starting Xvfb display :{self.display}")
+                logger.debug(f"Starting Xvfb display :{self.display}")
                 subprocess.Popen(
                     [
                         "Xvfb",
@@ -529,7 +441,7 @@ class ScholarBrowserManager(BrowserMixin):
         # Debug: Show window args for stealth mode
         if self.spoof_dimension:
             window_args = [arg for arg in launch_args if "window-" in arg]
-            logger.info(f"Stealth window args: {window_args}")
+            logger.debug(f"Stealth window args: {window_args}")
 
         proxy_config = None
         if self.use_zenrows_proxy:
@@ -645,7 +557,7 @@ class ScholarBrowserManager(BrowserMixin):
                     if verbose:
                         logger.debug(f"Screenshot {step}: {path}")
                     elif step == 1:
-                        logger.info(
+                        logger.debug(
                             f"Started periodic screenshots: {prefix}_*"
                         )
                 except Exception as e:
@@ -655,7 +567,7 @@ class ScholarBrowserManager(BrowserMixin):
                 await asyncio.sleep(interval_seconds)
                 elapsed += interval_seconds
 
-            logger.info(f"Completed {step} periodic screenshots for {prefix}")
+            logger.debug(f"Completed {step} periodic screenshots for {prefix}")
 
         # Start the task in background
         task = asyncio.create_task(take_periodic_screenshots())
@@ -685,18 +597,18 @@ class ScholarBrowserManager(BrowserMixin):
 
             if self._persistent_context:
                 await self._persistent_context.close()
-                logger.info("Closed persistent browser context")
+                logger.debug("Closed persistent browser context")
 
             if (
                 self._persistent_browser
                 and self._persistent_browser.is_connected()
             ):
                 await self._persistent_browser.close()
-                logger.info("Closed persistent browser")
+                logger.debug("Closed persistent browser")
 
             if self._persistent_playwright:
                 await self._persistent_playwright.stop()
-                logger.info("Stopped Playwright instance")
+                logger.debug("Stopped Playwright instance")
 
         except Exception as e:
             logger.warn(f"Error during browser cleanup: {e}")

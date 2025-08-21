@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 23:40:15 (ywatanabe)"
+# Timestamp: "2025-08-21 14:27:54 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_ChromeProfileManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -102,13 +102,11 @@ class ChromeProfileManager:
             for key, ext_info in self.EXTENSIONS.items():
                 ext_id = ext_info["id"]
                 if status.get(key, False):
-                    logger.success(
-                        f"{ext_info['name']} ({ext_id}) is installed"
+                    logger.debug(
+                        f"Found {ext_info['name']} ({ext_id}) installed"
                     )
                 else:
-                    logger.warn(
-                        f"{ext_info['name']} ({ext_id}) is not installed"
-                    )
+                    logger.warn(f"{ext_info['name']} ({ext_id}) not installed")
 
             all_installed = installed_count == len(self.EXTENSIONS)
             if all_installed:
@@ -162,7 +160,7 @@ class ChromeProfileManager:
                     "--disable-web-security",
                 ]
             )
-            logger.info(
+            logger.debug(
                 f"Loading {len(extension_paths)} extensions from {self.profile_dir}"
             )
 
@@ -206,7 +204,7 @@ class ChromeProfileManager:
                 stderr=subprocess.DEVNULL,
                 start_new_session=True,
             )
-            logger.info(f"Launched Chrome with PID {process.pid}")
+            logger.debug(f"Launched Chrome with PID {process.pid}")
 
             time.sleep(2)
             if process.poll() is not None:

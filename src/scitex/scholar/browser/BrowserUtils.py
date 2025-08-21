@@ -58,7 +58,7 @@ class BrowserUtils:
             with open(html_path, "w", encoding="utf-8") as f:
                 f.write(html_content)
 
-            logger.info(f"Debug info saved: {screenshot_path}, {html_path}")
+            logger.debug(f"Debug info saved: {screenshot_path}, {html_path}")
             return {"screenshot": screenshot_path, "html": html_path}
 
         except Exception as e:

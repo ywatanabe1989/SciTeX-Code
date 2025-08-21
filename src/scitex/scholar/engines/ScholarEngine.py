@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-19 08:52:24 (ywatanabe)"
+# Timestamp: "2025-08-21 19:28:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,6 +15,8 @@ import asyncio
 import hashlib
 import time
 from typing import Dict, List
+
+from tqdm import tqdm
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
@@ -156,6 +158,20 @@ class ScholarEngine:
         self, title: str = None, doi: str = None, **kwargs
     ) -> Dict[str, Dict]:
         """Search all engines and return combined results."""
+
+        def _build_readable_query_str(title, doi):
+            # Log failure if no results found
+            query_str = (
+                f"title: {title}"
+                if title
+                else f"doi: {doi}" if doi else "unknown query"
+            )
+            N_PRINT = 50
+            if len(query_str) < N_PRINT:
+                return query_str
+            else:
+                return f"{query_str[:N_PRINT]}..."
+
         # Check cache first
         cache_key = self._get_cache_key(title, doi, **kwargs)
         if self.use_cache and cache_key in self._cache:
@@ -191,20 +207,16 @@ class ScholarEngine:
                 logger.debug(f"Error from {engine_name}: {result}")
                 continue
             if result:
-                print(
+                logger.debug(
                     f"{engine_name} returned title: {result.get('basic', {}).get('title', 'N/A')}"
                 )
                 engine_results[engine_name] = result
 
         combined_result = self._combine_metadata(engine_results)
 
-        # Log failure if no results found
+        query_str = _build_readable_query_str(title, doi)
+
         if not combined_result:
-            query_str = (
-                f"title: {title}"
-                if title
-                else f"doi: {doi}" if doi else "unknown query"
-            )
             logger.fail(f"No metadata found for {query_str}")
 
         # Cache result
@@ -212,116 +224,9 @@ class ScholarEngine:
             self._cache[cache_key] = combined_result
             self._save_cache()
 
+        logger.success(f"Metadata retrieved for this query: {query_str}")
+
         return combined_result
-
-    # async def search_batch_async(
-    #     self,
-    #     titles: List[str] = None,
-    #     dois: List[str] = None,
-    # ) -> List[Dict[str, Dict]]:
-    #     """Search multiple papers in batch with parallel processing."""
-    #     if dois:
-    #         batched_meatadata = [await self.search_async(doi) for doi in dois]
-    #         dois = [
-    #             metadata.get("id", {}).get("doi")
-    #             for metadata in batched_metadata
-    #             if metadata and metadata.get("id")
-    #         ]
-    #         logger.warn(f"Search engines found {}/{} dois from publications (= {success_rate}%)") # implement this
-
-    #         return batched_metadata
-
-    #     if titles:
-    #         batched_meatadta = [await self.search_async(title) for title in titles]
-    #         dois = [
-    #             metadata.get("id", {}).get("doi")
-    #             for metadata in batched_metadata
-    #             if metadata and metadata.get("id")
-    #         ]
-    #         logger.warn(f"Search engines found {}/{} dois from publications (= {success_rate}%)") # implement this
-
-    #         return batched_metadata
-    # async def search_batch_async(
-    #     self,
-    #     titles: List[str] = None,
-    #     dois: List[str] = None,
-    # ) -> List[Dict[str, Dict]]:
-    #     """Search multiple papers in batch with parallel processing."""
-
-    #     def _print_stats(dois, results):
-    #         failed_queries = []
-    #         found_dois = []
-
-    #         for ii, (doi, result) in enumerate(zip(dois, results)):
-    #             if isinstance(result, Exception):
-    #                 failed_queries.append((doi, str(result)))
-    #             elif result and result.get("id", {}).get("doi"):
-    #                 found_dois.append(result.get("id", {}).get("doi"))
-    #             else:
-    #                 failed_queries.append((doi, "No metadata found"))
-
-    #         n_total = len(dois)
-    #         n_found = len(found_dois)
-    #         success_rate = (
-    #             round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         )
-
-    #         msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         if n_found == n_total:
-    #             logger.success(msg)
-    #         else:
-    #             logger.warn(msg)
-    #             for doi, error in failed_queries:
-    #                 logger.fail(f"Failed DOI '{doi}': {error}")
-
-    #     if dois:
-    #         batched_metadata = [
-    #             await self.search_async(doi=doi) for doi in dois
-    #         ]
-    #         _print_stats(batched_metadata)
-    #         # # fixme; this might be not useful but we would like to show success rate so that we should change check fields other than doi here
-    #         # found_dois = [
-    #         #     metadata.get("id", {}).get("doi")
-    #         #     for metadata in batched_metadata
-    #         #     if metadata and metadata.get("id", {}).get("doi")
-    #         # ]
-    #         # n_total = len(dois)
-    #         # n_found = len(found_dois)
-    #         # success_rate = (
-    #         #     round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         # )
-
-    #         # msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         # if n_found == n_total:
-    #         #     logger.success(msg)
-    #         # else:
-    #         #     logger.warn(msg)
-    #         return batched_metadata
-
-    #     if titles:
-    #         batched_metadata = [
-    #             await self.search_async(title=title) for title in titles
-    #         ]
-    #         _print_stats(batched_metadata)
-    #         # found_dois = [
-    #         #     metadata.get("id", {}).get("doi")
-    #         #     for metadata in batched_metadata
-    #         #     if metadata and metadata.get("id", {}).get("doi")
-    #         # ]
-    #         # n_total = len(titles)
-    #         # n_found = len(found_dois)
-    #         # success_rate = (
-    #         #     round(100.0 * n_found / n_total, 1) if n_total > 0 else 0.0
-    #         # )
-
-    #         # msg = f"Search engines found {n_found}/{n_total} DOIs from publications (= {success_rate}%)"
-    #         # if n_found == n_total:
-    #         #     logger.success(msg)
-    #         # else:
-    #         #     logger.warn(msg)
-    #         return batched_metadata
-
-    #     return []
 
     async def search_batch_async(
         self,
@@ -357,14 +262,14 @@ class ScholarEngine:
 
         if dois:
             batched_metadata = [
-                await self.search_async(doi=doi) for doi in dois
+                await self.search_async(doi=doi) for doi in tqdm(dois)
             ]
             _print_stats(dois, batched_metadata)
             return batched_metadata
 
         if titles:
             batched_metadata = [
-                await self.search_async(title=title) for title in titles
+                await self.search_async(title=title) for title in tqdm(titles)
             ]
             _print_stats(titles, batched_metadata)
             return batched_metadata

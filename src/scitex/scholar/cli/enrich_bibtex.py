@@ -18,10 +18,10 @@ Usage:
 
 Examples:
     # Enrich in-place (creates backup)
-    python -m scitex.scholar.enrich_bibtex papers.bib
+    python -m scitex.scholar.enrich_bibtex pac.bib
 
     # Save to new file
-    python -m scitex.scholar.enrich_bibtex papers.bib papers_enriched.bib
+    python -m scitex.scholar.enrich_bibtex pac.bib papers_enriched.bib
 """
 
 import argparse
@@ -40,10 +40,10 @@ def create_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
 # Enrich in-place (creates backup)
-python -m scitex.scholar enrich_bibtex papers.bib
+python -m scitex.scholar enrich_bibtex pac.bib
 
 # Save to new file
-python -m scitex.scholar enrich_bibtex papers.bib papers_enriched.bib""",
+python -m scitex.scholar enrich_bibtex pac.bib papers_enriched.bib""",
     )
 
     parser.add_argument("input", type=str, help="Input BibTeX file to enrich")

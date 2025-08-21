@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 16:19:28 (ywatanabe)"
+# Timestamp: "2025-08-21 14:22:10 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_StealthManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -53,7 +53,7 @@ class StealthManager:
             # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
         ]
         user_agent = random.choice(user_agents)
-        logger.info(f"User Agent randomly selected: {user_agent}")
+        logger.debug(f"User Agent randomly selected: {user_agent}")
         return user_agent
 
     def get_random_viewport(self) -> dict:
@@ -62,7 +62,7 @@ class StealthManager:
                 "width": self.viewport_size[0],
                 "height": self.viewport_size[1],
             }
-            logger.info(
+            logger.debug(
                 f"Viewport defined as specified in Stealth Manager initiation: {viewport}"
             )
             return viewport
@@ -70,7 +70,7 @@ class StealthManager:
         if self.spoof_dimension:
             # viewport = {"width": 1, "height": 1}
             viewport = {"width": 1920, "height": 1080}
-            logger.info(
+            logger.debug(
                 f"Viewport defined as spoof_dimension passed during Stealth Manager initiation: {viewport}"
             )
             return viewport
@@ -84,7 +84,7 @@ class StealthManager:
                     {"width": 1280, "height": 720},
                 ]
             )
-            logger.info(f"Viewport randomly selected: {viewport}")
+            logger.debug(f"Viewport randomly selected: {viewport}")
             return viewport
 
     def get_stealth_options(self) -> dict:
@@ -197,7 +197,7 @@ class StealthManager:
         if self.spoof_dimension:
             # 1x1 window completely off-screen for true invisibility
             stealth_args.extend(["--window-size=1,1", "--window-position=0,0"])
-            logger.info(
+            logger.debug(
                 "Invisible mode: Window set to 1x1 at position 0,0 (off-screen)"
             )
         else:
@@ -216,7 +216,7 @@ class StealthManager:
         else:
             config_desc = "Default (1920x1080)"
 
-        logger.info(f"Browser window configuration: {config_desc}")
+        logger.debug(f"Browser window configuration: {config_desc}")
         return stealth_args
 
     def get_network_evasion_headers(self) -> dict:
@@ -261,7 +261,7 @@ class StealthManager:
 
     # async def inject_stealth_scripts(self, page: Page):
     #     """Inject JavaScript to override browser fingerprinting detection."""
-    #     logger.info(
+    #     logger.debug(
     #         "Injecting advanced stealth scripts for Cloudflare evasion"
     #     )
 
@@ -376,13 +376,13 @@ class StealthManager:
     #     """
 
     #     await page.add_init_script(stealth_script)
-    #     logger.info("Advanced stealth scripts injected successfully")
+    #     logger.debug("Advanced stealth scripts injected successfully")
 
     async def add_human_behavior_async(self, page: Page):
         """Add human-like behavior patterns to avoid detection."""
         # Random delay before starting interactions
         delay = random.uniform(2, 5)
-        logger.info(f"Adding human behavior delay: {delay:.2f} seconds")
+        logger.debug(f"Adding human behavior delay: {delay:.2f} seconds")
         await asyncio.sleep(delay)
 
         # Simulate scrolling behavior
@@ -403,7 +403,7 @@ class StealthManager:
         self, page: Page, max_wait: int = 45
     ):
         """Enhanced Cloudflare challenge detection and handling."""
-        logger.info("Checking for Cloudflare challenge...")
+        logger.debug("Checking for Cloudflare challenge...")
 
         cloudflare_indicators = [
             "Just a moment",
@@ -430,10 +430,10 @@ class StealthManager:
             )
 
             if not is_challenge:
-                logger.info("No Cloudflare challenge detected")
+                logger.debug("No Cloudflare challenge detected")
                 return True
 
-            logger.info(
+            logger.debug(
                 "Cloudflare challenge detected, waiting for completion..."
             )
 
@@ -468,13 +468,11 @@ class StealthManager:
             # Additional wait to ensure page is fully loaded
             await asyncio.sleep(random.uniform(2, 4))
 
-            logger.info("Cloudflare challenge passed successfully")
+            logger.debug("Cloudflare challenge passed successfully")
             return True
 
         except Exception as e:
-            logger.warn(
-                f"Cloudflare challenge handling timeout or error: {e}"
-            )
+            logger.warn(f"Cloudflare challenge handling timeout or error: {e}")
 
             # Try to detect if we're still on challenge page
             try:
@@ -490,7 +488,9 @@ class StealthManager:
                     )
                     return False
                 else:
-                    logger.info("Challenge may have completed despite timeout")
+                    logger.debug(
+                        "Challenge may have completed despite timeout"
+                    )
                     return True
 
             except:
@@ -832,7 +832,7 @@ class StealthManager:
         The script is bulletproof and handles all dimension-related APIs that
         bot detectors commonly check.
         """
-        logger.info("stealth_manager.get_dimension_spoofing_script called.")
+        logger.debug("stealth_manager.get_dimension_spoofing_script called.")
         if not self.spoof_dimension:
             return ""
 

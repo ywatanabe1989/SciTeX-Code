@@ -51,7 +51,7 @@ class CaptchaHandler:
         if not captcha_found:
             return False
             
-        logger.info("Captcha detected on page - attempting to solve")
+        logger.debug("Captcha detected on page - attempting to solve")
         
         # Determine captcha type and solve
         if await self._is_cloudflare_challenge_async(page):
@@ -123,22 +123,22 @@ class CaptchaHandler:
     
     async def _solve_cloudflare_challenge_async(self, page: Page) -> bool:
         """Handle Cloudflare challenge/turnstile."""
-        logger.info("Handling Cloudflare challenge")
+        logger.debug("Handling Cloudflare challenge")
         
         try:
             # First, wait a bit to see if it auto-solves
-            logger.info("Waiting for Cloudflare auto-solve...")
+            logger.debug("Waiting for Cloudflare auto-solve...")
             await asyncio.sleep(5)
             
             # Check if still on challenge page
             if not await self._is_cloudflare_challenge_async(page):
-                logger.info("Cloudflare challenge auto-solved")
+                logger.debug("Cloudflare challenge auto-solved")
                 return True
             
             # If Turnstile captcha is present, solve it
             turnstile_frame = page.frame_locator("iframe[title*='Cloudflare']").first
             if turnstile_frame:
-                logger.info("Cloudflare Turnstile detected - solving with 2Captcha")
+                logger.debug("Cloudflare Turnstile detected - solving with 2Captcha")
                 
                 # Get site key
                 site_key = await self._extract_turnstile_key_async(page)
@@ -173,7 +173,7 @@ class CaptchaHandler:
                 return not await self._is_cloudflare_challenge_async(page)
             
             # For other Cloudflare challenges, just wait
-            logger.info("Waiting for Cloudflare challenge to complete...")
+            logger.debug("Waiting for Cloudflare challenge to complete...")
             await page.wait_for_function(
                 "!document.querySelector('#cf-challenge-running')",
                 timeout=30000
@@ -194,7 +194,7 @@ class CaptchaHandler:
     
     async def _solve_recaptcha_async(self, page: Page) -> bool:
         """Solve reCAPTCHA v2."""
-        logger.info("Solving reCAPTCHA")
+        logger.debug("Solving reCAPTCHA")
         
         try:
             # Get site key
@@ -252,7 +252,7 @@ class CaptchaHandler:
     
     async def _solve_hcaptcha_async(self, page: Page) -> bool:
         """Solve hCaptcha."""
-        logger.info("Solving hCaptcha")
+        logger.debug("Solving hCaptcha")
         
         try:
             # Get site key
@@ -366,7 +366,7 @@ class CaptchaHandler:
                     
                     if result.get("status") == 1:
                         task_id = result.get("request")
-                        logger.info(f"Captcha submitted, task ID: {task_id}")
+                        logger.debug(f"Captcha submitted, task ID: {task_id}")
                         return task_id
                     else:
                         logger.error(f"2Captcha submission failed: {result}")
@@ -396,7 +396,7 @@ class CaptchaHandler:
                         
                         if result.get("status") == 1:
                             solution = result.get("request")
-                            logger.info("Captcha solved successfully")
+                            logger.debug("Captcha solved successfully")
                             return solution
                         elif result.get("request") == "CAPCHA_NOT_READY":
                             logger.debug("Captcha not ready yet, waiting...")

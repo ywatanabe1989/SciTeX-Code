@@ -27,7 +27,7 @@ def create_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
 # Resolve and enrich with project organization
-python -m scitex.scholar resolve-and-enrich --bibtex papers.bib --project myproject
+python -m scitex.scholar resolve-and-enrich --bibtex pac.bib --project myproject
 
 # Show project summary
 python -m scitex.scholar resolve-and-enrich --project myproject --summary""",

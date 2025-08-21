@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 10:16:17 (ywatanabe)"
+# Timestamp: "2025-08-21 15:28:12 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 async def wait_redirects(
     page: Page,
     timeout: int = 30000,
-    max_redirects: int = 10,
+    max_redirects: int = 30,
     show_progress: bool = False,
     track_chain: bool = True,
     wait_for_idle: bool = True,
@@ -185,7 +185,7 @@ async def wait_redirects(
                 f"Redirect wait timed out after {total_time_ms:.0f}ms"
             )
         else:
-            logger.info("No redirects detected")
+            logger.debug("No redirects detected")
 
         return result
 

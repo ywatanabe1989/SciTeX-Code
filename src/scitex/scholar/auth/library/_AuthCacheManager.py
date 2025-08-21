@@ -175,7 +175,7 @@ class AuthCacheManager:
         """Validate cache data format and email match."""
         # Skip encrypted files
         if "encrypted" in cache_data:
-            logger.warning(
+            logger.warn(
                 "Found encrypted session file - please re-authenticate_async"
             )
             return False

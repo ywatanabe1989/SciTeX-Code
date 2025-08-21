@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 18:51:11 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/sso_automation/_UniversityOfMelbourneSSOAutomator.py
+# Timestamp: "2025-08-21 14:44:29 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/sso_automation/_UniversityOfMelbourneSSOAutomator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -17,8 +17,10 @@ from typing import Optional
 
 from playwright.async_api import Page, TimeoutError
 
-from scitex.scholar.browser import BrowserUtils
+# from scitex.scholar.browser import BrowserUtils
+from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
 from scitex.scholar.config import ScholarConfig
+
 from ._BaseSSOAutomator import BaseSSOAutomator
 
 
@@ -118,7 +120,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
             # Use the proven working selector from your implementation
             username_selector = "input[name='identifier']"
 
-            success = await BrowserUtils.reliable_fill_async(
+            success = await fill_with_fallbacks(
                 page, username_selector, self.username
             )
             if not success:
@@ -129,9 +131,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
 
             # Click Next button using proven working selector and JavaScript click
             next_selector = "input.button-primary[value='Next']"
-            success = await BrowserUtils.reliable_click_async(
-                page, next_selector
-            )
+            success = await click_with_fallbacks(page, next_selector)
             if not success:
                 self.logger.error("Failed to click Next button")
                 return False
@@ -152,7 +152,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
             # Use the proven working selector for password
             password_selector = "input[name='credentials.passcode']"
 
-            success = await BrowserUtils.reliable_fill_async(
+            success = await fill_with_fallbacks(
                 page, password_selector, self.password
             )
             if not success:
@@ -163,9 +163,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
 
             # Click Verify button using proven working selector and JavaScript click
             verify_selector = "input[type='submit'][value='Verify']"
-            success = await BrowserUtils.reliable_click_async(
-                page, verify_selector
-            )
+            success = await click_with_fallbacks(page, verify_selector)
             if not success:
                 self.logger.error("Failed to click Verify button")
                 return False

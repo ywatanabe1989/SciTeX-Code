@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 05:53:27 (ywatanabe)"
+# Timestamp: "2025-08-21 15:34:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/finders/find_pdf_urls.py
 # ----------------------------------------
 from __future__ import annotations
@@ -61,12 +61,12 @@ async def find_pdf_urls(
             seen_urls.add(url)
             urls_pdf.append({"url": url, "source": "direct_link"})
 
-    # Strategy 3: Check for publisher patterns
-    pattern_urls = find_pdf_urls_by_publisher_patterns(page, base_url)
-    for url in pattern_urls:
-        if url not in seen_urls:
-            seen_urls.add(url)
-            urls_pdf.append({"url": url, "source": "publisher_pattern"})
+    # # Strategy 3: Check for publisher patterns
+    # pattern_urls = find_pdf_urls_by_publisher_patterns(page, base_url)
+    # for url in pattern_urls:
+    #     if url not in seen_urls:
+    #         seen_urls.add(url)
+    #         urls_pdf.append({"url": url, "source": "publisher_pattern"})
 
     if len(urls_pdf):
         logger.success(

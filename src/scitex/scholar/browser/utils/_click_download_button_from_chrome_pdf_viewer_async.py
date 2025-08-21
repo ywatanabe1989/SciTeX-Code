@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 09:50:24 (ywatanabe)"
+# Timestamp: "2025-08-20 10:55:39 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_download_button_from_chrome_pdf_viewer_async.py
 # ----------------------------------------
 from __future__ import annotations
@@ -34,7 +34,7 @@ async def click_download_button_from_chrome_pdf_viewer_async(
         x_download = int(width * 95 / 100)
         y_download = int(height * 3 / 100)
 
-        async with page.expect_download(timeout=30_000) as download_info:
+        async with page.expect_download(timeout=120_000) as download_info:
             await page.mouse.click(x_download, y_download)
 
         download = await download_info.value
@@ -42,7 +42,7 @@ async def click_download_button_from_chrome_pdf_viewer_async(
         # Monitor download progress
         await show_popup_message_async(page, "Monitoring download process...")
         download_path = await download.path()
-        page.wait_for_timeout(10_000)
+        await page.wait_for_timeout(10_000)
         if download_path:
             # Wait for download to finish
             await download.save_as(spath_pdf)

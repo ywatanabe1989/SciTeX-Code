@@ -136,7 +136,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         logger.info("Existing EZProxy session expired")
                         self.session_file.unlink()
             except Exception as e:
-                logger.warning(f"Failed to load session: {e}")
+                logger.warn(f"Failed to load session: {e}")
 
     def _save_session_async(self) -> None:
         """Save current session to cache."""
@@ -153,7 +153,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                     json.dump(data, f, indent=2)
                 logger.info("Saved EZProxy session")
             except Exception as e:
-                logger.warning(f"Failed to save session: {e}")
+                logger.warn(f"Failed to save session: {e}")
 
     async def authenticate_async(self, force: bool = False, **kwargs) -> dict:
         """
@@ -349,7 +349,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                     return is_valid
                     
             except Exception as e:
-                logger.warning(f"Failed to verify session: {e}")
+                logger.warn(f"Failed to verify session: {e}")
                 return False
                 
         return True

@@ -178,7 +178,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                         logger.info("Existing Shibboleth session expired")
                         self.session_file.unlink()
             except Exception as e:
-                logger.warning(f"Failed to load session: {e}")
+                logger.warn(f"Failed to load session: {e}")
 
     def _save_session_async(self) -> None:
         """Save current session to cache."""
@@ -196,7 +196,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                     json.dump(data, f, indent=2)
                 logger.info("Saved Shibboleth session")
             except Exception as e:
-                logger.warning(f"Failed to save session: {e}")
+                logger.warn(f"Failed to save session: {e}")
 
     async def authenticate_async(self, force: bool = False, **kwargs) -> dict:
         """
@@ -517,7 +517,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                     return is_valid
                     
             except Exception as e:
-                logger.warning(f"Failed to verify session: {e}")
+                logger.warn(f"Failed to verify session: {e}")
                 return False
                 
         return True

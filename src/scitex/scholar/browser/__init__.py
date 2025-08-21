@@ -12,8 +12,8 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 from .local.ScholarBrowserManager import ScholarBrowserManager
-from .BrowserUtils import BrowserUtils
-from .PlaywrightVision import PlaywrightVision
+# from .BrowserUtils import BrowserUtils
+# from .PlaywrightVision import PlaywrightVision
 from .utils import (
     click_center_async,
     click_download_button_from_chrome_pdf_viewer_async,
@@ -27,8 +27,8 @@ from .utils import (
 
 __all__ = [
     "ScholarBrowserManager",
-    "BrowserUtils",
-    "PlaywrightVision",
+    # "BrowserUtils",
+    # "PlaywrightVision",
     "show_popup_message_async",
     "click_center_async",
     "click_download_button_from_chrome_pdf_viewer_async",

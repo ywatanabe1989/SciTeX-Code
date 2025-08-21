@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 09:53:47 (ywatanabe)"
+# Timestamp: "2025-08-20 11:18:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -126,12 +126,12 @@ class ScholarPDFDownloader:
 
         # Try download methods
         try_download_methods = [
-            (
-                "From Response Body",
-                self._try_download_from_response_body_async,
-            ),
-            ("Direct Download", self._try_direct_download_async),
             ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
+            # (
+            #     "From Response Body",
+            #     self._try_download_from_response_body_async,
+            # ),
+            # ("Direct Download", self._try_direct_download_async),
         ]
 
         for method_name, method_func in try_download_methods:

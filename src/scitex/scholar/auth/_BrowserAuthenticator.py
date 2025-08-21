@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:22:16 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_BrowserAuthenticator.py
+# Timestamp: "2025-08-21 14:47:29 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/_BrowserAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -20,11 +20,13 @@ including login detection, navigation, and session verification.
 import asyncio
 from typing import Any, Dict, List, Optional
 
-from playwright.async_api import Browser, Page, async_playwright
+from playwright.async_api import Page, async_playwright
 
 from scitex import logging
 
-from scitex.scholar.browser import BrowserUtils
+# from scitex.scholar.browser import BrowserUtils
+from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
+
 from ..browser.local._BrowserMixin import BrowserMixin
 
 logger = logging.getLogger(__name__)
@@ -78,9 +80,7 @@ class BrowserAuthenticator(BrowserMixin):
 
         # Check for cookie banner and warn if present
         if await self.cookie_acceptor.check_cookie_banner_exists_async(page):
-            logger.warning(
-                "Cookie banner detected - may need manual acceptance"
-            )
+            logger.warn("Cookie banner detected - may need manual acceptance")
 
         return page
 
@@ -117,7 +117,9 @@ class BrowserAuthenticator(BrowserMixin):
             if not openathens_automated and self._is_openathens_page(
                 current_url
             ):
-                logger.info("OpenAthens page detected - attempting automation")
+                logger.debug(
+                    "OpenAthens page detected - attempting automation"
+                )
                 automation_attempted = True
 
                 try:
@@ -137,9 +139,9 @@ class BrowserAuthenticator(BrowserMixin):
                             )
                             openathens_automated = True
                         else:
-                            logger.warning("OpenAthens page automation failed")
+                            logger.warn("OpenAthens page automation failed")
                 except Exception as e:
-                    logger.warning(f"OpenAthens automation failed: {e}")
+                    logger.warn(f"OpenAthens automation failed: {e}")
 
             # Priority 2: Institution-specific SSO automation (if available and on SSO page)
             elif self.sso_automator and self.sso_automator.is_sso_page(
@@ -159,7 +161,7 @@ class BrowserAuthenticator(BrowserMixin):
                         f"{institution_name} SSO automation completed"
                     )
                 else:
-                    logger.warning(f"{institution_name} SSO automation failed")
+                    logger.warn(f"{institution_name} SSO automation failed")
 
             # Priority 3: Generic automation attempt for unknown SSO pages
             elif self._is_sso_page(current_url) and not automation_attempted:
@@ -283,13 +285,13 @@ class BrowserAuthenticator(BrowserMixin):
 
     async def reliable_click_async(self, page: Page, selector: str) -> bool:
         """Perform reliable click using shared utility."""
-        return await BrowserUtils.reliable_click_async(page, selector)
+        return await click_with_fallbacks(page, selector)
 
     async def reliable_fill_async(
         self, page: Page, selector: str, value: str
     ) -> bool:
         """Perform reliable form fill using shared utility."""
-        return await BrowserUtils.reliable_fill_async(page, selector, value)
+        return await fill_with_fallbacks(page, selector, value)
 
     def display_login_instructions(
         self, email: Optional[str], timeout: int

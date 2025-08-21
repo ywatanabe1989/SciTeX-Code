@@ -36,7 +36,7 @@ def create_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
 # Download PDFs from BibTeX file
-python -m scitex.scholar download bibtex papers.bib --project myproject
+python -m scitex.scholar download bibtex pac.bib --project myproject
 
 # Download single paper by DOI
 python -m scitex.scholar download paper --doi 10.1038/nature12345
@@ -95,7 +95,7 @@ def main():
     #         epilog="""
     # Examples:
     #     # Download PDFs from BibTeX file
-    #     python -m scitex.scholar.download bibtex papers.bib --project myproject
+    #     python -m scitex.scholar.download bibtex pac.bib --project myproject
 
     #     # Download single paper by DOI
     #     python -m scitex.scholar.download paper --doi 10.1038/nature12345

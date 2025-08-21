@@ -54,7 +54,7 @@ class ZenRowsProxyManager:
             username = self.proxy_username
 
             if self.proxy_country:
-                logger.info(
+                logger.debug(
                     f"Using ZenRows proxy with country routing: {self.proxy_country.upper()}"
                 )
                 proxy_url = f"http://{self.proxy_username}:{self.proxy_password}_country-{self.proxy_country}@{self.proxy_domain}:{self.proxy_port}"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 09:34:43 (ywatanabe)"
+# Timestamp: "2025-08-21 14:13:53 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/resolvers/_OpenURLLinkFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -73,6 +73,7 @@ class OpenURLLinkFinder:
                     f"Found {len(publishers)} link elements for: {', '.join(publishers)}"
                 )
                 return found_links
+
         except Exception as e:
             logger.fail(
                 f"OpenURLLinkFinder did not find any urls from {page.url}: {e}"

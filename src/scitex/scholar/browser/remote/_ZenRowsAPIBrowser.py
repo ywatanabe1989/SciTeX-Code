@@ -119,7 +119,7 @@ class ZenRowsAPIBrowser:
         if return_html or screenshot_path:
             params["json_response"] = "true"
         
-        logger.info(f"Navigating to: {url}")
+        logger.debug(f"Navigating to: {url}")
         
         try:
             async with aiohttp.ClientSession() as session:
@@ -184,7 +184,7 @@ class ZenRowsAPIBrowser:
                             for inst in report.get("instructions", []):
                                 if inst.get("instruction") == "solve_captcha" and inst.get("success"):
                                     result["captcha_solved"] = True
-                                    logger.info(f"CAPTCHA solved: {inst['params']['type']}")
+                                    logger.debug(f"CAPTCHA solved: {inst['params']['type']}")
                         
                         return result
                         
@@ -281,7 +281,7 @@ class ZenRowsAPIBrowser:
                     match = re.search(pattern, html, re.IGNORECASE)
                     if match:
                         pdf_url = match.group(1)
-                        logger.info(f"Found PDF URL: {pdf_url}")
+                        logger.debug(f"Found PDF URL: {pdf_url}")
                         return pdf_url
         
         return None
@@ -342,6 +342,6 @@ class ZenRowsAPIBrowser:
         
         # Summary
         successful = sum(1 for r in final_results if r.get("success"))
-        logger.info(f"Screenshots: {successful}/{len(urls)} successful")
+        logger.debug(f"Screenshots: {successful}/{len(urls)} successful")
         
         return final_results

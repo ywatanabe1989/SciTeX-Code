@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 00:10:09 (ywatanabe)"
+# Timestamp: "2025-08-21 14:43:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,7 +18,8 @@ from typing import Optional
 
 from playwright.async_api import BrowserContext, Page
 
-from scitex.scholar.browser import BrowserUtils
+# from scitex.scholar.browser import BrowserUtils
+from scitex.scholar.browser.utils import click_with_fallbacks
 from scitex.scholar.config import ScholarConfig
 
 from ..sso_automation._BaseSSOAutomator import BaseSSOAutomator
@@ -153,9 +154,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                         selector, timeout=2000
                     )
                     if element:
-                        success = await BrowserUtils.reliable_click_async(
-                            page, selector
-                        )
+                        success = await click_with_fallbacks(page, selector)
                         if success:
                             self.logger.info(
                                 f"Successfully clicked submit using: {selector}"

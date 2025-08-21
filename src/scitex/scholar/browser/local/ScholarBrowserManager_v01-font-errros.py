@@ -151,10 +151,10 @@ class ScholarBrowserManager(BrowserMixin):
             raise ValueError(
                 "browser_mode must be eighther of 'interactive' or 'stealth'"
             )
-        logger.info("Browser initialized:")
-        logger.info(f"headless: {self.headless}")
-        logger.info(f"spoof_dimension: {self.spoof_dimension}")
-        logger.info(f"viewport_size: {self.viewport_size}")
+        logger.debug("Browser initialized:")
+        logger.debug(f"headless: {self.headless}")
+        logger.debug(f"spoof_dimension: {self.spoof_dimension}")
+        logger.debug(f"viewport_size: {self.viewport_size}")
 
     # async def _get_zenrows_browser_and_context_async(
     #     self,
@@ -331,13 +331,13 @@ class ScholarBrowserManager(BrowserMixin):
             if lock_file.exists():
                 try:
                     lock_file.unlink()
-                    logger.info(f"Removed Chrome lock file: {lock_file.name}")
+                    logger.debug(f"Removed Chrome lock file: {lock_file.name}")
                     removed_locks += 1
                 except Exception as e:
                     logger.warn(f"Could not remove {lock_file.name}: {e}")
 
         if removed_locks > 0:
-            logger.info(f"Cleaned up {removed_locks} Chrome lock files")
+            logger.debug(f"Cleaned up {removed_locks} Chrome lock files")
             # Wait a moment for the system to release file handles
             time.sleep(1)
 
@@ -351,7 +351,7 @@ class ScholarBrowserManager(BrowserMixin):
                 text=True,
             )
             if result.returncode == 0:
-                logger.info(
+                logger.debug(
                     "Killed lingering Chrome processes for this profile"
                 )
                 time.sleep(2)  # Give processes time to fully terminate
@@ -387,7 +387,7 @@ class ScholarBrowserManager(BrowserMixin):
                 ]
 
                 if not unwanted_pages:
-                    logger.info("Extension cleanup completed")
+                    logger.debug("Extension cleanup completed")
                     break
 
                 # Ensure context stays alive
@@ -396,7 +396,7 @@ class ScholarBrowserManager(BrowserMixin):
 
                 for page in unwanted_pages:
                     await page.close()
-                    logger.info(f"Closed unwanted page: {page.url}")
+                    logger.debug(f"Closed unwanted page: {page.url}")
 
             except Exception as e:
                 logger.debug(f"Cleanup attempt failed: {e}")
@@ -459,7 +459,7 @@ class ScholarBrowserManager(BrowserMixin):
                 logger.success(f"Xvfb display :{self.display} is running")
                 return True
             else:
-                logger.info(f"Starting Xvfb display :{self.display}")
+                logger.debug(f"Starting Xvfb display :{self.display}")
                 subprocess.Popen(
                     [
                         "Xvfb",
@@ -509,7 +509,7 @@ class ScholarBrowserManager(BrowserMixin):
         # Debug: Show window args for stealth mode
         if self.spoof_dimension:
             window_args = [arg for arg in launch_args if "window-" in arg]
-            logger.info(f"Stealth window args: {window_args}")
+            logger.debug(f"Stealth window args: {window_args}")
 
         proxy_config = None
         if self.use_zenrows_proxy:
@@ -625,7 +625,7 @@ class ScholarBrowserManager(BrowserMixin):
                     if verbose:
                         logger.debug(f"Screenshot {step}: {path}")
                     elif step == 1:
-                        logger.info(
+                        logger.debug(
                             f"Started periodic screenshots: {prefix}_*"
                         )
                 except Exception as e:
@@ -635,7 +635,7 @@ class ScholarBrowserManager(BrowserMixin):
                 await asyncio.sleep(interval_seconds)
                 elapsed += interval_seconds
 
-            logger.info(f"Completed {step} periodic screenshots for {prefix}")
+            logger.debug(f"Completed {step} periodic screenshots for {prefix}")
 
         # Start the task in background
         task = asyncio.create_task(take_periodic_screenshots())
@@ -665,18 +665,18 @@ class ScholarBrowserManager(BrowserMixin):
 
             if self._persistent_context:
                 await self._persistent_context.close()
-                logger.info("Closed persistent browser context")
+                logger.debug("Closed persistent browser context")
 
             if (
                 self._persistent_browser
                 and self._persistent_browser.is_connected()
             ):
                 await self._persistent_browser.close()
-                logger.info("Closed persistent browser")
+                logger.debug("Closed persistent browser")
 
             if self._persistent_playwright:
                 await self._persistent_playwright.stop()
-                logger.info("Stopped Playwright instance")
+                logger.debug("Stopped Playwright instance")
 
         except Exception as e:
             logger.warn(f"Error during browser cleanup: {e}")

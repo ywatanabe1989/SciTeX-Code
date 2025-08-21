@@ -35,10 +35,10 @@ async def detect_pdf_viewer_async(page):
     """
     )
     if detected:
-        logger.info("PDF viewer detected")
+        logger.debug("PDF viewer detected")
         return True
     else:
-        logger.info("PDF viewer not detected")
+        logger.debug("PDF viewer not detected")
         return False
 
 # EOF

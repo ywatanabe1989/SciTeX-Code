@@ -72,7 +72,7 @@ class ZenRowsBrowserManager(BrowserMixin):
                 username = (
                     f"{self._proxy_username}-country-{self._proxy_country}"
                 )
-                logger.info(
+                logger.debug(
                     f"Using ZenRows proxy with country routing: {self._proxy_country.upper()}"
                 )
 
@@ -88,7 +88,7 @@ class ZenRowsBrowserManager(BrowserMixin):
             self._shared_browser is None
             or not self._shared_browser.is_connected()
         ):
-            logger.info("Launching browser with ZenRows proxy...")
+            logger.debug("Launching browser with ZenRows proxy...")
 
             if self._shared_playwright is None:
                 self._shared_playwright = await async_playwright().start()

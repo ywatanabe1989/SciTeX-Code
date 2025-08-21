@@ -76,7 +76,7 @@ class ZenRowsRemoteScholarBrowserManager:
         if self._browser and self._browser.is_connected():
             return self._browser
 
-        logger.info("Connecting to ZenRows Scraping Browser...")
+        logger.debug("Connecting to ZenRows Scraping Browser...")
         if not self._playwright:
             self._playwright = await async_playwright().start()
 
@@ -87,17 +87,17 @@ class ZenRowsRemoteScholarBrowserManager:
         # but we can try appending it as a parameter
         if self.proxy_country:
             connection_url += f"&proxy_country={self.proxy_country}"
-            logger.info(f"Requesting proxy country: {self.proxy_country.upper()}")
+            logger.debug(f"Requesting proxy country: {self.proxy_country.upper()}")
         
         try:
             self._browser = await self._playwright.chromium.connect_over_cdp(
                 connection_url
             )
-            logger.info("Successfully connected to ZenRows browser")
+            logger.debug("Successfully connected to ZenRows browser")
             
             # Log a note about country routing
             if self.proxy_country:
-                logger.info(
+                logger.debug(
                     "Note: Country routing via Scraping Browser is experimental. "
                     "Use API mode for guaranteed country-specific IPs."
                 )
@@ -129,7 +129,7 @@ class ZenRowsRemoteScholarBrowserManager:
         # Inject cookie auto-acceptor
         try:
             await self.cookie_acceptor.inject_auto_acceptor_async(context)
-            logger.info("Injected cookie auto-acceptor")
+            logger.debug("Injected cookie auto-acceptor")
         except Exception as e:
             logger.warn(f"Failed to inject cookie acceptor: {e}")
 
@@ -164,7 +164,7 @@ class ZenRowsRemoteScholarBrowserManager:
         """Close the ZenRows browser connection."""
         if self._browser and self._browser.is_connected():
             await self._browser.close()
-            logger.info("Closed ZenRows browser connection")
+            logger.debug("Closed ZenRows browser connection")
         if self._playwright:
             await self._playwright.stop()
         self._browser = None
@@ -196,7 +196,7 @@ class ZenRowsRemoteScholarBrowserManager:
         """
         if use_api:
             # Use API browser for reliability
-            logger.info("Using ZenRows API for screenshot (recommended)")
+            logger.debug("Using ZenRows API for screenshot (recommended)")
             return await self._api_browser.navigate_and_screenshot_async(
                 url=url,
                 screenshot_path=output_path,
@@ -204,7 +204,7 @@ class ZenRowsRemoteScholarBrowserManager:
             )
         else:
             # Use WebSocket browser (less reliable for captchas)
-            logger.info("Using ZenRows WebSocket browser")
+            logger.debug("Using ZenRows WebSocket browser")
             try:
                 browser = await self.get_browser_async()
                 context = await browser.new_context()
@@ -281,7 +281,7 @@ class ZenRowsRemoteScholarBrowserManager:
                 match = re.search(pattern, html, re.IGNORECASE)
                 if match:
                     result["pdf_url"] = match.group(1)
-                    logger.info(f"Found PDF URL: {result['pdf_url']}")
+                    logger.debug(f"Found PDF URL: {result['pdf_url']}")
                     break
         
         return result

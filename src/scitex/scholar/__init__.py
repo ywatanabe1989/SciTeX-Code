@@ -12,7 +12,7 @@ Quick Start:
 
     scholar = Scholar()
     papers = scholar.search("deep learning")
-    papers.save("papers.bib")
+    papers.save("pac.bib")
 """
 
 # # Import main class
@@ -281,7 +281,7 @@ __all__ = [
 #         >>> from scitex.scholar import Scholar
 #         >>> scholar = Scholar()
 #         >>> papers = scholar.search("machine learning")
-#         >>> papers.filter(year_min=2020).save("ml_papers.bib")
+#         >>> papers.filter(year_min=2020).save("ml_pac.bib")
 
 #     Common Workflows:
 #         # Search and enrich

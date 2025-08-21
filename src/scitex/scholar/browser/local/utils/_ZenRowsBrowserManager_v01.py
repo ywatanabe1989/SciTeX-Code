@@ -82,11 +82,11 @@ class ZenRowsBrowserManager(BrowserManager):
                 username = (
                     f"{self._proxy_username}-country-{self._proxy_country}"
                 )
-                logger.info(
+                logger.debug(
                     f"Using ZenRows proxy with country routing: {self._proxy_country.upper()}"
                 )
 
-            logger.info(f"Using ZenRows proxy credentials: {username}")
+            logger.debug(f"Using ZenRows proxy credentials: {username}")
             return {
                 "server": f"http://{self._proxy_domain}:{self._proxy_port}",
                 "username": username,
@@ -104,7 +104,7 @@ class ZenRowsBrowserManager(BrowserManager):
             self._shared_browser is None
             or not self._shared_browser.is_connected()
         ):
-            logger.info("Launching local browser with ZenRows proxy...")
+            logger.debug("Launching local browser with ZenRows proxy...")
             if self._shared_playwright is None:
                 self._shared_playwright = await async_playwright().start()
 

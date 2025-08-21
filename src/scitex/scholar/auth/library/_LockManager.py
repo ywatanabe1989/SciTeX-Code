@@ -60,7 +60,7 @@ class LockManager:
             LockError: If lock acquisition fails unexpectedly
         """
         if self._is_locked:
-            logger.warning("Lock already acquired")
+            logger.warn("Lock already acquired")
             return True
 
         start_time = time.time()
@@ -98,7 +98,7 @@ class LockManager:
             logger.debug("Released authentication lock")
             
         except Exception as e:
-            logger.warning(f"Error releasing lock: {e}")
+            logger.warn(f"Error releasing lock: {e}")
 
     def is_locked(self) -> bool:
         """Check if lock is currently held."""

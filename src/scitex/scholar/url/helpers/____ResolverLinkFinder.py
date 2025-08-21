@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 18:25:00 (ywatanabe)"
+# Timestamp: "2025-08-21 14:11:48 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/_ResolverLinkFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -62,57 +62,6 @@ class ResolverLinkFinder:
         "10.3389": ["frontiersin.org"],  # Frontiers
         "10.3390": ["mdpi.com"],  # MDPI
     }
-
-    # # Common resolver page structures
-    # STRUCTURE_SELECTORS = [
-    #     # SFX (ExLibris) - used by many universities
-    #     "div#fulltext a",
-    #     "div.sfx-fulltext a",
-    #     "div.results-title > a",
-    #     "td.object-cell a",
-    #     ".getFullTxt a",
-    #     'div[id*="fulltext"] a',
-    #     'div[class*="fulltext"] a',
-    #     # Primo (ExLibris)
-    #     "prm-full-view-service-container a",
-    #     "span.availability-status-available a",
-    #     # Summon (ProQuest)
-    #     ".summon-fulltext-link",
-    #     "a.summon-link",
-    #     # EDS (EBSCO)
-    #     "a.fulltext-link",
-    #     ".ft-link a",
-    #     # Generic patterns
-    #     "a.full-text-link",
-    #     "a.fulltext",
-    #     "a#full-text-link",
-    #     ".access-link a",
-    #     ".available-link a",
-    # ]
-
-    # # Text patterns in priority order
-    # TEXT_PATTERNS = [
-    #     # Most specific
-    #     "View full text at",
-    #     "Available from Nature",
-    #     "Available from ScienceDirect",
-    #     "Available from Wiley",
-    #     "Full text available from",
-    #     # Common patterns
-    #     "View full text",
-    #     "Full Text from Publisher",
-    #     "Get full text",
-    #     "Access full text",
-    #     "Go to article",
-    #     "Access article",
-    #     # Generic but reliable
-    #     "Full Text",
-    #     "Full text",
-    #     "Article",
-    #     "View",
-    #     "PDF",
-    #     "Download",
-    # ]
 
     def __init__(
         self,

@@ -67,7 +67,7 @@ class Scholar:
         scholar = Scholar()
         papers = scholar.search("deep learning neuroscience")
         # Papers now have impact_factor and citation_count populated
-        papers.save("my_papers.bib")
+        papers.save("my_pac.bib")
 
         # Disable automatic enrichment if needed
         config = ScholarConfig(enable_auto_enrich=False)

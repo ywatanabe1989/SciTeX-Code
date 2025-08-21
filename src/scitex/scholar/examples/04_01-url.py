@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 07:14:17 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_url.py
+# Timestamp: "2025-08-21 15:21:48 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/04_01-url.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/examples/04_url.py"
+    "./src/scitex/scholar/examples/04_01-url.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -33,7 +33,8 @@ async def main_async():
     url_finder = ScholarURLFinder(context, use_cache=False)
 
     # Find URLs for a paper
-    doi = "10.1126/science.aao0702"  # Hippocampal...
+    # doi = "10.1126/science.aao0702"  # Hippocampal...
+    doi = "10.1016/j.smrv.2020.101353"
     urls = await url_finder.find_urls(
         doi=doi,
     )

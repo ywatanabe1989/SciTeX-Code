@@ -52,7 +52,7 @@ async def show_popup_message_async(
         else:
             return False
     except Exception as e:
-        logger.info(f"show_popup_message_async: {str(e)}")
+        logger.debug(f"show_popup_message_async: {str(e)}")
 
 
 # async def show_popup_message_async(

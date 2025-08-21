@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 10:20:09 (ywatanabe)"
+# Timestamp: "2025-08-21 14:22:06 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
@@ -67,7 +67,7 @@ async def click_and_wait(
     initial_url = page.url
     href = await link.get_attribute("href") or ""
     text = await link.inner_text() or ""
-    logger.info(f"Clicking: '{text[:30]}' -> {href[:50]}")
+    logger.debug(f"Clicking: '{text[:30]}' -> {href[:50]}")
 
     try:
         # Handle potential new page opening
@@ -78,7 +78,7 @@ async def click_and_wait(
                 new_page = await new_page_info.value
                 page = new_page
                 new_page_opened = True
-                logger.info("New page opened, switching context")
+                logger.debug("New page opened, switching context")
         except:
             await link.click()
 

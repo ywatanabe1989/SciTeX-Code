@@ -110,7 +110,7 @@ class AuthenticationStrategyResolver:
             )
 
         if not openathens_email:
-            logger.warning(
+            logger.warn(
                 "No email provided - defaulting to manual authentication"
             )
             return AuthenticationStrategy(

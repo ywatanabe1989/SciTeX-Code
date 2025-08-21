@@ -638,7 +638,7 @@ class LibraryManager:
         complete_metadata: Dict[str, Any],
         bibtex_source_filename: str = "papers",
     ) -> Optional[Path]:
-        """Create info/papers_bib/papers.bib structure."""
+        """Create info/papers_bib/pac.bib structure."""
         try:
             project_dir = self.config.path_manager.get_library_dir(project)
             info_dir = project_dir / "info" / f"{bibtex_source_filename}_bib"
