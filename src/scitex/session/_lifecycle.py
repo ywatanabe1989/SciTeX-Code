@@ -386,6 +386,42 @@ def start(
         from ..gen._tee import tee
         sys.stdout, sys.stderr = tee(sys, sdir=sdir, verbose=verbose)
         CONFIGS["sys"] = sys
+        
+        # Redirect logging handlers to use the tee-wrapped streams
+        # This ensures that logger output is captured in the log files
+        import logging
+        
+        # Update all existing StreamHandler instances to use our wrapped streams
+        for logger_name in list(logging.Logger.manager.loggerDict.keys()):
+            try:
+                logger = logging.getLogger(logger_name)
+                for handler in logger.handlers:
+                    if isinstance(handler, logging.StreamHandler):
+                        # StreamHandler typically uses stderr by default
+                        if not hasattr(handler, 'stream'):
+                            continue
+                        # Check if handler is using the original stderr or stdout
+                        if handler.stream in (sys.__stderr__, sys.__stdout__):
+                            # Replace with our tee-wrapped stream
+                            handler.stream = sys.stderr if handler.stream == sys.__stderr__ else sys.stdout
+            except Exception:
+                # Silently skip any logger that can't be updated
+                pass
+        
+        # Also update the root logger handlers
+        try:
+            root_logger = logging.getLogger()
+            for handler in root_logger.handlers:
+                if isinstance(handler, logging.StreamHandler):
+                    if not hasattr(handler, 'stream'):
+                        continue
+                    # Check if handler is using the original stderr or stdout
+                    if handler.stream in (sys.__stderr__, sys.__stdout__):
+                        # Replace with our tee-wrapped stream
+                        handler.stream = sys.stderr if handler.stream == sys.__stderr__ else sys.stdout
+        except Exception:
+            # Silently skip if root logger can't be updated
+            pass
 
     # Random Seeds
     fix_seeds(

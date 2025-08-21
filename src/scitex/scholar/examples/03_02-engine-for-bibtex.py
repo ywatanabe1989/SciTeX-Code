@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 19:44:14 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
+# Timestamp: "2025-08-21 22:12:01 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -25,12 +25,12 @@ Dependencies:
   - scitex, numpy, asyncio
 
 Input:
-- ./data/openaccess.bib
-- ./data/paywalled.bib
-- ./data/pac.bib
+- ./data/scholar/openaccess.bib
+- ./data/scholar/paywalled.bib
+- ./data/scholar/pac.bib
 
 Output:
-- ./data/pac_metadata.json
+- ./data/scholar/pac_metadata.json
 - Console output of search results
 """
 
@@ -76,9 +76,9 @@ async def search_bibtex_metadata(
 async def main_async(args):
     # Parameters
     bibtex_paths = [
-        "./data/openaccess.bib",
-        "./data/paywalled.bib",
-        "./data/pac.bib",
+        "./data/scholar/openaccess.bib",
+        "./data/scholar/paywalled.bib",
+        "./data/scholar/pac.bib",
     ]
     selected_path = bibtex_paths[args.bibtex_index]
 
@@ -93,9 +93,9 @@ async def main_async(args):
     output_name = selected_path.split("/")[-1].replace(
         ".bib", "_metadata.json"
     )
-    output_path = f"./data/{output_name}"
+    output_path = f"./data/scholar/{output_name}"
 
-    stx.io.save(batched_metadata, output_path, symlink_from_cwd=True)
+    stx.io.save(batched_metadata, output_path)
 
     return batched_metadata
 

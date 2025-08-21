@@ -32,8 +32,8 @@ async def main_async():
 
     # Data
     N_SAMPLES = 5
-    BIBTEX_OPENACCESS = "./data/openaccess.bib"
-    BIBTEX_PAYWALLED = "./data/openaccess.bib"
+    BIBTEX_OPENACCESS = "./data/scholar/openaccess.bib"
+    BIBTEX_PAYWALLED = "./data/scholar/openaccess.bib"
     ENTRIES = parse_bibtex(BIBTEX_OPENACCESS) + parse_bibtex(BIBTEX_PAYWALLED)
     ENTRIES = np.random.permutation(ENTRIES)[:N_SAMPLES].tolist()
     QUERY_TITLES = [entry.get("title") for entry in ENTRIES]

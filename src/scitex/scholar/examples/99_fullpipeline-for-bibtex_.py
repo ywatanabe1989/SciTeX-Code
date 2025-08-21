@@ -36,9 +36,9 @@ async def main_async():
     BROWSER_MODE = ["interactive", "stealth"][1]
 
     # Data
-    BIBTEX_OPENACCESS = "./data/openaccess.bib"
-    BIBTEX_PAYWALLED = "./data/paywalled.bib"
-    BIBTEX_PAC = "./data/pac.bib"
+    BIBTEX_OPENACCESS = "./data/scholar/openaccess.bib"
+    BIBTEX_PAYWALLED = "./data/scholar/paywalled.bib"
+    BIBTEX_PAC = "./data/scholar/pac.bib"
     ENTRIES = parse_bibtex(BIBTEX_PAC)
     ENTRIES = np.random.permutation(ENTRIES)[:N_SAMPLES].tolist()
     QUERY_TITLES = [entry.get("title") for entry in ENTRIES]

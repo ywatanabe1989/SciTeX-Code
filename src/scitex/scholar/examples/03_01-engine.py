@@ -1,46 +1,92 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 07:13:59 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_engine.py
+# Timestamp: "2025-08-21 22:01:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_01-engine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/examples/03_engine.py"
+    "./src/scitex/scholar/examples/03_01-engine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
+"""
+Functionalities:
+- Demonstrates ScholarEngine unified search capabilities
+- Shows metadata retrieval by title and DOI
+- Validates multi-engine aggregation results
+- Displays comprehensive paper metadata structures
+
+Dependencies:
+- scripts:
+  - None
+- packages:
+  - scitex, asyncio
+
+Input:
+- Paper titles and DOIs for search queries
+- Search engine configurations
+
+Output:
+- Console output with detailed metadata from multiple engines
+- Structured metadata showing engine sources and aggregated results
+"""
+
+"""Imports"""
+import argparse
 import asyncio
 import time
 from pprint import pprint
 
-from scitex.scholar import ScholarEngine
+import scitex as stx
 
+"""Warnings"""
 
-async def main_async():
-    # Query
-    TITLE = "Attention is All You Need"
-    DOI = "10.1038/nature14539"
+"""Parameters"""
 
-    # Example: Unified Engine
-    engine = ScholarEngine(use_cache=False)
+"""Functions & Classes"""
+async def search_by_queries(title: str = None, doi: str = None, use_cache: bool = False) -> dict:
+    """Demonstrate unified search capabilities.
+    
+    Parameters
+    ----------
+    title : str, optional
+        Paper title to search for
+    doi : str, optional
+        DOI to search for
+    use_cache : bool, default=False
+        Whether to use cached results
+        
+    Returns
+    -------
+    dict
+        Search results containing metadata from multiple engines
+    """
+    from scitex.scholar import ScholarEngine
+    
+    # Default queries if not provided
+    search_title = title or "Attention is All You Need"
+    search_doi = doi or "10.1038/nature14539"
+
+    print(f"🔍 Initializing ScholarEngine (cache: {use_cache})...")
+    engine = ScholarEngine(use_cache=use_cache)
     outputs = {}
 
-    # Search by Title
+    print("🔍 Searching by title...")
     outputs["metadata_by_title"] = await engine.search_async(
-        title=TITLE,
+        title=search_title,
     )
 
-    # Search by DOI
+    print("🔍 Searching by DOI...")
     outputs["metadata_by_doi"] = await engine.search_async(
-        doi=DOI,
+        doi=search_doi,
     )
 
     for k, v in outputs.items():
-        print("----------------------------------------")
-        print(k)
-        print("----------------------------------------")
+        print("=" * 50)
+        print(f"📊 {k.replace('_', ' ').title()}")
+        print("=" * 50)
         pprint(v)
         time.sleep(1)
 
@@ -324,6 +370,118 @@ async def main_async():
     #                            ('searched_by_URL', True)]))])
 
 
-asyncio.run(main_async())
+    return outputs
+
+
+async def main_async(args) -> dict:
+    """Main async function to demonstrate engine capabilities.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Command line arguments
+
+    Returns
+    -------
+    dict
+        Search results
+    """
+    print("🔍 Scholar Engine Demonstration")
+    print("=" * 40)
+    
+    results = await search_by_queries(
+        title=args.title,
+        doi=args.doi,
+        use_cache=not args.no_cache
+    )
+    
+    print("✅ Engine demonstration completed")
+    return results
+
+
+def main(args) -> int:
+    """Main function wrapper for asyncio execution.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Command line arguments
+
+    Returns
+    -------
+    int
+        Exit status code (0 for success, 1 for failure)
+    """
+    try:
+        asyncio.run(main_async(args))
+        return 0
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return 1
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Demonstrate Scholar engine unified search capabilities"
+    )
+    parser.add_argument(
+        "--title",
+        "-t",
+        type=str,
+        default="Attention is All You Need",
+        help="Paper title to search for (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--doi", 
+        "-d",
+        type=str,
+        default="10.1038/nature14539",
+        help="DOI to search for (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--no_cache",
+        "-nc",
+        action="store_true",
+        default=False,
+        help="Disable caching for search engines (default: %(default)s)",
+    )
+    args = parser.parse_args()
+    stx.str.printc(args, c="yellow")
+    return args
+
+
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF
