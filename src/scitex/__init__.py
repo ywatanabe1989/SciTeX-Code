@@ -69,6 +69,7 @@ dev = _LazyModule("dev")
 gists = _LazyModule("gists")
 errors = _LazyModule("errors")
 units = _LazyModule("units")
+logging = _LazyModule("logging")
 
 # Import sh function directly as it's commonly used
 try:
@@ -82,6 +83,6 @@ def start(*args, **kwargs):
     return gen.start(*args, **kwargs)
 
 __all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path",
-           "dict", "decorators", "start", "__version__", "sh", "errors", "units"]
+           "dict", "decorators", "start", "__version__", "sh", "errors", "units", "logging"]
 
 # EOF
