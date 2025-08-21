@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 17:43:16 (ywatanabe)"
+# Timestamp: "2025-08-22 00:00:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/OpenAlexEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -81,10 +81,17 @@ class OpenAlexEngine(BaseDOIEngine):
             results = data.get("results", [])
             if results:
                 return self._extract_metadata_from_work(results[0], return_as)
-            return None
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
+
         except Exception as exc:
             logger.warn(f"OpenAlex DOI search error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
 
     def _search_by_metadata(
         self,
@@ -96,7 +103,12 @@ class OpenAlexEngine(BaseDOIEngine):
     ) -> Optional[Dict]:
         """Search by metadata other than doi"""
         if not title:
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
         params = {
             "search": title,
@@ -125,10 +137,21 @@ class OpenAlexEngine(BaseDOIEngine):
                     work_title = work_title[:-1]
                 if work_title and self._is_title_match(title, work_title):
                     return self._extract_metadata_from_work(work, return_as)
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
+
         except Exception as exc:
             logger.warn(f"OpenAlex metadata error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
     def _extract_metadata_from_work(
         self, work, return_as: str
@@ -309,6 +332,10 @@ if __name__ == "__main__":
     outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
     outputs["metadata_by_doi_json"] = engine.search(doi=DOI, return_as="json")
 
+    # Empty Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+
     for k, v in outputs.items():
         print("----------------------------------------")
         print(k)
@@ -316,6 +343,6 @@ if __name__ == "__main__":
         pprint(v)
         time.sleep(1)
 
-# python -m scitex.scholar.engines.individual._OpenAlexEngine
+# python -m scitex.scholar.engines.individual.OpenAlexEngine
 
 # EOF

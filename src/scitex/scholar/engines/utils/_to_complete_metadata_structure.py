@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 10:40:07 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/utils/_to_complete_metadata_structure.py
+# Timestamp: "2025-08-21 23:17:53 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/utils/_to_complete_metadata_structure.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/utils/_to_complete_metadata_structure.py"
+    "./src/scitex/scholar/engines/utils/_to_complete_metadata_structure.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -25,6 +25,10 @@ BASE_STRUCTURE = OrderedDict(
                     ("arxiv_id_engines", None),
                     ("pmid", None),
                     ("pmid_engines", None),
+                    ("semantic_id", None),
+                    ("semantic_id_engines", None),
+                    ("ieee_id", None),
+                    ("ieee_id_engines", None),
                     ("scholar_id", None),
                     ("scholar_id_engines", None),
                 ]

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:15:30 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/engines/_URLDOIEngine.py
+# Timestamp: "2025-08-21 23:59:49 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/URLDOIEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/engines/_URLDOIEngine.py"
+    "./src/scitex/scholar/engines/individual/URLDOIEngine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -123,9 +123,11 @@ class URLDOIEngine(BaseDOIEngine):
         url: Optional[str] = None,
     ) -> Optional[Dict]:
         """Extract DOI from URL field if available"""
-        if not url:
-            return None
 
+        if not url:
+            return self._create_minimal_metadata(return_as=return_as)
+
+        print("bbb")
         try:
             assert return_as in [
                 "dict",
@@ -184,6 +186,9 @@ class URLDOIEngine(BaseDOIEngine):
                         return metadata
                     if return_as == "json":
                         return json.dumps(metadata, indent=2)
+                return self._create_minimal_metadata(
+                    doi=doi, return_as=return_as
+                )
 
             # Continue with other extractions (IEEE, Semantic Scholar)
             ieee_id = self._extract_ieee_id(url)
@@ -194,6 +199,8 @@ class URLDOIEngine(BaseDOIEngine):
                         "id": {
                             "doi": doi,
                             "doi_engines": [self.name],
+                            "ieee_id": ieee_id,
+                            "ieee_id_engines": [self.name],
                         },
                         "basic": {
                             "title": title if title else None,
@@ -214,6 +221,9 @@ class URLDOIEngine(BaseDOIEngine):
                         return metadata
                     if return_as == "json":
                         return json.dumps(metadata, indent=2)
+                return self._create_minimal_metadata(
+                    doi=doi, return_as=return_as
+                )
 
             semantic_id = self._extract_semantic_corpus_id(url)
             if semantic_id:
@@ -245,11 +255,23 @@ class URLDOIEngine(BaseDOIEngine):
                         return metadata
                     if return_as == "json":
                         return json.dumps(metadata, indent=2)
-
-            return None
+                return self._create_minimal_metadata(
+                    semantic_id=semantic_id, return_as=return_as
+                )
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
         except Exception as exc:
             logger.warn(f"URL DOI extraction error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
     def _extract_pubmed_id(self, url: str) -> Optional[str]:
         for pattern in self.pubmed_patterns:
@@ -374,30 +396,17 @@ if __name__ == "__main__":
         title=TITLE, url=URL, return_as="json"
     )
 
+    # Emptry Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+
     for k, v in outputs.items():
         print("----------------------------------------")
         print(k)
         print("----------------------------------------")
         pprint(v)
         time.sleep(1)
-# if __name__ == "__main__":
-#     from pprint import pprint
 
-#     engine = URLDOIEngine("test@example.com")
-
-#     test_urls = [
-#         "https://doi.org/10.1002/hbm.26190",
-#         "http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=\&arnumber=10040734",
-#         "https://www.ncbi.nlm.nih.gov/pubmed/33841115",
-#         "https://api.semanticscholar.org/CorpusId:3626970",
-#     ]
-
-#     for url in test_urls:
-#         metadata = engine.search("Test Paper", url=url)
-#         print(f"URL: {url}")
-#         pprint(metadata)
-#         print()
-
-# python -m scitex.scholar.engines.individual._URLDOIEngine
+# python -m scitex.scholar.engines.individual.URLDOIEngine
 
 # EOF

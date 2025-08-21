@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:25:55 (ywatanabe)"
+# Timestamp: "2025-08-22 00:34:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -128,7 +128,6 @@ def parse_args() -> argparse.Namespace:
         help="Disable caching for search engines (default: %(default)s)",
     )
     args = parser.parse_args()
-    stx.str.printc(args, c="yellow")
     return args
 
 

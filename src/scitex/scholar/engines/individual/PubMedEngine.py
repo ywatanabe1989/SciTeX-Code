@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:32:19 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/engines/_PubMedEngine.py
+# Timestamp: "2025-08-22 00:00:20 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/PubMedEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/engines/_PubMedEngine.py"
+    "./src/scitex/scholar/engines/individual/PubMedEngine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -150,7 +150,11 @@ class PubMedEngine(BaseDOIEngine):
 
         if pmids:
             return self._search_by_pmid(pmids[0], return_as)
-        return None
+
+        return self._create_minimal_metadata(
+            doi=doi,
+            return_as=return_as,
+        )
 
     def _search_by_pmid(
         self,
@@ -279,7 +283,10 @@ class PubMedEngine(BaseDOIEngine):
         if return_as == "json":
             return json.dumps(metadata, indent=2)
 
-        return None
+        return self._create_minimal_metadata(
+            pmid=pmid,
+            return_as=return_as,
+        )
 
 
 if __name__ == "__main__":
@@ -309,6 +316,10 @@ if __name__ == "__main__":
         pmid=PMID, return_as="json"
     )
 
+    # Emptry Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+
     for k, v in outputs.items():
         print("----------------------------------------")
         print(k)
@@ -316,6 +327,6 @@ if __name__ == "__main__":
         pprint(v)
         time.sleep(1)
 
-# python -m scitex.scholar.engines.individual._PubMedEngine
+# python -m scitex.scholar.engines.individual.PubMedEngine
 
 # EOF

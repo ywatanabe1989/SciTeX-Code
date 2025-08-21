@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:26:40 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/engines/_CrossRefEngine.py
+# Timestamp: "2025-08-22 00:01:06 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/engines/_CrossRefEngine.py"
+    "./src/scitex/scholar/engines/individual/CrossRefEngine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -76,7 +76,10 @@ class CrossRefEngine(BaseDOIEngine):
             return self._extract_metadata_from_item(item, return_as)
         except Exception as exc:
             logger.warn(f"CrossRef DOI search error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
 
     def _search_by_metadata(
         self,
@@ -118,10 +121,21 @@ class CrossRefEngine(BaseDOIEngine):
                     item_title = item_title[:-1]
                 if self._is_title_match(title, item_title):
                     return self._extract_metadata_from_item(item, return_as)
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
+
         except Exception as exc:
             logger.warn(f"CrossRef metadata error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
     def _extract_metadata_from_item(
         self, item, return_as: str
@@ -236,6 +250,10 @@ if __name__ == "__main__":
     outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
     outputs["metadata_by_doi_json"] = engine.search(doi=DOI, return_as="json")
 
+    # Empty Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+
     for k, v in outputs.items():
         print("----------------------------------------")
         print(k)
@@ -243,6 +261,6 @@ if __name__ == "__main__":
         pprint(v)
         time.sleep(1)
 
-# python -m scitex.scholar.engines.individual._CrossRefEngine
+# python -m scitex.scholar.engines.individual.CrossRefEngine
 
 # EOF

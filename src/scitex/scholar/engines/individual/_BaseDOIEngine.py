@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 17:32:22 (ywatanabe)"
+# Timestamp: "2025-08-21 23:54:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/_BaseDOIEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,9 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+import json
+from typing import Dict
 
 """
 Abstract base class for DOI engines with enhanced rate limit handling.
@@ -28,7 +31,12 @@ import requests
 
 from scitex import log
 
-from ..utils import PubMedConverter, TextNormalizer, URLDOIExtractor
+from ..utils import (
+    PubMedConverter,
+    TextNormalizer,
+    URLDOIExtractor,
+    to_complete_metadata_structure,
+)
 
 logger = log.getLogger(__name__)
 
@@ -373,5 +381,83 @@ class BaseDOIEngine(ABC):
         This method is kept for backward compatibility.
         """
         return self.text_normalizer.is_title_match(title1, title2, threshold)
+
+    def _create_minimal_metadata(
+        self,
+        doi=None,
+        pmid=None,
+        corpus_id=None,
+        ieee_id=None,
+        semantic_id=None,
+        title=None,
+        year=None,
+        authors=None,
+        return_as: str = "dict",
+    ) -> Optional[Dict]:
+        """Create empty result structure with tracking information when no metadata is found."""
+
+        # Add system tracking
+        metadata = {
+            "id": {
+                "doi": doi,
+                "doi_engines": [self.name] if doi else None,
+                "pmid": pmid,
+                "pmid_engines": [self.name] if pmid else None,
+                "corpus_id": corpus_id,
+                "corpus_id_engines": [self.name] if corpus_id else None,
+                "semantic_id": semantic_id,
+                "semantic_id_engines": ([self.name] if semantic_id else None),
+                "ieee_id": ieee_id,
+                "ieee_id_engines": [self.name] if ieee_id else None,
+            },
+            "basic": {
+                "title": title if title else None,
+                "title_engines": [self.name] if title else None,
+                "year": year if year else None,
+                "year_engines": [self.name] if year else None,
+                "authors": authors if authors else None,
+                "authors_engines": [self.name] if authors else None,
+            },
+        }
+
+        metadata = to_complete_metadata_structure(metadata)
+
+        if return_as == "dict":
+            return metadata
+        elif return_as == "json":
+            return json.dumps(metadata, indent=2)
+        else:
+            return metadata
+
+
+if __name__ == "__main__":
+
+    def main():
+        class MockEngine(BaseDOIEngine):
+            @property
+            def name(self) -> str:
+                return "MockEngine"
+
+            def search(
+                self,
+                title: str,
+                year: Optional[int] = None,
+                authors: Optional[List[str]] = None,
+            ) -> Optional[str]:
+                return None
+
+        engine = MockEngine()
+        result = engine._create_minimal_metadata(
+            # doi="10.1234/test",
+            # title="Test Paper",
+            # year=2023,
+            # authors=["John Doe"],
+        )
+        print("Mock engine metadata:")
+        print(json.dumps(result, indent=2))
+
+    main()
+
+# python -m scitex.scholar.engines.individual._BaseDOIEngine
 
 # EOF

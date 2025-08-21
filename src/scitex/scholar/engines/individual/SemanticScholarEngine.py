@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:14:22 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/engines/_SemanticScholarEngine.py
+# Timestamp: "2025-08-22 00:00:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/SemanticScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/engines/_SemanticScholarEngine.py"
+    "./src/scitex/scholar/engines/individual/SemanticScholarEngine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -122,13 +122,6 @@ class SemanticScholarEngine(BaseDOIEngine):
             ], "return_as must be either of 'dict' or 'json'"
             response = self.session.get(url, params=params, timeout=30)
 
-            # if response.status_code == 429:
-            #     raise requests.ConnectionError("Rate limit exceeded")
-
-            # if response.status_code == 404:
-            #     logger.warn(f"Semantic Scholar DOI not found: {doi}")
-            #     return None
-
             response.raise_for_status()
             paper = response.json()
             return self._extract_metadata_from_paper(paper, return_as)
@@ -136,6 +129,11 @@ class SemanticScholarEngine(BaseDOIEngine):
             raise
         except Exception as exc:
             logger.warn(f"Semantic Scholar DOI search error: {exc}")
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
+
             return None
 
     @retry(
@@ -214,7 +212,12 @@ class SemanticScholarEngine(BaseDOIEngine):
             raise
         except Exception as exc:
             logger.warn(f"Semantic Scholar metadata error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
     @retry(
         stop=stop_after_attempt(3),
@@ -258,6 +261,11 @@ class SemanticScholarEngine(BaseDOIEngine):
             raise
         except Exception as exc:
             logger.warn(f"Semantic Scholar Corpus ID search error: {exc}")
+            return self._create_minimal_metadata(
+                corpus_id=corpus_id,
+                return_as=return_as,
+            )
+
             return None
 
     def _extract_metadata_from_paper(
@@ -338,15 +346,9 @@ if __name__ == "__main__":
         title=TITLE, return_as="json"
     )
 
-    # # Search by DOI
-    # outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
-    # outputs["metadata_by_doi_json"] = engine.search(doi=DOI, return_as="json")
-
-    # # Search by Corpus ID
-    # outputs["metadata_by_corpus_id_dict"] = engine.search(corpus_id=CORPUS_ID)
-    # outputs["metadata_by_corpus_id_json"] = engine.search(
-    #     corpus_id=CORPUS_ID, return_as="json"
-    # )
+    # Emptry Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
 
     for k, v in outputs.items():
         print("----------------------------------------")
@@ -356,6 +358,6 @@ if __name__ == "__main__":
         time.sleep(1)
 
 
-# python -m scitex.scholar.engines.individual._SemanticScholarEngine
+# python -m scitex.scholar.engines.individual.SemanticScholarEngine
 
 # EOF

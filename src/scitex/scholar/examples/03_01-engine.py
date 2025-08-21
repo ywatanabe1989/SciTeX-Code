@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:01:15 (ywatanabe)"
+# Timestamp: "2025-08-22 00:09:09 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_01-engine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -46,9 +46,11 @@ import scitex as stx
 """Parameters"""
 
 """Functions & Classes"""
-async def search_by_queries(title: str = None, doi: str = None, use_cache: bool = False) -> dict:
+async def search_by_queries(
+    title: str = None, doi: str = None, use_cache: bool = False
+) -> dict:
     """Demonstrate unified search capabilities.
-    
+
     Parameters
     ----------
     title : str, optional
@@ -57,14 +59,14 @@ async def search_by_queries(title: str = None, doi: str = None, use_cache: bool 
         DOI to search for
     use_cache : bool, default=False
         Whether to use cached results
-        
+
     Returns
     -------
     dict
         Search results containing metadata from multiple engines
     """
     from scitex.scholar import ScholarEngine
-    
+
     # Default queries if not provided
     search_title = title or "Attention is All You Need"
     search_doi = doi or "10.1038/nature14539"
@@ -369,7 +371,6 @@ async def search_by_queries(title: str = None, doi: str = None, use_cache: bool 
     #                            ('searched_by_Semantic_Scholar', False),
     #                            ('searched_by_URL', True)]))])
 
-
     return outputs
 
 
@@ -388,13 +389,11 @@ async def main_async(args) -> dict:
     """
     print("🔍 Scholar Engine Demonstration")
     print("=" * 40)
-    
+
     results = await search_by_queries(
-        title=args.title,
-        doi=args.doi,
-        use_cache=not args.no_cache
+        title=args.title, doi=args.doi, use_cache=not args.no_cache
     )
-    
+
     print("✅ Engine demonstration completed")
     return results
 
@@ -433,7 +432,7 @@ def parse_args() -> argparse.Namespace:
         help="Paper title to search for (default: %(default)s)",
     )
     parser.add_argument(
-        "--doi", 
+        "--doi",
         "-d",
         type=str,
         default="10.1038/nature14539",
@@ -447,7 +446,6 @@ def parse_args() -> argparse.Namespace:
         help="Disable caching for search engines (default: %(default)s)",
     )
     args = parser.parse_args()
-    stx.str.printc(args, c="yellow")
     return args
 
 

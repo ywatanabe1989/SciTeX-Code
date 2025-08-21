@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-14 21:19:10 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/engines/_ArXivEngine.py
+# Timestamp: "2025-08-22 00:01:18 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/ArXivEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/metadata/doi/engines/_ArXivEngine.py"
+    "./src/scitex/scholar/engines/individual/ArXivEngine.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -106,10 +106,16 @@ class ArXivEngine(BaseDOIEngine):
             feed = feedparser.parse(response.text)
             for entry in feed.entries:
                 return self._extract_metadata_from_entry(entry, return_as)
-            return None
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
         except Exception as exc:
             logger.warn(f"ArXiv DOI search error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                doi=doi,
+                return_as=return_as,
+            )
 
     @retry(
         stop=stop_after_attempt(3),
@@ -128,7 +134,12 @@ class ArXivEngine(BaseDOIEngine):
     ) -> Optional[Dict]:
         """Search by metadata other than doi"""
         if not title:
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
         params = {
             "search_query": f'ti:"{title}"',
@@ -153,10 +164,21 @@ class ArXivEngine(BaseDOIEngine):
                 entry_title = entry.get("title", "").replace("\n", " ").strip()
                 if self._is_title_match(title, entry_title):
                     return self._extract_metadata_from_entry(entry, return_as)
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
+
         except Exception as exc:
             logger.warn(f"ArXiv metadata error: {exc}")
-            return None
+            return self._create_minimal_metadata(
+                title=title,
+                year=year,
+                authors=authors,
+                return_as=return_as,
+            )
 
     @retry(
         stop=stop_after_attempt(3),
@@ -316,12 +338,16 @@ if __name__ == "__main__":
     outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
     outputs["metadata_by_doi_json"] = engine.search(doi=DOI, return_as="json")
 
+    # Empty Result
+    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
+    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+
     for k, v in outputs.items():
         print("----------------------------------------")
         print(k)
         print("----------------------------------------")
         pprint(v)
 
-# python -m scitex.scholar.engines.individual._ArXivEngine
+# python -m scitex.scholar.engines.individual.ArXivEngine
 
 # EOF

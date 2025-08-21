@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:41:00 (ywatanabe)"
+# Timestamp: "2025-08-22 00:04:35 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,6 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import asyncio
 import hashlib
+import re
 import time
 from typing import Dict, List
 
@@ -29,7 +30,6 @@ from .individual import (
     SemanticScholarEngine,
     URLDOIEngine,
 )
-from .utils._to_complete_metadata_structure import BASE_STRUCTURE
 
 logger = log.getLogger(__name__)
 
@@ -393,7 +393,7 @@ class ScholarEngine:
             return True
 
         first = metadata_list[0]
-        first_title = first.get("basic", {}).get("title", "").lower().strip()
+        first_title = (first.get("basic", {}).get("title") or "").lower().strip()
         first_year = first.get("basic", {}).get("year")
         first_authors = first.get("basic", {}).get("authors", [])
         first_author_surname = (
@@ -401,10 +401,16 @@ class ScholarEngine:
         )
 
         for metadata in metadata_list[1:]:
-            title = metadata.get("basic", {}).get("title", "").lower().strip()
+            title = (metadata.get("basic", {}).get("title") or "").lower().strip()
             year = metadata.get("basic", {}).get("year")
             authors = metadata.get("basic", {}).get("authors", [])
-            author_surname = authors[0].split()[-1].lower() if authors else ""
+            first_author = authors[0]
+            if first_author:
+                author_surname = (
+                    authors[0].split()[-1].lower() if authors else ""
+                )
+            else:
+                author_surname = ""
 
             # Year must be exactly the same
             if first_year != year:
@@ -434,14 +440,12 @@ class ScholarEngine:
             return True
 
         paper_title = (
-            metadata.get("basic", {}).get("title", "").lower().strip()
+            (metadata.get("basic", {}).get("title") or "").lower().strip()
         )
-        query_title = query_title.lower().strip()
-
         if not paper_title:
             return False
 
-        import re
+        query_title = query_title.lower().strip()
 
         def normalize_title(text):
             text = re.sub(r"[^\w\s]", " ", text)
@@ -490,8 +494,7 @@ class ScholarEngine:
                 valid_engines[engine_name] = metadata
 
         if not valid_engines:
-            # return BASE_STRUCTURE.copy()
-            # fixme; return empty metadata structure
+            __import__("ipdb").set_trace()
             return None
 
         # Start with the first valid engine as base
