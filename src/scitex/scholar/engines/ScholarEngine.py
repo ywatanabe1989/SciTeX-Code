@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 00:04:35 (ywatanabe)"
+# Timestamp: "2025-08-22 20:09:42 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -25,6 +25,7 @@ from scitex.scholar import ScholarConfig
 from .individual import (
     ArXivEngine,
     CrossRefEngine,
+    CrossRefLocalEngine,
     OpenAlexEngine,
     PubMedEngine,
     SemanticScholarEngine,
@@ -46,6 +47,7 @@ class ScholarEngine:
     ):
         self.config = config if config else ScholarConfig()
         self.engines = self.config.resolve("engines", engines)
+        __import__("ipdb").set_trace()
         self.use_cache = self.config.resolve("use_cache_search", use_cache)
         self._engine_instances = {}
         self.rotation_manager = None
@@ -282,6 +284,7 @@ class ScholarEngine:
             engine_classes = {
                 "URL": URLDOIEngine,
                 "CrossRef": CrossRefEngine,
+                "CrossRefLocal": CrossRefLocalEngine,
                 "OpenAlex": OpenAlexEngine,
                 "PubMed": PubMedEngine,
                 "Semantic_Scholar": SemanticScholarEngine,
@@ -393,7 +396,9 @@ class ScholarEngine:
             return True
 
         first = metadata_list[0]
-        first_title = (first.get("basic", {}).get("title") or "").lower().strip()
+        first_title = (
+            (first.get("basic", {}).get("title") or "").lower().strip()
+        )
         first_year = first.get("basic", {}).get("year")
         first_authors = first.get("basic", {}).get("authors", [])
         first_author_surname = (
@@ -401,7 +406,9 @@ class ScholarEngine:
         )
 
         for metadata in metadata_list[1:]:
-            title = (metadata.get("basic", {}).get("title") or "").lower().strip()
+            title = (
+                (metadata.get("basic", {}).get("title") or "").lower().strip()
+            )
             year = metadata.get("basic", {}).get("year")
             authors = metadata.get("basic", {}).get("authors", [])
             first_author = authors[0]

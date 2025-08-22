@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 23:17:53 (ywatanabe)"
+# Timestamp: "2025-08-22 20:08:06 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/utils/_to_complete_metadata_structure.py
 # ----------------------------------------
 from __future__ import annotations
@@ -149,6 +149,7 @@ BASE_STRUCTURE = OrderedDict(
                 [
                     ("searched_by_arXiv", None),
                     ("searched_by_CrossRef", None),
+                    ("searched_by_CrossRefLocal", None),
                     ("searched_by_OpenAlex", None),
                     ("searched_by_PubMed", None),
                     ("searched_by_Semantic_Scholar", None),

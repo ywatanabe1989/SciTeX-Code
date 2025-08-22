@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 20:05:48 (ywatanabe)"
+# Timestamp: "2025-08-22 20:08:36 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefLocalEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,7 +37,7 @@ class CrossRefLocalEngine(BaseDOIEngine):
 
     @property
     def name(self) -> str:
-        return "CrossRef_Local"
+        return "CrossRefLocal"
 
     @property
     def rate_limit_delay(self) -> float:

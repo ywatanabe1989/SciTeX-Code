@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-22 17:05:34 (ywatanabe)"
+# Timestamp: "2025-08-22 20:10:16 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -15,21 +15,22 @@ enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
 # ----------------------------------------
 # sources:
 #   - url_doi_source
-#   - crossref  
+#   - crossref
 #   - pubmed
 #   - semantic_scholar
-#   - openalex  
+#   - openalex
 #   - arxiv
-#   - google_scholar  
+#   - google_scholar
 
 engines:
   - URL
+  - CrossRefLocal
   - Semantic_Scholar
   - CrossRef
   - OpenAlex
   - PubMed
   - arXiv
-  
+
 default_search_limit: 20
 max_workers: 4
 verify_ssl: true
@@ -48,7 +49,7 @@ use_cache_pdf_downloader: true
 semantic_scholar_api_key: ${SCITEX_SCHOLAR_SEMANTIC_SCHOLAR_API_KEY:-null}
 crossref_api_key: ${SCITEX_SCHOLAR_CROSSREF_API_KEY:-null}
 pubmed_api_key: ${SCITEX_SCHOLAR_PUBMED_API_KEY:-null}
-twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}  
+twocaptcha_api_key: ${SCITEX_SCHOLAR_2CAPTCHA_API_KEY:-null}
 
 # ----------------------------------------
 # auth:
@@ -60,7 +61,7 @@ crossref_email: ${SCITEX_SCHOLAR_CROSSREF_EMAIL:-null}
 openathens_enabled: ${SCITEX_SCHOLAR_OPENATHENS_ENABLED:-true}
 openathens_email: ${SCITEX_SCHOLAR_OPENATHENS_EMAIL:-null}
 ezproxy_email: ${SCITEX_SCHOLAR_EZPROXY_EMAIL:-null}
-shibboleth_email: ${SCITEX_SCHOLAR_SHIBBOLETH_EMAIL:-null}  
+shibboleth_email: ${SCITEX_SCHOLAR_SHIBBOLETH_EMAIL:-null}
 openurl_resolver_url: ${SCITEX_SCHOLAR_OPENURL_RESOLVER_URL:-null}
 sso_username: ${SCITEX_SCHOLAR_SSO_USERNAME:-null}
 sso_password: ${SCITEX_SCHOLAR_SSO_PASSWORD:-null}
@@ -70,7 +71,7 @@ notification_email: ${UNIMELB_EMAIL:-null}
 notification_from_email: ${SCITEX_EMAIL_AGENT:-"agent@scitex.ai"}
 
 # Screenshot settings
-capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}  
+capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}
 
 # ----------------------------------------
 # browser:
@@ -83,48 +84,48 @@ chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
 
 # DOI prefix to publisher domain mapping
 doi_to_domain:
-  "10.1038":  # Nature Publishing Group
+  "10.1038":
     - "nature.com"
     - "springernature.com"
-  "10.1016":  # Elsevier
+  "10.1016":
     - "sciencedirect.com"
     - "elsevier.com"
-  "10.1002":  # Wiley
+  "10.1002":
     - "wiley.com"
     - "onlinelibrary.wiley.com"
-  "10.1007":  # Springer
+  "10.1007":
     - "springer.com"
     - "link.springer.com"
-  "10.1126":  # Science/AAAS
+  "10.1126":
     - "science.org"
     - "sciencemag.org"
-  "10.1021":  # ACS Publications
+  "10.1021":
     - "acs.org"
     - "pubs.acs.org"
-  "10.1111":  # Wiley (alternative)
+  "10.1111":
     - "wiley.com"
     - "onlinelibrary.wiley.com"
-  "10.1080":  # Taylor & Francis
+  "10.1080":
     - "tandfonline.com"
-  "10.1177":  # SAGE
+  "10.1177":
     - "sagepub.com"
     - "journals.sagepub.com"
-  "10.1093":  # Oxford
+  "10.1093":
     - "oup.com"
     - "academic.oup.com"
-  "10.1109":  # IEEE
+  "10.1109":
     - "ieee.org"
     - "ieeexplore.ieee.org"
-  "10.1371":  # PLOS
+  "10.1371":
     - "plos.org"
     - "journals.plos.org"
-  "10.1073":  # PNAS
+  "10.1073":
     - "pnas.org"
-  "10.1136":  # BMJ
+  "10.1136":
     - "bmj.com"
-  "10.3389":  # Frontiers
+  "10.3389":
     - "frontiersin.org"
-  "10.3390":  # MDPI
+  "10.3390":
     - "mdpi.com"
 
 # Available from patterns - high priority for OpenURL resolvers
@@ -136,7 +137,7 @@ openurl_available_from_patterns:
   - "Available from JSTOR Health & General Sciences"
   - "Available from PubMed Central"
   - "Available from American Physiological Society Paid"
-  
+
   # Publisher-specific patterns (most reliable)
   - "Available from Nature"
   - "Available from Nature Publishing Group"
@@ -175,31 +176,31 @@ openurl_available_from_patterns:
 # Resolver link selectors in priority order
 structure_selectors:
   # University of Melbourne specific (based on screenshots)
-  - 'tr:has-text("Available from") a:has-text("GO")'  # GO button in row with "Available from"
-  - 'td a[href*="javascript:openSFXMenuLink"]:has-text("GO")'  # SFX GO buttons
-  - 'a[title="Navigate to target in new window"]'  # Links with this title attribute
-  
+  - 'tr:has-text("Available from") a:has-text("GO")'
+  - 'td a[href*="javascript:openSFXMenuLink"]:has-text("GO")'
+  - 'a[title="Navigate to target in new window"]'
+
   # SFX (ExLibris) - used by many universities
   - "div#fulltext a"
-  - "div.sfx-fulltext a" 
+  - "div.sfx-fulltext a"
   - "div.results-title > a"
   - "td.object-cell a"
   - ".getFullTxt a"
   - 'div[id*="fulltext"] a'
   - 'div[class*="fulltext"] a'
-  
+
   # Primo (ExLibris)
   - "prm-full-view-service-container a"
   - "span.availability-status-available a"
-  
+
   # Summon (ProQuest)
   - ".summon-fulltext-link"
   - "a.summon-link"
-  
+
   # EDS (EBSCO)
   - "a.fulltext-link"
   - ".ft-link a"
-  
+
   # Generic patterns
   - "a.full-text-link"
   - "a.fulltext"
@@ -215,7 +216,7 @@ text_patterns:
   - "Access full text"
   - "Go to article"
   - "Access article"
-  
+
   # Generic but reliable
   - "Full Text"
   - "Full text"
@@ -223,7 +224,7 @@ text_patterns:
   - "View"
   - "PDF"
   - "Download"
-  - "GO"  # Common button text in OpenURL resolvers
+  - "GO"
 
 negative_keywords:
   - "cookie"
@@ -259,15 +260,15 @@ download_selectors:
   # ScienceDirect (Elsevier)
   - 'a.PdfLink'
   - 'a.article-tools-pdf-link'
-  
+
   # Wiley Online Library
   - 'a#article-pdf-link'
   - 'a.pdf-download'
-  
+
   # SpringerLink
   - 'a[data-track-action="download pdf"]'
   - 'a.c-pdf-download__link'
-  
+
   # Oxford Academic
   - 'a.al-link.pdf-link'
 
@@ -325,7 +326,7 @@ deny_classes:
 
 deny_text_patterns:
   - "Download Issue"
-  - "Download Volume" 
+  - "Download Volume"
   - "Full Issue"
   - "Complete Issue"
   - "Entire Issue"
