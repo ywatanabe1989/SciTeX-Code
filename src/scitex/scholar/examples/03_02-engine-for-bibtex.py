@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 00:34:13 (ywatanabe)"
+# Timestamp: "2025-08-23 00:10:19 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/03_02-engine-for-bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -106,7 +106,7 @@ def parse_args() -> argparse.Namespace:
         description="Search metadata for papers in BibTeX files"
     )
     parser.add_argument(
-        "--bibtex_index",
+        "--bibtex-index",
         "-b",
         type=int,
         choices=[0, 1, 2],
@@ -114,14 +114,14 @@ def parse_args() -> argparse.Namespace:
         help="BibTeX file index (0: openaccess, 1: paywalled, 2: pac) (default: %(default)s)",
     )
     parser.add_argument(
-        "--n_samples",
+        "--n-samples",
         "-n",
         type=int,
         default=None,
         help="Number of samples to process (default: %(default)s)",
     )
     parser.add_argument(
-        "--no_cache",
+        "--no-cache",
         "-nc",
         action="store_true",
         default=False,

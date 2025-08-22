@@ -1,11 +1,91 @@
 <!-- ---
-!-- Timestamp: 2025-08-12 18:52:31
+!-- Timestamp: 2025-08-23 01:51:15
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/README.md
 !-- --- -->
 
 
 # SciTeX Scholar
+
+``` mermaid
+graph TD
+    subgraph " "
+        direction LR
+        subgraph "Layer 1: Entrypoints"
+            direction TB
+            CLI("<b>CLI</b><br>Command-line interfaces for<br>users to interact with the library.")
+            Examples("<b>Examples</b><br>Demonstration scripts showcasing<br>how to use various features.")
+        end
+
+        subgraph "Layer 2: Core Orchestration"
+            direction TB
+            Core("<b>Core</b> (Paper, Papers, Scholar)<br>Central classes that model<br>academic papers and orchestrate<br>the main workflows.")
+        end
+
+        subgraph "Layer 3: Functional Modules (Services)"
+            direction TB
+            Download("<b>Download</b><br>Handles the downloading of<br>PDF files from URLs.")
+            URL("<b>URL Finder</b><br>Resolves DOIs and other identifiers<br>to find article and PDF URLs.")
+            Auth("<b>Auth</b><br>Manages authentication with<br>institutional providers like OpenAthens.")
+        end
+
+        subgraph "Layer 4: Data & Interaction Layer"
+            direction TB
+            Engines("<b>Engines</b><br>Fetches metadata from various<br>academic sources like CrossRef, PubMed, etc.")
+            Storage("<b>Storage</b><br>Manages the local library,<br>caching, and BibTeX handling.")
+            Browser("<b>Browser</b><br>Controls local and remote web<br>browsers for automation using Playwright.")
+        end
+
+        subgraph "Layer 5: Foundational Utilities"
+            direction TB
+            Config("<b>Config</b><br>Handles configuration management,<br>loading settings from files and<br>environment variables.")
+            Utils("<b>Utils</b><br>Shared utility functions for text<br>normalization, parsing, etc.")
+        end
+    end
+
+    %% Defining Dependencies
+    CLI --> Core
+    CLI --> Auth
+    Examples --> Core
+    Examples --> Download
+    Examples --> URL
+    Examples --> Browser
+
+    Core --> Engines
+    Core --> Storage
+    Core --> Auth
+    Core --> Browser
+
+    Download --> URL
+    Download --> Browser
+    Download --> Config
+
+    URL --> Browser
+    URL --> Config
+    URL --> Utils
+
+    Auth --> Browser
+    Auth --> Config
+    Auth --> Utils
+
+    Engines --> Config
+    Engines --> Utils
+    Storage --> Config
+    Storage --> Utils
+    Browser --> Config
+
+    classDef entrypoint fill:#E1F5FE,stroke:#01579B,stroke-width:2px;
+    classDef core fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px;
+    classDef services fill:#FFF3E0,stroke:#E65100,stroke-width:2px;
+    classDef data fill:#F3E5F5,stroke:#4A148C,stroke-width:2px;
+    classDef utils fill:#F1F8E9,stroke:#33691E,stroke-width:2px;
+
+    class CLI,Examples entrypoint;
+    class Core core;
+    class Download,URL,Auth services;
+    class Engines,Storage,Browser data;
+    class Config,Utils utils;
+```
 
 A comprehensive Python library for scientific literature management with automatic enrichment of journal impact factors and citation counts.
 

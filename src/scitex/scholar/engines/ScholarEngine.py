@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 20:09:42 (ywatanabe)"
+# Timestamp: "2025-08-23 00:09:04 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -47,7 +47,6 @@ class ScholarEngine:
     ):
         self.config = config if config else ScholarConfig()
         self.engines = self.config.resolve("engines", engines)
-        __import__("ipdb").set_trace()
         self.use_cache = self.config.resolve("use_cache_search", use_cache)
         self._engine_instances = {}
         self.rotation_manager = None
@@ -501,8 +500,7 @@ class ScholarEngine:
                 valid_engines[engine_name] = metadata
 
         if not valid_engines:
-            __import__("ipdb").set_trace()
-            return None
+            raise ValueError("No valid engines returned matching metadata")
 
         # Start with the first valid engine as base
         base_metadata = list(valid_engines.values())[0].copy()

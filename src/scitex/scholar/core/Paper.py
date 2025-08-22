@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 23:18:10 (ywatanabe)"
+# Timestamp: "2025-08-23 00:04:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/Paper.py
 # ----------------------------------------
 from __future__ import annotations
@@ -22,7 +22,6 @@ from typing import Any, Dict, Optional, Union
 
 from scitex import log
 from scitex.dict import DotDict
-from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.engines.utils import (
     BASE_STRUCTURE,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 07:38:41 (ywatanabe)"
+# Timestamp: "2025-08-23 01:33:01 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/05_download_pdf.py
 # ----------------------------------------
 from __future__ import annotations
@@ -158,21 +158,21 @@ def parse_args() -> argparse.Namespace:
         description="Demonstrate Scholar PDF downloading capabilities"
     )
     parser.add_argument(
-        "--pdf_url",
+        "--pdf-url",
         "-u",
         type=str,
         default="https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf",
         help="PDF URL to download (default: %(default)s)",
     )
     parser.add_argument(
-        "--output_path",
+        "--output-path",
         "-o",
         type=str,
         default="/tmp/hippocampal_ripples-downloaded.pdf",
         help="Output path for downloaded PDF (default: %(default)s)",
     )
     parser.add_argument(
-        "--browser_mode",
+        "--browser-mode",
         "-bm",
         type=str,
         choices=["interactive", "stealth"],
