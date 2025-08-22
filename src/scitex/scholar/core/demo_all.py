@@ -21,8 +21,8 @@ a complete scientific literature management system with storage integration.
 import tempfile
 from pathlib import Path
 
-from ._Paper import Paper
-from ._Papers import Papers
+from .Paper import Paper
+from .Papers import Papers
 from ._Scholar import Scholar
 
 

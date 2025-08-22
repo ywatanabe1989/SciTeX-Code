@@ -35,7 +35,7 @@ from ..utils import (
     PubMedConverter,
     TextNormalizer,
     URLDOIExtractor,
-    to_complete_metadata_structure,
+    standardize_metadata,
 )
 
 logger = log.getLogger(__name__)
@@ -420,7 +420,7 @@ class BaseDOIEngine(ABC):
             },
         }
 
-        metadata = to_complete_metadata_structure(metadata)
+        metadata = standardize_metadata(metadata)
 
         if return_as == "dict":
             return metadata

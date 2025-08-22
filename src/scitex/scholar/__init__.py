@@ -25,7 +25,8 @@ from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.engines import ScholarEngine
 from scitex.scholar.url import ScholarURLFinder
 from scitex.scholar.download import ScholarPDFDownloader
-from .core import Paper, Papers#, Scholar
+from scitex.scholar.storage import ScholarLibrary
+from scitex.scholar.core import Paper, Papers#, Scholar
 from . import utils
 
 __all__ = [
@@ -44,7 +45,7 @@ __all__ = [
 
 # # Import core classes for advanced users
 # from scitex.scholar.core import Paper
-# from .core._Papers import Papers
+# from .core.Papers import Papers
 
 # # DOI resolver is available via: python -m scitex.scholar.resolve_doi_asyncs
 # from . import doi

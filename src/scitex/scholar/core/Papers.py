@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 15:38:18 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/_Papers.py
+# Timestamp: "2025-08-22 22:55:10 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/Papers.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/core/_Papers.py"
+    "./src/scitex/scholar/core/Papers.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -28,8 +28,9 @@ import pandas as pd
 from scitex import log
 from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
+from scitex.scholar.storage import ScholarLibrary
 
-from ._Paper import Paper
+from .Paper import Paper
 
 logger = log.getLogger(__name__)
 
@@ -70,31 +71,7 @@ class Papers:
         if auto_deduplicate and papers:
             self._deduplicate_in_place(source_priority=source_priority)
 
-        # Initialize storage managers (lazy loading)
-        self._library_manager = None
-        self._library_cache_manager = None
-
-    @property
-    def library_manager(self):
-        """Get library manager instance for project operations (lazy loading)."""
-        if self._library_manager is None:
-            from scitex.scholar.storage import LibraryManager
-
-            self._library_manager = LibraryManager(
-                project=self.project, config=self.config
-            )
-        return self._library_manager
-
-    @property
-    def library_cache_manager(self):
-        """Get library cache manager instance for project operations (lazy loading)."""
-        if self._library_cache_manager is None:
-            from scitex.scholar.storage import LibraryCacheManager
-
-            self._library_cache_manager = LibraryCacheManager(
-                project=self.project, config=self.config
-            )
-        return self._library_cache_manager
+        self.library = ScholarLibrary(project=self.project, config=self.config)
 
     def sync_with_library(self, bidirectional: bool = True) -> Dict[str, int]:
         """Synchronize the Papers collection with the library storage.
@@ -223,6 +200,7 @@ class Papers:
         logger.info(f"Project symlinks created: {results}")
         return results
 
+    # I think this should be handled by ScholarLibrary
     @classmethod
     def from_bibtex(cls, bibtex_input: Union[str, Path]) -> "Papers":
         """
@@ -284,6 +262,7 @@ class Papers:
         else:
             return cls._from_bibtex_text(input_str)
 
+    # I think this should be handled by ScholarLibrary
     @classmethod
     def _from_bibtex_file(cls, file_path: Union[str, Path]) -> "Papers":
         """
@@ -316,6 +295,7 @@ class Papers:
         logger.info(f"Created Papers with {len(papers)} papers from file")
         return cls(papers, auto_deduplicate=True)
 
+    # I think this should be handled by ScholarLibrary
     @classmethod
     def _from_bibtex_text(cls, bibtex_content: str) -> "Papers":
         """
@@ -357,6 +337,7 @@ class Papers:
         logger.info(f"Created Papers with {len(papers)} papers from text")
         return cls(papers, auto_deduplicate=True)
 
+    # I think this should be handled by ScholarLibrary and Paper class
     @staticmethod
     def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Optional[Paper]:
         """
@@ -975,35 +956,27 @@ class Papers:
     def _deduplicate_in_place(
         self, threshold: float = 0.85, source_priority: List[str] = None
     ) -> None:
-        """
-        Remove duplicate papers in-place based on similarity threshold.
-        Intelligently merges data from duplicates.
-
-        Args:
-            threshold: Similarity threshold (0-1) above which papers are considered duplicates
-            source_priority: List of sources in priority order (first = highest priority)
-        """
+        """Remove duplicate papers in-place based on similarity threshold."""
         if not self._papers:
             return
 
-        unique_papers = [self._papers[0]]
+        # Initialize library for similarity calculations
+        from scitex.scholar.storage import calculate_similarity_score
 
+        unique_papers = [self._papers[0]]
         for paper in self._papers[1:]:
             is_duplicate = False
-
-            for i, unique_paper in enumerate(unique_papers):
-                if paper.similarity_score(unique_paper) > threshold:
+            for ii_, unique_paper in enumerate(unique_papers):
+                if calculate_similarity_score(paper, unique_paper) > threshold:
                     is_duplicate = True
-                    # Merge the papers instead of just keeping one
                     merged_paper = self._merge_papers(
                         unique_paper, paper, source_priority
                     )
-                    unique_papers[i] = merged_paper
+                    unique_papers[ii_] = merged_paper
                     logger.debug(
                         f"Merged duplicate papers from sources: {merged_paper.all_sources}"
                     )
                     break
-
             if not is_duplicate:
                 unique_papers.append(paper)
 
@@ -1011,7 +984,7 @@ class Papers:
             logger.info(
                 f"Deduplicated {len(self._papers)} papers to {len(unique_papers)} unique papers"
             )
-            self._papers = unique_papers
+        self._papers = unique_papers
 
     def to_dataframe(self) -> pd.DataFrame:
         """
@@ -1198,7 +1171,8 @@ class Papers:
                 actual_format=format,
             )
 
-    def download_pdf_asyncs(
+    # I am not sure what is the clean approach; from ScholarPDFDownloader.py? from Scholar? Or write here?
+    def download_pdfs(
         self,
         scholar=None,
         download_dir: Optional[Union[str, Path]] = None,
@@ -1248,6 +1222,7 @@ class Papers:
             **kwargs,
         )
 
+    # This may be old API
     def _to_bibtex_entries(
         self, include_enriched: bool
     ) -> List[Dict[str, Any]]:
@@ -1281,6 +1256,7 @@ class Papers:
 
         return entries
 
+    # This may be old API
     def _determine_entry_type(self, paper: Paper) -> str:
         """Determine BibTeX entry type for a paper."""
         # Use original entry type if available
@@ -1295,6 +1271,7 @@ class Papers:
         else:
             return "misc"
 
+    # This should be handled in Library and Paper
     def _paper_to_bibtex_fields(
         self, paper: Paper, include_enriched: bool
     ) -> Dict[str, str]:
@@ -1823,7 +1800,7 @@ if __name__ == "__main__":
         print("Papers Class Demo - Project Collection Management")
         print("=" * 60)
 
-        from ._Paper import Paper
+        from .Paper import Paper
 
         # Create sample papers for a project
         sample_papers = [

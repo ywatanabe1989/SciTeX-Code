@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 19:51:43 (ywatanabe)"
+# Timestamp: "2025-08-22 23:18:04 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -17,7 +17,7 @@ from typing import Dict, List, Optional, Union
 
 from scitex import log
 
-from ..utils import to_complete_metadata_structure
+from ..utils import standardize_metadata
 from ._BaseDOIEngine import BaseDOIEngine
 
 logger = log.getLogger(__name__)
@@ -221,7 +221,7 @@ class CrossRefEngine(BaseDOIEngine):
             },
         }
 
-        metadata = to_complete_metadata_structure(metadata)
+        metadata = standardize_metadata(metadata)
         if return_as == "dict":
             return metadata
         if return_as == "json":

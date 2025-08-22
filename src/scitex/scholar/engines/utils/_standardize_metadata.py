@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 20:08:06 (ywatanabe)"
+# Timestamp: "2025-08-22 23:18:02 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/utils/_to_complete_metadata_structure.py
 # ----------------------------------------
 from __future__ import annotations
@@ -161,7 +161,7 @@ BASE_STRUCTURE = OrderedDict(
 )
 
 
-def to_complete_metadata_structure(metadata):
+def standardize_metadata(metadata):
     """Initialize all required fields with null values."""
     import copy
 
@@ -177,7 +177,60 @@ def to_complete_metadata_structure(metadata):
     return complete_structure
 
 
-# def to_complete_metadata_structure(metadata):
+def to_bibtex_entry(metadata, key=None):
+    """Convert complete metadata structure to BibTeX entry."""
+
+    def _generate_bibtex_key(metadata):
+        """Generate BibTeX key from metadata."""
+        authors = metadata["basic"]["authors"]
+        year = metadata["basic"]["year"] or "0000"
+
+        if authors:
+            first_author = authors[0].split()[-1].lower()
+        else:
+            first_author = "unknown"
+
+        return f"{first_author}-{year}"
+
+    def _determine_entry_type(metadata):
+        """Determine BibTeX entry type from metadata."""
+        if metadata["id"]["arxiv_id"]:
+            return "misc"
+        elif metadata["publication"]["journal"]:
+            return "article"
+        return "misc"
+
+    def _add_bibtex_field(lines, field_name, value):
+        """Add BibTeX field if value exists."""
+        if value:
+            escaped_value = str(value).replace("{", r"\{").replace("}", r"\}")
+            lines.append(f"  {field_name} = {{{escaped_value}}},")
+
+    def _add_bibtex_authors(lines, authors):
+        """Add authors field to BibTeX."""
+        if authors:
+            authors_str = " and ".join(authors)
+            lines.append(f"  author = {{{authors_str}}},")
+
+    if not key:
+        key = _generate_bibtex_key(metadata)
+
+    entry_type = _determine_entry_type(metadata)
+    lines = [f"@{entry_type}{{{key},"]
+
+    # Add fields from metadata structure
+    _add_bibtex_field(lines, "title", metadata["basic"]["title"])
+    _add_bibtex_authors(lines, metadata["basic"]["authors"])
+    _add_bibtex_field(lines, "year", metadata["basic"]["year"])
+    _add_bibtex_field(lines, "journal", metadata["publication"]["journal"])
+    _add_bibtex_field(lines, "doi", metadata["id"]["doi"])
+    _add_bibtex_field(lines, "abstract", metadata["basic"]["abstract"])
+
+    lines.append("}")
+    return "\n".join(lines)
+
+
+# def standardize_metadata(metadata):
 #     """Initialize all required fields with null values."""
 #     complete_structure = OrderedDict(
 #         [
@@ -248,19 +301,19 @@ def to_complete_metadata_structure(metadata):
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Timestamp: "2025-08-14 06:53:44 (ywatanabe)"
-# # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/utils/_to_complete_metadata_structure.py
+# # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/metadata/doi/utils/_standardize_metadata.py
 # # ----------------------------------------
 # from __future__ import annotations
 # import os
 # __FILE__ = (
-#     "./src/scitex/scholar/metadata/doi/utils/_to_complete_metadata_structure.py"
+#     "./src/scitex/scholar/metadata/doi/utils/_standardize_metadata.py"
 # )
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
 
 # from collections import OrderedDict
 
-# def to_complete_metadata_structure(metadata):
+# def standardize_metadata(metadata):
 #     """Initialize all required fields with null values."""
 #     complete_structure = {
 #         # Core identification

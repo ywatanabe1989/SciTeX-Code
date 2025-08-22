@@ -20,8 +20,8 @@ python -m scitex.scholar.metadata.enrichment._LibraryEnricher
 ## Core Objects
 
 - [`./_Scholar.py`](./_Scholar.py)
-- [`./_Paper.py`](./_Paper.py)
-- [`./_Papers.py`](./_Papers.py)
+- [`./Paper.py`](./Paper.py)
+- [`./Papers.py`](./Papers.py)
 
 ``` mermaid
 classDiagram

@@ -41,7 +41,7 @@ from scitex.scholar.auth import ScholarAuthManager
 from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.storage import LibraryManager
 
-from ._Papers import Papers
+from .Papers import Papers
 
 # from scitex.scholar.utils._paths import get_scholar_dir
 
@@ -543,8 +543,8 @@ if __name__ == "__main__":
         print("Scholar Class Demo - Global Library Management")
         print("=" * 60)
 
-        from ._Paper import Paper
-        from ._Papers import Papers
+        from .Paper import Paper
+        from .Papers import Papers
 
         # Initialize Scholar
         scholar = Scholar(project="demo_project")

@@ -17,7 +17,7 @@ from typing import Dict, List, Optional, Union
 
 from scitex import log
 
-from ..utils import to_complete_metadata_structure
+from ..utils import standardize_metadata
 from ._BaseDOIEngine import BaseDOIEngine
 
 logger = log.getLogger(__name__)
@@ -306,7 +306,7 @@ class OpenAlexEngine(BaseDOIEngine):
             },
         }
 
-        metadata = to_complete_metadata_structure(metadata)
+        metadata = standardize_metadata(metadata)
         if return_as == "dict":
             return metadata
         if return_as == "json":

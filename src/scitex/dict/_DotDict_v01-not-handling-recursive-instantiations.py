@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 22:03:48 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/dict/_DotDict.py
+# Timestamp: "2025-04-24 09:31:50 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/dict/_DotDict.py
 # ----------------------------------------
-from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/dict/_DotDict.py"
-)
+
+__FILE__ = "./src/scitex/dict/_DotDict.py"
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -25,14 +23,13 @@ class DotDict:
         # Avoids conflicts with keys named like standard methods ('keys', 'items', etc.)
         super().__setattr__("_data", {})
         if dictionary is not None:
-            if isinstance(dictionary, DotDict):
-                dictionary = dictionary._data
-            elif not isinstance(dictionary, dict):
+            if not isinstance(dictionary, dict):
                 raise TypeError("Input must be a dictionary.")
-
             for key, value in dictionary.items():
-                if isinstance(value, dict) and not isinstance(value, DotDict):
+                # Recursively convert nested dictionaries
+                if isinstance(value, dict):
                     value = DotDict(value)
+                # Use __setitem__ to populate data correctly
                 self[key] = value
 
     # --- Attribute Access (for valid identifiers) ---
@@ -58,8 +55,9 @@ class DotDict:
         if key == "_data" or key.startswith("_"):
             super().__setattr__(key, value)
         else:
-            if isinstance(value, dict) and not isinstance(value, DotDict):
-                value = DotDict(value)
+            # Store in the internal dictionary
+            if isinstance(value, dict):
+                value = DotDict(value)  # Convert dicts on the fly
             self._data[key] = value
 
     def __delattr__(self, key):
@@ -82,8 +80,8 @@ class DotDict:
 
     def __setitem__(self, key, value):
         # Called for obj[key] = value
-        if isinstance(value, dict) and not isinstance(value, DotDict):
-            value = DotDict(value)
+        if isinstance(value, dict):
+            value = DotDict(value)  # Convert dicts on the fly
         self._data[key] = value
 
     def __delitem__(self, key):
@@ -126,9 +124,7 @@ class DotDict:
 
         try:
             # Use the internal _data for representation
-            return json.dumps(
-                self.to_dict(), indent=4, default=default_handler
-            )
+            return json.dumps(self.to_dict(), indent=4, default=default_handler)
         except TypeError as e:
             # Fallback if default_handler still fails (e.g., complex recursion)
             return f"<DotDict object at {hex(id(self))}, contains: {list(self._data.keys())}> Error: {e}"
@@ -203,9 +199,7 @@ class DotDict:
         """
         # Mimic dict.pop behavior with optional default
         if len(args) > 1:
-            raise TypeError(
-                f"pop expected at most 2 arguments, got {1 + len(args)}"
-            )
+            raise TypeError(f"pop expected at most 2 arguments, got {1 + len(args)}")
         if key not in self._data:
             if args:
                 return args[0]  # Return default if provided
