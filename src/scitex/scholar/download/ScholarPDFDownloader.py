@@ -28,6 +28,7 @@ from scitex.scholar.browser import (
     show_grid_async,
     show_popup_message_async,
 )
+from scitex.scholar.browser.local.utils._HumanBehavior import HumanBehavior
 
 logger = log.getLogger(__name__)
 
@@ -127,11 +128,11 @@ class ScholarPDFDownloader:
         # Try download methods
         try_download_methods = [
             ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
-            # (
-            #     "From Response Body",
-            #     self._try_download_from_response_body_async,
-            # ),
-            # ("Direct Download", self._try_direct_download_async),
+            ("Direct Download", self._try_direct_download_async),
+            (
+                "From Response Body",
+                self._try_download_from_response_body_async,
+            ),
         ]
 
         for method_name, method_func in try_download_methods:
@@ -281,24 +282,39 @@ class ScholarPDFDownloader:
     async def _try_download_from_chrome_pdf_viewer_async(
         self, pdf_url: str, output_path: Path
     ) -> Optional[Path]:
-        """Download PDF from Chrome PDF viewer."""
+        """Download PDF from Chrome PDF viewer with human-like behavior."""
         page = None
         try:
             page = await self.context.new_page()
-            await page.goto(pdf_url, wait_until="load", timeout=60_000)
+            
+            # Human-like delay before navigation
+            await HumanBehavior.random_delay_async(1000, 2000, "before navigation")
+            
+            await page.goto(pdf_url, wait_until="load", timeout=30_000)
+            
+            # Wait for PDF to fully load
+            await HumanBehavior.random_delay_async(2000, 3000, "PDF loading")
 
             if not await detect_pdf_viewer_async(page):
+                logger.debug("No PDF viewer detected")
                 await page.close()
                 return None
 
+            # Simulate human PDF viewing behavior (lighter version)
+            await HumanBehavior.random_delay_async(1000, 2000, "viewing PDF")
+            
+            # Standard download button approach
             await show_grid_async(page)
             await click_center_async(page)
-
+            
             is_downloaded = (
                 await click_download_button_from_chrome_pdf_viewer_async(
                     page, output_path
                 )
             )
+            
+            # Wait for download
+            await HumanBehavior.random_delay_async(1000, 2000, "after download click")
             await page.close()
 
             if is_downloaded:
@@ -307,8 +323,8 @@ class ScholarPDFDownloader:
                 )
                 return output_path
             else:
-                logger.fail(
-                    f"Failed via Chrome PDF Viewer: from {pdf_url} to {output_path}"
+                logger.debug(
+                    f"Chrome PDF Viewer method didn't work for: {pdf_url}"
                 )
                 return None
 

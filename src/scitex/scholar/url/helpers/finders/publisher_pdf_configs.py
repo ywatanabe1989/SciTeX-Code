@@ -327,7 +327,17 @@ class PublisherPDFConfig:
     @classmethod
     def filter_pdf_urls(cls, page_url: str, pdf_urls: List[str]) -> List[str]:
         """Filter PDF URLs based on publisher-specific rules."""
+        import re
+        
         config = cls.get_config_for_url(page_url)
+        
+        # For ScienceDirect, extract the current article's PII from the page URL
+        current_pii = None
+        if any(domain in page_url.lower() for domain in ["sciencedirect.com", "cell.com", "elsevier.com"]):
+            # Extract PII from URL like /pii/S0149763420304668
+            pii_match = re.search(r'/pii/([A-Z0-9]+)', page_url)
+            if pii_match:
+                current_pii = pii_match.group(1)
         
         filtered_urls = []
         for pdf_url in pdf_urls:
@@ -339,6 +349,18 @@ class PublisherPDFConfig:
                 if pattern.lower() in pdf_url.lower():
                     should_deny = True
                     break
+            
+            # For ScienceDirect, only allow PDFs matching the current article's PII
+            if current_pii:
+                # Check if this PDF URL contains the current PII
+                if current_pii not in pdf_url:
+                    should_deny = True
+                # Also deny if it's from a different article (different PII pattern)
+                pdf_pii_match = re.search(r'pid=1-s2\.0-([A-Z0-9]+)-', pdf_url)
+                if pdf_pii_match:
+                    pdf_pii = pdf_pii_match.group(1)
+                    if pdf_pii != current_pii:
+                        should_deny = True
             
             # If not denied and matches allowed patterns, include it
             if not should_deny and cls.is_valid_pdf_url(page_url, pdf_url):

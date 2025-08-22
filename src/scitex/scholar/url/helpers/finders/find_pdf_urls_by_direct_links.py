@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-19 12:09:57 (ywatanabe)"
+# Timestamp: "2025-08-22 07:07:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/finders/find_pdf_urls_by_direct_links.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,6 +18,7 @@ from playwright.async_api import Page
 from scitex import log
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils import show_popup_message_async
+
 from .publisher_pdf_configs import PublisherPDFConfig
 
 logger = log.getLogger(__name__)
@@ -37,14 +38,18 @@ async def find_pdf_urls_by_direct_links(
 
         href_urls = await _find_pdf_urls_by_href(page, config)
         all_urls.update(href_urls)
-        
+
         # Filter URLs based on publisher-specific rules
         current_url = page.url
-        filtered_urls = PublisherPDFConfig.filter_pdf_urls(current_url, list(all_urls))
-        
+        filtered_urls = PublisherPDFConfig.filter_pdf_urls(
+            current_url, list(all_urls)
+        )
+
         # Log if we filtered out many URLs (like the 35 from ScienceDirect)
         if len(all_urls) > len(filtered_urls):
-            logger.info(f"Filtered {len(all_urls)} URLs down to {len(filtered_urls)} valid PDFs")
+            logger.info(
+                f"Filtered {len(all_urls)} URLs down to {len(filtered_urls)} valid PDFs"
+            )
 
         return filtered_urls
     except Exception as e:
@@ -54,30 +59,39 @@ async def find_pdf_urls_by_direct_links(
 
 async def _find_pdf_urls_by_href(
     page: Page,
+    deny_selectors: List[str] = None,
+    deny_classes: List[str] = None,
+    deny_text_patterns: List[str] = None,
     download_selectors: List[str] = None,
     config: ScholarConfig = None,
 ) -> List[str]:
     """Find PDF URLs from href attributes using configured selectors."""
     try:
         config = config or ScholarConfig()
-        
+
         # Get deny patterns from config file
-        config_deny_selectors = config.resolve("deny_selectors", default=[])
-        config_deny_classes = config.resolve("deny_classes", default=[])
-        config_deny_text_patterns = config.resolve("deny_text_patterns", default=[])
-        
+        config_deny_selectors = config.resolve(
+            "deny_selectors", default=[]
+        )
+        config_deny_classes = config.resolve(
+            "deny_classes", default=[]
+        )
+        config_deny_text_patterns = config.resolve(
+            "deny_text_patterns", default=[]
+        )
+
         # Merge with publisher-specific patterns
         current_url = page.url
         merged_config = PublisherPDFConfig.merge_with_config(
             current_url,
             config_deny_selectors,
             config_deny_classes,
-            config_deny_text_patterns
+            config_deny_text_patterns,
         )
-        
+
         # Use merged patterns
         deny_selectors = merged_config["deny_selectors"]
-        deny_classes = merged_config["deny_classes"] 
+        deny_classes = merged_config["deny_classes"]
         deny_text_patterns = merged_config["deny_text_patterns"]
 
         await show_popup_message_async(
@@ -85,13 +99,17 @@ async def _find_pdf_urls_by_href(
         )
 
         # Use merged download selectors (config + publisher-specific)
-        config_download_selectors = config.resolve("download_selectors", default=[])
-        publisher_download_selectors = merged_config.get("download_selectors", [])
-        
+        config_download_selectors = config.resolve(
+            "download_selectors", default=[]
+        )
+        publisher_download_selectors = merged_config.get(
+            "download_selectors", []
+        )
+
         # Combine selectors (config first, then publisher-specific)
         all_download_selectors = list(config_download_selectors)
         all_download_selectors.extend(publisher_download_selectors)
-        
+
         # Remove duplicates while preserving order
         seen = set()
         unique_selectors = []
@@ -99,12 +117,16 @@ async def _find_pdf_urls_by_href(
             if selector not in seen:
                 seen.add(selector)
                 unique_selectors.append(selector)
-        
-        download_selectors = unique_selectors if unique_selectors else [
-            'a[data-track-action*="download"]',
-            'a:has-text("Download PDF")',
-            "a.PdfLink",
-        ]
+
+        download_selectors = (
+            unique_selectors
+            if unique_selectors
+            else [
+                'a[data-track-action*="download"]',
+                'a:has-text("Download PDF")',
+                "a.PdfLink",
+            ]
+        )
 
         static_urls = await page.evaluate(
             """(args) => {
@@ -170,7 +192,7 @@ async def _find_pdf_urls_by_href(
                         // Regular CSS selector
                         document.querySelectorAll(selector).forEach(elem => {
                             if (shouldDenyElement(elem)) return;
-                            
+
                             const href = elem.href || elem.getAttribute('href');
                             if (href && (href.includes('.pdf') || href.includes('/pdf/'))) {
                                 urls.add(href);
@@ -181,14 +203,14 @@ async def _find_pdf_urls_by_href(
                     console.warn('Invalid selector:', selector, e);
                 }
             });
-            
+
             // Also check for common PDF link patterns
             document.querySelectorAll('a[href*=".pdf"], a[href*="/pdf/"]').forEach(link => {
                 if (!shouldDenyElement(link) && link.href) {
                     urls.add(link.href);
                 }
             });
-            
+
             // Check meta tags for PDF URLs
             const pdfMeta = document.querySelector('meta[name="citation_pdf_url"]');
             if (pdfMeta && pdfMeta.content) {
@@ -201,8 +223,8 @@ async def _find_pdf_urls_by_href(
                 "denySelectors": deny_selectors,
                 "denyClasses": deny_classes,
                 "denyTextPatterns": deny_text_patterns,
-                "downloadSelectors": download_selectors
-            }
+                "downloadSelectors": download_selectors,
+            },
         )
 
         return static_urls

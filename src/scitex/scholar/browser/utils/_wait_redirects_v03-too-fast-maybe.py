@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 08:11:51 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_wait_redirects.py
-# ----------------------------------------
-from __future__ import annotations
-import os
-__FILE__ = (
-    "./src/scitex/scholar/browser/utils/_wait_redirects.py"
-)
-__DIR__ = os.path.dirname(__FILE__)
+# File: _wait_redirects_v02-auth-aware.py
 # ----------------------------------------
 
 """
@@ -19,7 +11,7 @@ as they often perform client-side redirects.
 """
 
 import asyncio
-from typing import Dict
+from typing import Dict, List
 from urllib.parse import urlparse
 
 from playwright.async_api import Page, Response
@@ -45,35 +37,29 @@ AUTH_ENDPOINTS = [
     "/sso/",
 ]
 
-
 def is_auth_endpoint(url: str) -> bool:
     """Check if URL is likely an authentication/intermediate endpoint."""
     url_lower = url.lower()
     parsed = urlparse(url_lower)
-
+    
     # Check hostname
     for auth_pattern in AUTH_ENDPOINTS:
         if parsed.hostname and auth_pattern in parsed.hostname:
             return True
-
+    
     # Check path
     for auth_pattern in AUTH_ENDPOINTS:
         if auth_pattern.startswith("/") and auth_pattern in parsed.path:
             return True
-
+            
     return False
-
 
 def is_final_article_url(url: str) -> bool:
     """Check if URL looks like a final article page."""
     # Exclude chrome extensions and other non-article URLs
-    if (
-        url.startswith("chrome-extension://")
-        or url.startswith("about:")
-        or url.startswith("data:")
-    ):
+    if url.startswith("chrome-extension://") or url.startswith("about:") or url.startswith("data:"):
         return False
-
+    
     indicators = [
         "/science/article/",
         "/articles/",
@@ -85,7 +71,7 @@ def is_final_article_url(url: str) -> bool:
         "/doi/pdf/",
         ".pdf",
     ]
-
+    
     url_lower = url.lower()
     for indicator in indicators:
         if indicator in url_lower:
@@ -104,7 +90,7 @@ async def wait_redirects(
 ) -> Dict:
     """
     Wait for redirect chain to complete, handling authentication endpoints.
-
+    
     Args:
         page: Playwright page object
         timeout: Maximum wait time in milliseconds
@@ -113,7 +99,7 @@ async def wait_redirects(
         track_chain: Whether to track detailed redirect chain
         wait_for_idle: Whether to wait for network idle after redirects
         auth_aware: Continue waiting after auth endpoints (default: True)
-
+    
     Returns:
         dict with redirect information
     """
@@ -126,7 +112,7 @@ async def wait_redirects(
 
     start_time = asyncio.get_event_loop().time()
     start_url = page.url
-
+    
     # Tracking variables
     redirect_chain = [] if track_chain else None
     redirect_count = 0
@@ -135,35 +121,33 @@ async def wait_redirects(
     last_url = start_url
     last_response_time = start_time
     found_article = False
-
+    
     def track_response(response: Response):
         nonlocal redirect_count, last_url, last_response_time, found_article
-
+        
         # Only track main frame responses
         if response.frame != page.main_frame:
             return
-
+        
         status = response.status
         url = response.url
         timestamp = asyncio.get_event_loop().time()
         last_response_time = timestamp
-
+        
         # Track chain if requested
         if track_chain:
-            redirect_chain.append(
-                {
-                    "step": len(redirect_chain) + 1,
-                    "url": url,
-                    "status": status,
-                    "is_redirect": 300 <= status < 400,
-                    "is_auth": is_auth_endpoint(url),
-                    "timestamp": timestamp,
-                    "time_from_start_ms": (timestamp - start_time) * 1000,
-                }
-            )
-
+            redirect_chain.append({
+                "step": len(redirect_chain) + 1,
+                "url": url,
+                "status": status,
+                "is_redirect": 300 <= status < 400,
+                "is_auth": is_auth_endpoint(url),
+                "timestamp": timestamp,
+                "time_from_start_ms": (timestamp - start_time) * 1000,
+            })
+        
         logger.debug(f"Response: {url[:80]} ({status})")
-
+        
         # Show progress if enabled
         if show_progress and (300 <= status < 400 or is_auth_endpoint(url)):
             redirect_count += 1
@@ -174,7 +158,7 @@ async def wait_redirects(
                     duration_ms=1000,
                 )
             )
-
+        
         # Check if we reached final article
         if is_final_article_url(url) and 200 <= status < 300:
             found_article = True
@@ -187,95 +171,84 @@ async def wait_redirects(
                 )
             # Don't set complete immediately - wait a bit for any final redirects
             asyncio.create_task(_delayed_complete())
-
+        
         # Handle different response types
         if 300 <= status < 400:
             redirect_count += 1
             if redirect_count >= max_redirects:
                 logger.warning(f"Max redirects ({max_redirects}) reached")
                 navigation_complete.set()
-
+                
         elif 200 <= status < 300:
             # For auth endpoints, continue waiting
             if auth_aware and is_auth_endpoint(url):
-                logger.debug(
-                    f"Auth endpoint reached, continuing to wait: {url[:80]}"
-                )
+                logger.debug(f"Auth endpoint reached, continuing to wait: {url[:80]}")
                 if show_progress:
                     asyncio.create_task(
                         show_popup_message_async(
-                            page,
-                            "Processing authentication...",
-                            duration_ms=2000,
+                            page, "Processing authentication...", duration_ms=2000
                         )
                     )
                 # Don't complete yet - auth endpoints often do client-side redirects
             elif not auth_aware or found_article:
                 # Non-auth endpoint or article found - likely complete
                 asyncio.create_task(_delayed_complete())
-
+                
         elif status >= 400:
             logger.warning(f"Error response: {status} for {url}")
             navigation_complete.set()
-
+        
         last_url = url
-
+    
     async def _delayed_complete():
         """Set navigation complete after a short delay to catch final redirects."""
-        await asyncio.sleep(5)  # Increased from 2 to 5 seconds
+        await asyncio.sleep(2)  # Wait 2 seconds for any final redirects
         if not navigation_complete.is_set():
             navigation_complete.set()
-
+    
     async def check_url_stability():
         """Monitor URL changes even without network responses."""
         stable_count = 0
         last_checked_url = page.url
-
+        
         while not navigation_complete.is_set():
-            await asyncio.sleep(3)  # Increased from 1 to 3 seconds
+            await asyncio.sleep(1)
             current_url = page.url
-
+            
             # Check if URL changed
             if current_url != last_checked_url:
-                logger.debug(
-                    f"URL changed via client-side: {current_url[:80]}"
-                )
+                logger.debug(f"URL changed via client-side: {current_url[:80]}")
                 last_checked_url = current_url
                 stable_count = 0
-
+                
                 # Check if we reached an article
                 if is_final_article_url(current_url):
                     found_article = True
                     logger.info(f"Article URL detected: {current_url[:80]}")
-                    await asyncio.sleep(5)  # Increased from 2 to 5 seconds
+                    await asyncio.sleep(2)  # Wait a bit for page to stabilize
                     navigation_complete.set()
                     break
             else:
                 stable_count += 1
-
-            # If URL stable, complete with longer waits
-            if stable_count >= 8:  # Increased from 5 to 8 (24 seconds total)
-                if not is_auth_endpoint(current_url) or found_article:
-                    logger.debug(
-                        f"URL stable for 24s, completing: {current_url[:80]}"
-                    )
-                    navigation_complete.set()
-                    break
-            elif (
-                stable_count >= 20
-            ):  # Increased from 15 to 20 (60 seconds total)
-                logger.warning(
-                    f"Auth page stable for 60s, completing: {current_url[:80]}"
-                )
-                navigation_complete.set()
-                break
-
+                
+                # If URL stable for 5 seconds and not on auth page, complete
+                if stable_count >= 5:
+                    if not is_auth_endpoint(current_url) or found_article:
+                        logger.debug(f"URL stable for 5s, completing: {current_url[:80]}")
+                        navigation_complete.set()
+                        break
+                    elif stable_count >= 15:
+                        # Give auth pages more time (15 seconds)
+                        logger.warning(f"Auth page stable for 15s, completing: {current_url[:80]}")
+                        navigation_complete.set()
+                        break
+    
     # Set up response tracking
     page.on("response", track_response)
-
+    
     # Start URL stability checker
     stability_task = asyncio.create_task(check_url_stability())
-
+    
     try:
         # Wait for navigation to complete
         try:
@@ -289,32 +262,30 @@ async def wait_redirects(
                 await show_popup_message_async(
                     page, "Redirect timeout, finalizing...", duration_ms=1500
                 )
-
+        
         # Cancel stability checker
         stability_task.cancel()
-
+        
         # Wait for network idle if requested
         if wait_for_idle and not timed_out:
             try:
                 idle_timeout = min(5000, timeout // 4)
-                await page.wait_for_load_state(
-                    "networkidle", timeout=idle_timeout
-                )
+                await page.wait_for_load_state("networkidle", timeout=idle_timeout)
             except:
                 logger.debug("Network idle wait failed")
-
+        
         # Calculate results
         end_time = asyncio.get_event_loop().time()
         total_time_ms = (end_time - start_time) * 1000
         final_url = page.url
-
+        
         # Determine success
         success = (
-            not timed_out
-            and (final_url != start_url or redirect_count > 0)
-            and (not is_auth_endpoint(final_url) or found_article)
+            not timed_out and 
+            (final_url != start_url or redirect_count > 0) and
+            (not is_auth_endpoint(final_url) or found_article)
         )
-
+        
         result = {
             "success": success,
             "final_url": final_url,
@@ -322,13 +293,12 @@ async def wait_redirects(
             "total_time_ms": round(total_time_ms, 2),
             "timed_out": timed_out,
             "found_article": found_article,
-            "stopped_at_auth": is_auth_endpoint(final_url)
-            and not found_article,
+            "stopped_at_auth": is_auth_endpoint(final_url) and not found_article,
         }
-
+        
         if track_chain:
             result["redirect_chain"] = redirect_chain
-
+        
         # Log results
         if success:
             logger.success(
@@ -341,14 +311,12 @@ async def wait_redirects(
                 f"(after {redirect_count} redirects, {total_time_ms:.0f}ms)"
             )
         elif timed_out:
-            logger.warning(
-                f"Redirect wait timed out after {total_time_ms:.0f}ms"
-            )
+            logger.warning(f"Redirect wait timed out after {total_time_ms:.0f}ms")
         else:
             logger.debug("No redirects detected")
-
+        
         return result
-
+        
     except Exception as e:
         logger.error(f"Wait redirects failed: {e}")
         end_time = asyncio.get_event_loop().time()
@@ -367,5 +335,3 @@ async def wait_redirects(
             stability_task.cancel()
         except:
             pass
-
-# EOF

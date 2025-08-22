@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 22:02:00 (ywatanabe)"
+# Timestamp: "2025-08-22 07:38:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/05_download_pdf.py
 # ----------------------------------------
 from __future__ import annotations
@@ -45,12 +45,10 @@ import scitex as stx
 
 """Functions & Classes"""
 async def demonstrate_pdf_download(
-    pdf_url: str = None, 
-    output_path: str = None,
-    browser_mode: str = "stealth"
+    pdf_url: str = None, output_path: str = None, browser_mode: str = "stealth"
 ) -> str:
     """Demonstrate PDF downloading capabilities.
-    
+
     Parameters
     ----------
     pdf_url : str, optional
@@ -59,7 +57,7 @@ async def demonstrate_pdf_download(
         Path to save downloaded PDF
     browser_mode : str, default="stealth"
         Browser mode for downloading
-        
+
     Returns
     -------
     str
@@ -74,7 +72,7 @@ async def demonstrate_pdf_download(
     # Default parameters
     default_url = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
     default_output = "/tmp/hippocampal_ripples-downloaded.pdf"
-    
+
     download_url = pdf_url or default_url
     save_path = output_path or default_output
 
@@ -87,13 +85,13 @@ async def demonstrate_pdf_download(
     browser, context = (
         await browser_manager.get_authenticated_browser_and_context_async()
     )
-    
+
     print("📥 Initializing PDF downloader...")
     pdf_downloader = ScholarPDFDownloader(context)
 
     print(f"📄 Downloading PDF from: {download_url}")
     print(f"💾 Saving to: {save_path}")
-    
+
     saved_path = await pdf_downloader.download_from_url(
         download_url,
         output_path=save_path,
@@ -103,7 +101,7 @@ async def demonstrate_pdf_download(
         print(f"✅ Successfully downloaded: {saved_path}")
     else:
         print("❌ Download failed")
-        
+
     return saved_path
 
 
@@ -122,13 +120,13 @@ async def main_async(args) -> str:
     """
     print("📥 Scholar PDF Downloader Demonstration")
     print("=" * 40)
-    
+
     result = await demonstrate_pdf_download(
         pdf_url=args.pdf_url,
         output_path=args.output_path,
-        browser_mode=args.browser_mode
+        browser_mode=args.browser_mode,
     )
-    
+
     print("✅ PDF download demonstration completed")
     return result
 
@@ -182,6 +180,7 @@ def parse_args() -> argparse.Namespace:
         help="Browser mode (default: %(default)s)",
     )
     args = parser.parse_args()
+
     stx.str.printc(args, c="yellow")
     return args
 

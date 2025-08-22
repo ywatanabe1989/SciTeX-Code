@@ -1,8 +1,17 @@
 <!-- ---
-!-- Timestamp: 2025-08-17 19:30:44
+!-- Timestamp: 2025-08-22 07:39:17
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/README.md
 !-- --- -->
+
+## Science Direct
+● The key issue is that the authenticated PDF URLs (from pdf.sciencedirectassets.com) contain session-specific tokens that are
+  only valid within the browser context where they were generated. When you try to access them directly in a new session, they
+  redirect back to the publisher page.
+
+  The solution is to download the PDF within the same browser context where we obtained the URL. Let me check how the
+  ScholarPDFDownloader handles this:
+
 
 ## Usage
 
