@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 00:01:06 (ywatanabe)"
+# Timestamp: "2025-08-22 19:51:43 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefEngine.py
 # ----------------------------------------
 from __future__ import annotations

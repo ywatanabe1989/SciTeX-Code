@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-28 17:10:48 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/_Paper.py
+# Timestamp: "2025-08-22 17:05:25 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/_Paper.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/_Paper.py"
+    "./src/scitex/scholar/core/_Paper.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -16,14 +16,16 @@ __DIR__ = os.path.dirname(__FILE__)
 Represents a scientific paper with comprehensive metadata and methods.
 """
 
-from scitex import log
+import json
 import re
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from scitex import log
 from scitex.errors import ScholarError
+from scitex.scholar.config import ScholarConfig
 
 logger = log.getLogger(__name__)
 
@@ -62,13 +64,23 @@ class Paper:
         source: Optional[str] = None,
         # Extension point
         metadata: Optional[Dict[str, Any]] = None,
-        # Library integration (minimal)
+        # Library integration (enhanced)
         library_id: Optional[str] = None,
+        project: Optional[str] = None,
+        config: Optional["ScholarConfig"] = None,
     ):
         """Initialize paper with comprehensive metadata."""
 
-        # Library integration (minimal)
+        # Library integration (enhanced)
         self.library_id = library_id
+        self.project = project
+
+        # Initialize configuration
+        self.config = config if config else ScholarConfig()
+
+        # Initialize storage managers (lazy loading)
+        self._library_manager = None
+        self._library_cache_manager = None
 
         # Extension point
         self._additional_metadata = metadata or {}
@@ -98,7 +110,7 @@ class Paper:
         # URLs
         self._set_field_with_source("url", url)
         self._set_field_with_source("pdf_url", pdf_url)
-        
+
         # File references
         self._set_field_with_source("pdf_path", pdf_path)
 
@@ -240,14 +252,10 @@ class Paper:
                     f"  journal_quartile = {{{self.journal_quartile}}},"
                 )
                 # Add quartile source
-                lines.append(
-                    f"  quartile_source = {{JCR_{JCR_YEAR}}},"
-                )
+                lines.append(f"  quartile_source = {{JCR_{JCR_YEAR}}},")
                 quartile_source = self.metadata.get("quartile_source")
                 if quartile_source:
-                    lines.append(
-                        f"  quartile_source = {{{quartile_source}}},"
-                    )
+                    lines.append(f"  quartile_source = {{{quartile_source}}},")
 
             if self.citation_count is not None:
                 lines.append(f"  citation_count = {{{self.citation_count}}},")
@@ -373,15 +381,15 @@ class Paper:
             # Library integration
             "library_id": self.library_id,
             # Extension metadata
-            **self._additional_metadata
+            **self._additional_metadata,
         }
 
     def to_bibtex(self, include_enriched: bool = True) -> str:
         """Convert paper to BibTeX format.
-        
+
         Args:
             include_enriched: Include enriched metadata (impact factor, etc.)
-            
+
         Returns:
             BibTeX formatted string
         """
@@ -446,6 +454,114 @@ class Paper:
 
         return title_sim + author_sim + abstract_sim + year_sim
 
+    @property
+    def library_manager(self):
+        """Get library manager instance (lazy loading)."""
+        if self._library_manager is None:
+            from scitex.scholar.storage import LibraryManager
+
+            self._library_manager = LibraryManager(
+                project=self.project, config=self.config
+            )
+        return self._library_manager
+
+    @property
+    def library_cache_manager(self):
+        """Get library cache manager instance (lazy loading)."""
+        if self._library_cache_manager is None:
+            from scitex.scholar.storage import LibraryCacheManager
+
+            self._library_cache_manager = LibraryCacheManager(
+                project=self.project, config=self.config
+            )
+        return self._library_cache_manager
+
+    def save_to_library(self, force: bool = False) -> str:
+        """Save paper to the Scholar library system.
+
+        This stores the paper in the centralized library with proper ID generation,
+        metadata persistence, and project organization.
+
+        Returns:
+            str: The generated library ID for the paper
+        """
+        if not self.title:
+            raise ValueError("Paper must have a title to save to library")
+
+        # Generate or use existing library ID
+        if not self.library_id:
+            storage_path, readable_name, paper_id = (
+                self.config.paths.get_paper_storage_paths(
+                    doi=self.doi,
+                    title=self.title,
+                    authors=self.authors,
+                    journal=self.journal,
+                    year=self.year,
+                    project=self.project or "MASTER",
+                )
+            )
+            self.library_id = paper_id
+
+        # Save to library using LibraryManager
+        self.library_manager.save_resolved_paper(
+            title=self.title,
+            doi=self.doi,
+            year=self.year,
+            authors=self.authors,
+            journal=self.journal,
+            abstract=self.abstract,
+            metadata=self.to_dict(),
+            paper_id=self.library_id,
+        )
+
+        logger.info(f"Paper saved to library with ID: {self.library_id}")
+        return self.library_id
+
+    def load_from_library(self, library_id: str) -> None:
+        """Load paper data from library by ID.
+
+        Args:
+            library_id: The 8-character library ID
+        """
+        master_dir = self.config.get_library_master_dir()
+        paper_dir = master_dir / library_id
+        metadata_file = paper_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise ScholarError(f"Paper not found in library: {library_id}")
+
+        with open(metadata_file, "r") as f:
+            metadata = json.load(f)
+
+        # Update paper fields from library metadata
+        for field, value in metadata.items():
+            if hasattr(self, field) and field not in [
+                "config",
+                "_library_manager",
+                "_library_cache_manager",
+            ]:
+                setattr(self, field, value)
+
+        self.library_id = library_id
+        logger.info(f"Paper loaded from library: {library_id}")
+
+    @classmethod
+    def from_library(
+        cls, library_id: str, config: Optional["ScholarConfig"] = None
+    ) -> "Paper":
+        """Create Paper instance from library by ID.
+
+        Args:
+            library_id: The 8-character library ID
+            config: Scholar configuration
+
+        Returns:
+            Paper instance loaded from library
+        """
+        paper = cls(config=config, library_id=library_id)
+        paper.load_from_library(library_id)
+        return paper
+
     def save(
         self, output_path: Union[str, Path], format: Optional[str] = None
     ) -> None:
@@ -495,5 +611,106 @@ class Paper:
 
 # Export all classes and functions
 __all__ = ["Paper"]
+
+
+if __name__ == "__main__":
+
+    def main():
+        """Demonstrate Paper class usage with storage integration."""
+        print("=" * 60)
+        print("Paper Class Demo - Individual Publication Storage")
+        print("=" * 60)
+
+        # Create a sample paper
+        paper = Paper(
+            title="Attention Is All You Need",
+            authors=["Vaswani, Ashish", "Shazeer, Noam", "Parmar, Niki"],
+            journal="Advances in Neural Information Processing Systems",
+            year=2017,
+            doi="10.5555/3295222.3295349",
+            abstract="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks...",
+            keywords=["transformer", "attention", "neural networks"],
+            citation_count=50000,
+            project="transformer_papers",
+        )
+
+        print("1. Created Paper:")
+        print(f"   {paper}")
+        print(f"   DOI: {paper.doi}")
+        print(f"   Authors: {len(paper.authors)} authors")
+        print()
+
+        # Demonstrate BibTeX conversion
+        print("2. BibTeX Format:")
+        bibtex = paper.to_bibtex()
+        print("   " + "\n   ".join(bibtex.split("\n")[:8]) + "...")
+        print()
+
+        # Demonstrate dictionary conversion
+        print("3. Dictionary Format:")
+        paper_dict = paper.to_dict()
+        print(f"   Keys: {list(paper_dict.keys())[:8]}...")
+        print()
+
+        # Demonstrate similarity checking
+        similar_paper = Paper(
+            title="Attention is All You Need",  # Slight variation
+            authors=["Vaswani, A.", "Shazeer, N."],
+            year=2017,
+        )
+
+        similarity = paper.similarity_score(similar_paper)
+        print(f"4. Similarity Score: {similarity:.2f} (with similar paper)")
+        print()
+
+        # Demonstrate storage operations
+        print("5. Storage Operations:")
+        try:
+            # Save to library
+            library_id = paper.save_to_library()
+            print(f"   ✅ Saved to library with ID: {library_id}")
+
+            # Load from library
+            loaded_paper = Paper.from_library(library_id)
+            print(f"   ✅ Loaded from library: {loaded_paper.title[:50]}...")
+
+            # Verify they match
+            match_score = paper.similarity_score(loaded_paper)
+            print(
+                f"   ✅ Storage integrity check: {match_score:.2f} similarity"
+            )
+
+        except Exception as e:
+            print(f"   ⚠️  Storage demo skipped: {e}")
+
+        print()
+
+        # Demonstrate file saving
+        print("6. File Export:")
+        try:
+            import tempfile
+
+            with tempfile.NamedTemporaryFile(
+                suffix=".bib", delete=False
+            ) as tmp:
+                paper.save(tmp.name, format="bibtex")
+                print(f"   ✅ Saved to file: {tmp.name}")
+
+            with tempfile.NamedTemporaryFile(
+                suffix=".json", delete=False
+            ) as tmp:
+                paper.save(tmp.name, format="json")
+                print(f"   ✅ Saved to file: {tmp.name}")
+
+        except Exception as e:
+            print(f"   ⚠️  File export demo skipped: {e}")
+
+        print()
+        print("Paper demo completed! ✨")
+        print()
+
+    main()
+
+# python -m scitex.scholar.core._Paper
 
 # EOF

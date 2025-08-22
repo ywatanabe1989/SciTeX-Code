@@ -70,7 +70,7 @@ async function getPDFLink(doc) {
 		Zotero.debug("PDF is not available");
 		return false;
 	}
-	
+
 	// Some pages still have the PDF link available
 	var pdfURL = attr(doc, '#pdfLink', 'href');
 	if (!pdfURL) pdfURL = attr(doc, '[name="citation_pdf_url"]', 'content');
@@ -78,7 +78,7 @@ async function getPDFLink(doc) {
 		Z.debug('Found intermediate URL in head: ' + pdfURL);
 		return parseIntermediatePDFPage(pdfURL);
 	}
-	
+
 	// If intermediate page URL is available, use that directly
 	var intermediateURL = attr(doc, '.PdfEmbed > object', 'data');
 	if (intermediateURL) {
@@ -90,7 +90,7 @@ async function getPDFLink(doc) {
 			return parseIntermediatePDFPage(intermediateURL);
 		}
 	}
-	
+
 	// Simulate a click on the "Download PDF" button to open the menu containing the link with the URL
 	// for the intermediate page, which doesn't seem to be available in the DOM after the page load.
 	// This is an awful hack, and we should look out for a better way to get the URL, but it beats
@@ -114,7 +114,7 @@ async function getPDFLink(doc) {
 			return parseIntermediatePDFPage(intermediateURL);
 		}
 	}
-	
+
 	// On some institutional networks with access to ScienceDirect, the site
 	// serves JSON metadata probably used to preload dynamic content without a
 	// separate network request. If we find it, we can take advantage of it to
@@ -125,9 +125,9 @@ async function getPDFLink(doc) {
 		try {
 			json = JSON.parse(json);
 			Zotero.debug("Trying to construct PDF URL from JSON data");
-			
+
 			let urlMetadata = json.article.pdfDownload.urlMetadata;
-			
+
 			let path = urlMetadata.path;
 			let pdfExtension = urlMetadata.pdfExtension;
 			let pii = urlMetadata.pii;
@@ -157,7 +157,7 @@ async function getPDFLink(doc) {
 		Zotero.debug("Trying to construct PDF URL from canonical link: " + pdfURL);
 		return pdfURL;
 	}
-	
+
 	// If none of that worked for some reason, get the URL from the initial HTML,
 	// where it is present, by fetching the page source again. Hopefully this is
 	// never actually used.
@@ -381,7 +381,7 @@ async function processRIS(doc, text, isSearchResult = false) {
 		}
 		if (item.ISBN && !ZU.cleanISBN(item.ISBN)) delete item.ISBN;
 		if (item.ISSN && !ZU.cleanISSN(item.ISSN)) delete item.ISSN;
-		
+
 		item.language = item.language || attr(doc, 'article[role="main"]', 'lang');
 
 		if (item.url && item.url.substr(0, 2) == "//") {

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-09 01:07:56 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/_Papers.py
+# Timestamp: "2025-08-22 15:38:18 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/_Papers.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -69,6 +69,159 @@ class Papers:
         # Automatically deduplicate unless explicitly disabled
         if auto_deduplicate and papers:
             self._deduplicate_in_place(source_priority=source_priority)
+
+        # Initialize storage managers (lazy loading)
+        self._library_manager = None
+        self._library_cache_manager = None
+
+    @property
+    def library_manager(self):
+        """Get library manager instance for project operations (lazy loading)."""
+        if self._library_manager is None:
+            from scitex.scholar.storage import LibraryManager
+
+            self._library_manager = LibraryManager(
+                project=self.project, config=self.config
+            )
+        return self._library_manager
+
+    @property
+    def library_cache_manager(self):
+        """Get library cache manager instance for project operations (lazy loading)."""
+        if self._library_cache_manager is None:
+            from scitex.scholar.storage import LibraryCacheManager
+
+            self._library_cache_manager = LibraryCacheManager(
+                project=self.project, config=self.config
+            )
+        return self._library_cache_manager
+
+    def sync_with_library(self, bidirectional: bool = True) -> Dict[str, int]:
+        """Synchronize the Papers collection with the library storage.
+
+        Args:
+            bidirectional: If True, also load missing papers from library
+
+        Returns:
+            Dictionary with sync statistics
+        """
+        results = {"saved": 0, "loaded": 0, "updated": 0, "errors": 0}
+
+        # Save papers that aren't in library yet
+        save_results = self.save_to_library(progress=False)
+        results["saved"] = save_results["saved"]
+        results["errors"] += save_results["errors"]
+
+        if bidirectional and self.project:
+            # Load papers from library that aren't in collection
+            try:
+                library_papers = self.from_project(self.project, self.config)
+                library_ids = {
+                    p.library_id
+                    for p in library_papers._papers
+                    if p.library_id
+                }
+                collection_ids = {
+                    p.library_id for p in self._papers if p.library_id
+                }
+
+                missing_ids = library_ids - collection_ids
+                for library_id in missing_ids:
+                    try:
+                        paper = Paper.from_library(library_id, self.config)
+                        self._papers.append(paper)
+                        results["loaded"] += 1
+                    except Exception as e:
+                        logger.error(f"Failed to load paper {library_id}: {e}")
+                        results["errors"] += 1
+
+            except Exception as e:
+                logger.error(f"Failed to load library papers: {e}")
+                results["errors"] += 1
+
+        logger.info(f"Library sync complete: {results}")
+        return results
+
+    def get_project_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive statistics for the project collection.
+
+        Returns:
+            Dictionary with project statistics
+        """
+        stats = {
+            "total_papers": len(self._papers),
+            "project": self.project,
+            "with_doi": sum(1 for p in self._papers if p.doi),
+            "with_pdf": sum(
+                1
+                for p in self._papers
+                if p.pdf_path and Path(p.pdf_path).exists()
+            ),
+            "with_library_id": sum(1 for p in self._papers if p.library_id),
+            "journals": len(set(p.journal for p in self._papers if p.journal)),
+            "years": {
+                "min": min(
+                    (int(p.year) for p in self._papers if p.year), default=None
+                ),
+                "max": max(
+                    (int(p.year) for p in self._papers if p.year), default=None
+                ),
+            },
+            "authors": len(
+                set(
+                    author
+                    for p in self._papers
+                    if p.authors
+                    for author in p.authors
+                )
+            ),
+        }
+
+        # Add enrichment status
+        stats["enriched"] = self._enriched
+
+        return stats
+
+    def create_project_symlinks(self) -> Dict[str, int]:
+        """Create symlinks in project directory pointing to master storage.
+
+        Returns:
+            Dictionary with symlink creation statistics
+        """
+        if not self.project:
+            raise ValueError("Project must be set to create symlinks")
+
+        results = {"created": 0, "existed": 0, "errors": 0}
+        project_dir = self.config.get_library_dir() / self.project
+        project_dir.mkdir(parents=True, exist_ok=True)
+
+        for paper in self._papers:
+            if not paper.library_id:
+                continue
+
+            try:
+                # Create symlink from project to master
+                master_path = (
+                    self.config.get_library_master_dir() / paper.library_id
+                )
+                symlink_path = project_dir / paper.library_id
+
+                if symlink_path.exists():
+                    results["existed"] += 1
+                else:
+                    symlink_path.symlink_to(
+                        master_path, target_is_directory=True
+                    )
+                    results["created"] += 1
+
+            except Exception as e:
+                logger.error(
+                    f"Failed to create symlink for {paper.library_id}: {e}"
+                )
+                results["errors"] += 1
+
+        logger.info(f"Project symlinks created: {results}")
+        return results
 
     @classmethod
     def from_bibtex(cls, bibtex_input: Union[str, Path]) -> "Papers":
@@ -1406,119 +1559,147 @@ class Papers:
 
         return "\n\n".join(bibtex_entries)
 
-    def save_to_library(self, force: bool = False, progress: bool = True) -> Dict[str, int]:
+    def save_to_library(
+        self, force: bool = False, progress: bool = True
+    ) -> Dict[str, int]:
         """Save all papers to the Scholar library system.
-        
+
         Args:
             force: Overwrite existing metadata if True
             progress: Show progress information
-            
+
         Returns:
             Dictionary with save statistics
         """
         results = {"saved": 0, "skipped": 0, "errors": 0}
-        
+
         if progress:
             from tqdm import tqdm
+
             iterator = tqdm(self._papers, desc="Saving to library")
         else:
             iterator = self._papers
-            
+
         for paper in iterator:
             try:
-                if paper.save_to_library(force=force):
+                # Ensure paper has project context
+                if not paper.project:
+                    paper.project = self.project
+                    paper.config = self.config
+
+                library_id = paper.save_to_library(force=force)
+                if library_id:
                     results["saved"] += 1
                 else:
                     results["skipped"] += 1
             except Exception as e:
                 logger.error(f"Failed to save paper to library: {e}")
                 results["errors"] += 1
-        
+
         if progress:
             logger.info(f"Library save complete: {results}")
-        
+
         return results
 
     @classmethod
-    def from_project(cls, project: str, config: Optional[ScholarConfig] = None) -> "Papers":
+    def from_project(
+        cls, project: str, config: Optional[ScholarConfig] = None
+    ) -> "Papers":
         """Load papers from a project in the Scholar library.
-        
+
         Args:
             project: Project name
             config: Scholar configuration
-            
+
         Returns:
             Papers collection from the project
         """
         config = config or ScholarConfig()
         project_dir = config.get_library_dir() / project
         papers = []
-        
+
         if not project_dir.exists():
             logger.warning(f"Project directory not found: {project_dir}")
             return cls(papers, config=config, project=project)
-        
+
         # Load papers from symlinks in project directory
         for item in project_dir.iterdir():
             if item.is_symlink() and item.resolve().parent.name == "MASTER":
                 library_id = item.resolve().name
                 # Use LibraryManager to load paper data
                 from scitex.scholar.storage import LibraryManager
-                library_manager = LibraryManager(project=project, config=config)
-                
-                metadata_path = config.get_library_dir() / "MASTER" / library_id / "metadata.json"
+
+                library_manager = LibraryManager(
+                    project=project, config=config
+                )
+
+                metadata_path = (
+                    config.get_library_dir()
+                    / "MASTER"
+                    / library_id
+                    / "metadata.json"
+                )
                 if metadata_path.exists():
                     try:
                         import json
-                        with open(metadata_path, 'r') as f:
+
+                        with open(metadata_path, "r") as f:
                             data = json.load(f)
                         paper = Paper(**data)
                         papers.append(paper)
                     except Exception as e:
-                        logger.warning(f"Failed to load paper {library_id}: {e}")
+                        logger.warning(
+                            f"Failed to load paper {library_id}: {e}"
+                        )
                         continue
-        
+
         logger.info(f"Loaded {len(papers)} papers from project: {project}")
         return cls(papers, config=config, project=project)
 
     @classmethod
-    def from_library_search(cls, query: str, config: Optional[ScholarConfig] = None, project: Optional[str] = None) -> "Papers":
+    def from_library_search(
+        cls,
+        query: str,
+        config: Optional[ScholarConfig] = None,
+        project: Optional[str] = None,
+    ) -> "Papers":
         """Search papers in the Scholar library.
-        
+
         Args:
             query: Search query (matches title, authors, keywords)
             config: Scholar configuration
             project: Optional project filter
-            
+
         Returns:
             Papers collection matching the query
         """
         config = config or ScholarConfig()
         master_dir = config.get_library_dir() / "MASTER"
         papers = []
-        
+
         if not master_dir.exists():
             return cls(papers, config=config, project=project)
-        
+
         query_lower = query.lower()
-        
+
         for paper_dir in master_dir.iterdir():
             if not paper_dir.is_dir():
                 continue
-                
+
             # Load paper metadata directly
             metadata_path = paper_dir / "metadata.json"
             if not metadata_path.exists():
                 continue
-                
+
             try:
                 import json
-                with open(metadata_path, 'r') as f:
+
+                with open(metadata_path, "r") as f:
                     data = json.load(f)
                 paper = Paper(**data)
             except Exception:
                 continue
-            
+
             # Check if query matches paper metadata
             search_text = ""
             if paper.title:
@@ -1529,91 +1710,308 @@ class Papers:
                 search_text += " ".join(paper.keywords).lower() + " "
             if paper.abstract:
                 search_text += paper.abstract.lower() + " "
-            
+
             if query_lower in search_text:
                 papers.append(paper)
-        
+
         logger.info(f"Found {len(papers)} papers matching '{query}'")
         return cls(papers, config=config, project=project)
 
     def create_project_symlinks(self, force: bool = False) -> Dict[str, int]:
         """Create project symlinks for all papers in the collection.
-        
+
         Args:
             force: Recreate existing symlinks
-            
+
         Returns:
             Dictionary with creation statistics
         """
         if not self.project:
             logger.warning("No project specified for symlink creation")
             return {"created": 0, "skipped": 0, "errors": 0}
-        
+
         from scitex.scholar.storage import LibraryManager
-        library_manager = LibraryManager(project=self.project, config=self.config)
-        
+
+        library_manager = LibraryManager(
+            project=self.project, config=self.config
+        )
+
         results = {"created": 0, "skipped": 0, "errors": 0}
-        
+
         for paper in self._papers:
             if not paper.library_id:
                 results["skipped"] += 1
                 continue
-                
+
             try:
                 # Create human-readable symlink name
                 if paper.authors and paper.year and paper.journal:
-                    first_author = paper.authors[0].split()[-1] if paper.authors else "Unknown"
+                    first_author = (
+                        paper.authors[0].split()[-1]
+                        if paper.authors
+                        else "Unknown"
+                    )
                     year = paper.year
                     journal = paper.journal.replace(" ", "-")
                     symlink_name = f"{first_author}-{year}-{journal}"
                 else:
                     symlink_name = paper.library_id
-                
+
                 project_dir = self.config.get_library_dir() / self.project
                 project_dir.mkdir(exist_ok=True)
-                
+
                 symlink_path = project_dir / symlink_name
                 target_path = Path("../MASTER") / paper.library_id
-                
+
                 if symlink_path.exists() and not force:
                     results["skipped"] += 1
                     continue
-                
+
                 if symlink_path.exists():
                     symlink_path.unlink()
-                
+
                 symlink_path.symlink_to(target_path)
                 results["created"] += 1
-                
+
             except Exception as e:
-                logger.error(f"Failed to create symlink for {paper.library_id}: {e}")
+                logger.error(
+                    f"Failed to create symlink for {paper.library_id}: {e}"
+                )
                 results["errors"] += 1
-        
+
         logger.info(f"Symlink creation complete: {results}")
         return results
 
     def to_library_summary(self) -> pd.DataFrame:
         """Create a summary DataFrame of papers in the library.
-        
+
         Returns:
             DataFrame with library statistics
         """
         data = []
         for paper in self._papers:
-            data.append({
-                "library_id": paper.library_id,
-                "doi": paper.doi,
-                "title": paper.title[:50] + "..." if paper.title and len(paper.title) > 50 else paper.title,
-                "first_author": paper.authors[0] if paper.authors else None,
-                "year": paper.year,
-                "journal": paper.journal,
-                "has_pdf": bool(paper.pdf_path),
-            })
-        
+            data.append(
+                {
+                    "library_id": paper.library_id,
+                    "doi": paper.doi,
+                    "title": (
+                        paper.title[:50] + "..."
+                        if paper.title and len(paper.title) > 50
+                        else paper.title
+                    ),
+                    "first_author": (
+                        paper.authors[0] if paper.authors else None
+                    ),
+                    "year": paper.year,
+                    "journal": paper.journal,
+                    "has_pdf": bool(paper.pdf_path),
+                }
+            )
+
         return pd.DataFrame(data)
 
 
 # Export all classes and functions
 __all__ = ["Papers"]
+
+
+if __name__ == "__main__":
+
+    def main():
+        """Demonstrate Papers class usage with project collection management."""
+        print("=" * 60)
+        print("Papers Class Demo - Project Collection Management")
+        print("=" * 60)
+
+        from ._Paper import Paper
+
+        # Create sample papers for a project
+        sample_papers = [
+            Paper(
+                title="BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+                authors=["Devlin, Jacob", "Chang, Ming-Wei", "Lee, Kenton"],
+                journal="NAACL-HLT",
+                year=2019,
+                doi="10.18653/v1/N19-1423",
+                abstract="We introduce BERT, a new language representation model...",
+                keywords=["BERT", "transformer", "language model"],
+                citation_count=45000,
+                project="language_models_collection",
+            ),
+            Paper(
+                title="GPT-3: Language Models are Few-Shot Learners",
+                authors=["Brown, Tom", "Mann, Benjamin", "Ryder, Nick"],
+                journal="Advances in Neural Information Processing Systems",
+                year=2020,
+                doi="10.5555/3495724.3496881",
+                abstract="Recent work has demonstrated substantial gains on many NLP tasks...",
+                keywords=["GPT", "language model", "few-shot"],
+                citation_count=35000,
+                project="language_models_collection",
+            ),
+            Paper(
+                title="T5: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+                authors=["Raffel, Colin", "Shazeer, Noam", "Roberts, Adam"],
+                journal="Journal of Machine Learning Research",
+                year=2020,
+                doi="10.5555/3455716.3455856",
+                abstract="Transfer learning has become a dominant approach in NLP...",
+                keywords=["T5", "transfer learning", "transformer"],
+                citation_count=25000,
+                project="language_models_collection",
+            ),
+        ]
+
+        # Create Papers collection
+        papers = Papers(
+            sample_papers,
+            project="language_models_collection",
+            auto_deduplicate=True,
+        )
+
+        print("1. Created Papers Collection:")
+        print(f"   📚 Total papers: {len(papers)}")
+        print(f"   🏷️  Project: {papers.project}")
+        print(f"   📝 Sample titles:")
+        for i, paper in enumerate(papers._papers[:2]):
+            print(f"      {i+1}. {paper.title[:60]}...")
+        print()
+
+        # Demonstrate filtering and sorting
+        print("2. Collection Operations:")
+
+        # Filter by year
+        recent_papers = papers.filter(year_min=2020)
+        print(f"   📅 Papers from 2020+: {len(recent_papers)}")
+
+        # Sort by citation count
+        top_cited = papers.sort_by("citation_count", ascending=False)
+        top_paper = top_cited._papers[0]
+        print(
+            f"   🏆 Most cited: {top_paper.title[:50]}... ({top_paper.citation_count:,} citations)"
+        )
+
+        # Search functionality
+        bert_papers = papers.filter(
+            lambda p: "BERT" in p.title or "bert" in str(p.keywords)
+        )
+        print(f"   🔍 BERT-related papers: {len(bert_papers)}")
+        print()
+
+        # Demonstrate statistics
+        print("3. Project Statistics:")
+        try:
+            stats = papers.get_project_statistics()
+            print(f"   📊 Total papers: {stats['total_papers']}")
+            print(f"   📊 With DOI: {stats['with_doi']}")
+            print(f"   📊 Unique journals: {stats['journals']}")
+            print(
+                f"   📊 Year range: {stats['years']['min']}-{stats['years']['max']}"
+            )
+            print(f"   📊 Unique authors: {stats['authors']}")
+        except Exception as e:
+            print(f"   ⚠️  Statistics demo skipped: {e}")
+        print()
+
+        # Demonstrate export capabilities
+        print("4. Export Capabilities:")
+        try:
+            import tempfile
+
+            # BibTeX export
+            with tempfile.NamedTemporaryFile(
+                suffix=".bib", delete=False
+            ) as tmp:
+                papers.save(tmp.name, format="bibtex")
+                print(f"   📄 BibTeX exported to: {tmp.name}")
+
+            # CSV export
+            with tempfile.NamedTemporaryFile(
+                suffix=".csv", delete=False
+            ) as tmp:
+                papers.save(tmp.name, format="csv")
+                print(f"   📊 CSV exported to: {tmp.name}")
+
+        except Exception as e:
+            print(f"   ⚠️  Export demo skipped: {e}")
+        print()
+
+        # Demonstrate storage operations
+        print("5. Storage Operations:")
+        try:
+            # Save to library
+            save_results = papers.save_to_library(progress=False)
+            print(
+                f"   💾 Library save: {save_results['saved']} saved, {save_results['errors']} errors"
+            )
+
+            # Create project symlinks
+            symlink_results = papers.create_project_symlinks()
+            print(
+                f"   🔗 Symlinks: {symlink_results['created']} created, {symlink_results['existed']} existed"
+            )
+
+            # Sync with library
+            sync_results = papers.sync_with_library(bidirectional=False)
+            print(
+                f"   🔄 Library sync: {sync_results['saved']} saved, {sync_results['loaded']} loaded"
+            )
+
+        except Exception as e:
+            print(f"   ⚠️  Storage demo skipped: {e}")
+        print()
+
+        # Demonstrate loading from project
+        print("6. Project Loading:")
+        try:
+            # Try to load from the same project
+            loaded_papers = Papers.from_project("language_models_collection")
+            print(f"   📂 Loaded from project: {len(loaded_papers)} papers")
+
+            # Compare with original
+            if len(loaded_papers) > 0:
+                print(
+                    f"   📋 Sample loaded paper: {loaded_papers._papers[0].title[:50]}..."
+                )
+
+        except Exception as e:
+            print(f"   ⚠️  Project loading demo skipped: {e}")
+        print()
+
+        # Demonstrate analysis capabilities
+        print("7. Analysis Features:")
+
+        # Summary statistics
+        print(
+            f"   📈 Average citation count: {sum(p.citation_count or 0 for p in papers._papers) / len(papers):,.0f}"
+        )
+
+        # Journal distribution
+        journals = {}
+        for paper in papers._papers:
+            if paper.journal:
+                journals[paper.journal] = journals.get(paper.journal, 0) + 1
+        print(
+            f"   📚 Journal distribution: {dict(list(journals.items())[:2])}..."
+        )
+
+        # Keyword analysis
+        all_keywords = []
+        for paper in papers._papers:
+            if paper.keywords:
+                all_keywords.extend(paper.keywords)
+        keyword_counts = {}
+        for kw in all_keywords:
+            keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
+        top_keywords = sorted(
+            keyword_counts.items(), key=lambda x: x[1], reverse=True
+        )[:3]
+        print(f"   🏷️  Top keywords: {[kw for kw, count in top_keywords]}")
+        print()
+
+        print("Papers collection demo completed! ✨")
+        print()
+
+    main()
 
 # EOF
