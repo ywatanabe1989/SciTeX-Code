@@ -186,3 +186,5 @@ opencv-python
 pillow
 numpy
 pytesseract
+jupytext
+pytest-testmon

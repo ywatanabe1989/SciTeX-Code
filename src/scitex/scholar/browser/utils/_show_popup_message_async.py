@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-19 12:06:14 (ywatanabe)"
+# Timestamp: "2025-08-23 18:02:42 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_show_popup_message_async.py
 # ----------------------------------------
 from __future__ import annotations

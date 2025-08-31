@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:44:14 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/_CentralArgumentParser.py
+# Timestamp: "2025-08-27 01:22:28 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/cli/_CentralArgumentParser.py
 # ----------------------------------------
 from __future__ import annotations
 import os

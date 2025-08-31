@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:40:14 (ywatanabe)"
+# Timestamp: "2025-08-23 11:09:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_with_fallbacks.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,7 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 from playwright.async_api import Page
 
 from scitex import log

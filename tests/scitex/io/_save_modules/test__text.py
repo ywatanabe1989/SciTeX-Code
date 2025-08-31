@@ -127,7 +127,17 @@ Line 4"""
         code = '''def hello_world():
     """Print hello world."""
     print("Hello, World!")
-    return True
+    return True'''
+        
+        test_path = os.path.join(self.test_dir, "code_snippet.py")
+        save_text(code, test_path)
+        
+        # Read back and verify
+        with open(test_path, "r") as f:
+            content = f.read()
+        
+        assert content == code
+
 
 if __name__ == "__main__":
     import os

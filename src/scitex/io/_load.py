@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import glob
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
@@ -49,7 +49,7 @@ from ._load_modules._zarr import _load_zarr
 
 
 def load(
-    lpath: str,
+    lpath: Union[str, Path],
     show: bool = False,
     verbose: bool = False,
     cache: bool = True,
@@ -62,8 +62,8 @@ def load(
 
     Parameters
     ----------
-    lpath : str
-        The path to the file to be loaded.
+    lpath : Union[str, Path]
+        The path to the file to be loaded. Can be a string or pathlib.Path object.
     show : bool, optional
         If True, display additional information during loading. Default is False.
     verbose : bool, optional
@@ -104,8 +104,8 @@ def load(
 
     lpath = clean_path(lpath)
 
-    # Convert Path objects to strings to avoid AttributeError on string methods
-    if hasattr(lpath, "__fspath__"):  # Check if it's a path-like object
+    # Convert Path objects to strings for consistency
+    if isinstance(lpath, Path):
         lpath = str(lpath)
 
     # Check if it's a glob pattern

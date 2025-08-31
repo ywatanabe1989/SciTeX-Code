@@ -31,7 +31,8 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py"
 """Imports"""
 import inspect
 import os as _os
-from typing import Any
+from pathlib import Path
+from typing import Any, Union
 
 from scitex import log
 
@@ -152,7 +153,7 @@ def _get_figure_with_data(obj):
 
 def save(
     obj: Any,
-    specified_path: str,
+    specified_path: Union[str, Path],
     makedirs: bool = True,
     verbose: bool = True,
     symlink_from_cwd: bool = False,
@@ -167,8 +168,8 @@ def save(
     ----------
     obj : Any
         The object to be saved. Can be a NumPy array, PyTorch tensor, Pandas DataFrame, or any serializable object.
-    specified_path : str
-        The file name or path where the object should be saved. The file extension determines the format.
+    specified_path : Union[str, Path]
+        The file name or path where the object should be saved. Can be a string or pathlib.Path object. The file extension determines the format.
     makedirs : bool, optional
         If True, create the directory path if it does not exist. Default is True.
     verbose : bool, optional
@@ -225,10 +226,8 @@ def save(
     >>> scitex.io.save(data_dict, "data.json")
     """
     try:
-        # Convert Path objects to strings to avoid AttributeError on startswith
-        if hasattr(
-            specified_path, "__fspath__"
-        ):  # Check if it's a path-like object
+        # Convert Path objects to strings for consistency
+        if isinstance(specified_path, Path):
             specified_path = str(specified_path)
 
         ########################################

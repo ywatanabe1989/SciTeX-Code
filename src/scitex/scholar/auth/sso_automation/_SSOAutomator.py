@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:13:41 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/sso_automations/_SSOAutomator.py
+# Timestamp: "2025-08-23 11:25:43 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/sso_automation/_SSOAutomator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/auth/sso_automations/_SSOAutomator.py"
+    "./src/scitex/scholar/auth/sso_automation/_SSOAutomator.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -16,8 +16,8 @@ __DIR__ = os.path.dirname(__FILE__)
 from typing import Dict, Optional
 
 from scitex import log
-
 from scitex.scholar.config import ScholarConfig
+
 from ._BaseSSOAutomator import BaseSSOAutomator
 
 logger = log.getLogger(__name__)

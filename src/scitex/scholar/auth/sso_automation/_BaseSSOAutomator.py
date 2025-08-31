@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:09:01 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/sso_automation/_BaseSSOAutomator.py
+# Timestamp: "2025-08-23 11:14:18 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/sso_automation/_BaseSSOAutomator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -22,7 +22,6 @@ from typing import Optional
 from playwright.async_api import BrowserContext, Page
 
 from scitex.log import getLogger
-
 from scitex.scholar.config import ScholarConfig
 
 logger = getLogger(__name__)
