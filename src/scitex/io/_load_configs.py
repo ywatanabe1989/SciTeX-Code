@@ -15,13 +15,16 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_configs.py"
 # Time-stamp: "2025-02-27 11:09:00 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/io/_load_configs.py
 
+from pathlib import Path
+from typing import Optional, Union
+
 from ..dict import DotDict
 from ._load import load
 from ._glob import glob
 
 
-def load_configs(IS_DEBUG=None, show=False, verbose=False):
-    """Load YAML configuration files from ./config directory.
+def load_configs(IS_DEBUG=None, show=False, verbose=False, config_dir: Optional[Union[str, Path]] = None):
+    """Load YAML configuration files from specified directory.
 
     Parameters
     ----------
@@ -31,6 +34,9 @@ def load_configs(IS_DEBUG=None, show=False, verbose=False):
         Show configuration changes
     verbose : bool
         Print detailed information
+    config_dir : Union[str, Path], optional
+        Directory containing configuration files. Can be a string or pathlib.Path object.
+        Defaults to "./config" if None
 
     Returns
     -------
@@ -54,19 +60,27 @@ def load_configs(IS_DEBUG=None, show=False, verbose=False):
         return config
 
     try:
+        # Handle config directory parameter
+        if config_dir is None:
+            config_dir = "./config"
+        elif isinstance(config_dir, Path):
+            config_dir = str(config_dir)
+        
         # Set debug mode
+        debug_config_path = f"{config_dir}/IS_DEBUG.yaml"
         IS_DEBUG = (
             IS_DEBUG
             or os.getenv("CI") == "True"
             or (
-                os.path.exists("./config/IS_DEBUG.yaml")
-                and load("./config/IS_DEBUG.yaml").get("IS_DEBUG")
+                os.path.exists(debug_config_path)
+                and load(debug_config_path).get("IS_DEBUG")
             )
         )
 
         # Load and merge configs
         CONFIGS = {}
-        for lpath in glob("./config/*.yaml"):
+        config_pattern = f"{config_dir}/*.yaml"
+        for lpath in glob(config_pattern):
             if config := load(lpath):
                 CONFIGS.update(apply_debug_values(config, IS_DEBUG))
 

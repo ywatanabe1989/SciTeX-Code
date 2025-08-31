@@ -25,9 +25,10 @@ import sys as sys_module
 import time
 from datetime import datetime
 from glob import glob as _glob
+from pathlib import Path
 from pprint import pprint
 from time import sleep
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import matplotlib
 import matplotlib.pyplot as plt_module
@@ -152,6 +153,10 @@ def _setup_configs(
             "FILE": file,
             "SDIR": sdir,
             "REL_SDIR": relative_sdir,
+            # Path object versions for convenience (maintain backward compatibility)
+            "SDIR_PATH": Path(sdir) if sdir else None,
+            "REL_SDIR_PATH": Path(relative_sdir) if relative_sdir else None,
+            "FILE_PATH": Path(file) if file else None,
         }
     )
     return CONFIGS
@@ -259,7 +264,7 @@ def start(
     sys: sys_module = None,
     plt: plt_module = None,
     file: Optional[str] = None,
-    sdir: Optional[str] = None,
+    sdir: Optional[Union[str, Path]] = None,
     sdir_suffix: Optional[str] = None,
     args: Optional[Any] = None,
     os: Optional[Any] = None,
@@ -293,8 +298,8 @@ def start(
         Matplotlib pyplot module for plotting configuration
     file : str, optional
         Script file path. If None, automatically detected
-    sdir : str, optional
-        Save directory path. If None, automatically generated
+    sdir : Union[str, Path], optional
+        Save directory path. Can be a string or pathlib.Path object. If None, automatically generated
     sdir_suffix : str, optional
         Suffix to append to save directory
     args : object, optional
@@ -339,6 +344,10 @@ def start(
     """
     IS_DEBUG = _get_debug_mode()
     ID, PID = _initialize_env(IS_DEBUG)
+
+    # Convert Path objects to strings for internal processing
+    if sdir is not None and isinstance(sdir, Path):
+        sdir = str(sdir)
 
     ########################################
     # Defines SDIR (DO NOT MODIFY THIS SECTION)
@@ -617,7 +626,7 @@ def close(CONFIG, message=":)", notify=False, verbose=True, exit_status=None):
         CONFIG.EXIT_STATUS = exit_status
         CONFIG = CONFIG.to_dict()
         CONFIG = _process_timestamp(CONFIG, verbose=verbose)
-        sys = CONFIG.pop("sys")
+        sys = CONFIG.pop("sys", None)
         _save_configs(CONFIG)
 
         # RUNNING to FINISHED
