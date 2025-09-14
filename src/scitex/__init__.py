@@ -45,6 +45,7 @@ io = _LazyModule("io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
 ai = _LazyModule("ai")
+ml = _LazyModule("ai")  # Alias for machine learning - same as ai
 pd = _LazyModule("pd")
 str = _LazyModule("str")
 stats = _LazyModule("stats")
@@ -58,6 +59,7 @@ web = _LazyModule("web")
 db = _LazyModule("db")
 repro = _LazyModule("repro")
 reproduce = _LazyModule("reproduce")
+rng = _LazyModule("rng")  # New clean RNG module
 scholar = _LazyModule("scholar")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
@@ -84,8 +86,8 @@ except ImportError:
 
 # No convenience function - users should use scitex.session.start directly
 
-__all__ = ["io", "gen", "plt", "ai", "pd", "str", "stats", "path",
+__all__ = ["io", "gen", "plt", "ai", "ml", "pd", "str", "stats", "path",
            "dict", "decorators", "__version__", "sh", "errors", "units",
-           "logging", "log", "session"]
+           "logging", "log", "session", "rng"]
 
 # EOF

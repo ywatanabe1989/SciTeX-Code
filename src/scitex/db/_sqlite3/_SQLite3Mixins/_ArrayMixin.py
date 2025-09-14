@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-18 14:37:25 (ywatanabe)"
+# Timestamp: "2025-09-14 00:03:40 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_ArrayMixin.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/db/_sqlite3/_SQLite3Mixins/_ArrayMixin.py"
@@ -10,6 +11,8 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
+import hashlib
+import logging
 import zlib
 from typing import Any
 from typing import Any as _Any
@@ -17,9 +20,54 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
+logger = logging.getLogger(__name__)
+
 
 class _ArrayMixin:
     """Array data handling functionality"""
+    
+    def verify_array_hash(
+        self,
+        table_name: str,
+        column: str,
+        row_id: int,
+    ) -> bool:
+        """Verify array integrity using stored hash.
+        
+        Parameters
+        ----------
+        table_name : str
+            Name of the table
+        column : str
+            Name of the array column
+        row_id : int
+            ID of the row to verify
+            
+        Returns
+        -------
+        bool
+            True if hash matches, False otherwise
+        """
+        # Load the array
+        array = self.load_array(table_name, column, where=f"id = {row_id}")
+        if array is None:
+            return False
+            
+        # Get stored hash
+        result = self.execute(
+            f"SELECT {column}_hash FROM {table_name} WHERE id = ?",
+            (row_id,)
+        ).fetchone()
+        
+        if not result or not result[0]:
+            return False
+            
+        stored_hash = result[0]
+        
+        # Calculate current hash
+        current_hash = hashlib.sha256(array.tobytes()).hexdigest()[:16]
+        
+        return current_hash == stored_hash
 
     def save_arrays(
         self,
@@ -50,14 +98,14 @@ class _ArrayMixin:
         verbose : bool, default True
             Whether to print status messages
         """
-
+        self.ensure_connection()
         with self.lock:
             if compress is None:
                 compress = getattr(self, "compress_by_default", False)
 
             # Auto-add columns for all arrays
             for column in data.keys():
-                for suffix in ["_dtype", "_shape", "_is_compressed"]:
+                for suffix in ["_dtype", "_shape", "_is_compressed", "_hash"]:
                     try:
                         self.execute(
                             f"ALTER TABLE {table_name} ADD COLUMN {column}{suffix} TEXT"
@@ -73,6 +121,9 @@ class _ArrayMixin:
                 if not isinstance(arr, np.ndarray):
                     raise ValueError(f"{column} must be a NumPy array")
 
+                # Calculate hash from original array data
+                array_hash = hashlib.sha256(arr.tobytes()).hexdigest()[:16]
+                
                 binary = arr.tobytes()
                 if compress and len(binary) > 1024:
                     binary = zlib.compress(binary, level=compress_level)
@@ -86,10 +137,11 @@ class _ArrayMixin:
                         f"{column}_dtype",
                         f"{column}_shape",
                         f"{column}_is_compressed",
+                        f"{column}_hash",
                     ]
                 )
                 all_values.extend(
-                    [binary, str(arr.dtype), str(arr.shape), is_compressed]
+                    [binary, str(arr.dtype), str(arr.shape), is_compressed, array_hash]
                 )
 
             if additional_columns:
@@ -109,9 +161,9 @@ class _ArrayMixin:
             self.execute(query, tuple(all_values))
 
             if verbose:
-                from ....str import printc
-
-                printc(f"Saved {len(data)} arrays to {table_name}", c="yellow")
+                logger.info(
+                    f"Saved {len(data)} arrays to `{table_name}` table in `{self.db_path}`"
+                )
 
     def save_array(
         self,
@@ -152,11 +204,16 @@ class _ArrayMixin:
             Whether to print status messages
         """
 
+        # Note: save_arrays doesn't support 'where' parameter
+        # If where is provided but ids is not, we should handle it differently
+        if where and not ids:
+            # TODO: Implement WHERE clause support in save_arrays
+            pass
+            
         self.save_arrays(
             table_name=table_name,
             data={column: data},
             ids=ids,
-            where=where,
             additional_columns=additional_columns,
             compress=compress,
             compress_level=compress_level,
@@ -166,7 +223,7 @@ class _ArrayMixin:
     def load_arrays(
         self,
         table_name: str,
-        columns: List[str],
+        columns: Union[List[str], str] = "all",
         ids: Union[int, List[int], str] = "all",
         where: str = None,
         batch_size: int = 128,
@@ -178,8 +235,8 @@ class _ArrayMixin:
         ----------
         table_name : str
             Name of the table
-        columns : list of str
-            Column names to load
+        columns : list of str or "all", default "all"
+            Column names to load, default "all"
         ids : int, list of int, or "all", default "all"
             Row IDs to load. "all" loads all rows
         where : str, optional
@@ -194,23 +251,31 @@ class _ArrayMixin:
         dict
             Dictionary mapping column names to stacked arrays
         """
+        self.ensure_connection()
+        self._check_context_manager()
 
-        # Build column list for query
+        if columns == "all":
+            all_table_columns = self.get_table_schema(table_name)[
+                "name"
+            ].tolist()
+            array_columns = []
+            for col in all_table_columns:
+                if (
+                    (f"{col}_dtype" in all_table_columns)
+                    and (f"{col}_shape" in all_table_columns)
+                    and (f"{col}_is_compressed" in all_table_columns)
+                    # _hash might not exist in older databases, so make it optional
+                ):
+                    array_columns.append(col)
+        else:
+            array_columns = columns if isinstance(columns, list) else [columns]
+
         query_columns = ["id"]
-        for col in columns:
+        for col in array_columns:
             query_columns.extend(
-                [col, f"{col}_dtype", f"{col}_shape", f"{col}_is_compressed"]
+                [col, f"{col}_dtype", f"{col}_shape", f"{col}_is_compressed", f"{col}_hash"]
             )
 
-        # # Get data
-        # df = self.get_rows(
-        #     table_name=table_name,
-        #     columns=query_columns,
-        #     where=where,
-        #     return_as="dataframe",
-        # )
-
-        # Get data
         df = self.get_rows(
             table_name=table_name,
             columns=query_columns,
@@ -219,64 +284,45 @@ class _ArrayMixin:
             return_as="dataframe",
         )
 
-        # # Decode all array columns
-        # result = {}
-        # for col in columns:
-        #     arrays = []
-        #     for _, row in df.iterrows():
-        #         blob = row[col]
-        #         if row.get(f"{col}_is_compressed"):
-        #             blob = zlib.decompress(blob)
-        #         print(f"DEBUG: col={col}, row keys={list(row.keys())}")
-        #         print(
-        #             f"DEBUG: dtype_key='{col}_dtype', dtype_value='{row[f'{col}_dtype']}'"
-        #         )
-
-        #         arr = np.frombuffer(
-        #             blob, dtype=np.dtype(row[f"{col}_dtype"])
-        #         ).reshape(eval(row[f"{col}_shape"]))
-        #         arrays.append(arr)
-        #     result[col] = np.stack(arrays) if arrays else None
-
-        # Decode all array columns
         result = {}
-        for col in columns:
+        for array_col in array_columns:
             arrays = []
             valid_arrays = []
 
-            # First pass: collect valid arrays to infer shape/dtype
             for _, row in df.iterrows():
-                blob = row[col]
+                blob = row[array_col]
                 if blob is not None:
-                    if row.get(f"{col}_is_compressed"):
+                    if row.get(f"{array_col}_is_compressed"):
                         blob = zlib.decompress(blob)
                     arr = np.frombuffer(
-                        blob, dtype=np.dtype(row[f"{col}_dtype"])
-                    ).reshape(eval(row[f"{col}_shape"]))
+                        blob, dtype=np.dtype(row[f"{array_col}_dtype"])
+                    ).reshape(eval(row[f"{array_col}_shape"]))
                     valid_arrays.append(arr)
 
-            # Get reference shape and dtype
             if valid_arrays:
                 ref_shape = valid_arrays[0].shape
                 ref_dtype = valid_arrays[0].dtype
 
-            # Second pass: create arrays with consistent shape/dtype
-            for _, row in df.iterrows():
-                blob = row[col]
-                if blob is None:
-                    arr = np.full(ref_shape, np.nan, dtype=ref_dtype)
-                else:
-                    if row.get(f"{col}_is_compressed"):
-                        blob = zlib.decompress(blob)
-                    arr = np.frombuffer(
-                        blob, dtype=np.dtype(row[f"{col}_dtype"])
-                    ).reshape(eval(row[f"{col}_shape"]))
-                arrays.append(arr)
+                for _, row in df.iterrows():
+                    blob = row[array_col]
+                    if blob is None:
+                        arr = np.full(ref_shape, np.nan, dtype=ref_dtype)
+                    else:
+                        if row.get(f"{array_col}_is_compressed"):
+                            blob = zlib.decompress(blob)
+                        arr = np.frombuffer(
+                            blob, dtype=np.dtype(row[f"{array_col}_dtype"])
+                        ).reshape(eval(row[f"{array_col}_shape"]))
+                    arrays.append(arr)
 
-            result[col] = np.stack(arrays) if arrays else None
+                result[array_col] = np.stack(arrays) if arrays else None
+            else:
+                result[array_col] = None
 
         if verbose:
-            print(f"Loaded {len(columns)} array columns from {table_name}")
+            print(
+                f"Loaded {len(array_columns)} array columns from {table_name}"
+            )
 
         return result
 

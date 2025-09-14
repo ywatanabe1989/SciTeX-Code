@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 00:12:49 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
+# Timestamp: "2025-09-13 17:09:03 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -42,28 +42,12 @@ from ..path._getsize import getsize
 from ..str._clean_path import clean_path
 from ..str._color_text import color_text
 from ..str._readable_bytes import readable_bytes
-
 # Import save functions from the new modular structure
-from ._save_modules import (
-    save_catboost,
-    save_csv,
-    save_excel,
-    save_hdf5,
-    save_html,
-    save_image,
-    save_joblib,
-    save_json,
-    save_matlab,
-    save_mp4,
-    save_npy,
-    save_npz,
-    save_pickle,
-    save_pickle_compressed,
-    save_text,
-    save_torch,
-    save_yaml,
-    save_zarr,
-)
+from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
+                            save_html, save_image, save_joblib, save_json,
+                            save_matlab, save_mp4, save_npy, save_npz,
+                            save_pickle, save_pickle_compressed, save_text,
+                            save_torch, save_yaml, save_zarr)
 from ._save_modules._bibtex import save_bibtex
 
 logger = log.getLogger()
@@ -393,7 +377,7 @@ def _symlink(spath, spath_cwd, symlink_from_cwd, verbose):
         sh(f"rm -f {spath_cwd}", verbose=False)
         sh(f"ln -sfr {spath} {spath_cwd}", verbose=False)
         if verbose:
-            print(color_text(f"\n(Symlinked to: {spath_cwd})", "yellow"))
+            print(color_text(f"(Symlinked to: {spath_cwd})", "yellow"))
 
 
 def _save(

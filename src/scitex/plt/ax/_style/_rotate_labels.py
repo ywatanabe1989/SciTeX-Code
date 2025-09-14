@@ -77,9 +77,18 @@ def rotate_labels(ax, x=45, y=45, x_ha=None, y_ha=None, x_va=None, y_va=None,
     if y_va is None:
         y_va = "center"
 
+    # Check if this axis is part of a shared x-axis configuration
+    # If labels are already visible (bottom subplot or not shared), keep them visible
+    # This preserves matplotlib's default sharex behavior
+    x_labels_visible = ax.xaxis.get_tick_params()['labelbottom']
+    y_labels_visible = ax.yaxis.get_tick_params()['labelleft']
+    
     # Set labels with rotation and proper alignment
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=x, ha=x_ha, va=x_va)
-    ax.set_yticklabels(ax.get_yticklabels(), rotation=y, ha=y_ha, va=y_va)
+    # Only set labels if they're currently visible (respects sharex/sharey)
+    if x_labels_visible:
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=x, ha=x_ha, va=x_va)
+    if y_labels_visible:
+        ax.set_yticklabels(ax.get_yticklabels(), rotation=y, ha=y_ha, va=y_va)
     
     # Auto-adjust subplot parameters for better layout if needed
     if auto_adjust and scientific_convention:
@@ -193,6 +202,26 @@ def _adjust_subplot_params(ax, x_angle, y_angle):
     """
     fig = ax.get_figure()
     
+    # Check if figure is using a layout engine that is incompatible with subplots_adjust
+    try:
+        # For matplotlib >= 3.6
+        if hasattr(fig, 'get_layout_engine'):
+            layout_engine = fig.get_layout_engine()
+            if layout_engine is not None:
+                # If using constrained_layout or tight_layout, don't adjust
+                return
+    except AttributeError:
+        pass
+    
+    # Check for constrained_layout (older matplotlib versions)
+    try:
+        if hasattr(fig, 'get_constrained_layout'):
+            if fig.get_constrained_layout():
+                # Constrained layout is active, don't adjust
+                return
+    except AttributeError:
+        pass
+    
     # Calculate required margins based on rotation angles
     x_margin_factor = abs(np.sin(np.radians(x_angle))) * 0.1
     y_margin_factor = abs(np.sin(np.radians(y_angle))) * 0.15
@@ -209,7 +238,11 @@ def _adjust_subplot_params(ax, x_angle, y_angle):
         
         # Only adjust if we're increasing the margins significantly
         if new_bottom > current_bottom + 0.05 or new_left > current_left + 0.05:
-            fig.subplots_adjust(bottom=new_bottom, left=new_left)
+            # Suppress warning and try to adjust
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                fig.subplots_adjust(bottom=new_bottom, left=new_left)
     except Exception:
         # Skip adjustment if there are issues
         pass

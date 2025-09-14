@@ -52,7 +52,7 @@ def to_onehot(labels, n_classes):
     return eye[labels]
 
 
-def roc_auc(plt, true_class, pred_proba, labels, sdir_for_csv=None):
+def roc_auc(plt, true_class, pred_proba, labels, sdir_for_csv=None, spath=None):
     """
     Calculates ROC-AUC curve.
     Return: fig, metrics (dict)
@@ -163,6 +163,10 @@ def roc_auc(plt, true_class, pred_proba, labels, sdir_for_csv=None):
     ax.legend(lines, legends, loc="lower right")
 
     metrics = dict(roc_auc=roc_auc, fpr=fpr, tpr=tpr, threshold=threshold)
+
+    # Save figure if spath is provided
+    if spath is not None:
+        scitex.io.save(fig, spath)
 
     # return fig, roc_auc, fpr, tpr, threshold
     return fig, metrics

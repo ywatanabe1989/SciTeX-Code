@@ -188,3 +188,4 @@ numpy
 pytesseract
 jupytext
 pytest-testmon
+nphash

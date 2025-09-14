@@ -38,6 +38,7 @@ from typing import Optional as _Optional
 from typing import Any as _Any
 
 import matplotlib as _matplotlib
+import matplotlib.figure
 import pandas as _pd
 import numpy as _np
 import warnings as _warnings
@@ -134,7 +135,7 @@ class LearningCurveLogger:
         max_n_ticks: int = 4,
         linewidth: float = 1,
         scattersize: float = 50,
-    ) -> _matplotlib.figure.Figure:
+    ) -> matplotlib.figure.Figure:
         """Plots learning curves from logged metrics.
 
         Parameters

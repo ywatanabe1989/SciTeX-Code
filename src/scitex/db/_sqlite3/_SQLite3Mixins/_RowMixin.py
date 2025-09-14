@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-18 12:27:44 (ywatanabe)"
+# Timestamp: "2025-09-08 12:00:38 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_RowMixin.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/db/_sqlite3/_SQLite3Mixins/_RowMixin.py"
@@ -27,67 +28,6 @@ from ..._BaseMixins._BaseRowMixin import _BaseRowMixin
 class _RowMixin:
     """Row operations functionality"""
 
-    # def get_rows(
-    #     self,
-    #     table_name: str,
-    #     columns: List[str] = None,
-    #     ids: Union[int, List[int], str] = "all",
-    #     where: str = None,
-    #     order_by: str = None,
-    #     limit: Optional[int] = None,
-    #     offset: Optional[int] = None,
-    #     return_as: str = "dataframe",
-    # ):
-    #     if columns is None:
-    #         columns_str = "*"
-    #     elif isinstance(columns, str):
-    #         columns_str = f'"{columns}"'
-    #     else:
-    #         columns_str = ", ".join(f'"{col}"' for col in columns)
-
-    #     # Handle ids parameter
-    #     if ids != "all":
-    #         if isinstance(ids, int):
-    #             id_where = f"id = {ids}"
-    #         else:
-    #             id_list = ",".join(map(str, ids))
-    #             id_where = f"id IN ({id_list})"
-
-    #         if where:
-    #             where = f"({where}) AND ({id_where})"
-    #         else:
-    #             where = id_where
-
-    #     try:
-    #         query_parts = [f"SELECT {columns_str} FROM {table_name}"]
-
-    #         if where:
-    #             query_parts.append(f"WHERE {where}")
-    #         if order_by:
-    #             query_parts.append(f"ORDER BY {order_by}")
-    #         if limit is not None:
-    #             query_parts.append(f"LIMIT {limit}")
-    #         if offset is not None:
-    #             query_parts.append(f"OFFSET {offset}")
-
-    #         query = " ".join(query_parts)
-    #         self.cursor.execute(query)
-
-    #         column_names = [
-    #             description[0] for description in self.cursor.description
-    #         ]
-    #         data = self.cursor.fetchall()
-
-    #         if return_as == "list":
-    #             return data
-    #         elif return_as == "dict":
-    #             return [dict(zip(column_names, row)) for row in data]
-    #         else:
-    #             return pd.DataFrame(data, columns=column_names)
-
-    #     except sqlite3.Error as error:
-    #         raise sqlite3.Error(f"Query execution failed: {str(error)}")
-
     def get_rows(
         self,
         table_name: str,
@@ -98,7 +38,21 @@ class _RowMixin:
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         return_as: str = "dataframe",
+        include_blobs: bool = True,
     ):
+        if not include_blobs:
+            if columns is None:
+                schema = self.get_table_schema(table_name)
+                columns = schema[
+                    ~schema["type"].str.contains("BLOB", case=False)
+                ]["name"].tolist()
+            else:
+                schema = self.get_table_schema(table_name)
+                blob_columns = schema[
+                    schema["type"].str.contains("BLOB", case=False)
+                ]["name"].tolist()
+                columns = [col for col in columns if col not in blob_columns]
+
         if columns is None:
             columns_str = "*"
         elif isinstance(columns, str):
@@ -148,51 +102,6 @@ class _RowMixin:
 
         except sqlite3.Error as error:
             raise sqlite3.Error(f"Query execution failed: {str(error)}")
-
-    # def get_rows(
-    #     self,
-    #     table_name: str,
-    #     columns: List[str] = None,
-    #     where: str = None,
-    #     order_by: str = None,
-    #     limit: Optional[int] = None,
-    #     offset: Optional[int] = None,
-    #     return_as: str = "dataframe",
-    # ):
-    #     if columns is None:
-    #         columns_str = "*"
-    #     elif isinstance(columns, str):
-    #         columns_str = f'"{columns}"'
-    #     else:
-    #         columns_str = ", ".join(f'"{col}"' for col in columns)
-
-    #     try:
-    #         query_parts = [f"SELECT {columns_str} FROM {table_name}"]
-
-    #         if where:
-    #             query_parts.append(f"WHERE {where}")
-    #         if order_by:
-    #             query_parts.append(f"ORDER BY {order_by}")
-    #         if limit is not None:
-    #             query_parts.append(f"LIMIT {limit}")
-    #         if offset is not None:
-    #             query_parts.append(f"OFFSET {offset}")
-
-    #         query = " ".join(query_parts)
-    #         self.cursor.execute(query)
-
-    #         column_names = [description[0] for description in self.cursor.description]
-    #         data = self.cursor.fetchall()
-
-    #         if return_as == "list":
-    #             return data
-    #         elif return_as == "dict":
-    #             return [dict(zip(column_names, row)) for row in data]
-    #         else:
-    #             return pd.DataFrame(data, columns=column_names)
-
-    #     except sqlite3.Error as error:
-    #         raise sqlite3.Error(f"Query execution failed: {str(error)}")
 
     def get_row_count(self, table_name: str = None, where: str = None) -> int:
         if table_name is None:

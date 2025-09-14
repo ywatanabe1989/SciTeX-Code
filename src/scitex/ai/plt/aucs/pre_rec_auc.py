@@ -29,7 +29,7 @@ def to_onehot(labels, n_classes):
     return eye[labels]
 
 
-def pre_rec_auc(plt, true_class, pred_proba, labels):
+def pre_rec_auc(plt, true_class, pred_proba, labels, spath=None):
     """
     Calculates the precision recall curve.
     """
@@ -147,6 +147,11 @@ def pre_rec_auc(plt, true_class, pred_proba, labels):
         recall=recall,
         threshold=threshold,
     )
+
+    # Save figure if spath is provided
+    if spath is not None:
+        import scitex
+        scitex.io.save(fig, spath)
 
     return fig, metrics
 
