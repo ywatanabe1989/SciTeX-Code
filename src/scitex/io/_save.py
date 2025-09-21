@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-13 17:09:03 (ywatanabe)"
+# Timestamp: "2025-09-22 02:29:07 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,8 +12,6 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import warnings
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py"
 
 """
 1. Functionality:
@@ -34,7 +32,7 @@ import os as _os
 from pathlib import Path
 from typing import Any, Union
 
-from scitex import log
+from scitex import logging
 
 from .._sh import sh
 from ..path._clean import clean
@@ -50,7 +48,7 @@ from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
                             save_torch, save_yaml, save_zarr)
 from ._save_modules._bibtex import save_bibtex
 
-logger = log.getLogger()
+logger = logging.getLogger()
 
 
 def _get_figure_with_data(obj):
@@ -337,9 +335,21 @@ def save(
                 sh(f"rm -f {path}", verbose=False)
 
         if dry_run:
-            print(
-                color_text(f"\n(dry run) Saved to: {spath_final}", c="yellow")
-            )
+            # Get relative path from current working directory
+            try:
+                rel_path = _os.path.relpath(spath, _os.getcwd())
+            except ValueError:
+                rel_path = spath
+
+            if verbose:
+                print()
+                logger.info(
+                    color_text(f"(dry run) Saved to: ./{rel_path}", c="yellow")
+                )
+
+            # print(
+            #     color_text(f"\n(dry run) Saved to: {spath_final}", c="yellow")
+            # )
             return
 
         # Ensure directory exists
@@ -426,13 +436,26 @@ def _save(
         if _os.path.exists(spath):
             file_size = getsize(spath)
             file_size = readable_bytes(file_size)
-            print(color_text(f"\nSaved to: {spath} ({file_size})", c="yellow"))
+            # print(color_text(f"\nSaved to: {spath} ({file_size})", c="yellow"))
+            # Get relative path from current working directory
+            try:
+                rel_path = _os.path.relpath(spath, _os.getcwd())
+            except ValueError:
+                rel_path = spath
+
+            print()
+            logger.info(
+                color_text(f"Saved to: ./{rel_path} ({file_size})", c="yellow")
+            )
 
 
 def _save_separate_legends(
     obj, spath, symlink_from_cwd=False, dry_run=False, **kwargs
 ):
     """Save separate legend files if ax.legend('separate') was used."""
+    if dry_run:
+        return
+
     import matplotlib.figure
     import matplotlib.pyplot as plt
 
@@ -503,6 +526,9 @@ def _handle_image_with_csv(
     obj, spath, no_csv=False, symlink_from_cwd=False, dry_run=False, **kwargs
 ):
     """Handle image file saving with optional CSV export."""
+    if dry_run:
+        return
+
     save_image(obj, spath, **kwargs)
 
     # Handle separate legend saving

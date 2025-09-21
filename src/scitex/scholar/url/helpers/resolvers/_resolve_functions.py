@@ -25,12 +25,12 @@ from typing import Optional
 
 from playwright.async_api import Page
 
-from scitex import log
+from scitex import logging
 from scitex.scholar.browser.utils import show_popup_message_async, take_screenshot
 
 from ._OpenURLResolver import OpenURLResolver
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def resolve_publisher_url_by_navigating_to_doi_page(

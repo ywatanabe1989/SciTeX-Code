@@ -13,24 +13,24 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Modular logging utilities for SciTeX.
 
-⚠️  DEPRECATED: This module is deprecated. Use `scitex.log` instead.
-    The `scitex.log` module will be removed in a future version.
+⚠️  DEPRECATED: This module is deprecated. Use `scitex.logging` instead.
+    The `scitex.logging` module will be removed in a future version.
 
 This module provides enhanced logging capabilities with both console and file output,
 ensuring consistent logging across the SciTeX package.
 
 Migration:
     # OLD (deprecated)
-    from scitex import log
-    logger = log.getLogger(__name__)
+    from scitex import logging
+    logger = logging.getLogger(__name__)
 
     # NEW (recommended)
-    from scitex import log
-    logger = log.getLogger(__name__)
+    from scitex import logging
+    logger = logging.getLogger(__name__)
 
 Usage:
-    from scitex import log  # DEPRECATED
-    logger = log.getLogger(__name__)
+    from scitex import logging  # DEPRECATED
+    logger = logging.getLogger(__name__)
     logger.success("Operation completed successfully")
     logger.fail("Operation failed")
 
@@ -45,8 +45,8 @@ import warnings
 
 # Issue deprecation warning when module is imported
 warnings.warn(
-    "scitex.log is deprecated. Use scitex.log instead. "
-    "The scitex.log module will be removed in a future version.",
+    "scitex.logging is deprecated. Use scitex.logging instead. "
+    "The scitex.logging module will be removed in a future version.",
     DeprecationWarning,
     stacklevel=2
 )

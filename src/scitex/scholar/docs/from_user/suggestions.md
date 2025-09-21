@@ -39,11 +39,11 @@ import os
 import asyncio
 from scitex.scholar.open_url import OpenURLResolver
 from scitex.scholar.auth import ScholarAuthManager
-from scitex import log
+from scitex import logging
 
 # Set up logging to see what's happening
 logging.basicConfig(level=logging.INFO)
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 async def main():
     """Main execution function."""

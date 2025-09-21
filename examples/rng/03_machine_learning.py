@@ -16,7 +16,7 @@ import numpy as np
 import scitex as stx
 from pathlib import Path
 import time
-from scitex.log import getLogger
+from scitex.logging import getLogger
 
 logger = getLogger(__name__)
 

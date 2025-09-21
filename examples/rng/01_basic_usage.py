@@ -12,7 +12,7 @@ Run this example multiple times - you should get identical output each time!
 
 import numpy as np
 import scitex as stx
-from scitex.log import getLogger
+from scitex.logging import getLogger
 
 logger = getLogger(__name__)
 

@@ -45,7 +45,7 @@ class SeabornMixin:
 
             # Suppress matplotlib's categorical units warning and info messages
             import warnings
-            import logging
+            from scitex import logging
             
             # Temporarily suppress matplotlib's INFO level logging
             mpl_logger = logging.getLogger('matplotlib')

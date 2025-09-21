@@ -15,10 +15,10 @@ from typing import Any, Dict
 
 from playwright.async_api import Browser, BrowserContext, async_playwright
 
-from scitex import log
+from scitex import logging
 from scitex.scholar.config import ScholarConfig
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ZenRowsProxyManager:

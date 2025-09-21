@@ -14,10 +14,10 @@ import asyncio
 
 from playwright.async_api import Locator
 
-from scitex import log
+from scitex import logging
 from scitex.scholar.browser.utils.JSLoader import JSLoader
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def click_and_wait(

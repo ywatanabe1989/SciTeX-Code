@@ -398,7 +398,7 @@ def start(
         
         # Redirect logging handlers to use the tee-wrapped streams
         # This ensures that logger output is captured in the log files
-        import logging
+        from scitex import logging
         
         # Update all existing StreamHandler instances to use our wrapped streams
         for logger_name in list(logging.Logger.manager.loggerDict.keys()):

@@ -16,9 +16,9 @@ __DIR__ = os.path.dirname(__FILE__)
 from dataclasses import dataclass
 from typing import Any, List, Optional
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass

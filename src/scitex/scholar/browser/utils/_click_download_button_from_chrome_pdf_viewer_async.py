@@ -14,9 +14,9 @@ __DIR__ = os.path.dirname(__FILE__)
 from pathlib import Path
 from typing import Optional
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def click_download_button_from_chrome_pdf_viewer_async(

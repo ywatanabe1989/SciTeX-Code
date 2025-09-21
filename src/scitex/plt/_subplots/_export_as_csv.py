@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-05-18 18:14:08 (ywatanabe)"
+# Timestamp: "2025-09-21 01:52:22 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/_subplots/_export_as_csv.py
 # ----------------------------------------
+from __future__ import annotations
 import os
-
-__FILE__ = "./src/scitex/plt/_subplots/_export_as_csv.py"
+__FILE__ = (
+    "./src/scitex/plt/_subplots/_export_as_csv.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import warnings
 
+import numpy as np
 import pandas as pd
+from scitex.pd import to_xyz
 
 from ._export_as_csv_formatters import (_format_bar, _format_barh,
                                         _format_boxplot, _format_contour,
@@ -45,30 +49,30 @@ from ._export_as_csv_formatters import (_format_bar, _format_barh,
                                         _format_sns_scatterplot,
                                         _format_sns_stripplot,
                                         _format_sns_swarmplot,
-                                        _format_sns_violinplot, _format_violin,
-                                        _format_violinplot)
-
-from scitex.pd import to_xyz
+                                        _format_sns_violinplot, _format_text,
+                                        _format_violin, _format_violinplot)
 
 
 def _to_numpy(data):
     """Convert various data types to numpy array.
-    
+
     Handles torch tensors, pandas Series/DataFrame, and other array-like objects.
-    
+
     Parameters
     ----------
     data : array-like
         Data to convert to numpy array
-        
+
     Returns
     -------
     numpy.ndarray
         Data as numpy array
     """
-    if hasattr(data, 'numpy'):  # torch tensor
-        return data.detach().numpy() if hasattr(data, 'detach') else data.numpy()
-    elif hasattr(data, 'values'):  # pandas series/dataframe
+    if hasattr(data, "numpy"):  # torch tensor
+        return (
+            data.detach().numpy() if hasattr(data, "detach") else data.numpy()
+        )
+    elif hasattr(data, "values"):  # pandas series/dataframe
         return data.values
     else:
         return np.asarray(data)
@@ -98,7 +102,7 @@ def export_as_csv(history_records):
                 dfs.append(formatted_df)
         except Exception as e:
             warnings.warn(f"Failed to format record {record[0]}: {e}")
-    
+
     # If no valid dataframes were created, return an empty one
     if not dfs:
         warnings.warn("No valid data found to export.")
@@ -110,11 +114,16 @@ def export_as_csv(history_records):
     except Exception as e:
         warnings.warn(f"Failed to combine plotting records: {e}")
         # Return a DataFrame with metadata about what records were attempted
-        meta_df = pd.DataFrame({
-            "record_id": [r[0] for r in history_records.values()],
-            "method": [r[1] for r in history_records.values()],
-            "has_data": ["Yes" if r[2] and r[2] != {} else "No" for r in history_records.values()]
-        })
+        meta_df = pd.DataFrame(
+            {
+                "record_id": [r[0] for r in history_records.values()],
+                "method": [r[1] for r in history_records.values()],
+                "has_data": [
+                    "Yes" if r[2] and r[2] != {} else "No"
+                    for r in history_records.values()
+                ],
+            }
+        )
         return meta_df
 
 
@@ -160,6 +169,8 @@ def format_record(record):
         return _format_violin(id, tracked_dict, kwargs)
     elif method == "violinplot":
         return _format_violinplot(id, tracked_dict, kwargs)
+    elif method == "text":
+        return _format_text(id, tracked_dict, kwargs)
 
     # Custom plotting functions
     elif method == "plot_box":

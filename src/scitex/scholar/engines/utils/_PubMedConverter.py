@@ -32,10 +32,10 @@ import aiohttp
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class PubMedConverter:

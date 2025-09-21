@@ -14,7 +14,7 @@ This simulates a typical scientific workflow where reproducibility is critical.
 import numpy as np
 import scitex as stx
 from pathlib import Path
-from scitex.log import getLogger
+from scitex.logging import getLogger
 
 logger = getLogger(__name__)
 

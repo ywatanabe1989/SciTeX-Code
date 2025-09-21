@@ -21,9 +21,7 @@ from .metrics import (
 from .storage import (
     MetricStorage,
     save_metric,
-    save_figure,
-    save_dataframe,
-    organize_outputs
+    create_directory_structure_lazy as organize_outputs
 )
 
 from .validation import (

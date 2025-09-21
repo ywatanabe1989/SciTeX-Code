@@ -26,10 +26,10 @@ Follow the exmaples below and keep debugginge messages in src, scripts, and test
 
 ### Python
 ```python
-import logging
+from scitex import logging
 
 # Per-module logger
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Context-specific formatting
 logger.debug(f"[{self.__class__.__name__}] Processing: {item}")

@@ -16,7 +16,7 @@ from typing import List
 
 from playwright.async_api import Locator, Page
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils import (
     click_and_wait,
@@ -24,7 +24,7 @@ from scitex.scholar.browser.utils import (
     take_screenshot,
 )
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class OpenURLLinkFinder:

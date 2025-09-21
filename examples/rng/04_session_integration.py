@@ -14,7 +14,7 @@ This shows the recommended way to use RNG in SciTeX projects.
 import numpy as np
 import scitex as stx
 from pathlib import Path
-from scitex.log import getLogger
+from scitex.logging import getLogger
 
 # Logger will be reconfigured by session.start()
 logger = getLogger(__name__)

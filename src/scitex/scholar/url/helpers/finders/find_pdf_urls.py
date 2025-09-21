@@ -22,7 +22,7 @@ from typing import Dict, List
 
 from playwright.async_api import Page
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig
 
 from .find_pdf_urls_by_direct_links import find_pdf_urls_by_direct_links
@@ -34,7 +34,7 @@ from .find_pdf_urls_by_zotero_translators import (
 )
 from .find_pdf_urls_by_view_button import find_pdf_urls_by_navigation
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def find_pdf_urls(

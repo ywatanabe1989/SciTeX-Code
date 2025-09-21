@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-07 12:57:42 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ai/classification/cross_validation.py
+# Timestamp: "2025-09-22 00:54:37 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/cross_validation.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/ai/classification/cross_validation.py"
+    "./src/scitex/ml/classification/cross_validation.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """
 Cross-validation helper for streamlined machine learning experiments.
 

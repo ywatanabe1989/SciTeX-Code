@@ -197,9 +197,12 @@ def calc_roc_auc(
     Parameters
     ----------
     y_true : np.ndarray
-        True labels (binary)
+        True labels (binary or multiclass)
     y_proba : np.ndarray
-        Predicted probabilities for positive class
+        Predicted probabilities. Can be:
+        - 1D array of positive class probabilities for binary
+        - 2D array with shape (n_samples, 2) for binary 
+        - 2D array with shape (n_samples, n_classes) for multiclass
     fold : int, optional
         Fold number for tracking
     return_curve : bool
@@ -210,10 +213,17 @@ def calc_roc_auc(
     Dict[str, Any]
         {'metric': 'roc_auc', 'value': float, 'fold': int, 'curve': optional}
     """
-    # Handle multiclass case
-    if y_proba.ndim == 2 and y_proba.shape[1] > 2:
-        auc_score = roc_auc_score(y_true, y_proba, multi_class='ovr')
+    # Handle different input formats
+    if y_proba.ndim == 2:
+        if y_proba.shape[1] == 2:
+            # Binary classification with 2 columns - use positive class probabilities
+            y_proba_positive = y_proba[:, 1]
+            auc_score = roc_auc_score(y_true, y_proba_positive)
+        else:
+            # Multiclass case
+            auc_score = roc_auc_score(y_true, y_proba, multi_class='ovr')
     else:
+        # 1D array - already positive class probabilities
         auc_score = roc_auc_score(y_true, y_proba)
     
     result = {
@@ -227,7 +237,13 @@ def calc_roc_auc(
         # For multiclass, would need per-class curves
         if not (y_proba.ndim == 2 and y_proba.shape[1] > 2):
             try:
-                fpr, tpr, thresholds = roc_curve(y_true, y_proba)
+                # Use the same probabilities we used for AUC calculation
+                if y_proba.ndim == 2 and y_proba.shape[1] == 2:
+                    y_proba_for_curve = y_proba[:, 1]
+                else:
+                    y_proba_for_curve = y_proba
+                    
+                fpr, tpr, thresholds = roc_curve(y_true, y_proba_for_curve)
                 result['curve'] = {
                     'fpr': fpr.tolist(),
                     'tpr': tpr.tolist(),
@@ -251,9 +267,12 @@ def calc_pr_auc(
     Parameters
     ----------
     y_true : np.ndarray
-        True labels (binary)
+        True labels (binary or multiclass)
     y_proba : np.ndarray
-        Predicted probabilities for positive class
+        Predicted probabilities. Can be:
+        - 1D array of positive class probabilities for binary
+        - 2D array with shape (n_samples, 2) for binary 
+        - 2D array with shape (n_samples, n_classes) for multiclass
     fold : int, optional
         Fold number for tracking
     return_curve : bool
@@ -264,14 +283,20 @@ def calc_pr_auc(
     Dict[str, Any]
         {'metric': 'pr_auc', 'value': float, 'fold': int, 'curve': optional}
     """
-    # Handle multiclass case
-    if y_proba.ndim == 2 and y_proba.shape[1] > 2:
-        # Need to one-hot encode y_true for multiclass
-        from sklearn.preprocessing import label_binarize
-        n_classes = y_proba.shape[1]
-        y_true_bin = label_binarize(y_true, classes=range(n_classes))
-        auc_score = average_precision_score(y_true_bin, y_proba, average='weighted')
+    # Handle different input formats
+    if y_proba.ndim == 2:
+        if y_proba.shape[1] == 2:
+            # Binary classification with 2 columns - use positive class probabilities
+            y_proba_positive = y_proba[:, 1]
+            auc_score = average_precision_score(y_true, y_proba_positive)
+        else:
+            # Multiclass case
+            from sklearn.preprocessing import label_binarize
+            n_classes = y_proba.shape[1]
+            y_true_bin = label_binarize(y_true, classes=range(n_classes))
+            auc_score = average_precision_score(y_true_bin, y_proba, average='weighted')
     else:
+        # 1D array - already positive class probabilities
         auc_score = average_precision_score(y_true, y_proba)
     
     result = {

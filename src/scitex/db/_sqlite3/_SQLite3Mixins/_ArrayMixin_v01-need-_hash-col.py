@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import hashlib
-import logging
+from scitex import logging
 import zlib
 from typing import Any
 from typing import Any as _Any

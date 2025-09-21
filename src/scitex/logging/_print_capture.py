@@ -12,7 +12,7 @@ class PrintCapture:
     """Capture print() output and redirect to logging system."""
     
     def __init__(self, logger_name: str = "scitex.print_capture"):
-        self.logger = log.getLogger(logger_name)
+        self.logger = logging.getLogger(logger_name)
         self.original_stdout = sys.stdout
         self.original_stderr = sys.stderr
         self.capturing = False

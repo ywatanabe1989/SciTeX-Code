@@ -25,9 +25,9 @@ import asyncio
 from pathlib import Path
 
 import scitex as stx
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def find_and_download_pdf(

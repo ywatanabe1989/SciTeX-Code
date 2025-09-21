@@ -4,29 +4,26 @@
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/__init__.py"
-)
+
+__FILE__ = "./src/scitex/__init__.py"
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """
 Minimal scitex initialization.
 Modules are imported on-demand to avoid circular dependencies.
 """
 
 import warnings
-
-# Configure warnings
 # Always show our own deprecation warnings first
-warnings.filterwarnings("always", category=DeprecationWarning, module="scitex.*")
+warnings.filterwarnings(
+    "always", category=DeprecationWarning, module="scitex.*"
+)
 # Then ignore others
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Version
-try:
-    from .__version__ import __version__
-except ImportError:
-    __version__ = "unknown"
+from .__version__ import __version__
 
 # Lazy loading for all modules
 class _LazyModule:
@@ -37,8 +34,12 @@ class _LazyModule:
     def __getattr__(self, attr):
         if self._module is None:
             import importlib
-            self._module = importlib.import_module(f".{self._name}", package="scitex")
+
+            self._module = importlib.import_module(
+                f".{self._name}", package="scitex"
+            )
         return getattr(self._module, attr)
+
 
 # Create lazy modules
 io = _LazyModule("io")
@@ -59,7 +60,7 @@ web = _LazyModule("web")
 db = _LazyModule("db")
 repro = _LazyModule("repro")
 reproduce = _LazyModule("reproduce")
-rng = _LazyModule("rng")  # New clean RNG module
+rng = _LazyModule("rng")
 scholar = _LazyModule("scholar")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
@@ -75,7 +76,7 @@ gists = _LazyModule("gists")
 errors = _LazyModule("errors")
 units = _LazyModule("units")
 logging = _LazyModule("logging")
-log = _LazyModule("log")
+# log = _LazyModule("log")
 session = _LazyModule("session")
 
 # Import sh function directly as it's commonly used
@@ -84,10 +85,25 @@ try:
 except ImportError:
     sh = None
 
-# No convenience function - users should use scitex.session.start directly
-
-__all__ = ["io", "gen", "plt", "ai", "ml", "pd", "str", "stats", "path",
-           "dict", "decorators", "__version__", "sh", "errors", "units",
-           "logging", "log", "session", "rng"]
+__all__ = [
+    "io",
+    "gen",
+    "plt",
+    "ai",
+    "ml",
+    "pd",
+    "str",
+    "stats",
+    "path",
+    "dict",
+    "decorators",
+    "__version__",
+    "sh",
+    "errors",
+    "units",
+    "logging",
+    "session",
+    "rng",
+]
 
 # EOF

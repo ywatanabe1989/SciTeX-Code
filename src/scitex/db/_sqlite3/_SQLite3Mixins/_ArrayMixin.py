@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-14 00:03:40 (ywatanabe)"
+# Timestamp: "2025-09-16 15:40:38 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_ArrayMixin.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,20 +12,20 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import hashlib
-import logging
 import zlib
 from typing import Any
 from typing import Any as _Any
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
+from scitex import logging
 
 logger = logging.getLogger(__name__)
 
 
 class _ArrayMixin:
     """Array data handling functionality"""
-    
+
     def verify_array_hash(
         self,
         table_name: str,
@@ -33,7 +33,7 @@ class _ArrayMixin:
         row_id: int,
     ) -> bool:
         """Verify array integrity using stored hash.
-        
+
         Parameters
         ----------
         table_name : str
@@ -42,7 +42,7 @@ class _ArrayMixin:
             Name of the array column
         row_id : int
             ID of the row to verify
-            
+
         Returns
         -------
         bool
@@ -52,21 +52,20 @@ class _ArrayMixin:
         array = self.load_array(table_name, column, where=f"id = {row_id}")
         if array is None:
             return False
-            
+
         # Get stored hash
         result = self.execute(
-            f"SELECT {column}_hash FROM {table_name} WHERE id = ?",
-            (row_id,)
+            f"SELECT {column}_hash FROM {table_name} WHERE id = ?", (row_id,)
         ).fetchone()
-        
+
         if not result or not result[0]:
             return False
-            
+
         stored_hash = result[0]
-        
+
         # Calculate current hash
         current_hash = hashlib.sha256(array.tobytes()).hexdigest()[:16]
-        
+
         return current_hash == stored_hash
 
     def save_arrays(
@@ -123,7 +122,7 @@ class _ArrayMixin:
 
                 # Calculate hash from original array data
                 array_hash = hashlib.sha256(arr.tobytes()).hexdigest()[:16]
-                
+
                 binary = arr.tobytes()
                 if compress and len(binary) > 1024:
                     binary = zlib.compress(binary, level=compress_level)
@@ -141,7 +140,13 @@ class _ArrayMixin:
                     ]
                 )
                 all_values.extend(
-                    [binary, str(arr.dtype), str(arr.shape), is_compressed, array_hash]
+                    [
+                        binary,
+                        str(arr.dtype),
+                        str(arr.shape),
+                        is_compressed,
+                        array_hash,
+                    ]
                 )
 
             if additional_columns:
@@ -161,8 +166,16 @@ class _ArrayMixin:
             self.execute(query, tuple(all_values))
 
             if verbose:
-                logger.info(
-                    f"Saved {len(data)} arrays to `{table_name}` table in `{self.db_path}`"
+                # from scitex.str import printc
+
+                # printc(
+                #     f"Saved {len(data)} arrays to `{table_name}` table "
+                #     f"in `{self.db_path}`",
+                #     c="green",
+                # )
+                logger.success(
+                    f"Saved {len(data)} arrays to `{table_name}` table "
+                    f"in `{self.db_path}`"
                 )
 
     def save_array(
@@ -209,7 +222,7 @@ class _ArrayMixin:
         if where and not ids:
             # TODO: Implement WHERE clause support in save_arrays
             pass
-            
+
         self.save_arrays(
             table_name=table_name,
             data={column: data},
@@ -273,7 +286,13 @@ class _ArrayMixin:
         query_columns = ["id"]
         for col in array_columns:
             query_columns.extend(
-                [col, f"{col}_dtype", f"{col}_shape", f"{col}_is_compressed", f"{col}_hash"]
+                [
+                    col,
+                    f"{col}_dtype",
+                    f"{col}_shape",
+                    f"{col}_is_compressed",
+                    f"{col}_hash",
+                ]
             )
 
         df = self.get_rows(
@@ -292,7 +311,9 @@ class _ArrayMixin:
             for _, row in df.iterrows():
                 blob = row[array_col]
                 if blob is not None:
-                    if row.get(f"{array_col}_is_compressed"):
+                    # Handle is_compressed as either int or string
+                    is_compressed = row.get(f"{array_col}_is_compressed")
+                    if is_compressed in [1, "1", True]:
                         blob = zlib.decompress(blob)
                     arr = np.frombuffer(
                         blob, dtype=np.dtype(row[f"{array_col}_dtype"])
@@ -308,7 +329,9 @@ class _ArrayMixin:
                     if blob is None:
                         arr = np.full(ref_shape, np.nan, dtype=ref_dtype)
                     else:
-                        if row.get(f"{array_col}_is_compressed"):
+                        # Handle is_compressed as either int or string
+                        is_compressed = row.get(f"{array_col}_is_compressed")
+                        if is_compressed in [1, "1", True]:
                             blob = zlib.decompress(blob)
                         arr = np.frombuffer(
                             blob, dtype=np.dtype(row[f"{array_col}_dtype"])

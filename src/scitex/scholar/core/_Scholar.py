@@ -30,7 +30,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from scitex import log
+from scitex import logging
 
 # PDF extraction is now handled by scitex.io
 from scitex.errors import ScholarError
@@ -45,7 +45,7 @@ from .Papers import Papers
 
 # from scitex.scholar.utils._paths import get_scholar_dir
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Scholar:

@@ -17,10 +17,10 @@ from typing import Dict, List, Optional
 
 from playwright.async_api import Page, async_playwright
 
-from scitex import log
+from scitex import logging
 from scitex.scholar.browser.utils.JSLoader import JSLoader
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ZoteroTranslatorRunner:

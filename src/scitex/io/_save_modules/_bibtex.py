@@ -17,12 +17,12 @@ This module provides functionality to save data in BibTeX format,
 supporting both individual entries and collections.
 """
 
-from scitex import log
+from scitex import logging
 from typing import List, Dict, Any, Union
 from pathlib import Path
 from datetime import datetime
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def save_bibtex(obj: Union[Dict, List[Dict]], spath: str, **kwargs) -> None:

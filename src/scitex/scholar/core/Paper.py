@@ -20,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
-from scitex import log
+from scitex import logging
 from scitex.dict import DotDict
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.engines.utils import (
@@ -32,7 +32,7 @@ from scitex.scholar.storage import ScholarLibrary
 
 # from scitex.scholar.storage import LibraryCacheManager, LibraryManager
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Paper:

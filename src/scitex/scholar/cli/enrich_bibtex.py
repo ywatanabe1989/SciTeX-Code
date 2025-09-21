@@ -28,10 +28,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import Scholar
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_parser():
@@ -104,7 +104,7 @@ def main():
     if args.quiet:
         logging.disable(logging.INFO)
     elif args.verbose:
-        log.getLogger("scitex.scholar").setLevel(logging.DEBUG)
+        logging.getLogger("scitex.scholar").setLevel(logging.DEBUG)
 
     try:
         # Create scholar instance

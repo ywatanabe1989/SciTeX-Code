@@ -24,9 +24,9 @@ from urllib.parse import urlparse
 
 from playwright.async_api import Page, Response
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Known authentication/intermediate endpoints that perform client-side redirects
 AUTH_ENDPOINTS = [

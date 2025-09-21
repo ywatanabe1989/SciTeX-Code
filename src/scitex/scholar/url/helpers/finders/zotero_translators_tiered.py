@@ -13,7 +13,7 @@ from typing import Dict, List, Optional, Set
 from dataclasses import dataclass
 from enum import Enum
 
-from scitex.log import getLogger
+from scitex.logging import getLogger
 
 logger = getLogger(__name__)
 

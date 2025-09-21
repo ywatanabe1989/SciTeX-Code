@@ -19,7 +19,7 @@ from typing import Dict, List
 
 from tqdm import tqdm
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig
 
 from .individual import (
@@ -32,7 +32,7 @@ from .individual import (
     URLDOIEngine,
 )
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ScholarEngine:

@@ -40,9 +40,9 @@ print(urls)
 ## Download article PDF
 from playwright.async_api import BrowserContext
 from pathlib import Path
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def download_from_url(context: BrowserContext, pdf_url: str, output_path: Path):

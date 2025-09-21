@@ -2,8 +2,46 @@
 """Scitex desc module."""
 
 from ._describe import describe, verify_non_leakage
-from ._nan import nanargmax, nanargmin, nancount, nancumprod, nancumsum, nankurtosis, nanmax, nanmean, nanmin, nanprod, nanq25, nanq50, nanq75, nanquantile, nanskewness, nanstd, nansum, nanvar, nanzscore
-from ._real import kurtosis, mean, q25, q50, q75, quantile, skewness, std, var, zscore
+from ._nan import (
+    nanargmax,
+    nanargmin,
+    nancount,
+    nancumprod,
+    nancumsum,
+    nankurtosis,
+    nanmax,
+    nanmean,
+    nanmin,
+    nanprod,
+    nanq25,
+    nanq50,
+    nanq75,
+    nanquantile,
+    nanskewness,
+    nanstd,
+    nansum,
+    nanvar,
+    nanzscore,
+)
+from ._real import (
+    kurtosis,
+    mean,
+    q25,
+    q50,
+    q75,
+    quantile,
+    skewness,
+    std,
+    var,
+    zscore,
+)
+from ._circular import (
+    circular_mean,
+    circular_concentration,
+    circular_skewness,
+    circular_kurtosis,
+    describe_circular,
+)
 
 __all__ = [
     "describe",
@@ -37,4 +75,9 @@ __all__ = [
     "var",
     "verify_non_leakage",
     "zscore",
+    "circular_mean",
+    "circular_concentration",
+    "circular_skewness",
+    "circular_kurtosis",
+    "describe_circular",
 ]

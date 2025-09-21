@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-14 00:06:49 (ywatanabe)"
+# Timestamp: "2025-09-16 15:11:33 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/path/_symlink.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,12 +13,13 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Symlink creation and management utilities for SciTeX."""
 
-import logging
+# from scitex import logging
 from pathlib import Path
 from typing import Optional, Union
 
+from scitex import logging
+
 logger = logging.getLogger(__name__)
-import warnings
 
 
 def symlink(
@@ -121,10 +122,10 @@ def symlink(
         dst_path.symlink_to(
             src_for_link, target_is_directory=target_is_directory
         )
-        logger.info(f"Created symlink: {dst_path} -> {src_for_link}")
+        logger.success(f"Created symlink: {dst_path} -> {src_for_link}")
 
     except OSError as e:
-        warnings.warn(
+        logger.warn(
             f"Failed to create symlink from {dst_path} to {src_for_link}: {str(e)}"
         )
 
@@ -220,7 +221,7 @@ def create_relative_symlink(
     return symlink(src, dst, overwrite=overwrite, relative=True)
 
 
-def unlink_symlink(path: Union[str, Path], missing_ok: bool = False) -> None:
+def unlink_symlink(path: Union[str, Path], missing_ok: bool = True) -> None:
     """
     Remove a symbolic link.
 
