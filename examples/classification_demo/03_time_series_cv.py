@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-21 23:36:26 (ywatanabe)"
+# Timestamp: "2025-09-22 15:33:02 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/examples/classification_demo/03_time_series_cv.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,409 +12,414 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-Time Series Cross-Validation Example with SciTeX
+Time Series Cross-Validation Example
 
-Functionalities:
-  1. Demonstrate TimeSeriesBlockingSplit for multiple subjects
-  2. Demonstrate TimeSeriesStratifiedSplit for single time series
-  3. Perform temporal validation without data leakage
-  4. Report classification metrics for each fold
+Demonstrates all available time series CV splitters:
+- TimeSeriesStratifiedSplit: Single time series with class balance
+- TimeSeriesBlockingSplit: Multiple subjects/groups
+- TimeSeriesSlidingWindowSplit: Fixed-size sliding windows
+- TimeSeriesCalendarSplit: Calendar-based intervals
 
-Dependencies:
-  - Core libraries: numpy, pandas, scikit-learn
-  - SciTeX modules: scitex.ml.classification, scitex.io, scitex.logging, scitex.session
-
-IO:
-  - Input:
-      - ./data/time_series_classification.csv (for blocking split)
-      - ./data/binary_classification.csv (for stratified split)
-  - Output:
-      - ./outputs/time_series_blocking/ (blocking split results)
-      - ./outputs/time_series_stratified/ (stratified split results)
+Features:
+- Unified ClassificationReporter API
+- Automatic timestamp normalization
+- Comprehensive metrics and organized output
 """
 
 import argparse
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import scitex as stx
-from scitex.logging import getLogger
-from scitex.ml.classification import (SingleTaskClassificationReporter,
+from scitex.ml.classification import (ClassificationReporter,
                                       TimeSeriesBlockingSplit,
+                                      TimeSeriesCalendarSplit,
+                                      TimeSeriesSlidingWindowSplit,
                                       TimeSeriesStratifiedSplit)
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, balanced_accuracy_score
 from sklearn.preprocessing import StandardScaler
 
-logger = getLogger(__name__)
+
+def main(args: argparse.Namespace) -> int:
+    # Load time series data
+    df = stx.io.load("./data/datasets/time_series_classification.csv")
+
+    # Prepare features and target
+    feature_cols = [col for col in df.columns if col.startswith("feature")]
+    X = df[feature_cols].values
+    y = df["target"].values
+    timestamps = pd.to_datetime(df["timestamp"])
+
+    # Create subject groups for blocking split demo
+    if "subject" in df.columns:
+        groups = df["subject"].values
+    else:
+        # Synthetic groups: 3 subjects
+        n_subjects = 3
+        samples_per_subject = len(df) // n_subjects
+        groups = np.repeat(range(n_subjects), samples_per_subject)
+        groups = np.pad(
+            groups,
+            (0, len(df) - len(groups)),
+            mode="constant",
+            constant_values=n_subjects - 1,
+        )
+
+    print(
+        f"Dataset: {X.shape[0]} samples, {X.shape[1]} features, {len(np.unique(y))} classes"
+    )
+    print(f"Time range: {timestamps.min()} to {timestamps.max()}")
+    print(f"Groups: {len(np.unique(groups))} subjects")
+
+    # =================================================================
+    # DEMO 1: TimeSeriesStratifiedSplit
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("DEMO 1: TimeSeriesStratifiedSplit")
+    print("Single time series with stratification")
+    print("=" * 60)
+
+    splitter1 = TimeSeriesStratifiedSplit(
+        n_splits=3, test_ratio=0.2, val_ratio=0.1, gap=5, stratify=True
+    )
+
+    reporter1 = ClassificationReporter(CONFIG.SDIR + "time_series_stratified")
+
+    for fold, (train_idx, test_idx) in enumerate(
+        splitter1.split(X, y, timestamps=timestamps)
+    ):
+        print(f"\nFold {fold}:")
+        print(f"  Train: {len(train_idx)} samples")
+        print(f"  Test:  {len(test_idx)} samples")
+
+        accuracy = train_and_evaluate(
+            X, y, train_idx, test_idx, reporter1, fold
+        )
+        print(f"  Accuracy: {accuracy:.3f}")
+
+    reporter1.save_summary("stratified_cv_summary.json", verbose=False)
+    
+    # Visualize stratified splits
+    print("\nVisualizing stratified splits...")
+    fig = splitter1.plot_splits(X, timestamps=timestamps)
+    reporter1.save(fig, "cv_summary/stratified_splits.png")
+    plt.close(fig)
+
+    # =================================================================
+    # DEMO 2: TimeSeriesBlockingSplit
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("DEMO 2: TimeSeriesBlockingSplit")
+    print("Multiple subjects - no mixing between subjects")
+    print("=" * 60)
+
+    splitter2 = TimeSeriesBlockingSplit(n_splits=3, test_ratio=0.3)
+
+    reporter2 = ClassificationReporter(CONFIG.SDIR + "time_series_blocking")
+
+    for fold, (train_idx, test_idx) in enumerate(
+        splitter2.split(X, y, timestamps=timestamps, groups=groups)
+    ):
+        train_subjects = set(groups[train_idx])
+        test_subjects = set(groups[test_idx])
+
+        print(f"\nFold {fold}:")
+        print(
+            f"  Train: {len(train_idx)} samples from subjects {sorted(train_subjects)}"
+        )
+        print(
+            f"  Test:  {len(test_idx)} samples from subjects {sorted(test_subjects)}"
+        )
+        print(f"  No overlap: {len(train_subjects & test_subjects) == 0}")
+
+        accuracy = train_and_evaluate(
+            X, y, train_idx, test_idx, reporter2, fold
+        )
+        print(f"  Accuracy: {accuracy:.3f}")
+
+    reporter2.save_summary("blocking_cv_summary.json", verbose=False)
+    
+    # Visualize blocking splits
+    print("\nVisualizing blocking splits...")
+    fig = splitter2.plot_splits(X, timestamps=timestamps, groups=groups)
+    reporter2.save(fig, "cv_summary/blocking_splits.png")
+    plt.close(fig)
+
+    # =================================================================
+    # DEMO 3: TimeSeriesSlidingWindowSplit
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("DEMO 3: TimeSeriesSlidingWindowSplit")
+    print("Fixed-size sliding windows")
+    print("=" * 60)
+
+    splitter3 = TimeSeriesSlidingWindowSplit(
+        window_size=60, step_size=20, test_size=20, gap=5
+    )
+
+    reporter3 = ClassificationReporter(CONFIG.SDIR + "time_series_sliding")
+
+    for fold, (train_idx, test_idx) in enumerate(
+        splitter3.split(X, y, timestamps=timestamps)
+    ):
+        if fold >= 3:  # Limit to 3 folds for demo
+            break
+
+        print(f"\nFold {fold}:")
+        print(
+            f"  Train: samples {train_idx[0]}-{train_idx[-1]} ({len(train_idx)} samples)"
+        )
+        print(
+            f"  Test:  samples {test_idx[0]}-{test_idx[-1]} ({len(test_idx)} samples)"
+        )
+
+        accuracy = train_and_evaluate(
+            X, y, train_idx, test_idx, reporter3, fold
+        )
+        print(f"  Accuracy: {accuracy:.3f}")
+
+    reporter3.save_summary("sliding_cv_summary.json", verbose=False)
+    
+    # Visualize sliding window splits
+    print("\nVisualizing sliding window splits...")
+    fig = splitter3.plot_splits(X, timestamps=timestamps)
+    reporter3.save(fig, "cv_summary/sliding_window_splits.png")
+    plt.close(fig)
+
+    # =================================================================
+    # DEMO 4: TimeSeriesCalendarSplit
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("DEMO 4: TimeSeriesCalendarSplit")
+    print("Calendar-based monthly intervals")
+    print("=" * 60)
+
+    # Create synthetic monthly timestamps for demo
+    monthly_dates = pd.date_range(
+        "2023-01-01", periods=len(X), freq="6H"
+    )  # Every 6 hours
+
+    splitter4 = TimeSeriesCalendarSplit(
+        interval="M", n_train_intervals=6, n_test_intervals=1, step_intervals=2
+    )
+
+    reporter4 = ClassificationReporter(CONFIG.SDIR + "time_series_calendar")
+
+    try:
+        for fold, (train_idx, test_idx) in enumerate(
+            splitter4.split(X, y, timestamps=monthly_dates)
+        ):
+            if fold >= 2:  # Limit to 2 folds for demo
+                break
+
+            print(f"\nFold {fold}:")
+            print(
+                f"  Train: {monthly_dates[train_idx[0]].strftime('%Y-%m')} to {monthly_dates[train_idx[-1]].strftime('%Y-%m')}"
+            )
+            print(
+                f"  Test:  {monthly_dates[test_idx[0]].strftime('%Y-%m')} ({len(test_idx)} samples)"
+            )
+
+            accuracy = train_and_evaluate(
+                X, y, train_idx, test_idx, reporter4, fold
+            )
+            print(f"  Accuracy: {accuracy:.3f}")
+
+        reporter4.save_summary("calendar_cv_summary.json", verbose=False)
+        
+        # Visualize calendar splits
+        print("\nVisualizing calendar splits...")
+        fig = splitter4.plot_splits(X, timestamps=monthly_dates)
+        reporter4.save(fig, "cv_summary/calendar_splits.png")
+        plt.close(fig)
+    except Exception as e:
+        print(f"Calendar split demo skipped: {str(e)}")
+
+    # =================================================================
+    # DEMO 5: Train-Validation-Test Split Example
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("DEMO 5: Train-Validation-Test Split")
+    print("Time series split with validation set (green) - maintains temporal order")
+    print("=" * 60)
+
+    splitter5 = TimeSeriesStratifiedSplit(
+        n_splits=3, test_ratio=0.2, val_ratio=0.15, gap=3, stratify=True
+    )
+
+    reporter5 = ClassificationReporter(CONFIG.SDIR + "time_series_val_split")
+
+    print("\nTrain-Validation-Test configuration:")
+    print(f"  - Train: ~{100 - 20 - 15}% of data (expanding window)")
+    print(f"  - Validation: {15}% of data") 
+    print(f"  - Test: {20}% of data")
+    print(f"  - Gap: {3} samples between sets")
+    print(f"  - Stratification: Enabled (temporal-aware - preserves chronological order)")
+
+    # Run one fold as example
+    for fold, (train_idx, val_idx, test_idx) in enumerate(
+        splitter5.split_with_val(X, y, timestamps=timestamps)
+    ):
+        if fold >= 1:  # Just show first fold
+            break
+            
+        print(f"\nFold {fold} breakdown:")
+        print(f"  Train: {len(train_idx)} samples")
+        print(f"  Validation: {len(val_idx)} samples") 
+        print(f"  Test: {len(test_idx)} samples")
+        
+        # Proper train-validation-test workflow
+        val_accuracy, test_accuracy = train_validate_and_test(
+            X, y, train_idx, val_idx, test_idx, reporter5, fold
+        )
+        print(f"  Validation accuracy: {val_accuracy:.3f}")
+        print(f"  Test accuracy: {test_accuracy:.3f}")
+
+    reporter5.save_summary("val_split_cv_summary.json", verbose=False)
+    
+    # Visualize train-validation-test splits  
+    print("\nVisualizing train-validation-test splits...")
+    fig = splitter5.plot_splits(X, timestamps=timestamps)
+    reporter5.save(fig, "cv_summary/train_val_test_splits.png")
+    plt.close(fig)
+
+    # =================================================================
+    # Additional Configuration Examples
+    # =================================================================
+    print("\n" + "=" * 60)
+    print("ADDITIONAL SPLITTER CONFIGURATIONS")
+    print("=" * 60)
+
+    print("\n# Weekly calendar splits:")
+    print("# splitter = TimeSeriesCalendarSplit(")
+    print("#     interval='W',           # Weekly")
+    print("#     n_train_intervals=8,    # 8 weeks training")
+    print("#     n_test_intervals=2,     # 2 weeks testing")
+    print("#     gap_intervals=1         # 1 week gap")
+    print("# )")
+
+    print("\n# Larger sliding windows:")
+    print("# splitter = TimeSeriesSlidingWindowSplit(")
+    print("#     window_size=200,        # Larger windows")
+    print("#     step_size=50,           # Larger steps")
+    print("#     test_size=50            # Larger test windows")
+    print("# )")
+    
+    print("\n# Train-Validation-Test splits:")
+    print("# splitter = TimeSeriesStratifiedSplit(")
+    print("#     n_splits=3,")
+    print("#     test_ratio=0.2,          # 20% test")
+    print("#     val_ratio=0.15,          # 15% validation")
+    print("#     gap=5,                   # 5 sample gap")
+    print("#     stratify=True            # Maintain class balance")
+    print("# )")
+    print("# # Use val_ratio > 0 to get train-val-test splits")
+    
+    print("\n# Visualize any splitter:")
+    print("# fig = splitter.plot_splits(X, timestamps=timestamps)")
+    print("# reporter.save(fig, 'cv_summary/my_splits.png')  # Save via reporter")
+    print("# fig.savefig('my_splits.png')                   # Or save directly")
+
+    print("\n# Stratified with validation set:")
+    print("# splitter = TimeSeriesStratifiedSplit(")
+    print("#     n_splits=5,")
+    print("#     test_ratio=0.15,        # Smaller test")
+    print("#     val_ratio=0.1,          # Add validation")
+    print("#     gap=10,                 # Larger gap")
+    print("#     stratify=False          # No stratification")
+    print("# )")
+
+    print("\n" + "=" * 60)
+    print("Time series CV demonstrations completed!")
+    print("Check output directories for:")
+    print("  - Comprehensive classification metrics and summaries")
+    print("  - Split visualizations in cv_summary/ subdirectories")
+    print("  - Train (blue), Validation (green), Test (red) split plots")
+    print("=" * 60)
+
+    return 0
 
 
-def parse_args():
+def train_and_evaluate(X, y, train_idx, test_idx, reporter, fold):
+    """Train model and calculate metrics."""
+    # Split data
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+
+    # Scale features
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    # Train model
+    model = RandomForestClassifier(n_estimators=50, random_state=42 + fold)
+    model.fit(X_train_scaled, y_train)
+
+    # Get predictions
+    y_pred = model.predict(X_test_scaled)
+    y_proba = model.predict_proba(X_test_scaled)
+
+    # Calculate metrics
+    class_names = [f"Class_{i}" for i in range(len(np.unique(y)))]
+    reporter.calculate_metrics(
+        y_true=y_test,
+        y_pred=y_pred,
+        y_proba=y_proba,
+        labels=class_names,
+        fold=fold,
+        verbose=False,
+    )
+
+    return np.mean(y_pred == y_test)
+
+
+def train_validate_and_test(X, y, train_idx, val_idx, test_idx, reporter, fold):
+    """Train model, validate for hyperparameters, then test - proper 3-way split."""
+    # Split data into train, validation, and test
+    X_train, X_val, X_test = X[train_idx], X[val_idx], X[test_idx]
+    y_train, y_val, y_test = y[train_idx], y[val_idx], y[test_idx]
+
+    # Scale features (fit on train, transform val and test)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_val_scaled = scaler.transform(X_val)
+    X_test_scaled = scaler.transform(X_test)
+
+    # Train model on training set
+    model = RandomForestClassifier(n_estimators=50, random_state=42 + fold)
+    model.fit(X_train_scaled, y_train)
+
+    # Validate on validation set
+    y_val_pred = model.predict(X_val_scaled)
+    val_accuracy = np.mean(y_val_pred == y_val)
+
+    # Final evaluation on test set
+    y_test_pred = model.predict(X_test_scaled)
+    y_test_proba = model.predict_proba(X_test_scaled)
+    test_accuracy = np.mean(y_test_pred == y_test)
+
+    # Report metrics on test set (the final evaluation)
+    class_names = [f"Class_{i}" for i in range(len(np.unique(y)))]
+    reporter.calculate_metrics(
+        y_true=y_test,
+        y_pred=y_test_pred,
+        y_proba=y_test_proba,
+        labels=class_names,
+        fold=fold,
+        verbose=False,
+    )
+
+    return val_accuracy, test_accuracy
+
+
+def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Time series cross-validation example with SciTeX"
+        description="Time series cross-validation example"
     )
-    parser.add_argument(
-        "--data-dir",
-        type=Path,
-        default=Path("./data"),
-        help="Directory containing input data (default: ./data)",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=None,  # Will use CONFIG['SDIR'] if not specified
-        help="Base output directory for results (default: uses SciTeX session directory)",
-    )
-    parser.add_argument(
-        "--n-splits",
-        type=int,
-        default=3,
-        help="Number of CV folds (default: 3)",
-    )
-    parser.add_argument(
-        "--test-ratio",
-        type=float,
-        default=0.2,
-        help="Proportion of data for testing in each fold (default: 0.2)",
-    )
-    parser.add_argument(
-        "--gap",
-        type=int,
-        default=10,
-        help="Gap between train and test sets in stratified split (default: 10)",
-    )
-    parser.add_argument(
-        "--n-estimators",
-        type=int,
-        default=50,
-        help="Number of trees in Random Forest (default: 50)",
-    )
-    parser.add_argument(
-        "--random-state",
-        type=int,
-        default=42,
-        help="Random seed for reproducibility (default: 42)",
-    )
-    parser.add_argument(
-        "--demo",
-        type=str,
-        choices=["blocking", "stratified", "both"],
-        default="both",
-        help="Which demo to run (default: both)",
-    )
-    return parser.parse_args()
-
-
-def demonstrate_blocking_split(args):
-    """Demonstrate TimeSeriesBlockingSplit for multiple subjects.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        Command line arguments
-
-    Returns
-    -------
-    dict
-        Results from blocking split CV
-    """
-    logger.info("\n" + "=" * 60)
-    logger.info("Time Series Blocking Split (Multiple Subjects)")
-    logger.info("=" * 60)
-
-    # Load time series data
-    data_path = args.data_dir / "time_series_classification.csv"
-    df = stx.io.load(data_path)
-
-    logger.info(f"Loaded dataset: {data_path}")
-    logger.info(f"Shape: {df.shape}")
-    logger.info(f"Subjects: {df['subject_id'].nunique()}")
-
-    # Prepare data
-    feature_cols = [col for col in df.columns if col.startswith("feature")]
-    X = df[feature_cols].values
-    y = df["target"].values
-    timestamps = df["timestamp"].values
-    groups = df["subject_id"].values
-
-    # Initialize splitter
-    tscv = TimeSeriesBlockingSplit(
-        n_splits=args.n_splits, test_ratio=args.test_ratio
-    )
-
-    # Use SciTeX output directory if not specified
-    if args.output_dir is None:
-        base_output_dir = Path(CONFIG["SDIR"]) / "classification_results"
-    else:
-        base_output_dir = args.output_dir
-
-    # Initialize reporter
-    output_dir = base_output_dir / "time_series_blocking"
-    reporter = SingleTaskClassificationReporter(
-        name="time_series_blocking", output_dir=str(output_dir)
-    )
-
-    logger.info(f"Performing {tscv.n_splits}-fold blocking time series CV...")
-    logger.info("Each subject's time series is split temporally")
-
-    # Perform cross-validation
-    fold_scores = []
-    all_metrics = []
-
-    for fold_idx, (train_idx, test_idx) in enumerate(
-        tscv.split(X, y, timestamps, groups)
-    ):
-        logger.info(f"\n--- Fold {fold_idx + 1}/{tscv.n_splits} ---")
-
-        # Get train/test data
-        X_train, X_test = X[train_idx], X[test_idx]
-        y_train, y_test = y[train_idx], y[test_idx]
-
-        # Check temporal ordering
-        train_times = timestamps[train_idx]
-        test_times = timestamps[test_idx]
-        logger.info(
-            f"Train samples: {len(train_idx)}, Test samples: {len(test_idx)}"
-        )
-        logger.info(
-            f"Train time range: [{train_times.min():.2f}, {train_times.max():.2f}]"
-        )
-        logger.info(
-            f"Test time range: [{test_times.min():.2f}, {test_times.max():.2f}]"
-        )
-
-        # Scale features
-        scaler = StandardScaler()
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
-
-        # Train model
-        model = RandomForestClassifier(
-            n_estimators=args.n_estimators, random_state=args.random_state
-        )
-        model.fit(X_train, y_train)
-
-        # Predict
-        y_pred = model.predict(X_test)
-        y_pred_proba = model.predict_proba(X_test)
-
-        # Calculate metrics
-        acc = accuracy_score(y_test, y_pred)
-        bal_acc = balanced_accuracy_score(y_test, y_pred)
-        fold_scores.append(bal_acc)
-
-        logger.success(
-            f"Accuracy: {acc:.3f}, Balanced Accuracy: {bal_acc:.3f}"
-        )
-
-        # Report metrics
-        metrics = reporter.calculate_metrics(
-            y_true=y_test,
-            y_pred=y_pred,
-            y_proba=y_pred_proba,
-            labels=["Class_0", "Class_1"],
-            fold_idx=fold_idx,
-        )
-        all_metrics.append(metrics)
-
-    mean_score = np.mean(fold_scores)
-    std_score = np.std(fold_scores)
-    logger.success(
-        f"\nMean Balanced Accuracy: {mean_score:.3f} ± {std_score:.3f}"
-    )
-
-    # Save CV summary
-    cv_summary = pd.DataFrame(
-        {"fold": range(len(fold_scores)), "balanced_accuracy": fold_scores}
-    )
-    summary_path = output_dir / "cv_summary.csv"
-    stx.io.save(cv_summary, summary_path, symlink_from_cwd=True)
-
-    return {
-        "fold_scores": fold_scores,
-        "mean_score": mean_score,
-        "std_score": std_score,
-        "metrics": all_metrics,
-    }
-
-
-def demonstrate_stratified_split(args):
-    """Demonstrate TimeSeriesStratifiedSplit for single time series.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        Command line arguments
-
-    Returns
-    -------
-    dict
-        Results from stratified split CV
-    """
-    logger.info("\n" + "=" * 60)
-    logger.info("Time Series Stratified Split (Single Time Series)")
-    logger.info("=" * 60)
-
-    # Use binary classification data as a single time series
-    data_path = args.data_dir / "binary_classification.csv"
-    df = stx.io.load(data_path)
-
-    # Add synthetic timestamps
-    df["timestamp"] = np.arange(len(df))
-
-    logger.info(f"Loaded dataset: {data_path}")
-    logger.info(f"Shape: {df.shape}")
-
-    # Prepare data
-    feature_cols = [col for col in df.columns if col.startswith("feature")]
-    X = df[feature_cols].values
-    y = df["target"].values
-    timestamps = df["timestamp"].values
-
-    # Initialize splitter with stratification
-    tscv = TimeSeriesStratifiedSplit(
-        n_splits=args.n_splits,
-        test_ratio=args.test_ratio,
-        gap=args.gap,
-        stratify=True,
-    )
-
-    # Use SciTeX output directory if not specified
-    if args.output_dir is None:
-        base_output_dir = Path(CONFIG["SDIR"]) / "classification_results"
-    else:
-        base_output_dir = args.output_dir
-
-    # Initialize reporter
-    output_dir = base_output_dir / "time_series_stratified"
-    reporter = SingleTaskClassificationReporter(
-        name="time_series_stratified", output_dir=str(output_dir)
-    )
-
-    logger.info(
-        f"Performing {tscv.n_splits}-fold stratified time series CV..."
-    )
-    logger.info(
-        f"Gap of {tscv.gap} samples between train and test (prevents leakage)"
-    )
-
-    # Perform cross-validation
-    fold_scores = []
-    all_metrics = []
-
-    for fold_idx, (train_idx, test_idx) in enumerate(
-        tscv.split(X, y, timestamps)
-    ):
-        logger.info(f"\n--- Fold {fold_idx + 1}/{tscv.n_splits} ---")
-
-        # Get train/test data
-        X_train, X_test = X[train_idx], X[test_idx]
-        y_train, y_test = y[train_idx], y[test_idx]
-
-        # Check class balance
-        train_dist = np.bincount(y_train) / len(y_train)
-        test_dist = np.bincount(y_test) / len(y_test)
-        logger.info(
-            f"Train samples: {len(train_idx)}, Test samples: {len(test_idx)}"
-        )
-        logger.info(f"Train class distribution: {train_dist}")
-        logger.info(f"Test class distribution: {test_dist}")
-
-        # Scale features
-        scaler = StandardScaler()
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
-
-        # Train model
-        model = RandomForestClassifier(
-            n_estimators=args.n_estimators, random_state=args.random_state
-        )
-        model.fit(X_train, y_train)
-
-        # Predict
-        y_pred = model.predict(X_test)
-        y_pred_proba = model.predict_proba(X_test)
-
-        # Calculate metrics
-        acc = accuracy_score(y_test, y_pred)
-        bal_acc = balanced_accuracy_score(y_test, y_pred)
-        fold_scores.append(bal_acc)
-
-        logger.success(
-            f"Accuracy: {acc:.3f}, Balanced Accuracy: {bal_acc:.3f}"
-        )
-
-        # Report metrics
-        metrics = reporter.calculate_metrics(
-            y_true=y_test,
-            y_pred=y_pred,
-            y_proba=y_pred_proba,
-            labels=["Negative", "Positive"],
-            fold_idx=fold_idx,
-        )
-        all_metrics.append(metrics)
-
-    mean_score = np.mean(fold_scores)
-    std_score = np.std(fold_scores)
-    logger.success(
-        f"\nMean Balanced Accuracy: {mean_score:.3f} ± {std_score:.3f}"
-    )
-
-    # Save CV summary
-    cv_summary = pd.DataFrame(
-        {"fold": range(len(fold_scores)), "balanced_accuracy": fold_scores}
-    )
-    summary_path = output_dir / "cv_summary.csv"
-    stx.io.save(cv_summary, summary_path, symlink_from_cwd=True)
-
-    return {
-        "fold_scores": fold_scores,
-        "mean_score": mean_score,
-        "std_score": std_score,
-        "metrics": all_metrics,
-    }
-
-
-def main(args):
-    """Run time series CV examples.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        Command line arguments
-
-    Returns
-    -------
-    dict
-        Results from both CV strategies
-    """
-    logger.info("=" * 60)
-    logger.info("Time Series Cross-Validation Examples")
-    logger.info("=" * 60)
-
-    results = {}
-
-    # Demonstrate different time series CV strategies
-    if args.demo in ["blocking", "both"]:
-        results["blocking"] = demonstrate_blocking_split(args)
-
-    if args.demo in ["stratified", "both"]:
-        results["stratified"] = demonstrate_stratified_split(args)
-
-    logger.success("\n" + "=" * 60)
-    logger.success("Time series CV examples completed!")
-    # Show correct output directory in message
-    output_base = (
-        args.output_dir
-        if args.output_dir is not None
-        else Path(CONFIG["SDIR"]) / "classification_results"
-    )
-    logger.success(f"Check {output_base} directory for organized results")
-    logger.success("=" * 60)
-
-    return 0  # Exit status
+    args = parser.parse_args()
+    return args
 
 
 def run_main() -> None:
