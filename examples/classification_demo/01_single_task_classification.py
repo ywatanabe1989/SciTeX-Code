@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 01:51:55 (ywatanabe)"
+# Timestamp: "2025-09-22 15:06:39 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/examples/classification_demo/01_single_task_classification.py
 # ----------------------------------------
 from __future__ import annotations
@@ -43,8 +43,7 @@ import numpy as np
 import pandas as pd
 import scitex as stx
 from scitex.logging import getLogger
-from scitex.ml.classification import (ReporterConfig,
-                                      SingleTaskClassificationReporter)
+from scitex.ml.classification import ClassificationReporter
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -57,22 +56,17 @@ logger = getLogger(__name__)
 """Functions & Classes"""
 def main(args: argparse.Namespace) -> int:
     # Load data
-    df = pd.read_csv(f"./data/datasets/binary_classification.csv")
+    df = stx.io.load("./data/datasets/binary_classification.csv")
 
     # Prepare features and target
     feature_cols = [col for col in df.columns if col.startswith("feature")]
     X = df[feature_cols].values
     y = df["target"].values
 
-    # Configure and initialize reporter
-    config = ReporterConfig()
-    reporter = SingleTaskClassificationReporter(
-        name="single_task_classification",
-        output_dir=CONFIG.SDIR + "classification_results",
-        config=config,
+    # Initialize unified reporter (single-task mode)
+    reporter = ClassificationReporter(
+        CONFIG.SDIR + "classification_results",
     )
-    # Pass the session CONFIG for inclusion in reports
-    reporter.set_session_config(CONFIG)
 
     # Perform 5-fold cross-validation
     n_folds = 5
@@ -106,50 +100,44 @@ def main(args: argparse.Namespace) -> int:
             labels=["Negative", "Positive"],
             fold=fold,
         )
-        
+
         # Save custom data for this fold using real model outputs
         # Save actual feature importances from the trained model
         feature_importance = {
-            f"feature_{i}": importance 
+            f"feature_{i}": importance
             for i, importance in enumerate(model.feature_importances_)
         }
-        reporter.save(
-            feature_importance,
-            "feature_importance.json",
-            fold=fold
-        )
-        
+        reporter.save(feature_importance, "feature_importance.json", fold=fold)
+
         # Save predictions with sample indices
-        fold_predictions = pd.DataFrame({
-            "sample_idx": test_idx,
-            "y_true": y_test,
-            "y_pred": y_pred,
-            "y_proba_positive": y_pred_proba[:, 1] if y_pred_proba.ndim == 2 else y_pred_proba
-        })
-        reporter.save(
-            fold_predictions,
-            "predictions.csv",
-            fold=fold
+        fold_predictions = pd.DataFrame(
+            {
+                "sample_idx": test_idx,
+                "y_true": y_test,
+                "y_pred": y_pred,
+                "y_proba_positive": (
+                    y_pred_proba[:, 1]
+                    if y_pred_proba.ndim == 2
+                    else y_pred_proba
+                ),
+            }
         )
-        
+        reporter.save(fold_predictions, "predictions.csv", fold=fold)
+
         # Save model coefficients/parameters
         model_info = {
             "n_estimators": model.n_estimators,
             "max_features": model.max_features,
             "n_features_in": model.n_features_in_,
             "n_classes": model.n_classes_,
-            "feature_importances": model.feature_importances_.tolist()
+            "feature_importances": model.feature_importances_.tolist(),
         }
-        reporter.save(
-            model_info,
-            "model_info.json",
-            fold=fold
-        )
+        reporter.save(model_info, "model_info.json", fold=fold)
 
     # Save summary across all folds
     summary = reporter.get_summary()
     summary_path = reporter.save_summary("cv_summary.json")
-    
+
     # Save aggregated custom analysis to cv_summary
     # Convert numpy types to Python types for JSON serialization
     unique_vals, counts = np.unique(y, return_counts=True)
@@ -158,23 +146,22 @@ def main(args: argparse.Namespace) -> int:
             "n_samples": int(X.shape[0]),
             "n_features": int(X.shape[1]),
             "n_classes": 2,
-            "class_balance": {int(val): int(count) for val, count in zip(unique_vals, counts)}
+            "class_balance": {
+                int(val): int(count) for val, count in zip(unique_vals, counts)
+            },
         },
         "cv_strategy": "StratifiedKFold",
         "n_folds": 5,
         "model_type": "RandomForestClassifier",
-        "timestamp": pd.Timestamp.now().isoformat()
+        "timestamp": pd.Timestamp.now().isoformat(),
     }
-    reporter.save(
-        aggregated_analysis,
-        "cv_summary/experiment_metadata.json"
-    )
-    
+    reporter.save(aggregated_analysis, "cv_summary/experiment_metadata.json")
+
     # Save a custom markdown report
-    balanced_acc_mean = summary.get('balanced_accuracy', {}).get('mean', 0.0)
-    roc_auc_mean = summary.get('roc_auc', {}).get('mean', 0.0)
-    pr_auc_mean = summary.get('pr_auc', {}).get('mean', 0.0)
-    
+    balanced_acc_mean = summary.get("balanced_accuracy", {}).get("mean", 0.0)
+    roc_auc_mean = summary.get("roc_auc", {}).get("mean", 0.0)
+    pr_auc_mean = summary.get("pr_auc", {}).get("mean", 0.0)
+
     custom_report = f"""# Custom Analysis Report
 
 ## Experiment Overview
@@ -192,11 +179,8 @@ def main(args: argparse.Namespace) -> int:
 This demonstrates the custom data saving functionality of the reporter.
 You can save any data format to any location within the organized structure.
 """
-    reporter.save(
-        custom_report,
-        "reports/custom_analysis.md"
-    )
-    
+    reporter.save(custom_report, "reports/custom_analysis.md")
+
     logger.info("Custom data saved successfully")
 
     return 0

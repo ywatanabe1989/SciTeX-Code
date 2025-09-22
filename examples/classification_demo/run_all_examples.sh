@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-21 23:21:56 (ywatanabe)"
+# Timestamp: "2025-09-22 15:07:13 (ywatanabe)"
 # File: ./examples/classification_demo/run_all_examples.sh
 
 THIS_DIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
@@ -23,7 +23,7 @@ echo_error() { echo -e "${RED}$1${NC}"; }
 # Set Python path to use the correct scitex module
 export PYTHONPATH="/home/ywatanabe/proj/scitex_repo/src:$PYTHONPATH"
 
-# cd /home/ywatanabe/proj/scitex_repo/examples/classification_demo/
+cd /home/ywatanabe/proj/scitex_repo
 DIR="/home/ywatanabe/proj/scitex_repo/examples/classification_demo"
 "$DIR"/00_generate_data.py
 "$DIR"/01_single_task_classification.py

@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import BaseCrossValidator, StratifiedKFold
 
-from ._SingleClassificationReporter import SingleTaskClassificationReporter
+from .reporters import ClassificationReporter
 
 
 class CrossValidationExperiment:
@@ -79,8 +79,8 @@ class CrossValidationExperiment:
         self.verbose = verbose
 
         # Initialize reporter
-        self.reporter = SingleTaskClassificationReporter(
-            name=name, output_dir=output_dir, required_metrics=metrics
+        self.reporter = ClassificationReporter(
+            output_dir=output_dir, required_metrics=metrics, verbose=verbose
         )
 
         # Track experiment metadata

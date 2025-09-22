@@ -1,25 +1,12 @@
 #!/usr/bin/env python3
-"""Classification utilities."""
+"""Classification utilities with unified API."""
 
-# Import improved reporters (clean replacements)
-from ._SingleClassificationReporter import SingleTaskClassificationReporter
-from ._MultiClassificationReporter import (
-    MultipleTasksClassificationReporter,
-    create_multi_task_reporter,
-)
-
-# Import base classes and utilities
-from ._BaseClassificationReporter import (
-    BaseClassificationReporter,
-    ReporterConfig,
-)
+# Import the unified reporter - the only public API
+from .reporters import ClassificationReporter
 
 # Import other existing modules
 from ._ClassifierServer import ClassifierServer
 from .cross_validation import CrossValidationExperiment, quick_experiment
-
-# Import reporter utilities
-from . import reporter_utils
 
 # Import time series module
 from . import time_series
@@ -29,40 +16,30 @@ from .time_series import (
     TimeSeriesStratifiedSplit,
     TimeSeriesBlockingSplit,
     TimeSeriesSlidingWindowSplit,
+    TimeSeriesCalendarSplit,
     TimeSeriesStrategy,
     TimeSeriesMetadata,
 )
 
-# Backward compatibility aliases
-ClassificationReporter = MultipleTasksClassificationReporter
-SingleClassificationReporter = SingleTaskClassificationReporter
-
+# Backward compatibility alias
 CVExperiment = CrossValidationExperiment
 
 __all__ = [
-    # Core reporters (improved versions)
-    "SingleTaskClassificationReporter",
-    "MultipleTasksClassificationReporter",
-    "create_multi_task_reporter",
-    # Base classes and configuration
-    "BaseClassificationReporter",
-    "ReporterConfig",
-    # Aliases for convenience
-    "ClassificationReporter",  # Alias for MultipleTasksClassificationReporter
-    "SingleClassificationReporter",  # Alias for SingleTaskClassificationReporter
+    # Main reporter (unified API)
+    "ClassificationReporter",
     # Classifier management
     "ClassifierServer",
     # Cross-validation
     "CrossValidationExperiment",
     "CVExperiment",  # Alias
     "quick_experiment",
-    "reporter_utils",
     # Time series module
     "time_series",
     # Time series CV splitters (re-exported from time_series module)
     "TimeSeriesStratifiedSplit",
     "TimeSeriesBlockingSplit",
     "TimeSeriesSlidingWindowSplit",
+    "TimeSeriesCalendarSplit",
     "TimeSeriesStrategy",
     "TimeSeriesMetadata",
 ]

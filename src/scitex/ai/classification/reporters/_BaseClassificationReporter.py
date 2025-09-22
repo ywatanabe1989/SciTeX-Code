@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 01:50:08 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/_BaseClassificationReporter.py
+# Timestamp: "2025-09-22 15:00:10 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/_BaseClassificationReporter.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/ml/classification/_BaseClassificationReporter.py"
+    "./src/scitex/ml/classification/reporters/_BaseClassificationReporter.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -37,9 +37,7 @@ class BaseClassificationReporter(ABC):
 
     Parameters
     ----------
-    name : str
-        Experiment name
-    output_dir : Union[str, Path], optional
+    output_dir : Union[str, Path]
         Base directory for outputs. If None, creates timestamped directory.
     precision : int, default 3
         Number of decimal places for numerical outputs
@@ -47,12 +45,10 @@ class BaseClassificationReporter(ABC):
 
     def __init__(
         self,
-        name: str,
-        output_dir: Union[str, Path] = None,
+        output_dir: Union[str, Path],
         precision: int = 3,
         verbose=True,
     ):
-        self.name = name
         self.precision = precision
         self._dirs_created = False
 
@@ -61,16 +57,13 @@ class BaseClassificationReporter(ABC):
             from datetime import datetime
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_dir = Path(f"./results/{name}_{timestamp}")
+            output_dir = Path(f"./results/classification_{timestamp}")
 
         self.output_dir = Path(output_dir)
 
         if verbose:
             logger.info(
-                (
-                    f"Classifcation reporter initialized "
-                    f"(name: {name}, output directory: {str(output_dir)})"
-                )
+                f"Classification reporter initialized (output directory: {str(output_dir)})"
             )
 
     def _create_subdir_if_needed(self, subdir: str) -> Path:
@@ -155,10 +148,7 @@ class BaseClassificationReporter(ABC):
         }
 
     def __repr__(self) -> str:
-        return (
-            f"{self.__class__.__name__}(name='{self.name}', "
-            f"output_dir='{self.output_dir}')"
-        )
+        return f"{self.__class__.__name__}(output_dir='{self.output_dir}')"
 
 
 class ReporterConfig:

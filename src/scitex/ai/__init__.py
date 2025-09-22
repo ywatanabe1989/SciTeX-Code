@@ -11,7 +11,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex AI module for machine learning and artificial intelligence utilities."""
 
-from .classification import MultipleTasksClassificationReporter, ClassificationReporter
+from .classification import ClassificationReporter
 from .training._LearningCurveLogger import LearningCurveLogger
 from .training._EarlyStopping import EarlyStopping
 from .loss import MultiTaskLoss
@@ -37,7 +37,6 @@ from . import utils
 __all__ = [
     # "Classifiers",  # Moved to .old directory
     "LearningCurveLogger",
-    "MultipleTasksClassificationReporter",
     "ClassificationReporter",
     "EarlyStopping",
     "MultiTaskLoss",

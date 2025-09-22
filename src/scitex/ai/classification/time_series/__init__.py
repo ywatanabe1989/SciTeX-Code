@@ -14,18 +14,26 @@ ensuring proper temporal ordering and preventing data leakage.
 from ._TimeSeriesStratifiedSplit import TimeSeriesStratifiedSplit
 from ._TimeSeriesBlockingSplit import TimeSeriesBlockingSplit
 from ._TimeSeriesSlidingWindowSplit import TimeSeriesSlidingWindowSplit
+from ._TimeSeriesCalendarSplit import TimeSeriesCalendarSplit
 
 # Import metadata and strategy
 from ._TimeSeriesStrategy import TimeSeriesStrategy
 from ._TimeSeriesMetadata import TimeSeriesMetadata
+
+# Import timestamp normalizer
+from ._normalize_timestamp import normalize_timestamp
 
 __all__ = [
     # Main time series CV splitters
     "TimeSeriesStratifiedSplit",
     "TimeSeriesBlockingSplit", 
     "TimeSeriesSlidingWindowSplit",
+    "TimeSeriesCalendarSplit",
     
     # Support classes
     "TimeSeriesStrategy",
     "TimeSeriesMetadata",
+    
+    # Timestamp normalizer
+    "normalize_timestamp",
 ]

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 02:28:36 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporter_utils/plotting.py
+# Timestamp: "2025-09-22 15:12:45 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/reporter_utils/plotting.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/ml/classification/reporter_utils/plotting.py"
+    "./src/scitex/ml/classification/reporters/reporter_utils/plotting.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -181,7 +181,7 @@ class Plotter:
                         )
 
             ax.set_xlabel("Predicted")
-            ax.set_ylabel("True")
+            ax.set_ylabel("Ground Truth")
             ax.set_title(title)
 
             if save_path:
@@ -426,13 +426,13 @@ class Plotter:
                 roc_auc = auc(fpr, tpr)
 
                 fig, ax = plt.subplots(figsize=(8, 8))  # Square figure
-                
+
                 # Use provided mean/std if available, otherwise use calculated AUC
                 if auc_mean is not None and auc_std is not None:
                     label = f"ROC Curve (AUC = {auc_mean:.3f} ± {auc_std:.3f})"
                 else:
                     label = f"ROC Curve (AUC = {roc_auc:.3f})"
-                
+
                 ax.plot(fpr, tpr, label=label, linewidth=2)
                 ax.plot([0, 1], [0, 1], "k--", label="Random", alpha=0.5)
                 ax.set_xlabel("False Positive Rate")
@@ -450,13 +450,16 @@ class Plotter:
 
             if save_path:
                 from scitex.io import save as stx_io_save
+
                 stx_io_save(fig, save_path, verbose=verbose or self.verbose)
 
             plt.close(fig)  # Clean up
             return fig
 
         except Exception as e:
-            warnings.warn(f"Failed to create overall ROC curve: {e}", UserWarning)
+            warnings.warn(
+                f"Failed to create overall ROC curve: {e}", UserWarning
+            )
             return None
 
     def create_overall_pr_curve(
@@ -499,7 +502,7 @@ class Plotter:
 
         try:
             from sklearn.metrics import (average_precision_score,
-                                        precision_recall_curve)
+                                         precision_recall_curve)
 
             # Handle binary classification
             if y_proba.ndim == 1 or y_proba.shape[1] == 2:
@@ -514,19 +517,14 @@ class Plotter:
                 avg_precision = average_precision_score(y_true, y_proba_pos)
 
                 fig, ax = plt.subplots(figsize=(8, 8))  # Square figure
-                
+
                 # Use provided mean/std if available, otherwise use calculated AP
                 if ap_mean is not None and ap_std is not None:
                     label = f"PR Curve (Average Precision (AP) = {ap_mean:.3f} ± {ap_std:.3f})"
                 else:
                     label = f"PR Curve (Average Precision (AP) = {avg_precision:.3f})"
-                
-                ax.plot(
-                    recall,
-                    precision,
-                    label=label,
-                    linewidth=2
-                )
+
+                ax.plot(recall, precision, label=label, linewidth=2)
                 ax.set_xlabel("Recall")
                 ax.set_ylabel("Precision")
                 ax.set_title(title)
@@ -542,13 +540,16 @@ class Plotter:
 
             if save_path:
                 from scitex.io import save as stx_io_save
+
                 stx_io_save(fig, save_path, verbose=verbose or self.verbose)
 
             plt.close(fig)  # Clean up
             return fig
 
         except Exception as e:
-            warnings.warn(f"Failed to create overall PR curve: {e}", UserWarning)
+            warnings.warn(
+                f"Failed to create overall PR curve: {e}", UserWarning
+            )
             return None
 
 
