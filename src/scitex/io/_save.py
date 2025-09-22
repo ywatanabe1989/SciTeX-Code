@@ -139,6 +139,7 @@ def save(
     makedirs: bool = True,
     verbose: bool = True,
     symlink_from_cwd: bool = False,
+    symlink_to: Union[str, Path] = None,
     dry_run: bool = False,
     no_csv: bool = False,
     **kwargs,
@@ -158,6 +159,8 @@ def save(
         If True, print a message upon successful saving. Default is True.
     symlink_from_cwd : bool, optional
         If True, create a _symlink from the current working directory. Default is False.
+    symlink_to : Union[str, Path], optional
+        If specified, create a symlink at this path pointing to the saved file. Default is None.
     dry_run : bool, optional
         If True, simulate the saving process without actually writing files. Default is False.
     **kwargs
@@ -367,8 +370,9 @@ def save(
             **kwargs,
         )
 
-        # Symbolic link
+        # Symbolic links
         _symlink(spath, spath_cwd, symlink_from_cwd, verbose)
+        _symlink_to(spath_final, symlink_to, verbose)
 
     except Exception as e:
         logger.error(
@@ -388,6 +392,29 @@ def _symlink(spath, spath_cwd, symlink_from_cwd, verbose):
         sh(f"ln -sfr {spath} {spath_cwd}", verbose=False)
         if verbose:
             print(color_text(f"(Symlinked to: {spath_cwd})", "yellow"))
+
+
+def _symlink_to(spath_final, symlink_to, verbose):
+    """Create a symbolic link at the specified path pointing to the saved file."""
+    if symlink_to:
+        # Convert Path objects to strings for consistency
+        if isinstance(symlink_to, Path):
+            symlink_to = str(symlink_to)
+        
+        # Clean the symlink path
+        symlink_to = clean(symlink_to)
+        
+        # Ensure the symlink directory exists
+        _os.makedirs(_os.path.dirname(symlink_to), exist_ok=True)
+        
+        # Remove existing symlink or file
+        sh(f"rm -f {symlink_to}", verbose=False)
+        
+        # Create the symlink using relative path for robustness
+        sh(f"ln -sfr {spath_final} {symlink_to}", verbose=False)
+        
+        if verbose:
+            print(color_text(f"\n(Symlinked to: {symlink_to})", "yellow"))
 
 
 def _save(
