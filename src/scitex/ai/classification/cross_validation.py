@@ -198,12 +198,12 @@ class CrossValidationExperiment:
             print("=" * 70 + "\n")
 
         # Run cross-validation
-        for fold_idx, (train_idx, test_idx) in enumerate(self.cv.split(X, y)):
+        for fold, (train_idx, test_idx) in enumerate(self.cv.split(X, y)):
             fold_start = time.time()
 
             if self.verbose:
                 print(
-                    f"\n--- Fold {fold_idx + 1}/{self.cv.get_n_splits()} ---"
+                    f"\n--- Fold {fold + 1}/{self.cv.get_n_splits()} ---"
                 )
 
             # Split data
@@ -241,14 +241,14 @@ class CrossValidationExperiment:
                 y_pred=y_pred,
                 y_proba=y_proba,
                 labels=class_names,
-                fold_idx=fold_idx,
+                fold=fold,
                 save=True,
                 plot=calculate_curves,
             )
 
             # Save model if requested
             if self.save_models:
-                model_path = f"models/fold_{fold_idx:02d}_model.pkl"
+                model_path = f"models/fold_{fold:02d}_model.pkl"
                 self.reporter.add(model, model_path)
                 self.models.append(model)
 
@@ -257,7 +257,7 @@ class CrossValidationExperiment:
             self.fold_times.append(fold_time)
 
             if self.verbose:
-                print(f"  Fold {fold_idx} completed in {fold_time:.2f}s")
+                print(f"  Fold {fold} completed in {fold_time:.2f}s")
                 print(
                     f"  BA: {metrics.get('balanced_accuracy', 0):.3f}, "
                     f"MCC: {metrics.get('mcc', 0):.3f}"

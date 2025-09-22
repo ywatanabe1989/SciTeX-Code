@@ -71,18 +71,18 @@ reporter = SingleClassificationReporter(
 )
 
 # For each fold
-for fold_idx in range(n_folds):
+for fold in range(n_folds):
     # Train model and get predictions
     y_pred, y_proba = train_and_predict(...)
     
     # Calculate and save metrics (automatically organized)
-    reporter.calc_balanced_accuracy(y_true, y_pred, fold_idx)
-    reporter.calc_mcc(y_true, y_pred, fold_idx)
-    reporter.calc_confusion_matrix(y_true, y_pred, fold_idx)
+    reporter.calc_balanced_accuracy(y_true, y_pred, fold)
+    reporter.calc_mcc(y_true, y_pred, fold)
+    reporter.calc_confusion_matrix(y_true, y_pred, fold)
     
     # Add custom objects with path-based API
-    reporter.add(fig, f"plots/roc_curve_fold_{fold_idx:02d}.jpg")
-    reporter.add(model_params, f"models/params_fold_{fold_idx:02d}.json")
+    reporter.add(fig, f"plots/roc_curve_fold_{fold:02d}.jpg")
+    reporter.add(model_params, f"models/params_fold_{fold:02d}.json")
 
 # Save all results
 reporter.save()

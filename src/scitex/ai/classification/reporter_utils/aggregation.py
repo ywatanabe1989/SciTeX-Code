@@ -156,7 +156,7 @@ def create_summary_table(
         metrics = set()
         for fold in fold_results:
             for key, value in fold.items():
-                if key not in ['fold', 'fold_id', 'fold_idx']:
+                if key not in ['fold', 'fold_id', 'fold']:
                     # Check if it's a numeric metric
                     if isinstance(value, (int, float)):
                         metrics.add(key)
@@ -413,13 +413,13 @@ def merge_fold_results(
     }
     
     # Load each fold
-    for fold_idx in range(n_folds):
-        fold_dir = results_dir / f"fold_{fold_idx:02d}"
+    for fold in range(n_folds):
+        fold_dir = results_dir / f"fold_{fold:02d}"
         if not fold_dir.exists():
-            fold_dir = results_dir / f"fold_{fold_idx}"  # Try without padding
+            fold_dir = results_dir / f"fold_{fold}"  # Try without padding
         
         if fold_dir.exists():
-            fold_data = {'fold_id': fold_idx}
+            fold_data = {'fold_id': fold}
             
             # Load metrics
             metrics_dir = fold_dir / 'metrics'

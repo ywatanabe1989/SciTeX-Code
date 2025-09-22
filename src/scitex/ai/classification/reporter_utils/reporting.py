@@ -236,9 +236,9 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n\n")
             
             # Individual fold confusion matrices
-            for fold_idx in range(n_folds):
+            for fold in range(n_folds):
                 # Look for plots with exact fold matching
-                fold_key = f'fold_{fold_idx:02d}'
+                fold_key = f'fold_{fold:02d}'
                 fold_plots = {k: v for k, v in results['plots'].items() if fold_key in k}
                 fold_cm = [v for k, v in fold_plots.items() if 'confusion_matrix' in k]
                 
@@ -252,7 +252,7 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n")
                     f.write("#+ATTR_ORG: :width 250\n")
                     f.write("#+ATTR_HTML: :width 100% :style max-width:250px\n") 
-                    f.write(f"#+CAPTION: Fold {fold_idx:02d}\n")
+                    f.write(f"#+CAPTION: Fold {fold:02d}\n")
                     f.write(f"[[file:{rel_path}]]\n")
                     f.write("#+BEGIN_EXPORT html\n")
                     f.write("</div>\n")
@@ -286,9 +286,9 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n\n")
             
             # Individual fold ROC curves
-            for fold_idx in range(n_folds):
+            for fold in range(n_folds):
                 # Look for plots with exact fold matching
-                fold_key = f'fold_{fold_idx:02d}'
+                fold_key = f'fold_{fold:02d}'
                 fold_plots = {k: v for k, v in results['plots'].items() if fold_key in k}
                 fold_roc = [v for k, v in fold_plots.items() if 'roc_curve' in k]
                 
@@ -302,7 +302,7 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n")
                     f.write("#+ATTR_ORG: :width 250\n")
                     f.write("#+ATTR_HTML: :width 100% :style max-width:250px\n")
-                    f.write(f"#+CAPTION: Fold {fold_idx:02d}\n")
+                    f.write(f"#+CAPTION: Fold {fold:02d}\n")
                     f.write(f"[[file:{rel_path}]]\n")
                     f.write("#+BEGIN_EXPORT html\n")
                     f.write("</div>\n")
@@ -336,9 +336,9 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n\n")
             
             # Individual fold PR curves
-            for fold_idx in range(n_folds):
+            for fold in range(n_folds):
                 # Look for plots with exact fold matching
-                fold_key = f'fold_{fold_idx:02d}'
+                fold_key = f'fold_{fold:02d}'
                 fold_plots = {k: v for k, v in results['plots'].items() if fold_key in k}
                 fold_pr = [v for k, v in fold_plots.items() if 'pr_curve' in k]
                 
@@ -352,7 +352,7 @@ def generate_org_report(
                     f.write("#+END_EXPORT\n")
                     f.write("#+ATTR_ORG: :width 250\n")
                     f.write("#+ATTR_HTML: :width 100% :style max-width:250px\n")
-                    f.write(f"#+CAPTION: Fold {fold_idx:02d}\n")
+                    f.write(f"#+CAPTION: Fold {fold:02d}\n")
                     f.write(f"[[file:{rel_path}]]\n")
                     f.write("#+BEGIN_EXPORT html\n")
                     f.write("</div>\n")

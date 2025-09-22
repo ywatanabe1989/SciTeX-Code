@@ -119,7 +119,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
         y_pred: np.ndarray,
         y_proba: Optional[np.ndarray] = None,
         labels: Optional[List[str]] = None,
-        fold_idx: Optional[int] = None,
+        fold: Optional[int] = None,
         target: Optional[str] = None,
         save: bool = True,
         plot: bool = None
@@ -140,7 +140,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
             Prediction probabilities (required for AUC metrics)
         labels : List[str], optional
             Class labels for display
-        fold_idx : int, optional
+        fold : int, optional
             Fold index for cross-validation
         target : str, optional
             Target class identifier. If None, uses first target.
@@ -168,7 +168,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
             y_pred=y_pred,
             y_proba=y_proba,
             labels=labels,
-            fold_idx=fold_idx,
+            fold=fold,
             save=save,
             plot=plot
         )
@@ -176,7 +176,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
     def calculate_metrics_for_all_targets(
         self,
         targets_data: Dict[str, Dict[str, np.ndarray]],
-        fold_idx: Optional[int] = None,
+        fold: Optional[int] = None,
         save: bool = True,
         plot: bool = None
     ) -> Dict[str, Dict[str, Any]]:
@@ -196,7 +196,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
                 },
                 'target2': {...}
             }
-        fold_idx : int, optional
+        fold : int, optional
             Fold index for cross-validation
         save : bool, default True
             Whether to save results to disk
@@ -227,7 +227,7 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
                 y_pred=y_pred,
                 y_proba=y_proba,
                 labels=labels,
-                fold_idx=fold_idx,
+                fold=fold,
                 target=target_name,
                 save=save,
                 plot=plot

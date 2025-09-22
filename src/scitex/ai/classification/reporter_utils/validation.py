@@ -81,7 +81,7 @@ class MetricValidator:
     def validate_fold(
         self,
         fold_data: Dict[str, Any],
-        fold_idx: int
+        fold: int
     ) -> Dict[str, Any]:
         """
         Validate metrics for a single fold.
@@ -90,7 +90,7 @@ class MetricValidator:
         ----------
         fold_data : Dict[str, Any]
             Dictionary of metrics for the fold
-        fold_idx : int
+        fold : int
             Fold index
             
         Returns
@@ -99,7 +99,7 @@ class MetricValidator:
             Validation results for the fold
         """
         result = {
-            'fold': fold_idx,
+            'fold': fold,
             'complete': True,
             'missing_metrics': [],
             'invalid_metrics': [],
@@ -325,14 +325,14 @@ def validate_completeness(
         return validation
     
     # Check for each required metric in each fold
-    for fold_idx in range(n_folds):
+    for fold in range(n_folds):
         fold_metrics = []
         for metric in required_metrics:
             # Try different file patterns
             patterns = [
-                f"{metric}_fold_{fold_idx:02d}.json",
-                f"{metric}_fold_{fold_idx}.json",
-                f"fold_{fold_idx:02d}_{metric}.json"
+                f"{metric}_fold_{fold:02d}.json",
+                f"{metric}_fold_{fold}.json",
+                f"fold_{fold:02d}_{metric}.json"
             ]
             
             found = False
@@ -345,7 +345,7 @@ def validate_completeness(
             if not found:
                 validation['complete'] = False
                 validation['missing_files'].append(
-                    f"fold_{fold_idx:02d}/{metric}"
+                    f"fold_{fold:02d}/{metric}"
                 )
         
         if fold_metrics:

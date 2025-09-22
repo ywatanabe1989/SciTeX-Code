@@ -78,7 +78,7 @@ def main(args: argparse.Namespace) -> int:
     n_folds = 5
     cv = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=42)
 
-    for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+    for fold_idx, (train_idx, test_idx) in enumerate(cv.split(X, y)):
         # Split data for this fold
         X_train, X_test = X[train_idx], X[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
@@ -90,7 +90,7 @@ def main(args: argparse.Namespace) -> int:
 
         # Train model for this fold
         model = RandomForestClassifier(
-            n_estimators=100, random_state=42 + fold
+            n_estimators=100, random_state=42 + fold_idx
         )
         model.fit(X_train_scaled, y_train)
 
@@ -104,100 +104,12 @@ def main(args: argparse.Namespace) -> int:
             y_pred=y_pred,
             y_proba=y_pred_proba,
             labels=["Negative", "Positive"],
-            fold=fold,
-        )
-        
-        # Save custom data for this fold using real model outputs
-        # Save actual feature importances from the trained model
-        feature_importance = {
-            f"feature_{i}": importance 
-            for i, importance in enumerate(model.feature_importances_)
-        }
-        reporter.save(
-            feature_importance,
-            "feature_importance.json",
-            fold=fold
-        )
-        
-        # Save predictions with sample indices
-        fold_predictions = pd.DataFrame({
-            "sample_idx": test_idx,
-            "y_true": y_test,
-            "y_pred": y_pred,
-            "y_proba_positive": y_pred_proba[:, 1] if y_pred_proba.ndim == 2 else y_pred_proba
-        })
-        reporter.save(
-            fold_predictions,
-            "predictions.csv",
-            fold=fold
-        )
-        
-        # Save model coefficients/parameters
-        model_info = {
-            "n_estimators": model.n_estimators,
-            "max_features": model.max_features,
-            "n_features_in": model.n_features_in_,
-            "n_classes": model.n_classes_,
-            "feature_importances": model.feature_importances_.tolist()
-        }
-        reporter.save(
-            model_info,
-            "model_info.json",
-            fold=fold
+            fold_idx=fold_idx,
         )
 
     # Save summary across all folds
     summary = reporter.get_summary()
     summary_path = reporter.save_summary("cv_summary.json")
-    
-    # Save aggregated custom analysis to cv_summary
-    # Convert numpy types to Python types for JSON serialization
-    unique_vals, counts = np.unique(y, return_counts=True)
-    aggregated_analysis = {
-        "dataset_info": {
-            "n_samples": int(X.shape[0]),
-            "n_features": int(X.shape[1]),
-            "n_classes": 2,
-            "class_balance": {int(val): int(count) for val, count in zip(unique_vals, counts)}
-        },
-        "cv_strategy": "StratifiedKFold",
-        "n_folds": 5,
-        "model_type": "RandomForestClassifier",
-        "timestamp": pd.Timestamp.now().isoformat()
-    }
-    reporter.save(
-        aggregated_analysis,
-        "cv_summary/experiment_metadata.json"
-    )
-    
-    # Save a custom markdown report
-    balanced_acc_mean = summary.get('balanced_accuracy', {}).get('mean', 0.0)
-    roc_auc_mean = summary.get('roc_auc', {}).get('mean', 0.0)
-    pr_auc_mean = summary.get('pr_auc', {}).get('mean', 0.0)
-    
-    custom_report = f"""# Custom Analysis Report
-
-## Experiment Overview
-- Dataset: Make classification (sklearn)
-- Model: Random Forest Classifier
-- CV Strategy: 5-fold Stratified Cross-Validation
-- Date: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
-
-## Key Findings
-- Mean Balanced Accuracy: {balanced_acc_mean:.3f}
-- Mean ROC-AUC: {roc_auc_mean:.3f}
-- Mean PR-AUC: {pr_auc_mean:.3f}
-
-## Notes
-This demonstrates the custom data saving functionality of the reporter.
-You can save any data format to any location within the organized structure.
-"""
-    reporter.save(
-        custom_report,
-        "reports/custom_analysis.md"
-    )
-    
-    logger.info("Custom data saved successfully")
 
     return 0
 

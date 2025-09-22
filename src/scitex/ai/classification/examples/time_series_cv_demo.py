@@ -337,14 +337,14 @@ def visualize_cv_splits():
             splits = list(splitter.split(X, y, timestamps))
         
         # Visualize
-        for fold_idx, (train_idx, test_idx) in enumerate(splits[:5]):  # Max 5 folds
+        for fold, (train_idx, test_idx) in enumerate(splits[:5]):  # Max 5 folds
             # Create a timeline
             timeline = np.zeros(n_samples)
             timeline[train_idx] = 1  # Train
             timeline[test_idx] = 2   # Test
             
             # Plot as horizontal bars
-            y_pos = fold_idx
+            y_pos = fold
             for i in range(n_samples):
                 if timeline[i] == 1:
                     ax.barh(y_pos, 1, left=i, height=0.8, color='blue', alpha=0.6)

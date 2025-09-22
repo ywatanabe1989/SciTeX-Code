@@ -97,7 +97,7 @@ class BaseClassificationReporter(ABC):
         y_pred: np.ndarray,
         y_proba: Optional[np.ndarray] = None,
         labels: Optional[List[str]] = None,
-        fold_idx: Optional[int] = None,
+        fold: Optional[int] = None,
         verbose=True,
     ) -> Dict[str, Any]:
         """
@@ -115,7 +115,7 @@ class BaseClassificationReporter(ABC):
             Prediction probabilities (required for AUC metrics)
         labels : List[str], optional
             Class labels for display
-        fold_idx : int, optional
+        fold : int, optional
             Fold index for cross-validation
 
         Returns

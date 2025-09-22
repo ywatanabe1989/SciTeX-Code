@@ -112,7 +112,7 @@ class MetricStorage:
                 self._save_csv(data, full_path)
             elif extension in [".png", ".jpg", ".jpeg", ".pdf", ".svg"]:
                 self._save_figure(data, full_path)
-            elif extension == ".txt":
+            elif extension in [".txt", ".md"]:
                 self._save_text(data, full_path)
             else:
                 raise ValueError(f"Unsupported file extension: {extension}")
@@ -187,7 +187,7 @@ class MetricStorage:
 def save_metric(
     metric_value: Any,
     path: Union[str, Path],
-    fold_idx: int = None,
+    fold: int = None,
     precision: int = 4,
 ) -> Path:
     """
@@ -199,7 +199,7 @@ def save_metric(
         Metric value to save
     path : Union[str, Path]
         Output path
-    fold_idx : int, optional
+    fold : int, optional
         Fold index to include in metadata
     precision : int, default 4
         Number of decimal places
@@ -233,8 +233,8 @@ def save_metric(
         data = {"metric": metric_name, "value": metric_value}
 
     # Add fold information if provided
-    if fold_idx is not None:
-        data["fold"] = fold_idx
+    if fold is not None:
+        data["fold"] = fold
 
     from scitex.io import save as stx_io_save
 

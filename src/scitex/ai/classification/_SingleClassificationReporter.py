@@ -122,7 +122,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         y_pred: np.ndarray,
         y_proba: Optional[np.ndarray] = None,
         labels: Optional[List[str]] = None,
-        fold_idx: Optional[int] = None,
+        fold: Optional[int] = None,
         verbose=True,
     ) -> Dict[str, Any]:
         """
@@ -138,7 +138,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             Prediction probabilities (required for AUC metrics)
         labels : List[str], optional
             Class labels for display
-        fold_idx : int, optional
+        fold : int, optional
             Fold index for cross-validation
 
         Returns
@@ -147,9 +147,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             Dictionary of calculated metrics
         """
         if verbose:
-            if fold_idx:
+            if fold:
                 print()
-                logger.info(f"Calculating metrics for fold #{fold_idx:02d}...")
+                logger.info(f"Calculating metrics for fold #{fold:02d}...")
             else:
                 logger.info(f"Calculating metrics...")
 
@@ -161,8 +161,8 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             raise ValueError("y_true and y_proba must have same length")
 
         # Set default fold index
-        if fold_idx is None:
-            fold_idx = 0
+        if fold is None:
+            fold = 0
 
         # Set default labels if not provided
         if labels is None:
@@ -172,25 +172,25 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         # Calculate all metrics
         metrics = {}
 
-        # Core metrics (always calculated) - pass fold_idx to all metrics
+        # Core metrics (always calculated) - pass fold to all metrics
         metrics["balanced_accuracy"] = calc_balanced_accuracy(
-            y_true, y_pred, fold=fold_idx
+            y_true, y_pred, fold=fold
         )
-        metrics["mcc"] = calc_mcc(y_true, y_pred, fold=fold_idx)
+        metrics["mcc"] = calc_mcc(y_true, y_pred, fold=fold)
         metrics["confusion_matrix"] = calc_confusion_matrix(
-            y_true, y_pred, fold=fold_idx
+            y_true, y_pred, fold=fold
         )
         metrics["classification_report"] = calc_classification_report(
-            y_true, y_pred, labels, fold=fold_idx
+            y_true, y_pred, labels, fold=fold
         )
 
         # AUC metrics (only if probabilities available)
         if y_proba is not None:
             try:
                 metrics["roc_auc"] = calc_roc_auc(
-                    y_true, y_proba, fold=fold_idx
+                    y_true, y_proba, fold=fold
                 )
-                metrics["pr_auc"] = calc_pr_auc(y_true, y_proba, fold=fold_idx)
+                metrics["pr_auc"] = calc_pr_auc(y_true, y_proba, fold=fold)
             except Exception as e:
                 print(f"Warning: Could not calculate AUC metrics: {e}")
 
@@ -205,29 +205,29 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             pprint(metrics)
 
         # Store metrics for summary
-        self.fold_metrics[fold_idx] = metrics.copy()
+        self.fold_metrics[fold] = metrics.copy()
         
         # Store predictions for overall curves
         if y_proba is not None:
             self.all_predictions.append({
-                'fold': fold_idx,
+                'fold': fold,
                 'y_true': y_true.copy(),
                 'y_proba': y_proba.copy()
             })
 
         # Save metrics if requested
-        self._save_fold_metrics(metrics, fold_idx, labels)
+        self._save_fold_metrics(metrics, fold, labels)
 
         # Generate plots if requested
-        self._create_plots(y_true, y_pred, y_proba, labels, fold_idx, metrics)
+        self._create_plots(y_true, y_pred, y_proba, labels, fold, metrics)
 
         return metrics
 
     def _save_fold_metrics(
-        self, metrics: Dict[str, Any], fold_idx: int, labels: List[str]
+        self, metrics: Dict[str, Any], fold: int, labels: List[str]
     ) -> None:
         """Save metrics for a specific fold in shallow directory structure."""
-        fold_dir = f"fold_{fold_idx:02d}"
+        fold_dir = f"fold_{fold:02d}"
 
         # Extract metric values for filenames
         balanced_acc = self._extract_metric_value(metrics.get("balanced_accuracy"))
@@ -253,16 +253,16 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 
                 # Create filename with balanced accuracy
                 if balanced_acc is not None:
-                    cm_filename = f"confusion_matrix_fold_{fold_idx:02d}_bacc_{balanced_acc:.3f}.csv"
+                    cm_filename = f"confusion_matrix_fold_{fold:02d}_bacc_{balanced_acc:.3f}.csv"
                 else:
-                    cm_filename = f"confusion_matrix_fold_{fold_idx:02d}.csv"
+                    cm_filename = f"confusion_matrix_fold_{fold:02d}.csv"
                 
                 # Ensure index is saved in CSV
                 self.storage.save(cm_df, f"{fold_dir}/{cm_filename}")
 
             elif metric_name == "classification_report":
                 # Save classification report with consistent naming
-                report_filename = f"classification_report_fold_{fold_idx:02d}.csv"
+                report_filename = f"classification_report_fold_{fold:02d}.csv"
                 if isinstance(actual_value, pd.DataFrame):
                     # Already a DataFrame
                     self.storage.save(
@@ -277,52 +277,52 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                         )
                     except:
                         # Save as JSON if DataFrame conversion fails
-                        report_filename = f"classification_report_fold_{fold_idx:02d}.json"
+                        report_filename = f"classification_report_fold_{fold:02d}.json"
                         self.storage.save(
                             actual_value,
                             f"{fold_dir}/{report_filename}",
                         )
                 else:
                     # String or other format
-                    report_filename = f"classification_report_fold_{fold_idx:02d}.txt"
+                    report_filename = f"classification_report_fold_{fold:02d}.txt"
                     self.storage.save(
                         actual_value, f"{fold_dir}/{report_filename}"
                     )
 
             elif metric_name == "balanced_accuracy" and balanced_acc is not None:
                 # Save with value in filename
-                filename = f"balanced_accuracy_fold_{fold_idx:02d}_{balanced_acc:.3f}.json"
+                filename = f"balanced_accuracy_fold_{fold:02d}_{balanced_acc:.3f}.json"
                 save_metric(
                     actual_value,
                     self.output_dir / f"{fold_dir}/{filename}",
-                    fold_idx=fold_idx,
+                    fold=fold,
                     precision=self.precision,
                 )
             elif metric_name == "mcc" and mcc_value is not None:
                 # Save with value in filename
-                filename = f"mcc_fold_{fold_idx:02d}_{mcc_value:.3f}.json"
+                filename = f"mcc_fold_{fold:02d}_{mcc_value:.3f}.json"
                 save_metric(
                     actual_value,
                     self.output_dir / f"{fold_dir}/{filename}",
-                    fold_idx=fold_idx,
+                    fold=fold,
                     precision=self.precision,
                 )
             elif metric_name == "roc_auc" and roc_auc_value is not None:
                 # Save with value in filename
-                filename = f"roc_auc_fold_{fold_idx:02d}_{roc_auc_value:.3f}.json"
+                filename = f"roc_auc_fold_{fold:02d}_{roc_auc_value:.3f}.json"
                 save_metric(
                     actual_value,
                     self.output_dir / f"{fold_dir}/{filename}",
-                    fold_idx=fold_idx,
+                    fold=fold,
                     precision=self.precision,
                 )
             elif metric_name == "pr_auc" and pr_auc_value is not None:
                 # Save with value in filename
-                filename = f"pr_auc_fold_{fold_idx:02d}_{pr_auc_value:.3f}.json"
+                filename = f"pr_auc_fold_{fold:02d}_{pr_auc_value:.3f}.json"
                 save_metric(
                     actual_value,
                     self.output_dir / f"{fold_dir}/{filename}",
-                    fold_idx=fold_idx,
+                    fold=fold,
                     precision=self.precision,
                 )
     
@@ -340,7 +340,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         self,
         y_true: np.ndarray,
         y_proba: Optional[np.ndarray],
-        fold_idx: int,
+        fold: int,
         metrics: Dict[str, Any],
     ) -> None:
         """Save ROC and PR curve data as CSV files with metric values in filenames."""
@@ -349,7 +349,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             
         from sklearn.metrics import roc_curve, precision_recall_curve, auc, average_precision_score
         
-        fold_dir = f"fold_{fold_idx:02d}"
+        fold_dir = f"fold_{fold:02d}"
         
         # Handle binary vs multiclass
         if y_proba.ndim == 1 or y_proba.shape[1] == 2:
@@ -370,7 +370,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             })
             
             # Save with AUC value in filename
-            roc_filename = f"roc_curve_fold_{fold_idx:02d}_auc_{roc_auc:.3f}.csv"
+            roc_filename = f"roc_curve_fold_{fold:02d}_auc_{roc_auc:.3f}.csv"
             self.storage.save(roc_df, f"{fold_dir}/{roc_filename}")
             
             # PR curve data
@@ -384,7 +384,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             })
             
             # Save with AP value in filename
-            pr_filename = f"pr_curve_fold_{fold_idx:02d}_ap_{avg_precision:.3f}.csv"
+            pr_filename = f"pr_curve_fold_{fold:02d}_ap_{avg_precision:.3f}.csv"
             self.storage.save(pr_df, f"{fold_dir}/{pr_filename}")
 
     def _create_plots(
@@ -393,16 +393,16 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         y_pred: np.ndarray,
         y_proba: Optional[np.ndarray],
         labels: List[str],
-        fold_idx: int,
+        fold: int,
         metrics: Dict[str, Any],
     ) -> None:
         """Create and save plots with metric-based filenames in unified structure."""
         # Use unified fold directory
-        fold_dir = self._create_subdir_if_needed(f"fold_{fold_idx:02d}")
+        fold_dir = self._create_subdir_if_needed(f"fold_{fold:02d}")
         fold_dir.mkdir(parents=True, exist_ok=True)
         
         # Save curve data for external plotting
-        self._save_curve_data(y_true, y_proba, fold_idx, metrics)
+        self._save_curve_data(y_true, y_proba, fold, metrics)
 
         # Confusion matrix plot with metric in filename
         if "confusion_matrix" in metrics:
@@ -422,11 +422,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             
             # Create title with balanced accuracy and filename with fold and metric
             if balanced_acc is not None:
-                title = f"Confusion Matrix (Fold {fold_idx:02d}) - Balanced Acc: {balanced_acc:.3f}"
-                filename = f"confusion_matrix_fold_{fold_idx:02d}_bacc_{balanced_acc:.3f}.jpg"
+                title = f"Confusion Matrix (Fold {fold:02d}) - Balanced Acc: {balanced_acc:.3f}"
+                filename = f"confusion_matrix_fold_{fold:02d}_bacc_{balanced_acc:.3f}.jpg"
             else:
-                title = f"Confusion Matrix (Fold {fold_idx:02d})"
-                filename = f"confusion_matrix_fold_{fold_idx:02d}.jpg"
+                title = f"Confusion Matrix (Fold {fold:02d})"
+                filename = f"confusion_matrix_fold_{fold:02d}.jpg"
 
             self.plotter.create_confusion_matrix_plot(
                 cm_data,
@@ -441,28 +441,28 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             roc_auc = metrics.get("roc_auc", {})
             if isinstance(roc_auc, dict) and "value" in roc_auc:
                 roc_auc_val = roc_auc["value"]
-                roc_filename = f"roc_curve_fold_{fold_idx:02d}_auc_{roc_auc_val:.3f}.jpg"
+                roc_filename = f"roc_curve_fold_{fold:02d}_auc_{roc_auc_val:.3f}.jpg"
             else:
-                roc_filename = f"roc_curve_fold_{fold_idx:02d}.jpg"
+                roc_filename = f"roc_curve_fold_{fold:02d}.jpg"
             
             self.plotter.create_roc_curve(
                 y_true, y_proba, 
                 save_path=fold_dir / roc_filename,
-                title=f"ROC Curve (Fold {fold_idx:02d})"
+                title=f"ROC Curve (Fold {fold:02d})"
             )
             
             # PR curve with AP in filename
             pr_auc = metrics.get("pr_auc", {})
             if isinstance(pr_auc, dict) and "value" in pr_auc:
                 pr_auc_val = pr_auc["value"]
-                pr_filename = f"pr_curve_fold_{fold_idx:02d}_ap_{pr_auc_val:.3f}.jpg"
+                pr_filename = f"pr_curve_fold_{fold:02d}_ap_{pr_auc_val:.3f}.jpg"
             else:
-                pr_filename = f"pr_curve_fold_{fold_idx:02d}.jpg"
+                pr_filename = f"pr_curve_fold_{fold:02d}.jpg"
 
             self.plotter.create_precision_recall_curve(
                 y_true, y_proba, 
                 save_path=fold_dir / pr_filename,
-                title=f"Precision-Recall Curve (Fold {fold_idx:02d})"
+                title=f"Precision-Recall Curve (Fold {fold:02d})"
             )
 
     def get_summary(self) -> Dict[str, Any]:
@@ -793,8 +793,8 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             results['summary'] = summary['metrics_summary']
         
         # Add per-fold results
-        for fold_idx, fold_data in self.fold_metrics.items():
-            fold_result = {'fold_id': fold_idx}
+        for fold, fold_data in self.fold_metrics.items():
+            fold_result = {'fold_id': fold}
             fold_result.update(fold_data)
             results['folds'].append(fold_result)
         
@@ -1033,6 +1033,54 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             # Save as CSV
             self.storage.save(report_df, f"{cv_summary_dir}/classification_report_cv_summary.csv")
     
+    def save(self, data: Any, relative_path: Union[str, Path], fold: Optional[int] = None) -> Path:
+        """
+        Save custom data with automatic fold organization.
+        
+        Parameters
+        ----------
+        data : Any
+            Custom data to save (any format supported by stx.io.save)
+        relative_path : Union[str, Path]
+            Relative path from output_dir or fold directory. Examples:
+            - When fold is provided: "custom_metrics.json" → "fold_00/custom_metrics.json"
+            - When fold is None: "cv_summary/results.csv" → "cv_summary/results.csv"
+        fold : Optional[int], default None
+            If provided, automatically prepends "fold_{fold:02d}/" to the path
+            
+        Returns
+        -------
+        Path
+            Absolute path to the saved file
+            
+        Examples
+        --------
+        >>> # Save custom metrics for fold 0 (automatic fold directory)
+        >>> reporter.save(
+        ...     {"metric1": 0.95, "metric2": 0.87},
+        ...     "custom_metrics.json",
+        ...     fold=0
+        ... )  # Saves to: fold_00/custom_metrics.json
+        
+        >>> # Save to cv_summary (no fold)
+        >>> reporter.save(
+        ...     df_results,
+        ...     "cv_summary/final_analysis.csv"
+        ... )
+        
+        >>> # Save to reports directory
+        >>> reporter.save(
+        ...     report_content,
+        ...     "reports/analysis.md"
+        ... )
+        """
+        # Automatically prepend fold directory if fold is provided
+        if fold is not None:
+            relative_path = f"fold_{fold:02d}/{relative_path}"
+        
+        # Use the existing storage.save method which already handles everything
+        return self.storage.save(data, relative_path)
+
     def __repr__(self) -> str:
         fold_count = len(self.fold_metrics)
         return (
