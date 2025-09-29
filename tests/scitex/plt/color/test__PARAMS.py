@@ -278,16 +278,15 @@ def test_params_immutability():
     
     assert PARAMS_NEW["RGB"]["blue"] == rgb_blue_original, "PARAMS should not be mutable"
 
-
 if __name__ == "__main__":
     import os
-    
+
     import pytest
-    
+
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/color/_PARAMS.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_PARAMS.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -295,12 +294,11 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/_scitex_repo/src/scitex/plt/colors/_PARAMS.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/colors/_PARAMS.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/colors/_PARAMS.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # # RGB
 # RGB = {
 #     "white": [255, 255, 255],
@@ -318,12 +316,12 @@ if __name__ == "__main__":
 #     "navy": [0, 0, 100],
 #     "orange": [228, 94, 50],
 # }
-#
+# 
 # RGB_NORM = {
 #     k: [round(r / 255, 2), round(g / 255, 2), round(b / 255, 2)]
 #     for k, (r, g, b) in RGB.items()
 # }
-#
+# 
 # # RGBA
 # DEF_ALPHA = 0.9
 # RGBA = {k: [r, g, b, DEF_ALPHA] for k, (r, g, b) in RGB.items()}
@@ -331,7 +329,7 @@ if __name__ == "__main__":
 # RGBA_NORM_FOR_CYCLE = {
 #     k: v for k, v in RGBA_NORM.items() if k not in ["white", "grey", "black"]
 # }
-#
+# 
 # # HEX
 # HEX = {
 #     "blue": "#0080C0",
@@ -347,8 +345,8 @@ if __name__ == "__main__":
 #     "navy": "#000064",
 #     "orange": "#E45E32",
 # }
-#
-#
+# 
+# 
 # PARAMS = dict(
 #     RGB=RGB,
 #     RGBA=RGBA,
@@ -356,10 +354,11 @@ if __name__ == "__main__":
 #     RGBA_NORM_FOR_CYCLE=RGBA_NORM_FOR_CYCLE,
 #     HEX=HEX,
 # )
-#
+# 
 # # pprint(PARAMS)
-#
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/_scitex_repo/src/scitex/plt/color/_PARAMS.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_PARAMS.py
 # --------------------------------------------------------------------------------

@@ -172,7 +172,6 @@ def test_mk_spath_absolute_path():
                 
                 assert result.endswith('module//absolute/path/file.txt')
 
-
 if __name__ == "__main__":
     import os
 
@@ -181,36 +180,35 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/path/_mk_spath.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_mk_spath.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-02 20:59:46 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/path/_mk_spath.py
-#
+# 
 # import inspect
 # import os
-#
+# 
 # from ._split import split
-#
-#
-#
+# 
+# 
 # def mk_spath(sfname, makedirs=False):
 #     """
 #     Create a save path based on the calling script's location.
-#
+# 
 #     Parameters:
 #     -----------
 #     sfname : str
 #         The name of the file to be saved.
 #     makedirs : bool, optional
 #         If True, create the directory structure for the save path. Default is False.
-#
+# 
 #     Returns:
 #     --------
 #     str
 #         The full save path for the file.
-#
+# 
 #     Example:
 #     --------
 #     >>> import scitex.io._path as path
@@ -221,21 +219,21 @@ if __name__ == "__main__":
 #     THIS_FILE = inspect.stack()[1].filename
 #     if "ipython" in __file__:  # for ipython
 #         THIS_FILE = f'/tmp/fake-{os.getenv("USER")}.py'
-#
+# 
 #     ## spath
 #     fpath = __file__
 #     fdir, fname, _ = split(fpath)
 #     sdir = fdir + fname + "/"
 #     spath = sdir + sfname
-#
+# 
 #     if makedirs:
 #         os.makedirs(split(spath)[0], exist_ok=True)
-#
+# 
 #     return spath
-#
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/path/_mk_spath.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_mk_spath.py
 # --------------------------------------------------------------------------------

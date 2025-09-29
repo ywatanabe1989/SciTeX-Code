@@ -106,9 +106,15 @@ def normalize(x, axis=-1, amp=1.0, cuda=False):
 
 @torch_fn
 def spectrograms(x, fs, dj=0.125, cuda=False):
-    from wavelets_pytorch.transform import (
-        WaveletTransformTorch,
-    )  # PyTorch version
+    try:
+        from wavelets_pytorch.transform import (
+            WaveletTransformTorch,
+        )  # PyTorch version
+    except ImportError:
+        raise ImportError(
+            "The spectrograms function requires the wavelets-pytorch package. "
+            "Install it with: pip install wavelets-pytorch"
+        )
 
     dt = 1 / fs
     # dj = 0.125

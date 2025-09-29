@@ -92,7 +92,13 @@ def set_meta(ax, caption=None, methods=None, stats=None, keywords=None,
     # Add automatic metadata
     import datetime
     metadata['created_timestamp'] = datetime.datetime.now().isoformat()
-    metadata['scitex_version'] = '1.11.0'  # TODO: Get from __version__
+    
+    # Get version dynamically
+    try:
+        import scitex
+        metadata['scitex_version'] = getattr(scitex, '__version__', 'unknown')
+    except ImportError:
+        metadata['scitex_version'] = 'unknown'
     
     # Store metadata in figure for automatic saving
     fig = ax.get_figure()
@@ -242,7 +248,7 @@ if __name__ == "__main__":
     import sys
     import matplotlib.pyplot as plt
     import scitex
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Example usage
     fig, ax = plt.subplots()
@@ -257,6 +263,6 @@ if __name__ == "__main__":
     export_metadata_yaml(fig, 'example_metadata.yaml')
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF

@@ -262,13 +262,13 @@ if __name__ == "__main__":
     import scitex
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     info = scitex.res.get_specs()
     scitex.io.save(info, "specs.yaml")
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

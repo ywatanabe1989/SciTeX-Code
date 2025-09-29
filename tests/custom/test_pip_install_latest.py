@@ -21,7 +21,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
 
 # import argparse
-# import logging
+# from scitex import logging
 # import subprocess
 
 # import requests

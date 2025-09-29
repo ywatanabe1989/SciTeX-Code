@@ -284,7 +284,6 @@ def test_add_hue_col_complex_dtypes():
     assert len(result) == 4
     assert result["hue"].iloc[-1] == 1
 
-
 if __name__ == "__main__":
     import os
 
@@ -293,7 +292,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/color/_add_hue_col.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_add_hue_col.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -301,16 +300,15 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/color/_add_hue_col.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/color/_add_hue_col.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/color/_add_hue_col.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # import numpy as np
 # import pandas as pd
-#
-#
+# 
+# 
 # def add_hue_col(df):
 #     df["hue"] = 0
 #     dummy_row = pd.DataFrame(
@@ -328,14 +326,16 @@ if __name__ == "__main__":
 #             dummy_row[col] = np.nan
 #         if dtype is np.dtype(bool):
 #             dummy_row[col] = None
-#
+# 
 #     dummy_row = pd.DataFrame(pd.Series(dummy_row)).T
-#
+# 
 #     dummy_row["hue"] = 1
 #     df_added = pd.concat([df, dummy_row], axis=0)
 #     return df_added
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/color/_add_hue_col.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/color/_add_hue_col.py
 # --------------------------------------------------------------------------------

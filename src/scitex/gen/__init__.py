@@ -7,19 +7,37 @@ from ._alternate_kwarg import alternate_kwarg
 from ._cache import cache
 from ._check_host import check_host, is_host, verify_host
 from ._ci import ci
-from ._close import close, running2finished
+# _close.py moved to old/ directory - functionality now in scitex.session
 from ._embed import embed
 from ._inspect_module import inspect_module
 from ._is_ipython import is_ipython, is_script
 from ._less import less
 from ._list_packages import list_packages, main
-from ._mat2py import dir2npy, keys2npa, mat2dict, mat2npa, mat2npy, public_keys, save_npa
+from ._mat2py import (
+    dir2npy,
+    keys2npa,
+    mat2dict,
+    mat2npa,
+    mat2npy,
+    public_keys,
+    save_npa,
+)
 from ._norm import clip_perc, to_01, to_nan01, to_nanz, to_z, unbias
 from ._paste import paste
 from ._print_config import print_config, print_config_main
 from ._shell import run_shellcommand, run_shellscript
 from ._src import src
-from ._start import start
+# _start.py moved to old/ directory - functionality now in scitex.session
+
+# BACKWARD COMPATIBILITY: Import deprecated wrappers
+from ._deprecated_start import start as _deprecated_start
+from ._deprecated_close import close as _deprecated_close, running2finished as _deprecated_running2finished
+
+# Override the imported functions with deprecated wrappers
+start = _deprecated_start
+close = _deprecated_close
+running2finished = _deprecated_running2finished
+
 from ._symlink import symlink
 from ._symlog import symlog
 from ._tee import Tee, main, tee
@@ -33,8 +51,16 @@ from ._type import ArrayLike, var_info
 from ._var_info import ArrayLike, var_info
 from ._wrap import wrap
 from ._xml2dict import XmlDictConfig, XmlListConfig, xml2dict
-from ._detect_environment import detect_environment, get_output_directory, is_notebook
-from ._get_notebook_path import get_notebook_path, get_notebook_name, get_notebook_directory
+from ._detect_environment import (
+    detect_environment,
+    get_output_directory,
+    is_notebook,
+)
+from ._get_notebook_path import (
+    get_notebook_path,
+    get_notebook_name,
+    get_notebook_directory,
+)
 
 __all__ = [
     "ArrayLike",

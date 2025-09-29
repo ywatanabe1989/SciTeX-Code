@@ -1,0 +1,1057 @@
+[
+  {
+    "name": "Aazhang-2017-IEEE-Transactions-on-Signal-Processing",
+    "journal": "IEEE Transactions on Signal Processing",
+    "doi": null,
+    "title": "Mutual Information in Frequency and Its Application to Measure Cross-Frequency Coupling in Epilepsy",
+    "year": "2017",
+    "authors": [
+      "Rakesh Malladi and Don H. Johnson and G. Kalamangalam and N. Tandon and B. Aazhang"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Agarwal-2018-MATEC-Web-of-Conferences",
+    "journal": "MATEC Web of Conferences",
+    "doi": "10.1051/matecconf/201821003016",
+    "title": "Epileptic Seizure Prediction over EEG Data using Hybrid CNN-SVM Model with Edge Computing Services",
+    "year": 2018,
+    "authors": [
+      "Punjal Agarwal",
+      "Hwang-Cheng Wang",
+      "Kathiravan Srinivasan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Ahmad-2020-2020-IEEE-Region-10-Symposium-TENSYMP",
+    "journal": "2020 IEEE Region 10 Symposium (TENSYMP)",
+    "doi": "10.1109/tensymp50017.2020.9230899",
+    "title": "Prediction of Epileptic Seizures using Support Vector Machine and Regularization",
+    "year": 2020,
+    "authors": [
+      "Shaikh Rezwan Rafid Ahmad",
+      "Samee Mohammad Sayeed",
+      "Zaziba Ahmed",
+      "Nusayer Masud Siddique",
+      "Mohammad Zavid Parvez"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Alhudhaif-2021-PeerJ-Computer-Science",
+    "journal": "PeerJ Computer Science",
+    "doi": "10.7717/peerj-cs.523",
+    "title": "A novel multi-class imbalanced EEG signals classification based on the adaptive synthetic sampling (ADASYN) approach",
+    "year": 2021,
+    "authors": [
+      "Adi Alhudhaif"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Alotaiby-2017-Computational-Intelligence-and-Neuroscience",
+    "journal": "Computational Intelligence and Neuroscience",
+    "doi": "10.1155/2017/1240323",
+    "title": "Epileptic Seizure Prediction Using CSP and LDA for Scalp EEG Signals",
+    "year": 2017,
+    "authors": [
+      "Turky N. Alotaiby",
+      "Saleh A. Alshebeili",
+      "Faisal M. Alotaibi",
+      "Saud R. Alrshoud"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Alvarado-Rojas-2011-2011-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society",
+    "journal": "2011 Annual International Conference of the IEEE Engineering in Medicine and Biology Society",
+    "doi": "10.1109/iembs.2011.6090471",
+    "title": "Probing cortical excitability using cross-frequency coupling in intracranial EEG recordings: A new method for seizure prediction",
+    "year": 2011,
+    "authors": [
+      "C. Alvarado-Rojas",
+      "M. Valderrama",
+      "A. Witon",
+      "V. Navarro",
+      "M. L. Van Quyen"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Alvarado-Rojas-2014-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/srep04545",
+    "title": "Slow modulations of high-frequency activity (40\u2013140 Hz) discriminate preictal changes in human focal epilepsy",
+    "year": 2014,
+    "authors": [
+      "C. Alvarado-Rojas",
+      "M. Valderrama",
+      "A. Fouad-Ahmed",
+      "H. Feldwisch-Drentrup",
+      "M. Ihle",
+      "C. A. Teixeira",
+      "F. Sales",
+      "A. Schulze-Bonhage",
+      "C. Adam",
+      "A. Dourado",
+      "S. Charpier",
+      "V. Navarro",
+      "M. Le Van Quyen"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Amiri-2016-Frontiers-in-Human-Neuroscience",
+    "journal": "Frontiers in Human Neuroscience",
+    "doi": "10.3389/fnhum.2016.00387",
+    "title": "Phase-Amplitude Coupling Is Elevated in Deep Sleep and in the Onset Zone of Focal Epileptic Seizures",
+    "year": 2016,
+    "authors": [
+      "Mina Amiri",
+      "Birgit Frauscher",
+      "Jean Gotman"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Asano-2023-Nature-Communications",
+    "journal": "Nature Communications",
+    "doi": "10.21203/rs.3.rs-2799931/v1",
+    "title": "Developmental atlas of phase-amplitude coupling between physiologic high-frequency oscillations and slow waves",
+    "year": "2023",
+    "authors": [
+      "Eishi Asano",
+      "Kazuki Sakakura",
+      "Naoto Kuroda",
+      "Masaki Sonoda",
+      "Takumi Mitsuhashi",
+      "Ethan Firestone",
+      "Aimee Luat",
+      "Neena Marupudi",
+      "Sood Sandeep"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Ashokkumar-2023-Wireless-Personal-Communications",
+    "journal": "Wireless Personal Communications",
+    "doi": "10.1007/s11277-022-10154-w",
+    "title": "Quantifying Functional Connectivity Network Through Synchronization and Graph Theory Approaches for Seizure Prediction",
+    "year": 2023,
+    "authors": [
+      "S. R. Ashokkumar",
+      "M. Premkumar",
+      "S. Anupallavi",
+      "V. Jeevanantham",
+      "G. Mohanbabu",
+      "A. Selvapandian"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Assi-2018-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-018-33969-9",
+    "title": "Bispectrum Features and Multilayer Perceptron Classifier to Enhance Seizure Prediction",
+    "year": 2018,
+    "authors": [
+      "Elie Bou Assi",
+      "Laura Gagliano",
+      "Sandy Rihana",
+      "Dang K. Nguyen",
+      "Mohamad Sawan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Bosl-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.675728",
+    "title": "Prediction of Seizure Recurrence. A Note of Caution",
+    "year": 2021,
+    "authors": [
+      "William J. Bosl",
+      "Alan Leviton",
+      "Tobias Loddenkemper"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Chang-2018-Nature-Neuroscience",
+    "journal": "Nature Neuroscience",
+    "doi": "10.1038/s41593-018-0278-y",
+    "title": "Loss of neuronal network resilience precedes seizures and determines the ictogenic nature of interictal synaptic perturbations",
+    "year": 2018,
+    "authors": [
+      "Wei-Chih Chang",
+      "Jan Kudlacek",
+      "Jaroslav Hlinka",
+      "Jan Chvojka",
+      "Michal Hadrava",
+      "Vojtech Kumpost",
+      "Andrew D. Powell",
+      "Radek Janca",
+      "Matias I. Maturana",
+      "Philippa J. Karoly",
+      "Dean R. Freestone",
+      "Mark J. Cook",
+      "Milan Palus",
+      "Jakub Otahal",
+      "John G. R. Jefferys",
+      "Premysl Jiruska"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Cmpora-2019-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-019-56548-y",
+    "title": "Seizure localization using pre ictal phase-amplitude coupling in intracranial electroencephalography",
+    "year": 2019,
+    "authors": [
+      "Nuria E. C\u00e1mpora",
+      "Camilo J. Mininni",
+      "Silvia Kochen",
+      "Sergio E. Lew"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Edakawa-2016-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/srep25422",
+    "title": "Detection of Epileptic Seizures Using Phase\u2013Amplitude Coupling in Intracranial Electroencephalography",
+    "year": 2016,
+    "authors": [
+      "Kohtaroh Edakawa",
+      "Takufumi Yanagisawa",
+      "Haruhiko Kishima",
+      "Ryohei Fukuma",
+      "Satoru Oshino",
+      "Hui Ming Khoo",
+      "Maki Kobayashi",
+      "Masataka Tanaka",
+      "Toshiki Yoshimine"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "El-Samie-2014-EURASIP-Journal-on-Advances-in-Signal-Processing",
+    "journal": "EURASIP Journal on Advances in Signal Processing",
+    "doi": "10.1186/1687-6180-2014-183",
+    "title": "EEG seizure detection and prediction algorithms: a survey",
+    "year": "2014",
+    "authors": [
+      "T. Alotaiby and S. Alshebeili and Tariq A. Alshawi and Ishtiaq Ahmad and F. El-Samie"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Gagliano-2018-Epilepsy-Research",
+    "journal": "Epilepsy Research",
+    "doi": "10.1016/j.eplepsyres.2017.11.009",
+    "title": "Bilateral preictal signature of phase-amplitude coupling in canine epilepsy",
+    "year": 2018,
+    "authors": [
+      "Laura Gagliano",
+      "Elie Bou Assi",
+      "Dang K. Nguyen",
+      "Sandy Rihana",
+      "Mohamad Sawan"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Gagliano-2019-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-019-52152-2",
+    "title": "Bispectrum and Recurrent Neural Networks: Improved Classification of Interictal and Preictal States",
+    "year": 2019,
+    "authors": [
+      "Laura Gagliano",
+      "Elie Bou Assi",
+      "Dang K. Nguyen",
+      "Mohamad Sawan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Garcia-2024-2024-46th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC",
+    "journal": "2024 46th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC)",
+    "doi": "10.1109/embc53108.2024.10782382",
+    "title": "Respiratory Signal Extraction from ECG using a Phase-Amplitude Cross-Frequency Coupling Index",
+    "year": 2024,
+    "authors": [
+      "Cesar Augusto Suarez Garcia",
+      "Adam C. Gravitis",
+      "Berj L. Bardakjian"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Ghiasvand-2020-The-Neuroscience-Journal-of-Shefaye-Khatam",
+    "journal": "The Neuroscience Journal of Shefaye Khatam",
+    "doi": "10.52547/shefa.9.1.110",
+    "title": "Epileptic Seizure Prediction from Spectral, Temporal, and Spatial Features of EEG Signals Using Deep Learning Algorithms",
+    "year": "2020",
+    "authors": [
+      "Foad Ghaderi and Nazanin Mohammadkhani Ghiasvand"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Grigorovsky-2020-Brain-Communications",
+    "journal": "Brain Communications",
+    "doi": "10.1093/braincomms/fcaa182",
+    "title": "Delta-gamma phase-amplitude coupling as a biomarker of postictal generalized EEG suppression",
+    "year": 2020,
+    "authors": [
+      "Vasily Grigorovsky",
+      "Daniel Jacobs",
+      "Vanessa L Breton",
+      "Uilki Tufa",
+      "Christopher Lucasius",
+      "Jose Martin del Campo",
+      "Yotin Chinvarun",
+      "Peter L Carlen",
+      "Richard Wennberg",
+      "Berj L Bardakjian"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Hasan-2017-Applied-Bionics-and-Biomechanics",
+    "journal": "Applied Bionics and Biomechanics",
+    "doi": "10.1155/2017/6848014",
+    "title": "Prediction of Epileptic Seizure by Analysing Time Series EEG Signal Using k-NN Classifier",
+    "year": 2017,
+    "authors": [
+      "Md. Kamrul Hasan",
+      "Md. Asif Ahamed",
+      "Mohiuddin Ahmad",
+      "M. A. Rashid"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Jin-2022-2022-41st-Chinese-Control-Conference-CCC",
+    "journal": "2022 41st Chinese Control Conference (CCC)",
+    "doi": "10.23919/ccc55666.2022.9902624",
+    "title": "Neural Oscillations and Synchronous Analysis in ECoG during Propofol Anesthesia",
+    "year": 2022,
+    "authors": [
+      "Xing Jin",
+      "Zhenhu Liang",
+      "Xiaoli Li"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Kapoor-2022-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s23010423",
+    "title": "Epileptic Seizure Prediction Based on Hybrid Seek Optimization Tuned Ensemble Classifier Using EEG Signals",
+    "year": 2022,
+    "authors": [
+      "Bhaskar Kapoor",
+      "Bharti Nagpal",
+      "Praphula Kumar Jain",
+      "Ajith Abraham",
+      "Lubna Abdelkareim Gabralla"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Li-2021-Brain-Sciences",
+    "journal": "Brain Sciences",
+    "doi": "10.3390/brainsci11081066",
+    "title": "Prediction of Epilepsy Based on Tensor Decomposition and Functional Brain Network",
+    "year": 2021,
+    "authors": [
+      "Han Li",
+      "Qizhong Zhang",
+      "Ziying Lin",
+      "Farong Gao"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Li-2021-IEEE-Transactions-on-Biomedical-Engineering",
+    "journal": "IEEE Transactions on Biomedical Engineering",
+    "doi": "10.1109/TBME.2021.3090027",
+    "title": "Propofol Anesthesia Decreased the Efficiency of Long-Range Cortical Interaction in Humans",
+    "year": "2021",
+    "authors": [
+      "Zhenhu Liang and Xing Jin and Ye Ren and Tao Yu and Xiaoli Li"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Li-2023-Frontiers-in-Neuroscience",
+    "journal": "Frontiers in Neuroscience",
+    "doi": "10.3389/fnins.2023.1153568",
+    "title": "Phase-amplitude coupling-based adaptive filters for neural signal decoding",
+    "year": 2023,
+    "authors": [
+      "Jiajun Li",
+      "Yu Qi",
+      "Gang Pan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Li-2023-Frontiers-in-Physiology",
+    "journal": "Frontiers in Physiology",
+    "doi": "10.3389/fphys.2022.1085530",
+    "title": "Classifying epileptic phase-amplitude coupling in SEEG using complex-valued convolutional neural network",
+    "year": 2023,
+    "authors": [
+      "Chunsheng Li",
+      "Shiyue Liu",
+      "Zeyu Wang",
+      "Guanqian Yuan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Liu-2016-Conference-proceedings-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-IEEE-Engineering-in-Medicine-and-Biology-Society-Annual-Conference",
+    "journal": "Conference proceedings : ... Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual Conference",
+    "doi": "10.1109/embc.2016.7590876",
+    "title": "Phase-amplitude coupling analysis for seizure evolvement using Hilbert Huang Transform.",
+    "year": "2016",
+    "authors": [
+      "Hanyue Zhou and Ying Li and Yue-Loong Hsin and Wentai Liu"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Liu-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.764821",
+    "title": "Epileptogenic Zone Location of Temporal Lobe Epilepsy by Cross-Frequency Coupling Analysis",
+    "year": 2021,
+    "authors": [
+      "Xiaotong Liu",
+      "Fang Han",
+      "Rui Fu",
+      "Qingyun Wang",
+      "Guoming Luan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Liu-2024-Frontiers-in-Neuroinformatics",
+    "journal": "Frontiers in Neuroinformatics",
+    "doi": "10.3389/fninf.2024.1354436",
+    "title": "Epileptic seizure prediction based on EEG using pseudo-three-dimensional CNN",
+    "year": 2024,
+    "authors": [
+      "Xin Liu",
+      "Chunyang Li",
+      "Xicheng Lou",
+      "Haohuan Kong",
+      "Xinwei Li",
+      "Zhangyong Li",
+      "Lisha Zhong"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Ma-2021-Frontiers-in-Neurology",
+    "journal": "Frontiers in Neurology",
+    "doi": "10.3389/fneur.2021.718683",
+    "title": "Phase\u2013Amplitude Coupling and Epileptogenic Zone Localization of Frontal Epilepsy Based on Intracranial EEG",
+    "year": 2021,
+    "authors": [
+      "Huijuan Ma",
+      "Zeyu Wang",
+      "Chunsheng Li",
+      "Jia Chen",
+      "Yuping Wang"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Marcoleta-2020-Biomedical-Physics-amp-Engineering-Express",
+    "journal": "Biomedical Physics &amp; Engineering Express",
+    "doi": "10.1088/2057-1976/ab9fed",
+    "title": "Distributed mixed signal demultiplexer for electrocorticography electrodes",
+    "year": 2020,
+    "authors": [
+      "Juan Pablo Marcoleta",
+      "Waldo Nogueira",
+      "Theodor Doll"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Marzulli-2025-Frontiers-in-Human-Neuroscience",
+    "journal": "Frontiers in Human Neuroscience",
+    "doi": "10.3389/fnhum.2025.1521491",
+    "title": "Classifying mental motor tasks from chronic ECoG-BCI recordings using phase-amplitude coupling features",
+    "year": 2025,
+    "authors": [
+      "Morgane Marzulli",
+      "Alexandre Bleuz\u00e9",
+      "Joe Saad",
+      "Felix Martel",
+      "Philippe Ciuciu",
+      "Tetiana Aksenova",
+      "Lucas Struber"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Mendoza-Cardenas-2021-2021-10th-International-IEEE-EMBS-Conference-on-Neural-Engineering-NER",
+    "journal": "2021 10th International IEEE/EMBS Conference on Neural Engineering (NER)",
+    "doi": "10.1109/ner49283.2021.9441220",
+    "title": "Searching for waveforms on spatially-filtered epileptic ECoG",
+    "year": 2021,
+    "authors": [
+      "Carlos H. Mendoza-Cardenas",
+      "Austin J. Brockmeier"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Mendoza-Cardenas-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc46164.2021.9629913",
+    "title": "Shift-invariant waveform learning on epileptic ECoG",
+    "year": 2021,
+    "authors": [
+      "Carlos H. Mendoza-Cardenas",
+      "Austin J. Brockmeier"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Miao-2021-2021-43rd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc46164.2021.9630941",
+    "title": "Seizure Onset Zone Identification Based on Phase-Amplitude Coupling of Interictal Electrocorticogram",
+    "year": 2021,
+    "authors": [
+      "Yao Miao",
+      "Yasushi Iimura",
+      "Hidenori Sugano",
+      "Kosuke Fukumori",
+      "Taku Shoji",
+      "Toshihisa Tanaka"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Miao-2021-Cognitive-Neurodynamics",
+    "journal": "Cognitive Neurodynamics",
+    "doi": "10.1101/2021.10.27.21265585",
+    "title": "Seizure Onset Zone Identification Using Phase-Amplitude Coupling and Multiple Machine Learning Approaches for Interictal Electrocorticogram",
+    "year": "2021",
+    "authors": [
+      "Yao Miao",
+      "Yasushi Iimura",
+      "Hidenori Sugano",
+      "Kosuke Fukumori",
+      "Toshihisa Tanaka"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Mierlo-2014-Progress-in-Neurobiology",
+    "journal": "Progress in Neurobiology",
+    "doi": "10.1016/j.pneurobio.2014.06.004",
+    "title": "Functional brain connectivity from EEG in epilepsy: Seizure prediction and epileptogenic focus localization",
+    "year": 2014,
+    "authors": [
+      "Pieter van Mierlo",
+      "Margarita Papadopoulou",
+      "Evelien Carrette",
+      "Paul Boon",
+      "Stefaan Vandenberghe",
+      "Kristl Vonck",
+      "Daniele Marinazzo"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Mukamel-2014-The-Journal-of-Neuroscience",
+    "journal": "The Journal of Neuroscience",
+    "doi": "10.1523/jneurosci.5813-12.2014",
+    "title": "A Transition in Brain State during Propofol-Induced Unconsciousness",
+    "year": 2014,
+    "authors": [
+      "Eran A. Mukamel",
+      "Elvira Pirondini",
+      "Behtash Babadi",
+      "Kin Foon Kevin Wong",
+      "Eric T. Pierce",
+      "P. Grace Harrell",
+      "John L. Walsh",
+      "Andres F. Salazar-Gomez",
+      "Sydney S. Cash",
+      "Emad N. Eskandar",
+      "Veronica S. Weiner",
+      "Emery N. Brown",
+      "Patrick L. Purdon"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Natu-2022-Computational-and-Mathematical-Methods-in-Medicine",
+    "journal": "Computational and Mathematical Methods in Medicine",
+    "doi": "10.1155/2022/7751263",
+    "title": "Review on Epileptic Seizure Prediction: Machine Learning and Deep Learning Approaches",
+    "year": 2022,
+    "authors": [
+      "Milind Natu",
+      "Mrinal Bachute",
+      "Shilpa Gite",
+      "Ketan Kotecha",
+      "Ankit Vidyarthi"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Parvez-2016-IEEE-Transactions-on-Neural-Systems-and-Rehabilitation-Engineering",
+    "journal": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+    "doi": "10.1109/tnsre.2015.2458982",
+    "title": "Epileptic Seizure Prediction by Exploiting Spatiotemporal Relationship of EEG Signals Using Phase Correlation",
+    "year": 2016,
+    "authors": [
+      "Mohammad Zavid Parvez",
+      "Manoranjan Paul"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Pilet-2025-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-025-02679-4",
+    "title": "Predicting seizure onset zones from interictal intracranial EEG using functional connectivity and machine learning",
+    "year": 2025,
+    "authors": [
+      "Jared Pilet",
+      "Scott A. Beardsley",
+      "Chad Carlson",
+      "Christopher T. Anderson",
+      "Candida Ustine",
+      "Sean Lew",
+      "Wade Mueller",
+      "Manoj Raghavan"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Raghavan-2024-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-024-67120-8",
+    "title": "Gamma amplitude-envelope correlations are strongly elevated within hyperexcitable networks in focal epilepsy",
+    "year": 2024,
+    "authors": [
+      "Manoj Raghavan",
+      "Jared Pilet",
+      "Chad Carlson",
+      "Christopher T. Anderson",
+      "Wade Mueller",
+      "Sean Lew",
+      "Candida Ustine",
+      "Priyanka Shah-Basak",
+      "Vahab Youssofzadeh",
+      "Scott A. Beardsley"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Ramachandran-2018-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s18061698",
+    "title": "Towards an Online Seizure Advisory System\u2014An Adaptive Seizure Prediction Framework Using Active Learning Heuristics",
+    "year": 2018,
+    "authors": [
+      "Vignesh Raja Karuppiah Ramachandran",
+      "Huibert J. Alblas",
+      "Duc V. Le",
+      "Nirvana Meratnia"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Richner-2019-Journal-of-Neural-Engineering",
+    "journal": "Journal of Neural Engineering",
+    "doi": "10.1088/1741-2552/ab335b",
+    "title": "Phase relationship between micro-electrocorticography and cortical neurons",
+    "year": 2019,
+    "authors": [
+      "Thomas J Richner",
+      "Sarah K Brodnick",
+      "Sanitta Thongpang",
+      "Amelia A Sandberg",
+      "Lisa A Krugner-Higby",
+      "Justin C Williams"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Rong-2020-Engineering",
+    "journal": "Engineering",
+    "doi": "10.1016/j.eng.2019.08.015",
+    "title": "Artificial Intelligence in Healthcare: Review and Prediction Case Studies",
+    "year": 2020,
+    "authors": [
+      "Guoguang Rong",
+      "Arnaldo Mendez",
+      "Elie Bou Assi",
+      "Bo Zhao",
+      "Mohamad Sawan"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Salimpour-2019-Frontiers-in-Neuroscience",
+    "journal": "Frontiers in Neuroscience",
+    "doi": "10.3389/fnins.2019.00125",
+    "title": "Cross-Frequency Coupling Based Neuromodulation for Treating Neurological Disorders",
+    "year": 2019,
+    "authors": [
+      "Yousef Salimpour",
+      "William S. Anderson"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Schelter-2007",
+    "journal": "",
+    "doi": null,
+    "title": "Welcome to the 3rd International Workshop on Seizure Prediction in Epilepsy!",
+    "year": "2007",
+    "authors": [
+      "B. Schelter"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Sebaei-2024-South-Eastern-European-Journal-of-Public-Health",
+    "journal": "South Eastern European Journal of Public Health",
+    "doi": "10.70135/seejph.vi.1681",
+    "title": "Value of Quantitative Intraoperative Electrocorticography During Anterior Temporal Lobectomy in Temporal Lobe Epilepsy Patients",
+    "year": 2024,
+    "authors": [
+      "Dina Sebaei",
+      "Ali M. Salah Eldin",
+      "Samar M. Hussein",
+      "Noha M. Abogresha",
+      "Amani El-Baz"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Seo-2020-Mathematics",
+    "journal": "Mathematics",
+    "doi": "10.3390/math8040481",
+    "title": "Pattern Recognition in Epileptic EEG Signals via Dynamic Mode Decomposition",
+    "year": 2020,
+    "authors": [
+      "Jong-Hyeon Seo",
+      "Ichiro Tsuda",
+      "Young Ju Lee",
+      "Akio Ikeda",
+      "Masao Matsuhashi",
+      "Riki Matsumoto",
+      "Takayuki Kikuchi",
+      "Hunseok Kang"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Shirzadi-2024-Diagnostics",
+    "journal": "Diagnostics",
+    "doi": "10.3390/diagnostics14202255",
+    "title": "AML-DECODER: Advanced Machine Learning for HD-sEMG Signal Classification\u2014Decoding Lateral Epicondylitis in Forearm Muscles",
+    "year": 2024,
+    "authors": [
+      "Mehdi Shirzadi",
+      "M\u00f3nica Rojas Mart\u00ednez",
+      "Joan Francesc Alonso",
+      "Leidy Yanet Serna",
+      "Joaquim Chaler",
+      "Miguel Angel Ma\u00f1anas",
+      "Hamid Reza Marateb"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Sivathamboo-2020-IEEE-Reviews-in-Biomedical-Engineering",
+    "journal": "IEEE Reviews in Biomedical Engineering",
+    "doi": null,
+    "title": "Machine Learning for Predicting Epileptic Seizures Using EEG Signals: A Review",
+    "year": "2020",
+    "authors": [
+      "Terence J. O'Brien and Adnan Qayyum and Adeel Razi and Levin Kuhlmann and Patrick Kwan and Khansa Rasheed and Junaid Qadir and Shobi Sivathamboo"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Song-2022-Sensors",
+    "journal": "Sensors",
+    "doi": "10.3390/s22176458",
+    "title": "An Intelligent Epileptic Prediction System Based on Synchrosqueezed Wavelet Transform and Multi-Level Feature CNN for Smart Healthcare IoT",
+    "year": 2022,
+    "authors": [
+      "Kunpeng Song",
+      "Jiajia Fang",
+      "Lei Zhang",
+      "Fangni Chen",
+      "Jian Wan",
+      "Neal Xiong"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Sun-2022-Acta-Epileptologica",
+    "journal": "Acta Epileptologica",
+    "doi": "10.1186/s42494-022-00113-0",
+    "title": "Synchronization clusters located on epileptic onset zones in neocortical epilepsy",
+    "year": 2022,
+    "authors": [
+      "Yanping Sun",
+      "Yuqiang Song",
+      "Hongjin Ren",
+      "Haifang Zhu",
+      "Yanning Wang",
+      "Xiaoli Li",
+      "Wenjing Yan",
+      "Yuping Wang"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Tang-2015-Bio-Medical-Materials-and-Engineering",
+    "journal": "Bio-Medical Materials and Engineering",
+    "doi": "10.3233/bme-151401",
+    "title": "An epileptic focus location method based on ECoG",
+    "year": 2015,
+    "authors": [
+      "Xiaoying Tang",
+      "Xiying Zhang",
+      "Dongqin Cai",
+      "Juncheng Du",
+      "Weifeng Liu"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Ujma-2022-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.21203/rs.3.rs-1705700/v1",
+    "title": "The sleep EEG envelope: a novel, neuronal firing-based human biomarker",
+    "year": "2022",
+    "authors": [
+      "P\u00e9ter P. Ujma",
+      "Martin Dresler",
+      "P\u00e9ter Simor",
+      "D\u00e1niel Fab\u00f3",
+      "Istv\u00e1n Ulbert",
+      "Lor\u00e1nd Er\u0151ss",
+      "R\u00f3bert B\u00f3dizs"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Wang-2020-2020-42nd-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-amp-Biology-Society-EMBC",
+    "journal": "2020 42nd Annual International Conference of the IEEE Engineering in Medicine &amp; Biology Society (EMBC)",
+    "doi": "10.1109/embc44109.2020.9175273",
+    "title": "Classifying cross-frequency coupling pattern in epileptogenic tissues by convolutional neural network",
+    "year": 2020,
+    "authors": [
+      "Zeyu Wang",
+      "Chunsheng Li"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Watson-2015-BMC-Neuroscience",
+    "journal": "BMC Neuroscience",
+    "doi": "10.1186/1471-2202-16-s1-p38",
+    "title": "A phase-locked loop epilepsy network emulator for localizing, forecasting, and controlling ictal activity",
+    "year": 2015,
+    "authors": [
+      "Patrick D Watson",
+      "Kevin Horecka",
+      "Rama Ratnam",
+      "Neal J Cohen"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Winter-2020-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-020-71359-2",
+    "title": "The value of intra-operative electrographic biomarkers for tailoring during epilepsy surgery: from group-level to patient-level analysis",
+    "year": "2020",
+    "authors": [
+      "M. Demuru and S. Kalitzin and W. Zweiphenning and D. van Blooijs and Maryse A Van't Klooster and P. van Eijsden and F. Leijten and M. Zijlmans and K. Braun and C. Ferrier and T. Gebbink and P. Gosselaar and G. Huiskamp and Nicole E C van Klink and J. Ophorst and P. V. van Rijen and Sandra M A van der Salm and A. Winter"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Xie-2017-Scientific-Reports",
+    "journal": "Scientific Reports",
+    "doi": "10.1038/s41598-017-07823-3",
+    "title": "Portable wireless electrocorticography system with a flexible microelectrodes array for epilepsy treatment",
+    "year": 2017,
+    "authors": [
+      "Kejun Xie",
+      "Shaomin Zhang",
+      "Shurong Dong",
+      "Shijian Li",
+      "Chaonan Yu",
+      "Kedi Xu",
+      "Wanke Chen",
+      "Wei guo",
+      "Jikui Luo",
+      "Zhaohui Wu"
+    ],
+    "has_pdf": true,
+    "pdf_count": 1
+  },
+  {
+    "name": "Yanagisawa-2012-The-Journal-of-Neuroscience",
+    "journal": "The Journal of Neuroscience",
+    "doi": "10.1523/jneurosci.2929-12.2012",
+    "title": "Regulation of Motor Representation by Phase\u2013Amplitude Coupling in the Sensorimotor Cortex",
+    "year": 2012,
+    "authors": [
+      "Takufumi Yanagisawa",
+      "Okito Yamashita",
+      "Masayuki Hirata",
+      "Haruhiko Kishima",
+      "Youichi Saitoh",
+      "Tetsu Goto",
+      "Toshiki Yoshimine",
+      "Yukiyasu Kamitani"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Yekutieli-2018-Epilepsy-Journal",
+    "journal": "Epilepsy Journal",
+    "doi": "10.4172/2472-0895.1000120",
+    "title": "ECoG Correlation Variation for Epilepsy Research",
+    "year": 2018,
+    "authors": [
+      "Ziv Yekutieli",
+      "Eshel Ben Jacob"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Yuan-2015-2015-IEEE-International-Conference-on-Digital-Signal-Processing-DSP",
+    "journal": "2015 IEEE International Conference on Digital Signal Processing (DSP)",
+    "doi": "10.1109/icdsp.2015.7251854",
+    "title": "A seizure prediction method based on efficient features and BLDA",
+    "year": 2015,
+    "authors": [
+      "Qi Yuan",
+      "Dongmei Wei"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Zhang-2024-International-Journal-of-Surgery",
+    "journal": "International Journal of Surgery",
+    "doi": "10.1097/js9.0000000000002022",
+    "title": "Brain\u2013computer interfaces: the innovative key to unlocking neurological conditions",
+    "year": 2024,
+    "authors": [
+      "Hongyu Zhang",
+      "Le Jiao",
+      "Songxiang Yang",
+      "Haopeng Li",
+      "Xinzhan Jiang",
+      "Jing Feng",
+      "Shuhuai Zou",
+      "Qiang Xu",
+      "Jianheng Gu",
+      "Xuefeng Wang",
+      "Baojian Wei"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  },
+  {
+    "name": "Zhou-2016-2016-38th-Annual-International-Conference-of-the-IEEE-Engineering-in-Medicine-and-Biology-Society-EMBC",
+    "journal": "Conference proceedings : ... Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual Conference",
+    "doi": "10.1109/embc.2016.7590876",
+    "title": "Phase-amplitude coupling analysis for seizure evolvement using Hilbert Huang Transform.",
+    "year": "2016",
+    "authors": [
+      "Hanyue Zhou and Ying Li and Yue-Loong Hsin and Wentai Liu"
+    ],
+    "has_pdf": false,
+    "pdf_count": 0
+  }
+]

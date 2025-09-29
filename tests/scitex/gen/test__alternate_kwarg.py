@@ -107,7 +107,6 @@ class TestAlternateKwarg:
         result = alternate_kwarg(kwargs, "primary_key", "alt_key")
         assert result["primary_key"] == expected
 
-
 if __name__ == "__main__":
     import os
 
@@ -116,22 +115,22 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_alternate_kwarg.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_alternate_kwarg.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-02 13:30:41 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/gen/_alternate_kwarg.py
-#
-#
+# 
+# 
 # def alternate_kwarg(kwargs, primary_key, alternate_key):
 #     alternate_value = kwargs.pop(alternate_key, None)
 #     kwargs[primary_key] = kwargs.get(primary_key) or alternate_value
 #     return kwargs
-#
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_alternate_kwarg.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_alternate_kwarg.py
 # --------------------------------------------------------------------------------

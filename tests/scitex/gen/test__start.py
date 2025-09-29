@@ -154,12 +154,12 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_start.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_start.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
-# # Timestamp: "2025-05-01 23:44:56 (ywatanabe)"
-# # File: /home/ywatanabe/proj/_scitex_repo/src/scitex/gen/_start.py
+# # Timestamp: "2025-05-19 09:02:56 (ywatanabe)"
+# # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/scitex_repo/src/scitex/gen/_start.py
 # # ----------------------------------------
 # import os
 # __FILE__ = (
@@ -167,9 +167,9 @@ if __name__ == "__main__":
 # )
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/gen/_start.py"
-#
+# 
 # import inspect
 # import os as _os
 # import re
@@ -178,10 +178,10 @@ if __name__ == "__main__":
 # from pprint import pprint
 # from time import sleep
 # from typing import Any, Dict, Optional, Tuple
-#
+# 
 # import matplotlib
 # import matplotlib.pyplot as plt_module
-#
+# 
 # from ..dev._analyze_code_flow import analyze_code_flow
 # from ..dict import DotDict
 # from ..gen._tee import tee
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 # from ..repro._gen_ID import gen_ID
 # from ..str._clean_path import clean_path
 # from ..str._printc import printc as _printc
-#
+# 
 # """
 # Functionality:
 #     * Initializes experimental environment with reproducible settings
@@ -212,8 +212,8 @@ if __name__ == "__main__":
 #     * matplotlib
 #     * scitex package
 # """
-#
-#
+# 
+# 
 # def _print_header(
 #     ID: str,
 #     PID: int,
@@ -223,7 +223,7 @@ if __name__ == "__main__":
 #     verbose: bool = True,
 # ) -> None:
 #     """Prints formatted header with scitex version, ID, and PID information.
-#
+# 
 #     Parameters
 #     ----------
 #     ID : str
@@ -238,7 +238,7 @@ if __name__ == "__main__":
 #     _printc(
 #         (f"## scitex v{_get_scitex_version()}\n" f"## {ID} (PID: {PID})"), char="#"
 #     )
-#
+# 
 #     _printc((f"{file}\n" f"{args}"), c="yellow", char="=")
 #     sleep(1)
 #     if verbose:
@@ -246,16 +246,16 @@ if __name__ == "__main__":
 #         pprint(configs)
 #         print(f"\n{'-'*40}\n")
 #     sleep(1)
-#
-#
+# 
+# 
 # def _initialize_env(IS_DEBUG: bool) -> Tuple[str, int]:
 #     """Initialize environment with ID and PID.
-#
+# 
 #     Parameters
 #     ----------
 #     IS_DEBUG : bool
 #         Debug mode flag
-#
+# 
 #     Returns
 #     -------
 #     tuple
@@ -264,8 +264,8 @@ if __name__ == "__main__":
 #     ID = gen_ID(N=4) if not IS_DEBUG else "DEBUG_" + gen_ID(N=4)
 #     PID = _os.getpid()
 #     return ID, PID
-#
-#
+# 
+# 
 # def _setup_configs(
 #     IS_DEBUG: bool,
 #     ID: str,
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 #     verbose: bool,
 # ) -> Dict[str, Any]:
 #     """Setup configuration dictionary with basic parameters.
-#
+# 
 #     Parameters
 #     ----------
 #     IS_DEBUG : bool
@@ -291,13 +291,13 @@ if __name__ == "__main__":
 #         Relative save directory path
 #     verbose : bool
 #         Verbosity flag
-#
+# 
 #     Returns
 #     -------
 #     dict
 #         Configuration dictionary
 #     """
-#
+# 
 #     CONFIGS = load_configs(IS_DEBUG).to_dict()
 #     CONFIGS.update(
 #         {
@@ -310,13 +310,13 @@ if __name__ == "__main__":
 #         }
 #     )
 #     return CONFIGS
-#
-#
+# 
+# 
 # def _setup_matplotlib(
 #     plt: plt_module = None, agg: bool = False, **mpl_kwargs: Any
 # ) -> Tuple[Any, Optional[Dict[str, Any]]]:
 #     """Configure matplotlib settings.
-#
+# 
 #     Parameters
 #     ----------
 #     plt : module
@@ -325,7 +325,7 @@ if __name__ == "__main__":
 #         Whether to use Agg backend
 #     **mpl_kwargs : dict
 #         Additional matplotlib configuration parameters
-#
+# 
 #     Returns
 #     -------
 #     tuple
@@ -339,8 +339,8 @@ if __name__ == "__main__":
 #             matplotlib.use("Agg")
 #         return plt, CC
 #     return plt, None
-#
-#
+# 
+# 
 # def start(
 #     sys: sys_module = None,
 #     plt: plt_module = None,
@@ -368,12 +368,12 @@ if __name__ == "__main__":
 #     # font_size_legend: int = 6,
 #     hide_top_right_spines: bool = True,
 #     alpha: float = 0.9,
-#     line_width: float = 0.5,
+#     line_width: float = 1.0,
 #     clear_logs: bool = False,
 #     verbose: bool = True,
 # ) -> Tuple[DotDict, Any, Any, Any, Optional[Dict[str, Any]]]:
 #     """Initialize experiment environment with reproducibility settings.
-#
+# 
 #     Parameters
 #     ----------
 #     sys : module, optional
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 #         Default line width for plots
 #     clear_logs : bool, default=False
 #         Whether to clear existing log directory
-#
+# 
 #     Returns
 #     -------
 #     tuple
@@ -422,50 +422,54 @@ if __name__ == "__main__":
 #     """
 #     IS_DEBUG = _get_debug_mode()
 #     ID, PID = _initialize_env(IS_DEBUG)
-#
+# 
 #     ########################################
 #     # Defines SDIR (DO NOT MODIFY THIS SECTION)
 #     ########################################
 #     if sdir is None:
 #         # Define __file__
 #         if file:
-#             THIS_FILE = file
+#             caller_file = file
 #         else:
-#             THIS_FILE = inspect.stack()[1].filename
+#             caller_file = inspect.stack()[1].filename
 #             if "ipython" in __file__:
-#                 THIS_FILE = f"/tmp/{_os.getenv('USER')}.py"
-#
+#                 caller_file = f"/tmp/{_os.getenv('USER')}.py"
+# 
+#         # Convert to absolute path if relative
+#         if not _os.path.isabs(caller_file):
+#             caller_file = _os.path.abspath(caller_file)
+# 
 #         # Define sdir
 #         sdir = clean_path(
-#             _os.path.splitext(__file__)[0] + f"_out/RUNNING/{ID}/"
+#             _os.path.splitext(caller_file)[0] + f"_out/RUNNING/{ID}/"
 #         )
-#
+# 
 #         # Optional
 #         if sdir_suffix:
 #             sdir = sdir[:-1] + f"-{sdir_suffix}/"
-#
+# 
 #     if clear_logs:
-#         _clear_python_log_dir(_sdir + sfname + "/")
+#         _clear_python_log_dir(sdir + caller_file + "/")
 #     _os.makedirs(sdir, exist_ok=True)
 #     relative_sdir = _simplify_relative_path(sdir)
 #     ########################################
-#
+# 
 #     # Setup configs after having all necessary parameters
 #     CONFIGS = _setup_configs(
 #         IS_DEBUG, ID, PID, file, sdir, relative_sdir, verbose
 #     )
-#
+# 
 #     # Logging
 #     if sys is not None:
 #         flush(sys)
 #         sys.stdout, sys.stderr = tee(sys, sdir=sdir, verbose=verbose)
 #         CONFIGS["sys"] = sys
-#
+# 
 #     # Random Seeds
 #     fix_seeds(
 #         os=os, random=random, np=np, torch=torch, seed=seed, verbose=verbose
 #     )
-#
+# 
 #     # Matplotlib configurations
 #     plt, CC = _setup_matplotlib(
 #         plt,
@@ -486,38 +490,42 @@ if __name__ == "__main__":
 #         # font_size_legend=font_size_legend,
 #         verbose=verbose,
 #     )
-#
+# 
 #     # Adds argument-parsed variables
 #     if args is not None:
 #         CONFIGS["ARGS"] = vars(args) if hasattr(args, "__dict__") else args
-#
+# 
 #     CONFIGS = DotDict(CONFIGS)
-#
+# 
 #     _print_header(ID, PID, file, args, CONFIGS, verbose)
-#
+# 
 #     if show_execution_flow:
 #         structure = analyze_code_flow(file)
 #         _printc(structure)
-#
-#     return CONFIGS, sys.stdout, sys.stderr, plt, CC
-#
-#
+# 
+#     # Return appropriate values based on whether sys was provided
+#     if sys is not None:
+#         return CONFIGS, sys.stdout, sys.stderr, plt, CC
+#     else:
+#         return CONFIGS, None, None, plt, CC
+# 
+# 
 # def _simplify_relative_path(sdir: str) -> str:
 #     """
 #     Simplify the relative path by removing specific patterns.
-#
+# 
 #     Example
 #     -------
 #     sdir = '/home/user/scripts/memory-load/distance_between_gs_stats/RUNNING/2024Y-09M-12D-02h44m40s_GlBZ'
 #     simplified_path = simplify_relative_path(sdir)
 #     print(simplified_path)
 #     # Output: './memory-load/distance_between_gs_stats/'
-#
+# 
 #     Parameters
 #     ----------
 #     sdir : str
 #         The directory path to simplify
-#
+# 
 #     Returns
 #     -------
 #     str
@@ -533,8 +541,8 @@ if __name__ == "__main__":
 #         r"\d{4}Y-\d{2}M-\d{2}D-\d{2}h\d{2}m\d{2}s_\w+/?$", "", simplified_path
 #     )
 #     return simplified_path
-#
-#
+# 
+# 
 # def _get_debug_mode() -> bool:
 #     # Debug mode check
 #     try:
@@ -545,60 +553,61 @@ if __name__ == "__main__":
 #                 IS_DEBUG = True
 #         else:
 #             IS_DEBUG = False
-#
+# 
 #     except Exception as e:
 #         print(e)
 #         IS_DEBUG = False
 #     return IS_DEBUG
-#
-#
+# 
+# 
 # def _clear_python_log_dir(log_dir: str) -> None:
 #     try:
 #         if _os.path.exists(log_dir):
 #             _os.system(f"rm -rf {log_dir}")
 #     except Exception as e:
 #         print(f"Failed to clear directory {log_dir}: {e}")
-#
-#
+# 
+# 
 # def _get_scitex_version() -> str:
 #     """Gets scitex version"""
 #     try:
 #         import scitex
-#
+# 
 #         return scitex.__version__
 #     except Exception as e:
 #         print(e)
 #         return "(not found)"
-#
-#
+# 
+# 
 # if __name__ == "__main__":
 #     import os
 #     import sys
-#
+# 
 #     import matplotlib.pyplot as plt
 #     import scitex
-#
+# 
 #     # Config
 #     CONFIG = scitex.io.load_configs()
-#
+# 
 #     # Functions
 #     # Your awesome code here :)
-#
+# 
 #     if __name__ == "__main__":
 #         # Start
 #         CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
-#
+# 
 #         # Your awesome code here :)
-#
+# 
 #         # Close
 #         scitex.gen.close(CONFIG)
-#
-#
+# 
+# 
 # """
 # /home/ywatanabe/proj/entrance/scitex/gen/_start.py
 # """
-#
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/gen/_start.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_start.py
 # --------------------------------------------------------------------------------

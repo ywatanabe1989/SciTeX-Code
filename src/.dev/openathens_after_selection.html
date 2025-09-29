@@ -1,0 +1,901 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <!-- Styles generated from theme -->
+    <link href="/api/internal/brand/theme/style-sheet?touch-point=SIGN_IN_PAGE&amp;v=abc4780733b2999dc5536ea4bf18a7237d32beafe91e2f7611b8af3ecb8ae0d0dfb208992a3b1ecefd0c0f9333f4b59d" rel="stylesheet" type="text/css">
+    <!-- Favicon from theme -->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <title>University of Melbourne - Sign In</title>
+    <!-- Core widget js and css -->
+<script type="text/javascript" src="https://ok8static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.33.2/js/okta-sign-in.min.js" integrity="sha384-yEQR8oBedCVhw7cfWyk0wwOq6ewbnlhJsgb3G8QwTyJiYpTkYdfUsWK4QU4wjoen" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://ok8static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.33.2/css/okta-sign-in.min.css" integrity="sha384-fxx+LDlIb08xQnHiuttLUvFQjDs5lrUHVoq4eWhpVlSteR2K2q21MbrOCkWfWqqs" crossorigin="anonymous">
+
+<!-- Customizable css theme options. Link your own stylesheet or override styles inline. -->
+<link rel="stylesheet" type="text/css" href="" integrity="" crossorigin="anonymous">
+
+<!-- styles for custom sign in -->
+<link rel="stylesheet" type="text/css" href="https://ok8static.oktacdn.com/assets/loginpage/css/custom-signin.a91af2abfd04662e499bd3e151150dbf.css" integrity="sha384-BhMidK4jYIQaVFKNVHUvbfdgrt4NVlnlTZMsOMWLdWkme3j1JcshKDNQiMssd7sN" crossorigin="anonymous">
+
+
+<script type="text/javascript" nonce="">
+    window.onerror = function (msg, _url, _lineNo, _colNo, error) {
+        if (window.console && window.console.error) {
+            if (error) {
+                console.error(error);
+            } else {
+                console.error(msg);
+            }
+        }
+
+        // Return true to suppress "Script Error" alerts in IE
+        return true;
+    };
+</script>
+
+<style>
+
+</style>
+<script>
+    let $ = jQueryCourage
+
+</script>
+    <style nonce="">
+        #login-bg-image-id {
+            background-image: url('https://ok8static.oktacdn.com/fs/bco/7/fs02r9nhj8QyYnJhl3l7')
+        }
+/*Footer center in all screens */
+.auth-footer {
+    align-items: center;
+}
+.login-bg-image {
+    position: inherit;
+}
+body {
+    background-color: #094183;
+}
+
+#okta-sign-in .o-form-explain  {
+    color: #FFFFFF;
+    /*Colour change of text to white */
+}
+.identifier-container:before {
+visibility: hidden;
+/*Hide the grey logo */
+}
+.switch-channel-link{
+    color: #FFFFFF !important ;
+    /*Colour change of text to white for OV enrolment can't scan text*/
+}
+
+#okta-sign-in .siw-main-view .siw-main-body span.strong {
+        color: #FFFFFF;
+        /*Colour change of text to white */
+}
+#okta-sign-in.auth-container.main-container {
+    font-family: montserrat,Arial,Helvetica,sans-serif;
+    color: #FFFFFF;
+    
+    background-color: #094183;
+	border-color: #094183;
+	box-shadow: 0 0px 0
+    hsla(0,0%,68.6%,.12);
+}
+#okta-sign-in .auth-org-logo{
+max-width: 150px;
+max-height: 150px;
+}
+#okta-sign-in.auth-container h2 {
+    font-weight: 700;
+    color: #ffffff;
+}
+#okta-sign-in.auth-container .okta-form-label {
+    font-weight: 600;
+    color: #ffffff;
+}
+#okta-sign-in.auth-container .link, #okta-sign-in.auth-container .link:active, #okta-sign-in.auth-container .link:hover, #okta-sign-in.auth-container .link:link, #okta-sign-in.auth-container .link:visited {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+#okta-sign-in.auth-container .okta-sign-in-header {
+    border-bottom-color: #094183;
+}
+#okta-sign-in.auth-container .okta-form-subtitle {
+    color: #ffffff;  
+        padding-bottom: 20px;       
+}
+
+p {
+  color: #ffffff;
+  white-space: pre-line;
+  padding-bottom: 20 px;
+  }
+
+#okta-sign-in.auth-container h2, #okta-sign-in.auth-container h3 {
+    font-weight: 700;
+    color: #ffffff;
+}
+auth-container#okta-sign-in .okta-sign-in-beacon-border{
+
+border-color: #fff;
+} 
+
+#okta-sign-in .auth-beacon-border{
+
+border: 0px solid #fff;
+
+} 
+#okta-sign-in.auth-container .button-primary {
+    color: #fff;
+    background: #00875a !important;     
+	border-color: #032A58 !important;
+    box-shadow: none;
+}
+#okta-sign-in .auth-beacon{
+box-shadow: 0px 0px 0px 0px;
+} 
+
+/*Submit Logo */
+
+#okta-sign-in.auth-container .button-primary {
+    color: #fff;
+    background: #00875a !important;     
+	border-color: #032A58 !important;
+    box-shadow: none;
+}
+
+#okta-sign-in .auth-beacon{
+box-shadow: 0px 0px 0px 0px;
+} 
+
+#okta-sign-in .scan-instructions .scan-instructions-details{
+
+padding-right: 0px;
+padding-bottom:20px;
+ text-align: center;        
+} 
+
+#okta-sign-in .scan-instructions .scan-instructions-details-wrapper {
+    width: 100%;
+    margin-right: 0px;
+    float: left;
+}
+
+#okta-sign-in .scan-instructions .scan-instructions-qrcode-wrapper {
+    float: center;
+}
+
+#okta-sign-in .o-form-head{
+font-size: 18px;
+} 
+
+#okta-sign-in .ajax-form-editor .infobox, #okta-sign-in .edit-form .infobox, #okta-sign-in .form-content-wrap .infobox, #okta-sign-in .m-form .infobox, #okta-sign-in .o-form .infobox, #okta-sign-in .read-only-form .infobox, #okta-sign-in .v-form .infobox {
+    background-color: #094183;
+}
+
+#okta-sign-in .error-16-red::before, #okta-sign-in .error-16-small::before {
+    color: #fff;
+    background-color: #d93934;
+    padding: 1px;
+}
+
+#okta-sign-in .o-form .input-fix input[disabled], #okta-sign-in .o-form .input-fix input[readonly], #okta-sign-in .o-form .textarea-fix input[disabled], #okta-sign-in .o-form .textarea-fix input[readonly] {
+
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+#okta-sign-in .o-form-disabled, #okta-sign-in .o-form-saving .o-form-input > :not(.o-form-disabled) {
+    opacity: 1;
+    pointer-events: none;
+    display: block;
+}
+
+#okta-sign-in a {
+    white-space: pre-line;
+}
+
+#okta-sign-in a.help:active, #okta-sign-in a.help:link, #okta-sign-in a.help:visited,
+#okta-sign-in a.inline-link:active, #okta-sign-in a.inline-link:link, #okta-sign-in a.inline-link:visited {
+  text-decoration: underline;
+}
+
+#okta-sign-in .link, .auth-container#okta-sign-in .link:active, .auth-container#okta-sign-in .link:hover, .auth-container#okta-sign-in .link:link, .auth-container#okta-sign-in .link:visited {
+    color: ##FFFFFF;
+    text-decoration: underline;
+}
+
+.applogin-container h1, .applogin-container p {
+    padding: 10px;
+}
+
+.okta-container .applogin-banner .applogin-container h1 {
+    padding: 10px;
+}
+
+#okta-sign-in div[role="radiogroup"] .o-form-explain {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#okta-sign-in .ajax-form-editor .infobox, #okta-sign-in .edit-form .infobox, #okta-sign-in .form-content-wrap .infobox, #okta-sign-in .m-form .infobox, #okta-sign-in .o-form .infobox, #okta-sign-in .read-only-form .infobox, #okta-sign-in .v-form .infobox {
+    background-color: #e34843;
+    border: 0px;
+}
+
+#okta-sign-in .infobox-compact:before, #okta-sign-in .infobox-md:before, #okta-sign-in .infobox:before {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+#okta-sign-in .o-form-explain.o-form-input-error {
+    color: #fff;
+    padding-left: 40px;
+    position: relative;
+    display: none;
+}
+
+ #okta-sign-in .help-wrap .infobox.infobox-error::before, #okta-sign-in .infobox-error::before, #okta-sign-in .infobox.infobox-subtle.infobox-error::before {
+    background-color: #d63e3e;
+}
+.auth-container#okta-sign-in .o-form-explain.okta-form-input-error {
+    padding-top: 8px;
+    background-color: #d63e3e;
+}
+
+#okta-sign-in .o-form-input-error .icon-16 {
+    left: 5px;
+    position: absolute !important;
+    top: 7px;
+}
+
+#okta-sign-in .ajax-form-editor .infobox, #okta-sign-in .edit-form .infobox, #okta-sign-in .form-content-wrap .infobox, #okta-sign-in .m-form .infobox, #okta-sign-in .o-form .infobox, #okta-sign-in .read-only-form .infobox, #okta-sign-in .v-form .infobox {
+    background-color: #d63e3e;
+    border: 0px;
+}
+
+#okta-sign-in .help-wrap .infobox.infobox-warning::before, #okta-sign-in .infobox-warning::before, #okta-sign-in .infobox.infobox-subtle.infobox-warning::before {
+    background-color: #e34843;
+}
+
+.auth-container#okta-sign-in .okta-form-divider {
+    border-bottom-color: #35659e;
+}
+
+#okta-sign-in .scan-instructions .scan-instructions-qrcode-wrapper {
+     float: none !important; 
+    text-align: center !important;
+}
+ 
+#okta-sign-in .scan-instructions .qrcode-error, #okta-sign-in .scan-instructions .qrcode-success {
+  
+    width: 140px;
+    height: 140px;
+    top: 91px;
+    right: 89px;
+} 
+
+ @media only screen and (max-width: 360px){
+#okta-sign-in .scan-instructions .qrcode-error, #okta-sign-in .scan-instructions .qrcode-success {
+  
+    top: 110px;
+    right: 71px;
+	} 
+ }
+
+#okta-sign-in .enroll-factor-list .list-title {
+    color: #fff;
+}
+
+h1,h4, strong {color: #fff;}
+
+#okta-sign-in .infobox {
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+.applogin-container p {
+	background-color: #094183;
+	color: #fff;
+}
+
+.okta-container .applogin-banner {
+	background-color: #094183;
+}
+
+.okta-container .applogin-banner .applogin-background {
+    background-color: #094183;
+	box-shadow: 0px 0px 0px 0px hsla(0, 0%, 69%, 0.3);
+    
+}
+
+.authenticator-usage-text {
+    display : none ;
+}
+
+.select-css {
+                display: block;
+                font-size: 14px;
+                font-family: proxima nova, montserrat, Arial, Helvetica, sans-serif;
+                font-weight: 400;
+                color: #1d1d21;
+                line-height: 1.3;
+                padding: .6em 1.4em .5em .8em;
+                width: 100%;
+                max-width: 100%; /* useful when width is set to anything other than 100% */
+                box-sizing: border-box;
+                margin: 0;
+                border: 1px solid #aaa;
+                box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+                border-radius: .3em;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                appearance: none;
+                background-color: #fff;
+                background-position: right .7em top 50%, 0 0;
+            }
+
+    </style>
+<script src="https://ok8static.oktacdn.com/assets/js/mvc/loginpage/initLoginPage.pack.58de3be0c9b511a0fdfd7ea4f69b56fc.js" integrity="sha384-cJ4LGViZBmIttMPH+ao2RyPuN5BztKWYWIa4smbm56r1cUhkU/Dr6vTS3UoPbKTI" crossorigin="anonymous"></script></head>
+<body>
+    <div id="login-bg-image-id" class="login-bg-image tb--background"></div>
+    <div id="custom-applogin-banner" class="applogin-banner" style="position: relative; margin-bottom: 10px; min-width: 300px;"><div class="applogin-background" style="background-color: #094183; opacity: .9; position: absolute; top: 0; bottom: 0; left: 0; right: 0; box-shadow: 0 0 0px 0px hsl(0deg 0% 69% / 30%);"></div><div class="applogin-container" style="position: relative; width: 400px; min-width: 300px; margin: 0 auto; padding: 20px 0;box-sizing: border-box; text-align: center;"><p style="background: transparent; border: 0;font: inherit; margin: 0; outline: 0; padding: 0; vertical-align: baseline; display: block; margin-block-start: 0em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px;">Sign in with your University of Melbourne account to access OpenAthens</p> </div></div><div id="okta-login-container"><main data-se="auth-container" tabindex="-1" id="okta-sign-in" class="auth-container main-container no-beacon" style=""><div class="okta-sign-in-header auth-header"><h1><img src="https://d2glwx35mhbfwf.cloudfront.net/v4.10.0/logo-with-padding.svg" class="auth-org-logo" alt="The University of Melbourne"></h1><div data-type="beacon-container" class="beacon-container"></div></div><div class="auth-content"><div class="auth-content-inner"><div class="siw-main-view identify primary-auth"><div class="siw-main-header"><div></div></div><div class="siw-main-body"><form method="POST" action="/app/universityofmelbourne_openathens_1/exk4hneffrVDsz6Z03l6/sso/saml" data-se="o-form" slot="content" id="form20" class="ion-form o-form o-form-edit-mode"><div data-se="o-form-content" class="o-form-content o-form-theme clearfix"><h2 data-se="o-form-head" class="okta-form-title o-form-head">Log in</h2><div class="o-form-info-container"></div><div class="o-form-error-container" data-se="o-form-error-container" role="alert"></div><div class="o-form-fieldset-container" data-se="o-form-fieldset-container"><div data-se="o-form-fieldset-identifier" class="o-form-fieldset o-form-label-top"><div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input28">Username&nbsp;</label></div><div data-se="o-form-input-container" class="o-form-input"><p class="o-form-explain" id="describe-username">e.g. jsmith (not email address)</p><span data-se="o-form-input-identifier" class="o-form-input-name-identifier o-form-control okta-form-input-field input-fix"><input type="text" placeholder="" name="identifier" id="input28" value="" aria-label="" autocomplete="username" aria-describedby="describe-username" required="" style=""></span></div></div></div></div><div class="o-form-button-bar"><input class="button button-primary" type="submit" value="Next" data-type="save" style=""></div></form></div><div class="siw-main-footer"><div class="auth-footer"><a data-se="unlock" href="#" class="link js-unlock">Unlock account?</a><a data-se="help" href="https://www.unimelb.edu.au/cybersecurity/mfa" target="_blank" rel="noopener noreferrer" class="link js-help">Help</a><a data-se="custom" href="https://www.unimelb.edu.au/cybersecurity/privacy" class="link js-custom">Privacy collection notice</a></div></div></div></div></div></main></div>
+
+    <!--
+        "OktaUtil" defines a global OktaUtil object
+        that contains methods used to complete the Okta login flow.
+     -->
+    
+
+<div id="inactive-tab-main-div" style="display:none;">
+    <div class="inactive-tab-container">
+        <div class="inactive-tab-header">
+            <img src="https://ok8static.oktacdn.com/fs/bco/1/fs02r9nhj6HGtZHfu3l7" alt="University of Melbourne" class="report-org-logo">
+            <div class="divider"></div>
+        </div>
+        <div class="inactive-tab-content">
+            <h2 class="inactive-tab-content-title">The page has timed out</h2>
+            <p class="inactive-tab-details">If this page does not reload automatically, please refresh your browser.</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" nonce="">
+  var signInSuccessCallBackFunction;
+  var oktaData = {"redirectUri":"\x2Fapp\x2Funiversityofmelbourne_openathens_1\x2Fexk4hneffrVDsz6Z03l6\x2Fsso\x2Fsaml","isMobileSso":false,"orgSyncToAccountChooserEnabled":true,"fromUri":"","isMobileClientLogin":false,"requestContext":{"app":{"type":"object","value":{"name":"universityofmelbourne_openathens_1","label":"OpenAthens","id":"0oa4hnefgPkXnxJt03l6"}},"authentication":{"request":{},"protocol":{},"client":{"name":"universityofmelbourne_openathens_1","label":"OpenAthens","id":"0oa4hnefgPkXnxJt03l6"},"type":"object","value":{"request":{},"protocol":{}}},"target":{"clientId":"0oa4hnefgPkXnxJt03l6","name":"universityofmelbourne_openathens_1","label":"OpenAthens"}},"countryIso":"AU","inactiveTab":{"elementId":"inactive\x2Dtab\x2Dmain\x2Ddiv","avoidPageRefresh":true,"enabled":true},"signIn":{"logoText":"University\x20of\x20Melbourne\x20logo","brandName":"University\x20of\x20Melbourne","language":"en","consent":{"cancel":function(){window.location.href='https\x3A\x2F\x2Fsso.unimelb.edu.au\x2Flogin\x2Fstep\x2Dup\x2Fredirect\x3FstateToken\x3DeyJ6aXAiOiJERUYiLCJhbGlhcyI6ImVuY3J5cHRpb25rZXkiLCJ2ZXIiOiIxIiwib2lkIjoiMDBvMWs2emFmeGxFRVpWVHAzbDYiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0..b6V3OOZcTk08i65l.GKf9TzqdvTUv\x2DabUd5dXRAKLm6o3h756nTUnklzU_VTNXD9rPwE4jgccTuJdBbC9_39MMDqb7ZV4klGj5\x2Dk5eMw47ydP8vKCZFx34dAzNWTruYd7_ewlpxYjqMoUZjiRZlLSyx9qiLsQFI6uxUzpf0FZwvS\x2Del9CeSDyDbiDesPkkAeVYbQhCEBy1NRTDYyPExkaF9ikglAuJF5NRdx1jUPbAcy9JykaD0UyG2jLRMkJ2zqVmF9YqGNKXNqEg6X3SlK\x2DP3sSZRchrl4nQjnLEqZgu8YF5bLOT2MQUkyTL4UEQI1KeKucstTS1vWBxWW3_nEmgYkjBHORdr9svwzInoalBqUru0Nwr92ssqTSGguJwodSpeVyj59oMAU0XorzeZmEbWybbHJYhc3t1UvkCEYSKx1eHtLajREMOPBKJlO2MYnCQ37\x2Dr_s0ApsgBnkfHAC2XU1YAVPSx476iOSpssfxpzqRI2couNfMknK6udm\x2DBwFcOOL96AAOGw9TbrMXOipM4CKuMdCNb9AO7IIQT_b8n2ylDCwFpHox2b27of1EWwbBoJTaBJVL3ugrP6acmYtWH6KlYDHhSaZR8NkpMW9KQR8Xsq2\x2DyL9hQcOhC82s2BhkifAnRK0W5KsPF9fPgzmHafZm4J8kD66H94GkekEIYt85EaZFYyC3Kyop2vfJet_8PFxh8b\x2Dn0hoT89YH6csOjFgYbuFWWiY7n4biCEuBaQpMVBHzFYevqpFtMI0AmoMyD_AnqJmqYinEZHcKOV\x2DfI95Gh6Pz6zAOIXKOGO8djxWf8bXb1dV9eduzGROeepCYoeCaZCfdV8CbcHZYxzf14UUmTr89H\x2Dir16OcLgccDMvV66tjbSDsrDh64Z6lbirzt6cFPSWfBorvRjomN_A2XwFb3cGP5q\x2DOmguIuFK7yfHz0zii70\x2DxHcbJ1s\x2D\x2D_UUs4_OUjMnfsTPLSSVGP15PVDjHuGJqqSc85QQGWAdEqrnmeKhWOUOjkadacHK3mxjJ8UpML3OmxfO0G9wsuqowwhYKEpn7QgwVNilAspw64mH_yAUw17zYPzbpcLNV_tNP7IfouKzyd9A88lFcWjcD1fZJ6TAht5Vhpkhyo6kkSrckDgrFdYsEV6L5pZDPjfEhMHwdro\x2DdKsiHyxT5Du\x2DbG340lR_ehoqPxavO6CE2FDDzRDOLdZETdNM\x2DVrHZwRKSMT2S\x2DjnO4BdvktGFMDKJcvsdUDDGMT0HuDN3trEnqE0n4o_yBjII5sorjuFOQ\x2DzqmsmMKZXeyamnx\x2DB4pVvuPb1A_3L5XE1o8ZhrYDnfIHEhQrZNSTUrfqK_b5ntebvPOZUZFcGPKcO4QMq1od0sTq9FfET\x2DSUlWk5RwDWPKJSXdEqZ2usJQ5KYlyGJKmAjQgm_3kH\x2DEcgjPwur4XKwwbWeYTGuGLsbxuj0EoFlqUtG8RTv7s4lo23RfBlBtjv7daVeXwoxslQBeIx\x2D0NH3boNcPSQP18zRvZRGYOkoaAU9xpoqF2jPyVcBTm\x2DU\x2Db1JdRsnSXUT31fsMCqX86pkAxmFOIFBF3TnoBX_tKTDS_TIg2QPYtsVDaxNU35gNqFB14FICKxlfk3hWrwObyDIhFkPIWW_B7DPt2hIHZ_LNHwNQXUiYtQieR0TqOKs7e6ggzS3gg5_CskO8SAa3pdXpEE5lwWfrLI1J9_84nWSQrCkgEQ1VzrCIJ7vUVMyfOGk2AoVrP0Z0SoeRBP0MBOV90kBrxjhkh8DCQ1\x2DHvzqXuufU9p6TIydtIcKNb7qfbQhgijja1SC2gf5wBTeY74KjqUjtO6ROxRYQGgqaGKaAIm8ERRI0bgeQ04Sxk5fmEjTc_4pDPGaXrkr66GL6rYdXoDRj44tnh2F\x2DHLQle2nG12G\x2DxCiv5KRxRvyaJX5vEUJ3DcX4LpyVUC_MiGiNgiyfKi36a6l6aofRY82Kwsog5_JcTuEqP3sTu4rG7rK1imohcrwhOm4WHG2NKId0XBe2h1i3hx9MvSXPwVSpJYzIw5rfeTniq2Nw3tZjkwiBIoSxUnU4N0aJRN075uhNSLHdZ2uu2AYXldmdV2\x2DezR_sCat\x2DusaLNZnhb3hKHeRS_x7\x2Dt17wFdOb3c7tUWmZOYH4sEc8F9X_yTa_\x2DQxSfMW0qzo8tue0oNjM0_HXaBSUWhMFz508cgfXPkd4MY6LLwId\x2DgDI2MX963rIRnio0i_m8zLmI43LdY9fRu1l2eNdj4oEPeVWLYe4QL34olhgkqG_YY_6npHfMuBfcLBtQ4m2NNhH7Nsn\x2Dsz3eiyNlM9STMgddHkNoLerk1O8JoyS2BGktZFFSISJm8HLrjz8sX7f6Y78eYaZdxWYyXxLZXvw\x2DMiIZqpBXrS4sOo3sL50AMgIAq1GOldE021KfKKvE6xZxY4aDruVtA\x2D\x2DQrjz5e56_yz9PGROF3DO4ct5ChoocUGVJuntgRRxaUjxplzoTIBH4Fhcl2Ht2XLAIrZPlq85dwQGTvTT8oMziOCeQr3XephRZ0r7zIFSxaUpRfG01quWVLACpWPbVLM39jvZU__tS7FTEjHrj3a7xpLh8huCa2T4tFBK8SYl7bqZ3HNY_txaPnUsVN6WT8C3ZXST39buvWnqvl\x2DVghdMmV5YkifQlTIZtI6sqlSn2ineELlLejKcBcDsf9rk6sWsVZUhpO_UDPJWdGrwcahWIYLOB1S_fMP9XC4V4NC5adWTYal9hLQam6cuMeAMAOef8Akb1Sej73Kkb5JDE8xAdYb78ZsvwS6UGBdP5gf1l7RNl6wZfjqkMI\x2Dr_PJhiFsEexImRflUpHRJ0K70G_HkiGja8Vwzu2CbOKo7\x2DWj9WZVOUqxBenuoAel1KzNbiBU_AuXXTIUu3oPVQ3se0QeOKatjJ94AeTyDb4bdFOQvi_64AKKfqFdJh0ykEsxd1foGy9SY4taa2xh0g5yGrE4It\x2D36Bijaa8WyvB4mtQHD\x2DTnaYRq_L38S9ztCakWxBp4mCLRXjoXdKIPtsfN2HU9XrbnULHd98qw5MQnttEwOxH0aSZOQea6XFZfTseifcg3r1c_6S2llhqx1A2imVJTOwTOhb1oDX9QQOo5oD_bjkLMzIQBRqmW6uoDOZxXvaNUarJ3l2Q00yWHzGMevRSSGdq1R3sAaI3G_HYm4_D0iW365hlKmCRJct9cI0ZAjTFHz_3SMMW752_6q0kSWI_MhlvcXCbG_P3cbGQboLEnqo_85aR9LanML\x2D_wlbJruhsmbtKaeUxaRZTZok8h\x2DozDE9NeGIz31tPlrCqoJOhlI6o6EMLqzdpku2RmuvA9KFN31X2W0N3SXe8F3A0Xr05JLEiOJ3pKAis_wiLv_46N2QtzdBm6BbaIdu8DKdga3KiSD\x2DggEHJft4suNLrepEg49hq0kBqtLU\x2DEnTJoLcT5a4tRWBYZLoqdbifcpwc3g\x2DMqiXkab5nhEzJ9yQzZbYrZzc6ChqI4ZYyi8PZWQdc1p94EMdQBQKBiildqGtwBKTFxriKMoFJeYeLJgxZPCMi4yUwU4OVhFcLVDw5_ds_lm_HSfKQW_nwbUTLo4RIDQjkLhkOSNK6sbacSGR4qBdpdpCG2f5lqkXJmLaAhEDnXvP5sapGd3HFZFSgZhyP5n_SUmVq5sDrOPyY0rgWpDZXfKW8jzg\x2DmnEtVLzBRSso9cRzkbvxd9qGCmznfSd4XBTzB9qsCEt\x2DURBpM\x2Du4H0p6plJ9yvZU7CTWhH\x2DqMmQPjOlkRAPoMOIMc8IL8AceDPJK184UZNxHDLCU6LhoIZe_Y1lbR0fbnZDTMJj4snANlucSKtWVzlltc_gzGA\x2Du6SU2ulFWTd9RZIbG_zusZC7OwmaV5KzOXmaJEq4M0sn2u7pjloBsOs\x2DfTKUVU4eCQUAm8U\x2DGcmI1jycvG8yQHBbz6s0gWtRt7Gfyc5_Yk3YPEYZUiaIqCCXIOEbCNVN41oSskzjL_Yphxg3YhBorjRYEWbw_uw\x2DtRds7ZYX_3ogttlWU6OhOsQ4xa36bkztYbjK18gwQOH82glGoHTtmO2I2OrB4NRk2Zc\x2DJW9y9Nr_PQQzPrqu7n6S9nlGAFho42Pm6rZYNIGYxLkIa6uQXGwWzXUzvQkZmiCZy3P2wpp07fX3056tRqQNdJmYjvkoMpk6Uj_ptAl5mYGRUSc_mI3G7CucuQqeCPazQ5GRGCCJR45NuVhoiUjz_4dRIxZG7aqxMGEZZnbdUtvOWqDiHPfx7xCYVESyyDchwDpss\x2DgcEivN2nVlfsDJMEA9SX8uarh333g5LAHXlfp\x2D19cTb3tPkAEhaH5A_UvXuRpVbUE9S1re8vgVob9kruIkKdsnL0_DTTK32Nn4ylKFxfvHo5hNTSz\x2DsD003TBzig0BGjAHIObWkAbtPf8O0_MCvrReNeVGIDvVMEhAGl5o\x2DkhGGklvebt1jx8lk\x2DgGjewf50V_aOe9IKJso3sZnB_Tvxtt33k96pp\x2DLtJ4WgVpeSETbzTsfPT7Ik\x2DcSs_6Cnt9vcBKXlKYwfXQHRDrwArvQtoRv0Zn4WS1\x2DGIWd6eDeJPqiNuM0PABpk5AjRVEsj7z\x2DznnXfG411yW7ayZW_KnunHD8Df9KaYIbi4a5_lUDQdoTF9qOJm9LZRAsWHjGqawHav1tWBbPbovJ8yvwYVA8J9rqPaMP5nrBzdFhaIzbmdTXnBooIofjFHMuLfROC9nHivrjmBE_lGrxsw5rDwW13akADA0leRrVY0vDFBhCB2547bzZti0NzSQ1rCPHKzyceZsggtdtS5t8n7\x2DdpHxTAXUYT56QkaDeddVHC1ALLXrtisMOm\x2D0mYxPIErOIO_Jr8OmPXLRkME8TF2AMiB8VcCuk1OX4Qve6c5P841J8Jbj6jODQ9zbFUYQirfgjzSeYr7XXVOa8ZlM1sK5275J3rPpzCTsrJwuvwMmhKgfRtNLj\x2DV5hUKNemNZXS\x2DAR4RpLt3w3xB1I0wxzcpWWAUCEZUgDRQWOaEv2zw51_g0m_MGQIf8BKbXurYSGELM9678HhKMeqdCx\x2DE\x2DoZ7SKWmGEoZGeBloPFgQuDUKHbfST6T9Ow6vzGtQSyujag2LLN1XKb3UqdevqBL56jHHcpk4luv2puK4fX36sonzhSY4s4kwUnLip_sSF0RvKvofqNfnXSU01znyeeSOQlg5zJh0aVrhTX1vpD399deD8vwMzGcIK7Ail\x2DdZR_hHYzu28q4x65INc8tk7xL61PcO9EC1L3RLGhhdHLksL6xplrLGNYLN1_52WtpyuOX2QPgcDnFIGKoS\x2Df80dtwZJiSWGd7hE5h9hYz_etRnRmX8jlcH2RJE5NfMRKZ2UxdsUcLXO5rKiy3JOs567ls5qsf02acvppCA2InYc2vvQGzId3k454wPgSvAU48OrVdVxX7W1AI1eU4_vr3tG0JncfL9_nieIW61vtU3cABbHplrfckbCSI6Nzp0yJe7eGpBiqz\x2D7oBchlrvLDNWps\x2D7Qh\x2D8X9mwdBFt0vAeYVf82x0NOh_9LG0dAms87QdmsSzZoQK1q\x2DGKlKPxKJV_rKb5pvei7kG_A604CkJCTKuO11dlGrHMuC8MQly1EINGTUUHisXkNKjT13Y1BCB\x2Db2sJAFR\x2Dwvq8fwbVeZQGcAqyaDHC9D\x2DiN5snw079g5w4PcZX\x2DNS76\x2DDXPhQuriDqa6kRdQGnSZ\x2DudeLZFzJIFPOVpWZgdUPLgDjLgK4HMVX766qKDAZV8Spg0L\x2D6dRLId\x2DebGrCovrsN4hxvmXW9q9zqv1mu5BDuNA399i2HBYpZGTXVsl0rQdcZpbQ3OwmLv8WMb_Ba0oHleA73vRNGwPVsr3PSzFKMt7LhmzSrfCdG3DT\x2DEp\x2DbNQgionLTlykuTENiJPGJY4ASnL1gBVpNVcDuQc_K3hVCe8X6iNrJiJ5r_J_mEV6hC\x2DIyHvao72OdQNwBowgGfurHFft8MdZKhKSxJJLaJXYzOo1VaPkQ7s822NKqWPBxBX5Bkmm6UdCvzWphjBgLDYBrvgWTVKNpLySpk0vVBBHF7RJY76FYKdi4wv4q6JDgzWTzh1_01VwNu6yrlvlQpzPk7U6qSl4XmERgF6VvZ1L0WUHsIGmUWPYJHmJWdveMu79sizkAGfWiejOv3hzaQysX0G3wHD1K05scdSu\x2DqeiQ_r9UUXqMoamey0HnJZodtzLQ70m4smRmcjKppGsw4Atb1hPAwgvm57DgSfoC5F1wlYU5jBNucLnYA5YrS_4RAhrpujJJPV_uMfhbfxaLLQmLdrWf5PRyPdzWBb8se0tVyCZ1Tsp49Mh21mgxQDIl2ZIDz4KglcXBQO\x2D7yaZ\x2DVoHC_XmJd5b5D7avXMFEd\x2Dnp9dt96NGOJoQlkHhTpFO5jmWDwisrgr\x2DjBjV7K4hWoGRqhQme2Wax0ZXco28PkW8GHc\x2D2AMSFWeLq\x2Dzzrdd1uogT1oYmShM8QlcAr3o.H2lvWsP70TXm1y6vdP05mQ';}},"i18n":{"en":{"primaryauth.username.tooltip":"e.g.\x20jsmith","account.unlock.email.or.username.placeholder":"Email\x20or\x20Username","forgotpassword":"Forgot\x20password\x3F","mfa.challenge.password.placeholder":"Password","help":"Help","password.forgot.email.or.username.tooltip":"Email\x20or\x20Username","needhelp":"Need\x20help\x20signing\x20in\x3F","primaryauth.username.placeholder":"Username","password.forgot.email.or.username.placeholder":"Email\x20or\x20Username","account.unlock.email.or.username.tooltip":"Email\x20or\x20Username","unlockaccount":"Unlock\x20account\x3F","primaryauth.password.placeholder":"Password","primaryauth.title":"Sign\x20In"}},"features":{"hideSignOutLinkInMFA":false,"emailRecovery":true,"deviceFingerprinting":true,"showIdentifier":true,"consent":true,"useDeviceFingerprintForSecurityImage":true,"customExpiredPassword":true,"router":true,"showPasswordToggleOnSignInPage":true,"securityImage":false,"autoPush":true,"smsRecovery":false,"idpDiscovery":false,"selfServiceUnlock":true,"webauthn":true,"passwordlessAuth":true,"showPasswordRequirementsAsHtmlList":true,"registration":false,"rememberMe":true,"callRecovery":false,"multiOptionalFactorEnroll":true},"baseUrl":"https\x3A\x2F\x2Fsso.unimelb.edu.au","helpSupportNumber":"\x2B61\x203\x20834\x2040888","assets":{"baseUrl":"https\x3A\x2F\x2Fok8static.oktacdn.com\x2Fassets\x2Fjs\x2Fsdk\x2Fokta\x2Dsignin\x2Dwidget\x2F7.33.2"},"customButtons":[],"idpDiscovery":{"requestContext":""},"logo":"https\x3A\x2F\x2Fok8static.oktacdn.com\x2Ffs\x2Fbco\x2F1\x2Ffs02r9nhj6HGtZHfu3l7","stateToken":"eyJ6aXAiOiJERUYiLCJhbGlhcyI6ImVuY3J5cHRpb25rZXkiLCJ2ZXIiOiIxIiwib2lkIjoiMDBvMWs2emFmeGxFRVpWVHAzbDYiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0..b6V3OOZcTk08i65l.GKf9TzqdvTUv\x2DabUd5dXRAKLm6o3h756nTUnklzU_VTNXD9rPwE4jgccTuJdBbC9_39MMDqb7ZV4klGj5\x2Dk5eMw47ydP8vKCZFx34dAzNWTruYd7_ewlpxYjqMoUZjiRZlLSyx9qiLsQFI6uxUzpf0FZwvS\x2Del9CeSDyDbiDesPkkAeVYbQhCEBy1NRTDYyPExkaF9ikglAuJF5NRdx1jUPbAcy9JykaD0UyG2jLRMkJ2zqVmF9YqGNKXNqEg6X3SlK\x2DP3sSZRchrl4nQjnLEqZgu8YF5bLOT2MQUkyTL4UEQI1KeKucstTS1vWBxWW3_nEmgYkjBHORdr9svwzInoalBqUru0Nwr92ssqTSGguJwodSpeVyj59oMAU0XorzeZmEbWybbHJYhc3t1UvkCEYSKx1eHtLajREMOPBKJlO2MYnCQ37\x2Dr_s0ApsgBnkfHAC2XU1YAVPSx476iOSpssfxpzqRI2couNfMknK6udm\x2DBwFcOOL96AAOGw9TbrMXOipM4CKuMdCNb9AO7IIQT_b8n2ylDCwFpHox2b27of1EWwbBoJTaBJVL3ugrP6acmYtWH6KlYDHhSaZR8NkpMW9KQR8Xsq2\x2DyL9hQcOhC82s2BhkifAnRK0W5KsPF9fPgzmHafZm4J8kD66H94GkekEIYt85EaZFYyC3Kyop2vfJet_8PFxh8b\x2Dn0hoT89YH6csOjFgYbuFWWiY7n4biCEuBaQpMVBHzFYevqpFtMI0AmoMyD_AnqJmqYinEZHcKOV\x2DfI95Gh6Pz6zAOIXKOGO8djxWf8bXb1dV9eduzGROeepCYoeCaZCfdV8CbcHZYxzf14UUmTr89H\x2Dir16OcLgccDMvV66tjbSDsrDh64Z6lbirzt6cFPSWfBorvRjomN_A2XwFb3cGP5q\x2DOmguIuFK7yfHz0zii70\x2DxHcbJ1s\x2D\x2D_UUs4_OUjMnfsTPLSSVGP15PVDjHuGJqqSc85QQGWAdEqrnmeKhWOUOjkadacHK3mxjJ8UpML3OmxfO0G9wsuqowwhYKEpn7QgwVNilAspw64mH_yAUw17zYPzbpcLNV_tNP7IfouKzyd9A88lFcWjcD1fZJ6TAht5Vhpkhyo6kkSrckDgrFdYsEV6L5pZDPjfEhMHwdro\x2DdKsiHyxT5Du\x2DbG340lR_ehoqPxavO6CE2FDDzRDOLdZETdNM\x2DVrHZwRKSMT2S\x2DjnO4BdvktGFMDKJcvsdUDDGMT0HuDN3trEnqE0n4o_yBjII5sorjuFOQ\x2DzqmsmMKZXeyamnx\x2DB4pVvuPb1A_3L5XE1o8ZhrYDnfIHEhQrZNSTUrfqK_b5ntebvPOZUZFcGPKcO4QMq1od0sTq9FfET\x2DSUlWk5RwDWPKJSXdEqZ2usJQ5KYlyGJKmAjQgm_3kH\x2DEcgjPwur4XKwwbWeYTGuGLsbxuj0EoFlqUtG8RTv7s4lo23RfBlBtjv7daVeXwoxslQBeIx\x2D0NH3boNcPSQP18zRvZRGYOkoaAU9xpoqF2jPyVcBTm\x2DU\x2Db1JdRsnSXUT31fsMCqX86pkAxmFOIFBF3TnoBX_tKTDS_TIg2QPYtsVDaxNU35gNqFB14FICKxlfk3hWrwObyDIhFkPIWW_B7DPt2hIHZ_LNHwNQXUiYtQieR0TqOKs7e6ggzS3gg5_CskO8SAa3pdXpEE5lwWfrLI1J9_84nWSQrCkgEQ1VzrCIJ7vUVMyfOGk2AoVrP0Z0SoeRBP0MBOV90kBrxjhkh8DCQ1\x2DHvzqXuufU9p6TIydtIcKNb7qfbQhgijja1SC2gf5wBTeY74KjqUjtO6ROxRYQGgqaGKaAIm8ERRI0bgeQ04Sxk5fmEjTc_4pDPGaXrkr66GL6rYdXoDRj44tnh2F\x2DHLQle2nG12G\x2DxCiv5KRxRvyaJX5vEUJ3DcX4LpyVUC_MiGiNgiyfKi36a6l6aofRY82Kwsog5_JcTuEqP3sTu4rG7rK1imohcrwhOm4WHG2NKId0XBe2h1i3hx9MvSXPwVSpJYzIw5rfeTniq2Nw3tZjkwiBIoSxUnU4N0aJRN075uhNSLHdZ2uu2AYXldmdV2\x2DezR_sCat\x2DusaLNZnhb3hKHeRS_x7\x2Dt17wFdOb3c7tUWmZOYH4sEc8F9X_yTa_\x2DQxSfMW0qzo8tue0oNjM0_HXaBSUWhMFz508cgfXPkd4MY6LLwId\x2DgDI2MX963rIRnio0i_m8zLmI43LdY9fRu1l2eNdj4oEPeVWLYe4QL34olhgkqG_YY_6npHfMuBfcLBtQ4m2NNhH7Nsn\x2Dsz3eiyNlM9STMgddHkNoLerk1O8JoyS2BGktZFFSISJm8HLrjz8sX7f6Y78eYaZdxWYyXxLZXvw\x2DMiIZqpBXrS4sOo3sL50AMgIAq1GOldE021KfKKvE6xZxY4aDruVtA\x2D\x2DQrjz5e56_yz9PGROF3DO4ct5ChoocUGVJuntgRRxaUjxplzoTIBH4Fhcl2Ht2XLAIrZPlq85dwQGTvTT8oMziOCeQr3XephRZ0r7zIFSxaUpRfG01quWVLACpWPbVLM39jvZU__tS7FTEjHrj3a7xpLh8huCa2T4tFBK8SYl7bqZ3HNY_txaPnUsVN6WT8C3ZXST39buvWnqvl\x2DVghdMmV5YkifQlTIZtI6sqlSn2ineELlLejKcBcDsf9rk6sWsVZUhpO_UDPJWdGrwcahWIYLOB1S_fMP9XC4V4NC5adWTYal9hLQam6cuMeAMAOef8Akb1Sej73Kkb5JDE8xAdYb78ZsvwS6UGBdP5gf1l7RNl6wZfjqkMI\x2Dr_PJhiFsEexImRflUpHRJ0K70G_HkiGja8Vwzu2CbOKo7\x2DWj9WZVOUqxBenuoAel1KzNbiBU_AuXXTIUu3oPVQ3se0QeOKatjJ94AeTyDb4bdFOQvi_64AKKfqFdJh0ykEsxd1foGy9SY4taa2xh0g5yGrE4It\x2D36Bijaa8WyvB4mtQHD\x2DTnaYRq_L38S9ztCakWxBp4mCLRXjoXdKIPtsfN2HU9XrbnULHd98qw5MQnttEwOxH0aSZOQea6XFZfTseifcg3r1c_6S2llhqx1A2imVJTOwTOhb1oDX9QQOo5oD_bjkLMzIQBRqmW6uoDOZxXvaNUarJ3l2Q00yWHzGMevRSSGdq1R3sAaI3G_HYm4_D0iW365hlKmCRJct9cI0ZAjTFHz_3SMMW752_6q0kSWI_MhlvcXCbG_P3cbGQboLEnqo_85aR9LanML\x2D_wlbJruhsmbtKaeUxaRZTZok8h\x2DozDE9NeGIz31tPlrCqoJOhlI6o6EMLqzdpku2RmuvA9KFN31X2W0N3SXe8F3A0Xr05JLEiOJ3pKAis_wiLv_46N2QtzdBm6BbaIdu8DKdga3KiSD\x2DggEHJft4suNLrepEg49hq0kBqtLU\x2DEnTJoLcT5a4tRWBYZLoqdbifcpwc3g\x2DMqiXkab5nhEzJ9yQzZbYrZzc6ChqI4ZYyi8PZWQdc1p94EMdQBQKBiildqGtwBKTFxriKMoFJeYeLJgxZPCMi4yUwU4OVhFcLVDw5_ds_lm_HSfKQW_nwbUTLo4RIDQjkLhkOSNK6sbacSGR4qBdpdpCG2f5lqkXJmLaAhEDnXvP5sapGd3HFZFSgZhyP5n_SUmVq5sDrOPyY0rgWpDZXfKW8jzg\x2DmnEtVLzBRSso9cRzkbvxd9qGCmznfSd4XBTzB9qsCEt\x2DURBpM\x2Du4H0p6plJ9yvZU7CTWhH\x2DqMmQPjOlkRAPoMOIMc8IL8AceDPJK184UZNxHDLCU6LhoIZe_Y1lbR0fbnZDTMJj4snANlucSKtWVzlltc_gzGA\x2Du6SU2ulFWTd9RZIbG_zusZC7OwmaV5KzOXmaJEq4M0sn2u7pjloBsOs\x2DfTKUVU4eCQUAm8U\x2DGcmI1jycvG8yQHBbz6s0gWtRt7Gfyc5_Yk3YPEYZUiaIqCCXIOEbCNVN41oSskzjL_Yphxg3YhBorjRYEWbw_uw\x2DtRds7ZYX_3ogttlWU6OhOsQ4xa36bkztYbjK18gwQOH82glGoHTtmO2I2OrB4NRk2Zc\x2DJW9y9Nr_PQQzPrqu7n6S9nlGAFho42Pm6rZYNIGYxLkIa6uQXGwWzXUzvQkZmiCZy3P2wpp07fX3056tRqQNdJmYjvkoMpk6Uj_ptAl5mYGRUSc_mI3G7CucuQqeCPazQ5GRGCCJR45NuVhoiUjz_4dRIxZG7aqxMGEZZnbdUtvOWqDiHPfx7xCYVESyyDchwDpss\x2DgcEivN2nVlfsDJMEA9SX8uarh333g5LAHXlfp\x2D19cTb3tPkAEhaH5A_UvXuRpVbUE9S1re8vgVob9kruIkKdsnL0_DTTK32Nn4ylKFxfvHo5hNTSz\x2DsD003TBzig0BGjAHIObWkAbtPf8O0_MCvrReNeVGIDvVMEhAGl5o\x2DkhGGklvebt1jx8lk\x2DgGjewf50V_aOe9IKJso3sZnB_Tvxtt33k96pp\x2DLtJ4WgVpeSETbzTsfPT7Ik\x2DcSs_6Cnt9vcBKXlKYwfXQHRDrwArvQtoRv0Zn4WS1\x2DGIWd6eDeJPqiNuM0PABpk5AjRVEsj7z\x2DznnXfG411yW7ayZW_KnunHD8Df9KaYIbi4a5_lUDQdoTF9qOJm9LZRAsWHjGqawHav1tWBbPbovJ8yvwYVA8J9rqPaMP5nrBzdFhaIzbmdTXnBooIofjFHMuLfROC9nHivrjmBE_lGrxsw5rDwW13akADA0leRrVY0vDFBhCB2547bzZti0NzSQ1rCPHKzyceZsggtdtS5t8n7\x2DdpHxTAXUYT56QkaDeddVHC1ALLXrtisMOm\x2D0mYxPIErOIO_Jr8OmPXLRkME8TF2AMiB8VcCuk1OX4Qve6c5P841J8Jbj6jODQ9zbFUYQirfgjzSeYr7XXVOa8ZlM1sK5275J3rPpzCTsrJwuvwMmhKgfRtNLj\x2DV5hUKNemNZXS\x2DAR4RpLt3w3xB1I0wxzcpWWAUCEZUgDRQWOaEv2zw51_g0m_MGQIf8BKbXurYSGELM9678HhKMeqdCx\x2DE\x2DoZ7SKWmGEoZGeBloPFgQuDUKHbfST6T9Ow6vzGtQSyujag2LLN1XKb3UqdevqBL56jHHcpk4luv2puK4fX36sonzhSY4s4kwUnLip_sSF0RvKvofqNfnXSU01znyeeSOQlg5zJh0aVrhTX1vpD399deD8vwMzGcIK7Ail\x2DdZR_hHYzu28q4x65INc8tk7xL61PcO9EC1L3RLGhhdHLksL6xplrLGNYLN1_52WtpyuOX2QPgcDnFIGKoS\x2Df80dtwZJiSWGd7hE5h9hYz_etRnRmX8jlcH2RJE5NfMRKZ2UxdsUcLXO5rKiy3JOs567ls5qsf02acvppCA2InYc2vvQGzId3k454wPgSvAU48OrVdVxX7W1AI1eU4_vr3tG0JncfL9_nieIW61vtU3cABbHplrfckbCSI6Nzp0yJe7eGpBiqz\x2D7oBchlrvLDNWps\x2D7Qh\x2D8X9mwdBFt0vAeYVf82x0NOh_9LG0dAms87QdmsSzZoQK1q\x2DGKlKPxKJV_rKb5pvei7kG_A604CkJCTKuO11dlGrHMuC8MQly1EINGTUUHisXkNKjT13Y1BCB\x2Db2sJAFR\x2Dwvq8fwbVeZQGcAqyaDHC9D\x2DiN5snw079g5w4PcZX\x2DNS76\x2DDXPhQuriDqa6kRdQGnSZ\x2DudeLZFzJIFPOVpWZgdUPLgDjLgK4HMVX766qKDAZV8Spg0L\x2D6dRLId\x2DebGrCovrsN4hxvmXW9q9zqv1mu5BDuNA399i2HBYpZGTXVsl0rQdcZpbQ3OwmLv8WMb_Ba0oHleA73vRNGwPVsr3PSzFKMt7LhmzSrfCdG3DT\x2DEp\x2DbNQgionLTlykuTENiJPGJY4ASnL1gBVpNVcDuQc_K3hVCe8X6iNrJiJ5r_J_mEV6hC\x2DIyHvao72OdQNwBowgGfurHFft8MdZKhKSxJJLaJXYzOo1VaPkQ7s822NKqWPBxBX5Bkmm6UdCvzWphjBgLDYBrvgWTVKNpLySpk0vVBBHF7RJY76FYKdi4wv4q6JDgzWTzh1_01VwNu6yrlvlQpzPk7U6qSl4XmERgF6VvZ1L0WUHsIGmUWPYJHmJWdveMu79sizkAGfWiejOv3hzaQysX0G3wHD1K05scdSu\x2DqeiQ_r9UUXqMoamey0HnJZodtzLQ70m4smRmcjKppGsw4Atb1hPAwgvm57DgSfoC5F1wlYU5jBNucLnYA5YrS_4RAhrpujJJPV_uMfhbfxaLLQmLdrWf5PRyPdzWBb8se0tVyCZ1Tsp49Mh21mgxQDIl2ZIDz4KglcXBQO\x2D7yaZ\x2DVoHC_XmJd5b5D7avXMFEd\x2Dnp9dt96NGOJoQlkHhTpFO5jmWDwisrgr\x2DjBjV7K4hWoGRqhQme2Wax0ZXco28PkW8GHc\x2D2AMSFWeLq\x2Dzzrdd1uogT1oYmShM8QlcAr3o.H2lvWsP70TXm1y6vdP05mQ","helpLinks":{"help":"https\x3A\x2F\x2Fwww.unimelb.edu.au\x2Fcybersecurity\x2Fmfa","forgotPassword":"","unlock":"","custom":[{"text":"Privacy\x20collection\x20notice","href":"https\x3A\x2F\x2Fwww.unimelb.edu.au\x2Fcybersecurity\x2Fprivacy"}]},"piv":{}},"accountChooserDiscoveryUrl":"https\x3A\x2F\x2Flogin.okta.com\x2Fdiscovery\x2Fiframe.html"};
+
+  var runLoginPage = function(fn) {
+    var mainScript = document.createElement('script');
+    mainScript.src = "https://ok8static.oktacdn.com/assets/js/mvc/loginpage/initLoginPage.pack.58de3be0c9b511a0fdfd7ea4f69b56fc.js";
+    mainScript.integrity = "sha384-cJ4LGViZBmIttMPH+ao2RyPuN5BztKWYWIa4smbm56r1cUhkU/Dr6vTS3UoPbKTI";
+    mainScript.crossOrigin = "anonymous";
+    document.getElementsByTagName('head')[0].appendChild(mainScript);
+    fn && mainScript.addEventListener('load', function () { setTimeout(fn, 1) });
+  };
+
+  var OktaUtil = {
+    _addClass: function(el, className) {
+      if(el) {
+        var elementClasses = el.className.split(" ");
+        if (elementClasses.indexOf(className) == -1) {
+          el.className += " " + className;
+        }
+      }
+    },
+
+    _removeElement: function(el) {
+      if(el) {
+        el.parentNode.removeChild(el);
+      }
+    },
+
+    _hideElement: function(el) {
+      if(el) {
+        el.style.display = 'none';
+      }
+    },
+
+    _isDocumentVisible: function() {
+      return document.visibilityState === 'visible';
+    },
+
+    addLoginContainerClass: function () {
+      this._addClass(document.getElementById('okta-login-container'), 'login-container');
+    },
+
+    showUnsupportedCookieWarning: function () {
+      document.getElementById('okta-sign-in').removeAttribute('style');
+      document.getElementById('unsupported-cookie').removeAttribute('style');
+    },
+
+    removeUnsupportedCookieWarning: function () {
+      this._removeElement(document.getElementById('okta-sign-in'));
+    },
+
+    hideOktaLoginContainer: function () {
+      this._hideElement(document.getElementById('okta-login-container'));
+    },
+
+    isChromeOs:  function () {
+      return /\bCrOS\b/.test(navigator.userAgent);
+    },
+
+    addChromeOSScript: function() {
+      var chromeOSScript = document.createElement('script');
+      chromeOSScript.src = "/js/google/users-1.0.js";
+      document.getElementsByTagName('head')[0].appendChild(chromeOSScript);
+    },
+
+    getSignInWidgetConfig: function () {
+        if (oktaData.inactiveTab && oktaData.inactiveTab.enabled && !this._isDocumentVisible() && !oktaData.inactiveTab.avoidPageRefresh) {
+            // Show a loading state and wait for the visibility event
+            this.hideOktaLoginContainer();
+            // remove stateToken so SIW does not attempt a login flow
+            oktaData.signIn.stateToken = undefined;
+        }
+        return oktaData.signIn;
+    },
+
+    completeLogin: function (res) {
+      signInSuccessCallBackFunction(res);
+    },
+
+    getRequestContext: function () {
+      return oktaData.requestContext;
+    },
+
+    setRedirectUri: function (uri) {
+      oktaData.redirectUri = uri;
+    },
+
+    init: function () {
+      if (!navigator.cookieEnabled) {
+        this.showUnsupportedCookieWarning();
+        this.hideOktaLoginContainer();
+      } else {
+        this.removeUnsupportedCookieWarning();
+
+        if (oktaData.inactiveTab && oktaData.inactiveTab.enabled && !this._isDocumentVisible()) {
+          try {
+            oktaData.inactiveTab.renderFnBackup = OktaSignIn.prototype.renderEl;
+          } catch (err) {
+            // no op - graceful handling OktaSignIn undefined case
+          }
+
+          // pause render sign-in widget when browser tab is inactive
+          if (!oktaData.inactiveTab.renderFnBackup) {
+            // for older SIW, renderFnBackup is undefined, fallback to full page reload
+            oktaData.inactiveTab.fallbackFullPageReload = true;
+            // Show a loading state and wait for the visibility event
+            this.hideOktaLoginContainer();
+            // remove stateToken so SIW does not attempt a login flow
+            oktaData.signIn.stateToken = undefined;
+          } else {
+            // for newer SIW, override renderEl function so SIW does not attempt a login flow
+            OktaSignIn.prototype.renderEl = function () {
+              oktaData.inactiveTab.renderArgsBackup = arguments;
+              oktaData.inactiveTab.signInInstance = this;
+              try {
+                return new Promise(function (resolve, reject) {
+                  oktaData.inactiveTab.renderResolve = resolve;
+                  oktaData.inactiveTab.renderReject = reject;
+                });
+              } catch (err) {
+                // return nothing if promise is not supported, since promise chaining won't work anyway
+              }
+            }
+          }
+
+          // event handler to resume render sign-in widget
+          document.addEventListener('visibilitychange', function checkVisibilityAndCallSuccess() {
+            if (document.visibilityState === 'visible') {
+              try {
+                document.removeEventListener('visibilitychange', checkVisibilityAndCallSuccess);
+                const inactiveTabDiv = document.getElementById(oktaData.inactiveTab.elementId);
+                inactiveTabDiv.style.display = 'none';
+
+                // resume render sign-in widget
+                if (oktaData.inactiveTab.renderFnBackup && oktaData.inactiveTab.renderArgsBackup) {
+                  OktaSignIn.prototype.renderEl = oktaData.inactiveTab.renderFnBackup;
+                  var result = oktaData.inactiveTab.signInInstance.renderEl.apply(oktaData.inactiveTab.signInInstance, oktaData.inactiveTab.renderArgsBackup);
+                  if (result && result.then) {
+                    result.then(oktaData.inactiveTab.renderResolve, oktaData.inactiveTab.renderReject);
+                  }
+                }
+              } catch (err) {
+                oktaData.inactiveTab.fallbackFullPageReload = true;
+              }
+              if (oktaData.inactiveTab.fallbackFullPageReload) {
+                location.reload();
+              }
+            }
+          });
+        }
+
+        // add class if app login banner is present
+        if (oktaData.isAppBannerVisible) {
+          this.addLoginContainerClass();
+        }
+
+        oktaData.isCustomSignIn = true;
+        oktaData.hasChromeOSFeature = this.isChromeOs();
+        if (oktaData.hasChromeOSFeature) {
+          this.addChromeOSScript();
+        }
+        runLoginPage(function () {
+          var res = OktaLogin.initLoginPage(oktaData);
+          oktaData.signIn = res.signIn;
+          signInSuccessCallBackFunction = res.signInSuccessCallbackFn;
+
+        });
+      }
+    }
+  };
+  OktaUtil.init();
+  //# sourceURL=OktaUtil.js
+</script>
+
+
+
+    <script type="text/javascript" nonce="">
+        // "config" object contains default widget configuration
+        // with any custom overrides defined in your admin settings.
+        var QRskipped = false;  // define variable for use in QR skip (for mobiles)
+        var config = OktaUtil.getSignInWidgetConfig();
+
+        //Logo override with the one below
+       config.logo='https://d2glwx35mhbfwf.cloudfront.net/v4.10.0/logo-with-padding.svg';
+       config.features.rememberMyUsernameOnOIE = true;
+       config.defaultCountryCode = "AU";
+        config.i18n = {
+            //Updated text values to correspond wtih OIE text
+            'en': {
+                'primaryauth.username.placeholder': 'Username',
+                'primaryauth.username.tooltip': 'e.g. jsmith (not email address)',
+                'oie.enroll.google_authenticator.scanBarcode.description': "1. Launch app on your mobile device and press Add account. Use your mobile to scan the QR code below.",
+                'oie.enroll.google_authenticator.cannotScanBarcode.title': " Can't scan QR code?",
+                'oie.yubikey.description': 'Click in the textfield below, then tap your YubiKey',
+                'oie.signin': 'Log in',
+                'oie.select.authenticators.enroll.title': 'Set up two-factor authentication',
+                'oie.select.authenticators.enroll.subtitle': 'Important: Please keep the Okta Verify App installed on your mobile device as you may be prompted to confirm your identity at any time.The University requires two-factor authentication to add an additional layer of security when signing in to your account',
+                'oform.next': 'Next',
+                'enroll.totp.cannotScan': " Can't scan?  Click to send activation via SMS, email or enter manually",
+                'oie.enroll.switch.authenticator': "\u2190 Back to factor list",
+                'oie.enroll.google_authenticator.scanBarcode.title': 'Scan QR code',
+                'oie.enroll.google_authenticator.manualSetupInstructions': '1. Open the app on your mobile device 2. Enter your username 3. Enter the following in the Secret Key Field',
+                'idx.session.expired': 'Your session has expired. Please try to log in again',
+                'errors.E0000004': 'Please re-enter your credentials. \nFor support please visit: unimelb.edu.au/cybersecurity',
+                "oie.enroll.authenticator.button.text" : "Setup",
+                "oie.primaryauth.submit" : "Log in",
+                "idx.expired.activation.token" : "This account set-up link has expired. To set up your University of Melbourne account: <br>Staff: please contact Service Centre on (+61) 3 8344 0888.<br>Students: Resend the set-up link by entering your details at https://accounts.unimelb.edu.au",	
+                "idx.missing.activation.token" : "This account set-up link has expired. To set up your University of Melbourne account: <br>Staff: please contact Service Centre on (+61) 3 8344 0888.<br>Students: Resend the set-up link by entering your details at https://accounts.unimelb.edu.au",
+                "idx.invalid.reset.password.token" : "This account set-up link has expired. To set up your University of Melbourne account: <br>Staff: please contact Service Centre on (+61) 3 8344 0888.<br>Students: Resend the set-up link by entering your details at https://accounts.unimelb.edu.au"
+            }
+       };
+
+        var oktaSignIn = new OktaSignIn(config);
+        oktaSignIn.renderEl({ el: '#okta-login-container' },
+            OktaUtil.completeLogin,
+            function(error) {
+                // Logs errors that occur when configuring the widget.
+                // Remove or replace this with your own custom error handler.
+                console.log(error.message, error);
+            }
+        );
+            var deviceLabels = {
+        'APPLE': 'Apple',
+        'ANDROID': 'Android',
+        'WINDOWS': 'Windows'
+    };
+    oktaSignIn.on('afterRender', function (context) {
+        console.log(navigator.userAgent);
+        console.log(context.controller);
+        console.log(context);
+
+        // Identify if a logo is on the page and add accessibility
+        var logoBannerEl = document.querySelector(".auth-org-logo");
+            if(logoBannerEl != null)
+            {
+                // Adds alt attribute
+                logoBannerEl.setAttribute("alt", "The University of Melbourne");
+                // Removes the aria-label
+                logoBannerEl.removeAttribute('aria-label')
+            }
+        //Retrieve whether a banner needs to be injected into the SIW
+        var oktaLoginContainer = document.getElementById("okta-login-container")
+        //Triggers to understand the context of the application
+        var appContext = retrieveApplicationInfo();
+        // If context is found create the banner to be injected
+        if (appContext != null) {
+            console.log("appContext" + appContext)
+            //Check if a banner exists and if so don't create another banner
+            var appBanner = document.getElementById("custom-applogin-banner")   
+            if (appBanner == null){
+                    console.log("create banner")
+                    initiateBannerAddition(appContext);
+                }
+        }
+
+        function retrieveApplicationInfo() {
+            //Looks at the URL to determine whether a bookmark application is being used
+            var url = document.location.href
+            //Get the request Context of the SIW which is used to find the application label
+            var requestContext = OktaUtil.getRequestContext()
+            console.log(requestContext)
+            if (requestContext && requestContext.target  && requestContext.target.label) {
+                // Anytime the Okta Admin and Admin Console is triggered don't trigger the banner
+                if(requestContext.target.label == "Okta Administration" || requestContext.target.label == "Okta Dashboard" ) {
+                    return null
+                } else {
+                    //Retrieves the application label to be used for the banner
+                    return requestContext.target.label;
+                }
+            }
+            
+            // if statement to give a label name depending on the bookmark app that is found in the url, we cannot use the other methods to achieve the same outcome for bookmark apps
+            if (url.includes("bookmark")){
+                if (url.includes("0oa1pu7wqzk13BGtG3l6")){
+                    return "MFA Self-Service and Pre-Enrolment"
+                }
+                if (url.includes("0oa2b3ijumZlVDCvf3l6")){
+                    return "UniTravel"
+                }
+                if (url.includes("0oa2lw2ppmiC89sqC3l6")){
+                    return "Themis"
+                }
+            }
+
+        }
+
+
+        // Function creates the html to add into the SIW for the banner
+        function initiateBannerAddition(applicationName){
+                    var appTextConnect = "Connect to "
+                    var appName = applicationName
+                    var appTextSignIn = "Sign in with your University of Melbourne account to access " + appName
+                //var appLogoBanner = '<div id="custom-applogin-banner" class="applogin-banner" style="position: relative; margin-bottom: 10px; min-width: 300px;" ><div class="applogin-background" style="background-color: #094183; opacity: .9; position: absolute; top: 0; bottom: 0; left: 0; right: 0; box-shadow: 0 0 0px 0px hsl(0deg 0% 69% / 30%);"></div><div class="applogin-container" style="position: relative; width: 400px; min-width: 300px; margin: 0 auto; padding: 20px 0;box-sizing: border-box; text-align: center;"><h1 style="font-size: 24px; font-weight: lighter; line-height: 26px;">'+ appTextConnect +'<div class="applogin-app-logo" style="display: inline-block; vertical-align: middle; margin-left: 5px;"><img src="' + appLogo + '" alt="Okta Dashboard" class="logo okta_enduser" style="max-height: 26px;"></div> </h1> <p style="background: transparent; border: 0;font: inherit; margin: 0; outline: 0; padding: 0; vertical-align: baseline; display: block; margin-block-start: 0em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px;">' + appTextSignIn + '</p> </div></div>'
+                //var appLogoBanner = '<div id="custom-applogin-banner" class="applogin-banner" style="position: relative; margin-bottom: 10px; min-width: 300px;" ><div class="applogin-background" style="background-color: #094183; opacity: .9; position: absolute; top: 0; bottom: 0; left: 0; right: 0; box-shadow: 0 0 0px 0px hsl(0deg 0% 69% / 30%);"></div><div class="applogin-container" style="position: relative; width: 400px; min-width: 300px; margin: 0 auto; padding: 20px 0;box-sizing: border-box; text-align: center;"><h1 style="font-size: 24px; font-weight: lighter; line-height: 26px;">'+ appTextConnect +'<div class="applogin-app-logo" style="display: inline-block; vertical-align: middle; margin-left: 5px;"></div> </h1> <p style="background: transparent; border: 0;font: inherit; margin: 0; outline: 0; padding: 0; vertical-align: baseline; display: block; margin-block-start: 0em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px;">' + appTextSignIn + '</p> </div></div>'
+                var appLogoBanner = '<div id="custom-applogin-banner" class="applogin-banner" style="position: relative; margin-bottom: 10px; min-width: 300px;" ><div class="applogin-background" style="background-color: #094183; opacity: .9; position: absolute; top: 0; bottom: 0; left: 0; right: 0; box-shadow: 0 0 0px 0px hsl(0deg 0% 69% / 30%);"></div><div class="applogin-container" style="position: relative; width: 400px; min-width: 300px; margin: 0 auto; padding: 20px 0;box-sizing: border-box; text-align: center;"><p style="background: transparent; border: 0;font: inherit; margin: 0; outline: 0; padding: 0; vertical-align: baseline; display: block; margin-block-start: 0em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px;">' + appTextSignIn + '</p> </div></div>'
+                $('#okta-login-container').before(appLogoBanner)
+                }
+
+    
+        //fetch the device type
+        var isMobile = {
+            Android: function() {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BB|PlayBook/i);
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function() {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i);
+            },
+            any: function() {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };       
+        
+        //During the primary authentication, change the text to Log in and add accessibility to input username and password fields
+        if(context.controller === 'primary-auth') {
+            console.log("primary-auth");
+            //Checks for Sign in Text and replace with Log In
+            var signInEl = document.querySelector('[data-se="o-form-head"]')
+            if(signInEl != null) {
+                signInEl.innerHTML = "Log in"
+            }
+            //Finds the username input field and set accessibility attribute
+            var usernameSpanEl = document.querySelector('[data-se="o-form-input-identifier"]')
+            if(usernameSpanEl != null) {
+                usernameInputEl = usernameSpanEl.childNodes[0];
+                usernameDescribeParaEl = usernameSpanEl.previousSibling;
+                //Retrieve of two elements and add id, aria-describedby and required for accessibility
+                if(usernameInputEl != null && usernameDescribeParaEl != null) {
+                    usernameDescribeParaEl.setAttribute('id', 'describe-username');
+                    usernameInputEl.setAttribute('aria-describedby', 'describe-username');  
+                    usernameInputEl.setAttribute('required', '');  
+
+                }
+            }
+            //Find the password input and add the accessibility attribute
+            var passwordSpanEl = document.querySelector('[data-se="o-form-input-credentials.passcode"]')
+            if(passwordSpanEl != null) {
+                //Finds the password input and adds required attribute
+                passwordInputEl = passwordSpanEl.childNodes[0];
+                if(passwordInputEl != null) {
+                    passwordInputEl.setAttribute('required', '');  
+
+                }
+            }
+            //Removal of the UAT link as UAT page up is integrated with preprod and production is only integrated with production pageup
+            //PageUp Use case to add the buttons whether the page up application is being accessed
+            var APP_NAMES = ["/app/theuniversityofmelbourne_pageup_1/exk2alwjaWMSQaJgm3l6/sso/saml"
+                           ];
+            var APP_EXT_URLS = [ "https://protect-au.mimecast.com/s/NOGLCoVzwKhX6vmA8s16ftt?domain=unimelb.pageuppeople.com"
+                               ];
+            
+            for(var i=0; i<APP_NAMES.length; i++) {
+               if(oktaData.redirectUri == APP_NAMES[i]) {
+                   var buttonsBar = document.querySelector('div.o-form-button-bar');
+                   var pageUpNonSAMLURLElement = document.createElement('button');
+                   pageUpNonSAMLURLElement.setAttribute('class', 'button button-primary');
+                   pageUpNonSAMLURLElement.setAttribute('type', 'button');
+                   pageUpNonSAMLURLElement.setAttribute('onclick', "window.open('" + APP_EXT_URLS[i] + "')");
+                   var buttonLabel = document.createTextNode("External Users - Click Here");
+                   pageUpNonSAMLURLElement.appendChild(buttonLabel);
+                   buttonsBar.appendChild(document.createElement('BR'));
+                   buttonsBar.appendChild(pageUpNonSAMLURLElement);
+                   break;
+               }
+                        
+
+        }
+        }
+        //During the MFA enrolment add text for the end-user to follow
+        if (context.controller === 'enroll-choices') {
+            var oFormExplain = document.querySelector('[data-se="o-form-explain"]')
+            if (oFormExplain != null) {
+                oFormExplain.innerHTML = '<b>Important:</b> \nPlease keep the Okta Verify App installed on your mobile device as you may be prompted to confirm your identity at any time.\n<br>The University requires <b>two-factor authentication</b> to add an additional layer of security when signing in to your account'
+            }
+            //Add focus through javascript for accessibility requirements
+            var oFormSetUpDescription = document.querySelector('[data-se="o-form-head"]')
+            if (oFormSetUpDescription != null) {
+                oFormSetUpDescription.setAttribute("tabindex",0);
+                oFormSetUpDescription.focus();
+            }
+        }
+        // During OV enrolment, add accessibility attributes
+        if (context.authenticatorKey === 'okta_verify') {
+            if (context.formName === 'select-enrollment-channel') {
+                var oFormOptions = document.querySelector('[data-se="o-form-fieldset-container"]')
+                oFormOptionsText = oFormOptions.childNodes[0];
+                //If specific elements show up (text and email options) we add aria-labelledby, role and id for screenreader
+                if (oFormOptions != null) {
+                    oFormOptions.setAttribute('aria-labelledby', 'group-label');  
+                    oFormOptions.setAttribute('role', 'group');  
+                }
+                if (oFormOptionsText != null) {
+                    oFormOptionsText.setAttribute('id', 'group-label');  
+                }
+            }
+            // During OV enrolment, the options to send enrolment through text or email. This adds accessibility attributes to it
+            if(context.formName === 'enroll-poll'){
+                var divChannelText = document.querySelector('.switch-channel-text')
+                var qrcode = document.querySelector('.qrcode')
+                if (divChannelText != null) {
+                    divChannelText.removeAttribute('aria-label') 
+                }
+                if (qrcode != null) {
+                   qrcode.setAttribute('alt', 'QR code. If you can’t scan, follow click on the link below to select an alternative activation method'); 
+                }                
+            }
+
+           //Add Accessibility attributes to input fields to both email and sms options for the OV enrolment 
+            if(context.formName === 'enrollment-channel-data'){
+                //Identify which option (sms/email) is selected and depending on the context update the attrbutes of the input field
+                var fieldsetContainer = document.querySelector('[data-se="o-form-fieldset-container"]')
+                var ovFieldsetEmail = document.querySelector('[data-se="o-form-fieldset-email"]')
+                var ovFieldsetSMS = document.querySelector('[data-se="o-form-input-phoneCode"]')
+                if (ovFieldsetEmail != null) {
+                    var ovInputEmail = document.querySelector('[data-se="o-form-input-email"]')
+                    var fieldsetContainerChild = fieldsetContainer.childNodes[1];
+                    var ovInputEmailChild = ovInputEmail.childNodes[0];
+                    ovInputEmailChild.setAttribute('aria-describedby', 'email-description'); 
+                    fieldsetContainerChild.setAttribute('id', 'email-description'); 
+                }
+                if (ovFieldsetSMS != null) {
+                    var ovInputSMS = document.querySelector('[data-se="o-form-input-phoneNumber"]')
+                    var ovInputSMSChild = ovInputSMS.childNodes[0];
+                    var ovInputSMSChildId = ovInputSMSChild.id
+                    var smsLabelDivParent = fieldsetContainer.childNodes[1];
+                    var smsLabelDivChild = smsLabelDivParent.childNodes[0];
+                    var smsLabel = smsLabelDivChild.childNodes[0];
+                    smsLabel.setAttribute('for', ovInputSMSChildId); 
+                    var fieldsetContainerChild = fieldsetContainer.childNodes[2];
+                    ovInputSMSChild.setAttribute('aria-describedby', 'text-description'); 
+                    fieldsetContainerChild.setAttribute('id', 'text-description'); 
+                    var fixSelect = function () {
+                    // Get input for phone number
+                    var phInput = document.querySelector('input[name="phoneNumber"]');
+
+
+
+                    var selects = document.querySelectorAll('select'), i;
+                    for (i = 0; i < selects.length; ++i) {
+                        selects[i].classList.add("select-css");
+                        selects[i].style.display = "";
+                    }
+
+                    // Hide all divs
+                    var divs = document.querySelectorAll(".chzn-container"), i;
+                    for (i = 0; i < divs.length; ++i) {
+                        divs[i].style.display = "none";
+
+                    }
+                        
+
+                    // Select Australia as the default country
+                    jQueryCourage('select[name="countryCode"]').find('option[value="AU"]').prop('selected', true).trigger('change');
+
+                };
+                setTimeout(fixSelect, 100);
+                }                
+            }
+        }
+        //Phone enrolment this adds accessibility attributes
+        if(context.authenticatorKey === 'phone_number') {    
+                    var fixSelect = function () {
+                    // Get input for phone number
+                    var phInput = document.querySelector('input[name="phoneNumber"]');
+                    var selects = document.querySelectorAll('select'), i;
+                    for (i = 0; i < selects.length; ++i) {
+                        selects[i].classList.add("select-css");
+                        selects[i].style.display = "";
+                    }
+                    // Hide all divs
+                    var divs = document.querySelectorAll(".chzn-container"), i;
+                    for (i = 0; i < divs.length; ++i) {
+                        divs[i].style.display = "none";
+
+                    }
+                    // Select Australia as the default country
+                    jQueryCourage('select[name="countryCode"]').find('option[value="AU"]').prop('selected', true).trigger('change');
+
+                };
+                setTimeout(fixSelect, 100);
+                  
+        }
+        if (context.formName === 'select-authenticator-authenticate' && document.location.href.includes("fromURI=https://sso.unimelb.edu.au")) {	
+          var validationSMSOption = document.querySelector('[data-se="phone_number"]') 	
+          if (validationSMSOption != null) {	
+            validationSMSOption.querySelector('[data-se="button"]').click();	
+          }	
+        }
+        if (context.controller === 'mfa-verify-password' && document.location.href.includes("fromURI=https://sso.unimelb.edu.au")) {	
+          var validationForgotPassword = document.querySelector('[data-se="forgot-password"]')	
+          if (validationForgotPassword != null) {	
+            validationForgotPassword.click();	
+          }	
+        }	
+        if (context.formName === 'request-activation-email' && document.location.href.includes("fromURI=https://sso.unimelb.edu.au")) {	
+          var requestActivationLink = document.querySelector('div.o-form-button-bar')	
+          if (requestActivationLink != null) {	
+            requestActivationLink.style.display = 'none'; 	
+          }
+        }
+        if (context.formName === 'select-authenticator-authenticate') {	
+          var emailAuthenticator = document.querySelector('[data-se="okta_email"]')	
+          if (emailAuthenticator != null) {	
+            emailAuthenticator.parentNode.parentNode.style.display = 'none'; 	
+          }
+        }
+        //Yubikey enrolment this adds accessibility attributes
+        if(context.authenticatorKey === 'yubikey_token') {    
+            var qrCodeEl = document.querySelector('[data-se="o-form-label"]')
+            var qrCodeInputEl = document.querySelector('[type="password"]')
+            if(qrCodeEl != null) {       
+                if(qrCodeInputEl != null) {        
+                    qrCodeInputEl.setAttribute('aria-label', 'Insert your YubiKey into a USB port and tap it to generate a verification code');    
+            }   
+            }  
+        }
+
+                                                                                                            
+    });
+    </script>
+
+
+
+<iframe id="account-chooser-iframe" data-se="account-chooser" class="hide" src="https://login.okta.com/discovery/iframe.html"></iframe></body></html>

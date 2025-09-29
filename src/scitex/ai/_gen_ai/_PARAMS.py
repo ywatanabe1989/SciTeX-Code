@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-06-24 19:12:22 (ywatanabe)"
+# Timestamp: "2025-09-30 06:38:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_PARAMS.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/ai/_gen_ai/_PARAMS.py"
@@ -203,9 +204,23 @@ OPENAI_MODELS = [
 # https://docs.anthropic.com/en/docs/about-claude/models#model-comparison-table
 ANTHROPIC_MODELS = [
     {
+        "name": "claude-opus-4-1-20250805",
+        "input_cost": 15.00,
+        "output_cost": 75.00,
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "provider": "Anthropic",
+    },
+    {
         "name": "claude-opus-4-20250514",
         "input_cost": 15.00,
         "output_cost": 75.00,
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "provider": "Anthropic",
+    },
+    {
+        "name": "claude-sonnet-4-5-20250929",
+        "input_cost": 3.00,
+        "output_cost": 15.00,
         "api_key_env": "ANTHROPIC_API_KEY",
         "provider": "Anthropic",
     },
@@ -264,16 +279,23 @@ ANTHROPIC_MODELS = [
 # https://ai.google.dev/gemini-api/docs/pricing
 GOOGLE_MODELS = [
     {
-        "name": "gemini-2.5-flash-preview-04-17",
-        "input_cost": 0.15,
-        "output_cost": 3.50,
+        "name": "gemini-2.5-pro",
+        "input_cost": 2.50,
+        "output_cost": 10.00,
         "api_key_env": "GOOGLE_API_KEY",
         "provider": "Google",
     },
     {
-        "name": "gemini-2.5-pro-exp-03-25",
-        "input_cost": 1.25,
-        "output_cost": 10.00,
+        "name": "gemini-2.5-flash",
+        "input_cost": 0.30,
+        "output_cost": 2.50,
+        "api_key_env": "GOOGLE_API_KEY",
+        "provider": "Google",
+    },
+    {
+        "name": "gemini-2.5-flash-lite",
+        "input_cost": 0.10,
+        "output_cost": 0.40,
         "api_key_env": "GOOGLE_API_KEY",
         "provider": "Google",
     },
@@ -285,65 +307,9 @@ GOOGLE_MODELS = [
         "provider": "Google",
     },
     {
-        "name": "gemini-2.0-flash-lite-preview-02-05",
+        "name": "gemini-2.0-flash-lite",
         "input_cost": 0.075,
         "output_cost": 0.30,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-2.0-pro-exp-02-05",
-        "input_cost": None,
-        "output_cost": None,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-2.0-flash-thinking-exp-01-21",
-        "input_cost": None,
-        "output_cost": None,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-exp-1206",
-        "input_cost": None,
-        "output_cost": None,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-2.0-flash-exp",
-        "input_cost": None,
-        "output_cost": None,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-1.5-pro-latest",
-        "input_cost": 3.50,
-        "output_cost": 10.50,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-1.5-pro",
-        "input_cost": 3.50,
-        "output_cost": 10.50,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-1.5-flash-latest",
-        "input_cost": 0.15,
-        "output_cost": 0.0375,
-        "api_key_env": "GOOGLE_API_KEY",
-        "provider": "Google",
-    },
-    {
-        "name": "gemini-1.5-flash",
-        "input_cost": 0.15,
-        "output_cost": 0.0375,
         "api_key_env": "GOOGLE_API_KEY",
         "provider": "Google",
     },

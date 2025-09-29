@@ -219,32 +219,35 @@ def test_getsize_none_path():
     with pytest.raises(TypeError):
         getsize(None)
 
-
 if __name__ == "__main__":
-    pytest.main([__file__])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/path/_getsize.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_getsize.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2024-11-02 19:54:02 (ywatanabe)"
 # # File: ./scitex_repo/src/scitex/path/_getsize.py
-#
+# 
 # import os
-#
+# 
 # import numpy as np
-#
-#
+# 
+# 
 # def getsize(path):
 #     if os.path.exists(path):
 #         return os.path.getsize(path)
 #     else:
 #         return np.nan
-#
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/_scitex_repo/src/scitex/path/_getsize.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/path/_getsize.py
 # --------------------------------------------------------------------------------

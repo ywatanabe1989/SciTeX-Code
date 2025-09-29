@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:25:44 (ywatanabe)"
+# Timestamp: "2025-09-11 05:49:14 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py"
@@ -29,6 +30,7 @@ class _QueryMixin:
         return parameters
 
     def execute(self, query: str, parameters: Tuple = ()) -> None:
+        self.ensure_connection()
         self._check_context_manager()
 
         if not self.cursor:
@@ -59,6 +61,7 @@ class _QueryMixin:
             raise sqlite3.Error(f"Query execution failed: {err}")
 
     def executemany(self, query: str, parameters: List[Tuple]) -> None:
+        self.ensure_connection()
         if not self.cursor:
             raise ConnectionError("Database not connected")
 
@@ -83,6 +86,7 @@ class _QueryMixin:
             raise sqlite3.Error(f"Batch query execution failed: {err}")
 
     def executescript(self, script: str) -> None:
+        self.ensure_connection()
         if not self.cursor:
             raise ConnectionError("Database not connected")
 

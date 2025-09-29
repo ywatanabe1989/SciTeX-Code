@@ -1,0 +1,456 @@
+{
+  "missing_pdfs": [
+    {
+      "name": "Alhudhaif-2021-PeerJ-Computer-Science",
+      "journal": "PeerJ Computer Science",
+      "doi": "10.7717/peerj-cs.523",
+      "title": "A novel multi-class imbalanced EEG signals classif"
+    },
+    {
+      "name": "Alotaiby-2017-Computational-Intelligence-and-Neuroscience",
+      "journal": "Computational Intelligence and Neuroscience",
+      "doi": "10.1155/2017/1240323",
+      "title": "Epileptic Seizure Prediction Using CSP and LDA for"
+    },
+    {
+      "name": "Asano-2023-Nature-Communications",
+      "journal": "Nature Communications",
+      "doi": "10.21203/rs.3.rs-2799931/v1",
+      "title": "Developmental atlas of phase-amplitude coupling be"
+    },
+    {
+      "name": "Ashokkumar-2023-Wireless-Personal-Communications",
+      "journal": "Wireless Personal Communications",
+      "doi": "10.1007/s11277-022-10154-w",
+      "title": "Quantifying Functional Connectivity Network Throug"
+    },
+    {
+      "name": "Chang-2018-Nature-Neuroscience",
+      "journal": "Nature Neuroscience",
+      "doi": "10.1038/s41593-018-0278-y",
+      "title": "Loss of neuronal network resilience precedes seizu"
+    },
+    {
+      "name": "Gagliano-2018-Epilepsy-Research",
+      "journal": "Epilepsy Research",
+      "doi": "10.1016/j.eplepsyres.2017.11.009",
+      "title": "Bilateral preictal signature of phase-amplitude co"
+    },
+    {
+      "name": "Ghiasvand-2020-The-Neuroscience-Journal-of-Shefaye-Khatam",
+      "journal": "The Neuroscience Journal of Shefaye Khatam",
+      "doi": "10.52547/shefa.9.1.110",
+      "title": "Epileptic Seizure Prediction from Spectral, Tempor"
+    },
+    {
+      "name": "Grigorovsky-2020-Brain-Communications",
+      "journal": "Brain Communications",
+      "doi": "10.1093/braincomms/fcaa182",
+      "title": "Delta-gamma phase-amplitude coupling as a biomarke"
+    },
+    {
+      "name": "Hasan-2017-Applied-Bionics-and-Biomechanics",
+      "journal": "Applied Bionics and Biomechanics",
+      "doi": "10.1155/2017/6848014",
+      "title": "Prediction of Epileptic Seizure by Analysing Time "
+    },
+    {
+      "name": "Jin-2022-2022-41st-Chinese-Control-Conference-CCC",
+      "journal": "2022 41st Chinese Control Conference (CCC)",
+      "doi": "10.23919/ccc55666.2022.9902624",
+      "title": "Neural Oscillations and Synchronous Analysis in EC"
+    },
+    {
+      "name": "Li-2021-Brain-Sciences",
+      "journal": "Brain Sciences",
+      "doi": "10.3390/brainsci11081066",
+      "title": "Prediction of Epilepsy Based on Tensor Decompositi"
+    },
+    {
+      "name": "Marcoleta-2020-Biomedical-Physics-amp-Engineering-Express",
+      "journal": "Biomedical Physics &amp; Engineering Express",
+      "doi": "10.1088/2057-1976/ab9fed",
+      "title": "Distributed mixed signal demultiplexer for electro"
+    },
+    {
+      "name": "Miao-2021-Cognitive-Neurodynamics",
+      "journal": "Cognitive Neurodynamics",
+      "doi": "10.1101/2021.10.27.21265585",
+      "title": "Seizure Onset Zone Identification Using Phase-Ampl"
+    },
+    {
+      "name": "Mierlo-2014-Progress-in-Neurobiology",
+      "journal": "Progress in Neurobiology",
+      "doi": "10.1016/j.pneurobio.2014.06.004",
+      "title": "Functional brain connectivity from EEG in epilepsy"
+    },
+    {
+      "name": "Mukamel-2014-The-Journal-of-Neuroscience",
+      "journal": "The Journal of Neuroscience",
+      "doi": "10.1523/jneurosci.5813-12.2014",
+      "title": "A Transition in Brain State during Propofol-Induce"
+    },
+    {
+      "name": "Natu-2022-Computational-and-Mathematical-Methods-in-Medicine",
+      "journal": "Computational and Mathematical Methods in Medicine",
+      "doi": "10.1155/2022/7751263",
+      "title": "Review on Epileptic Seizure Prediction: Machine Le"
+    },
+    {
+      "name": "Ramachandran-2018-Sensors",
+      "journal": "Sensors",
+      "doi": "10.3390/s18061698",
+      "title": "Towards an Online Seizure Advisory System\u2014An Adapt"
+    },
+    {
+      "name": "Richner-2019-Journal-of-Neural-Engineering",
+      "journal": "Journal of Neural Engineering",
+      "doi": "10.1088/1741-2552/ab335b",
+      "title": "Phase relationship between micro-electrocorticogra"
+    },
+    {
+      "name": "Rong-2020-Engineering",
+      "journal": "Engineering",
+      "doi": "10.1016/j.eng.2019.08.015",
+      "title": "Artificial Intelligence in Healthcare: Review and "
+    },
+    {
+      "name": "Salimpour-2019-Frontiers-in-Neuroscience",
+      "journal": "Frontiers in Neuroscience",
+      "doi": "10.3389/fnins.2019.00125",
+      "title": "Cross-Frequency Coupling Based Neuromodulation for"
+    },
+    {
+      "name": "Schelter-2007",
+      "journal": "",
+      "doi": null,
+      "title": "Welcome to the 3rd International Workshop on Seizu"
+    },
+    {
+      "name": "Sebaei-2024-South-Eastern-European-Journal-of-Public-Health",
+      "journal": "South Eastern European Journal of Public Health",
+      "doi": "10.70135/seejph.vi.1681",
+      "title": "Value of Quantitative Intraoperative Electrocortic"
+    },
+    {
+      "name": "Seo-2020-Mathematics",
+      "journal": "Mathematics",
+      "doi": "10.3390/math8040481",
+      "title": "Pattern Recognition in Epileptic EEG Signals via D"
+    },
+    {
+      "name": "Shirzadi-2024-Diagnostics",
+      "journal": "Diagnostics",
+      "doi": "10.3390/diagnostics14202255",
+      "title": "AML-DECODER: Advanced Machine Learning for HD-sEMG"
+    },
+    {
+      "name": "Song-2022-Sensors",
+      "journal": "Sensors",
+      "doi": "10.3390/s22176458",
+      "title": "An Intelligent Epileptic Prediction System Based o"
+    },
+    {
+      "name": "Sun-2022-Acta-Epileptologica",
+      "journal": "Acta Epileptologica",
+      "doi": "10.1186/s42494-022-00113-0",
+      "title": "Synchronization clusters located on epileptic onse"
+    },
+    {
+      "name": "Tang-2015-Bio-Medical-Materials-and-Engineering",
+      "journal": "Bio-Medical Materials and Engineering",
+      "doi": "10.3233/bme-151401",
+      "title": "An epileptic focus location method based on ECoG"
+    },
+    {
+      "name": "Ujma-2022-Scientific-Reports",
+      "journal": "Scientific Reports",
+      "doi": "10.21203/rs.3.rs-1705700/v1",
+      "title": "The sleep EEG envelope: a novel, neuronal firing-b"
+    },
+    {
+      "name": "Yanagisawa-2012-The-Journal-of-Neuroscience",
+      "journal": "The Journal of Neuroscience",
+      "doi": "10.1523/jneurosci.2929-12.2012",
+      "title": "Regulation of Motor Representation by Phase\u2013Amplit"
+    },
+    {
+      "name": "Yekutieli-2018-Epilepsy-Journal",
+      "journal": "Epilepsy Journal",
+      "doi": "10.4172/2472-0895.1000120",
+      "title": "ECoG Correlation Variation for Epilepsy Research"
+    },
+    {
+      "name": "Zhang-2024-International-Journal-of-Surgery",
+      "journal": "International Journal of Surgery",
+      "doi": "10.1097/js9.0000000000002022",
+      "title": "Brain\u2013computer interfaces: the innovative key to u"
+    }
+  ],
+  "by_publisher": {
+    "PeerJ": [
+      {
+        "name": "Alhudhaif-2021-PeerJ-Computer-Science",
+        "journal": "PeerJ Computer Science",
+        "doi": "10.7717/peerj-cs.523",
+        "title": "A novel multi-class imbalanced EEG signals classif"
+      }
+    ],
+    "Hindawi": [
+      {
+        "name": "Alotaiby-2017-Computational-Intelligence-and-Neuroscience",
+        "journal": "Computational Intelligence and Neuroscience",
+        "doi": "10.1155/2017/1240323",
+        "title": "Epileptic Seizure Prediction Using CSP and LDA for"
+      },
+      {
+        "name": "Hasan-2017-Applied-Bionics-and-Biomechanics",
+        "journal": "Applied Bionics and Biomechanics",
+        "doi": "10.1155/2017/6848014",
+        "title": "Prediction of Epileptic Seizure by Analysing Time "
+      },
+      {
+        "name": "Natu-2022-Computational-and-Mathematical-Methods-in-Medicine",
+        "journal": "Computational and Mathematical Methods in Medicine",
+        "doi": "10.1155/2022/7751263",
+        "title": "Review on Epileptic Seizure Prediction: Machine Le"
+      }
+    ],
+    "Nature": [
+      {
+        "name": "Asano-2023-Nature-Communications",
+        "journal": "Nature Communications",
+        "doi": "10.21203/rs.3.rs-2799931/v1",
+        "title": "Developmental atlas of phase-amplitude coupling be"
+      },
+      {
+        "name": "Chang-2018-Nature-Neuroscience",
+        "journal": "Nature Neuroscience",
+        "doi": "10.1038/s41593-018-0278-y",
+        "title": "Loss of neuronal network resilience precedes seizu"
+      },
+      {
+        "name": "Ujma-2022-Scientific-Reports",
+        "journal": "Scientific Reports",
+        "doi": "10.21203/rs.3.rs-1705700/v1",
+        "title": "The sleep EEG envelope: a novel, neuronal firing-b"
+      }
+    ],
+    "Other": [
+      {
+        "name": "Ashokkumar-2023-Wireless-Personal-Communications",
+        "journal": "Wireless Personal Communications",
+        "doi": "10.1007/s11277-022-10154-w",
+        "title": "Quantifying Functional Connectivity Network Throug"
+      },
+      {
+        "name": "Grigorovsky-2020-Brain-Communications",
+        "journal": "Brain Communications",
+        "doi": "10.1093/braincomms/fcaa182",
+        "title": "Delta-gamma phase-amplitude coupling as a biomarke"
+      },
+      {
+        "name": "Jin-2022-2022-41st-Chinese-Control-Conference-CCC",
+        "journal": "2022 41st Chinese Control Conference (CCC)",
+        "doi": "10.23919/ccc55666.2022.9902624",
+        "title": "Neural Oscillations and Synchronous Analysis in EC"
+      },
+      {
+        "name": "Miao-2021-Cognitive-Neurodynamics",
+        "journal": "Cognitive Neurodynamics",
+        "doi": "10.1101/2021.10.27.21265585",
+        "title": "Seizure Onset Zone Identification Using Phase-Ampl"
+      },
+      {
+        "name": "Mierlo-2014-Progress-in-Neurobiology",
+        "journal": "Progress in Neurobiology",
+        "doi": "10.1016/j.pneurobio.2014.06.004",
+        "title": "Functional brain connectivity from EEG in epilepsy"
+      },
+      {
+        "name": "Schelter-2007",
+        "journal": "",
+        "doi": null,
+        "title": "Welcome to the 3rd International Workshop on Seizu"
+      },
+      {
+        "name": "Sun-2022-Acta-Epileptologica",
+        "journal": "Acta Epileptologica",
+        "doi": "10.1186/s42494-022-00113-0",
+        "title": "Synchronization clusters located on epileptic onse"
+      }
+    ],
+    "Elsevier": [
+      {
+        "name": "Gagliano-2018-Epilepsy-Research",
+        "journal": "Epilepsy Research",
+        "doi": "10.1016/j.eplepsyres.2017.11.009",
+        "title": "Bilateral preictal signature of phase-amplitude co"
+      },
+      {
+        "name": "Marcoleta-2020-Biomedical-Physics-amp-Engineering-Express",
+        "journal": "Biomedical Physics &amp; Engineering Express",
+        "doi": "10.1088/2057-1976/ab9fed",
+        "title": "Distributed mixed signal demultiplexer for electro"
+      },
+      {
+        "name": "Richner-2019-Journal-of-Neural-Engineering",
+        "journal": "Journal of Neural Engineering",
+        "doi": "10.1088/1741-2552/ab335b",
+        "title": "Phase relationship between micro-electrocorticogra"
+      },
+      {
+        "name": "Rong-2020-Engineering",
+        "journal": "Engineering",
+        "doi": "10.1016/j.eng.2019.08.015",
+        "title": "Artificial Intelligence in Healthcare: Review and "
+      },
+      {
+        "name": "Tang-2015-Bio-Medical-Materials-and-Engineering",
+        "journal": "Bio-Medical Materials and Engineering",
+        "doi": "10.3233/bme-151401",
+        "title": "An epileptic focus location method based on ECoG"
+      },
+      {
+        "name": "Yekutieli-2018-Epilepsy-Journal",
+        "journal": "Epilepsy Journal",
+        "doi": "10.4172/2472-0895.1000120",
+        "title": "ECoG Correlation Variation for Epilepsy Research"
+      }
+    ],
+    "Neuroscience Journals": [
+      {
+        "name": "Ghiasvand-2020-The-Neuroscience-Journal-of-Shefaye-Khatam",
+        "journal": "The Neuroscience Journal of Shefaye Khatam",
+        "doi": "10.52547/shefa.9.1.110",
+        "title": "Epileptic Seizure Prediction from Spectral, Tempor"
+      },
+      {
+        "name": "Mukamel-2014-The-Journal-of-Neuroscience",
+        "journal": "The Journal of Neuroscience",
+        "doi": "10.1523/jneurosci.5813-12.2014",
+        "title": "A Transition in Brain State during Propofol-Induce"
+      },
+      {
+        "name": "Sebaei-2024-South-Eastern-European-Journal-of-Public-Health",
+        "journal": "South Eastern European Journal of Public Health",
+        "doi": "10.70135/seejph.vi.1681",
+        "title": "Value of Quantitative Intraoperative Electrocortic"
+      },
+      {
+        "name": "Yanagisawa-2012-The-Journal-of-Neuroscience",
+        "journal": "The Journal of Neuroscience",
+        "doi": "10.1523/jneurosci.2929-12.2012",
+        "title": "Regulation of Motor Representation by Phase\u2013Amplit"
+      },
+      {
+        "name": "Zhang-2024-International-Journal-of-Surgery",
+        "journal": "International Journal of Surgery",
+        "doi": "10.1097/js9.0000000000002022",
+        "title": "Brain\u2013computer interfaces: the innovative key to u"
+      }
+    ],
+    "MDPI": [
+      {
+        "name": "Li-2021-Brain-Sciences",
+        "journal": "Brain Sciences",
+        "doi": "10.3390/brainsci11081066",
+        "title": "Prediction of Epilepsy Based on Tensor Decompositi"
+      },
+      {
+        "name": "Ramachandran-2018-Sensors",
+        "journal": "Sensors",
+        "doi": "10.3390/s18061698",
+        "title": "Towards an Online Seizure Advisory System\u2014An Adapt"
+      },
+      {
+        "name": "Seo-2020-Mathematics",
+        "journal": "Mathematics",
+        "doi": "10.3390/math8040481",
+        "title": "Pattern Recognition in Epileptic EEG Signals via D"
+      },
+      {
+        "name": "Shirzadi-2024-Diagnostics",
+        "journal": "Diagnostics",
+        "doi": "10.3390/diagnostics14202255",
+        "title": "AML-DECODER: Advanced Machine Learning for HD-sEMG"
+      },
+      {
+        "name": "Song-2022-Sensors",
+        "journal": "Sensors",
+        "doi": "10.3390/s22176458",
+        "title": "An Intelligent Epileptic Prediction System Based o"
+      }
+    ],
+    "Frontiers": [
+      {
+        "name": "Salimpour-2019-Frontiers-in-Neuroscience",
+        "journal": "Frontiers in Neuroscience",
+        "doi": "10.3389/fnins.2019.00125",
+        "title": "Cross-Frequency Coupling Based Neuromodulation for"
+      }
+    ]
+  },
+  "priority_papers": [
+    {
+      "name": "Asano-2023-Nature-Communications",
+      "journal": "Nature Communications",
+      "doi": "10.21203/rs.3.rs-2799931/v1",
+      "title": "Developmental atlas of phase-amplitude coupling be"
+    },
+    {
+      "name": "Chang-2018-Nature-Neuroscience",
+      "journal": "Nature Neuroscience",
+      "doi": "10.1038/s41593-018-0278-y",
+      "title": "Loss of neuronal network resilience precedes seizu"
+    },
+    {
+      "name": "Ujma-2022-Scientific-Reports",
+      "journal": "Scientific Reports",
+      "doi": "10.21203/rs.3.rs-1705700/v1",
+      "title": "The sleep EEG envelope: a novel, neuronal firing-b"
+    },
+    {
+      "name": "Salimpour-2019-Frontiers-in-Neuroscience",
+      "journal": "Frontiers in Neuroscience",
+      "doi": "10.3389/fnins.2019.00125",
+      "title": "Cross-Frequency Coupling Based Neuromodulation for"
+    },
+    {
+      "name": "Li-2021-Brain-Sciences",
+      "journal": "Brain Sciences",
+      "doi": "10.3390/brainsci11081066",
+      "title": "Prediction of Epilepsy Based on Tensor Decompositi"
+    },
+    {
+      "name": "Ramachandran-2018-Sensors",
+      "journal": "Sensors",
+      "doi": "10.3390/s18061698",
+      "title": "Towards an Online Seizure Advisory System\u2014An Adapt"
+    },
+    {
+      "name": "Seo-2020-Mathematics",
+      "journal": "Mathematics",
+      "doi": "10.3390/math8040481",
+      "title": "Pattern Recognition in Epileptic EEG Signals via D"
+    },
+    {
+      "name": "Shirzadi-2024-Diagnostics",
+      "journal": "Diagnostics",
+      "doi": "10.3390/diagnostics14202255",
+      "title": "AML-DECODER: Advanced Machine Learning for HD-sEMG"
+    },
+    {
+      "name": "Song-2022-Sensors",
+      "journal": "Sensors",
+      "doi": "10.3390/s22176458",
+      "title": "An Intelligent Epileptic Prediction System Based o"
+    },
+    {
+      "name": "Alhudhaif-2021-PeerJ-Computer-Science",
+      "journal": "PeerJ Computer Science",
+      "doi": "10.7717/peerj-cs.523",
+      "title": "A novel multi-class imbalanced EEG signals classif"
+    }
+  ]
+}

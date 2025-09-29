@@ -56,6 +56,7 @@ pip install scitex
 |                       | [`scitex.linalg`](./src/scitex/linalg#readme)         | Linear algebra                   |
 | **Signal Processing** | [`scitex.dsp`](./src/scitex/dsp#readme)               | Digital Signal Processing        |
 | **Statistics**        | [`scitex.stats`](./src/scitex/stats#readme)           | Statistical analysis tools       |
+| **Literature**        | [`scitex.scholar`](./src/scitex/scholar#readme)       | Academic paper search & download |
 | **ETC**               | [`scitex.decorators`](./src/scitex/decorators#readme) | Function decorators              |
 |                       | [`scitex.gists`](./src/scitex/gists#readme)           | Code snippets                    |
 |                       | [`scitex.resource`](./src/scitex/resource#readme)     | Resource management              |
@@ -91,6 +92,62 @@ scitex.gen.close(config, info)
 ```
 
 ## 🆕 What's New in v2.0
+
+### 🔬 Scientific Validity Enhancements (August 2025)
+
+#### Statistical Validation Framework
+SciTeX now ensures proper statistical practices with comprehensive validation:
+- **Assumption Checking**: Automatic normality and homoscedasticity tests before analysis
+- **Effect Size Calculations**: Cohen's d, Hedges' g, eta-squared, odds ratios with CIs
+- **Sample Size Validation**: Power recommendations for adequate statistical power
+- **Intelligent Test Selection**: Suggests appropriate tests based on data characteristics
+
+```python
+from scitex.stats import StatisticalValidator, EffectSizeCalculator
+
+# Check assumptions before t-test
+is_normal, p, stats = StatisticalValidator.check_normality(data)
+is_homo, p, stats = StatisticalValidator.check_homoscedasticity(group1, group2)
+
+# Calculate effect size with confidence intervals
+effect = EffectSizeCalculator.cohens_d(treatment, control)
+print(f"Effect: {effect['d']:.3f} ({effect['interpretation']})")
+```
+
+#### Scholar Module Reliability Improvements
+Enhanced PDF download workflow with enterprise-grade reliability:
+- **Pre-flight Checks**: System validation before attempting downloads
+- **Smart Retry Logic**: Exponential backoff with strategy rotation
+- **Enhanced Diagnostics**: Publisher-specific error solutions
+
+### 📚 Scholar Module with Enhanced Search Capabilities
+
+The Scholar module now supports **5 search engines** including the newly added **CrossRef**:
+- **PubMed**: Biomedical literature database
+- **Semantic Scholar**: AI-powered research tool with citation graphs
+- **Google Scholar**: Comprehensive academic search (via scholarly package)
+- **CrossRef**: DOI registration agency with 150M+ scholarly works (NEW!)
+- **arXiv**: Preprint repository for physics, mathematics, computer science
+
+```python
+from scitex.scholar import Scholar
+
+# Initialize Scholar
+scholar = Scholar()
+
+# Search across multiple databases
+papers = scholar.search(
+    query="machine learning",
+    sources=["pubmed", "crossref", "arxiv"],  # Mix and match sources
+    limit=20
+)
+```
+
+Features:
+- Automatic enrichment with 2024 JCR impact factors
+- YAML configuration support
+- PDF download with institutional access (OpenAthens, EZProxy & Shibboleth - fully working!)
+- Unified API across all search engines
 
 ### 🤖 MCP Servers for AI-Assisted Development
 

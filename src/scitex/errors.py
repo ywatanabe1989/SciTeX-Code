@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-12 10:18:39 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/errors.py
+# Timestamp: "2025-07-31 19:05:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/errors.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/errors.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/errors.py"
 
 """
 1. Functionality:
@@ -207,6 +206,61 @@ class PDFDownloadError(ScholarError):
             f"Failed to download PDF from {url}",
             context={"url": url, "reason": reason},
             suggestion="Check if the paper is open access",
+        )
+
+
+class DOIResolutionError(ScholarError):
+    """Raised when DOI resolution fails."""
+
+    def __init__(self, doi: str, reason: str):
+        super().__init__(
+            f"Failed to resolve DOI: {doi}",
+            context={"doi": doi, "reason": reason},
+            suggestion="Verify the DOI is correct and try again",
+        )
+
+
+class PDFExtractionError(ScholarError):
+    """Raised when PDF text extraction fails."""
+
+    def __init__(self, filepath: str, reason: str):
+        super().__init__(
+            f"Failed to extract text from PDF: {filepath}",
+            context={"filepath": filepath, "reason": reason},
+            suggestion="Ensure the PDF is not corrupted or encrypted",
+        )
+
+
+class BibTeXEnrichmentError(ScholarError):
+    """Raised when BibTeX enrichment fails."""
+
+    def __init__(self, bibtex_file: str, reason: str):
+        super().__init__(
+            f"Failed to enrich BibTeX file: {bibtex_file}",
+            context={"bibtex_file": bibtex_file, "reason": reason},
+            suggestion="Check the BibTeX format and ensure all entries are valid",
+        )
+
+
+class TranslatorError(ScholarError):
+    """Raised when Zotero translator operations fail."""
+
+    def __init__(self, translator_name: str, reason: str):
+        super().__init__(
+            f"Translator error in {translator_name}: {reason}",
+            context={"translator": translator_name, "reason": reason},
+            suggestion="Check translator compatibility and JavaScript environment",
+        )
+
+
+class AuthenticationError(ScholarError):
+    """Raised when authentication fails."""
+
+    def __init__(self, provider: str, reason: str = ""):
+        super().__init__(
+            f"Authentication failed for {provider}: {reason}",
+            context={"provider": provider, "reason": reason},
+            suggestion="Check your credentials and authentication settings",
         )
 
 
@@ -481,6 +535,11 @@ __all__ = [
     "SearchError",
     "EnrichmentError",
     "PDFDownloadError",
+    "DOIResolutionError",
+    "PDFExtractionError",
+    "BibTeXEnrichmentError",
+    "TranslatorError",
+    "AuthenticationError",
     # Plotting
     "PlottingError",
     "FigureNotFoundError",

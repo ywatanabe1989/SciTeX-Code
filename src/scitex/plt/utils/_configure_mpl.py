@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-05-19 08:49:35 (ywatanabe)"
-# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/utils/_configure_mpl.py
+# Timestamp: "2025-09-12 23:01:15 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/utils/_configure_mpl.py
 # ----------------------------------------
+from __future__ import annotations
 import os
-
-__FILE__ = "./src/scitex/plt/utils/_configure_mpl.py"
+__FILE__ = (
+    "./src/scitex/plt/utils/_configure_mpl.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import matplotlib.pyplot as plt
-import scitex
 import numpy as np
+import scitex
 
 
 def configure_mpl(
@@ -22,7 +24,7 @@ def configure_mpl(
     fig_scale=1.0,
     dpi_display=100,
     dpi_save=300,
-    fontsize="medium",
+    # fontsize="medium",
     autolayout=True,
     n_ticks=4,
     hide_top_right_spines=True,
@@ -47,12 +49,12 @@ def configure_mpl(
         Display resolution in DPI, by default 100
     dpi_save : int, optional
         Saving resolution in DPI, by default 300
-    fontsize : Union[str, int, float], optional
-        Base font size ('xx-small' to 'xx-large' or points), by default 'medium'
-        Other sizes are derived from this:
-        - Title: 125% of base
-        - Labels: 100% of base
-        - Ticks/Legend: 85% of base
+    # fontsize : Union[str, int, float], optional
+    #     Base font size ('xx-small' to 'xx-large' or points), by default 'medium'
+    #     Other sizes are derived from this:
+    #     - Title: 125% of base
+    #     - Labels: 100% of base
+    #     - Ticks/Legend: 85% of base
     autolayout : bool, optional
         Whether to enable automatic tight layout, by default True
     hide_top_right_spines : bool, optional
@@ -71,13 +73,13 @@ def configure_mpl(
     tuple
         (plt, dict of RGBA colors)
     """
-    # Convert base font size
-    base_size = _convert_font_size(fontsize)
+    # # Convert base font size
+    # base_size = _convert_font_size(fontsize)
 
-    # Ensure minimum sizes for different elements with better proportions
-    title_size = max(base_size * 1.25, 10.0)  # Increased for better hierarchy
-    label_size = max(base_size * 1.0, 9.0)  # Minimum 9pt for good readability
-    small_size = max(base_size * 0.85, 8.0)  # Increased ratio for better legibility
+    # # Ensure minimum sizes for different elements with better proportions
+    # title_size = max(base_size * 1.25, 10.0)  # Increased for better hierarchy
+    # label_size = max(base_size * 1.0, 9.0)  # Minimum 9pt for good readability
+    # small_size = max(base_size * 0.85, 8.0)  # Increased ratio for better legibility
 
     # Colors
     RGBA = {
@@ -108,13 +110,13 @@ def configure_mpl(
         "savefig.dpi": dpi_save,
         # Figure Size
         "figure.figsize": figsize_inch,
-        # Font Sizes
-        "font.size": base_size,
-        "axes.titlesize": title_size,
-        "axes.labelsize": label_size,
-        "xtick.labelsize": small_size,
-        "ytick.labelsize": small_size,
-        "legend.fontsize": small_size,
+        # # Font Sizes
+        # "font.size": base_size,
+        # "axes.titlesize": title_size,
+        # "axes.labelsize": label_size,
+        # "xtick.labelsize": small_size,
+        # "ytick.labelsize": small_size,
+        # "legend.fontsize": small_size,
         # Auto Layout
         "figure.autolayout": autolayout,
         # Top and Right Axes
@@ -123,7 +125,9 @@ def configure_mpl(
         # Spine width
         "axes.linewidth": 0.8,  # Slightly thicker axes lines
         # Custom color cycle
-        "axes.prop_cycle": plt.cycler(color=list(RGBA_NORM_FOR_CYCLE.values())),
+        "axes.prop_cycle": plt.cycler(
+            color=list(RGBA_NORM_FOR_CYCLE.values())
+        ),
         # Line
         "lines.linewidth": line_width,
         "lines.markersize": 6.0,  # Better default marker size
@@ -131,7 +135,7 @@ def configure_mpl(
         "grid.linewidth": 0.6,
         "grid.alpha": 0.3,
     }
-    
+
     # Configure LaTeX rendering if enabled with enhanced fallback
     if enable_latex:
         latex_success = False
@@ -139,18 +143,19 @@ def configure_mpl(
             # Try to enable LaTeX rendering
             test_config = {
                 "text.usetex": True,
-                "text.latex.preamble": latex_preamble or r"\usepackage{amsmath}\usepackage{amssymb}",
+                "text.latex.preamble": latex_preamble
+                or r"\usepackage{amsmath}\usepackage{amssymb}",
                 "font.family": "serif",
                 "font.serif": ["Computer Modern Roman"],
                 "mathtext.fontset": "cm",
             }
-            
+
             # Test LaTeX capability before applying
             with plt.rc_context(test_config):
                 try:
                     # Create a test figure to verify LaTeX works
                     fig, ax = plt.subplots(figsize=(1, 1))
-                    ax.text(0.5, 0.5, r'$x^2 + y^2 = r^2$', usetex=True)
+                    ax.text(0.5, 0.5, r"$x^2 + y^2 = r^2$", usetex=True)
                     fig.canvas.draw()  # Force rendering
                     plt.close(fig)
                     latex_success = True
@@ -159,48 +164,58 @@ def configure_mpl(
                     if verbose:
                         print(f"⚠️  LaTeX test render failed: {latex_error}")
                     raise latex_error
-            
+
             if latex_success:
                 mpl_config.update(test_config)
                 if verbose:
                     print("✅ LaTeX rendering enabled and tested")
-                    
+
         except Exception as e:
             if verbose:
-                print(f"⚠️  LaTeX rendering failed, falling back to mathtext: {e}")
-                print("    This may be due to missing LaTeX fonts or Node.js conflicts")
-            
+                print(
+                    f"⚠️  LaTeX rendering failed, falling back to mathtext: {e}"
+                )
+                print(
+                    "    This may be due to missing LaTeX fonts or Node.js conflicts"
+                )
+
             # Enhanced fallback to mathtext with better configuration
-            mpl_config.update({
-                "text.usetex": False,
-                "mathtext.default": "regular",
-                "font.family": "serif",
-                "mathtext.fontset": "cm",
-                "mathtext.fallback": "cm",  # Fallback font for missing symbols
-            })
-            
+            mpl_config.update(
+                {
+                    "text.usetex": False,
+                    "mathtext.default": "regular",
+                    "font.family": "serif",
+                    "mathtext.fontset": "cm",
+                    "mathtext.fallback": "cm",  # Fallback font for missing symbols
+                }
+            )
+
             # Enable LaTeX fallback mode in the str module
             try:
                 from scitex.str._latex_fallback import set_fallback_mode
+
                 set_fallback_mode("force_mathtext")
                 if verbose:
                     print("📝 Enabled automatic LaTeX fallback mode")
             except ImportError:
                 if verbose:
                     print("⚠️  LaTeX fallback module not available")
-                    
+
     else:
         # Use mathtext only with enhanced configuration
-        mpl_config.update({
-            "text.usetex": False,
-            "mathtext.default": "regular",
-            "mathtext.fontset": "cm",
-            "mathtext.fallback": "cm",
-        })
-        
+        mpl_config.update(
+            {
+                "text.usetex": False,
+                "mathtext.default": "regular",
+                "mathtext.fontset": "cm",
+                "mathtext.fallback": "cm",
+            }
+        )
+
         # Set fallback mode to mathtext
         try:
             from scitex.str._latex_fallback import set_fallback_mode
+
             set_fallback_mode("force_mathtext")
         except ImportError:
             pass
@@ -218,12 +233,12 @@ def configure_mpl(
             f"{fig_size_mm[0] * fig_scale:.1f} x "
             f"{fig_size_mm[1] * fig_scale:.1f} mm (width x height)"
         )
-        print("\nFont Sizes:")
-        print(f"  Base Size: {base_size:.1f}pt")
-        print(f"  Title: {title_size:.1f}pt (125% of base, min 10pt)")
-        print(f"  Axis Labels: {label_size:.1f}pt (100% of base, min 9pt)")
-        print(f"  Tick Labels: {small_size:.1f}pt (85% of base, min 8pt)")
-        print(f"  Legend: {small_size:.1f}pt (85% of base, min 8pt)")
+        # print("\nFont Sizes:")
+        # print(f"  Base Size: {base_size:.1f}pt")
+        # print(f"  Title: {title_size:.1f}pt (125% of base, min 10pt)")
+        # print(f"  Axis Labels: {label_size:.1f}pt (100% of base, min 9pt)")
+        # print(f"  Tick Labels: {small_size:.1f}pt (85% of base, min 8pt)")
+        # print(f"  Legend: {small_size:.1f}pt (85% of base, min 8pt)")
         print(f"\nHide Top and Right Axes: {hide_top_right_spines}")
         print(f"Line Width: {line_width}")
         # print(f"Number of Ticks: {n_ticks}")
@@ -247,36 +262,36 @@ def configure_mpl(
     return plt, RGBA_NORM
 
 
-def _convert_font_size(size: Union[str, int, float]) -> float:
-    """Converts various font size specifications to numerical values.
+# def _convert_font_size(size: Union[str, int, float]) -> float:
+#     """Converts various font size specifications to numerical values.
 
-    Parameters
-    ----------
-    size : Union[str, int, float]
-        Font size specification. Can be:
-        - String: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'
-        - Numeric: direct point size value
+#     Parameters
+#     ----------
+#     size : Union[str, int, float]
+#         Font size specification. Can be:
+#         - String: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'
+#         - Numeric: direct point size value
 
-    Returns
-    -------
-    float
-        Font size in points
-    """
-    if isinstance(size, str):
-        size_map = {
-            "xx-small": 9,
-            "x-small": 11,
-            "small": 13,
-            "medium": 15,
-            "large": 18,
-            "x-large": 22,
-            "xx-large": 26,
-        }
-        return size_map.get(size.lower(), 15)
-    elif isinstance(size, (int, float)):
-        return max(float(size), 9.0)  # Ensure minimum size of 9
-    else:
-        raise ValueError(f"Unsupported font size type: {type(size)}")
+#     Returns
+#     -------
+#     float
+#         Font size in points
+#     """
+#     if isinstance(size, str):
+#         size_map = {
+#             "xx-small": 9,
+#             "x-small": 11,
+#             "small": 13,
+#             "medium": 15,
+#             "large": 18,
+#             "x-large": 22,
+#             "xx-large": 26,
+#         }
+#         return size_map.get(size.lower(), 15)
+#     elif isinstance(size, (int, float)):
+#         return max(float(size), 9.0)  # Ensure minimum size of 9
+#     else:
+#         raise ValueError(f"Unsupported font size type: {type(size)}")
 
 
 if __name__ == "__main__":

@@ -23,3 +23,4 @@ warnings.warn(
 
 # Import everything from the new module for backward compatibility
 from ..repro import *  # noqa: F403,F401,E402
+from ._hash_array import hash_array

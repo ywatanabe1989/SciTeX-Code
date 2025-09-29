@@ -670,21 +670,29 @@ class TestConfidenceIntervalValidation:
         
         assert np.isclose(result, expected, rtol=1e-10)
 
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-v", "-s"])
+    import os
+
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Function Reference: ci(xx, axis=None)
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_ci.py
+# --------------------------------------------------------------------------------
+# #!./env/bin/python3
+# # -*- coding: utf-8 -*-
+# # Time-stamp: "2024-06-04 06:55:56 (ywatanabe)"
+# # /home/ywatanabe/proj/scitex/src/scitex/gen/_ci.py
 # 
-# Calculates 95% confidence interval using the formula:
-# CI = 1.96 * std / sqrt(n)
 # 
-# where:
-# - 1.96 is the z-score for 95% confidence
-# - std is the standard deviation of non-NaN values
-# - n is the count of non-NaN values
+# import numpy as np
 # 
-# Note: The axis parameter has limitations due to the NaN filtering implementation
-# which flattens the array after filtering.
+# 
+# def ci(xx, axis=None):
+#     indi = ~np.isnan(xx)
+#     return 1.96 * (xx[indi]).std(axis=axis) / np.sqrt(indi.sum())
+
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/gen/_ci.py
 # --------------------------------------------------------------------------------

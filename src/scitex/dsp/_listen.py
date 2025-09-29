@@ -47,7 +47,7 @@ def list_and_select_device() -> int:
 if __name__ == "__main__":
     import scitex
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     signal, time_points, sampling_freq = scitex.dsp.demo_sig("chirp")
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     listen(signal, sampling_freq)
 
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # def play_audio(
 #     samples: np.ndarray, fs: int = 44100, channels: int = 1
@@ -471,7 +471,7 @@ if __name__ == "__main__":
 # # # if __name__ == "__main__":
 # # #     import scitex
 
-# # #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+# # #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
 # # #     # Generate a test signal if demo_sig fails
 # # #     try:
@@ -503,7 +503,7 @@ if __name__ == "__main__":
 # # #         except Exception as err:
 # # #             print(f"Failed to play {method} sonification: {err}")
 
-# # #     scitex.gen.close(CONFIG)
+# # #     scitex.session.close(CONFIG)
 
 # # # # EOF
 
@@ -680,7 +680,7 @@ if __name__ == "__main__":
 # # # # if __name__ == "__main__":
 # # # #     import scitex
 
-# # # #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+# # # #     CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
 # # # #     signal, time_points, sampling_freq = scitex.dsp.demo_sig("chirp")
 
@@ -689,7 +689,7 @@ if __name__ == "__main__":
 
 # # # #     listen(signal, sampling_freq)
 
-# # # #     scitex.gen.close(CONFIG)
+# # # #     scitex.session.close(CONFIG)
 
 # # # #
 

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-07-12 11:47:28
+!-- Timestamp: 2025-09-10 07:43:20
 !-- Author: ywatanabe
 !-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/README.md
 !-- --- -->
@@ -11,6 +11,12 @@
 !-- --- -->
 
 # Database Module - SQLite3 Usage
+
+## Cli
+```bash
+python -m scitex.db inspect database.db
+python -m scitex.db health database1.db database2.db --fix
+```
 
 ## Basic Usage
 

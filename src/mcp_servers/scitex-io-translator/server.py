@@ -14,7 +14,7 @@ Focuses on IO module translations.
 
 import json
 import asyncio
-import logging
+from scitex import logging
 from typing import Dict, Any, List, Optional
 import re
 from pathlib import Path

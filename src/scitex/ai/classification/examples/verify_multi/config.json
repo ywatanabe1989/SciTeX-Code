@@ -1,0 +1,13 @@
+{
+  "name": "verify_multi",
+  "output_dir": ".dev/verify_multi",
+  "target_classes": [
+    "task1",
+    "task2"
+  ],
+  "required_metrics": [
+    "balanced_accuracy",
+    "mcc",
+    "confusion_matrix"
+  ]
+}

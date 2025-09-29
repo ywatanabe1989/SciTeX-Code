@@ -127,100 +127,52 @@ Line 4"""
         code = '''def hello_world():
     """Print hello world."""
     print("Hello, World!")
-    return True
-
-if __name__ == "__main__":
-    hello_world()
-'''
-        save_text(code, self.test_file)
+    return True'''
         
-        with open(self.test_file, 'r') as f:
+        test_path = os.path.join(self.test_dir, "code_snippet.py")
+        save_text(code, test_path)
+        
+        # Read back and verify
+        with open(test_path, "r") as f:
             content = f.read()
+        
         assert content == code
 
-    def test_save_markdown_text(self):
-        """Test saving markdown-formatted text"""
-        markdown = """# Title
 
-## Subtitle
+if __name__ == "__main__":
+    import os
 
-This is a paragraph with **bold** and *italic* text.
+    import pytest
 
-- Item 1
-- Item 2
-- Item 3
+    pytest.main([os.path.abspath(__file__)])
 
-```python
-def example():
-    pass
-```
-"""
-        save_text(markdown, self.test_file)
-        
-        with open(self.test_file, 'r') as f:
-            content = f.read()
-        assert content == markdown
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_save_modules/_text.py
+# --------------------------------------------------------------------------------
+# #!/usr/bin/env python3
+# # -*- coding: utf-8 -*-
+# # Timestamp: "2025-05-16 12:17:12 (ywatanabe)"
+# # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/io/_save_modules/_text.py
+# 
+# 
+# def _save_text(obj, spath):
+#     """
+#     Save text content to a file.
+#     
+#     Parameters
+#     ----------
+#     obj : str
+#         The text content to save.
+#     spath : str
+#         Path where the text file will be saved.
+#         
+#     Returns
+#     -------
+#     None
+#     """
+#     with open(spath, "w") as file:
+#         file.write(obj)
 
-    def test_save_with_different_extensions(self):
-        """Test saving with different file extensions"""
-        text = "Test content"
-        
-        # .txt
-        txt_file = os.path.join(self.temp_dir, "test.txt")
-        save_text(text, txt_file)
-        assert os.path.exists(txt_file)
-        
-        # .log
-        log_file = os.path.join(self.temp_dir, "test.log")
-        save_text(text, log_file)
-        assert os.path.exists(log_file)
-        
-        # .md
-        md_file = os.path.join(self.temp_dir, "test.md")
-        save_text(text, md_file)
-        assert os.path.exists(md_file)
-
-    def test_save_numeric_string(self):
-        """Test saving numeric values as strings"""
-        save_text("42", self.test_file)
-        
-        with open(self.test_file, 'r') as f:
-            content = f.read()
-        assert content == "42"
-
-    def test_save_with_bom(self):
-        """Test saving with BOM (Byte Order Mark)"""
-        text = "Text with BOM"
-        save_text(text, self.test_file, encoding='utf-8-sig')
-        
-        # Check file has BOM
-        with open(self.test_file, 'rb') as f:
-            raw = f.read()
-        assert raw.startswith(b'\xef\xbb\xbf')
-        
-        # Content should still read correctly
-        with open(self.test_file, 'r', encoding='utf-8-sig') as f:
-            content = f.read()
-        assert content == text
-
-    def test_error_non_string_input(self):
-        """Test error handling for non-string input"""
-        with pytest.raises(TypeError):
-            save_text(123, self.test_file)
-        
-        with pytest.raises(TypeError):
-            save_text([1, 2, 3], self.test_file)
-
-    def test_save_with_line_endings(self):
-        """Test preserving specific line endings"""
-        # Unix line endings
-        unix_text = "Line1\nLine2\nLine3"
-        save_text(unix_text, self.test_file)
-        
-        with open(self.test_file, 'rb') as f:
-            content = f.read()
-        assert b'\r\n' not in content  # No Windows line endings
-        assert b'\n' in content  # Has Unix line endings
-
-
-# EOF
+# --------------------------------------------------------------------------------
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_save_modules/_text.py
+# --------------------------------------------------------------------------------

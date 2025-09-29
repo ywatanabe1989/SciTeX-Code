@@ -263,7 +263,7 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
         sys,
         plt,
         verbose=False,
@@ -272,7 +272,7 @@ if __name__ == "__main__":
 
     exit_status = main(parse_args())
 
-    scitex.gen.close(
+    scitex.session.close(
         CONFIG,
         verbose=False,
         notify=False,

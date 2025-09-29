@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-14 15:21:15 (ywatanabe)"
-# File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_save.py
+# Timestamp: "2025-09-24 14:07:02 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/io/_save.py"
@@ -11,8 +12,6 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import warnings
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py"
 
 """
 1. Functionality:
@@ -29,9 +28,11 @@ THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py"
 
 """Imports"""
 import inspect
-import logging
 import os as _os
-from typing import Any
+from pathlib import Path
+from typing import Any, Union
+
+from scitex import logging
 
 from .._sh import sh
 from ..path._clean import clean
@@ -46,6 +47,8 @@ from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
                             save_pickle, save_pickle_compressed, save_text,
                             save_torch, save_yaml, save_zarr)
 from ._save_modules._bibtex import save_bibtex
+
+logger = logging.getLogger()
 
 
 def _get_figure_with_data(obj):
@@ -132,10 +135,11 @@ def _get_figure_with_data(obj):
 
 def save(
     obj: Any,
-    specified_path: str,
+    specified_path: Union[str, Path],
     makedirs: bool = True,
     verbose: bool = True,
     symlink_from_cwd: bool = False,
+    symlink_to: Union[str, Path] = None,
     dry_run: bool = False,
     no_csv: bool = False,
     **kwargs,
@@ -147,14 +151,16 @@ def save(
     ----------
     obj : Any
         The object to be saved. Can be a NumPy array, PyTorch tensor, Pandas DataFrame, or any serializable object.
-    specified_path : str
-        The file name or path where the object should be saved. The file extension determines the format.
+    specified_path : Union[str, Path]
+        The file name or path where the object should be saved. Can be a string or pathlib.Path object. The file extension determines the format.
     makedirs : bool, optional
         If True, create the directory path if it does not exist. Default is True.
     verbose : bool, optional
         If True, print a message upon successful saving. Default is True.
     symlink_from_cwd : bool, optional
         If True, create a _symlink from the current working directory. Default is False.
+    symlink_to : Union[str, Path], optional
+        If specified, create a symlink at this path pointing to the saved file. Default is None.
     dry_run : bool, optional
         If True, simulate the saving process without actually writing files. Default is False.
     **kwargs
@@ -205,10 +211,8 @@ def save(
     >>> scitex.io.save(data_dict, "data.json")
     """
     try:
-        # Convert Path objects to strings to avoid AttributeError on startswith
-        if hasattr(
-            specified_path, "__fspath__"
-        ):  # Check if it's a path-like object
+        # Convert Path objects to strings for consistency
+        if isinstance(specified_path, Path):
             specified_path = str(specified_path)
 
         ########################################
@@ -334,9 +338,17 @@ def save(
                 sh(f"rm -f {path}", verbose=False)
 
         if dry_run:
-            print(
-                color_text(f"\n(dry run) Saved to: {spath_final}", c="yellow")
-            )
+            # Get relative path from current working directory
+            try:
+                rel_path = _os.path.relpath(spath, _os.getcwd())
+            except ValueError:
+                rel_path = spath
+
+            if verbose:
+                print()
+                logger.success(
+                    color_text(f"(dry run) Saved to: ./{rel_path}", c="yellow")
+                )
             return
 
         # Ensure directory exists
@@ -354,11 +366,12 @@ def save(
             **kwargs,
         )
 
-        # Symbolic link
+        # Symbolic links
         _symlink(spath, spath_cwd, symlink_from_cwd, verbose)
+        _symlink_to(spath_final, symlink_to, verbose)
 
     except Exception as e:
-        logging.error(
+        logger.error(
             f"Error occurred while saving: {str(e)}\n"
             f"Debug: Initial script_path = {inspect.stack()[1].filename}\n"
             f"Debug: Final spath = {spath}\n"
@@ -374,7 +387,32 @@ def _symlink(spath, spath_cwd, symlink_from_cwd, verbose):
         sh(f"rm -f {spath_cwd}", verbose=False)
         sh(f"ln -sfr {spath} {spath_cwd}", verbose=False)
         if verbose:
-            print(color_text(f"\n(Symlinked to: {spath_cwd})", "yellow"))
+            # Get file extension to provide more informative message
+            ext = _os.path.splitext(spath_cwd)[1].lower()
+            logger.success(color_text(f"(Symlinked to: {spath_cwd})"))
+
+
+def _symlink_to(spath_final, symlink_to, verbose):
+    """Create a symbolic link at the specified path pointing to the saved file."""
+    if symlink_to:
+        # Convert Path objects to strings for consistency
+        if isinstance(symlink_to, Path):
+            symlink_to = str(symlink_to)
+
+        # Clean the symlink path
+        symlink_to = clean(symlink_to)
+
+        # Ensure the symlink directory exists
+        _os.makedirs(_os.path.dirname(symlink_to), exist_ok=True)
+
+        # Remove existing symlink or file
+        sh(f"rm -f {symlink_to}", verbose=False)
+
+        # Create the symlink using relative path for robustness
+        sh(f"ln -sfr {spath_final} {symlink_to}", verbose=False)
+
+        if verbose:
+            print(color_text(f"\n(Symlinked to: {symlink_to})", "yellow"))
 
 
 def _save(
@@ -389,7 +427,7 @@ def _save(
     # Don't use object's own save method - use consistent handlers
     # This ensures all saves go through the same pipeline and get
     # the yellow confirmation message
-    
+
     # Get file extension
     ext = _os.path.splitext(spath)[1].lower()
 
@@ -423,13 +461,25 @@ def _save(
         if _os.path.exists(spath):
             file_size = getsize(spath)
             file_size = readable_bytes(file_size)
-            print(color_text(f"\nSaved to: {spath} ({file_size})", c="yellow"))
+            # Get relative path from current working directory
+            try:
+                rel_path = _os.path.relpath(spath, _os.getcwd())
+            except ValueError:
+                rel_path = spath
+
+            print()
+            logger.success(
+                color_text(f"Saved to: ./{rel_path} ({file_size})", c="yellow")
+            )
 
 
 def _save_separate_legends(
     obj, spath, symlink_from_cwd=False, dry_run=False, **kwargs
 ):
     """Save separate legend files if ax.legend('separate') was used."""
+    if dry_run:
+        return
+
     import matplotlib.figure
     import matplotlib.pyplot as plt
 
@@ -500,6 +550,9 @@ def _handle_image_with_csv(
     obj, spath, no_csv=False, symlink_from_cwd=False, dry_run=False, **kwargs
 ):
     """Handle image file saving with optional CSV export."""
+    if dry_run:
+        return
+
     save_image(obj, spath, **kwargs)
 
     # Handle separate legend saving
@@ -524,29 +577,80 @@ def _handle_image_with_csv(
                 if hasattr(fig_obj, "export_as_csv"):
                     csv_data = fig_obj.export_as_csv()
                     if csv_data is not None and not csv_data.empty:
-                        save(
+                        # For CSV files, we want them in the same directory as the image
+                        # Use the full path but it will be handled correctly by save()
+                        csv_path = spath.replace(ext_wo_dot, "csv")
+                        # Save directly using _save to avoid path doubling
+                        _save(
                             csv_data,
-                            spath.replace(ext_wo_dot, "csv"),
-                            symlink_from_cwd=symlink_from_cwd,
+                            csv_path,
+                            verbose=True,
+                            symlink_from_cwd=False,  # Will handle symlink manually
                             dry_run=dry_run,
                             no_csv=True,
                             **kwargs,
                         )
+                        # Create symlink for CSV manually if needed
+                        if symlink_from_cwd:
+                            # Get the relative path from the original specified path
+                            # This preserves the directory structure for the symlink
+                            import inspect
+
+                            frame_info = inspect.stack()
+                            # Find the original specified_path from the parent save() call
+                            for frame in frame_info:
+                                if "specified_path" in frame.frame.f_locals:
+                                    original_path = frame.frame.f_locals[
+                                        "specified_path"
+                                    ]
+                                    if isinstance(original_path, str):
+                                        # Replace extension to get CSV path structure
+                                        csv_relative = original_path.replace(
+                                            _os.path.splitext(original_path)[
+                                                1
+                                            ],
+                                            ".csv",
+                                        )
+                                        csv_cwd = _os.path.join(
+                                            _os.getcwd(), csv_relative
+                                        )
+                                        _symlink(csv_path, csv_cwd, True, True)
+                                        break
+                            else:
+                                # Fallback to basename if we can't find the original path
+                                csv_cwd = (
+                                    _os.getcwd()
+                                    + "/"
+                                    + _os.path.basename(csv_path)
+                                )
+                                _symlink(csv_path, csv_cwd, True, True)
 
                 # Save SigmaPlot CSV if method exists
                 if hasattr(fig_obj, "export_as_csv_for_sigmaplot"):
                     sigmaplot_data = fig_obj.export_as_csv_for_sigmaplot()
                     if sigmaplot_data is not None and not sigmaplot_data.empty:
-                        save(
+                        # For CSV files, we want them in the same directory as the image
+                        csv_sigmaplot_path = spath.replace(
+                            ext_wo_dot, "csv"
+                        ).replace(".csv", "_for_sigmaplot.csv")
+                        # Save directly using _save to avoid path doubling
+                        _save(
                             sigmaplot_data,
-                            spath.replace(ext_wo_dot, "csv").replace(
-                                ".csv", "_for_sigmaplot.csv"
-                            ),
-                            symlink_from_cwd=symlink_from_cwd,
+                            csv_sigmaplot_path,
+                            verbose=True,
+                            symlink_from_cwd=False,  # Will handle symlink manually
                             dry_run=dry_run,
                             no_csv=True,
                             **kwargs,
                         )
+                        # Create symlink for SigmaPlot CSV manually if needed
+                        if symlink_from_cwd:
+                            csv_cwd = (
+                                _os.getcwd()
+                                + "/"
+                                + _os.path.basename(csv_sigmaplot_path)
+                            )
+                            _symlink(csv_sigmaplot_path, csv_cwd, True, True)
         except Exception:
             pass
 

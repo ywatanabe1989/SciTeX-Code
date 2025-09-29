@@ -279,31 +279,32 @@ class TestTakeReference:
         with pytest.raises((IndexError, RuntimeError, AssertionError)):
             scitex.dsp.reference.take_reference(signal, 10, dim=0)  # Out of bounds
 
-
 if __name__ == "__main__":
     import os
 
-    pytest.main([os.path.abspath(__file__), "-v"])
+    import pytest
+
+    pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/dsp/reference.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/dsp/reference.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "ywatanabe (2024-11-02 22:48:44)"
 # # File: ./scitex_repo/src/scitex/dsp/reference.py
-#
+# 
 # import torch as _torch
 # from ..decorators import torch_fn as _torch_fn
-#
-#
+# 
+# 
 # @_torch_fn
 # def common_average(x, dim=-2):
 #     re_referenced = (x - x.mean(dim=dim, keepdims=True)) / x.std(dim=dim, keepdims=True)
 #     assert x.shape == re_referenced.shape
 #     return re_referenced
-#
-#
+# 
+# 
 # @_torch_fn
 # def random(x, dim=-2):
 #     idx_all = [slice(None)] * x.ndim
@@ -313,8 +314,8 @@ if __name__ == "__main__":
 #     re_referenced = x - y
 #     assert x.shape == re_referenced.shape
 #     return re_referenced
-#
-#
+# 
+# 
 # @_torch_fn
 # def take_reference(x, tgt_indi, dim=-2):
 #     idx_all = [slice(None)] * x.ndim
@@ -322,16 +323,16 @@ if __name__ == "__main__":
 #     re_referenced = x - x[tgt_indi]
 #     assert x.shape == re_referenced.shape
 #     return re_referenced
-#
-#
+# 
+# 
 # if __name__ == "__main__":
 #     import scitex
-#
+# 
 #     x, f, t = scitex.dsp.demo_sig()
 #     y = common_average(x)
-#
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/_scitex_repo/src/scitex/dsp/reference.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/dsp/reference.py
 # --------------------------------------------------------------------------------

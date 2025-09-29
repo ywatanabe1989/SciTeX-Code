@@ -1,2 +1,0 @@
-/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/example.py:42: SciTeXWarning: SCITEX_SEMANTIC_SCHOLAR_API_KEY not found. Citation counts will use CrossRef (works without key). For additional citation sources, get a free API key at: https://www.semanticscholar.org/product/api
-  scholar = stx.scholar.Scholar(

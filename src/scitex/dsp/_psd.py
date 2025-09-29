@@ -64,7 +64,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Parameters
     SIG_TYPE = "chirp"
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     scitex.io.save(fig, "psd.png")
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

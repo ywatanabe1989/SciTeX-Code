@@ -296,8 +296,20 @@ if __name__ == "__main__":
     import pytest
 
     pytest.main([os.path.abspath(__file__)])
-#
-#
+
+# --------------------------------------------------------------------------------
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_flush.py
+# --------------------------------------------------------------------------------
+# #!/usr/bin/env python3
+# # -*- coding: utf-8 -*-
+# # Time-stamp: "2024-11-02 03:23:44 (ywatanabe)"
+# # File: ./scitex_repo/src/scitex/io/_flush.py
+# 
+# import os
+# import sys
+# import warnings
+# 
+# 
 # def flush(sys=sys):
 #     """
 #     Flushes the system's stdout and stderr, and syncs the file system.
@@ -309,10 +321,10 @@ if __name__ == "__main__":
 #         sys.stdout.flush()
 #         sys.stderr.flush()
 #         os.sync()
-#
-#
+# 
+# 
 # # EOF
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/io/_flush.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_flush.py
 # --------------------------------------------------------------------------------

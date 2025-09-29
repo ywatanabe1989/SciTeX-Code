@@ -190,6 +190,28 @@ class Units:
     hertz = Unit("hertz", "Hz", {"time": -1})
     kilohertz = Unit("kilohertz", "kHz", {"time": -1}, scale=1000)
     megahertz = Unit("megahertz", "MHz", {"time": -1}, scale=1e6)
+    
+    # Electrical units
+    volt = Unit("volt", "V", {"mass": 1, "length": 2, "time": -3, "current": -1})
+    millivolt = Unit("millivolt", "mV", {"mass": 1, "length": 2, "time": -3, "current": -1}, scale=0.001)
+    microvolt = Unit("microvolt", "μV", {"mass": 1, "length": 2, "time": -3, "current": -1}, scale=1e-6)
+    kilovolt = Unit("kilovolt", "kV", {"mass": 1, "length": 2, "time": -3, "current": -1}, scale=1000)
+    
+    ohm = Unit("ohm", "Ω", {"mass": 1, "length": 2, "time": -3, "current": -2})
+    kiloohm = Unit("kiloohm", "kΩ", {"mass": 1, "length": 2, "time": -3, "current": -2}, scale=1000)
+    
+    farad = Unit("farad", "F", {"mass": -1, "length": -2, "time": 4, "current": 2})
+    microfarad = Unit("microfarad", "μF", {"mass": -1, "length": -2, "time": 4, "current": 2}, scale=1e-6)
+    nanofarad = Unit("nanofarad", "nF", {"mass": -1, "length": -2, "time": 4, "current": 2}, scale=1e-9)
+    picofarad = Unit("picofarad", "pF", {"mass": -1, "length": -2, "time": 4, "current": 2}, scale=1e-12)
+    
+    # Common abbreviations
+    s = second
+    ms = millisecond
+    Hz = hertz
+    V = volt
+    mV = millivolt
+    mA = Unit("milliampere", "mA", {"current": 1}, scale=0.001)
 
 
 def validate_units(func):

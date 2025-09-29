@@ -181,9 +181,9 @@ def _ensure_log_file(path: str, init: bool) -> None:
 main = log_processor_usages
 
 if __name__ == "__main__":
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt, verbose=False)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt, verbose=False)
     main()
-    scitex.gen.close(CONFIG, verbose=False, notify=False)
+    scitex.session.close(CONFIG, verbose=False, notify=False)
 
 # python -c "import scitex; scitex.resource.log_processor_usages(\"/tmp/processor_usages.csv\", init=True)"
 

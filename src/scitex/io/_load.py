@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 23:50:18 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load.py
+# Timestamp: "2025-08-11 05:54:51 (ywatanabe)"
+# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/io/_load.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/io/_load.py"
@@ -11,10 +12,20 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import glob
-from typing import Any
+from pathlib import Path
+from typing import Any, Union
 
 from ..decorators import preserve_doc
 from ..str._clean_path import clean_path
+from ._load_cache import (
+    cache_data,
+    configure_cache,
+    get_cache_info,
+    get_cached_data,
+    load_npy_cached,
+)
+from ._load_modules._bibtex import _load_bibtex
+
 # from ._load_modules._catboost import _load_catboost
 from ._load_modules._con import _load_con
 from ._load_modules._docx import _load_docx
@@ -35,25 +46,30 @@ from ._load_modules._txt import _load_txt
 from ._load_modules._xml import _load_xml
 from ._load_modules._yaml import _load_yaml
 from ._load_modules._zarr import _load_zarr
-from ._load_modules._bibtex import _load_bibtex
 
 
 def load(
-    lpath: str, show: bool = False, verbose: bool = False, **kwargs
+    lpath: Union[str, Path],
+    show: bool = False,
+    verbose: bool = False,
+    cache: bool = True,
+    **kwargs,
 ) -> Any:
     """
     Load data from various file formats.
 
-    This function supports loading data from multiple file formats.
+    This function supports loading data from multiple file formats with optional caching.
 
     Parameters
     ----------
-    lpath : str
-        The path to the file to be loaded.
+    lpath : Union[str, Path]
+        The path to the file to be loaded. Can be a string or pathlib.Path object.
     show : bool, optional
         If True, display additional information during loading. Default is False.
     verbose : bool, optional
         If True, print verbose output during loading. Default is False.
+    cache : bool, optional
+        If True, enable caching for faster repeated loads. Default is True.
     **kwargs : dict
         Additional keyword arguments to be passed to the specific loading function.
 
@@ -85,11 +101,15 @@ def load(
     >>> image = load('image.png')
     >>> model = load('model.pth')
     """
-    lpath = clean_path(lpath)
 
-    # Convert Path objects to strings to avoid AttributeError on string methods
-    if hasattr(lpath, "__fspath__"):  # Check if it's a path-like object
+    # Don't use clean_path as it breaks relative paths like ./file.txt
+    # lpath = clean_path(lpath)
+
+    # Convert Path objects to strings for consistency
+    if isinstance(lpath, Path):
         lpath = str(lpath)
+        if verbose:
+            print(f"[DEBUG] After Path conversion: {lpath}")
 
     # Check if it's a glob pattern
     if "*" in lpath or "?" in lpath or "[" in lpath:
@@ -107,53 +127,37 @@ def load(
             )
         return results
 
-    # Enhanced path searching for notebook compatibility
+    # Handle broken symlinks - os.path.exists() returns False for broken symlinks
     if not os.path.exists(lpath):
-        # Try to find the file in common output directories
-        search_paths = [lpath]  # Original path
-
-        # Check if we're in a notebook environment
-        try:
-            from ..gen._detect_environment import detect_environment
-
-            env_type = detect_environment()
-
-            if env_type == "jupyter":
-                # Try notebook output directories
-                import re
-                from pathlib import Path
-
-                # Get current directory name
-                cwd = Path.cwd()
-
-                # Common notebook output patterns
-                patterns = [
-                    f"{cwd.name}_out/{lpath}",  # Current dir output
-                    f"*_out/{lpath}",  # Any notebook output dir
-                    f"../*_out/{lpath}",  # Parent dir outputs
-                    f"test_*_out/{lpath}",  # Test output dirs
-                ]
-
-                for pattern in patterns:
-                    matches = glob.glob(pattern)
-                    if matches:
-                        # Use the most recent file if multiple matches
-                        lpath = max(matches, key=os.path.getmtime)
-                        break
+        if os.path.islink(lpath):
+            # For symlinks, resolve the target path relative to symlink's directory
+            symlink_dir = os.path.dirname(os.path.abspath(lpath))
+            target = os.readlink(lpath)
+            resolved_target = os.path.join(symlink_dir, target)
+            resolved_target = os.path.abspath(resolved_target)
+            
+            if os.path.exists(resolved_target):
+                lpath = resolved_target
+            else:
+                raise FileNotFoundError(f"Symlink target not found: {resolved_target}")
+        else:
+            # Try general path resolution
+            try:
+                resolved_path = os.path.realpath(lpath)
+                if os.path.exists(resolved_path):
+                    lpath = resolved_path
                 else:
-                    # Also check parent directory for the file
-                    parent_path = os.path.join("..", lpath)
-                    if os.path.exists(parent_path):
-                        lpath = parent_path
-        except:
-            # If detection fails, continue with original logic
-            pass
+                    raise FileNotFoundError(f"File not found: {lpath}")
+            except Exception:
+                raise FileNotFoundError(f"File not found: {lpath}")
 
-        # Final check - if still not found, raise error
-        if not os.path.exists(lpath):
-            raise FileNotFoundError(
-                f"{lpath} not found. Searched in current directory and notebook output directories."
-            )
+    # Try to get from cache first
+    if cache:
+        cached_data = get_cached_data(lpath)
+        if cached_data is not None:
+            if verbose:
+                print(f"[Cache HIT] Loaded from cache: {lpath}")
+            return cached_data
 
     loaders_dict = {
         # Default
@@ -217,10 +221,23 @@ def load(
     }
 
     ext = lpath.split(".")[-1] if "." in lpath else ""
+
+    # Special handling for numpy files with caching
+    if cache and ext in ["npy", "npz"]:
+        return load_npy_cached(lpath, **kwargs)
+
     loader = preserve_doc(loaders_dict.get(ext, _load_txt))
 
     try:
-        return loader(lpath, **kwargs)
+        result = loader(lpath, **kwargs)
+
+        # Cache the result if caching is enabled
+        if cache:
+            cache_data(lpath, result)
+            if verbose:
+                print(f"[Cache STORED] Cached data for: {lpath}")
+
+        return result
     except (ValueError, FileNotFoundError) as e:
         raise ValueError(f"Error loading file {lpath}: {str(e)}")
 

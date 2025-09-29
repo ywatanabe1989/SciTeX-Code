@@ -105,7 +105,6 @@ class TestMainFunctionality:
         actual_spath = os.path.join(ACTUAL_SAVE_DIR, spath)
         assert os.path.exists(actual_spath), f"Failed to save figure to {spath}"
 
-
 if __name__ == "__main__":
     import os
 
@@ -114,7 +113,7 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_style/_force_aspect.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_style/_force_aspect.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
@@ -122,30 +121,38 @@ if __name__ == "__main__":
 # # File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/ax/_style/_force_aspect.py
 # # ----------------------------------------
 # import os
-# __FILE__ = (
-#     "./src/scitex/plt/ax/_style/_force_aspect.py"
-# )
+# 
+# __FILE__ = "./src/scitex/plt/ax/_style/_force_aspect.py"
 # __DIR__ = os.path.dirname(__FILE__)
 # # ----------------------------------------
-#
+# 
 # import matplotlib
-#
-#
+# from ....plt.utils import assert_valid_axis
+# 
+# 
 # def force_aspect(axis, aspect=1):
-#     assert isinstance(
-#         axis, matplotlib.axes._axes.Axes
-#     ), "First argument must be a matplotlib axes"
-#
+#     """
+#     Forces aspect ratio of an axis based on the extent of the image.
+#     
+#     Arguments:
+#         axis (matplotlib.axes.Axes or scitex.plt._subplots.AxisWrapper): The axis to adjust.
+#         aspect (float, optional): The aspect ratio to apply. Defaults to 1.
+#         
+#     Returns:
+#         matplotlib.axes.Axes or scitex.plt._subplots.AxisWrapper: The axis with adjusted aspect ratio.
+#     """
+#     assert_valid_axis(axis, "First argument must be a matplotlib axis or scitex axis wrapper")
+# 
 #     im = axis.get_images()
-#
+# 
 #     extent = im[0].get_extent()
-#
-#     axis.set_aspect(
-#         abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect
-#     )
+# 
+#     axis.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
 #     return axis
-#
+# 
+# 
 # # EOF
+
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_style/_force_aspect.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_style/_force_aspect.py
 # --------------------------------------------------------------------------------

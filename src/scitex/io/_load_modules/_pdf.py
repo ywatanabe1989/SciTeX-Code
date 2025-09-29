@@ -17,7 +17,7 @@ This module provides comprehensive PDF text extraction capabilities
 for scientific papers, supporting various extraction modes and formats.
 """
 
-import logging
+from scitex import logging
 import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple

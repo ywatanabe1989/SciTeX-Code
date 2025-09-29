@@ -25,7 +25,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Parameters
     T_SEC = 1

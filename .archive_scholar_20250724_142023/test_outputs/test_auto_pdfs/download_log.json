@@ -1,0 +1,19 @@
+[
+  {
+    "doi": "10.1371/journal.pone.0159279",
+    "source": "plos",
+    "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0159279&type=printable",
+    "filename": "10.1371_journal.pone.0159279.pdf",
+    "status": "success"
+  },
+  {
+    "doi": "10.3389/fnins.2019.00573",
+    "status": "failed",
+    "filename": "10.3389_fnins.2019.00573.pdf"
+  },
+  {
+    "doi": "10.7554/eLife.64694",
+    "status": "failed",
+    "filename": "10.7554_eLife.64694.pdf"
+  }
+]

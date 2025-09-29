@@ -29,7 +29,7 @@ if __name__ == "__main__":
     import scitex
 
     # Start
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(sys, plt)
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(sys, plt)
 
     # Parameters
     T_SEC = 1.0
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     scitex.io.save(fig, "traces.png")
 
     # Close
-    scitex.gen.close(CONFIG)
+    scitex.session.close(CONFIG)
 
 # EOF
 

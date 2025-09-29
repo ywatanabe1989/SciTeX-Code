@@ -118,7 +118,6 @@ class TestMainFunctionality:
         actual_spath = os.path.join(ACTUAL_SAVE_DIR, spath)
         assert os.path.exists(actual_spath), f"Failed to save figure to {spath}"
 
-
 if __name__ == "__main__":
     import os
 
@@ -127,13 +126,13 @@ if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])
 
 # --------------------------------------------------------------------------------
-# Start of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_style/_set_size.py
+# Start of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_style/_set_size.py
 # --------------------------------------------------------------------------------
 # #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 # # Time-stamp: "2022-12-09 13:38:11 (ywatanabe)"
-#
-#
+# 
+# 
 # def set_size(ax, w, h):
 #     """w, h: width, height in inches"""
 #     # if not ax: ax=plt.gca()
@@ -147,5 +146,5 @@ if __name__ == "__main__":
 #     return ax
 
 # --------------------------------------------------------------------------------
-# End of Source Code from: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/ax/_style/_set_size.py
+# End of Source Code from: /home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/ax/_style/_set_size.py
 # --------------------------------------------------------------------------------
