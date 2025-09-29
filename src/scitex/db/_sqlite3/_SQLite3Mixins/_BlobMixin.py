@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-18 12:13:43 (ywatanabe)"
+# Timestamp: "2025-09-11 05:50:10 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_BlobMixin.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/db/_sqlite3/_SQLite3Mixins/_BlobMixin.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-from typing import List
 
 import pickle
 import zlib
 from typing import Any as _Any
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 
@@ -52,6 +52,8 @@ class _BlobMixin:
         """
         import os
         import time
+
+        self.ensure_connection()
 
         # Use database default if compress not explicitly specified
         if compress is None:
@@ -212,6 +214,7 @@ class _BlobMixin:
         -------
         Loaded object(s)
         """
+        self.ensure_connection()
 
         # Handle ids parameter
         if ids != "all":

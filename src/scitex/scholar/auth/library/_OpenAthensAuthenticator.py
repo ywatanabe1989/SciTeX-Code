@@ -29,7 +29,7 @@ from typing import Any, Dict, List, Optional
 
 from playwright.async_api import async_playwright
 
-from scitex import log
+from scitex import logging
 
 from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
@@ -39,7 +39,7 @@ from ._AuthCacheManager import AuthCacheManager
 from ._LockManager import LockManager
 from ._SessionManager import SessionManager
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class OpenAthensError(ScholarError):

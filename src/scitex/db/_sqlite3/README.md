@@ -123,4 +123,69 @@ with SQLite3("data.db", compress_by_default=True) as db:
     pass
 ```
 
+## Column Operations
+
+Modern column management with automatic version detection:
+
+### Drop Columns
+
+```python
+with SQLite3("data.db") as db:
+    # Drop single column (uses native DROP COLUMN if SQLite >= 3.35.0)
+    db.drop_column("table_name", "old_column")
+    
+    # Drop multiple columns efficiently
+    db.drop_columns("table_name", ["col1", "col2", "col3"])
+```
+
+### Rename Columns
+
+```python
+# Rename column (uses native RENAME COLUMN if SQLite >= 3.25.0)
+db.rename_column("table_name", "old_name", "new_name")
+```
+
+### Add Columns
+
+```python
+# Add new column with default value
+db.add_column("table_name", "new_column", "TEXT", default="N/A")
+
+# Add column with NOT NULL constraint
+db.add_column("table_name", "required_field", "INTEGER NOT NULL", default=0)
+```
+
+### Reorder and Sort Columns
+
+```python
+# Explicit column ordering
+db.reorder_columns("table_name", ["id", "name", "email", "created_at"])
+
+# Sort alphabetically with key columns first
+db.sort_columns("table_name", alphabetical=True, key_columns_first=["id", "created_at"])
+
+# Custom sort with callable
+db.sort_columns("table_name", key=lambda col: (col != "id", col.lower()))
+```
+
+### Column Information
+
+```python
+# Check if column exists
+if db.column_exists("table_name", "column_name"):
+    print("Column exists")
+
+# Get column information
+columns = db.get_column_info("table_name")
+for col in columns:
+    print(f"{col['name']}: {col['type']} {'PK' if col['pk'] else ''}")
+```
+
+### Version Detection
+
+The module automatically detects SQLite version and uses native operations when available:
+- DROP COLUMN: SQLite 3.35.0+ (native) or table recreation
+- RENAME COLUMN: SQLite 3.25.0+ (native) or table recreation
+- All operations preserve data, constraints, indexes, and triggers
+
 <!-- EOF -->

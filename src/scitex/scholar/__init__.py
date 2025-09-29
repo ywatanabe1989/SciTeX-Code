@@ -26,7 +26,7 @@ from scitex.scholar.engines import ScholarEngine
 from scitex.scholar.url import ScholarURLFinder
 from scitex.scholar.download import ScholarPDFDownloader
 from scitex.scholar.storage import ScholarLibrary
-from scitex.scholar.core import Paper, Papers#, Scholar
+from scitex.scholar.core import Paper, Papers, Scholar
 from . import utils
 
 __all__ = [
@@ -38,7 +38,7 @@ __all__ = [
 
     "Paper",
     "Papers",
-    # "Scholar",
+    "Scholar",
 
     "utils",
 ]

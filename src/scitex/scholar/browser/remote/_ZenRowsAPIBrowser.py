@@ -22,10 +22,10 @@ from typing import Optional, Dict, Any, List
 from pathlib import Path
 import aiohttp
 
-from scitex import log
+from scitex import logging
 from scitex.errors import ScholarError
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ZenRowsAPIBrowser:

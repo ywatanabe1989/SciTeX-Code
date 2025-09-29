@@ -91,14 +91,16 @@ def conf_mat(
     assert (cm is not None) or ((y_true is not None) and (y_pred is not None))
 
     if cm is None:
-        with scitex.gen.suppress_output():
+        with scitex.context.suppress_output():
             cm = sklearn_confusion_matrix(y_true, y_pred, labels=labels)
 
     bacc = calc_bACC_from_cm(cm)
 
     title = f"{title} (bACC = {bacc:.3f})"
 
-    if labels is not None:
+    # Only reconstruct full confusion matrix if we have y_true and y_pred
+    # When cm is passed directly, use it as-is
+    if labels is not None and y_true is not None and y_pred is not None:
         full_cm = np.zeros((len(labels), len(labels)))
         unique_true = np.unique(y_true)
         unique_pred = np.unique(y_pred)
@@ -114,7 +116,7 @@ def conf_mat(
     cm = pd.DataFrame(data=cm).copy()
 
     labels_to_latex = lambda labels: (
-        [scitex.gen.to_latex_style(label) for label in labels]
+        [scitex.str.to_latex_style(label) for label in labels]
         if labels is not None
         else None
     )
@@ -222,7 +224,7 @@ def calc_bACC_from_cm(cm):
     bacc = calc_bACC_from_cm(cm)
     print(bacc)
     """
-    with scitex.gen.suppress_output():
+    with scitex.context.suppress_output():
         try:
             per_class = np.diag(cm) / np.nansum(cm, axis=1)
             bacc = np.nanmean(per_class)
@@ -353,7 +355,7 @@ if __name__ == "__main__":
 #     assert (cm is not None) or ((y_true is not None) and (y_pred is not None))
 
 #     if cm is None:
-#         with scitex.gen.suppress_output():
+#         with scitex.context.suppress_output():
 #             cm = sklearn_confusion_matrix(y_true, y_pred, labels=labels)
 #             # cm = sklearn_confusion_matrix(y_true, y_pred)
 
@@ -382,13 +384,13 @@ if __name__ == "__main__":
 
 #     # To LaTeX styles
 #     if pred_labels is not None:
-#         pred_labels = [scitex.gen.to_latex_style(l) for l in pred_labels]
+#         pred_labels = [scitex.str.to_latex_style(l) for l in pred_labels]
 #     if true_labels is not None:
-#         true_labels = [scitex.gen.to_latex_style(l) for l in true_labels]
+#         true_labels = [scitex.str.to_latex_style(l) for l in true_labels]
 #     if labels is not None:
-#         labels = [scitex.gen.to_latex_style(l) for l in labels]
+#         labels = [scitex.str.to_latex_style(l) for l in labels]
 #     if sorted_labels is not None:
-#         sorted_labels = [scitex.gen.to_latex_style(l) for l in sorted_labels]
+#         sorted_labels = [scitex.str.to_latex_style(l) for l in sorted_labels]
 
 #     # Prediction Labels: columns
 #     if pred_labels is not None:
@@ -507,7 +509,7 @@ if __name__ == "__main__":
 
 
 # def calc_bACC_from_cm(cm):
-#     with scitex.gen.suppress_output():
+#     with scitex.context.suppress_output():
 #         try:
 #             per_class = np.diag(cm) / np.nansum(cm, axis=1)
 #             bacc = round(np.nanmean(per_class), 3)

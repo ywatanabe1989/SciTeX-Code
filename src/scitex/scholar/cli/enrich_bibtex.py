@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-30 04:21:31 (ywatanabe)"
+# Timestamp: "2025-09-30 04:32:57 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/enrich_bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -28,7 +28,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from scitex import log, logging
+from scitex import logging
 from scitex.scholar import Scholar
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ def main():
     if args.quiet:
         logging.disable(logging.INFO)
     elif args.verbose:
-        log.getLogger("scitex.scholar").setLevel(logging.DEBUG)
+        logging.getLogger("scitex.scholar").setLevel(logging.DEBUG)
 
     try:
         # Create scholar instance

@@ -29,7 +29,7 @@ from typing import List, Optional
 
 import requests
 
-from scitex import log
+from scitex import logging
 
 from ..utils import (
     PubMedConverter,
@@ -38,7 +38,7 @@ from ..utils import (
     standardize_metadata,
 )
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class BaseDOIEngine(ABC):

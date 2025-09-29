@@ -14,9 +14,9 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class BibTeXHandler:
@@ -140,13 +140,16 @@ class BibTeXHandler:
             "pdf": fields.get("url"),
         }
 
-        paper = Paper(
+        # Use utility function for backward compatibility
+        from scitex.scholar.utils.paper_utils import paper_from_structured
+
+        paper = paper_from_structured(
             basic=basic_data,
             id=id_data,
             publication=publication_data,
             url=url_data,
             project=self.project,
-            config=self.config,
+            # config is not stored in Paper anymore
         )
 
         paper._original_bibtex_fields = fields.copy()

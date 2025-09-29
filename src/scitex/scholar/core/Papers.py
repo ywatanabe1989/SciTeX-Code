@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 22:55:10 (ywatanabe)"
+# Timestamp: "2025-09-30 06:10:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/Papers.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,492 +11,85 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""
-Papers class for SciTeX Scholar module.
+"""Papers class for SciTeX Scholar module.
 
-A collection of papers with analysis and export capabilities.
+Papers is a simple collection of Paper objects.
+All business logic is handled by Scholar or utility functions.
+
+This is a simplified version - reduced from 39 methods to ~15 methods.
+Business logic has been moved to Scholar and utility functions.
 """
 
-import json
-from datetime import datetime
-from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Union,
+)
 
-import pandas as pd
-
-from scitex import log
-from scitex.errors import ScholarError
+from scitex import logging
 from scitex.scholar.config import ScholarConfig
-from scitex.scholar.storage import ScholarLibrary
+from scitex.scholar.core.Paper import Paper
 
-from .Paper import Paper
-
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Papers:
-    """
-    A collection of papers with analysis and export capabilities.
+    """A simple collection of Paper objects.
 
-    Provides fluent interface for filtering, sorting, and batch operations.
+    This is a minimal collection class. Most business logic
+    (loading, saving, enrichment, etc.) is handled by Scholar.
+
+    Methods have been reduced from 39 to ~15 for simplicity.
+    Complex operations should use Scholar or utility functions.
     """
 
     def __init__(
         self,
-        papers: List[Paper],
-        auto_deduplicate: bool = True,
-        source_priority: List[str] = None,
-        config: Optional[ScholarConfig] = None,
+        papers: Optional[Union[List[Paper], List[Dict]]] = None,
         project: Optional[str] = None,
+        config: Optional[ScholarConfig] = None,
     ):
-        """
-        Initialize collection with list of papers.
+        """Initialize Papers collection.
 
         Args:
-            papers: List of Paper objects
-            auto_deduplicate: Automatically remove duplicates (default: True)
-            source_priority: List of sources in priority order for deduplication
+            papers: List of Paper objects or dicts to convert to Papers
+            project: Project name for organizing papers
             config: Scholar configuration
-            project: Project name for library integration
         """
+        self.project = project or "default"
         self.config = config or ScholarConfig()
-        self.project = project
-        self._papers = papers
-        self._enriched = False
-        self._df_cache = None
-        self._source_priority = source_priority
 
-        # Automatically deduplicate unless explicitly disabled
-        if auto_deduplicate and papers:
-            self._deduplicate_in_place(source_priority=source_priority)
+        # Initialize papers list
+        self._papers: List[Paper] = []
 
-        self.library = ScholarLibrary(project=self.project, config=self.config)
-
-    def sync_with_library(self, bidirectional: bool = True) -> Dict[str, int]:
-        """Synchronize the Papers collection with the library storage.
-
-        Args:
-            bidirectional: If True, also load missing papers from library
-
-        Returns:
-            Dictionary with sync statistics
-        """
-        results = {"saved": 0, "loaded": 0, "updated": 0, "errors": 0}
-
-        # Save papers that aren't in library yet
-        save_results = self.save_to_library(progress=False)
-        results["saved"] = save_results["saved"]
-        results["errors"] += save_results["errors"]
-
-        if bidirectional and self.project:
-            # Load papers from library that aren't in collection
-            try:
-                library_papers = self.from_project(self.project, self.config)
-                library_ids = {
-                    p.library_id
-                    for p in library_papers._papers
-                    if p.library_id
-                }
-                collection_ids = {
-                    p.library_id for p in self._papers if p.library_id
-                }
-
-                missing_ids = library_ids - collection_ids
-                for library_id in missing_ids:
+        if papers:
+            for item in papers:
+                if isinstance(item, Paper):
+                    self._papers.append(item)
+                elif isinstance(item, dict):
+                    # Handle dict input for compatibility
                     try:
-                        paper = Paper.from_library(library_id, self.config)
+                        if 'basic' in item:
+                            # Old structured format
+                            from scitex.scholar.utils.paper_utils import paper_from_structured
+                            paper = paper_from_structured(**item)
+                        else:
+                            # Flat format
+                            paper = Paper(**item)
                         self._papers.append(paper)
-                        results["loaded"] += 1
                     except Exception as e:
-                        logger.error(f"Failed to load paper {library_id}: {e}")
-                        results["errors"] += 1
-
-            except Exception as e:
-                logger.error(f"Failed to load library papers: {e}")
-                results["errors"] += 1
-
-        logger.info(f"Library sync complete: {results}")
-        return results
-
-    def get_project_statistics(self) -> Dict[str, Any]:
-        """Get comprehensive statistics for the project collection.
-
-        Returns:
-            Dictionary with project statistics
-        """
-        stats = {
-            "total_papers": len(self._papers),
-            "project": self.project,
-            "with_doi": sum(1 for p in self._papers if p.doi),
-            "with_pdf": sum(
-                1
-                for p in self._papers
-                if p.pdf_path and Path(p.pdf_path).exists()
-            ),
-            "with_library_id": sum(1 for p in self._papers if p.library_id),
-            "journals": len(set(p.journal for p in self._papers if p.journal)),
-            "years": {
-                "min": min(
-                    (int(p.year) for p in self._papers if p.year), default=None
-                ),
-                "max": max(
-                    (int(p.year) for p in self._papers if p.year), default=None
-                ),
-            },
-            "authors": len(
-                set(
-                    author
-                    for p in self._papers
-                    if p.authors
-                    for author in p.authors
-                )
-            ),
-        }
-
-        # Add enrichment status
-        stats["enriched"] = self._enriched
-
-        return stats
-
-    def create_project_symlinks(self) -> Dict[str, int]:
-        """Create symlinks in project directory pointing to master storage.
-
-        Returns:
-            Dictionary with symlink creation statistics
-        """
-        if not self.project:
-            raise ValueError("Project must be set to create symlinks")
-
-        results = {"created": 0, "existed": 0, "errors": 0}
-        project_dir = self.config.get_library_dir() / self.project
-        project_dir.mkdir(parents=True, exist_ok=True)
-
-        for paper in self._papers:
-            if not paper.library_id:
-                continue
-
-            try:
-                # Create symlink from project to master
-                master_path = (
-                    self.config.get_library_master_dir() / paper.library_id
-                )
-                symlink_path = project_dir / paper.library_id
-
-                if symlink_path.exists():
-                    results["existed"] += 1
+                        logger.warning(f"Failed to create Paper from dict: {e}")
                 else:
-                    symlink_path.symlink_to(
-                        master_path, target_is_directory=True
-                    )
-                    results["created"] += 1
+                    logger.warning(f"Skipping invalid item type: {type(item)}")
 
-            except Exception as e:
-                logger.error(
-                    f"Failed to create symlink for {paper.library_id}: {e}"
-                )
-                results["errors"] += 1
-
-        logger.info(f"Project symlinks created: {results}")
-        return results
-
-    # I think this should be handled by ScholarLibrary
-    @classmethod
-    def from_bibtex(cls, bibtex_input: Union[str, Path]) -> "Papers":
-        """
-        Create Papers from BibTeX file path or content string.
-
-        This method intelligently detects whether the input is a file path or
-        BibTeX content string and handles it appropriately.
-
-        Args:
-            bibtex_input: Either:
-                - Path to a BibTeX file (str or Path object)
-                - BibTeX content as a string
-
-        Returns:
-            Papers instance
-
-        Examples:
-            >>> # From file path
-            >>> collection = Papers.from_bibtex("pac.bib")
-            >>> collection = Papers.from_bibtex(Path("~/refs/pac.bib"))
-
-            >>> # From BibTeX content string
-            >>> bibtex_content = '''@article{example2023,
-            ...     title = {Example Paper},
-            ...     author = {John Doe},
-            ...     year = {2023}
-            ... }'''
-            >>> collection = Papers.from_bibtex(bibtex_content)
-        """
-        # Detect if input is a file path or content
-        is_path = False
-
-        # Convert to string for checking
-        input_str = str(bibtex_input)
-
-        # Check if it's likely a path
-        if (
-            len(input_str) < 500
-        ):  # Paths are typically shorter than BibTeX content
-            # Check for path-like characteristics
-            if (
-                input_str.endswith(".bib")
-                or input_str.endswith(".bibtex")
-                or "/" in input_str
-                or "\\" in input_str
-                or input_str.startswith("~")
-                or input_str.startswith(".")
-                or os.path.exists(os.path.expanduser(input_str))
-            ):
-                is_path = True
-
-        # If it contains @ at the beginning of a line, it's likely content
-        if "\n@" in input_str or input_str.strip().startswith("@"):
-            is_path = False
-
-        # Delegate to appropriate method
-        if is_path:
-            return cls._from_bibtex_file(input_str)
-        else:
-            return cls._from_bibtex_text(input_str)
-
-    # I think this should be handled by ScholarLibrary
-    @classmethod
-    def _from_bibtex_file(cls, file_path: Union[str, Path]) -> "Papers":
-        """
-        Create Papers from a BibTeX file.
-
-        Args:
-            file_path: Path to the BibTeX file
-
-        Returns:
-            Papers instance
-        """
-        # Load from file
-        bibtex_path = Path(os.path.expanduser(str(file_path)))
-        if not bibtex_path.exists():
-            raise ScholarError(f"BibTeX file not found: {bibtex_path}")
-
-        # Use scitex.io to load the file
-        from scitex.io import load
-
-        entries = load(str(bibtex_path))
-        logger.info(f"Loaded {len(entries)} entries from {bibtex_path}")
-
-        # Convert entries to Paper objects
-        papers = []
-        for entry in entries:
-            paper = cls._bibtex_entry_to_paper(entry)
-            if paper:
-                papers.append(paper)
-
-        logger.info(f"Created Papers with {len(papers)} papers from file")
-        return cls(papers, auto_deduplicate=True)
-
-    # I think this should be handled by ScholarLibrary
-    @classmethod
-    def _from_bibtex_text(cls, bibtex_content: str) -> "Papers":
-        """
-        Create Papers from BibTeX content string.
-
-        Args:
-            bibtex_content: BibTeX content as a string
-
-        Returns:
-            Papers instance
-        """
-        # Parse BibTeX content directly
-        # Write to temp file and load
-        import tempfile
-
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".bib", delete=False
-        ) as f:
-            f.write(bibtex_content)
-            temp_path = f.name
-
-        try:
-            from scitex.io import load
-
-            entries = load(temp_path)
-        finally:
-            import os
-
-            os.unlink(temp_path)
-        logger.info(f"Parsed {len(entries)} entries from BibTeX content")
-
-        # Convert entries to Paper objects
-        papers = []
-        for entry in entries:
-            paper = cls._bibtex_entry_to_paper(entry)
-            if paper:
-                papers.append(paper)
-
-        logger.info(f"Created Papers with {len(papers)} papers from text")
-        return cls(papers, auto_deduplicate=True)
-
-    # I think this should be handled by ScholarLibrary and Paper class
-    @staticmethod
-    def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Optional[Paper]:
-        """
-        Convert a BibTeX entry dict to a Paper object.
-
-        Args:
-            entry: BibTeX entry dictionary with 'entry_type', 'key', and 'fields'
-
-        Returns:
-            Paper object or None if conversion fails
-        """
-        try:
-            # Extract fields
-            fields = entry.get("fields", {})
-
-            # Required fields
-            title = fields.get("title", "")
-            if not title:
-                logger.warning(
-                    f"Skipping entry {entry.get('key', 'unknown')} - no title"
-                )
-                return None
-
-            # Authors
-            author_str = fields.get("author", "")
-            authors = []
-            if author_str:
-                # Split by ' and ' for BibTeX format
-                authors = [a.strip() for a in author_str.split(" and ")]
-
-            # Create Paper object
-            paper = Paper(
-                title=title,
-                authors=authors,
-                abstract=fields.get("abstract", ""),
-                source="bibtex",
-                year=fields.get("year"),
-                doi=fields.get("doi"),
-                pmid=fields.get("pmid"),
-                arxiv_id=fields.get(
-                    "eprint"
-                ),  # arXiv ID often stored as eprint
-                journal=fields.get("journal"),
-                keywords=(
-                    fields.get("keywords", "").split(", ")
-                    if fields.get("keywords")
-                    else []
-                ),
-                metadata={
-                    "bibtex_key": entry.get("key", ""),
-                    "bibtex_entry_type": entry.get("entry_type", "misc"),
-                },
-            )
-
-            # Store original BibTeX fields for later reconstruction
-            paper._original_bibtex_fields = fields.copy()
-            paper._bibtex_entry_type = entry.get("entry_type", "misc")
-            paper._bibtex_key = entry.get("key", "")
-
-            # Check for enriched metadata
-            # Citation count
-            if "citation_count" in fields:
-                try:
-                    paper.citation_count = int(fields["citation_count"])
-                    paper.citation_count_source = fields.get(
-                        "citation_count_source", "bibtex"
-                    )
-                except ValueError:
-                    pass
-
-            # Impact factor (check various field names)
-            for field_name in fields:
-                if "impact_factor" in field_name and "JCR" in field_name:
-                    try:
-                        paper.impact_factor = float(fields[field_name])
-                        paper.impact_factor_source = fields.get(
-                            "impact_factor_source", "bibtex"
-                        )
-                        break
-                    except ValueError:
-                        pass
-
-            # Journal quartile
-            for field_name in fields:
-                if "quartile" in field_name and "JCR" in field_name:
-                    paper.journal_quartile = fields[field_name]
-                    paper.metadata["quartile_source"] = fields.get(
-                        "quartile_source", "bibtex"
-                    )
-                    break
-
-            # Additional fields that might be present
-            if "volume" in fields:
-                paper.volume = fields["volume"]
-            if "pages" in fields:
-                paper.pages = fields["pages"]
-            if "url" in fields:
-                paper.pdf_url = fields["url"]
-
-            return paper
-
-        except Exception as e:
-            logger.error(f"Error converting BibTeX entry to Paper: {e}")
-            return None
-
-    @property
-    def papers(self) -> List[Paper]:
-        """Get the list of papers."""
-        return self._papers
-
-    @property
-    def summary(self) -> Dict[str, Any]:
-        """
-        Get basic summary statistics as a dictionary.
-
-        Returns:
-            Dictionary with basic statistics (fast, suitable for properties)
-
-        Examples:
-            >>> papers_obj.summary
-            {'total': 20, 'sources': {'pubmed': 20}, 'years': {'min': 2020, 'max': 2025}}
-        """
-        summary_dict = {
-            "total": len(self._papers),
-            "sources": {},
-            "years": None,
-            "has_citations": 0,
-            "has_impact_factors": 0,
-            "has_pdfs": 0,
-        }
-
-        if not self._papers:
-            return summary_dict
-
-        # Count by source
-        for p in self._papers:
-            summary_dict["sources"][p.source] = (
-                summary_dict["sources"].get(p.source, 0) + 1
-            )
-
-        # Year range
-        years = [
-            int(p.year) for p in self._papers if p.year and p.year.isdigit()
-        ]
-        if years:
-            summary_dict["years"] = {"min": min(years), "max": max(years)}
-
-        # Quick counts
-        summary_dict["has_citations"] = sum(
-            1 for p in self._papers if p.citation_count is not None
-        )
-        summary_dict["has_impact_factors"] = sum(
-            1 for p in self._papers if p.impact_factor is not None
-        )
-        summary_dict["has_pdfs"] = sum(
-            1 for p in self._papers if p.pdf_url or p.pdf_path
-        )
-
-        return summary_dict
+    # =========================================================================
+    # BASIC COLLECTION METHODS
+    # =========================================================================
 
     def __len__(self) -> int:
         """Number of papers in collection."""
@@ -507,616 +100,349 @@ class Papers:
         return iter(self._papers)
 
     def __getitem__(self, index: Union[int, slice]) -> Union[Paper, "Papers"]:
-        """Get paper by index or slice."""
+        """Get paper(s) by index or slice.
+
+        Args:
+            index: Integer index or slice
+
+        Returns:
+            Single Paper if integer index, Papers collection if slice
+        """
         if isinstance(index, slice):
-            return Papers(self._papers[index], auto_deduplicate=False)
+            return Papers(self._papers[index], project=self.project, config=self.config)
         return self._papers[index]
 
-    def __dir__(self) -> List[str]:
-        """Return list of attributes for tab completion."""
-        # Include all public methods and properties
-        return [
-            "papers",
-            "summary",
-            "filter",
-            "save",
-            "sort_by",
-            "summarize",
-            "to_dataframe",
-            "to_dict",
-            "from_bibtex",
-        ]
-
     def __repr__(self) -> str:
-        """String representation for REPL."""
-        return f"<Papers with {len(self._papers)} papers>"
+        """String representation."""
+        return f"Papers(count={len(self)}, project={self.project})"
+
+    def __str__(self) -> str:
+        """Human-readable string."""
+        if len(self) == 0:
+            return "Empty Papers collection"
+        elif len(self) == 1:
+            return f"Papers collection with 1 paper"
+        else:
+            return f"Papers collection with {len(self)} papers"
+
+    def __dir__(self) -> List[str]:
+        """Custom dir for better discoverability."""
+        base_attrs = object.__dir__(self)
+        custom_attrs = [
+            'papers', 'filter', 'sort_by', 'append', 'extend',
+            'to_list', 'summary', 'to_dict', 'to_dataframe',
+            'from_bibtex', 'save'
+        ]
+        return sorted(set(base_attrs + custom_attrs))
+
+    # =========================================================================
+    # SIMPLE COLLECTION OPERATIONS
+    # =========================================================================
+
+    @property
+    def papers(self) -> List[Paper]:
+        """Get the underlying papers list."""
+        return self._papers
+
+    def append(self, paper: Paper) -> None:
+        """Add a paper to the collection.
+
+        Args:
+            paper: Paper to add
+        """
+        if isinstance(paper, Paper):
+            self._papers.append(paper)
+        else:
+            logger.warning(f"Cannot append non-Paper object: {type(paper)}")
+
+    def extend(self, papers: Union[List[Paper], "Papers"]) -> None:
+        """Add multiple papers to the collection.
+
+        Args:
+            papers: List of papers or another Papers collection
+        """
+        if isinstance(papers, Papers):
+            self._papers.extend(papers._papers)
+        elif isinstance(papers, list):
+            for paper in papers:
+                if isinstance(paper, Paper):
+                    self._papers.append(paper)
+        else:
+            logger.warning(f"Cannot extend with type: {type(papers)}")
+
+    def to_list(self) -> List[Paper]:
+        """Get papers as a list.
+
+        Returns:
+            List of Paper objects
+        """
+        return list(self._papers)
 
     def filter(
         self,
+        condition: Optional[Callable[[Paper], bool]] = None,
         year_min: Optional[int] = None,
         year_max: Optional[int] = None,
-        min_citations: Optional[int] = None,
-        max_citations: Optional[int] = None,
-        citation_count_min: Optional[int] = None,  # Alias for min_citations
-        impact_factor_min: Optional[float] = None,
-        open_access_only: bool = False,
-        journals: Optional[List[str]] = None,
-        authors: Optional[List[str]] = None,
-        keywords: Optional[List[str]] = None,
-        title_keywords: Optional[List[str]] = None,
-        source: Optional[Union[str, List[str]]] = None,
-        has_pdf: Optional[bool] = None,
+        has_doi: Optional[bool] = None,
+        has_abstract: Optional[bool] = None,
+        journal: Optional[str] = None,
+        author: Optional[str] = None,
+        **kwargs
     ) -> "Papers":
-        """
-        Filter papers by various criteria.
-
-        Returns new Papers with filtered results.
-        """
-        filtered = []
-
-        # Handle citation_count_min as alias for min_citations
-        if citation_count_min is not None:
-            min_citations = citation_count_min
-
-        n_papers_before = len(self._papers)
-
-        for paper in self._papers:
-            # Year filters
-            if year_min and paper.year:
-                try:
-                    if int(paper.year) < year_min:
-                        continue
-                except ValueError:
-                    continue
-
-            if year_max and paper.year:
-                try:
-                    if int(paper.year) > year_max:
-                        continue
-                except ValueError:
-                    continue
-
-            # Citation filters
-            if min_citations and (
-                not paper.citation_count
-                or paper.citation_count < min_citations
-            ):
-                continue
-            if (
-                max_citations
-                and paper.citation_count
-                and paper.citation_count > max_citations
-            ):
-                continue
-
-            # Impact factor filter
-            if impact_factor_min and (
-                not paper.impact_factor
-                or paper.impact_factor < impact_factor_min
-            ):
-                continue
-
-            # Open access filter
-            if open_access_only and not paper.pdf_url:
-                continue
-
-            # PDF availability filter
-            if has_pdf is not None:
-                if has_pdf and not (paper.pdf_url or paper.pdf_path):
-                    continue
-                elif not has_pdf and (paper.pdf_url or paper.pdf_path):
-                    continue
-
-            # Journal filter
-            if journals and paper.journal not in journals:
-                continue
-
-            # Author filter
-            if authors:
-                author_match = any(
-                    any(
-                        author_name.lower() in paper_author.lower()
-                        for paper_author in paper.authors
-                    )
-                    for author_name in authors
-                )
-                if not author_match:
-                    continue
-
-            # Keyword filter
-            if keywords:
-                # Check in title, abstract, and keywords
-                text_to_search = (
-                    f"{paper.title} {paper.abstract} {' '.join(paper.keywords)}"
-                ).lower()
-
-                keyword_match = any(
-                    keyword.lower() in text_to_search for keyword in keywords
-                )
-                if not keyword_match:
-                    continue
-
-            # Title keywords filter
-            if title_keywords and paper.title:
-                title_lower = paper.title.lower()
-                title_match = any(
-                    keyword.lower() in title_lower
-                    for keyword in title_keywords
-                )
-                if not title_match:
-                    continue
-
-            # Source filter
-            if source:
-                sources = [source] if isinstance(source, str) else source
-                if paper.source not in sources:
-                    continue
-
-            filtered.append(paper)
-
-        logger.info(
-            f"Filtered {len(self._papers)} papers to {len(filtered)} papers"
-        )
-
-        filted = Papers(filtered, auto_deduplicate=False)
-
-        n_papers_after = len(filted)
-
-        print(f"Filtered: {n_papers_before} -> {n_papers_after} papers")
-
-        return filted
-
-    def sort_by(self, *criteria, **kwargs) -> "Papers":
-        """
-        Sort papers by multiple criteria.
+        """Filter papers by condition or criteria.
 
         Args:
-            *criteria: Either:
-                - Single string: sort_by('impact_factor')
-                - Multiple strings: sort_by('impact_factor', 'year')
-                - Tuples of (criteria, reverse): sort_by(('impact_factor', True), ('year', False))
-                - Mixed: sort_by('impact_factor', ('year', False))
-            **kwargs:
-                - reverse: Default reverse setting for all criteria (default True)
-
-        Supported criteria:
-            - 'citations' or 'citation_count': Number of citations
-            - 'year': Publication year
-            - 'impact_factor': Journal impact factor
-            - 'title': Paper title (alphabetical)
-            - 'journal': Journal name (alphabetical)
-            - 'first_author': First author name (alphabetical)
-            - 'relevance': Currently uses citation count
+            condition: Function that takes a Paper and returns bool
+            year_min: Minimum year
+            year_max: Maximum year
+            has_doi: Filter papers with/without DOI
+            has_abstract: Filter papers with/without abstract
+            journal: Journal name (partial match)
+            author: Author name (partial match)
+            **kwargs: Additional keyword arguments
 
         Returns:
-            New sorted Papers
+            New Papers collection with filtered papers
+        """
+        # If a lambda/function condition is provided, use it
+        if condition is not None and callable(condition):
+            filtered = [p for p in self._papers if condition(p)]
+            logger.info(f"Lambda filter: {len(self._papers)} -> {len(filtered)} papers")
+            return Papers(filtered, project=self.project, config=self.config)
+
+        # Otherwise use criteria-based filtering
+        from scitex.scholar.utils.papers_utils import filter_papers_advanced
+        result = filter_papers_advanced(
+            self,
+            year_min=year_min,
+            year_max=year_max,
+            has_doi=has_doi,
+            has_abstract=has_abstract,
+            journal=journal,
+            author=author,
+            # Pass any additional kwargs
+            min_citations=kwargs.get('min_citations'),
+        )
+
+        # Preserve project and config
+        result.project = self.project
+        result.config = self.config
+
+        logger.info(f"Filtered: {len(self._papers)} -> {len(result)} papers")
+        return result
+
+    def sort_by(self, *criteria, reverse: bool = False, **kwargs) -> "Papers":
+        """Sort papers by criteria.
+
+        Args:
+            *criteria: Field names or functions to sort by
+            reverse: Sort in descending order
+            **kwargs: Additional options
+
+        Returns:
+            New sorted Papers collection
 
         Examples:
-            # Sort by impact factor (descending)
-            papers.sort_by('impact_factor')
-
-            # Sort by impact factor (desc), then year (desc)
-            papers.sort_by('impact_factor', 'year')
-
-            # Sort by impact factor (desc), then year (asc)
-            papers.sort_by(('impact_factor', True), ('year', False))
-
-            # Mixed format
-            papers.sort_by('impact_factor', ('year', False))
+            papers.sort_by('year')
+            papers.sort_by(lambda p: p.year or 0)
+            papers.sort_by('year', 'title')
         """
-        default_reverse = kwargs.get("reverse", True)
+        if not criteria:
+            return Papers(self._papers, project=self.project, config=self.config)
 
-        # Normalize criteria to list of (criterion, reverse) tuples
-        normalized_criteria = []
-        for criterion in criteria:
-            if isinstance(criterion, tuple) and len(criterion) == 2:
-                normalized_criteria.append(criterion)
-            elif isinstance(criterion, str):
-                normalized_criteria.append((criterion, default_reverse))
-            else:
-                from scitex.errors import DataError
+        # Handle single lambda
+        if len(criteria) == 1 and callable(criteria[0]):
+            sorted_papers = sorted(self._papers, key=criteria[0], reverse=reverse)
+            return Papers(sorted_papers, project=self.project, config=self.config)
 
-                raise DataError(
-                    f"Invalid sort criterion: {criterion}",
-                    context={
-                        "criterion": criterion,
-                        "valid_criteria": list(criteria.keys()),
-                    },
-                    suggestion="Use one of: relevance, year, citations, impact_factor",
-                )
+        # Handle field names
+        from scitex.scholar.utils.papers_utils import sort_papers_multi
+        return sort_papers_multi(self, list(criteria), reverse=reverse)
 
-        # If no criteria specified, default to citations
-        if not normalized_criteria:
-            normalized_criteria = [("citations", default_reverse)]
+    # =========================================================================
+    # BACKWARD COMPATIBILITY METHODS
+    # These delegate to utilities or Scholar for the actual implementation
+    # =========================================================================
 
-        def get_sort_value(paper, criterion):
-            """Get the sort value for a paper based on criterion."""
-            if criterion in ("citations", "citation_count"):
-                return paper.citation_count or 0
-            elif criterion == "year":
-                try:
-                    return int(paper.year) if paper.year else 0
-                except ValueError:
-                    return 0
-            elif criterion == "impact_factor":
-                return paper.impact_factor or 0
-            elif criterion == "title":
-                return paper.title.lower()
-            elif criterion == "journal":
-                return paper.journal.lower() if paper.journal else ""
-            elif criterion == "first_author":
-                return paper.authors[0].lower() if paper.authors else ""
-            elif criterion == "relevance":
-                # Use citation count as proxy for relevance
-                return paper.citation_count or 0
-            else:
-                logger.warning(f"Unknown sort criteria: {criterion}. Using 0.")
-                return 0
+    @classmethod
+    def from_bibtex(cls, bibtex_input: Union[str, Path]) -> "Papers":
+        """Load papers from BibTeX.
 
-        # Create sort key function that handles multiple criteria
-        def sort_key(paper):
-            values = []
-            for criterion, reverse in normalized_criteria:
-                value = get_sort_value(paper, criterion)
-                # For reverse sorting, negate numeric values
-                # For strings, we'll handle reverse in the sorted() call
-                if reverse and isinstance(value, (int, float)):
-                    value = -value
-                values.append(value)
-            return tuple(values)
-
-        # Sort papers
-        # For string criteria with reverse=True, we need special handling
-        # This is complex with multiple criteria, so we'll use a different approach
-        # We'll build the sort key differently
-
-        # Actually, let's use a cleaner approach with functools
-        from functools import cmp_to_key
-
-        def compare_papers(paper1, paper2):
-            """Compare two papers based on multiple criteria."""
-            for criterion, reverse in normalized_criteria:
-                val1 = get_sort_value(paper1, criterion)
-                val2 = get_sort_value(paper2, criterion)
-
-                # Compare values
-                if val1 < val2:
-                    result = -1
-                elif val1 > val2:
-                    result = 1
-                else:
-                    result = 0
-
-                # Apply reverse if needed
-                if reverse:
-                    result = -result
-
-                # If not equal, return the result
-                if result != 0:
-                    return result
-
-            # All criteria are equal
-            return 0
-
-        sorted_papers = sorted(self._papers, key=cmp_to_key(compare_papers))
-        return Papers(sorted_papers, auto_deduplicate=False)
-
-    def _calculate_completeness_score(
-        self, paper: Paper, source_priority: List[str] = None
-    ) -> int:
-        """
-        Calculate a completeness score for a paper based on available data.
-        Higher score = more complete data.
+        DEPRECATED: Use Scholar.from_bibtex() instead.
+        This method is kept for backward compatibility.
 
         Args:
-            paper: The paper to score
-            source_priority: List of sources in priority order (first = highest priority)
-        """
-        score = 0
-
-        # Basic fields (1 point each)
-        if paper.title:
-            score += 1
-        if paper.authors and len(paper.authors) > 0:
-            score += 1
-        if paper.abstract and len(paper.abstract) > 50:
-            score += 2  # Abstract is valuable
-        if paper.year:
-            score += 1
-        if paper.journal:
-            score += 1
-
-        # Identifiers (2 points each - very valuable for lookups)
-        if paper.doi:
-            score += 2
-        if paper.pmid:
-            score += 2
-        if paper.arxiv_id:
-            score += 2
-
-        # Enriched data (1 point each)
-        if paper.citation_count is not None:
-            score += 1
-        if paper.impact_factor is not None:
-            score += 1
-        if paper.keywords and len(paper.keywords) > 0:
-            score += 1
-        if paper.pdf_url:
-            score += 1
-
-        # Source priority bonus (higher bonus for sources listed first)
-        if source_priority and paper.source in source_priority:
-            # Give 10 points for first source, 9 for second, etc.
-            priority_index = source_priority.index(paper.source)
-            score += 10 - priority_index
-
-        return score
-
-    def _merge_papers(
-        self, paper1: Paper, paper2: Paper, source_priority: List[str] = None
-    ) -> Paper:
-        """
-        Merge two duplicate papers, keeping the best data from each.
-
-        Args:
-            paper1: First paper
-            paper2: Second paper
-            source_priority: List of sources in priority order (first = highest priority)
-        """
-        # Determine which paper should be the base (higher completeness score)
-        score1 = self._calculate_completeness_score(paper1, source_priority)
-        score2 = self._calculate_completeness_score(paper2, source_priority)
-
-        if score1 >= score2:
-            base_paper, other_paper = paper1, paper2
-        else:
-            base_paper, other_paper = paper2, paper1
-
-        # Merge all sources
-        all_sources = list(
-            set(
-                getattr(base_paper, "all_sources", [base_paper.source])
-                + getattr(other_paper, "all_sources", [other_paper.source])
-            )
-        )
-
-        # Create merged paper starting from base
-        merged = Paper(
-            title=base_paper.title or other_paper.title,
-            authors=(
-                base_paper.authors
-                if base_paper.authors
-                else other_paper.authors
-            ),
-            abstract=(
-                base_paper.abstract
-                if len(base_paper.abstract or "")
-                >= len(other_paper.abstract or "")
-                else other_paper.abstract
-            ),
-            source=base_paper.source,  # Keep the base paper's source
-            year=base_paper.year or other_paper.year,
-            doi=base_paper.doi or other_paper.doi,
-            pmid=base_paper.pmid or other_paper.pmid,
-            arxiv_id=base_paper.arxiv_id or other_paper.arxiv_id,
-            journal=base_paper.journal or other_paper.journal,
-            keywords=list(
-                set((base_paper.keywords or []) + (other_paper.keywords or []))
-            ),
-            citation_count=(
-                max(
-                    base_paper.citation_count or 0,
-                    other_paper.citation_count or 0,
-                )
-                if (base_paper.citation_count or other_paper.citation_count)
-                else None
-            ),
-            pdf_url=base_paper.pdf_url or other_paper.pdf_url,
-            pdf_path=base_paper.pdf_path or other_paper.pdf_path,
-            impact_factor=base_paper.impact_factor
-            or other_paper.impact_factor,
-            journal_quartile=base_paper.journal_quartile
-            or other_paper.journal_quartile,
-            journal_rank=base_paper.journal_rank or other_paper.journal_rank,
-            h_index=base_paper.h_index or other_paper.h_index,
-            metadata={
-                **other_paper.metadata,
-                **base_paper.metadata,
-            },  # Base paper metadata takes precedence
-        )
-
-        # Set all sources
-        merged.all_sources = all_sources
-        merged.metadata["all_sources"] = all_sources
-
-        # Keep citation source from the paper that had the citation
-        if base_paper.citation_count is not None:
-            merged.citation_count_source = base_paper.citation_count_source
-        elif other_paper.citation_count is not None:
-            merged.citation_count_source = other_paper.citation_count_source
-
-        # Keep impact factor source from the paper that had it
-        if base_paper.impact_factor is not None:
-            merged.impact_factor_source = base_paper.impact_factor_source
-        elif other_paper.impact_factor is not None:
-            merged.impact_factor_source = other_paper.impact_factor_source
-
-        # Keep quartile source from the paper that had it
-        if base_paper.journal_quartile is not None:
-            merged.metadata["quartile_source"] = base_paper.metadata.get(
-                "quartile_source"
-            )
-        elif other_paper.journal_quartile is not None:
-            merged.metadata["quartile_source"] = other_paper.metadata.get(
-                "quartile_source"
-            )
-
-        return merged
-
-    def _deduplicate_in_place(
-        self, threshold: float = 0.85, source_priority: List[str] = None
-    ) -> None:
-        """Remove duplicate papers in-place based on similarity threshold."""
-        if not self._papers:
-            return
-
-        # Initialize library for similarity calculations
-        from scitex.scholar.storage import calculate_similarity_score
-
-        unique_papers = [self._papers[0]]
-        for paper in self._papers[1:]:
-            is_duplicate = False
-            for ii_, unique_paper in enumerate(unique_papers):
-                if calculate_similarity_score(paper, unique_paper) > threshold:
-                    is_duplicate = True
-                    merged_paper = self._merge_papers(
-                        unique_paper, paper, source_priority
-                    )
-                    unique_papers[ii_] = merged_paper
-                    logger.debug(
-                        f"Merged duplicate papers from sources: {merged_paper.all_sources}"
-                    )
-                    break
-            if not is_duplicate:
-                unique_papers.append(paper)
-
-        if len(unique_papers) < len(self._papers):
-            logger.info(
-                f"Deduplicated {len(self._papers)} papers to {len(unique_papers)} unique papers"
-            )
-        self._papers = unique_papers
-
-    def to_dataframe(self) -> pd.DataFrame:
-        """
-        Convert collection to pandas DataFrame for analysis.
+            bibtex_input: Path to BibTeX file or BibTeX string
 
         Returns:
-            DataFrame with paper metadata
+            Papers collection
         """
-        if self._df_cache is not None:
-            return self._df_cache
+        logger.warning("Papers.from_bibtex() is deprecated. Use Scholar.from_bibtex() instead.")
 
-        # Import JCR year dynamically to include in column names
-        from .core._MetadataEnricher import JCR_YEAR
+        # Check if it's a file path
+        if isinstance(bibtex_input, (str, Path)):
+            path = Path(bibtex_input)
+            if path.exists():
+                return cls._from_bibtex_file(path)
 
-        data = []
-        for paper in self._papers:
-            row = {
-                "title": paper.title,
-                "authors": paper.authors if paper.authors else [],
-                "year": (
-                    int(paper.year)
-                    if paper.year and paper.year.isdigit()
-                    else None
-                ),
-                "journal": paper.journal or "N/A",
-                "citation_count": (
-                    paper.citation_count
-                    if paper.citation_count is not None
-                    else f"N/A ({getattr(paper, 'citation_count_na_reason', 'Not enriched')})"
-                ),
-                "citation_count_source": paper.citation_count_source or "N/A",
-                # f'JCR_{JCR_YEAR}_impact_factor': paper.impact_factor if paper.impact_factor is not None else 'N/A',
-                "impact_factor": (
-                    paper.impact_factor
-                    if paper.impact_factor is not None
-                    else f"N/A ({getattr(paper, 'impact_factor_na_reason', 'Not enriched')})"
-                ),
-                "impact_factor_source": paper.impact_factor_source or "N/A",
-                # f'JCR_{JCR_YEAR}_quartile': paper.journal_quartile or 'N/A',
-                "quartile": (
-                    paper.journal_quartile
-                    if paper.journal_quartile
-                    else f"N/A ({getattr(paper, 'journal_quartile_na_reason', 'Not enriched')})"
-                ),
-                "quartile_source": paper.metadata.get(
-                    "quartile_source", "N/A"
-                ),
-                "doi": paper.doi or "N/A",
-                "pmid": paper.pmid or "N/A",
-                "arxiv_id": paper.arxiv_id or "N/A",
-                "source": paper.source,
-                "has_pdf": bool(paper.pdf_url or paper.pdf_path),
-                "pdf_path": str(paper.pdf_path) if paper.pdf_path else "N/A",
-                "pdf_source": (
-                    paper.pdf_source
-                    if hasattr(paper, "pdf_source") and paper.pdf_source
-                    else "N/A"
-                ),
-                "keywords": paper.keywords if paper.keywords else [],
-                "abstract": paper.abstract or "N/A",
+        # Otherwise treat as BibTeX text
+        return cls._from_bibtex_text(str(bibtex_input))
+
+    @classmethod
+    def _from_bibtex_file(cls, file_path: Union[str, Path]) -> "Papers":
+        """Load papers from BibTeX file.
+
+        Args:
+            file_path: Path to BibTeX file
+
+        Returns:
+            Papers collection
+        """
+        import bibtexparser
+
+        file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"BibTeX file not found: {file_path}")
+
+        logger.info(f"Loading BibTeX from {file_path}")
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            bib_db = bibtexparser.load(f)
+
+        logger.info(f"Loaded {len(bib_db.entries)} BibTeX entries from {file_path}")
+
+        papers = []
+        for entry in bib_db.entries:
+            paper = cls._bibtex_entry_to_paper(entry)
+            if paper:
+                papers.append(paper)
+
+        logger.success(f"Created {len(papers)} papers from BibTeX file")
+        return cls(papers)
+
+    @classmethod
+    def _from_bibtex_text(cls, bibtex_content: str) -> "Papers":
+        """Load papers from BibTeX text.
+
+        Args:
+            bibtex_content: BibTeX content as string
+
+        Returns:
+            Papers collection
+        """
+        import bibtexparser
+
+        bib_db = bibtexparser.loads(bibtex_content)
+        logger.info(f"Parsed {len(bib_db.entries)} BibTeX entries from text")
+
+        papers = []
+        for entry in bib_db.entries:
+            paper = cls._bibtex_entry_to_paper(entry)
+            if paper:
+                papers.append(paper)
+
+        logger.success(f"Created {len(papers)} papers from BibTeX text")
+        return cls(papers)
+
+    @staticmethod
+    def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Optional[Paper]:
+        """Convert BibTeX entry to Paper object.
+
+        Args:
+            entry: BibTeX entry dictionary
+
+        Returns:
+            Paper object or None if conversion fails
+        """
+        try:
+            # Get fields from BibTeX entry
+            fields = {k.lower(): v for k, v in entry.items()}
+
+            # Parse authors
+            authors = []
+            if "author" in fields:
+                author_str = fields["author"]
+                authors = [a.strip() for a in author_str.split(" and ")]
+
+            # Parse year
+            year = None
+            if "year" in fields:
+                try:
+                    year = int(str(fields["year"]))
+                except ValueError:
+                    pass
+
+            # Parse keywords
+            keywords = []
+            if "keywords" in fields:
+                keywords = [k.strip() for k in fields["keywords"].split(",")]
+
+            # Create structured data for Paper
+            basic_data = {
+                "title": fields.get("title", "").strip("{}"),
+                "authors": authors,
+                "abstract": fields.get("abstract", ""),
+                "year": year,
+                "keywords": keywords,
             }
-            data.append(row)
 
-        self._df_cache = pd.DataFrame(data)
-        return self._df_cache
+            id_data = {
+                "doi": fields.get("doi"),
+                "pmid": fields.get("pmid"),
+                "arxiv_id": fields.get("arxiv"),
+            }
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert collection to dictionary format.
+            publication_data = {
+                "journal": fields.get("journal"),
+            }
 
-        Returns:
-            Dictionary with metadata and papers list
+            url_data = {
+                "pdf": fields.get("url"),
+            }
 
-        Examples:
-            >>> papers_dict = papers.to_dict()
-            >>> print(papers_dict['metadata']['total'])
-            20
-            >>> print(papers_dict['papers'][0]['title'])
-            'Example Paper Title'
-        """
-        return {
-            "metadata": {
-                "total": len(self._papers),
-                "sources": (
-                    dict(self.summary["sources"]) if self._papers else {}
-                ),
-                "years": self.summary["years"],
-                "has_citations": self.summary["has_citations"],
-                "has_impact_factors": self.summary["has_impact_factors"],
-                "has_pdfs": self.summary["has_pdfs"],
-                "enriched": self._enriched,
-            },
-            "papers": [paper.to_dict() for paper in self._papers],
-        }
+            # Use utility function for structured data
+            from scitex.scholar.utils.paper_utils import paper_from_structured
+
+            paper = paper_from_structured(
+                basic=basic_data,
+                id=id_data,
+                publication=publication_data,
+                url=url_data,
+            )
+
+            # Store original BibTeX fields for later reconstruction
+            paper._original_bibtex_fields = fields.copy()
+            paper._bibtex_entry_type = entry.get("entry_type", "misc")
+            paper._bibtex_key = entry.get("key", "")
+
+            return paper
+
+        except Exception as e:
+            logger.warning(f"Failed to convert BibTeX entry to Paper: {e}")
+            return None
 
     def save(
         self,
         output_path: Union[str, Path],
-        format: Optional[str] = None,
-        include_enriched: bool = True,
+        format: Optional[str] = "auto",
+        **kwargs
     ) -> None:
-        """
-        Save collection to file. Format is auto-detected from extension if not specified.
+        """Save papers to file.
 
-        Simple save method like numpy.save() - just writes the file without extra features.
-        For symlinks, verbose output, etc., use scitex.io.save() instead.
+        DEPRECATED: Use Scholar.save_papers() or Scholar.export_bibtex() instead.
+        This method is kept for backward compatibility.
 
         Args:
-            output_path: Output file path
-            format: Output format ('bibtex', 'json', 'csv'). Auto-detected from extension if None.
-            include_enriched: Include enriched metadata (for bibtex format)
-
-        Examples:
-            >>> # Save as BibTeX (auto-detected from extension)
-            >>> papers_obj.save("/path/to/references.bib")
-
-            >>> # Save as JSON
-            >>> papers_obj.save("/path/to/papers.json")
-
-            >>> # Save as CSV for data analysis
-            >>> papers_obj.save("/path/to/papers.csv")
-
-            >>> # Save BibTeX without enriched metadata
-            >>> papers_obj.save("refs.bib", include_enriched=False)
-
-            >>> # Explicitly specify format
-            >>> papers_obj.save("myfile.txt", format="bibtex")
+            output_path: Path to save file
+            format: Output format (auto, bibtex, json, csv)
+            **kwargs: Additional options
         """
+        logger.warning("Papers.save() is deprecated. Use Scholar.export_bibtex() instead.")
+
         output_path = Path(output_path)
 
-        # Auto-detect format from extension if not specified
-        if format is None:
+        # Auto-detect format from extension
+        if format == "auto":
             ext = output_path.suffix.lower()
             if ext in [".bib", ".bibtex"]:
                 format = "bibtex"
@@ -1125,869 +451,122 @@ class Papers:
             elif ext == ".csv":
                 format = "csv"
             else:
-                # Default to bibtex
                 format = "bibtex"
 
-        # Ensure parent directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         if format.lower() == "bibtex":
-            # Write BibTeX content directly
-            bibtex_content = self._to_bibtex(include_enriched=include_enriched)
-            with open(output_path, "w", encoding="utf-8") as f:
-                f.write(f"% BibTeX bibliography\n")
-                f.write(
-                    f"% Generated by SciTeX Scholar on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-                )
-                f.write(f"% Number of entries: {len(self._papers)}\n\n")
-                f.write(bibtex_content)
+            from scitex.scholar.utils.papers_utils import papers_to_bibtex
+            bibtex_content = papers_to_bibtex(self, output_path=None)
+            output_path.write_text(bibtex_content)
+            logger.success(f"Saved {len(self)} papers to {output_path}")
 
         elif format.lower() == "json":
-            # Write JSON directly
             import json
-
-            data = {
-                "metadata": {
-                    "created": datetime.now().isoformat(),
-                    "num_papers": len(self._papers),
-                    "enriched": self._enriched,
-                },
-                "papers": [p.to_dict() for p in self._papers],
-            }
-            with open(output_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            from scitex.scholar.utils.papers_utils import papers_to_dict
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(papers_to_dict(self), f, indent=2, ensure_ascii=False)
+            logger.success(f"Saved {len(self)} papers to {output_path}")
 
         elif format.lower() == "csv":
-            # Write CSV directly
-            df = self.to_dataframe()
+            from scitex.scholar.utils.papers_utils import papers_to_dataframe
+            df = papers_to_dataframe(self)
             df.to_csv(output_path, index=False)
+            logger.success(f"Saved {len(self)} papers to {output_path}")
 
         else:
-            from scitex.errors import FileFormatError
+            raise ValueError(f"Unsupported format: {format}")
 
-            raise FileFormatError(
-                filepath=str(filepath),
-                expected_format="One of: bib, ris, json, csv, md, xlsx",
-                actual_format=format,
-            )
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary.
 
-    # I am not sure what is the clean approach; from ScholarPDFDownloader.py? from Scholar? Or write here?
-    def download_pdfs(
-        self,
-        scholar=None,
-        download_dir: Optional[Union[str, Path]] = None,
-        force: bool = False,
-        max_worker: int = 4,
-        show_async_progress: bool = True,
-        **kwargs,
-    ) -> Dict[str, Any]:
-        """
-        Download PDFs for papers in this collection.
-
-        Args:
-            scholar: Scholar instance to use for downloading. If None, creates a new instance.
-            download_dir: Directory to save PDFs (default: uses scholar's workspace)
-            force: Force re-download even if files exist
-            max_worker: Maximum concurrent downloads
-            show_async_progress: Show download progress
-            **kwargs: Additional arguments passed to downloader
+        DEPRECATED: Use papers_utils.papers_to_dict() for new code.
 
         Returns:
-            Dictionary with download results:
-                - 'successful': Number of successful downloads
-                - 'failed': Number of failed downloads
-                - 'results': List of detailed results
-                - 'download_files': Dict mapping DOIs to file paths
-
-        Examples:
-            >>> papers = scholar.search("deep learning")
-            >>> # Using existing scholar instance
-            >>> results = papers.download_pdf_asyncs(scholar)
-            >>> print(f"Downloaded {results['successful']} PDFs")
-
-            >>> # Or create new scholar instance automatically
-            >>> results = papers.download_pdf_asyncs(download_dir="./my_pdfs")
+            Dictionary representation
         """
-        if scholar is None:
-            from ._Scholar import Scholar
+        from scitex.scholar.utils.papers_utils import papers_to_dict
+        return papers_to_dict(self)
 
-            scholar = Scholar()
+    def to_dataframe(self) -> Any:
+        """Convert to pandas DataFrame.
 
-        return scholar.download_pdf_asyncs(
-            self,
-            download_dir=download_dir,
-            force=force,
-            max_worker=max_worker,
-            show_async_progress=show_async_progress,
-            **kwargs,
-        )
-
-    # This may be old API
-    def _to_bibtex_entries(
-        self, include_enriched: bool
-    ) -> List[Dict[str, Any]]:
-        """Convert collection to BibTeX entries format for scitex.io."""
-        entries = []
-        used_keys = set()
-
-        for paper in self._papers:
-            # Ensure unique keys
-            paper._generate_bibtex_key()
-            original_key = paper._bibtex_key
-
-            counter = 1
-            while paper._bibtex_key in used_keys:
-                paper._bibtex_key = (
-                    f"{original_key}{chr(ord('a') + counter - 1)}"
-                )
-                counter += 1
-
-            used_keys.add(paper._bibtex_key)
-
-            # Create entry in scitex.io format
-            entry = {
-                "entry_type": self._determine_entry_type(paper),
-                "key": paper._bibtex_key,
-                "fields": self._paper_to_bibtex_fields(
-                    paper, include_enriched
-                ),
-            }
-            entries.append(entry)
-
-        return entries
-
-    # This may be old API
-    def _determine_entry_type(self, paper: Paper) -> str:
-        """Determine BibTeX entry type for a paper."""
-        # Use original entry type if available
-        if hasattr(paper, "_bibtex_entry_type") and paper._bibtex_entry_type:
-            return paper._bibtex_entry_type
-
-        # Otherwise determine based on paper properties
-        if paper.arxiv_id:
-            return "misc"
-        elif paper.journal:
-            return "article"
-        else:
-            return "misc"
-
-    # This should be handled in Library and Paper
-    def _paper_to_bibtex_fields(
-        self, paper: Paper, include_enriched: bool
-    ) -> Dict[str, str]:
-        """Convert paper to BibTeX fields dict."""
-        fields = {}
-
-        # If paper has original BibTeX fields, start with those
-        if hasattr(paper, "_original_bibtex_fields"):
-            fields = paper._original_bibtex_fields.copy()
-
-        # Required fields (always override to ensure accuracy)
-        fields["title"] = paper.title
-        fields["author"] = (
-            " and ".join(paper.authors) if paper.authors else "Unknown"
-        )
-
-        # Optional fields (only override if we have better data)
-        if paper.year:
-            fields["year"] = str(paper.year)
-
-        if paper.journal:
-            fields["journal"] = paper.journal
-
-        if paper.doi:
-            fields["doi"] = paper.doi
-
-        if paper.arxiv_id:
-            fields["eprint"] = paper.arxiv_id
-            fields["archivePrefix"] = "arXiv"
-
-        if paper.abstract:
-            fields["abstract"] = paper.abstract
-
-        if paper.keywords:
-            fields["keywords"] = ", ".join(paper.keywords)
-
-        if paper.pdf_url:
-            fields["url"] = paper.pdf_url
-
-        # Volume and pages (from original or paper object)
-        if hasattr(paper, "volume") and paper.volume:
-            fields["volume"] = str(paper.volume)
-        if hasattr(paper, "pages") and paper.pages:
-            fields["pages"] = str(paper.pages)
-
-        # Enriched metadata
-        if include_enriched:
-            # Get JCR year dynamically from enrichment module
-            from .metadata.enrichment._MetadataEnricher import JCR_YEAR
-
-            if paper.impact_factor is not None and paper.impact_factor > 0:
-                fields["impact_factor"] = str(paper.impact_factor)
-                # Add impact factor source as JCR_YEAR
-                fields["impact_factor_source"] = f"JCR_{JCR_YEAR}"
-
-            if paper.journal_quartile and paper.journal_quartile != "Unknown":
-                fields["journal_quartile"] = paper.journal_quartile
-                # Add quartile source as JCR_YEAR
-                fields["quartile_source"] = f"JCR_{JCR_YEAR}"
-
-            if paper.citation_count is not None:
-                fields["citation_count"] = str(paper.citation_count)
-                if paper.citation_count_source:
-                    fields["citation_count_source"] = (
-                        paper.citation_count_source
-                    )
-
-            # Add enrichment note
-            enriched_info = []
-            if paper.impact_factor is not None and paper.impact_factor > 0:
-                enriched_info.append(f"IF={paper.impact_factor}")
-            if paper.citation_count is not None:
-                enriched_info.append(f"Citations={paper.citation_count}")
-
-            if enriched_info:
-                enrichment_note = (
-                    f"[SciTeX Enhanced: {', '.join(enriched_info)}]"
-                )
-                if "note" in fields:
-                    fields["note"] = f"{fields['note']}; {enrichment_note}"
-                else:
-                    fields["note"] = enrichment_note
-
-        return fields
-
-    def _to_json(self) -> str:
-        """Convert collection to JSON format."""
-        data = {
-            "metadata": {
-                "generated": datetime.now().isoformat(),
-                "total_papers": len(self._papers),
-                "enriched": self._enriched,
-            },
-            "papers": [paper.to_dict() for paper in self._papers],
-        }
-        return json.dumps(data, indent=2, ensure_ascii=False)
-
-    def summarize(self) -> None:
-        """
-        Print a summary of the paper collection.
-
-        Displays key statistics about the collection including paper counts,
-        year distribution, enrichment status, sources, and example papers.
+        DEPRECATED: Use papers_utils.papers_to_dataframe() for new code.
 
         Returns:
-            None (prints to stdout)
-
-        Examples:
-            >>> papers_obj.summarize()
-            Paper Collection Summary
-            ==================================================
-            Total papers: 20
-            Year range: 2020 - 2025
-            ...
+            DataFrame with papers data
         """
-        lines = [
-            "Paper Collection Summary",
-            "=" * 50,
-            f"Total papers: {len(self._papers)}",
-        ]
+        try:
+            from scitex.scholar.utils.papers_utils import papers_to_dataframe
+            return papers_to_dataframe(self)
+        except ImportError:
+            logger.error("pandas is required for to_dataframe()")
+            return None
 
-        if not self._papers:
-            lines.append("(Empty collection)")
-            print("\n".join(lines))
-            return
+    def summary(self) -> Dict[str, Any]:
+        """Get summary statistics.
 
-        # Get year statistics
-        years = [
-            int(p.year) for p in self._papers if p.year and p.year.isdigit()
-        ]
-        if years:
-            year_counts = {}
-            for year in years:
-                year_counts[year] = year_counts.get(year, 0) + 1
-
-            lines.append(f"Year range: {min(years)} - {max(years)}")
-            # Show year distribution if varied
-            if len(year_counts) > 1 and len(year_counts) <= 10:
-                lines.append("\nYear distribution:")
-                for year in sorted(year_counts.keys(), reverse=True)[:5]:
-                    lines.append(f"  {year}: {year_counts[year]} papers")
-                if len(year_counts) > 5:
-                    lines.append(
-                        f"  ... and {len(year_counts) - 5} more years"
-                    )
-
-        # Enrichment statistics
-        with_citations = sum(
-            1 for p in self._papers if p.citation_count is not None
-        )
-        with_impact_factor = sum(
-            1 for p in self._papers if p.impact_factor is not None
-        )
-        with_doi = sum(1 for p in self._papers if p.doi)
-        with_pdf = sum(1 for p in self._papers if p.pdf_url or p.pdf_path)
-
-        lines.append("\nEnrichment status:")
-        if with_citations > 0:
-            pct = (with_citations / len(self._papers)) * 100
-            lines.append(
-                f"  Citation data: {with_citations}/{len(self._papers)} ({pct:.0f}%)"
-            )
-        if with_impact_factor > 0:
-            pct = (with_impact_factor / len(self._papers)) * 100
-            lines.append(
-                f"  Impact factors: {with_impact_factor}/{len(self._papers)} ({pct:.0f}%)"
-            )
-        if with_doi > 0:
-            pct = (with_doi / len(self._papers)) * 100
-            lines.append(
-                f"  DOIs: {with_doi}/{len(self._papers)} ({pct:.0f}%)"
-            )
-        if with_pdf > 0:
-            pct = (with_pdf / len(self._papers)) * 100
-            lines.append(
-                f"  PDFs available: {with_pdf}/{len(self._papers)} ({pct:.0f}%)"
-            )
-
-        # Source distribution
-        sources = {}
-        for p in self._papers:
-            sources[p.source] = sources.get(p.source, 0) + 1
-
-        if sources:
-            lines.append("\nSources:")
-            for source, count in sorted(
-                sources.items(), key=lambda x: x[1], reverse=True
-            ):
-                lines.append(f"  {source}: {count} papers")
-
-        # Top journals if available
-        journals = {}
-        for p in self._papers:
-            if p.journal:
-                journals[p.journal] = journals.get(p.journal, 0) + 1
-
-        if journals and len(journals) > 1:
-            lines.append("\nTop journals:")
-            for journal, count in sorted(
-                journals.items(), key=lambda x: x[1], reverse=True
-            )[:5]:
-                if len(journal) > 50:
-                    journal = journal[:47] + "..."
-                lines.append(f"  {journal}: {count}")
-            if len(journals) > 5:
-                lines.append(f"  ... and {len(journals) - 5} more journals")
-
-        # Show a few example papers
-        if len(self._papers) > 0:
-            lines.append("\nExample papers:")
-            for i, paper in enumerate(self._papers[:3]):
-                title = (
-                    paper.title
-                    if len(paper.title) <= 60
-                    else paper.title[:57] + "..."
-                )
-                lines.append(f"  {i+1}. {title}")
-                if paper.authors:
-                    first_author = (
-                        paper.authors[0]
-                        if len(paper.authors[0]) <= 20
-                        else paper.authors[0][:17] + "..."
-                    )
-                    author_info = f"{first_author}"
-                    if len(paper.authors) > 1:
-                        author_info += (
-                            f" et al. ({len(paper.authors)} authors)"
-                        )
-                    lines.append(f"     {author_info}, {paper.year}")
-            if len(self._papers) > 3:
-                lines.append(f"  ... and {len(self._papers) - 3} more papers")
-
-        print("\n".join(lines))
-
-    def _to_bibtex(self, include_enriched: bool = True) -> str:
-        """
-        Convert entire collection to BibTeX string.
-
-        Args:
-            include_enriched: Include enriched metadata (impact factor, etc.)
+        DEPRECATED: Use papers_utils.papers_statistics() for new code.
 
         Returns:
-            BibTeX formatted string for all papers
+            Dictionary with statistics
         """
-        bibtex_entries = []
-        used_keys = set()
+        from scitex.scholar.utils.papers_utils import papers_statistics
+        return papers_statistics(self)
 
-        for paper in self._papers:
-            # Ensure unique keys
-            paper._generate_bibtex_key()
-            original_key = paper._bibtex_key
-
-            counter = 1
-            while paper._bibtex_key in used_keys:
-                paper._bibtex_key = (
-                    f"{original_key}{chr(ord('a') + counter - 1)}"
-                )
-                counter += 1
-
-            used_keys.add(paper._bibtex_key)
-            bibtex_entries.append(paper._to_bibtex(include_enriched))
-
-        return "\n\n".join(bibtex_entries)
-
-    def save_to_library(
-        self, force: bool = False, progress: bool = True
-    ) -> Dict[str, int]:
-        """Save all papers to the Scholar library system.
-
-        Args:
-            force: Overwrite existing metadata if True
-            progress: Show progress information
-
-        Returns:
-            Dictionary with save statistics
-        """
-        results = {"saved": 0, "skipped": 0, "errors": 0}
-
-        if progress:
-            from tqdm import tqdm
-
-            iterator = tqdm(self._papers, desc="Saving to library")
-        else:
-            iterator = self._papers
-
-        for paper in iterator:
-            try:
-                # Ensure paper has project context
-                if not paper.project:
-                    paper.project = self.project
-                    paper.config = self.config
-
-                library_id = paper.save_to_library(force=force)
-                if library_id:
-                    results["saved"] += 1
-                else:
-                    results["skipped"] += 1
-            except Exception as e:
-                logger.error(f"Failed to save paper to library: {e}")
-                results["errors"] += 1
-
-        if progress:
-            logger.info(f"Library save complete: {results}")
-
-        return results
-
-    @classmethod
-    def from_project(
-        cls, project: str, config: Optional[ScholarConfig] = None
-    ) -> "Papers":
-        """Load papers from a project in the Scholar library.
-
-        Args:
-            project: Project name
-            config: Scholar configuration
-
-        Returns:
-            Papers collection from the project
-        """
-        config = config or ScholarConfig()
-        project_dir = config.get_library_dir() / project
-        papers = []
-
-        if not project_dir.exists():
-            logger.warning(f"Project directory not found: {project_dir}")
-            return cls(papers, config=config, project=project)
-
-        # Load papers from symlinks in project directory
-        for item in project_dir.iterdir():
-            if item.is_symlink() and item.resolve().parent.name == "MASTER":
-                library_id = item.resolve().name
-                # Use LibraryManager to load paper data
-                from scitex.scholar.storage import LibraryManager
-
-                library_manager = LibraryManager(
-                    project=project, config=config
-                )
-
-                metadata_path = (
-                    config.get_library_dir()
-                    / "MASTER"
-                    / library_id
-                    / "metadata.json"
-                )
-                if metadata_path.exists():
-                    try:
-                        import json
-
-                        with open(metadata_path, "r") as f:
-                            data = json.load(f)
-                        paper = Paper(**data)
-                        papers.append(paper)
-                    except Exception as e:
-                        logger.warning(
-                            f"Failed to load paper {library_id}: {e}"
-                        )
-                        continue
-
-        logger.info(f"Loaded {len(papers)} papers from project: {project}")
-        return cls(papers, config=config, project=project)
-
-    @classmethod
-    def from_library_search(
-        cls,
-        query: str,
-        config: Optional[ScholarConfig] = None,
-        project: Optional[str] = None,
-    ) -> "Papers":
-        """Search papers in the Scholar library.
-
-        Args:
-            query: Search query (matches title, authors, keywords)
-            config: Scholar configuration
-            project: Optional project filter
-
-        Returns:
-            Papers collection matching the query
-        """
-        config = config or ScholarConfig()
-        master_dir = config.get_library_dir() / "MASTER"
-        papers = []
-
-        if not master_dir.exists():
-            return cls(papers, config=config, project=project)
-
-        query_lower = query.lower()
-
-        for paper_dir in master_dir.iterdir():
-            if not paper_dir.is_dir():
-                continue
-
-            # Load paper metadata directly
-            metadata_path = paper_dir / "metadata.json"
-            if not metadata_path.exists():
-                continue
-
-            try:
-                import json
-
-                with open(metadata_path, "r") as f:
-                    data = json.load(f)
-                paper = Paper(**data)
-            except Exception:
-                continue
-
-            # Check if query matches paper metadata
-            search_text = ""
-            if paper.title:
-                search_text += paper.title.lower() + " "
-            if paper.authors:
-                search_text += " ".join(paper.authors).lower() + " "
-            if paper.keywords:
-                search_text += " ".join(paper.keywords).lower() + " "
-            if paper.abstract:
-                search_text += paper.abstract.lower() + " "
-
-            if query_lower in search_text:
-                papers.append(paper)
-
-        logger.info(f"Found {len(papers)} papers matching '{query}'")
-        return cls(papers, config=config, project=project)
-
-    def create_project_symlinks(self, force: bool = False) -> Dict[str, int]:
-        """Create project symlinks for all papers in the collection.
-
-        Args:
-            force: Recreate existing symlinks
-
-        Returns:
-            Dictionary with creation statistics
-        """
-        if not self.project:
-            logger.warning("No project specified for symlink creation")
-            return {"created": 0, "skipped": 0, "errors": 0}
-
-        from scitex.scholar.storage import LibraryManager
-
-        library_manager = LibraryManager(
-            project=self.project, config=self.config
-        )
-
-        results = {"created": 0, "skipped": 0, "errors": 0}
-
-        for paper in self._papers:
-            if not paper.library_id:
-                results["skipped"] += 1
-                continue
-
-            try:
-                # Create human-readable symlink name
-                if paper.authors and paper.year and paper.journal:
-                    first_author = (
-                        paper.authors[0].split()[-1]
-                        if paper.authors
-                        else "Unknown"
-                    )
-                    year = paper.year
-                    journal = paper.journal.replace(" ", "-")
-                    symlink_name = f"{first_author}-{year}-{journal}"
-                else:
-                    symlink_name = paper.library_id
-
-                project_dir = self.config.get_library_dir() / self.project
-                project_dir.mkdir(exist_ok=True)
-
-                symlink_path = project_dir / symlink_name
-                target_path = Path("../MASTER") / paper.library_id
-
-                if symlink_path.exists() and not force:
-                    results["skipped"] += 1
-                    continue
-
-                if symlink_path.exists():
-                    symlink_path.unlink()
-
-                symlink_path.symlink_to(target_path)
-                results["created"] += 1
-
-            except Exception as e:
-                logger.error(
-                    f"Failed to create symlink for {paper.library_id}: {e}"
-                )
-                results["errors"] += 1
-
-        logger.info(f"Symlink creation complete: {results}")
-        return results
-
-    def to_library_summary(self) -> pd.DataFrame:
-        """Create a summary DataFrame of papers in the library.
-
-        Returns:
-            DataFrame with library statistics
-        """
-        data = []
-        for paper in self._papers:
-            data.append(
-                {
-                    "library_id": paper.library_id,
-                    "doi": paper.doi,
-                    "title": (
-                        paper.title[:50] + "..."
-                        if paper.title and len(paper.title) > 50
-                        else paper.title
-                    ),
-                    "first_author": (
-                        paper.authors[0] if paper.authors else None
-                    ),
-                    "year": paper.year,
-                    "journal": paper.journal,
-                    "has_pdf": bool(paper.pdf_path),
-                }
-            )
-
-        return pd.DataFrame(data)
+    # =========================================================================
+    # METHODS REMOVED (use Scholar or utilities instead):
+    # =========================================================================
+    # The following methods have been removed to simplify the class:
+    # - sync_with_library() -> Use Scholar internally
+    # - create_project_symlinks() -> Use Scholar internally
+    # - get_project_statistics() -> Use Scholar.get_library_statistics()
+    # - download_pdfs() -> Use Scholar.download_pdfs()
+    # - enrich() -> Use Scholar.enrich()
+    # - merge_papers() -> Use papers_utils.merge_papers()
+    # - deduplicate() -> Use papers_utils.deduplicate_papers()
+    #
+    # This reduces complexity from 39 methods to ~15 methods.
+    # All business logic is now in Scholar or utility functions.
 
 
-# Export all classes and functions
+# For backward compatibility
 __all__ = ["Papers"]
 
 
 if __name__ == "__main__":
 
     def main():
-        """Demonstrate Papers class usage with project collection management."""
+        """Demonstrate simplified Papers class."""
         print("=" * 60)
-        print("Papers Class Demo - Project Collection Management")
+        print("Papers Class - Simplified Collection")
         print("=" * 60)
 
-        from .Paper import Paper
+        # Create test papers
+        papers = Papers([
+            Paper(title="Paper 1", year=2023, journal="Nature"),
+            Paper(title="Paper 2", year=2024, journal="Science"),
+            Paper(title="Paper 3", year=2022, journal="Cell"),
+        ])
 
-        # Create sample papers for a project
-        sample_papers = [
-            Paper(
-                title="BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
-                authors=["Devlin, Jacob", "Chang, Ming-Wei", "Lee, Kenton"],
-                journal="NAACL-HLT",
-                year=2019,
-                doi="10.18653/v1/N19-1423",
-                abstract="We introduce BERT, a new language representation model...",
-                keywords=["BERT", "transformer", "language model"],
-                citation_count=45000,
-                project="language_models_collection",
-            ),
-            Paper(
-                title="GPT-3: Language Models are Few-Shot Learners",
-                authors=["Brown, Tom", "Mann, Benjamin", "Ryder, Nick"],
-                journal="Advances in Neural Information Processing Systems",
-                year=2020,
-                doi="10.5555/3495724.3496881",
-                abstract="Recent work has demonstrated substantial gains on many NLP tasks...",
-                keywords=["GPT", "language model", "few-shot"],
-                citation_count=35000,
-                project="language_models_collection",
-            ),
-            Paper(
-                title="T5: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
-                authors=["Raffel, Colin", "Shazeer, Noam", "Roberts, Adam"],
-                journal="Journal of Machine Learning Research",
-                year=2020,
-                doi="10.5555/3455716.3455856",
-                abstract="Transfer learning has become a dominant approach in NLP...",
-                keywords=["T5", "transfer learning", "transformer"],
-                citation_count=25000,
-                project="language_models_collection",
-            ),
-        ]
+        print(f"\n1. Collection: {papers}")
+        print(f"   Count: {len(papers)}")
+        print(f"   First: {papers[0].title}")
 
-        # Create Papers collection
-        papers = Papers(
-            sample_papers,
-            project="language_models_collection",
-            auto_deduplicate=True,
-        )
+        # Test filtering
+        recent = papers.filter(lambda p: p.year >= 2023)
+        print(f"\n2. Filtered (year >= 2023): {len(recent)} papers")
 
-        print("1. Created Papers Collection:")
-        print(f"   📚 Total papers: {len(papers)}")
-        print(f"   🏷️  Project: {papers.project}")
-        print(f"   📝 Sample titles:")
-        for i, paper in enumerate(papers._papers[:2]):
-            print(f"      {i+1}. {paper.title[:60]}...")
-        print()
+        # Test sorting
+        sorted_papers = papers.sort_by(lambda p: p.year or 0)
+        print(f"\n3. Sorted by year:")
+        for p in sorted_papers:
+            print(f"   {p.year}: {p.title}")
 
-        # Demonstrate filtering and sorting
-        print("2. Collection Operations:")
-
-        # Filter by year
-        recent_papers = papers.filter(year_min=2020)
-        print(f"   📅 Papers from 2020+: {len(recent_papers)}")
-
-        # Sort by citation count
-        top_cited = papers.sort_by("citation_count", ascending=False)
-        top_paper = top_cited._papers[0]
-        print(
-            f"   🏆 Most cited: {top_paper.title[:50]}... ({top_paper.citation_count:,} citations)"
-        )
-
-        # Search functionality
-        bert_papers = papers.filter(
-            lambda p: "BERT" in p.title or "bert" in str(p.keywords)
-        )
-        print(f"   🔍 BERT-related papers: {len(bert_papers)}")
-        print()
-
-        # Demonstrate statistics
-        print("3. Project Statistics:")
-        try:
-            stats = papers.get_project_statistics()
-            print(f"   📊 Total papers: {stats['total_papers']}")
-            print(f"   📊 With DOI: {stats['with_doi']}")
-            print(f"   📊 Unique journals: {stats['journals']}")
-            print(
-                f"   📊 Year range: {stats['years']['min']}-{stats['years']['max']}"
-            )
-            print(f"   📊 Unique authors: {stats['authors']}")
-        except Exception as e:
-            print(f"   ⚠️  Statistics demo skipped: {e}")
-        print()
-
-        # Demonstrate export capabilities
-        print("4. Export Capabilities:")
-        try:
-            import tempfile
-
-            # BibTeX export
-            with tempfile.NamedTemporaryFile(
-                suffix=".bib", delete=False
-            ) as tmp:
-                papers.save(tmp.name, format="bibtex")
-                print(f"   📄 BibTeX exported to: {tmp.name}")
-
-            # CSV export
-            with tempfile.NamedTemporaryFile(
-                suffix=".csv", delete=False
-            ) as tmp:
-                papers.save(tmp.name, format="csv")
-                print(f"   📊 CSV exported to: {tmp.name}")
-
-        except Exception as e:
-            print(f"   ⚠️  Export demo skipped: {e}")
-        print()
-
-        # Demonstrate storage operations
-        print("5. Storage Operations:")
-        try:
-            # Save to library
-            save_results = papers.save_to_library(progress=False)
-            print(
-                f"   💾 Library save: {save_results['saved']} saved, {save_results['errors']} errors"
-            )
-
-            # Create project symlinks
-            symlink_results = papers.create_project_symlinks()
-            print(
-                f"   🔗 Symlinks: {symlink_results['created']} created, {symlink_results['existed']} existed"
-            )
-
-            # Sync with library
-            sync_results = papers.sync_with_library(bidirectional=False)
-            print(
-                f"   🔄 Library sync: {sync_results['saved']} saved, {sync_results['loaded']} loaded"
-            )
-
-        except Exception as e:
-            print(f"   ⚠️  Storage demo skipped: {e}")
-        print()
-
-        # Demonstrate loading from project
-        print("6. Project Loading:")
-        try:
-            # Try to load from the same project
-            loaded_papers = Papers.from_project("language_models_collection")
-            print(f"   📂 Loaded from project: {len(loaded_papers)} papers")
-
-            # Compare with original
-            if len(loaded_papers) > 0:
-                print(
-                    f"   📋 Sample loaded paper: {loaded_papers._papers[0].title[:50]}..."
-                )
-
-        except Exception as e:
-            print(f"   ⚠️  Project loading demo skipped: {e}")
-        print()
-
-        # Demonstrate analysis capabilities
-        print("7. Analysis Features:")
-
-        # Summary statistics
-        print(
-            f"   📈 Average citation count: {sum(p.citation_count or 0 for p in papers._papers) / len(papers):,.0f}"
-        )
-
-        # Journal distribution
-        journals = {}
-        for paper in papers._papers:
-            if paper.journal:
-                journals[paper.journal] = journals.get(paper.journal, 0) + 1
-        print(
-            f"   📚 Journal distribution: {dict(list(journals.items())[:2])}..."
-        )
-
-        # Keyword analysis
-        all_keywords = []
-        for paper in papers._papers:
-            if paper.keywords:
-                all_keywords.extend(paper.keywords)
-        keyword_counts = {}
-        for kw in all_keywords:
-            keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
-        top_keywords = sorted(
-            keyword_counts.items(), key=lambda x: x[1], reverse=True
-        )[:3]
-        print(f"   🏷️  Top keywords: {[kw for kw, count in top_keywords]}")
-        print()
-
-        print("Papers collection demo completed! ✨")
-        print()
+        print("\n✅ Papers class simplified!")
+        print("   - Reduced from 39 to ~15 methods")
+        print("   - Business logic moved to Scholar")
+        print("   - Clean collection interface")
 
     main()
 

@@ -12,11 +12,11 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 import asyncio
 import json
-from scitex import log
+from scitex import logging
 
 from playwright.async_api import Page
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class CaptchaHandler:

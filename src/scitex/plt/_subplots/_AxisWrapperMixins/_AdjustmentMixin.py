@@ -20,13 +20,46 @@ class AdjustmentMixin:
 
     def rotate_labels(
         self,
-        x: float = 30,
-        y: float = 30,
-        x_ha: str = "right",
-        y_ha: str = "center",
+        x: float = None,
+        y: float = None,
+        x_ha: str = None,
+        y_ha: str = None,
+        x_va: str = None,
+        y_va: str = None,
+        auto_adjust: bool = True,
+        scientific_convention: bool = True,
+        tight_layout: bool = False,
     ) -> None:
+        """Rotate x and y axis labels with automatic positioning.
+        
+        Parameters
+        ----------
+        x : float or None, optional
+            Rotation angle for x-axis labels in degrees. 
+            If None or 0, x-axis labels are not rotated. Default is None.
+        y : float or None, optional
+            Rotation angle for y-axis labels in degrees.
+            If None or 0, y-axis labels are not rotated. Default is None.
+        x_ha : str or None, optional
+            Horizontal alignment for x-axis labels. If None, automatically determined.
+        y_ha : str or None, optional
+            Horizontal alignment for y-axis labels. If None, automatically determined.
+        x_va : str or None, optional
+            Vertical alignment for x-axis labels. If None, automatically determined.
+        y_va : str or None, optional
+            Vertical alignment for y-axis labels. If None, automatically determined.
+        auto_adjust : bool, optional
+            Whether to automatically adjust alignment. Default is True.
+        scientific_convention : bool, optional
+            Whether to follow scientific conventions. Default is True.
+        tight_layout : bool, optional
+            Whether to apply tight_layout to prevent overlapping. Default is False.
+        """
         self._axis_mpl = ax_module.rotate_labels(
-            self._axis_mpl, x=x, y=y, x_ha=x_ha, y_ha=y_ha
+            self._axis_mpl, x=x, y=y, x_ha=x_ha, y_ha=y_ha,
+            x_va=x_va, y_va=y_va, auto_adjust=auto_adjust,
+            scientific_convention=scientific_convention,
+            tight_layout=tight_layout
         )
 
     def legend(self, loc: str = "upper left", **kwargs) -> None:

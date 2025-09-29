@@ -16,12 +16,12 @@ import time
 import urllib.parse
 from typing import Dict, List, Optional, Union
 
-from scitex import log
+from scitex import logging
 
 from ..utils import standardize_metadata
 from ._BaseDOIEngine import BaseDOIEngine
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class CrossRefLocalEngine(BaseDOIEngine):

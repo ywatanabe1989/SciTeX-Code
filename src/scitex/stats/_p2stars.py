@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-09-29 13:43:40 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/stats/_p2stars.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/stats/_p2stars.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 # Time-stamp: "2024-10-06 10:39:57 (ywatanabe)"
 
+from typing import Union
+
 import pandas as pd
-import re
-from typing import Union, List
 
 
 def p2stars(
@@ -47,7 +57,9 @@ def p2stars(
     elif isinstance(input_data, pd.DataFrame):
         return _p2stars_pd(input_data, ns)
     else:
-        raise ValueError("Input must be a float, string, or a pandas DataFrame")
+        raise ValueError(
+            "Input must be a float, string, or a pandas DataFrame"
+        )
 
 
 def _p2stars_str(pvalue: Union[float, str], ns: bool = False) -> str:
@@ -58,7 +70,9 @@ def _p2stars_str(pvalue: Union[float, str], ns: bool = False) -> str:
                 return "NA"
         pvalue_float = float(pvalue)
         if pvalue_float < 0 or pvalue_float > 1:
-            raise ValueError(f"P-value must be between 0 and 1, got {pvalue_float}")
+            raise ValueError(
+                f"P-value must be between 0 and 1, got {pvalue_float}"
+            )
     except ValueError as e:
         raise ValueError(f"Invalid p-value: {pvalue}. {str(e)}")
 
@@ -73,7 +87,7 @@ def _p2stars_str(pvalue: Union[float, str], ns: bool = False) -> str:
 
 
 def _p2stars_pd(df: pd.DataFrame, ns: bool = False) -> pd.DataFrame:
-    from scitex.stats import find_pval
+    from scitex.pd import find_pval
 
     pvalue_cols = find_pval(df, multiple=True)
     assert pvalue_cols, "No p-value columns found in DataFrame"
@@ -114,3 +128,5 @@ def _p2stars_pd(df: pd.DataFrame, ns: bool = False) -> pd.DataFrame:
 #         List of column names that likely contain p-values
 #     """
 #     return [col for col in df.columns if re.search(r'p[_.-]?val', col.lower())]
+
+# EOF

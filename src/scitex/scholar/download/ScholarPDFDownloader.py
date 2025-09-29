@@ -19,7 +19,7 @@ from typing import List, Optional, Union
 
 from playwright.async_api import BrowserContext, Page, async_playwright
 
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig, ScholarURLFinder
 from scitex.scholar.browser import (
     click_center_async,
@@ -30,7 +30,7 @@ from scitex.scholar.browser import (
 )
 from scitex.scholar.browser.local.utils._HumanBehavior import HumanBehavior
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Timing differences:
 # 1. `timeout=60_000` - Maximum wait time for operation to complete

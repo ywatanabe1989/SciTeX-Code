@@ -13,6 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # Standard matplotlib formatters
 from ._format_plot import _format_plot
 from ._format_scatter import _format_scatter
+from ._format_text import _format_text
 from ._format_bar import _format_bar
 from ._format_barh import _format_barh
 from ._format_hist import _format_hist

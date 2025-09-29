@@ -19,9 +19,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass

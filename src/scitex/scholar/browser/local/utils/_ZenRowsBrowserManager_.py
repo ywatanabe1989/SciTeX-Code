@@ -15,13 +15,13 @@ from typing import Any, Dict
 
 from playwright.async_api import Browser, BrowserContext, async_playwright
 
-from scitex import log
+from scitex import logging
 
 from .._BrowserMixin import BrowserMixin
 from ._CookieAutoAcceptor import CookieAutoAcceptor
 from ._StealthManager import StealthManager
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ZenRowsBrowserManager(BrowserMixin):

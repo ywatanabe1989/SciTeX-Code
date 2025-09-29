@@ -9,11 +9,11 @@ through redirect chains to reach the actual PDF URL.
 
 from typing import List, Optional
 from playwright.async_api import Page
-from scitex import log
+from scitex import logging
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils._wait_redirects import wait_redirects
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def find_pdf_urls_by_navigation(

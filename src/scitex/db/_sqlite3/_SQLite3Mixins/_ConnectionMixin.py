@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-15 10:37:55 (ywatanabe)"
+# Timestamp: "2025-09-11 05:43:10 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_ConnectionMixin.py
 # ----------------------------------------
+from __future__ import annotations
 import os
 __FILE__ = (
     "./src/scitex/db/_sqlite3/_SQLite3Mixins/_ConnectionMixin.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 # Time-stamp: "2024-11-29 04:33:58 (ywatanabe)"
 
 THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_ConnectionMixin.py"
@@ -112,5 +114,13 @@ class _ConnectionMixin:
             self.connect(self.db_path, use_temp_db)
         else:
             raise ValueError("No database path specified for reconnection")
+
+    def ensure_connection(self):
+        """
+        Ensure connection when used in context manager (with statement).
+        All methods that use `self.cursor` or `self.conn` should call this first.
+        """
+        if not self.cursor or not self.conn:
+            self.reconnect()
 
 # EOF

@@ -38,12 +38,12 @@ import functools
 import re
 from typing import Any, Callable, Dict
 
-from scitex import log
+from scitex import logging
 
 # matplotlib imports moved to functions that need them
 
 # Configure logging
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Global state for LaTeX capability
 _latex_available = None

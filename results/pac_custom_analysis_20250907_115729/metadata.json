@@ -1,0 +1,122 @@
+{
+  "name": "pac_custom_analysis",
+  "n_folds": 3,
+  "required_metrics": [
+    "balanced_accuracy",
+    "mcc",
+    "confusion_matrix",
+    "classification_report",
+    "roc_auc",
+    "pr_auc"
+  ],
+  "validation": {
+    "complete": false,
+    "n_folds": 3,
+    "required_metrics": [
+      "balanced_accuracy",
+      "mcc",
+      "confusion_matrix",
+      "classification_report",
+      "roc_auc",
+      "pr_auc"
+    ],
+    "fold_results": [
+      {
+        "fold": 0,
+        "complete": false,
+        "missing_metrics": [
+          "pr_auc",
+          "roc_auc",
+          "classification_report",
+          "mcc",
+          "balanced_accuracy",
+          "confusion_matrix"
+        ],
+        "invalid_metrics": [],
+        "warnings": []
+      },
+      {
+        "fold": 1,
+        "complete": false,
+        "missing_metrics": [
+          "pr_auc",
+          "roc_auc",
+          "classification_report",
+          "mcc",
+          "balanced_accuracy",
+          "confusion_matrix"
+        ],
+        "invalid_metrics": [],
+        "warnings": []
+      },
+      {
+        "fold": 2,
+        "complete": false,
+        "missing_metrics": [
+          "pr_auc",
+          "roc_auc",
+          "classification_report",
+          "mcc",
+          "balanced_accuracy",
+          "confusion_matrix"
+        ],
+        "invalid_metrics": [],
+        "warnings": []
+      }
+    ],
+    "summary": {
+      "missing_by_metric": {
+        "balanced_accuracy": [
+          0,
+          1,
+          2
+        ],
+        "mcc": [
+          0,
+          1,
+          2
+        ],
+        "confusion_matrix": [
+          0,
+          1,
+          2
+        ],
+        "classification_report": [
+          0,
+          1,
+          2
+        ],
+        "roc_auc": [
+          0,
+          1,
+          2
+        ],
+        "pr_auc": [
+          0,
+          1,
+          2
+        ]
+      },
+      "invalid_count": 0,
+      "warnings": [],
+      "consistency": {
+        "metrics_per_fold": {
+          "fold_0": [
+            "fold_id",
+            "metrics"
+          ],
+          "fold_1": [
+            "fold_id",
+            "metrics"
+          ],
+          "fold_2": [
+            "fold_id",
+            "metrics"
+          ]
+        },
+        "consistent": true,
+        "issues": []
+      }
+    }
+  }
+}

@@ -1,80 +1,67 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: "2024-12-05 09:20:53 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/stats/desc/_describe.py
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/stats/desc/_describe.py"
+# Timestamp: "2025-09-20 15:05:08 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/stats/desc/_describe.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/stats/desc/_describe.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
 """
-Functionality:
-    - Computes descriptive statistics on PyTorch tensors
-Input:
-    - PyTorch tensor or numpy array
-Output:
-    - Descriptive statistics (mean, std, quantiles, etc.)
-Prerequisites:
-    - PyTorch, NumPy
+Functionalities:
+- Computes comprehensive descriptive statistics on PyTorch tensors
+- Provides batch processing for large datasets
+- Validates non-leakage of information across samples
+- Combines multiple statistical measures into single function
+- Demonstrates statistical analysis with synthetic data
+
+Dependencies:
+- packages:
+  - torch
+  - numpy
+  - scitex
+
+IO:
+- input-files:
+  - PyTorch tensor or numpy array
+- output-files:
+  - Combined descriptive statistics results
 """
 
+"""Imports"""
+import argparse
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
+import scitex as stx
 import torch
+from scitex import logging
 
 from ...decorators import batch_fn, torch_fn
-from ._nan import (
-    nancount,
-    nankurtosis,
-    nanmax,
-    nanmean,
-    nanmin,
-    nanq25,
-    nanq50,
-    nanq75,
-    nanskewness,
-    nanstd,
-    nanvar,
-)
+from ._nan import (nancount, nankurtosis, nanmax, nanmean, nanmin, nanq25,
+                   nanq50, nanq75, nanskewness, nanstd, nanvar)
 from ._real import kurtosis, mean, q25, q50, q75, skewness, std
 
+logger = logging.getLogger(__name__)
 
+"""Functions & Classes"""
 def verify_non_leakage(
     x: torch.Tensor,
     dim: Optional[Union[int, Tuple[int, ...]]] = None,
 ):
-    """
-    Verifies that statistics computation doesn't leak information across samples.
-
-    Parameters
-    ----------
-    x : torch.Tensor
-        Input tensor
-    dim : Optional[Union[int, Tuple[int, ...]]]
-        Dimension(s) used for computation
-
-    Returns
-    -------
-    bool
-        True if verification passes
-
-    Raises
-    ------
-    AssertionError
-        If statistics leak information across samples
-    """
-    # Full calculation
+    """Verifies that statistics computation doesn't leak information across samples."""
     described, _ = describe(x, dim=(1, 2))
-
-    # Compute statistics on first sample
     x_first = x[:1]
     described_first, _ = describe(x_first, dim=dim)
 
-    # Verify shapes match
     assert (
         described_first.shape == described[:1].shape
     ), f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
 
-    # Verify values match
     torch.testing.assert_close(
         described_first,
         described[:1],
@@ -82,7 +69,6 @@ def verify_non_leakage(
         atol=1e-8,
         msg="Statistics leak information across samples",
     )
-
     return True
 
 
@@ -105,29 +91,31 @@ def describe(
     device: Optional[torch.device] = None,
     batch_size: int = -1,
 ) -> Tuple[torch.Tensor, List[str]]:
-    """
-    Computes various descriptive statistics.
+    """Compute descriptive statistics.
 
     Parameters
     ----------
     x : torch.Tensor
-        Input tensor
+        Input tensor with batch dimension as first axis
     axis : int, default=-1
         Deprecated. Use dim instead
     dim : int or tuple of ints, optional
         Dimension(s) along which to compute statistics
-    keepdims : bool, default=True
+    keepdims : bool, default=False
         Whether to keep reduced dimensions
-    funcs : list of str or "all"
+    funcs : list of str or "all", default=["nanmean", "nanstd", "nankurtosis", "nanskewness", "nanq25", "nanq50", "nanq75"]
         Statistical functions to compute
     device : torch.device, optional
         Device to use for computation
+    batch_size : int, default=-1
+        Batch size for processing (handled by decorator)
 
     Returns
     -------
     Tuple[torch.Tensor, List[str]]
-        Computed statistics and their names
+        Computed statistics stacked along last dimension and their names
     """
+
     dim = axis if dim is None else dim
     dim = (dim,) if isinstance(dim, int) else tuple(dim)
 
@@ -151,9 +139,6 @@ def describe(
         "nanmax": nanmax,
         "nanmin": nanmin,
         "nancount": nancount,
-        # "nanprod": nanprod,
-        # "nanargmin": nanargmin,
-        # "nanargmax": nanargmax,
     }
 
     if funcs == "all":
@@ -166,24 +151,71 @@ def describe(
     return torch.stack(calculated, dim=-1), func_names
 
 
-if __name__ == "__main__":
-    from scitex.stats.desc._describe import describe, verify_non_leakage
-
-    # x = np.random.rand(4, 3, 2)
-    # x = np.random.rand(390, 250, 16, 100, 100)
-    # print(scitex.stats.desc.nankurtosis(x, dim=(1,2)).shape)
-
+def main(args) -> int:
+    """Demonstrate comprehensive descriptive statistics with synthetic data."""
     x = np.random.rand(10, 250, 16, 100, 100)
 
-    described, _ = describe(x[:10], dim=(-2, -1), batch_size=1)
-    # verify_non_leakage(x, dim=(1, 2))
-    # # print(describe(x, dim=(1, 2), keepdims=False)[0].shape)
-    # # print(describe(x, funcs="all", dim=(1, 2), keepdims=False)[0].shape)
+    # Compute comprehensive statistics
+    described, method_names = describe(x[:10], dim=(-2, -1), batch_size=1)
+
+    # Store results
+    results = {
+        "input": x,
+        "described": described,
+        "method_names": method_names,
+    }
+
+    for k, v in results.items():
+        if isinstance(v, (np.ndarray, torch.Tensor)):
+            print(f"\n{k}, Type: {type(v)}, Shape: {v.shape}, Values: {v}")
+        elif isinstance(v, list):
+            print(f"\n{k}, Type: {type(v)}, Length: {len(v)}, Values: {v}")
+        else:
+            print(f"\n{k}, Type: {type(v)}, Values: {v}")
+
+    return 0
 
 
-"""
-python ./scitex_repo/src/scitex/stats/desc/_describe.py
-python -m src.scitex.stats.desc._describe
-"""
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Demonstrate comprehensive descriptive statistics"
+    )
+    args = parser.parse_args()
+    return args
+
+
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+    import sys
+
+    import matplotlib.pyplot as plt
+    import scitex as stx
+
+    args = parse_args()
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

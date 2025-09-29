@@ -27,9 +27,9 @@ import re
 from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class URLDOIExtractor:

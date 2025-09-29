@@ -18,6 +18,7 @@ import pandas as pd
 class FigWrapper:
     def __init__(self, fig_mpl):
         self._fig_mpl = fig_mpl
+        self._axes = []  # Keep track of axes for synchronization
         self._last_saved_info = None
         self._not_saved_yet_flag = True
         self._called_from_mng_io_save = False
@@ -36,7 +37,17 @@ class FigWrapper:
 
             @wraps(attr_mpl)
             def wrapper(*args, track=None, id=None, **kwargs):
-                results = attr_mpl(*args, **kwargs)
+                # Suppress constrained_layout warnings for certain operations
+                import warnings
+                with warnings.catch_warnings():
+                    if attr in ['subplots_adjust', 'tight_layout']:
+                        warnings.filterwarnings('ignore', 
+                                              message='.*constrained_layout.*',
+                                              category=UserWarning)
+                        warnings.filterwarnings('ignore',
+                                              message='.*layout engine.*incompatible.*',
+                                              category=UserWarning)
+                    results = attr_mpl(*args, **kwargs)
                 # self._track(track, id, attr, args, kwargs)
                 return results
 
@@ -179,6 +190,7 @@ class FigWrapper:
                 # If both fail, do nothing - figure will use default layout
                 pass
 
+    
     def adjust_layout(self, **kwargs):
         """Adjust the constrained layout parameters.
         

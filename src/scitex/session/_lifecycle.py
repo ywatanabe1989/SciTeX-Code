@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 20:36:55 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/session/_lifecycle.py
+# Timestamp: "2025-09-22 01:35:47 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/session/_lifecycle.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -18,6 +18,7 @@ scitex.session.start() and scitex.session.close() with enhanced session manageme
 """
 
 import inspect
+import logging
 import os as _os
 import re
 import shutil
@@ -30,18 +31,20 @@ from pprint import pprint
 from time import sleep
 from typing import Any, Dict, Optional, Tuple, Union
 
+logger = logging.getLogger(__name__)
+
 import matplotlib
 import matplotlib.pyplot as plt_module
 
 from ..dict import DotDict
 # Lazy import to avoid circular dependency with scitex.gen
 from ..io import flush
+from ..io import save as scitex_io_save
 from ..io._load import load
 from ..io._load_configs import load_configs
-from ..io import save as scitex_io_save
 from ..plt.utils._configure_mpl import configure_mpl
-from ..repro._fix_seeds import fix_seeds
 from ..repro._gen_ID import gen_ID
+from ..rng import RandomStateManager
 from ..str._clean_path import clean_path
 from ..str._printc import printc as _printc
 from ..utils._notify import notify as scitex_utils_notify
@@ -51,6 +54,7 @@ from ._manager import get_global_session_manager
 try:
     from ..dev._analyze_code_flow import analyze_code_flow
 except ImportError:
+
     def analyze_code_flow(file):
         return "Code flow analysis not available"
 
@@ -80,11 +84,22 @@ def _print_header(
     verbose : bool, optional
         Whether to print detailed information, by default True
     """
+
+    args_str = "Arguments:"
+    for arg, value in args._get_kwargs():
+        args_str += f"\n    {arg}: {value}"
+
     _printc(
-        (f"## scitex v{_get_scitex_version()}\n" f"## {ID} (PID: {PID})"), char="#"
+        (
+            f"SciTeX v{_get_scitex_version()}\n"
+            f"{ID} (PID: {PID})\n\n"
+            f"{file}\n\n"
+            f"{args_str}"
+            # f"{args}"
+        ),
+        char="=",
     )
 
-    _printc((f"{file}\n" f"{args}"), c="yellow", char="=")
     sleep(1)
     if verbose:
         print(f"\n{'-'*40}\n")
@@ -254,6 +269,7 @@ def _get_scitex_version() -> str:
     """Gets scitex version"""
     try:
         import scitex
+
         return scitex.__version__
     except Exception as e:
         print(e)
@@ -285,7 +301,7 @@ def start(
     line_width: float = 1.0,
     clear_logs: bool = False,
     verbose: bool = True,
-) -> Tuple[DotDict, Any, Any, Any, Optional[Dict[str, Any]]]:
+) -> Tuple[DotDict, Any, Any, Any, Optional[Dict[str, Any]], Any]:
     """Initialize experiment session with reproducibility settings.
 
     This function replaces scitex.session.start() with enhanced session management.
@@ -336,11 +352,12 @@ def start(
     Returns
     -------
     tuple
-        (CONFIGS, stdout, stderr, plt, CC)
+        (CONFIGS, stdout, stderr, plt, CC, rng)
         - CONFIGS: Configuration dictionary
         - stdout, stderr: Redirected output streams
         - plt: Configured matplotlib.pyplot module
         - CC: Color cycle dictionary
+        - rng: Global RandomStateManager instance for reproducible random generation
     """
     IS_DEBUG = _get_debug_mode()
     ID, PID = _initialize_env(IS_DEBUG)
@@ -393,13 +410,14 @@ def start(
         flush(sys)
         # Lazy import to avoid circular dependency
         from ..gen._tee import tee
+
         sys.stdout, sys.stderr = tee(sys, sdir=sdir, verbose=verbose)
         CONFIGS["sys"] = sys
-        
+
         # Redirect logging handlers to use the tee-wrapped streams
         # This ensures that logger output is captured in the log files
         import logging
-        
+
         # Update all existing StreamHandler instances to use our wrapped streams
         for logger_name in list(logging.Logger.manager.loggerDict.keys()):
             try:
@@ -407,35 +425,44 @@ def start(
                 for handler in logger.handlers:
                     if isinstance(handler, logging.StreamHandler):
                         # StreamHandler typically uses stderr by default
-                        if not hasattr(handler, 'stream'):
+                        if not hasattr(handler, "stream"):
                             continue
                         # Check if handler is using the original stderr or stdout
                         if handler.stream in (sys.__stderr__, sys.__stdout__):
                             # Replace with our tee-wrapped stream
-                            handler.stream = sys.stderr if handler.stream == sys.__stderr__ else sys.stdout
+                            handler.stream = (
+                                sys.stderr
+                                if handler.stream == sys.__stderr__
+                                else sys.stdout
+                            )
             except Exception:
                 # Silently skip any logger that can't be updated
                 pass
-        
+
         # Also update the root logger handlers
         try:
             root_logger = logging.getLogger()
             for handler in root_logger.handlers:
                 if isinstance(handler, logging.StreamHandler):
-                    if not hasattr(handler, 'stream'):
+                    if not hasattr(handler, "stream"):
                         continue
                     # Check if handler is using the original stderr or stdout
                     if handler.stream in (sys.__stderr__, sys.__stdout__):
                         # Replace with our tee-wrapped stream
-                        handler.stream = sys.stderr if handler.stream == sys.__stderr__ else sys.stdout
+                        handler.stream = (
+                            sys.stderr
+                            if handler.stream == sys.__stderr__
+                            else sys.stdout
+                        )
         except Exception:
             # Silently skip if root logger can't be updated
             pass
 
-    # Random Seeds
-    fix_seeds(
-        os=os, random=random, np=np, torch=torch, seed=seed, verbose=verbose
-    )
+    # Initialize RandomStateManager (automatically fixes all seeds)
+    rng = RandomStateManager(seed=seed, verbose=verbose)
+    if verbose:
+        module_logger = logging.getLogger(__name__)
+        module_logger.info(f"Initialized RandomStateManager with seed {seed}")
 
     # Matplotlib configurations
     plt, CC = _setup_matplotlib(
@@ -471,9 +498,9 @@ def start(
 
     # Return appropriate values based on whether sys was provided
     if sys is not None:
-        return CONFIGS, sys.stdout, sys.stderr, plt, CC
+        return CONFIGS, sys.stdout, sys.stderr, plt, CC, rng
     else:
-        return CONFIGS, None, None, plt, CC
+        return CONFIGS, None, None, plt, CC, rng
 
 
 def _format_diff_time(diff_time):
@@ -508,13 +535,17 @@ def _process_timestamp(CONFIG, verbose=True):
 
 def _save_configs(CONFIG):
     """Save configuration to files."""
-    scitex_io_save(CONFIG, CONFIG["SDIR"] + "CONFIGS/CONFIG.pkl", verbose=False)
-    scitex_io_save(CONFIG, CONFIG["SDIR"] + "CONFIGS/CONFIG.yaml", verbose=False)
+    scitex_io_save(
+        CONFIG, CONFIG["SDIR"] + "CONFIGS/CONFIG.pkl", verbose=False
+    )
+    scitex_io_save(
+        CONFIG, CONFIG["SDIR"] + "CONFIGS/CONFIG.yaml", verbose=False
+    )
 
 
 def _escape_ansi_from_log_files(log_files):
     """Remove ANSI escape sequences from log files.
-    
+
     Parameters
     ----------
     log_files : list
@@ -543,9 +574,11 @@ def _args_to_str(args_dict):
         return ""
 
 
-def running2finished(CONFIG, exit_status=None, remove_src_dir=True, max_wait=60):
+def running2finished(
+    CONFIG, exit_status=None, remove_src_dir=True, max_wait=60
+):
     """Move session from RUNNING to FINISHED directory.
-    
+
     Parameters
     ----------
     CONFIG : dict
@@ -556,7 +589,7 @@ def running2finished(CONFIG, exit_status=None, remove_src_dir=True, max_wait=60)
         Whether to remove source directory after copy
     max_wait : int, default=60
         Maximum seconds to wait for copy operation
-        
+
     Returns
     -------
     dict
@@ -583,15 +616,32 @@ def running2finished(CONFIG, exit_status=None, remove_src_dir=True, max_wait=60)
                 shutil.copy2(s, d)
 
         start_time = time.time()
-        while not _os.path.exists(dest_dir) and time.time() - start_time < max_wait:
+        while (
+            not _os.path.exists(dest_dir)
+            and time.time() - start_time < max_wait
+        ):
             time.sleep(0.1)
         if _os.path.exists(dest_dir):
-            _printc(
-                f"Congratulations! The script completed.\n\n{dest_dir}",
-                c="yellow",
+
+            print()
+            logger.success(
+                f"Congratulations! The script completed: {dest_dir}",
             )
+
             if remove_src_dir:
                 shutil.rmtree(src_dir)
+
+            # Cleanup RUNNING when empty
+            running_base = os.path.dirname(src_dir.rstrip("/"))
+            if os.path.basename(running_base) == "RUNNING":
+                try:
+                    os.rmdir(running_base)
+                    # print(
+                    #     f"Cleaned up empty RUNNING directory: {running_base}"
+                    # )
+                except OSError:
+                    pass
+
         else:
             print(f"Copy operation timed out after {max_wait} seconds")
 

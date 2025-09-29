@@ -57,7 +57,7 @@ Created comprehensive documentation:
 Fixed several issues during implementation:
 
 #### Fixed Issues
-- Import error: `scitex.logging` - Created missing __init__.py
+- Import error: `scitex.loggingging` - Created missing __init__.py
 - Session ID format: Changed from UUID to numeric
 - Cookie sending: Changed from parameter to HTTP headers
 - API parameters: Added js_render and premium_proxy as required

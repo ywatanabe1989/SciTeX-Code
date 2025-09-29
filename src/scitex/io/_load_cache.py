@@ -13,7 +13,7 @@ import hashlib
 import weakref
 from functools import lru_cache
 from typing import Any, Tuple, Optional, Dict
-from scitex import log
+from scitex import logging
 
 # Cache for file metadata (path -> (mtime, size, hash))
 _file_metadata_cache: Dict[str, Tuple[float, int, str]] = {}

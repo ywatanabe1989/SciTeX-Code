@@ -18,11 +18,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from scitex import log
+from scitex import logging
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.utils import TextNormalizer
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class LibraryManager:
@@ -40,6 +40,32 @@ class LibraryManager:
         self.library_master_dir = self.config.get_library_dir() / "MASTER"
         self.single_doi_resolver = single_doi_resolver
         self._source_filename = "papers"
+
+    def _call_path_manager_get_storage_paths(self, paper_info: Dict, collection_name: str = "MASTER") -> Dict[str, Any]:
+        """Helper to call PathManager's get_paper_storage_paths with proper parameters."""
+        # Extract parameters from paper_info dict
+        doi = paper_info.get("doi")
+        title = paper_info.get("title")
+        authors = paper_info.get("authors", [])
+        year = paper_info.get("year")
+        journal = paper_info.get("journal")
+
+        # Call PathManager with individual parameters
+        storage_path, readable_name, paper_id = self.config.path_manager.get_paper_storage_paths(
+            doi=doi,
+            title=title,
+            authors=authors,
+            year=year,
+            journal=journal,
+            project=collection_name
+        )
+
+        # Return in the expected dict format
+        return {
+            "storage_path": storage_path,
+            "readable_name": readable_name,
+            "unique_id": paper_id
+        }
 
     def check_library_for_doi(
         self, title: str, year: Optional[int] = None
@@ -97,37 +123,90 @@ class LibraryManager:
 
     def save_resolved_paper(
         self,
+        # Required bibliographic fields
         title: str,
         doi: str,
-        year: Optional[int] = None,
+
+        # Optional bibliographic fields
         authors: Optional[List[str]] = None,
-        source: str = None,
+        year: Optional[int] = None,
+        journal: Optional[str] = None,
+        abstract: Optional[str] = None,
+
+        # Additional bibliographic fields
+        volume: Optional[str] = None,
+        issue: Optional[str] = None,
+        pages: Optional[str] = None,
+        publisher: Optional[str] = None,
+        issn: Optional[str] = None,
+        short_journal: Optional[str] = None,
+
+        # Enrichment fields
+        citation_count: Optional[int] = None,
+        impact_factor: Optional[float] = None,
+
+        # Source tracking (which engine/database provided this info)
+        doi_source: Optional[str] = None,
+        title_source: Optional[str] = None,
+        abstract_source: Optional[str] = None,
+        authors_source: Optional[str] = None,
+        year_source: Optional[str] = None,
+        journal_source: Optional[str] = None,
+
+        # Library management
+        library_id: Optional[str] = None,
+        project: Optional[str] = None,
+
+        # Legacy support (will be removed)
         metadata: Optional[Dict] = None,
         bibtex_source: Optional[str] = None,
+        source: Optional[str] = None,  # Legacy doi_source
+        paper_id: Optional[str] = None,  # Legacy library_id
+        **kwargs  # For backward compatibility
     ) -> str:
         """Save successfully resolved paper to Scholar library."""
+        # Handle legacy parameters
+        if paper_id and not library_id:
+            library_id = paper_id
+        if source and not doi_source:
+            doi_source = source
+
+        # Build paper_info with explicit parameters (not metadata dict)
         paper_info = {
             "title": title,
             "year": year,
             "authors": authors or [],
             "doi": doi,
+            "journal": journal,
         }
 
+        # Only use metadata dict as fallback for backward compatibility
         if metadata:
-            if metadata.get("journal"):
-                paper_info["journal"] = metadata["journal"]
-            if not year and metadata.get("year"):
-                paper_info["year"] = metadata["year"]
-            if not authors and metadata.get("authors"):
-                paper_info["authors"] = metadata["authors"]
+            if not journal:
+                journal = metadata.get("journal")
+                paper_info["journal"] = journal
+            if not year:
+                year = metadata.get("year")
+                paper_info["year"] = year
+            if not authors:
+                authors = metadata.get("authors")
+                paper_info["authors"] = authors or []
 
-        master_storage_paths = (
-            self.config.path_manager.get_paper_storage_paths(
-                paper_info=paper_info, collection_name="MASTER"
-            )
+        # Call PathManager with individual parameters
+        storage_path, readable_name, paper_id = self.config.path_manager.get_paper_storage_paths(
+            doi=doi,
+            title=title,
+            authors=authors or [],
+            year=year,
+            journal=journal,
+            project="MASTER"
         )
-        paper_id = master_storage_paths["unique_id"]
-        master_storage_path = master_storage_paths["storage_path"]
+
+        # Use provided library_id if available, otherwise use generated paper_id
+        if library_id:
+            paper_id = library_id
+
+        master_storage_path = storage_path
         master_metadata_file = master_storage_path / "metadata.json"
 
         existing_metadata = {}
@@ -138,11 +217,16 @@ class LibraryManager:
             except (json.JSONDecodeError, IOError):
                 existing_metadata = {}
 
+        # Clean text fields
         clean_title = TextNormalizer.clean_metadata_text(
             existing_metadata.get("title", title)
         )
+
+        # Use explicit abstract parameter first, then metadata dict, then existing
         clean_abstract = None
-        if metadata and metadata.get("abstract"):
+        if abstract:
+            clean_abstract = TextNormalizer.clean_metadata_text(abstract)
+        elif metadata and metadata.get("abstract"):
             clean_abstract = TextNormalizer.clean_metadata_text(
                 metadata["abstract"]
             )
@@ -151,8 +235,10 @@ class LibraryManager:
                 existing_metadata["abstract"]
             )
 
-        doi_source_value = existing_metadata.get("doi_source")
+        # Handle doi_source - explicit parameter takes precedence
+        doi_source_value = doi_source or existing_metadata.get("doi_source")
         if not doi_source_value and source:
+            # Normalize legacy source parameter
             if "crossref" in source.lower():
                 doi_source_value = "crossref"
             elif "semantic" in source.lower():
@@ -165,70 +251,33 @@ class LibraryManager:
                 doi_source_value = source
 
         comprehensive_metadata = {
+            # Core bibliographic fields
             "title": clean_title,
-            "title_source": existing_metadata.get("title_source", "input"),
+            "title_source": title_source or existing_metadata.get("title_source", "input"),
             "doi": existing_metadata.get("doi", doi),
             "doi_source": doi_source_value,
-            "year": existing_metadata.get("year", paper_info.get("year")),
-            "year_source": existing_metadata.get(
-                "year_source",
-                (
-                    "input"
-                    if year is not None
-                    else (
-                        metadata.get("journal_source", source)
-                        if metadata and metadata.get("year")
-                        else None
-                    )
-                ),
-            ),
-            "authors": existing_metadata.get(
-                "authors", paper_info.get("authors", [])
-            ),
-            "authors_source": existing_metadata.get(
-                "authors_source",
-                (
-                    "input"
-                    if authors
-                    else (
-                        metadata.get("journal_source", source)
-                        if metadata and metadata.get("authors")
-                        else None
-                    )
-                ),
-            ),
-            "journal": existing_metadata.get(
-                "journal", metadata.get("journal") if metadata else None
-            ),
-            "journal_source": existing_metadata.get(
-                "journal_source",
-                metadata.get("journal_source") if metadata else None,
-            ),
-            "short_journal": existing_metadata.get(
-                "short_journal",
-                metadata.get("short_journal") if metadata else None,
-            ),
-            "publisher": existing_metadata.get(
-                "publisher", metadata.get("publisher") if metadata else None
-            ),
-            "volume": existing_metadata.get(
-                "volume", metadata.get("volume") if metadata else None
-            ),
-            "issue": existing_metadata.get(
-                "issue", metadata.get("issue") if metadata else None
-            ),
-            "issn": existing_metadata.get(
-                "issn", metadata.get("issn") if metadata else None
-            ),
+            "year": existing_metadata.get("year", year),
+            "year_source": year_source or existing_metadata.get("year_source", "input" if year else None),
+            "authors": existing_metadata.get("authors", authors or []),
+            "authors_source": authors_source or existing_metadata.get("authors_source", "input" if authors else None),
+            "journal": existing_metadata.get("journal", journal),
+            "journal_source": journal_source or existing_metadata.get("journal_source", "input" if journal else None),
+
+            # Additional bibliographic fields from explicit parameters
+            "volume": existing_metadata.get("volume", volume),
+            "issue": existing_metadata.get("issue", issue),
+            "pages": existing_metadata.get("pages", pages),
+            "publisher": existing_metadata.get("publisher", publisher),
+            "issn": existing_metadata.get("issn", issn),
+            "short_journal": existing_metadata.get("short_journal", short_journal),
+
+            # Abstract with source tracking
             "abstract": existing_metadata.get("abstract", clean_abstract),
-            "abstract_source": existing_metadata.get(
-                "abstract_source",
-                (
-                    metadata.get("journal_source")
-                    if metadata and metadata.get("abstract")
-                    else None
-                ),
-            ),
+            "abstract_source": abstract_source or existing_metadata.get("abstract_source", "input" if abstract else None),
+
+            # Enrichment fields
+            "citation_count": existing_metadata.get("citation_count", citation_count),
+            "impact_factor": existing_metadata.get("impact_factor", impact_factor),
             "scitex_id": existing_metadata.get(
                 "scitex_id", existing_metadata.get("scholar_id", paper_id)
             ),
@@ -243,7 +292,7 @@ class LibraryManager:
                 "projects", [] if self.project == "master" else [self.project]
             ),
             "master_storage_path": str(master_storage_path),
-            "readable_name": master_storage_paths["readable_name"],
+            "readable_name": readable_name,
             "metadata_file": str(master_metadata_file),
         }
 
@@ -335,10 +384,8 @@ class LibraryManager:
                 )
                 paper_info = {**paper, **enhanced_metadata}
 
-                storage_paths = (
-                    self.config.path_manager.get_paper_storage_paths(
-                        paper_info=paper_info, collection_name="MASTER"
-                    )
+                storage_paths = self._call_path_manager_get_storage_paths(
+                    paper_info=paper_info, collection_name="MASTER"
                 )
                 paper_id = storage_paths["unique_id"]
                 storage_path = storage_paths["storage_path"]
@@ -586,19 +633,15 @@ class LibraryManager:
                 f"Missing fields for future enhancement: {', '.join(missing_fields)}"
             )
 
-        storage_path = self.config.path_manager.get_paper_storage_paths(
+        storage_paths = self._call_path_manager_get_storage_paths(
             paper_info={**paper, **enhanced_metadata}, collection_name="MASTER"
-        )["storage_path"]
+        )
+        storage_path = storage_paths["storage_path"]
 
         complete_metadata.update(
             {
                 "master_storage_path": str(storage_path),
-                "readable_name": self.config.path_manager.get_paper_storage_paths(
-                    paper_info={**paper, **enhanced_metadata},
-                    collection_name="MASTER",
-                )[
-                    "readable_name"
-                ],
+                "readable_name": storage_paths["readable_name"],
                 "metadata_file": str(storage_path / "metadata.json"),
             }
         )
@@ -811,7 +854,7 @@ class LibraryManager:
                 "year": year,
                 "authors": authors or [],
             }
-            readable_paths = self.config.path_manager.get_paper_storage_paths(
+            readable_paths = self._call_path_manager_get_storage_paths(
                 paper_info=paper_info, collection_name=self.project
             )
             readable_name = readable_paths["readable_name"]

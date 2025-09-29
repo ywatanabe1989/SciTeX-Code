@@ -16,6 +16,7 @@ from ._sqlite3._SQLite3 import SQLite3
 from ._sqlite3._delete_duplicates import delete_sqlite3_duplicates
 from ._delete_duplicates import delete_duplicates
 from ._inspect import inspect
+from ._check_health import check_health, batch_health_check
 
 __all__ = [
     "PostgreSQL",

@@ -15,9 +15,9 @@ import re
 
 import bibtexparser
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def parse_bibtex(bibtex_path):

@@ -14,6 +14,7 @@ __DIR__ = os.path.dirname(__FILE__)
 from ._tpl import termplot
 from . import color
 from . import utils
+from . import ax
 
 # Lazy import for subplots to avoid circular dependencies
 _subplots = None
@@ -67,7 +68,7 @@ def __dir__():
     """
     # Get local attributes
     local_attrs = __all__.copy()
-    
+
     # Add matplotlib.pyplot attributes
     try:
         import matplotlib.pyplot as plt
@@ -75,7 +76,7 @@ def __dir__():
         local_attrs.extend(mpl_attrs)
     except ImportError:
         pass
-    
+
     return sorted(set(local_attrs))
 
 # EOF

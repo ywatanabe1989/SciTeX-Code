@@ -14,9 +14,9 @@ __DIR__ = os.path.dirname(__FILE__)
 import argparse
 import asyncio
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_parser():

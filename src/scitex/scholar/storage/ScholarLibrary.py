@@ -44,16 +44,39 @@ class ScholarLibrary:
         return self._cache_manager.load_paper_metadata(library_id)
 
     def save_paper(self, paper: "Paper", force: bool = False) -> str:
-        """Save paper to library."""
+        """Save paper to library with explicit parameters."""
+        # Extract all available fields from paper object
+        paper_dict = paper.to_dict() if hasattr(paper, 'to_dict') else {}
+
         return self._library_manager.save_resolved_paper(
-            title=paper.title,
-            doi=paper.doi,
-            year=paper.year,
-            authors=paper.authors,
-            journal=paper.journal,
-            abstract=paper.abstract,
-            metadata=paper.to_dict(),
-            paper_id=paper.library_id,
+            # Required fields
+            title=getattr(paper, 'title', paper_dict.get('title', '')),
+            doi=getattr(paper, 'doi', paper_dict.get('doi', '')),
+
+            # Optional bibliographic fields
+            year=getattr(paper, 'year', paper_dict.get('year')),
+            authors=getattr(paper, 'authors', paper_dict.get('authors')),
+            journal=getattr(paper, 'journal', paper_dict.get('journal')),
+            abstract=getattr(paper, 'abstract', paper_dict.get('abstract')),
+
+            # Additional bibliographic fields
+            volume=getattr(paper, 'volume', paper_dict.get('volume')),
+            issue=getattr(paper, 'issue', paper_dict.get('issue')),
+            pages=getattr(paper, 'pages', paper_dict.get('pages')),
+            publisher=getattr(paper, 'publisher', paper_dict.get('publisher')),
+            issn=getattr(paper, 'issn', paper_dict.get('issn')),
+
+            # Enrichment fields
+            citation_count=getattr(paper, 'citation_count', paper_dict.get('citation_count')),
+
+            # Source tracking
+            doi_source=getattr(paper, 'doi_source', paper_dict.get('doi_source')),
+            title_source=getattr(paper, 'title_source', paper_dict.get('title_source')),
+            abstract_source=getattr(paper, 'abstract_source', paper_dict.get('abstract_source')),
+
+            # Library management
+            library_id=getattr(paper, 'library_id', paper_dict.get('library_id')),
+            project=self.project,
         )
 
     def papers_from_bibtex(

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-09-24 18:27:45
+!-- Timestamp: 2025-09-30 05:05:44
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -380,6 +380,64 @@ git clone git@github.com:zotero/translators.git zotero_translators
 # Chrome/Edge: https://chrome.google.com/webstore/detail/lean-library/hghakoefmnkhamdhenpbogkeopjlkpoa
 # Firefox: https://addons.mozilla.org/en-US/firefox/addon/lean-library/
 ```
+
+## Module depenencied
+
+# What users interact with:
+Papers         # Collection dataclass - main user interface
+Paper          # Individual paper dataclass
+Scholar        # Main orchestrator - main user interface
+ScholarConfig  # User configuration
+
+Internal Implementation Layers
+
+Mid-Level Orchestrators
+
+ScholarLibrary  # Combines storage + cache operations
+ScholarEngine   # Aggregates multiple search engines
+
+Low-Level Implementations
+
+# Storage layer
+LibraryManager      # Paper storage logic
+PathManager         # File system paths
+LibraryCacheManager # Caching layer
+
+# Search/Enrichment engines  
+CrossRefLocalEngine
+SemanticScholarEngine
+OpenAlexEngine
+# ... etc
+
+# Authentication
+BrowserAuthenticator
+UniversityOfMelbourneSSOAutomator
+
+# Download/Browser
+PDFDownloader variants
+Crawl4AI integration
+Puppeteer integration
+
+This architecture is excellent because:
+
+1. Users only need to know:
+papers = Papers.from_bibtex("file.bib", project="neurovista")
+papers.enrich()
+papers.save_to_library()
+2. They don't need to know about:
+  - How storage paths are managed
+  - Which search engines are used
+  - How authentication works
+  - Browser automation details
+3. The Scholar class (when uncommented) would likely be the main facade that ties
+everything together, similar to how pd.DataFrame is the main interface for pandas.
+
+The fact that Scholar is commented out suggests the team was transitioning or
+refactoring the architecture. The current state has Papers as the main user interface
+with ScholarLibrary and ScholarEngine as the key orchestrators underneath.
+
+This is a textbook example of the Facade Pattern - hiding complex subsystems behind
+simple, user-friendly interfaces!
 
 
 ## Citation

@@ -15,9 +15,9 @@ import json
 
 from playwright.async_api import Page
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class CookieAutoAcceptor:

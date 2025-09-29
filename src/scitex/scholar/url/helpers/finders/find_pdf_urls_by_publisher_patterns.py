@@ -14,9 +14,9 @@ __DIR__ = os.path.dirname(__FILE__)
 import re
 from typing import List
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def find_pdf_urls_by_publisher_patterns(page, url: str) -> List[str]:

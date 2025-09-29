@@ -21,7 +21,7 @@ from typing import Optional
 
 from playwright.async_api import BrowserContext, Page
 
-from scitex.log import getLogger
+from scitex.logging import getLogger
 from scitex.scholar.config import ScholarConfig
 
 logger = getLogger(__name__)

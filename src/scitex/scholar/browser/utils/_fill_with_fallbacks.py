@@ -13,9 +13,9 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from playwright.async_api import Page
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 async def fill_with_fallbacks(
