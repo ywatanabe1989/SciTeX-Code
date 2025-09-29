@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-06 14:59:55 (ywatanabe)"
+# Timestamp: "2025-09-30 04:21:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/enrich_bibtex.py
 # ----------------------------------------
 from __future__ import annotations
@@ -28,10 +28,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from scitex import log
+from scitex import log, logging
 from scitex.scholar import Scholar
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_parser():

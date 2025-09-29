@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 # ---------------------------------------
 
 # Function to display usage information
-show_async_usage() {
+show_usage() {
     echo "Usage: $0 [options] <search_pattern> <replacement> [directory]"
     echo ""
     echo "Options:"
@@ -40,7 +40,7 @@ target_dir="."
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -h|--help)
-            show_async_usage
+            show_usage
             exit 0
             ;;
         -n|--no-dry-run)
@@ -49,7 +49,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -*)
             echo "Error: Unknown option: $1"
-            show_async_usage
+            show_usage
             exit 1
             ;;
         *)
@@ -62,7 +62,7 @@ while [[ $# -gt 0 ]]; do
                 target_dir="$1"
             else
                 echo "Error: Too many arguments"
-                show_async_usage
+                show_usage
                 exit 1
             fi
             shift
@@ -73,7 +73,7 @@ done
 # Check if required arguments are provided
 if [ -z "$search_pattern" ] || [ -z "$replacement" ]; then
     echo "Error: Missing required arguments"
-    show_async_usage
+    show_usage
     exit 1
 fi
 
@@ -96,7 +96,7 @@ replace_in_files() {
             grep --color=always -n "$search_pattern" "$file_path" | head -5
             match_count=$(grep -c "$search_pattern" "$file_path")
             if [ $match_count -gt 5 ]; then
-                echo "... ($match_count matches found, show_asyncing first 5)"
+                echo "... ($match_count matches found, showing first 5)"
             fi
         else
             # Actually do the replacement
@@ -121,7 +121,7 @@ rename_files_and_dirs() {
             new_name=$(echo "$base_part" | sed "s/$search_pattern/$replacement/g")
             new_path="$dir_part/$new_name"
 
-            # Rename or show_async what would be renamed
+            # Rename or show what would be renamed
             if [ "$base_part" != "$new_name" ]; then
                 echo "Renaming: $item_path → $new_path"
                 if ! $dry_run; then

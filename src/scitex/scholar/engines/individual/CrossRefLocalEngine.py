@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 23:18:06 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefLocalEngine.py
+# Timestamp: "2025-09-24 20:03:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/individual/CrossRefLocalEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os

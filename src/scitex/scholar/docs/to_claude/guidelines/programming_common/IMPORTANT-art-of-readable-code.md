@@ -228,7 +228,7 @@ def fast_gaussian_blur(image_data, radius):
 
 **DO NOT**
 ```python
-def authenticate_async(username, password):
+def authenticate(username, password):
     """Authenticates a user."""
     # Code to check password
     if check_password(username, password):
@@ -240,7 +240,7 @@ def authenticate_async(username, password):
 
 **DO**
 ```python
-def authenticate_async(username, password):
+def authenticate(username, password):
     """Authenticate a user and generate an access token.
     
     Args:
@@ -858,14 +858,14 @@ def initialize_app():
         data = get_form_data()
         validate_data(data)
         save_to_database(data)
-        show_async_success_message("Data saved successfully!")
+        show_success_message("Data saved successfully!")
     
     def validate_data(data):
         if not data["name"]:
-            show_async_error("Name is required")
+            show_error("Name is required")
             return False
         if len(data["description"]) > 200:
-            show_async_error("Description too long")
+            show_error("Description too long")
             return False
         return True
     
@@ -926,14 +926,14 @@ class EventHandlers:
         # Validate data
         valid, error_message = self.validator.validate_save_data(data)
         if not valid:
-            self.ui.show_async_error(error_message)
+            self.ui.show_error(error_message)
             return
             
         # Save data
         if self.db_service.save_data(data):
-            self.ui.show_async_success_message("Data saved successfully!")
+            self.ui.show_success_message("Data saved successfully!")
         else:
-            self.ui.show_async_error("Failed to save data")
+            self.ui.show_error("Failed to save data")
 
 def initialize_app():
     """Initialize the application."""
@@ -1243,7 +1243,7 @@ def calculate_statistics(values):
     """Calculate mean, median, and mode of a dataset.
     
     This implementation prioritizes readability over micro-optimizations.
-    Performance testing show_async it handles datasets of up to 100,000 elements
+    Performance testing showed it handles datasets of up to 100,000 elements
     in under 50ms, which is sufficient for our current needs.
     
     For larger datasets, consider using NumPy's statistical functions which

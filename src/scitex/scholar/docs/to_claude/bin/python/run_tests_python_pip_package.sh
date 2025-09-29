@@ -51,7 +51,7 @@ usage() {
     echo "  -c, --cache        Delete Python cache files (default: $DELETE_CACHE)"
     echo "  -d, --debug        Run tests in debug mode (default: $DEBUG)"
     echo "  -i, --ipdb         Enable IPython debugger on test failures (default: $IPDB)"
-    echo "  -j, --n_worker_asyncs    Number of worker_asyncs (default: $N_WORKERS, auto-parallel if >1)"
+    echo "  -j, --n_workers    Number of workers (default: $N_WORKERS, auto-parallel if >1)"
     echo "  -l, --last_failed  Run only tests that failed in the last run (default: $LAST_FAILED)"
     echo "  -n, --n_runs       Number of test executions (default: $N_RUNS)"
     echo "  -e, --exitfirst    (default: $EXIT_FIRST)"
@@ -65,7 +65,7 @@ usage() {
     echo "Example:"
     echo "  $0 -c              Clean cache before running tests"
     echo "  $0 -n 10           Run tests 10 times in sequence"
-    echo "  $0 -j 4            Run tests in parallel with 4 worker_asyncs"
+    echo "  $0 -j 4            Run tests in parallel with 4 workers"
     echo "  $0 tests/mngs/core Run only tests in core module"
     exit 1
 }
@@ -85,11 +85,11 @@ parse_args() {
                 SYNC_TESTS_WITH_SOURCE=true
                 shift
                 ;;
-            -n|--n_worker_asyncs)
+            -n|--n_workers)
                 N_RUNS="$2"
                 shift 2
                 ;;
-            -j|--n_worker_asyncs)
+            -j|--n_workers)
                 N_WORKERS="$2"
                 shift 2
                 ;;
@@ -197,7 +197,7 @@ run_tests() {
 
     # N_WORKERS
     if [[ $N_WORKERS -gt 1 ]]; then
-        echo_info "Running in parallel mode with $N_WORKERS worker_asyncs"
+        echo_info "Running in parallel mode with $N_WORKERS workers"
         PYTEST_ARGS+=" -n $N_WORKERS"
     fi
 

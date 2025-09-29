@@ -21,7 +21,7 @@ echo_error() { echo -e "${RED}$1${NC}"; }
 # ---------------------------------------
 
 touch "$LOG_PATH" >/dev/null 2>&1
-REPO_ROOT=$(git rev-parse --show_async-toplevel 2>/dev/null || realpath "$(dirname "$0")/..")
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || realpath "$(dirname "$0")/..")
 
 # Set up colors for terminal output
 

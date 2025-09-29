@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:34:10 (ywatanabe)"
+# Timestamp: "2025-09-30 04:29:44 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/resolve_and_enrich.py
 # ----------------------------------------
 from __future__ import annotations
@@ -16,9 +16,9 @@ import json
 import sys
 from pathlib import Path
 
-from scitex import log
+from scitex import logging
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_parser():
@@ -83,41 +83,51 @@ python -m scitex.scholar resolve-and-enrich --project myproject --summary""",
 
 
 def main():
-    from ..metadata.doi._SingleDOIResolver import SingleDOIResolver
-    from ..metadata.enrichment import MetadataEnricher
+    import asyncio
 
-    parser = create_parser()
-    args = parser.parse_args()
+    async def async_main():
+        # Use ScholarEngine instead of legacy metadata modules
+        from ..config import ScholarConfig
+        from ..engines.ScholarEngine import ScholarEngine
+        from ..storage.ScholarLibrary import ScholarLibrary
 
-    # Validate arguments
-    if not args.bibtex and not args.title and not args.summary:
-        parser.error("Must specify --bibtex, --title, or --summary")
+        parser = create_parser()
+        args = parser.parse_args()
 
-    try:
-        resolver = SingleDOIResolver(
-            project=args.project, max_worker=args.worker_asyncs
-        )
+        # Validate arguments
+        if not args.bibtex and not args.title and not args.summary:
+            parser.error("Must specify --bibtex, --title, or --summary")
 
-        if args.summary:
-            display_project_summary(resolver)
-            return
+        try:
+            # Initialize working components
+            config = ScholarConfig()
+            engine = ScholarEngine(config=config)
+            library = ScholarLibrary(project=args.project, config=config)
 
-        if args.bibtex:
-            process_bibtex_file(resolver, args)
-        elif args.title:
-            process_single_title(resolver, args)
+            logger.info(
+                f"Initialized ScholarEngine with {len(engine.engines)} engines"
+            )
+            logger.info(f"Project: {args.project}")
 
-        # Enrich metadata by default unless --no-enrich
-        if not args.no_enrich:
-            enrich_project_metadata(args.project)
+            if args.summary:
+                await display_project_summary(library, args.project)
+                return
 
-    except KeyboardInterrupt:
-        print("\n\nOperation cancelled by user")
-        sys.exit(1)
-    except Exception as e:
-        logger.error(f"Error during resolution: {e}")
-        print(f"\nError: {e}")
-        sys.exit(1)
+            if args.bibtex:
+                await process_bibtex_file(engine, library, args)
+            elif args.title:
+                await process_single_title(engine, library, args)
+
+        except KeyboardInterrupt:
+            print("\n\nOperation cancelled by user")
+            sys.exit(1)
+        except Exception as e:
+            logger.error(f"Error during resolution: {e}")
+            print(f"\nError: {e}")
+            sys.exit(1)
+
+    # Run async main
+    asyncio.run(async_main())
 
 
 def process_bibtex_file(resolver: SingleDOIResolver, args):

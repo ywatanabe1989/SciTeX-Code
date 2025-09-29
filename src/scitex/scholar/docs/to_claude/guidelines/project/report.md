@@ -22,7 +22,7 @@
 # Timestamp: "YYYY-MM-DD HH:mm:ss (ywatanabe)"
 # File: <path-to-projects>/<project-id>-<project-name>/reports/YYYY-MMDD-HHmmss-<title>-report.org
 
-#+STARTUP: show_asyncall
+#+STARTUP: showall
 #+OPTIONS: toc:nil num:nil
 #+TITLE: <title>
 #+DATE: YYYY-MMDD-HHmmss

@@ -48,8 +48,8 @@ Please proofread them following the guidelines below.
 | ❌ DO NOT | ✅ DO |
 |-----------|------|
 | "We somewhat observed an interesting effect." | "We observed an effect." |
-| "The data show_asyncs that..." | "The data show_async that..." |
-| "Figure 1 show_asyncs the results of an in-depth analysis" | "Figure~\ref{fig:01} show_asyncs the results of the analysis" |
+| "The data shows that..." | "The data show that..." |
+| "Figure 1 shows the results of an in-depth analysis" | "Figure~\ref{fig:01} shows the results of the analysis" |
 | "We did the experiment to see if..." | "We conducted the experiment to determine whether..." |
 | "A lot of samples were tested" | "Multiple samples (n = 42) were tested" |
 | "The results were found to be significant" | "The results were significant (p < 0.05)" |

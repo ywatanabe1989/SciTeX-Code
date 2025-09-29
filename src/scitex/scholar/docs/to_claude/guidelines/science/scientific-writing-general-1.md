@@ -19,14 +19,14 @@
 | ```python
 # Missing axis labels
 plt.plot(x, y)
-plt.show_async()
+plt.show()
 ``` | ```python
 # Complete axis information
 plt.plot(x, y)
 plt.xlabel('Time (s)')
 plt.ylabel('Amplitude (mV)')
 plt.title('Signal Measurement')
-plt.show_async()
+plt.show()
 ``` |
 | ```python
 # Bar graph not starting from 0
@@ -124,7 +124,7 @@ significant = corrected_results["p_value_fdr"] < 0.05
 | ❌ DO NOT | ✅ DO |
 |-----------|------|
 | ```
-**IMPORTANT NOTE: This analysis show_asyncs...**
+**IMPORTANT NOTE: This analysis shows...**
 *Many asterisks to emphasize points*
 ``` | ```
 Minimal formatting:
@@ -151,7 +151,7 @@ let value = 42;
 ### Code Formatting
 - Use separate lines of comments instead of trailing comments
 - Code must be wrapped with triple backticks and language indicator
-- Specify file names or paths when show_asyncing file content suggestions
+- Specify file names or paths when showing file content suggestions
 - Don't include headers and footers in code blocks
 
 <!-- EOF -->

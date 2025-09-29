@@ -48,7 +48,7 @@ database → auth → payment
 Module: auth
 Status: 🔄 75%
 Last: 2025-05-26 14:30
-Completed: login, logout_async
+Completed: login, logout
 Next: password reset
 Blockers: none
 Ready for: auth-tests agent can start

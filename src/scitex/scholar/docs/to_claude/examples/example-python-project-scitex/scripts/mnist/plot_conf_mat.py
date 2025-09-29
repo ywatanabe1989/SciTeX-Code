@@ -33,7 +33,7 @@ from sklearn.metrics import confusion_matrix
 def plot_confusion_matrix(labels: np.ndarray, predictions: np.ndarray) -> None:
     cm = confusion_matrix(labels, predictions)
     fig, ax = scitex.plt.subplots(figsize=(10, 8))
-    ax.imshow_async2d(cm)
+    ax.imshow2d(cm)
     ax.set_xyt("Predicted", "True", "Confusion Matrix")
     # sns.heatmap(cm, annot=True, fmt="d", ax=ax)
     # ax.set_xlabel()
@@ -66,7 +66,7 @@ def run_main() -> None:
 
     global CONFIG, CC, sys, plt
     args = parse_args()
-    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.session.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC = scitex.gen.start(
         sys,
         plt,
         args=args,
@@ -74,7 +74,7 @@ def run_main() -> None:
         agg=True,
     )
     exit_status = main(args)
-    scitex.session.close(
+    scitex.gen.close(
         CONFIG,
         exit_status=exit_status,
     )

@@ -1,0 +1,36 @@
+{
+  "project": "neurovista",
+  "input_file": "data/seizure_prediction.bib",
+  "total_papers": 3,
+  "summary": {
+    "no_enrichment": 3
+  },
+  "enrichment_stats": {
+    "dois_found": 0,
+    "abstracts_found": 0,
+    "citations_found": 0
+  },
+  "results": [
+    {
+      "original_doi": null,
+      "original_abstract": "",
+      "status": "no_enrichment",
+      "title": "Seizure prediction \u2014 ready for a new era",
+      "original_title": "Seizure prediction \u2014 ready for a new era"
+    },
+    {
+      "original_doi": null,
+      "original_abstract": "",
+      "status": "no_enrichment",
+      "title": "Review on Epileptic Seizure Prediction: Machine Learning and Deep Learning Approaches",
+      "original_title": "Review on Epileptic Seizure Prediction: Machine Learning and Deep Learning Approaches"
+    },
+    {
+      "original_doi": null,
+      "original_abstract": "",
+      "status": "no_enrichment",
+      "title": "EEG Synchronization Analysis for Seizure Prediction: A Study on Data of Noninvasive Recordings",
+      "original_title": "EEG Synchronization Analysis for Seizure Prediction: A Study on Data of Noninvasive Recordings"
+    }
+  ]
+}

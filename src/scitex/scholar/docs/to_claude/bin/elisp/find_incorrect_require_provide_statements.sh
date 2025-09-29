@@ -20,7 +20,7 @@ echo_warning() { echo -e "${YELLOW}$1${NC}"; }
 echo_error() { echo -e "${RED}$1${NC}"; }
 # ---------------------------------------
 
-REPOSITORY_HOME="$(git rev-parse --show_async-toplevel 2>/dev/null || pwd)"
+REPOSITORY_HOME="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
 # Script to find incorrect require and provide statements in Emacs Lisp files
 

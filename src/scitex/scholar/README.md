@@ -1,11 +1,31 @@
 <!-- ---
-!-- Timestamp: 2025-08-23 01:51:15
+!-- Timestamp: 2025-09-24 18:27:45
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
 
 
 # SciTeX Scholar
+
+## Usage
+
+1. Access to [AI2 Asta](https://asta.allen.ai/chat/) and download bib file for your query by clicking `Export All Citations`
+2. Copy the downloaded bib file (`~/donwloads/papers.bib`) to `./data/descriptive_name.bib`
+3. 
+```bash
+./examples/99_fullpipeline-for-bibtex.py \
+    --bibtex_path ./data/descriptive_name.bib 
+    --browser_mode interactive
+```
+
+./examples/99_fullpipeline-for-bibtex.py \
+    --bibtex_path ./data/seizure_prediction.bib \
+    --browser_mode interactive
+
+
+```
+
+
 
 ``` mermaid
 graph TD
