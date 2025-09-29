@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-09-30 08:42:27
+!-- Timestamp: 2025-09-30 08:44:43
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -22,6 +22,13 @@ python -m scitex.scholar --bibtex file1.bib file2.bib file3.bib --merge --enrich
 python -m scitex.scholar --bibtex ./data/pac.bib ./data/seizure_prediction.bib --merge --enrich 
 # ./pac-seizure_prediction_enriched.bib
 ```
+Original bibtex files:
+- [`./data/pac.bib`](./data/pac.bib)
+- [`./data/seizure_prediction.bib`](./data/seizure_prediction.bib)
+
+Merged, enriched file:
+- [`./pac-seizure_prediction_enriched.bib`](./data/pac-seizure_prediction_enriched.bib)
+
 
 ### 4. Python API
 ```python
