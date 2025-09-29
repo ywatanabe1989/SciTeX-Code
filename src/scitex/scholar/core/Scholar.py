@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-30 05:07:07 (ywatanabe)"
+# Timestamp: "2025-09-30 07:00:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -39,7 +39,8 @@ from scitex.scholar.config import ScholarConfig
 # Updated imports for current architecture
 from scitex.scholar.auth import ScholarAuthManager
 from scitex.scholar.browser import ScholarBrowserManager
-from scitex.scholar.storage import LibraryManager, ScholarLibrary
+from scitex.scholar.storage import LibraryManager
+from scitex.scholar.storage import ScholarLibrary
 from scitex.scholar.engines.ScholarEngine import ScholarEngine
 
 from .Papers import Papers
@@ -84,6 +85,7 @@ class Scholar:
         self,
         config: Optional[Union[ScholarConfig, str, Path]] = None,
         project: Optional[str] = None,
+        project_description: Optional[str] = None,
     ):
         """
         Initialize Scholar with configuration.
@@ -94,245 +96,210 @@ class Scholar:
                    - Path to YAML config file (str or Path)
                    - None (uses ScholarConfig.load() to find config)
             project: Default project name for operations
+            project_description: Optional description for the project
         """
-        # Handle different config input types
-        if config is None:
-            self.config = ScholarConfig.load()  # Auto-detect config
-        elif isinstance(config, (str, Path)):
-            self.config = ScholarConfig.from_yaml(config)
-        elif isinstance(config, ScholarConfig):
-            self.config = config
-        else:
-            raise TypeError(f"Invalid config type: {type(config)}")
+
+        self.config = self._init_config(config)
 
         # Set project and workspace
-        self.project = project
+        self.project = self.config.resolve("project", project, "default")
         self.workspace_dir = self.config.path_manager.workspace_dir
 
+        # Create project directory with description if provided
+        if project and project_description:
+            self._create_project_metadata(project, project_description)
+
         # Initialize service components (lazy loading for better performance)
-        self._scholar_engine = None  # Replaces DOIResolver and LibraryEnricher
-        self._auth_manager = None
-        self._browser_manager = None
-        self._library_manager = None
-        self._library = None  # ScholarLibrary for high-level operations
+        # Use mangled names for private properties
+        self._Scholar__scholar_engine = (
+            None  # Replaces DOIResolver and LibraryEnricher
+        )
+        self._Scholar__auth_manager = None
+        self._Scholar__browser_manager = None
+        self._Scholar__library_manager = None
+        self._Scholar__library = (
+            None  # ScholarLibrary for high-level operations
+        )
 
         logger.info(
             f"Scholar initialized (project: {project}, workspace: {self.workspace_dir})"
         )
 
-    @property
-    def scholar_engine(self) -> ScholarEngine:
-        """Get Scholar engine for search and enrichment."""
-        if self._scholar_engine is None:
-            self._scholar_engine = ScholarEngine(config=self.config)
-        return self._scholar_engine
-
-    @property
-    def auth_manager(self) -> ScholarAuthManager:
-        """Get authentication manager service."""
-        if self._auth_manager is None:
-            self._auth_manager = ScholarAuthManager()
-        return self._auth_manager
-
-    @property
-    def browser_manager(self) -> ScholarBrowserManager:
-        """Get browser manager service."""
-        if self._browser_manager is None:
-            self._browser_manager = ScholarBrowserManager(
-                auth_manager=self.auth_manager,
-                chrome_profile_name="system",
-                browser_mode="stealth",
-            )
-        return self._browser_manager
-
-    @property
-    def library_manager(self) -> LibraryManager:
-        """Get library manager service (low-level operations)."""
-        if self._library_manager is None:
-            self._library_manager = LibraryManager(
-                project=self.project, config=self.config
-            )
-        return self._library_manager
-
-    @property
-    def library(self) -> ScholarLibrary:
-        """Get Scholar library service (high-level operations)."""
-        if self._library is None:
-            self._library = ScholarLibrary(
-                project=self.project, config=self.config
-            )
-        return self._library
-
-    # Removed library_enricher - now handled by scholar_engine
-
-    # Convenience methods that delegate to appropriate services
-
-    def resolve_dois_from_bibtex(
-        self, bibtex_path: Union[str, Path]
-    ) -> Papers:
-        """Resolve DOIs from BibTeX file using Scholar engine.
+    # ----------------------------------------
+    # Enrichers
+    # ----------------------------------------
+    def enrich_papers(
+        self, papers: Optional[Papers] = None
+    ) -> Union[Papers, Dict[str, int]]:
+        """Enrich papers with metadata from multiple sources.
 
         Args:
-            bibtex_path: Path to BibTeX file
+            papers: Papers collection to enrich. If None, enriches all papers in current project.
 
         Returns:
-            Papers collection with resolved DOIs
+            - If papers provided: Returns enriched Papers collection
+            - If no papers: Returns dict with enrichment statistics for project
         """
-        # Load papers from BibTeX
-        papers = Papers.from_bibtex(bibtex_path)
-
-        # Use ScholarEngine to enrich each paper with DOI
         import asyncio
-        resolved = 0
-        failed = 0
+
+        # If no papers provided, enrich entire project
+        if papers is None:
+            return self._enrich_current_project()
+
+        # Enrich the provided papers collection
+        enriched_list = []
 
         for paper in papers:
             try:
-                # Search for paper using ScholarEngine
+                # Use ScholarEngine to search and enrich
                 results = asyncio.run(
-                    self.scholar_engine.search_async(
+                    self._scholar_engine.search_async(
                         title=paper.title,
-                        year=paper.year
+                        year=paper.year,
+                        authors=paper.authors[0] if paper.authors else None,
                     )
                 )
 
-                # Extract DOI from results
-                for engine_name, result in results.items():
-                    if isinstance(result, dict) and result.get('id', {}).get('doi'):
-                        paper.doi = result['id']['doi']
-                        resolved += 1
-                        break
-                else:
-                    failed += 1
+                # Create a copy to avoid modifying original
+                enriched_paper = self._merge_enrichment_data(paper, results)
+                enriched_list.append(enriched_paper)
+                logger.info(f"Enriched: {paper.title[:50]}...")
+
             except Exception as e:
-                logger.debug(f"Failed to resolve DOI for paper: {e}")
-                failed += 1
+                logger.warning(
+                    f"Failed to enrich paper '{paper.title[:50]}...': {e}"
+                )
+                enriched_list.append(
+                    paper
+                )  # Keep original if enrichment fails
 
-        logger.info(
-            f"DOI resolution complete: {resolved} resolved, {failed} failed"
-        )
-        return papers
+        from ..core.Papers import Papers
 
-    def enrich_project(self) -> Dict[str, int]:
-        """Enrich all papers in the current project using Scholar engine.
+        return Papers(enriched_list, project=self.project)
+
+    def _merge_enrichment_data(self, paper: "Paper", results: Dict) -> "Paper":
+        """Merge enrichment results into paper object.
+
+        Creates a new Paper object with merged data to avoid modifying the original.
+        """
+        # Import here to avoid circular dependency
+        from copy import deepcopy
+
+        enriched = deepcopy(paper)
+
+        # Results from ScholarEngine is already combined metadata, not individual engine results
+        if not results:
+            return enriched
+
+        # Extract from the combined metadata structure
+        # ID section
+        if "id" in results:
+            if results["id"].get("doi") and not enriched.doi:
+                enriched.doi = results["id"]["doi"]
+            if results["id"].get("pmid") and not enriched.pmid:
+                enriched.pmid = results["id"]["pmid"]
+            if results["id"].get("arxiv_id") and not enriched.arxiv_id:
+                enriched.arxiv_id = results["id"]["arxiv_id"]
+            # Note: corpus_id, semantic_id, ieee_id are in results but not in Paper dataclass
+
+        # Basic metadata section
+        if "basic" in results:
+            # Always update abstract if found (key enrichment goal)
+            if results["basic"].get("abstract"):
+                enriched.abstract = results["basic"]["abstract"]
+
+            # Update title if more complete
+            if results["basic"].get("title"):
+                new_title = results["basic"]["title"]
+                if not enriched.title or len(new_title) > len(enriched.title):
+                    enriched.title = new_title
+
+            # Update authors if found
+            if results["basic"].get("authors") and not enriched.authors:
+                enriched.authors = results["basic"]["authors"]
+
+            # Update year if found
+            if results["basic"].get("year") and not enriched.year:
+                enriched.year = results["basic"]["year"]
+
+            # Update keywords if found
+            if results["basic"].get("keywords") and not enriched.keywords:
+                enriched.keywords = results["basic"]["keywords"]
+
+        # Publication metadata
+        if "publication" in results:
+            if results["publication"].get("journal") and not enriched.journal:
+                enriched.journal = results["publication"]["journal"]
+            if results["publication"].get("publisher") and not enriched.publisher:
+                enriched.publisher = results["publication"]["publisher"]
+            if results["publication"].get("volume") and not enriched.volume:
+                enriched.volume = results["publication"]["volume"]
+            if results["publication"].get("issue") and not enriched.issue:
+                enriched.issue = results["publication"]["issue"]
+            if results["publication"].get("pages") and not enriched.pages:
+                enriched.pages = results["publication"]["pages"]
+
+        # Citation metadata
+        if "citation_count" in results:
+            if results["citation_count"].get("count"):
+                count = results["citation_count"]["count"]
+                # Always take the maximum citation count
+                if not enriched.citation_count or count > enriched.citation_count:
+                    enriched.citation_count = count
+            # Note: influential_citation_count is in results but not in Paper dataclass
+
+        # URL metadata
+        if "url" in results:
+            if results["url"].get("pdf") and not enriched.pdf_url:
+                enriched.pdf_url = results["url"]["pdf"]
+            if results["url"].get("url") and not enriched.url:
+                enriched.url = results["url"]["url"]
+
+        # Note: Metrics section (journal_impact_factor, h_index) not stored in Paper dataclass
+
+        return enriched
+
+    def _enrich_current_project(self) -> Dict[str, int]:
+        """Enrich all papers in the current project.
 
         Returns:
             Dictionary with enrichment statistics
         """
-        import asyncio
-
         if not self.project:
-            raise ValueError("No project specified for enrichment")
+            raise ValueError(
+                "No project specified. Use Scholar(project='name') or provide papers to enrich()."
+            )
 
-        # Load papers from project
-        papers = Papers.from_project(self.project, config=self.config)
-
-        enriched = 0
-        failed = 0
-
-        # Enrich each paper using ScholarEngine
-        for paper in papers:
-            try:
-                results = asyncio.run(
-                    self.scholar_engine.search_async(
-                        title=paper.title,
-                        year=paper.year
-                    )
-                )
-
-                # Merge enrichment data
-                for engine_name, result in results.items():
-                    if isinstance(result, dict):
-                        # Update paper with enriched data
-                        if result.get('basic', {}).get('abstract') and not paper.abstract:
-                            paper.abstract = result['basic']['abstract']
-                        if result.get('citation_count', {}).get('count'):
-                            paper.citation_count = result['citation_count']['count']
-                        if result.get('id', {}).get('doi') and not paper.doi:
-                            paper.doi = result['id']['doi']
-
-                enriched += 1
-                # Save enriched paper
-                paper.save_to_library()
-            except Exception as e:
-                logger.debug(f"Failed to enrich paper: {e}")
-                failed += 1
-
-        return {"enriched": enriched, "failed": failed, "total": len(papers)}
-
-    def load_project(self, project: Optional[str] = None) -> Papers:
-        """Load papers from a project using library manager service.
-
-        Args:
-            project: Project name (uses self.project if None)
-
-        Returns:
-            Papers collection from the project
-        """
-        project_name = project or self.project
-        if not project_name:
-            raise ValueError("No project specified")
-
-        return Papers.from_project(project_name, config=self.config)
-
-    def search_library(
-        self, query: str, project: Optional[str] = None
-    ) -> Papers:
-        """Search papers in library using collection manager.
-
-        Args:
-            query: Search query
-            project: Project filter (uses self.project if None)
-
-        Returns:
-            Papers collection matching the query
-        """
-        return Papers.from_library_search(
-            query, config=self.config, project=project or self.project
-        )
-
-    def from_bibtex(self, bibtex_input: Union[str, Path]) -> Papers:
-        """Create Papers collection from BibTeX file or content.
-
-        Args:
-            bibtex_input: BibTeX file path or content string
-
-        Returns:
-            Papers collection
-        """
-        # Use the internal library to load papers
-        papers = self.library.papers_from_bibtex(bibtex_input)
-
-        # Convert to Papers collection
-        from .Papers import Papers
-        papers_collection = Papers(papers, config=self.config, project=self.project)
-        papers_collection.library = self.library  # Attach library for save operations
-
-        return papers_collection
-
-    def search(self, query: str, **kwargs) -> Papers:
-        """
-        Search library or provide guidance for external search.
-
-        For new literature search, use AI2 Scholar QA (https://scholarqa.allen.ai/chat/)
-        then use scholar.resolve_dois_from_bibtex() to process the results.
-
-        Args:
-            query: Search query for library search
-
-        Returns:
-            Papers collection from library search
-        """
+        # Load papers from project library
+        papers = self.load_project(self.project)
         logger.info(
-            "For new literature search, use AI2 Scholar QA: https://scholarqa.allen.ai/chat/"
-        )
-        logger.info(
-            "Then use scholar.resolve_dois_from_bibtex() to process the BibTeX file"
+            f"Enriching {len(papers)} papers in project '{self.project}'"
         )
 
-        # Search existing library
-        return self.search_library(query)
+        # Enrich the papers
+        enriched_papers = self.enrich_papers(papers)
 
+        # Count successes
+        enriched_count = sum(
+            1
+            for i, p in enumerate(enriched_papers)
+            if p.abstract
+            and not papers[i].abstract  # Check if abstract was added
+        )
+
+        # Save enriched papers back to library
+        saved_ids = self.save_papers_to_library(enriched_papers)
+
+        return {
+            "enriched": enriched_count,
+            "failed": len(papers) - enriched_count,
+            "total": len(papers),
+            "saved": len(saved_ids),
+        }
+
+    # ----------------------------------------
+    # PDF Downloaders
+    # ----------------------------------------
     async def download_pdfs_async(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
@@ -351,7 +318,7 @@ class Scholar:
 
         # Get authenticated browser context
         browser, context = (
-            await self.browser_manager.get_authenticated_browser_and_context_async()
+            await self._browser_manager.get_authenticated_browser_and_context_async()
         )
         url_handler = URLHandler(context)
 
@@ -389,7 +356,7 @@ class Scholar:
                 logger.error(f"Failed to download {doi}: {e}")
                 results["failed"] += 1
 
-        await self.browser_manager.close()
+        await self._browser_manager.close()
         logger.info(f"PDF download complete: {results}")
         return results
 
@@ -401,19 +368,122 @@ class Scholar:
 
         return asyncio.run(self.download_pdfs_async(dois, output_dir))
 
-    # Clean utility methods
-    def get_config(self) -> ScholarConfig:
-        """Get the Scholar configuration."""
-        return self.config
+    # ----------------------------------------
+    # Loaders
+    # ----------------------------------------
+    def load_project(self, project: Optional[str] = None) -> Papers:
+        """Load papers from a project using library manager service.
 
-    def set_project(self, project: str):
-        """Set the default project for operations."""
-        self.project = project
-        # Reset lazy-loaded services that depend on project
-        self._library_manager = None
-        self._library = None
+        Args:
+            project: Project name (uses self.project if None)
 
-    def save_papers(self, papers: Papers) -> List[str]:
+        Returns:
+            Papers collection from the project
+        """
+        project_name = project or self.project
+        if not project_name:
+            raise ValueError("No project specified")
+
+        # Load papers from library
+        # For now, return empty Papers until this is implemented
+        from ..core.Papers import Papers
+
+        logger.info(f"Loading papers from project: {project_name}")
+        return Papers([], project=project_name)
+
+    def load_bibtex(self, bibtex_input: Union[str, Path]) -> Papers:
+        """Load Papers collection from BibTeX file or content.
+
+        Args:
+            bibtex_input: BibTeX file path or content string
+
+        Returns:
+            Papers collection
+        """
+        # Use the internal library to load papers
+        papers = self._library.papers_from_bibtex(bibtex_input)
+
+        # Convert to Papers collection
+        from .Papers import Papers
+
+        papers_collection = Papers(
+            papers, config=self.config, project=self.project
+        )
+        papers_collection.library = (
+            self._library
+        )  # Attach library for save operations
+
+        return papers_collection
+
+    # ----------------------------------------
+    # Searchers
+    # ----------------------------------------
+    def search_library(
+        self, query: str, project: Optional[str] = None
+    ) -> Papers:
+        """
+        Search papers in local library.
+
+        For new literature search (not in library), use AI2 Scholar QA:
+        https://scholarqa.allen.ai/chat/ then process with:
+        papers = scholar.load_bibtex('file.bib') followed by scholar.enrich(papers)
+
+        Args:
+            query: Search query
+            project: Project filter (uses self.project if None)
+
+        Returns:
+            Papers collection matching the query
+        """
+        # For now, return empty Papers until search is implemented
+        from ..core.Papers import Papers
+
+        logger.info(f"Searching library for: {query}")
+        return Papers([], project=project or self.project)
+
+    def search_across_projects(
+        self, query: str, projects: Optional[List[str]] = None
+    ) -> Papers:
+        """Search for papers across multiple projects or the entire library.
+
+        Args:
+            query: Search query
+            projects: List of project names to search (None for all)
+
+        Returns:
+            Papers collection with search results
+        """
+        if projects is None:
+            # Search all projects
+            all_projects = [p["name"] for p in self.list_projects()]
+        else:
+            all_projects = projects
+
+        all_papers = []
+        for project in all_projects:
+            try:
+                project_papers = Papers.from_project(project, self.config)
+                # Simple text search implementation
+                matching_papers = [
+                    p
+                    for p in project_papers._papers
+                    if query.lower() in (p.title or "").lower()
+                    or query.lower() in (p.abstract or "").lower()
+                    or any(
+                        query.lower() in (author or "").lower()
+                        for author in (p.authors or [])
+                    )
+                ]
+                all_papers.extend(matching_papers)
+            except Exception as e:
+                logger.debug(f"Failed to search project {project}: {e}")
+
+        return Papers(all_papers, config=self.config, project="search_results")
+
+    # ----------------------------------------
+    # Savers
+    # ----------------------------------------
+    def save_papers_to_library(self, papers: Papers) -> List[str]:
         """Save papers collection to library.
 
         Args:
@@ -425,7 +495,7 @@ class Scholar:
         saved_ids = []
         for paper in papers:
             try:
-                paper_id = self.library.save_paper(paper)
+                paper_id = self._library.save_paper(paper)
                 saved_ids.append(paper_id)
             except Exception as e:
                 logger.warning(f"Failed to save paper: {e}")
@@ -433,11 +503,32 @@ class Scholar:
         logger.info(f"Saved {len(saved_ids)}/{len(papers)} papers to library")
         return saved_ids
 
-    # Enhanced global project management
-    def create_project(
+    def save_papers_as_bibtex(
+        self, papers: Papers, output_path: Optional[Union[str, Path]] = None
+    ) -> str:
+        """Save papers to BibTeX format with enrichment metadata.
+
+        Args:
+            papers: Papers collection to save
+            output_path: Optional path to save the BibTeX file
+
+        Returns:
+            BibTeX content as string with enrichment metadata included
+        """
+        from ..storage.BibTeXHandler import BibTeXHandler
+
+        bibtex_handler = BibTeXHandler(
+            project=self.project, config=self.config
+        )
+        return bibtex_handler.papers_to_bibtex(papers, output_path)
+
+    # ----------------------------------------
+    # Project Handlers
+    # ----------------------------------------
+    def _create_project_metadata(
         self, project: str, description: Optional[str] = None
     ) -> Path:
-        """Create a new project in the Scholar library.
+        """Create project directory and metadata (PRIVATE).
 
         Args:
             project: Project name
@@ -499,6 +590,9 @@ class Scholar:
 
         return sorted(projects, key=lambda x: x["name"])
 
+    # ----------------------------------------
+    # Library Handlers
+    # ----------------------------------------
     def get_library_statistics(self) -> Dict[str, Any]:
         """Get comprehensive statistics for the entire Scholar library.
 
@@ -528,45 +622,6 @@ class Scholar:
             stats["storage_mb"] = 0
 
         return stats
-
-    def search_across_projects(
-        self, query: str, projects: Optional[List[str]] = None
-    ) -> Papers:
-        """Search for papers across multiple projects or the entire library.
-
-        Args:
-            query: Search query
-            projects: List of project names to search (None for all)
-
-        Returns:
-            Papers collection with search results
-        """
-        if projects is None:
-            # Search all projects
-            all_projects = [p["name"] for p in self.list_projects()]
-        else:
-            all_projects = projects
-
-        all_papers = []
-        for project in all_projects:
-            try:
-                project_papers = Papers.from_project(project, self.config)
-                # Simple text search implementation
-                matching_papers = [
-                    p
-                    for p in project_papers._papers
-                    if query.lower() in (p.title or "").lower()
-                    or query.lower() in (p.abstract or "").lower()
-                    or any(
-                        query.lower() in (author or "").lower()
-                        for author in (p.authors or [])
-                    )
-                ]
-                all_papers.extend(matching_papers)
-            except Exception as e:
-                logger.debug(f"Failed to search project {project}: {e}")
-
-        return Papers(all_papers, config=self.config, project="search_results")
 
     def backup_library(self, backup_path: Union[str, Path]) -> Dict[str, Any]:
         """Create a backup of the Scholar library.
@@ -613,6 +668,112 @@ class Scholar:
         )
         return backup_info
 
+    # =========================================================================
+    # INTERNAL SERVICES (PRIVATE - users should not access these directly)
+    # =========================================================================
+    def _init_config(self, config):
+        # Handle different config input types
+        if config is None:
+            return ScholarConfig.load()  # Auto-detect config
+        elif isinstance(config, (str, Path)):
+            return ScholarConfig.from_yaml(config)
+        elif isinstance(config, ScholarConfig):
+            return config
+        else:
+            raise TypeError(f"Invalid config type: {type(config)}")
+
+    @property
+    def _scholar_engine(self) -> ScholarEngine:
+        """Get Scholar engine for search and enrichment (PRIVATE)."""
+        if (
+            not hasattr(self, "__scholar_engine")
+            or self.__scholar_engine is None
+        ):
+            self.__scholar_engine = ScholarEngine(config=self.config)
+        return self.__scholar_engine
+
+    @property
+    def _auth_manager(self) -> ScholarAuthManager:
+        """Get authentication manager service (PRIVATE)."""
+        if not hasattr(self, "__auth_manager") or self.__auth_manager is None:
+            self.__auth_manager = ScholarAuthManager()
+        return self.__auth_manager
+
+    @property
+    def _browser_manager(self) -> ScholarBrowserManager:
+        """Get browser manager service (PRIVATE)."""
+        if (
+            not hasattr(self, "__browser_manager")
+            or self.__browser_manager is None
+        ):
+            self.__browser_manager = ScholarBrowserManager(
+                auth_manager=self._auth_manager,
+                chrome_profile_name="system",
+                browser_mode="stealth",
+            )
+        return self.__browser_manager
+
+    @property
+    def _library_manager(self) -> LibraryManager:
+        """Get library manager service - low-level operations (PRIVATE)."""
+        if (
+            not hasattr(self, "__library_manager")
+            or self.__library_manager is None
+        ):
+            self.__library_manager = LibraryManager(
+                project=self.project, config=self.config
+            )
+        return self.__library_manager
+
+    @property
+    def _library(self) -> ScholarLibrary:
+        """Get Scholar library service - high-level operations (PRIVATE)."""
+        if not hasattr(self, "__library") or self.__library is None:
+            self.__library = ScholarLibrary(
+                project=self.project, config=self.config
+            )
+        return self.__library
+
+    # ----------------------------------------
+    # Deprecated Aliases (Backward Compatibility)
+    # ----------------------------------------
+    def from_bibtex(self, bibtex_input: Union[str, Path]) -> Papers:
+        """DEPRECATED: Use load_bibtex() instead."""
+        logger.warning("from_bibtex() is deprecated. Use load_bibtex() instead.")
+        return self.load_bibtex(bibtex_input)
+
+    def enrich(
+        self, papers: Optional[Papers] = None
+    ) -> Union[Papers, Dict[str, int]]:
+        """DEPRECATED: Use enrich_papers() instead."""
+        logger.warning("enrich() is deprecated. Use enrich_papers() instead.")
+        return self.enrich_papers(papers)
+
+    def save_papers(self, papers: Papers) -> List[str]:
+        """DEPRECATED: Use save_papers_to_library() instead."""
+        logger.warning(
+            "save_papers() is deprecated. Use save_papers_to_library() instead."
+        )
+        return self.save_papers_to_library(papers)
+
+    def save_as_bibtex(
+        self, papers: Papers, output_path: Optional[Union[str, Path]] = None
+    ) -> str:
+        """DEPRECATED: Use save_papers_as_bibtex() instead."""
+        logger.warning(
+            "save_as_bibtex() is deprecated. Use save_papers_as_bibtex() instead."
+        )
+        return self.save_papers_as_bibtex(papers, output_path)
+
+    def to_bibtex(
+        self, papers: Papers, output_path: Optional[Union[str, Path]] = None
+    ) -> str:
+        """DEPRECATED: Use save_papers_as_bibtex() instead."""
+        logger.warning(
+            "to_bibtex() is deprecated. Use save_papers_as_bibtex() instead."
+        )
+        return self.save_papers_as_bibtex(papers, output_path)
+
 
 # Export all classes and functions
 __all__ = ["Scholar"]
@@ -620,26 +781,30 @@ __all__ = ["Scholar"]
 if __name__ == "__main__":
 
     def main():
-        """Demonstrate Scholar class usage as global entry point."""
-        print("=" * 60)
-        print("Scholar Class Demo - Global Library Management")
-        print("=" * 60)
+        """Demonstrate Scholar class usage - Clean API Demo."""
+        print("\n" + "=" * 60)
+        print("🎓 Scholar Module Demo - Clean API")
+        print("=" * 60 + "\n")
 
-        from .Paper import Paper
-        from .Papers import Papers
-
-        # Initialize Scholar
-        scholar = Scholar(project="demo_project")
-        print("1. Scholar Initialization:")
-        print(f"   🎓 Scholar initialized with project: {scholar.project}")
-        print(f"   📁 Workspace directory: {scholar.workspace_dir}")
+        # ----------------------------------------
+        # 1. Initialize Scholar
+        # ----------------------------------------
+        print("1️⃣  Initialize Scholar")
+        print("-" * 60)
+        scholar = Scholar(
+            project="demo_project",
+            project_description="Demo project for testing Scholar API"
+        )
+        print(f"✓ Scholar initialized")
+        print(f"  Project: {scholar.project}")
+        print(f"  Workspace: {scholar.workspace_dir}")
         print()
 
         # Demonstrate project management
         print("2. Project Management:")
         try:
             # Create a new project
-            project_dir = scholar.create_project(
+            project_dir = scholar._create_project_metadata(
                 "neural_networks_2024",
                 description="Collection of neural network papers from 2024",
             )
@@ -711,7 +876,8 @@ if __name__ == "__main__":
         print(f"   📝 Created collection with {len(papers)} papers")
 
         # Use Scholar to work with the collection
-        scholar.set_project("neural_networks_2024")
+        # Switch project by creating new instance (cleaner pattern)
+        scholar = Scholar(project="neural_networks_2024")
         print(f"   🎯 Set Scholar project to: {scholar.project}")
         print()
 
@@ -769,23 +935,24 @@ if __name__ == "__main__":
 
         # Demonstrate configuration access
         print("7. Configuration Management:")
-        config = scholar.get_config()
-        print(f"   ⚙️  Scholar directory: {config.paths.scholar_dir}")
-        print(f"   ⚙️  Library directory: {config.get_library_dir()}")
+        print(f"   ⚙️  Scholar directory: {scholar.config.paths.scholar_dir}")
+        print(f"   ⚙️  Library directory: {scholar.config.get_library_dir()}")
         print(
             f"   ⚙️  Debug mode: {config.resolve('debug_mode', default=False)}"
         )
         print()
 
-        # Demonstrate service access
-        print("8. Service Components:")
-        print(f"   🔧 Scholar Engine: {type(scholar.scholar_engine).__name__}")
-        print(f"   🔧 Auth Manager: {type(scholar.auth_manager).__name__}")
+        # Demonstrate service access (internal components)
+        print("8. Service Components (Internal):")
         print(
-            f"   🔧 Browser Manager: {type(scholar.browser_manager).__name__}"
+            f"   🔧 Scholar Engine: {type(scholar._scholar_engine).__name__}"
+        )
+        print(f"   🔧 Auth Manager: {type(scholar._auth_manager).__name__}")
+        print(
+            f"   🔧 Browser Manager: {type(scholar._browser_manager).__name__}"
         )
         print(
-            f"   🔧 Library Manager: {type(scholar.library_manager).__name__}"
+            f"   🔧 Library Manager: {type(scholar._library_manager).__name__}"
         )
         print()
 

@@ -25,7 +25,9 @@ Examples:
 """
 
 import argparse
+import shutil
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from scitex import logging
@@ -46,12 +48,16 @@ python -m scitex.scholar enrich_bibtex pac.bib
 python -m scitex.scholar enrich_bibtex pac.bib papers_enriched.bib""",
     )
 
-    parser.add_argument("input", type=str, help="Input BibTeX file to enrich")
     parser.add_argument(
-        "output",
+        "input",
         type=str,
-        nargs="?",
-        help="Output file (defaults to input file with backup)",
+        nargs="+",
+        help="Input BibTeX file(s) to enrich (multiple files will be merged)"
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        help="Output file (defaults to input file with backup, or auto-generated for merge)",
     )
     parser.add_argument(
         "--no-backup",
@@ -59,17 +65,15 @@ python -m scitex.scholar enrich_bibtex pac.bib papers_enriched.bib""",
         help="Don't create backup when overwriting input file",
     )
     parser.add_argument(
-        "--no-preserve",
+        "--merge",
         action="store_true",
-        help="Don't preserve original BibTeX fields",
+        help="Merge multiple input files (implied when multiple inputs provided)",
     )
     parser.add_argument(
-        "--no-abstracts",
-        action="store_true",
-        help="Don't fetch missing abstracts",
-    )
-    parser.add_argument(
-        "--no-urls", action="store_true", help="Don't fetch missing URLs"
+        "--project",
+        type=str,
+        default="enrich_cli",
+        help="Project name for library storage",
     )
     parser.add_argument(
         "--quiet", "-q", action="store_true", help="Suppress progress output"
@@ -86,19 +90,32 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
-    # Validate input file
-    input_path = Path(args.input)
-    if not input_path.exists():
-        logger.fail(f"Input file not found: {input_path}")
-        sys.exit(1)
+    # Handle multiple files (merge mode)
+    input_paths = [Path(p) for p in args.input]
 
-    if not input_path.suffix.lower() == ".bib":
-        logger.warning(
-            f"Input file does not have .bib extension: {input_path}"
-        )
+    # Validate all input files exist
+    for input_path in input_paths:
+        if not input_path.exists():
+            logger.fail(f"Input file not found: {input_path}")
+            sys.exit(1)
+        if not input_path.suffix.lower() == ".bib":
+            logger.warning(f"Input file does not have .bib extension: {input_path}")
+
+    # Determine if we need to merge
+    needs_merge = len(input_paths) > 1 or args.merge
 
     # Set output path
-    output_path = Path(args.output) if args.output else None
+    if args.output:
+        output_path = Path(args.output)
+    elif needs_merge:
+        # Auto-generate filename for merged output
+        base_names = [p.stem for p in input_paths]
+        output_path = Path("-".join(base_names) + ".bib")
+        logger.info(f"Auto-generated output filename: {output_path}")
+    else:
+        output_path = None
+
+    input_path = input_paths[0]  # For single file mode
 
     # Configure logging
     if args.quiet:
@@ -108,60 +125,96 @@ def main():
 
     try:
         # Create scholar instance
-        scholar = Scholar()
+        scholar = Scholar(project=args.project)
 
-        # Show configuration
-        if not args.quiet:
-            logger.info(f"Enriching BibTeX file: {input_path}")
-            if output_path and output_path != input_path:
-                logger.info(f"Output will be saved to: {output_path}")
-            else:
-                logger.info(
-                    "Enriching in-place"
-                    + (
-                        " (with backup)"
-                        if not args.no_backup
-                        else " (no backup)"
+        # Handle merge mode
+        if needs_merge:
+            from scitex.scholar.storage import BibTeXHandler
+
+            if not args.quiet:
+                logger.info(f"Merging {len(input_paths)} BibTeX files...")
+
+            handler = BibTeXHandler()
+            merge_result = handler.merge_bibtex_files(
+                file_paths=input_paths,
+                dedup_strategy="smart",
+                return_details=True
+            )
+
+            papers = merge_result["papers"]
+            if not args.quiet:
+                logger.info(f"Merged {len(papers)} unique papers")
+        else:
+            # Single file mode
+            if not args.quiet:
+                logger.info(f"Enriching BibTeX file: {input_path}")
+                if output_path and output_path != input_path:
+                    logger.info(f"Output will be saved to: {output_path}")
+                else:
+                    logger.info(
+                        "Enriching in-place"
+                        + (
+                            " (with backup)"
+                            if not args.no_backup
+                            else " (no backup)"
+                        )
                     )
-                )
+
+            # Create backup if enriching in-place
+            backup_path = None
+            if not output_path or output_path == input_path:
+                if not args.no_backup:
+                    # Create timestamped backup
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    backup_path = input_path.parent / f"{input_path.stem}.{timestamp}.bak.bib"
+                    shutil.copy2(input_path, backup_path)
+                    if not args.quiet:
+                        logger.info(f"Created backup: {backup_path}")
+
+            # Load papers from BibTeX
+            if not args.quiet:
+                logger.info("Loading papers from BibTeX...")
+            papers = scholar.load_bibtex(input_path)
+            if not args.quiet:
+                logger.info(f"Loaded {len(papers)} papers")
+
+        # Check current state
+        original_doi_count = sum(1 for p in papers if p.doi)
+        original_abstract_count = sum(1 for p in papers if p.abstract)
+        original_citation_count = sum(1 for p in papers if p.citation_count)
 
         # Perform enrichment
-        papers = scholar.enrich_bibtex(
-            bibtex_path=input_path,
-            output_path=output_path,
-            backup=not args.no_backup,
-            preserve_original_fields=not args.no_preserve,
-            add_missing_abstracts=not args.no_abstracts,
-            add_missing_urls=not args.no_urls,
-        )
+        if not args.quiet:
+            logger.info("Enriching papers with metadata...")
+        enriched_papers = scholar.enrich_papers(papers)
+
+        # Save enriched papers to BibTeX
+        final_output = output_path or input_path
+        bibtex_content = scholar.save_papers_as_bibtex(enriched_papers, final_output)
 
         # Show summary
         if not args.quiet:
-            logger.success(f"\nSuccessfully enriched {len(papers)} papers")
+            logger.success(f"\nSuccessfully enriched {len(enriched_papers)} papers")
 
             # Count enriched fields
-            with_doi = sum(1 for p in papers if p.doi)
-            with_impact = sum(1 for p in papers if p.impact_factor is not None)
+            with_doi = sum(1 for p in enriched_papers if p.doi)
+            with_abstract = sum(1 for p in enriched_papers if p.abstract)
             with_citations = sum(
-                1 for p in papers if p.citation_count is not None
+                1 for p in enriched_papers if p.citation_count
             )
 
-            logger.info(f"  Papers with DOI: {with_doi}/{len(papers)}")
-            logger.info(
-                f"  Papers with impact factor: {with_impact}/{len(papers)}"
-            )
-            logger.info(
-                f"  Papers with citation count: {with_citations}/{len(papers)}"
-            )
+            # Show improvements
+            logger.info("\nEnrichment results:")
+            logger.info(f"  Papers with DOI: {with_doi}/{len(enriched_papers)} "
+                       f"(+{with_doi - original_doi_count} new)")
+            logger.info(f"  Papers with abstract: {with_abstract}/{len(enriched_papers)} "
+                       f"(+{with_abstract - original_abstract_count} new)")
+            logger.info(f"  Papers with citations: {with_citations}/{len(enriched_papers)} "
+                       f"(+{with_citations - original_citation_count} new)")
 
             # Show output location
-            final_output = output_path or input_path
             logger.info(f"\nEnriched file saved to: {final_output}")
-
-            if not args.no_backup and (
-                output_path is None or output_path == input_path
-            ):
-                backup_path = input_path.with_suffix(".bib.bak")
+            if backup_path:
                 logger.info(f"Original file backed up to: {backup_path}")
 
     except KeyboardInterrupt:

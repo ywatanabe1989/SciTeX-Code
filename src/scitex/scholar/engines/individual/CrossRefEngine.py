@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 23:18:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/CrossRefEngine.py
+# Timestamp: "2025-09-30 07:29:03 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/individual/CrossRefEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -229,37 +229,47 @@ class CrossRefEngine(BaseDOIEngine):
 
 
 if __name__ == "__main__":
-    from pprint import pprint
 
-    TITLE = "Attention is All You Need"
-    # DOI = "https://doi.org/10.48550/arXiv.1706.03762"
-    DOI = "10.1007/978-3-031-84300-6_13"
+    def main():
+        from pprint import pprint
 
-    # Example: CrossRef search
-    engine = CrossRefEngine("test@example.com")
+        TITLE = "Attention is All You Need"
+        # DOI = "https://doi.org/10.48550/arXiv.1706.03762"
+        DOI = "10.1007/978-3-031-84300-6_13"
 
-    outputs = {}
+        # Example: CrossRef search
+        engine = CrossRefEngine("test@example.com")
 
-    # Search by title
-    outputs["metadata_by_title_dict"] = engine.search(title=TITLE)
-    outputs["metadata_by_title_json"] = engine.search(
-        title=TITLE, return_as="json"
-    )
+        outputs = {}
 
-    # Search by DOI
-    outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
-    outputs["metadata_by_doi_json"] = engine.search(doi=DOI, return_as="json")
+        # Search by title
+        outputs["metadata_by_title_dict"] = engine.search(title=TITLE)
+        outputs["metadata_by_title_json"] = engine.search(
+            title=TITLE, return_as="json"
+        )
 
-    # Empty Result
-    outputs["empty_dict"] = engine._create_minimal_metadata(return_as="dict")
-    outputs["empty_json"] = engine._create_minimal_metadata(return_as="json")
+        # Search by DOI
+        outputs["metadata_by_doi_dict"] = engine.search(doi=DOI)
+        outputs["metadata_by_doi_json"] = engine.search(
+            doi=DOI, return_as="json"
+        )
 
-    for k, v in outputs.items():
-        print("----------------------------------------")
-        print(k)
-        print("----------------------------------------")
-        pprint(v)
-        time.sleep(1)
+        # Empty Result
+        outputs["empty_dict"] = engine._create_minimal_metadata(
+            return_as="dict"
+        )
+        outputs["empty_json"] = engine._create_minimal_metadata(
+            return_as="json"
+        )
+
+        for k, v in outputs.items():
+            print("----------------------------------------")
+            print(k)
+            print("----------------------------------------")
+            pprint(v)
+            time.sleep(1)
+
+    main()
 
 # python -m scitex.scholar.engines.individual.CrossRefEngine
 

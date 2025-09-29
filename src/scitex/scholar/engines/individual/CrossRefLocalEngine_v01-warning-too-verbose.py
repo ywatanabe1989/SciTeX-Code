@@ -119,11 +119,7 @@ class CrossRefLocalEngine(BaseDOIEngine):
             return self._create_minimal_metadata(return_as=return_as)
 
         except Exception as e:
-            # Shorten verbose connection error messages
-            if "Connection refused" in str(e) or "Max retries exceeded" in str(e):
-                logger.warning(f"CrossRef Local server not available at {self.api_url} (connection refused)")
-            else:
-                logger.warning(f"CrossRef Local search error: {e}")
+            logger.warning(f"CrossRef Local search error: {e}")
             return self._create_minimal_metadata(return_as=return_as)
 
     def _search_by_doi_only(self, doi: str, return_as: str) -> Optional[Dict]:
@@ -140,11 +136,7 @@ class CrossRefLocalEngine(BaseDOIEngine):
             data = response.json()
             return self._extract_metadata_from_crossref_data(data, return_as)
         except Exception as exc:
-            # Shorten verbose connection error messages
-            if "Connection refused" in str(exc) or "Max retries exceeded" in str(exc):
-                logger.warning(f"CrossRef Local server not available at {self.api_url} (connection refused)")
-            else:
-                logger.warning(f"CrossRef Local DOI lookup error: {exc}")
+            logger.warning(f"CrossRef Local DOI lookup error: {exc}")
             return self._create_minimal_metadata(doi=doi, return_as=return_as)
 
     def _extract_metadata_from_crossref_data(

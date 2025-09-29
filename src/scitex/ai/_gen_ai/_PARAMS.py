@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-10 07:49:47 (ywatanabe)"
+# Timestamp: "2025-09-30 06:38:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/_gen_ai/_PARAMS.py
 # ----------------------------------------
 from __future__ import annotations
@@ -214,6 +214,13 @@ ANTHROPIC_MODELS = [
         "name": "claude-opus-4-20250514",
         "input_cost": 15.00,
         "output_cost": 75.00,
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "provider": "Anthropic",
+    },
+    {
+        "name": "claude-sonnet-4-5-20250929",
+        "input_cost": 3.00,
+        "output_cost": 15.00,
         "api_key_env": "ANTHROPIC_API_KEY",
         "provider": "Anthropic",
     },

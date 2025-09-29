@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-09-30 07:26:11 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_formatters.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/logging/_formatters.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Custom formatters for SciTeX logging."""
 
 import logging
@@ -11,19 +21,19 @@ class SciTeXConsoleFormatter(logging.Formatter):
 
     # ANSI color codes
     COLORS = {
-        'DEBUG': '\033[30m',     # Black
-        'INFO': '\033[30m',      # Black
-        'SUCCESS': '\033[32m',   # Green
-        'WARNING': '\033[33m',   # Yellow
-        'FAIL': '\033[91m',      # Light Red
-        'ERROR': '\033[31m',     # Red
-        'CRITICAL': '\033[35m',  # Magenta
+        "DEBU": "\033[30m",  # Black
+        "INFO": "\033[30m",  # Black
+        "SUCC": "\033[32m",  # Green
+        "WARN": "\033[33m",  # Yellow
+        "FAIL": "\033[91m",  # Light Red
+        "ERRO": "\033[31m",  # Red
+        "CRIT": "\033[35m",  # Magenta
     }
-    RESET = '\033[0m'
+    RESET = "\033[0m"
 
     def format(self, record):
         """Format the log record with colors for terminal output."""
-        if hasattr(sys.stdout, 'isatty') and sys.stdout.isatty():
+        if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
             levelname = record.levelname
             if levelname in self.COLORS:
                 color = self.COLORS[levelname]
@@ -37,9 +47,11 @@ class SciTeXFileFormatter(logging.Formatter):
 
     def __init__(self):
         super().__init__(
-            fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
 
 
-__all__ = ['SciTeXConsoleFormatter', 'SciTeXFileFormatter']
+__all__ = ["SciTeXConsoleFormatter", "SciTeXFileFormatter"]
+
+# EOF

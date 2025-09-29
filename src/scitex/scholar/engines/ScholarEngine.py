@@ -500,7 +500,15 @@ class ScholarEngine:
                 valid_engines[engine_name] = metadata
 
         if not valid_engines:
-            raise ValueError("No valid engines returned matching metadata")
+            # Return all engine results without validation if nothing matches
+            # This allows partial enrichment even if title validation fails
+            logger.warning("No engines returned matching metadata, using all results")
+            valid_engines = {k: v for k, v in engine_results.items() if v}
+
+        # If still no valid engines, return empty structure
+        if not valid_engines:
+            logger.warning("No engine returned any metadata")
+            return {}
 
         # Start with the first valid engine as base
         base_metadata = list(valid_engines.values())[0].copy()
