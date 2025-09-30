@@ -185,8 +185,15 @@ class Papers:
         year_max: Optional[int] = None,
         has_doi: Optional[bool] = None,
         has_abstract: Optional[bool] = None,
+        has_pdf: Optional[bool] = None,
+        min_citations: Optional[int] = None,
+        max_citations: Optional[int] = None,
+        min_impact_factor: Optional[float] = None,
+        max_impact_factor: Optional[float] = None,
         journal: Optional[str] = None,
         author: Optional[str] = None,
+        keyword: Optional[str] = None,
+        publisher: Optional[str] = None,
         **kwargs
     ) -> "Papers":
         """Filter papers by condition or criteria.
@@ -197,12 +204,71 @@ class Papers:
             year_max: Maximum year
             has_doi: Filter papers with/without DOI
             has_abstract: Filter papers with/without abstract
+            has_pdf: Filter papers with/without PDF URL
+            min_citations: Minimum citation count
+            max_citations: Maximum citation count
+            min_impact_factor: Minimum journal impact factor
+            max_impact_factor: Maximum journal impact factor
             journal: Journal name (partial match)
             author: Author name (partial match)
-            **kwargs: Additional keyword arguments
+            keyword: Keyword (searches in keywords, title, abstract)
+            publisher: Publisher name (partial match)
+            **kwargs: Additional keyword arguments for backward compatibility
 
         Returns:
             New Papers collection with filtered papers
+
+        Examples:
+            # Using lambda condition with Paper fields
+            # Available Paper fields: title, authors, year, abstract, keywords,
+            # doi, pmid, arxiv_id, journal, volume, issue, pages, publisher,
+            # citation_count, journal_impact_factor, url, pdf_url, etc.
+
+            # Filter by single condition
+            high_impact = papers.filter(lambda p: p.journal_impact_factor and p.journal_impact_factor > 10)
+            highly_cited = papers.filter(lambda p: p.citation_count and p.citation_count > 500)
+            recent = papers.filter(lambda p: p.year and p.year >= 2020)
+
+            # Complex conditions
+            elite = papers.filter(
+                lambda p: p.journal_impact_factor and p.journal_impact_factor > 10
+                         and p.citation_count and p.citation_count > 500
+            )
+
+            # Using built-in parameters
+            high_impact_v2 = papers.filter(min_impact_factor=10.0)
+            highly_cited_v2 = papers.filter(min_citations=500)
+            recent_v2 = papers.filter(year_min=2020)
+
+            # Combining multiple parameters
+            filtered = papers.filter(
+                min_impact_factor=5.0,
+                min_citations=100,
+                year_min=2015,
+                year_max=2023,
+                journal="Nature",
+                has_doi=True
+            )
+
+            # Range filtering
+            mid_impact = papers.filter(min_impact_factor=3.0, max_impact_factor=10.0)
+            mid_citations = papers.filter(min_citations=100, max_citations=1000)
+
+            # Keyword search (searches in keywords, title, and abstract)
+            ml_papers = papers.filter(keyword="machine learning")
+            eeg_papers = papers.filter(keyword="EEG")
+
+            # Journal and author filtering
+            nature_papers = papers.filter(journal="Nature")  # Partial match
+            smith_papers = papers.filter(author="Smith")     # Partial match
+
+            # Boolean filters
+            with_doi = papers.filter(has_doi=True)
+            with_abstract = papers.filter(has_abstract=True)
+            with_pdf = papers.filter(has_pdf=True)
+
+            # Chain filters for AND logic
+            elite_recent = papers.filter(min_impact_factor=10).filter(year_min=2020)
         """
         # If a lambda/function condition is provided, use it
         if condition is not None and callable(condition):
@@ -218,10 +284,15 @@ class Papers:
             year_max=year_max,
             has_doi=has_doi,
             has_abstract=has_abstract,
+            has_pdf=has_pdf,
+            min_citations=min_citations or kwargs.get('min_citations'),
+            max_citations=max_citations or kwargs.get('max_citations'),
+            min_impact_factor=min_impact_factor or kwargs.get('min_impact_factor'),
+            max_impact_factor=max_impact_factor or kwargs.get('max_impact_factor'),
             journal=journal,
             author=author,
-            # Pass any additional kwargs
-            min_citations=kwargs.get('min_citations'),
+            keyword=keyword,
+            publisher=publisher,
         )
 
         # Preserve project and config

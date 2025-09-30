@@ -202,9 +202,15 @@ def filter_papers_advanced(
     year_max: Optional[int] = None,
     has_doi: Optional[bool] = None,
     has_abstract: Optional[bool] = None,
+    has_pdf: Optional[bool] = None,
     min_citations: Optional[int] = None,
+    max_citations: Optional[int] = None,
+    min_impact_factor: Optional[float] = None,
+    max_impact_factor: Optional[float] = None,
     journal: Optional[str] = None,
     author: Optional[str] = None,
+    keyword: Optional[str] = None,
+    publisher: Optional[str] = None,
 ) -> "Papers":
     """Advanced filtering for Papers collection.
 
@@ -214,9 +220,15 @@ def filter_papers_advanced(
         year_max: Maximum year
         has_doi: Filter papers with/without DOI
         has_abstract: Filter papers with/without abstract
+        has_pdf: Filter papers with/without PDF URL
         min_citations: Minimum citation count
+        max_citations: Maximum citation count
+        min_impact_factor: Minimum journal impact factor
+        max_impact_factor: Maximum journal impact factor
         journal: Journal name (partial match)
         author: Author name (partial match)
+        keyword: Keyword (partial match in keywords, title, or abstract)
+        publisher: Publisher name (partial match)
 
     Returns:
         Filtered Papers collection
@@ -246,18 +258,55 @@ def filter_papers_advanced(
             if not has_abstract and paper.abstract:
                 continue
 
-        # Citations filter
+        # PDF filter
+        if has_pdf is not None:
+            if has_pdf and not paper.pdf_url:
+                continue
+            if not has_pdf and paper.pdf_url:
+                continue
+
+        # Citation count filters
         if min_citations and (not paper.citation_count or paper.citation_count < min_citations):
+            continue
+        if max_citations and paper.citation_count and paper.citation_count > max_citations:
+            continue
+
+        # Impact factor filters
+        if min_impact_factor and (not paper.journal_impact_factor or paper.journal_impact_factor < min_impact_factor):
+            continue
+        if max_impact_factor and paper.journal_impact_factor and paper.journal_impact_factor > max_impact_factor:
             continue
 
         # Journal filter
         if journal and (not paper.journal or journal.lower() not in paper.journal.lower()):
             continue
 
+        # Publisher filter
+        if publisher and (not paper.publisher or publisher.lower() not in paper.publisher.lower()):
+            continue
+
         # Author filter
         if author:
             author_lower = author.lower()
             if not any(author_lower in a.lower() for a in paper.authors):
+                continue
+
+        # Keyword filter - search in keywords, title, and abstract
+        if keyword:
+            keyword_lower = keyword.lower()
+            keyword_found = False
+
+            # Check in keywords list
+            if paper.keywords and any(keyword_lower in k.lower() for k in paper.keywords):
+                keyword_found = True
+            # Check in title
+            elif paper.title and keyword_lower in paper.title.lower():
+                keyword_found = True
+            # Check in abstract
+            elif paper.abstract and keyword_lower in paper.abstract.lower():
+                keyword_found = True
+
+            if not keyword_found:
                 continue
 
         filtered.append(paper)

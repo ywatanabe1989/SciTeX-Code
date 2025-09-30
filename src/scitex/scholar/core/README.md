@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-09-30 07:58:28
+!-- Timestamp: 2025-09-30 21:05:08
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/README.md
+!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/README.md
 !-- --- -->
 
 # Scholar Module - Global Entry Point
@@ -46,6 +46,24 @@ results = scholar.search_library("transformer")
 # 9. Download PDFs using Browser Automation
 scholar.download_pdfs(dois, dir)
 ```
+
+## Filtering Papers
+
+``` python
+# Filter by impact factor
+high_impact = papers.filter(lambda p: p.journal_impact_factor and p.journal_impact_factor > 10)
+
+# Filter by citation count
+highly_cited = papers.filter(lambda p: p.citation_count and p.citation_count > 500)
+
+# Combined filter - high impact AND highly cited
+elite_papers = papers.filter(
+  lambda p: p.journal_impact_factor and p.journal_impact_factor > 10
+            and p.citation_count and p.citation_count > 500
+)
+```
+
+
 
 ## **Project vs Library**:
 
