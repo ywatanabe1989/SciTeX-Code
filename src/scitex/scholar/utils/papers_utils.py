@@ -335,10 +335,14 @@ def sort_papers_multi(
         values = []
         for criterion in criteria:
             value = getattr(paper, criterion, None)
-            # Handle None values
+            # Handle None values based on field type
             if value is None:
-                if criterion in ['year', 'citation_count']:
+                if criterion in ['year', 'citation_count', 'journal_impact_factor']:
                     value = 0
+                elif criterion in ['created_at', 'updated_at']:
+                    # For datetime fields, use a very old date
+                    from datetime import datetime
+                    value = datetime(1900, 1, 1)
                 else:
                     value = ''
             values.append(value)

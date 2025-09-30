@@ -306,17 +306,58 @@ class Papers:
         """Sort papers by criteria.
 
         Args:
-            *criteria: Field names or functions to sort by
-            reverse: Sort in descending order
+            *criteria: Field names (as strings) or lambda functions to sort by
+            reverse: Sort in descending order (default: False)
             **kwargs: Additional options
 
         Returns:
             New sorted Papers collection
 
+        Available Paper fields for sorting:
+            - 'title': Paper title
+            - 'year': Publication year
+            - 'citation_count': Number of citations
+            - 'journal_impact_factor': Journal impact factor
+            - 'journal': Journal name
+            - 'publisher': Publisher name
+            - 'doi': Digital Object Identifier
+            - 'created_at': When record was created
+            - 'updated_at': When record was last updated
+
         Examples:
-            papers.sort_by('year')
-            papers.sort_by(lambda p: p.year or 0)
-            papers.sort_by('year', 'title')
+            # Sort by single field (ascending)
+            by_year = papers.sort_by('year')
+            by_title = papers.sort_by('title')
+
+            # Sort by single field (descending)
+            by_citations_desc = papers.sort_by('citation_count', reverse=True)
+            by_impact_desc = papers.sort_by('journal_impact_factor', reverse=True)
+
+            # Sort by multiple fields (primary, secondary, etc.)
+            by_year_then_citations = papers.sort_by('year', 'citation_count')
+
+            # Using lambda functions for custom sorting
+            by_citations = papers.sort_by(lambda p: p.citation_count or 0, reverse=True)
+            by_impact = papers.sort_by(lambda p: p.journal_impact_factor or 0, reverse=True)
+
+            # Complex sorting with null handling
+            by_year_safe = papers.sort_by(lambda p: p.year if p.year else 9999)
+
+            # Sort by computed values
+            by_citation_per_year = papers.sort_by(
+                lambda p: (p.citation_count or 0) / (2024 - p.year) if p.year else 0,
+                reverse=True
+            )
+
+            # Top papers by impact factor
+            top_impact = papers.sort_by('journal_impact_factor', reverse=True)
+            for p in top_impact[:10]:
+                print(f"IF={p.journal_impact_factor:.1f} - {p.journal}")
+
+            # Top papers by citations
+            top_cited = papers.sort_by('citation_count', reverse=True)
+            for p in top_cited[:10]:
+                print(f"{p.citation_count} citations - {p.title[:50]}...")
         """
         if not criteria:
             return Papers(self._papers, project=self.project, config=self.config)
