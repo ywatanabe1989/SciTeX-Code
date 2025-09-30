@@ -301,6 +301,10 @@ class OpenAlexEngine(BaseDOIEngine):
                 "publisher": url_publisher if url_publisher else None,
                 "publisher_engines": [self.name] if url_publisher else None,
             },
+            "citation_count": citation_counts if citation_count_by_year else {
+                "count": citation_count if citation_count else None,
+                "count_engines": [self.name] if citation_count else None,
+            },
             "system": {
                 f"searched_by_{self.name}": True,
             },

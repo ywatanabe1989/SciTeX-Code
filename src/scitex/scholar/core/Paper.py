@@ -47,6 +47,7 @@ class Paper:
         pages: Page numbers
         publisher: Publisher name
         citation_count: Number of citations
+        journal_impact_factor: Journal impact factor (2-year)
         url: Paper URL
         pdf_url: Direct PDF URL
         openaccess_url: Open access URL
@@ -78,6 +79,7 @@ class Paper:
 
     # Metrics
     citation_count: Optional[int] = None
+    journal_impact_factor: Optional[float] = None
 
     # URLs
     url: Optional[str] = None

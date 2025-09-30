@@ -258,10 +258,10 @@ class BibTeXHandler:
             if hasattr(paper, "citation_count_source"):
                 fields["citation_count_source"] = paper.citation_count_source
 
-        if hasattr(paper, "impact_factor") and paper.impact_factor:
-            fields["impact_factor"] = str(paper.impact_factor)
-            if hasattr(paper, "impact_factor_source"):
-                fields["impact_factor_source"] = paper.impact_factor_source
+        if hasattr(paper, "journal_impact_factor") and paper.journal_impact_factor:
+            fields["journal_impact_factor"] = str(paper.journal_impact_factor)
+            if hasattr(paper, "journal_impact_factor_source"):
+                fields["journal_impact_factor_source"] = paper.journal_impact_factor_source
 
         # Include original BibTeX fields if they exist
         if hasattr(paper, "_original_bibtex_fields"):

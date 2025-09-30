@@ -1,4 +1,4 @@
-# Timestamp: "2025-08-22 20:10:16 (ywatanabe)"
+# Timestamp: "2025-09-30 20:15:03 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -13,15 +13,6 @@ enable_auto_download: ${SCITEX_SCHOLAR_AUTO_DOWNLOAD:-false}
 # ----------------------------------------
 # Search Engines
 # ----------------------------------------
-# sources:
-#   - url_doi_source
-#   - crossref
-#   - pubmed
-#   - semantic_scholar
-#   - openalex
-#   - arxiv
-#   - google_scholar
-
 engines:
   - URL
   - CrossRefLocal

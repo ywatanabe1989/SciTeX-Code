@@ -61,6 +61,20 @@ def main():
         finally:
             sys.argv = original_argv
 
+    elif command == "bibtex" or command == "--bibtex":
+        from .cli.bibtex import main as bibtex_main
+
+        original_argv = sys.argv
+        # Handle both "bibtex" and "--bibtex" as commands
+        if command == "--bibtex":
+            sys.argv = ["bibtex", "--bibtex"] + sys.argv[2:]
+        else:
+            sys.argv = sys.argv[1:]  # Pass all args after command name
+        try:
+            bibtex_main()
+        finally:
+            sys.argv = original_argv
+
     # elif args.command == "download":
     #     from .cli.download_pdf import main as download_main
 

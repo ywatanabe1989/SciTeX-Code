@@ -175,7 +175,80 @@ class Scholar:
 
         from ..core.Papers import Papers
 
-        return Papers(enriched_list, project=self.project)
+        enriched_papers = Papers(enriched_list, project=self.project)
+
+        # Add impact factors as post-processing step
+        if self.config.resolve("enrich_impact_factors", None, True):
+            enriched_papers = self._enrich_impact_factors(enriched_papers)
+
+        return enriched_papers
+
+    def _enrich_impact_factors(self, papers: "Papers") -> "Papers":
+        """Add journal impact factors to papers.
+
+        Args:
+            papers: Papers collection to enrich with impact factors
+
+        Returns:
+            Papers collection with impact factors added where available
+        """
+        # Try JCR database first (fast)
+        try:
+            from scitex.scholar.engines.JCRImpactFactorEngine import JCRImpactFactorEngine
+            jcr_engine = JCRImpactFactorEngine()
+            papers = jcr_engine.enrich_papers(papers)
+            return papers
+        except Exception as e:
+            logger.debug(f"JCR engine unavailable: {e}, falling back to calculation method")
+
+        # Fallback to calculation method (slower but always available)
+        import sys
+        from pathlib import Path
+
+        # Add impact_factor module to path if needed
+        impact_factor_path = Path(__file__).parent.parent / "externals/impact_factor/src"
+        if impact_factor_path.exists() and str(impact_factor_path) not in sys.path:
+            sys.path.insert(0, str(impact_factor_path))
+
+        try:
+            from impact_factor import ImpactFactorCalculator
+
+            calculator = ImpactFactorCalculator()
+            journals_cache = {}  # Cache to avoid repeated lookups
+
+            enriched_count = 0
+
+            for paper in papers:
+                if paper.journal and paper.journal not in journals_cache:
+                    try:
+                        # Calculate impact factor for the journal
+                        result = calculator.calculate_impact_factor(paper.journal)
+                        if result and "impact_factors" in result:
+                            # Store the 2-year impact factor
+                            journals_cache[paper.journal] = result["impact_factors"].get(
+                                "classical_2year"
+                            )
+                        else:
+                            journals_cache[paper.journal] = None
+                    except Exception as e:
+                        logger.debug(f"Could not get impact factor for {paper.journal}: {e}")
+                        journals_cache[paper.journal] = None
+
+                # Add journal impact factor to paper if available
+                if paper.journal in journals_cache and journals_cache[paper.journal]:
+                    if not hasattr(paper, 'journal_impact_factor') or not paper.journal_impact_factor:
+                        paper.journal_impact_factor = journals_cache[paper.journal]
+                        enriched_count += 1
+
+            if enriched_count > 0:
+                logger.info(f"Added impact factors to {enriched_count} papers")
+
+        except ImportError as e:
+            logger.warning(f"Impact factor module not available: {e}")
+        except Exception as e:
+            logger.warning(f"Failed to enrich impact factors: {e}")
+
+        return papers
 
     def _merge_enrichment_data(self, paper: "Paper", results: Dict) -> "Paper":
         """Merge enrichment results into paper object.
@@ -241,8 +314,9 @@ class Scholar:
 
         # Citation metadata
         if "citation_count" in results:
-            if results["citation_count"].get("count"):
-                count = results["citation_count"]["count"]
+            # Try both "count" and "total" fields
+            count = results["citation_count"].get("count") or results["citation_count"].get("total")
+            if count:
                 # Always take the maximum citation count
                 if not enriched.citation_count or count > enriched.citation_count:
                     enriched.citation_count = count

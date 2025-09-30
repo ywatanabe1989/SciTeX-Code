@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-09-30 08:44:43
+!-- Timestamp: 2025-09-30 20:25:26
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -44,6 +44,15 @@ enriched = scholar.enrich_papers(papers)
 # Save results
 scholar.save_papers_as_bibtex(enriched, "enriched.bib")
 scholar.save_papers_to_library(enriched)
+```
+
+### PDF Download using Browser Automation
+```bash
+# Open authenticated browser for manual operations
+python -m scitex.scholar chrome
+
+# Download PDFs for papers
+python -m scitex.scholar download_pdf --doi 10.1038/nature12373
 ```
 
 ## Citation
