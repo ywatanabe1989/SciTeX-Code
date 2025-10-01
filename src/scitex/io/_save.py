@@ -577,9 +577,17 @@ def _handle_image_with_csv(
                 if hasattr(fig_obj, "export_as_csv"):
                     csv_data = fig_obj.export_as_csv()
                     if csv_data is not None and not csv_data.empty:
-                        # For CSV files, we want them in the same directory as the image
-                        # Use the full path but it will be handled correctly by save()
-                        csv_path = spath.replace(ext_wo_dot, "csv")
+                        # Replace directory name AND extension to separate data from visualizations
+                        # Example: ./path/to/jpg/fig.jpg -> ./path/to/csv/fig.csv
+                        dir_path, filename = _os.path.split(spath)
+                        dir_name = _os.path.basename(dir_path)
+                        parent_dir = _os.path.dirname(dir_path)
+
+                        # Replace image directory name with "csv"
+                        csv_dir = _os.path.join(parent_dir, "csv")
+                        # Replace extension
+                        csv_filename = _os.path.splitext(filename)[0] + ".csv"
+                        csv_path = _os.path.join(csv_dir, csv_filename)
                         # Save directly using _save to avoid path doubling
                         _save(
                             csv_data,

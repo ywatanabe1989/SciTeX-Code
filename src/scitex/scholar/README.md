@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-09-30 20:25:26
+!-- Timestamp: 2025-10-01 14:05:25
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
+!-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
 
 
@@ -57,14 +57,14 @@ python -m scitex.scholar download_pdf --doi 10.1038/nature12373
 
 ## Citation
 
-If you use SciTeX Scholar in your research, please cite:
+If you use SciTeX in your research, please cite:
 
 ```bibtex
-@software{scitex_scholar,
-  title = {SciTeX Scholar: Scientific Literature Management System},
+@software{scitex,
+  title = {SciTeX: A Python Toolbox for Scientific Research},
   author = {Yusuke Watanabe},
   year = {2025},
-  url = {https://github.com/ywatanabe1989/SciTeX-Code/tree/main/src/scitex/scholar}
+  url = {https://github.com/ywatanabe1989/SciTeX-Code}
 }
 ```
 
