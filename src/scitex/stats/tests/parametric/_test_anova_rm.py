@@ -32,15 +32,12 @@ import numpy as np
 import pandas as pd
 from typing import Union, Optional, Literal, Tuple, List
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 from ...utils._formatters import p2stars
 from ...utils._normalizers import convert_results
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    HAS_PLT = True
-except ImportError:
-    HAS_PLT = False
+HAS_PLT = True
 
 # Try importing pingouin for sphericity test
 try:
@@ -185,8 +182,10 @@ def test_anova_rm(
     correction: Literal['auto', 'none', 'gg'] = 'auto',
     check_sphericity: bool = True,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
+    decimals: int = 3,
+    verbose: bool = False
 ) -> Union[dict, pd.DataFrame, Tuple]:
     """
     Perform repeated measures ANOVA for within-subjects designs.
@@ -216,10 +215,15 @@ def test_anova_rm(
         Whether to test sphericity assumption
     plot : bool, default False
         Whether to generate profile plot
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
@@ -235,8 +239,7 @@ def test_anova_rm(
         - sphericity_met: Whether sphericity assumption met
         - epsilon_gg: Greenhouse-Geisser epsilon
         - correction_applied: Which correction was applied
-        - rejected: Whether to reject null hypothesis
-        - significant: Same as rejected
+        - significant: Whether to reject null hypothesis
 
     If plot=True, returns tuple of (result, figure)
 
@@ -430,9 +433,8 @@ def test_anova_rm(
         'effect_size_metric': 'partial_eta_squared',
         'effect_size_interpretation': eta2_interpretation,
         'alpha': alpha,
-        'rejected': pvalue < alpha,
         'significant': pvalue < alpha,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
     }
 
     # Add sphericity results
@@ -444,10 +446,27 @@ def test_anova_rm(
         result['epsilon_gg'] = round(float(epsilon_gg), decimals)
         result['correction_applied'] = correction_applied
 
+    # Log results if verbose
+    if verbose:
+        from scitex.logging import getLogger
+        logger = getLogger(__name__)
+        logger.info(f"Repeated Measures ANOVA: F({result['df_effect']:.1f}, {result['df_error']:.1f}) = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['stars']}")
+        logger.info(f"Partial η² = {result['effect_size']:.3f} ({result['effect_size_interpretation']})")
+        if 'sphericity_met' in result:
+            logger.info(f"Sphericity met: {result['sphericity_met']}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
     fig = None
     if plot and HAS_PLT:
-        fig = _plot_anova_rm(data_array, condition_names, result)
+        if ax is None:
+            fig = _plot_anova_rm(data_array, condition_names, result)
+        else:
+            # Use provided axes (not fully implemented for 1x3 layout)
+            fig = _plot_anova_rm(data_array, condition_names, result)
 
     # Return based on format
     if return_as == 'dataframe':
@@ -516,7 +535,7 @@ def _plot_anova_rm(data, condition_names, result):
     result_text = "Repeated Measures ANOVA\n"
     result_text += "=" * 35 + "\n\n"
     result_text += f"F({result['df_effect']:.1f}, {result['df_error']:.1f}) = {result['statistic']:.3f}\n"
-    result_text += f"p-value = {result['pvalue']:.4f} {result['pstars']}\n\n"
+    result_text += f"p-value = {result['pvalue']:.4f} {result['stars']}\n\n"
     result_text += f"Partial η² = {result['effect_size']:.3f}\n"
     result_text += f"Interpretation: {result['effect_size_interpretation']}\n\n"
 
@@ -545,26 +564,8 @@ def _plot_anova_rm(data, condition_names, result):
 
     return fig
 
-
-if __name__ == "__main__":
-    import sys
-    import argparse
-    import scitex as stx
-
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args([])
-
-    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
-        sys=sys,
-        plt=plt,
-        args=args,
-        file=__FILE__,
-        verbose=True,
-        agg=True,
-    )
-
-    logger = stx.logging.getLogger(__name__)
-
+"""Main function"""
+def main(args):
     logger.info("=" * 70)
     logger.info("Repeated Measures ANOVA Examples")
     logger.info("=" * 70)
@@ -582,11 +583,14 @@ if __name__ == "__main__":
     result = test_anova_rm(
         data,
         condition_names=['Baseline', 'Week 1', 'Week 2', 'Week 3'],
-        plot=True
+        plot=True,
+        verbose=True
     )
+    stx.io.save(plt.gcf(), "./.dev/anova_rm_example1.jpg")
+    plt.close()
 
     logger.info(f"F({result['df_effect']:.1f}, {result['df_error']:.1f}) = {result['statistic']:.3f}")
-    logger.info(f"p-value = {result['pvalue']:.4f} {result['pstars']}")
+    logger.info(f"p-value = {result['pvalue']:.4f} {result['stars']}")
     logger.info(f"Partial η² = {result['effect_size']:.3f} ({result['effect_size_interpretation']})")
     if 'sphericity_met' in result:
         logger.info(f"Sphericity met: {result['sphericity_met']}")
@@ -604,8 +608,11 @@ if __name__ == "__main__":
         data_spher,
         condition_names=['T1', 'T2', 'T3', 'T4'],
         correction='auto',
-        plot=True
+        plot=True,
+        verbose=True
     )
+    stx.io.save(plt.gcf(), "./.dev/anova_rm_example2.jpg")
+    plt.close()
 
     logger.info(f"Sphericity W = {result_spher.get('sphericity_W', 'N/A')}")
     logger.info(f"Sphericity p = {result_spher.get('sphericity_pvalue', 'N/A')}")
@@ -633,8 +640,11 @@ if __name__ == "__main__":
         subject_col='Subject',
         condition_col='TimePoint',
         value_col='Score',
-        plot=True
+        plot=True,
+        verbose=True
     )
+    stx.io.save(plt.gcf(), "./.dev/anova_rm_example3.jpg")
+    plt.close()
 
     logger.info(f"F = {result_long['statistic']:.3f}, p = {result_long['pvalue']:.4f}")
     logger.info(f"Conditions: {result_long['condition_names']}")
@@ -651,7 +661,9 @@ if __name__ == "__main__":
     for i, dose in enumerate([0, 5, 10, 15, 20]):
         df_wide.iloc[:, i] += dose * 0.5
 
-    result_wide = test_anova_rm(df_wide, plot=True)
+    result_wide = test_anova_rm(df_wide, plot=True, verbose=True)
+    stx.io.save(plt.gcf(), "./.dev/anova_rm_example4.jpg")
+    plt.close()
 
     logger.info(f"F = {result_wide['statistic']:.3f}, p = {result_wide['pvalue']:.4f}")
     logger.info(f"Partial η² = {result_wide['effect_size']:.3f}")
@@ -660,14 +672,48 @@ if __name__ == "__main__":
     logger.info("\n[Example 5] Export results")
     logger.info("-" * 70)
 
-    convert_results(result, return_as='excel', path='./anova_rm_results.xlsx')
-    logger.info("Saved to: ./anova_rm_results.xlsx")
+    convert_results(result, return_as='excel', path='./.dev/anova_rm_results.xlsx')
+    logger.info("Saved to: ./.dev/anova_rm_results.xlsx")
+
+# EOF
+
+    return 0
+
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    return parser.parse_args()
+
+
+def run_main():
+    """Initialize SciTeX framework and run main."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=args.verbose,
+        agg=True,
+    )
+
+    exit_status = main(args)
 
     stx.session.close(
         CONFIG,
-        verbose=False,
-        notify=False,
-        exit_status=0,
+        verbose=args.verbose,
+        exit_status=exit_status,
     )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

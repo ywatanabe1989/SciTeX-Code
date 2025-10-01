@@ -933,7 +933,7 @@ def main(args):
     plt.tight_layout()
 
     # Save
-    stx.io.save(fig, './cohens_d_demo.png')
+    stx.io.save(fig, './cohens_d_demo.jpg')
     logger.info("Visualization saved")
 
     return 0

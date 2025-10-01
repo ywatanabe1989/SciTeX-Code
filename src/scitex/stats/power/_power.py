@@ -381,7 +381,7 @@ def main(args):
     plt.tight_layout()
 
     # Save
-    stx.io.save(fig, './power_analysis_demo.png')
+    stx.io.save(fig, './power_analysis_demo.jpg')
     logger.info("Visualization saved")
 
     return 0

@@ -32,15 +32,12 @@ import numpy as np
 import pandas as pd
 from typing import Union, Optional, Literal, Tuple, List, Dict
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 from ...utils._formatters import p2stars
 from ...utils._normalizers import convert_results
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    HAS_PLT = True
-except ImportError:
-    HAS_PLT = False
+HAS_PLT = True
 
 
 def partial_eta_squared(ss_effect: float, ss_error: float) -> float:
@@ -70,8 +67,10 @@ def test_anova_2way(
     alpha: float = 0.05,
     check_assumptions: bool = True,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
+    decimals: int = 3,
+    verbose: bool = False
 ) -> Union[dict, pd.DataFrame, Tuple]:
     """
     Perform two-way ANOVA for factorial designs.
@@ -99,10 +98,15 @@ def test_anova_2way(
         Whether to check normality and homogeneity assumptions
     plot : bool, default False
         Whether to generate interaction plot
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
@@ -358,9 +362,8 @@ def test_anova_2way(
         'effect_size_metric': 'partial_eta_squared',
         'effect_size_interpretation': interpret_eta_squared(eta2_a),
         'alpha': alpha,
-        'rejected': p_a < alpha,
         'significant': p_a < alpha,
-        'pstars': p2stars(p_a),
+        'stars': p2stars(p_a),
     })
 
     # Main effect B
@@ -376,9 +379,8 @@ def test_anova_2way(
         'effect_size_metric': 'partial_eta_squared',
         'effect_size_interpretation': interpret_eta_squared(eta2_b),
         'alpha': alpha,
-        'rejected': p_b < alpha,
         'significant': p_b < alpha,
-        'pstars': p2stars(p_b),
+        'stars': p2stars(p_b),
     })
 
     # Interaction A×B
@@ -394,9 +396,8 @@ def test_anova_2way(
         'effect_size_metric': 'partial_eta_squared',
         'effect_size_interpretation': interpret_eta_squared(eta2_ab),
         'alpha': alpha,
-        'rejected': p_ab < alpha,
         'significant': p_ab < alpha,
-        'pstars': p2stars(p_ab),
+        'stars': p2stars(p_ab),
     })
 
     # Store cell means and marginals for plotting
@@ -411,10 +412,26 @@ def test_anova_2way(
         'factor_b_name': factor_b_name,
     }
 
+    # Log results if verbose
+    if verbose:
+        from scitex.logging import getLogger
+        logger = getLogger(__name__)
+        logger.info(f"Two-way ANOVA Results:")
+        for r in results:
+            logger.info(f"  {r['effect']}: F({r['df_effect']}, {r['df_error']}) = {r['statistic']:.3f}, p = {r['pvalue']:.4f} {r['stars']}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
     fig = None
     if plot and HAS_PLT:
-        fig = _plot_anova_2way(results_dict)
+        if ax is None:
+            fig = _plot_anova_2way(results_dict)
+        else:
+            # Use provided axes (not fully implemented for 2x2 layout)
+            fig = _plot_anova_2way(results_dict)
 
     # Return based on format
     if return_as == 'dataframe':
@@ -487,7 +504,7 @@ def _plot_anova_2way(results_dict):
     # Add significance annotation
     effect_a = effects[0]
     if effect_a['significant']:
-        ax.text(0.5, 0.95, f"F = {effect_a['statistic']:.2f} {effect_a['pstars']}",
+        ax.text(0.5, 0.95, f"F = {effect_a['statistic']:.2f} {effect_a['stars']}",
                transform=ax.transAxes, ha='center', va='top',
                bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
 
@@ -505,33 +522,15 @@ def _plot_anova_2way(results_dict):
     # Add significance annotation
     effect_b = effects[1]
     if effect_b['significant']:
-        ax.text(0.5, 0.95, f"F = {effect_b['statistic']:.2f} {effect_b['pstars']}",
+        ax.text(0.5, 0.95, f"F = {effect_b['statistic']:.2f} {effect_b['stars']}",
                transform=ax.transAxes, ha='center', va='top',
                bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
 
     plt.tight_layout()
     return fig
 
-
-if __name__ == "__main__":
-    import sys
-    import argparse
-    import scitex as stx
-
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args([])
-
-    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
-        sys=sys,
-        plt=plt,
-        args=args,
-        file=__FILE__,
-        verbose=True,
-        agg=True,
-    )
-
-    logger = stx.logging.getLogger(__name__)
-
+"""Main function"""
+def main(args):
     logger.info("=" * 70)
     logger.info("Two-way ANOVA Examples")
     logger.info("=" * 70)
@@ -559,12 +558,15 @@ if __name__ == "__main__":
         factor_a='Drug',
         factor_b='Gender',
         value='Score',
-        plot=True
+        plot=True,
+        verbose=True
     )
+    stx.io.save(plt.gcf(), "./.dev/anova_2way_example1.jpg")
+    plt.close()
 
     for effect in results:
         logger.info(f"{effect['effect']:20s}: F({effect['df_effect']},{effect['df_error']}) = "
-                   f"{effect['statistic']:.3f}, p = {effect['pvalue']:.4f} {effect['pstars']}, "
+                   f"{effect['statistic']:.3f}, p = {effect['pvalue']:.4f} {effect['stars']}, "
                    f"η²p = {effect['effect_size']:.3f}")
 
     # Example 2: No interaction (additive effects)
@@ -589,8 +591,11 @@ if __name__ == "__main__":
         factor_a='Temperature',
         factor_b='Time',
         value='Yield',
-        plot=True
+        plot=True,
+        verbose=True
     )
+    stx.io.save(plt.gcf(), "./.dev/anova_2way_example2.jpg")
+    plt.close()
 
     logger.info("\nMain effects should be significant, interaction should not be:")
     for effect in results2:
@@ -605,7 +610,8 @@ if __name__ == "__main__":
         factor_a='Drug',
         factor_b='Gender',
         value='Score',
-        return_as='dataframe'
+        return_as='dataframe',
+        verbose=True
     )
 
     logger.info(f"\n{results_df[['effect', 'statistic', 'pvalue', 'effect_size', 'significant']].to_string()}")
@@ -614,14 +620,48 @@ if __name__ == "__main__":
     logger.info("\n[Example 4] Export results")
     logger.info("-" * 70)
 
-    convert_results(results_df, return_as='excel', path='./anova_2way_results.xlsx')
-    logger.info("Saved to: ./anova_2way_results.xlsx")
+    convert_results(results_df, return_as='excel', path='./.dev/anova_2way_results.xlsx')
+    logger.info("Saved to: ./.dev/anova_2way_results.xlsx")
+
+# EOF
+
+    return 0
+
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    return parser.parse_args()
+
+
+def run_main():
+    """Initialize SciTeX framework and run main."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=args.verbose,
+        agg=True,
+    )
+
+    exit_status = main(args)
 
     stx.session.close(
         CONFIG,
-        verbose=False,
-        notify=False,
-        exit_status=0,
+        verbose=args.verbose,
+        exit_status=exit_status,
     )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

@@ -32,8 +32,10 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -45,8 +47,10 @@ def test_shapiro(
     var_x: str = 'x',
     alpha: float = 0.05,
     plot: bool = False,
-    return_as: Literal['dict', 'dataframe'] = 'dict'
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    ax: Optional[matplotlib.axes.Axes] = None,
+    return_as: Literal['dict', 'dataframe'] = 'dict',
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform Shapiro-Wilk test for normality.
 
@@ -60,26 +64,26 @@ def test_shapiro(
         Significance level
     plot : bool, default False
         Whether to generate Q-Q plot
+    ax : matplotlib.axes.Axes, optional
+        Axes to plot on. If provided, plot is set to True
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
+    verbose : bool, default False
+        If True, print test results to logger
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: 'Shapiro-Wilk test'
-        - statistic_name: 'W'
         - statistic: W-statistic value (0 to 1, closer to 1 = more normal)
         - pvalue: p-value
-        - pstars: Significance stars
-        - rejected: Whether null hypothesis is rejected (True = not normal)
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected (True = not normal)
         - normal: Whether data appears normal (True = normal)
         - recommendation: Suggested statistical approach
-        - n_x: Sample size
+        - n: Sample size
         - var_x: Variable label
-        - H0: Null hypothesis description
-    fig : matplotlib.figure.Figure, optional
-        Figure object with Q-Q plot (only if plot=True)
 
     Notes
     -----
@@ -176,39 +180,46 @@ def test_shapiro(
     # Compile results
     result = {
         'test_method': 'Shapiro-Wilk test',
-        'statistic_name': 'W',
         'statistic': w_stat,
-        'n_x': n_x,
+        'n': n_x,
         'var_x': var_x,
         'pvalue': pvalue,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': rejected,
+        'significant': rejected,
         'normal': normal,
         'recommendation': recommendation,
-        'H0': 'Data are normally distributed',
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"Shapiro-Wilk: W = {w_stat:.4f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Normal: {normal}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_qq(x, var_x, result)
+        if ax is None:
+            fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
+            _plot_qq_full(x, var_x, result, axes)
+        else:
+            _plot_qq_simple(x, var_x, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
         result = force_dataframe(result)
+    elif return_as not in ['dict', 'dataframe']:
+        from ...utils._normalizers import convert_results
+        return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_qq(x, var_x, result):
-    """Create Q-Q plot for normality assessment."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
-
+def _plot_qq_full(x, var_x, result, axes):
+    """Create 2-panel Q-Q plot with histogram."""
     # Plot 1: Q-Q plot
     ax = axes[0]
 
@@ -228,7 +239,7 @@ def _plot_qq(x, var_x, result):
     # Add text with results
     text_str = (
         f"W = {result['statistic']:.4f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"Normal: {result['normal']}"
     )
     ax.text(
@@ -260,7 +271,35 @@ def _plot_qq(x, var_x, result):
 
     plt.tight_layout()
 
-    return fig
+
+def _plot_qq_simple(x, var_x, result, ax):
+    """Create single Q-Q plot on provided axes."""
+    # Compute theoretical quantiles
+    (osm, osr), (slope, intercept, r) = stats.probplot(x, dist='norm')
+
+    # Plot
+    ax.scatter(osm, osr, alpha=0.6, s=30)
+    ax.plot(osm, slope * osm + intercept, 'r-', linewidth=2, label='Expected (normal)')
+
+    ax.set_xlabel('Theoretical Quantiles')
+    ax.set_ylabel('Sample Quantiles')
+    ax.set_title(f'Q-Q Plot: {var_x}')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # Add text with results
+    text_str = (
+        f"W = {result['statistic']:.4f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
+        f"Normal: {result['normal']}"
+    )
+    ax.text(
+        0.05, 0.95, text_str,
+        transform=ax.transAxes,
+        verticalalignment='top',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
+        fontsize=10
+    )
 
 
 def test_normality(
@@ -348,70 +387,34 @@ def main(args):
     logger.info("\n=== Example 1: Normal data ===")
 
     x_normal = np.random.normal(0, 1, 100)
-    result_normal = test_shapiro(x_normal, var_x='Normal')
-
-    logger.info(f"W = {result_normal['statistic']:.4f}")
-    logger.info(f"p = {result_normal['pvalue']:.4f} {result_normal['pstars']}")
-    logger.info(f"Normal: {result_normal['normal']}")
-    logger.info(f"Recommendation: {result_normal['recommendation']}")
+    result_normal = test_shapiro(x_normal, var_x='Normal', verbose=True)
 
     # Example 2: Non-normal data (exponential)
     logger.info("\n=== Example 2: Non-normal data (exponential) ===")
 
     x_exp = np.random.exponential(2, 100)
-    result_exp = test_shapiro(x_exp, var_x='Exponential')
+    result_exp = test_shapiro(x_exp, var_x='Exponential', verbose=True)
 
-    logger.info(f"W = {result_exp['statistic']:.4f}")
-    logger.info(f"p = {result_exp['pvalue']:.4f} {result_exp['pstars']}")
-    logger.info(f"Normal: {result_exp['normal']}")
-
-    # Example 3: Non-normal data (uniform)
-    logger.info("\n=== Example 3: Non-normal data (uniform) ===")
-
-    x_uniform = np.random.uniform(0, 10, 100)
-    result_uniform = test_shapiro(x_uniform, var_x='Uniform')
-
-    logger.info(f"W = {result_uniform['statistic']:.4f}")
-    logger.info(f"p = {result_uniform['pvalue']:.4f} {result_uniform['pstars']}")
-    logger.info(f"Normal: {result_uniform['normal']}")
-
-    # Example 4: Small sample
-    logger.info("\n=== Example 4: Small sample (n=15) ===")
-
-    x_small = np.random.normal(0, 1, 15)
-    result_small = test_shapiro(x_small, var_x='Small Sample')
-
-    logger.info(f"W = {result_small['statistic']:.4f}")
-    logger.info(f"p = {result_small['pvalue']:.4f}")
-    logger.info(f"Recommendation: {result_small['recommendation']}")
-
-    # Example 5: With Q-Q plot
-    logger.info("\n=== Example 5: Visual assessment with Q-Q plot ===")
+    # Example 3: With Q-Q plot
+    logger.info("\n=== Example 3: Visual assessment with Q-Q plot ===")
 
     x_mixed = np.concatenate([
         np.random.normal(0, 1, 90),
         np.random.normal(5, 1, 10)  # Outliers
     ])
 
-    result_mixed, fig_mixed = test_shapiro(
-        x_mixed,
-        var_x='Mixed Distribution',
-        plot=True
-    )
+    result_mixed = test_shapiro(x_mixed, var_x='Mixed Distribution', plot=True, verbose=True)
+    stx.io.save(plt.gcf(), './shapiro_example3.jpg')
+    plt.close()
 
-    logger.info(f"W = {result_mixed['statistic']:.4f}")
-    logger.info(f"p = {result_mixed['pvalue']:.4f} {result_mixed['pstars']}")
-    stx.io.save(fig_mixed, './shapiro_test_demo.png')
-    logger.info("Q-Q plot saved")
-
-    # Example 6: Multiple samples check
-    logger.info("\n=== Example 6: Check multiple samples ===")
+    # Example 4: Multiple samples check
+    logger.info("\n=== Example 4: Check multiple samples ===")
 
     x1 = np.random.normal(0, 1, 50)
     x2 = np.random.exponential(2, 50)
     x3 = np.random.normal(0, 1, 50)
 
-    check_result = check_normality(
+    check_result = test_normality(
         x1, x2, x3,
         var_names=['Sample A', 'Sample B', 'Sample C'],
         warn=True
@@ -420,8 +423,8 @@ def main(args):
     logger.info(f"All normal: {check_result['all_normal']}")
     logger.info(f"Recommendation: {check_result['recommendation']}")
 
-    # Example 7: Different distributions comparison
-    logger.info("\n=== Example 7: Distribution comparison ===")
+    # Example 5: Different distributions comparison
+    logger.info("\n=== Example 5: Distribution comparison ===")
 
     distributions = {
         'Normal': np.random.normal(0, 1, 100),
@@ -433,25 +436,20 @@ def main(args):
 
     results_comp = []
     for name, data in distributions.items():
-        result = test_shapiro(data, var_x=name)
+        result = test_shapiro(data, var_x=name, verbose=True)
         results_comp.append(result)
-        logger.info(
-            f"{name:15s}: W={result['statistic']:.4f}, "
-            f"p={result['pvalue']:.4f} {result['pstars']}, "
-            f"Normal={result['normal']}"
-        )
 
-    # Example 8: Export results
-    logger.info("\n=== Example 8: Export results ===")
+    # Example 6: Export results
+    logger.info("\n=== Example 6: Export results ===")
 
     from ...utils._normalizers import export_summary
 
     export_summary(
         results_comp,
-        './normality_tests.csv',
-        columns=['var_x', 'statistic', 'pvalue', 'pstars', 'normal', 'recommendation']
+        './shapiro_results.csv',
+        columns=['var_x', 'statistic', 'pvalue', 'stars', 'normal', 'recommendation']
     )
-    logger.info("Results exported to CSV")
+    logger.info("Results exported to ./shapiro_results.csv")
 
     return 0
 

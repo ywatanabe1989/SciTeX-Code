@@ -32,8 +32,9 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
 from scipy import stats
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -48,8 +49,10 @@ def test_wilcoxon(
     alternative: Literal['two-sided', 'greater', 'less'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
-    return_as: Literal['dict', 'dataframe'] = 'dict'
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    ax: Optional[matplotlib.axes.Axes] = None,
+    return_as: Literal['dict', 'dataframe'] = 'dict',
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform Wilcoxon signed-rank test (non-parametric paired test).
 
@@ -73,23 +76,27 @@ def test_wilcoxon(
         Significance level
     plot : bool, default False
         Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: 'Wilcoxon signed-rank test'
-        - statistic_name: 'W'
         - statistic: W-statistic (sum of signed ranks)
         - pvalue: p-value
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected
         - effect_size: rank-biserial correlation
         - effect_size_metric: 'rank-biserial correlation'
         - n_pairs: number of pairs (excluding zeros)
         - n_zeros: number of zero differences (ties)
-    fig : matplotlib.figure.Figure, optional
-        Figure object (only if plot=True)
 
     Notes
     -----
@@ -218,7 +225,6 @@ def test_wilcoxon(
     # Compile results
     result = {
         'test_method': 'Wilcoxon signed-rank test',
-        'statistic_name': 'W',
         'statistic': w_stat,
         'alternative': alternative,
         'n_pairs': n_nonzero,
@@ -226,95 +232,105 @@ def test_wilcoxon(
         'var_x': var_x,
         'var_y': var_y,
         'pvalue': pvalue,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': pvalue < alpha,
+        'significant': pvalue < alpha,
         'effect_size': effect_size,
         'effect_size_metric': 'rank-biserial correlation',
         'effect_size_interpretation': effect_size_interpretation,
         'H0': H0,
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"Wilcoxon: W = {w_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Rank-biserial r = {effect_size:.3f} ({effect_size_interpretation})")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_wilcoxon(x, y, var_x, var_y, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_wilcoxon(x, y, var_x, var_y, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
         result = force_dataframe(result)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_wilcoxon(x, y, var_x, var_y, result):
-    """Create visualization for Wilcoxon test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
+def _plot_wilcoxon(x, y, var_x, var_y, result, ax):
+    """Create violin+swarm visualization on given axes."""
+    positions = [0, 1]
+    data = [x, y]
+    colors = ["C0", "C1"]
 
-    # Compute differences
-    diff = x - y
+    # Violin plot (background, transparent)
+    parts = ax.violinplot(
+        data,
+        positions=positions,
+        widths=0.6,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
+    )
 
-    # Plot 1: Before-after plot
-    ax = axes[0]
+    for i, pc in enumerate(parts["bodies"]):
+        pc.set_facecolor(colors[i])
+        pc.set_alpha(0.3)
+        pc.set_edgecolor(colors[i])
+        pc.set_linewidth(1.5)
 
-    # Plot paired lines
-    for i in range(len(x)):
-        color = 'green' if x[i] > y[i] else 'red' if x[i] < y[i] else 'gray'
-        ax.plot([0, 1], [x[i], y[i]], 'o-', color=color, alpha=0.4)
+    # Swarm plot (foreground - scatter in front!)
+    np.random.seed(42)
+    for i, vals in enumerate(data):
+        y_vals = vals
+        x_vals = np.random.normal(positions[i], 0.04, size=len(vals))
+        ax.scatter(
+            x_vals, y_vals,
+            alpha=0.6,
+            s=40,
+            color=colors[i],
+            edgecolors='white',
+            linewidths=0.5,
+            zorder=3  # In front!
+        )
 
-    # Plot medians
-    ax.plot([0], [np.median(x)], 'bo', markersize=15, label=f'{var_x} (median)')
-    ax.plot([1], [np.median(y)], 'ro', markersize=15, label=f'{var_y} (median)')
+    # Add median lines
+    for i, vals in enumerate(data):
+        median = np.median(vals)
+        ax.hlines(
+            median,
+            positions[i] - 0.3,
+            positions[i] + 0.3,
+            colors='black',
+            linewidth=2,
+            zorder=4
+        )
 
-    ax.set_xticks([0, 1])
+    # Significance stars
+    y_max = max(np.max(x), np.max(y))
+    y_min = min(np.min(x), np.min(y))
+    y_range = y_max - y_min
+    sig_y = y_max + y_range * 0.05
+
+    ax.plot([0, 1], [sig_y, sig_y], 'k-', linewidth=1.5)
+    ax.text(
+        0.5, sig_y + y_range * 0.02,
+        result['stars'],
+        ha='center', va='bottom',
+        fontsize=14, fontweight='bold'
+    )
+
+    ax.set_xticks(positions)
     ax.set_xticklabels([var_x, var_y])
     ax.set_ylabel('Value')
-    ax.set_title(f'Paired Measurements {result["pstars"]}')
-    ax.legend()
+    ax.set_title(f"Wilcoxon Signed-Rank Test\nW = {result['statistic']:.2f}, p = {result['pvalue']:.4f} {result['stars']}")
     ax.grid(True, alpha=0.3, axis='y')
-
-    # Plot 2: Ranked differences
-    ax = axes[1]
-
-    # Remove zeros
-    diff_nonzero = diff[diff != 0]
-
-    if len(diff_nonzero) > 0:
-        # Rank absolute differences
-        abs_diff = np.abs(diff_nonzero)
-        ranks = stats.rankdata(abs_diff)
-
-        # Separate positive and negative
-        pos_ranks = ranks[diff_nonzero > 0]
-        neg_ranks = ranks[diff_nonzero < 0]
-
-        # Bar plot of ranks
-        if len(pos_ranks) > 0:
-            ax.barh(np.arange(len(pos_ranks)), pos_ranks, color='green', alpha=0.6, label='Positive ranks')
-        if len(neg_ranks) > 0:
-            ax.barh(np.arange(len(pos_ranks), len(pos_ranks) + len(neg_ranks)), neg_ranks,
-                   color='red', alpha=0.6, label='Negative ranks')
-
-        ax.set_xlabel('Rank')
-        ax.set_ylabel('Pair Index')
-        ax.set_title(
-            f"W = {result['statistic']:.0f}, "
-            f"p = {result['pvalue']:.4f}\n"
-            f"r = {result['effect_size']:.2f} ({result['effect_size_interpretation']})"
-        )
-        ax.legend()
-        ax.grid(True, alpha=0.3, axis='x')
-    else:
-        ax.text(0.5, 0.5, 'All differences are zero',
-                ha='center', va='center', transform=ax.transAxes)
-
-    plt.tight_layout()
-
-    return fig
 
 
 """Main function"""
@@ -331,10 +347,10 @@ def main(args):
     before1 = np.random.normal(10, 2, 30)
     after1 = before1 + np.random.normal(2, 1, 30)
 
-    result1 = test_wilcoxon(before1, after1, var_x='Before', var_y='After')
+    result1 = test_wilcoxon(before1, after1, var_x='Before', var_y='After', verbose=True)
 
     logger.info(f"W = {result1['statistic']:.0f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
+    logger.info(f"p = {result1['pvalue']:.4f} {result1['stars']}")
     logger.info(f"Effect size (r) = {result1['effect_size']:.3f} ({result1['effect_size_interpretation']})")
 
     # Example 2: Skewed data
@@ -343,10 +359,10 @@ def main(args):
     before2 = np.random.exponential(2, 30)
     after2 = before2 + np.random.exponential(1, 30)
 
-    result2 = test_wilcoxon(before2, after2)
+    result2 = test_wilcoxon(before2, after2, verbose=True)
 
     logger.info(f"W = {result2['statistic']:.0f}")
-    logger.info(f"p = {result2['pvalue']:.4f} {result2['pstars']}")
+    logger.info(f"p = {result2['pvalue']:.4f} {result2['stars']}")
     logger.info(f"Effect size (r) = {result2['effect_size']:.3f}")
 
     # Example 3: Data with outliers
@@ -355,10 +371,10 @@ def main(args):
     before3 = np.concatenate([np.random.normal(10, 1, 28), [20, 25]])  # Add outliers
     after3 = np.concatenate([np.random.normal(12, 1, 28), [22, 27]])
 
-    result3 = test_wilcoxon(before3, after3, var_x='Pre', var_y='Post')
+    result3 = test_wilcoxon(before3, after3, var_x='Pre', var_y='Post', verbose=True)
 
     logger.info(f"W = {result3['statistic']:.0f}")
-    logger.info(f"p = {result3['pvalue']:.4f} {result3['pstars']}")
+    logger.info(f"p = {result3['pvalue']:.4f} {result3['stars']}")
     logger.info("Wilcoxon is robust to outliers")
 
     # Example 4: Small effect
@@ -367,10 +383,10 @@ def main(args):
     before4 = np.random.normal(10, 2, 25)
     after4 = before4 + np.random.normal(0.3, 1, 25)  # Small change
 
-    result4 = test_wilcoxon(before4, after4)
+    result4 = test_wilcoxon(before4, after4, verbose=True)
 
     logger.info(f"W = {result4['statistic']:.0f}")
-    logger.info(f"p = {result4['pvalue']:.4f} {result4['pstars']}")
+    logger.info(f"p = {result4['pvalue']:.4f} {result4['stars']}")
     logger.info(f"Effect size (r) = {result4['effect_size']:.3f}")
 
     # Example 5: One-sided test
@@ -379,27 +395,30 @@ def main(args):
     before5 = np.random.normal(10, 2, 30)
     after5 = before5 + np.random.normal(1.5, 1, 30)
 
-    result_two = test_wilcoxon(before5, after5, alternative='two-sided')
-    result_less = test_wilcoxon(before5, after5, alternative='less')
+    result_two = test_wilcoxon(before5, after5, alternative='two-sided', verbose=True)
+    result_less = test_wilcoxon(before5, after5, alternative='less', verbose=True)
 
-    logger.info(f"Two-sided: p = {result_two['pvalue']:.4f} {result_two['pstars']}")
-    logger.info(f"One-sided (less): p = {result_less['pvalue']:.4f} {result_less['pstars']}")
+    logger.info(f"Two-sided: p = {result_two['pvalue']:.4f} {result_two['stars']}")
+    logger.info(f"One-sided (less): p = {result_less['pvalue']:.4f} {result_less['stars']}")
 
-    # Example 6: With visualization
+    # Example 6: With visualization (demonstrates plt.gcf() and stx.io.save())
     logger.info("\n=== Example 6: With visualization ===")
 
     before6 = np.random.lognormal(2, 0.5, 40)
     after6 = before6 * np.random.lognormal(0.15, 0.3, 40)
 
-    result6, fig6 = test_wilcoxon(
+    result6 = test_wilcoxon(
         before6, after6,
         var_x='Baseline',
         var_y='Treatment',
-        plot=True
+        plot=True,
+        verbose=True
     )
 
-    stx.io.save(fig6, './wilcoxon_test_demo.png')
-    logger.info("Visualization saved")
+    # Save the figure using plt.gcf()
+    stx.io.save(stx.plt.gcf(), './wilcoxon_demo.jpg')
+    stx.plt.close()
+    logger.info("Figure saved to wilcoxon_demo.jpg")
 
     # Example 7: Compare with paired t-test
     logger.info("\n=== Example 7: Wilcoxon vs Paired t-test ===")
@@ -410,11 +429,11 @@ def main(args):
 
     from ..parametric._test_ttest import test_ttest_rel
 
-    result_wilcox = test_wilcoxon(normal_before, normal_after)
-    result_ttest = test_ttest_rel(normal_before, normal_after)
+    result_wilcox = test_wilcoxon(normal_before, normal_after, verbose=True)
+    result_ttest = test_ttest_rel(normal_before, normal_after, verbose=True)
 
-    logger.info(f"Wilcoxon: p = {result_wilcox['pvalue']:.4f} {result_wilcox['pstars']}, r = {result_wilcox['effect_size']:.3f}")
-    logger.info(f"Paired t-test: p = {result_ttest['pvalue']:.4f} {result_ttest['pstars']}, d = {result_ttest['effect_size']:.3f}")
+    logger.info(f"Wilcoxon: p = {result_wilcox['pvalue']:.4f} {result_wilcox['stars']}, r = {result_wilcox['effect_size']:.3f}")
+    logger.info(f"Paired t-test: p = {result_ttest['pvalue']:.4f} {result_ttest['stars']}, d = {result_ttest['effect_size']:.3f}")
     logger.info("For normal data, both tests should agree")
 
     # Example 8: Export results
@@ -434,7 +453,7 @@ def main(args):
         results_list.append(result)
 
     df_all = combine_results(results_list)
-    logger.info(f"\n{df_all[['var_x', 'var_y', 'pvalue', 'pstars', 'effect_size']]}")
+    logger.info(f"\n{df_all[['var_x', 'var_y', 'pvalue', 'stars', 'effect_size']]}")
 
     export_summary(df_all, './wilcoxon_results.csv')
     logger.info("Results exported")

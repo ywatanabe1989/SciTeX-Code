@@ -27,19 +27,18 @@ IO:
 """
 
 """Imports"""
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
+import argparse
 import numpy as np
 import pandas as pd
 from scipy import stats
+import matplotlib.axes
+import scitex as stx
+from scitex.logging import getLogger
 from ...utils._formatters import p2stars
 from ...utils._normalizers import force_dataframe, convert_results
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    HAS_PLT = True
-except ImportError:
-    HAS_PLT = False
+logger = getLogger(__name__)
 
 
 def mcnemar_odds_ratio(b: int, c: int) -> float:
@@ -111,9 +110,11 @@ def test_mcnemar(
     correction: bool = True,
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform McNemar's test for paired categorical data.
 
@@ -141,15 +142,20 @@ def test_mcnemar(
         Significance level
     plot : bool, default False
         Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes to plot on. If provided, plot is set to True
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        If True, print test results to logger
 
     Returns
     -------
     result : dict or DataFrame
         Test results including:
+        - test_method: Name of test
         - statistic: χ² statistic
         - pvalue: p-value
         - df: degrees of freedom (always 1)
@@ -158,11 +164,8 @@ def test_mcnemar(
         - odds_ratio: b / c
         - effect_size: odds ratio
         - effect_size_interpretation: interpretation
-        - rejected: whether to reject null hypothesis
-        - significant: same as rejected
-        - pstars: significance stars
-
-    If plot=True, returns tuple of (result, figure)
+        - significant: whether to reject null hypothesis
+        - stars: significance stars
 
     Notes
     -----
@@ -277,7 +280,7 @@ def test_mcnemar(
 
     # Build result dictionary
     result = {
-        'test': "McNemar's test",
+        'test_method': "McNemar's test",
         'var_before': var_before,
         'var_after': var_after,
         'statistic': round(float(statistic), decimals),
@@ -288,35 +291,42 @@ def test_mcnemar(
         'n_discordant': int(n_discordant),
         'odds_ratio': round(float(odds_ratio), decimals) if np.isfinite(odds_ratio) else odds_ratio,
         'effect_size': round(float(odds_ratio), decimals) if np.isfinite(odds_ratio) else odds_ratio,
+        'effect_size_metric': 'Odds ratio',
         'effect_size_interpretation': or_interpretation,
         'correction': correction,
         'alpha': alpha,
-        'rejected': pvalue < alpha,
         'significant': pvalue < alpha,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"McNemar: χ² = {statistic:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"OR = {odds_ratio:.3f}, {or_interpretation} (b={b}, c={c})")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
-    if plot and HAS_PLT:
-        fig = _plot_mcnemar(observed_array, result, var_before, var_after)
+    if plot:
+        if ax is None:
+            fig, axes = stx.plt.subplots(1, 3, figsize=(12, 4))
+            _plot_mcnemar_full(observed_array, result, var_before, var_after, axes)
+        else:
+            _plot_mcnemar_simple(observed_array, result, var_before, var_after, ax)
 
-    # Return based on format
+    # Convert to requested format
     if return_as == 'dataframe':
-        result_df = pd.DataFrame([result])
-        if plot and fig is not None:
-            return result_df, fig
-        return result_df
-    else:
-        if plot and fig is not None:
-            return result, fig
-        return result
+        result = force_dataframe(result)
+    elif return_as not in ['dict', 'dataframe']:
+        return convert_results(result, return_as=return_as)
+
+    return result
 
 
-def _plot_mcnemar(observed, result, var_before, var_after):
-    """Create visualization for McNemar's test."""
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-
+def _plot_mcnemar_full(observed, result, var_before, var_after, axes):
+    """Create 3-panel visualization for McNemar's test."""
     a, b = observed[0]
     c, d = observed[1]
 
@@ -327,20 +337,17 @@ def _plot_mcnemar(observed, result, var_before, var_after):
     # Add text annotations
     for i in range(2):
         for j in range(2):
-            text = ax.text(j, i, int(observed[i, j]),
-                          ha="center", va="center", color="black", fontsize=14)
+            ax.text(j, i, int(observed[i, j]),
+                   ha="center", va="center", color="black", fontsize=14)
 
     ax.set_xticks([0, 1])
     ax.set_yticks([0, 1])
     ax.set_xticklabels(['0', '1'])
     ax.set_yticklabels(['0', '1'])
-    ax.set_xlabel(f'{var_after}', fontsize=12)
-    ax.set_ylabel(f'{var_before}', fontsize=12)
-    ax.set_title('Contingency Table', fontsize=12, fontweight='bold')
-
-    # Add colorbar
-    cbar = plt.colorbar(im, ax=ax)
-    cbar.set_label('Frequency', rotation=270, labelpad=15)
+    ax.set_xlabel(var_after)
+    ax.set_ylabel(var_before)
+    ax.set_title('Contingency Table')
+    stx.plt.colorbar(im, ax=ax)
 
     # Panel 2: Discordant pairs comparison
     ax = axes[1]
@@ -357,11 +364,9 @@ def _plot_mcnemar(observed, result, var_before, var_after):
                f'{int(count)}',
                ha='center', va='bottom', fontsize=12, fontweight='bold')
 
-    ax.set_ylabel('Count', fontsize=12)
-    ax.set_title('Discordant Pairs', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Count')
+    ax.set_title('Discordant Pairs')
     ax.set_ylim(0, max(counts) * 1.2 if max(counts) > 0 else 1)
-
-    # Add grid
     ax.yaxis.grid(True, alpha=0.3)
     ax.set_axisbelow(True)
 
@@ -370,11 +375,11 @@ def _plot_mcnemar(observed, result, var_before, var_after):
     ax.axis('off')
 
     # Create result text
-    result_text = f"McNemar's Test Results\n"
-    result_text += "=" * 30 + "\n\n"
+    result_text = f"McNemar's Test\n"
+    result_text += "=" * 25 + "\n\n"
     result_text += f"χ² = {result['statistic']:.3f}\n"
     result_text += f"df = {result['df']}\n"
-    result_text += f"p-value = {result['pvalue']:.4f} {result['pstars']}\n\n"
+    result_text += f"p-value = {result['pvalue']:.4f} {result['stars']}\n\n"
     result_text += f"Discordant pairs:\n"
     result_text += f"  b (0→1) = {result['b']}\n"
     result_text += f"  c (1→0) = {result['c']}\n"
@@ -398,30 +403,39 @@ def _plot_mcnemar(observed, result, var_before, var_after):
            fontfamily='monospace',
            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
 
-    plt.tight_layout()
 
-    return fig
+def _plot_mcnemar_simple(observed, result, var_before, var_after, ax):
+    """Create simplified single-panel discordant pairs plot on given axes."""
+    a, b = observed[0]
+    c, d = observed[1]
 
+    # Discordant pairs comparison
+    categories = ['0→1\n(b)', '1→0\n(c)']
+    counts = [b, c]
+    colors = ['lightblue', 'lightcoral']
 
-if __name__ == "__main__":
-    import sys
-    import argparse
-    import scitex as stx
+    bars = ax.bar(categories, counts, color=colors, edgecolor='black', alpha=0.7)
+
+    # Add count labels
+    for bar, count in zip(bars, counts):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height,
+               f'{int(count)}',
+               ha='center', va='bottom', fontsize=11, fontweight='bold')
+
+    ax.set_ylabel('Count')
+    stars = result['stars']
+    ax.set_title(f"McNemar: χ² = {result['statistic']:.3f} {stars}")
+    ax.set_ylim(0, max(counts) * 1.2 if max(counts) > 0 else 1)
+    ax.yaxis.grid(True, alpha=0.3)
+    ax.set_axisbelow(True)
+
+"""Main function"""
+def main(args):
 
     # Parse empty args
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args([])
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
-        sys=sys,
-        plt=plt,
-        args=args,
-        file=__FILE__,
-        verbose=True,
-        agg=True,
-    )
 
-    logger = stx.logging.getLogger(__name__)
 
     logger.info("=" * 70)
     logger.info("McNemar's Test Examples")
@@ -444,7 +458,7 @@ if __name__ == "__main__":
     logger.info(f"Contingency table:")
     logger.info(f"  [[{observed[0][0]}, {observed[0][1]}],")
     logger.info(f"   [{observed[1][0]}, {observed[1][1]}]]")
-    logger.info(f"\nχ² = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['pstars']}")
+    logger.info(f"\nχ² = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['stars']}")
     logger.info(f"Discordant pairs: b={result['b']}, c={result['c']}")
     logger.info(f"Odds Ratio = {result['odds_ratio']:.3f} ({result['effect_size_interpretation']})")
     logger.info(f"Significant: {result['significant']}")
@@ -475,7 +489,7 @@ if __name__ == "__main__":
     logger.info(f"Improvement: {result_strong['b']} patients")
     logger.info(f"Relapse: {result_strong['c']} patients")
     logger.info(f"Odds Ratio = {result_strong['odds_ratio']:.3f}")
-    logger.info(f"p-value = {result_strong['pvalue']:.4f} {result_strong['pstars']}")
+    logger.info(f"p-value = {result_strong['pvalue']:.4f} {result_strong['stars']}")
 
     # Example 4: With and without correction
     logger.info("\n[Example 4] Effect of continuity correction")
@@ -509,14 +523,47 @@ if __name__ == "__main__":
     logger.info("\n[Example 6] Export results to Excel")
     logger.info("-" * 70)
 
-    convert_results(df_results, return_as='excel', path='./mcnemar_results.xlsx')
+    df_results.to_excel('./mcnemar_results.xlsx', index=False)
     logger.info("Saved to: ./mcnemar_results.xlsx")
+
+
+    return 0
+
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    return parser.parse_args()
+
+
+def run_main():
+    """Initialize SciTeX framework and run main."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=args.verbose,
+        agg=True,
+    )
+
+    exit_status = main(args)
 
     stx.session.close(
         CONFIG,
-        verbose=False,
-        notify=False,
-        exit_status=0,
+        verbose=args.verbose,
+        exit_status=exit_status,
     )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

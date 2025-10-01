@@ -35,7 +35,6 @@ from ._formatters import (
 # Normalizers
 from ._normalizers import (
     force_dataframe,
-    convert_results,
 )
 
 __all__ = [
@@ -60,5 +59,4 @@ __all__ = [
 
     # Normalizers
     'force_dataframe',
-    'convert_results',
 ]

@@ -45,7 +45,7 @@ from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
                             save_html, save_image, save_joblib, save_json,
                             save_matlab, save_mp4, save_npy, save_npz,
                             save_pickle, save_pickle_compressed, save_text,
-                            save_torch, save_yaml, save_zarr)
+                            save_tex, save_torch, save_yaml, save_zarr)
 from ._save_modules._bibtex import save_bibtex
 
 logger = logging.getLogger()
@@ -690,6 +690,7 @@ _FILE_HANDLERS = {
     ".py": save_text,
     ".css": save_text,
     ".js": save_text,
+    ".tex": save_tex,
     # Bibliography
     ".bib": save_bibtex,
     # Data formats

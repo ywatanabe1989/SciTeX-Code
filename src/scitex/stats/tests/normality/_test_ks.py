@@ -33,8 +33,10 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -49,9 +51,11 @@ def test_ks_1samp(
     alternative: Literal['two-sided', 'less', 'greater'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform one-sample Kolmogorov-Smirnov test.
 
@@ -183,23 +187,34 @@ def test_ks_1samp(
     # Compile results
     result = {
         'test_method': 'Kolmogorov-Smirnov test (1-sample)',
-        'statistic_name': 'D',
         'statistic': round(d_stat, decimals),
-        'n_x': n_x,
+        'n': n_x,
         'var_x': var_x,
         'pvalue': round(pvalue, decimals),
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': rejected,
+        'significant': rejected,
         'matches_distribution': matches,
         'reference_distribution': ref_dist_name,
         'H0': f'Data follow {ref_dist_name} distribution',
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"KS test (1-sample): D = {d_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Matches {ref_dist_name}: {matches}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_ks_1samp(x, cdf_func, var_x, result, ref_dist_name)
+        if ax is None:
+            fig, axes = stx.plt.subplots(1, 2, figsize=(14, 6))
+            _plot_ks_1samp_full(x, cdf_func, var_x, result, ref_dist_name, axes)
+        else:
+            _plot_ks_1samp_simple(x, cdf_func, var_x, result, ref_dist_name, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
@@ -207,11 +222,7 @@ def test_ks_1samp(
     elif return_as not in ['dict', 'dataframe']:
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
 def test_ks_2samp(
@@ -222,9 +233,11 @@ def test_ks_2samp(
     alternative: Literal['two-sided', 'less', 'greater'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform two-sample Kolmogorov-Smirnov test.
 
@@ -334,24 +347,35 @@ def test_ks_2samp(
     # Compile results
     result = {
         'test_method': 'Kolmogorov-Smirnov test (2-sample)',
-        'statistic_name': 'D',
         'statistic': round(d_stat, decimals),
         'n_x': n_x,
         'n_y': n_y,
         'var_x': var_x,
         'var_y': var_y,
         'pvalue': round(pvalue, decimals),
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': rejected,
+        'significant': rejected,
         'same_distribution': not rejected,
         'H0': 'Both samples come from the same distribution',
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"KS test (2-sample): D = {d_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Same distribution: {not rejected}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_ks_2samp(x, y, var_x, var_y, result)
+        if ax is None:
+            fig, axes = stx.plt.subplots(1, 2, figsize=(14, 6))
+            _plot_ks_2samp_full(x, y, var_x, var_y, result, axes)
+        else:
+            _plot_ks_2samp_simple(x, y, var_x, var_y, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
@@ -359,17 +383,11 @@ def test_ks_2samp(
     elif return_as not in ['dict', 'dataframe']:
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_ks_1samp(x, cdf_func, var_x, result, ref_dist_name):
-    """Create CDF comparison plot for one-sample KS test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(14, 6))
-
+def _plot_ks_1samp_full(x, cdf_func, var_x, result, ref_dist_name, axes):
+    """Create 2-panel CDF comparison plot for one-sample KS test."""
     # Plot 1: CDF comparison
     ax = axes[0]
 
@@ -400,7 +418,7 @@ def _plot_ks_1samp(x, cdf_func, var_x, result, ref_dist_name):
     # Add text with results
     text_str = (
         f"D = {result['statistic']:.3f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"Matches: {result['matches_distribution']}"
     )
     ax.text(
@@ -436,13 +454,52 @@ def _plot_ks_1samp(x, cdf_func, var_x, result, ref_dist_name):
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    return fig
 
 
-def _plot_ks_2samp(x, y, var_x, var_y, result):
-    """Create CDF comparison plot for two-sample KS test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(14, 6))
+def _plot_ks_1samp_simple(x, cdf_func, var_x, result, ref_dist_name, ax):
+    """Create single CDF comparison plot on provided axes."""
+    # Compute ECDF
+    x_sorted = np.sort(x)
+    ecdf = np.arange(1, len(x) + 1) / len(x)
 
+    # Compute reference CDF
+    ref_cdf = cdf_func(x_sorted)
+
+    # Plot both CDFs
+    ax.step(x_sorted, ecdf, where='post', linewidth=2, label=f'Empirical ({var_x})', color='blue')
+    ax.plot(x_sorted, ref_cdf, linewidth=2, label=f'Reference ({ref_dist_name})', color='red')
+
+    # Mark maximum difference
+    diff = np.abs(ecdf - ref_cdf)
+    max_idx = np.argmax(diff)
+    ax.vlines(x_sorted[max_idx], ecdf[max_idx], ref_cdf[max_idx],
+              colors='green', linestyles='dashed', linewidth=2,
+              label=f'D = {result["statistic"]:.3f}')
+
+    ax.set_xlabel('Value')
+    ax.set_ylabel('Cumulative Probability')
+    ax.set_title(f'CDF Comparison: {var_x} vs {ref_dist_name}')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # Add text with results
+    text_str = (
+        f"D = {result['statistic']:.3f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
+        f"Matches: {result['matches_distribution']}"
+    )
+    ax.text(
+        0.98, 0.02, text_str,
+        transform=ax.transAxes,
+        verticalalignment='bottom',
+        horizontalalignment='right',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
+        fontsize=10
+    )
+
+
+def _plot_ks_2samp_full(x, y, var_x, var_y, result, axes):
+    """Create 2-panel CDF comparison plot for two-sample KS test."""
     # Plot 1: CDF comparison
     ax = axes[0]
 
@@ -466,7 +523,7 @@ def _plot_ks_2samp(x, y, var_x, var_y, result):
     # Add text with results
     text_str = (
         f"D = {result['statistic']:.3f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"Same dist: {result['same_distribution']}"
     )
     ax.text(
@@ -491,7 +548,41 @@ def _plot_ks_2samp(x, y, var_x, var_y, result):
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    return fig
+
+
+def _plot_ks_2samp_simple(x, y, var_x, var_y, result, ax):
+    """Create single CDF comparison plot on provided axes."""
+    # Compute ECDFs
+    x_sorted = np.sort(x)
+    ecdf_x = np.arange(1, len(x) + 1) / len(x)
+
+    y_sorted = np.sort(y)
+    ecdf_y = np.arange(1, len(y) + 1) / len(y)
+
+    # Plot both ECDFs
+    ax.step(x_sorted, ecdf_x, where='post', linewidth=2, label=var_x, color='blue')
+    ax.step(y_sorted, ecdf_y, where='post', linewidth=2, label=var_y, color='red')
+
+    ax.set_xlabel('Value')
+    ax.set_ylabel('Cumulative Probability')
+    ax.set_title(f'CDF Comparison: {var_x} vs {var_y}')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # Add text with results
+    text_str = (
+        f"D = {result['statistic']:.3f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
+        f"Same dist: {result['same_distribution']}"
+    )
+    ax.text(
+        0.98, 0.02, text_str,
+        transform=ax.transAxes,
+        verticalalignment='bottom',
+        horizontalalignment='right',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
+        fontsize=10
+    )
 
 
 """Main function"""
@@ -506,129 +597,63 @@ def main(args):
     logger.info("\n=== Example 1: One-sample KS test (normal data) ===")
 
     x_normal = np.random.normal(0, 1, 100)
-    result1 = test_ks_1samp(x_normal, cdf='norm', args=(0, 1), var_x='Normal data')
-
-    logger.info(f"D = {result1['statistic']:.3f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
-    logger.info(f"Matches normal distribution: {result1['matches_distribution']}")
+    result1 = test_ks_1samp(x_normal, cdf='norm', args=(0, 1), var_x='Normal data', verbose=True)
 
     # Example 2: One-sample test - exponential data tested against normal
     logger.info("\n=== Example 2: One-sample KS test (exponential data vs normal) ===")
 
     x_exp = np.random.exponential(2, 100)
     result2 = test_ks_1samp(x_exp, cdf='norm', args=(np.mean(x_exp), np.std(x_exp)),
-                            var_x='Exponential data')
+                            var_x='Exponential data', verbose=True)
 
-    logger.info(f"D = {result2['statistic']:.3f}")
-    logger.info(f"p = {result2['pvalue']:.4f} {result2['pstars']}")
-    logger.info(f"Matches normal distribution: {result2['matches_distribution']}")
-
-    # Example 3: One-sample test - uniform data
-    logger.info("\n=== Example 3: One-sample KS test (uniform data) ===")
-
-    x_unif = np.random.uniform(0, 1, 100)
-    result3 = test_ks_1samp(x_unif, cdf='uniform', args=(0, 1), var_x='Uniform data')
-
-    logger.info(f"D = {result3['statistic']:.3f}")
-    logger.info(f"p = {result3['pvalue']:.4f}")
-    logger.info(f"Matches uniform distribution: {result3['matches_distribution']}")
-
-    # Example 4: One-sample test with visualization
-    logger.info("\n=== Example 4: One-sample KS test with visualization ===")
+    # Example 3: One-sample test with visualization
+    logger.info("\n=== Example 3: One-sample KS test with visualization ===")
 
     x_mixed = np.concatenate([np.random.normal(0, 1, 90), np.random.normal(3, 1, 10)])
-    result4, fig4 = test_ks_1samp(
-        x_mixed,
-        cdf='norm',
-        args=(0, 1),
-        var_x='Mixed data',
-        plot=True
-    )
+    result3 = test_ks_1samp(x_mixed, cdf='norm', args=(0, 1), var_x='Mixed data',
+                            plot=True, verbose=True)
+    stx.io.save(plt.gcf(), './ks_example1.jpg')
+    plt.close()
 
-    logger.info(f"D = {result4['statistic']:.3f}, p = {result4['pvalue']:.4f}")
-    stx.io.save(fig4, './ks_1samp_demo.png')
-    logger.info("Visualization saved")
-
-    # Example 5: Two-sample test - same distribution
-    logger.info("\n=== Example 5: Two-sample KS test (same distribution) ===")
+    # Example 4: Two-sample test - same distribution
+    logger.info("\n=== Example 4: Two-sample KS test (same distribution) ===")
 
     x1 = np.random.normal(0, 1, 100)
     y1 = np.random.normal(0, 1, 100)
 
-    result5 = test_ks_2samp(x1, y1, var_x='Sample 1', var_y='Sample 2')
+    result4 = test_ks_2samp(x1, y1, var_x='Sample 1', var_y='Sample 2', verbose=True)
 
-    logger.info(f"D = {result5['statistic']:.3f}")
-    logger.info(f"p = {result5['pvalue']:.4f}")
-    logger.info(f"Same distribution: {result5['same_distribution']}")
-
-    # Example 6: Two-sample test - different means
-    logger.info("\n=== Example 6: Two-sample KS test (different means) ===")
+    # Example 5: Two-sample test - different means
+    logger.info("\n=== Example 5: Two-sample KS test (different means) ===")
 
     x2 = np.random.normal(0, 1, 100)
     y2 = np.random.normal(2, 1, 100)
 
-    result6 = test_ks_2samp(x2, y2, var_x='Group A', var_y='Group B')
+    result5 = test_ks_2samp(x2, y2, var_x='Group A', var_y='Group B', verbose=True)
 
-    logger.info(f"D = {result6['statistic']:.3f}")
-    logger.info(f"p = {result6['pvalue']:.4f} {result6['pstars']}")
-    logger.info(f"Same distribution: {result6['same_distribution']}")
+    # Example 6: Two-sample test with visualization
+    logger.info("\n=== Example 6: Two-sample KS test with visualization ===")
 
-    # Example 7: Two-sample test - different variances
-    logger.info("\n=== Example 7: Two-sample KS test (different variances) ===")
+    x3 = np.random.normal(5, 1, 80)
+    y3 = np.random.exponential(2, 80)
 
-    x3 = np.random.normal(0, 1, 100)
-    y3 = np.random.normal(0, 3, 100)
+    result6 = test_ks_2samp(x3, y3, var_x='Normal', var_y='Exponential',
+                            plot=True, verbose=True)
+    stx.io.save(plt.gcf(), './ks_example2.jpg')
+    plt.close()
 
-    result7 = test_ks_2samp(x3, y3, var_x='Low variance', var_y='High variance')
-
-    logger.info(f"D = {result7['statistic']:.3f}")
-    logger.info(f"p = {result7['pvalue']:.4f} {result7['pstars']}")
-    logger.info("KS test detected difference in distributions (variances)")
-
-    # Example 8: Two-sample test with visualization
-    logger.info("\n=== Example 8: Two-sample KS test with visualization ===")
-
-    x4 = np.random.normal(5, 1, 80)
-    y4 = np.random.exponential(2, 80)
-
-    result8, fig8 = test_ks_2samp(
-        x4, y4,
-        var_x='Normal',
-        var_y='Exponential',
-        plot=True
-    )
-
-    logger.info(f"D = {result8['statistic']:.3f}, p = {result8['pvalue']:.4f}")
-    stx.io.save(fig8, './ks_2samp_demo.png')
-    logger.info("Visualization saved")
-
-    # Example 9: Comparison with Shapiro-Wilk
-    logger.info("\n=== Example 9: KS vs Shapiro-Wilk for normality ===")
-
-    from ._test_shapiro import test_shapiro
-
-    x_test = np.random.exponential(2, 100)
-
-    ks_result = test_ks_1samp(x_test, cdf='norm',
-                              args=(np.mean(x_test), np.std(x_test)))
-    shapiro_result = test_shapiro(x_test)
-
-    logger.info(f"KS test:      D = {ks_result['statistic']:.3f}, p = {ks_result['pvalue']:.4f}")
-    logger.info(f"Shapiro-Wilk: W = {shapiro_result['statistic']:.4f}, p = {shapiro_result['pvalue']:.4f}")
-    logger.info("Note: Shapiro-Wilk is more powerful for normality testing")
-
-    # Example 10: Export results
-    logger.info("\n=== Example 10: Export results ===")
+    # Example 7: Export results
+    logger.info("\n=== Example 7: Export results ===")
 
     from ...utils._normalizers import convert_results, force_dataframe
 
-    test_results = [result1, result2, result3, result5, result6, result7]
+    test_results = [result1, result2, result3, result4, result5, result6]
 
     df = force_dataframe(test_results)
     logger.info(f"\nDataFrame shape: {df.shape}")
 
-    convert_results(test_results, return_as='excel', path='./ks_tests.xlsx')
-    logger.info("Results exported to Excel")
+    convert_results(test_results, return_as='excel', path='./ks_results.xlsx')
+    logger.info("Results exported to ./ks_results.xlsx")
 
     return 0
 

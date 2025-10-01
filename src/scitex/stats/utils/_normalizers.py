@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-10-01 20:28:19 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/stats/utils/_normalizers.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/stats/utils/_normalizers.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 """
 Output format normalization utilities for scitex.stats.
 
@@ -7,85 +18,88 @@ Provides functions to convert between dict and DataFrame formats,
 ensuring consistent output structure across all statistical tests.
 """
 
-import pandas as pd
+from typing import Any, Dict, List, Literal, Optional, Union
+
 import numpy as np
-from typing import Union, List, Dict, Any, Optional, Literal
+import pandas as pd
 
 # Standard columns for statistical test outputs
 STANDARD_COLUMNS = [
-    'test_method',
-    'statistic_name',
-    'statistic',
-    'alternative',
-    'n_samples',
-    'n_x',
-    'n_y',
-    'n_pairs',
-    'var_x',
-    'var_y',
-    'pvalue',
-    'pvalue_adjusted',
-    'pstars',
-    'alpha',
-    'alpha_adjusted',
-    'rejected',
-    'effect_size',
-    'effect_size_metric',
-    'effect_size_interpretation',
-    'effect_size_secondary',
-    'effect_size_secondary_metric',
-    'effect_size_secondary_interpretation',
-    'power',
-    'H0',
+    "test_method",
+    "statistic_name",
+    "statistic",
+    "alternative",
+    "n_samples",
+    "n_x",
+    "n_y",
+    "n_pairs",
+    "var_x",
+    "var_y",
+    "pvalue",
+    "pvalue_adjusted",
+    "pstars",
+    "alpha",
+    "alpha_adjusted",
+    "rejected",
+    "effect_size",
+    "effect_size_metric",
+    "effect_size_interpretation",
+    "effect_size_secondary",
+    "effect_size_secondary_metric",
+    "effect_size_secondary_interpretation",
+    "power",
+    "H0",
 ]
 
 # Default values for standard columns
 STANDARD_DEFAULTS = {
-    'alternative': 'two-sided',
-    'pstars': 'ns',
-    'rejected': False,
-    'alpha': 0.05,
-    'alpha_adjusted': np.nan,
-    'pvalue_adjusted': np.nan,
-    'power': np.nan,
-    'n_samples': np.nan,
-    'n_x': np.nan,
-    'n_y': np.nan,
-    'n_pairs': np.nan,
-    'var_x': '',
-    'var_y': '',
+    "alternative": "two-sided",
+    "pstars": "ns",
+    "rejected": False,
+    "alpha": 0.05,
+    "alpha_adjusted": np.nan,
+    "pvalue_adjusted": np.nan,
+    "power": np.nan,
+    "n_samples": np.nan,
+    "n_x": np.nan,
+    "n_y": np.nan,
+    "n_pairs": np.nan,
+    "var_x": "",
+    "var_y": "",
 }
 
 # Column types
 COLUMN_TYPES = {
-    'test_method': str,
-    'statistic_name': str,
-    'statistic': float,
-    'alternative': str,
-    'n_samples': 'Int64',  # Nullable integer
-    'n_x': 'Int64',
-    'n_y': 'Int64',
-    'n_pairs': 'Int64',
-    'var_x': str,
-    'var_y': str,
-    'pvalue': float,
-    'pvalue_adjusted': float,
-    'pstars': str,
-    'alpha': float,
-    'alpha_adjusted': float,
-    'rejected': bool,
-    'effect_size': float,
-    'effect_size_metric': str,
-    'effect_size_interpretation': str,
-    'effect_size_secondary': float,
-    'effect_size_secondary_metric': str,
-    'effect_size_secondary_interpretation': str,
-    'power': float,
-    'H0': str,
+    "test_method": str,
+    "statistic_name": str,
+    "statistic": float,
+    "alternative": str,
+    "n_samples": "Int64",  # Nullable integer
+    "n_x": "Int64",
+    "n_y": "Int64",
+    "n_pairs": "Int64",
+    "var_x": str,
+    "var_y": str,
+    "pvalue": float,
+    "pvalue_adjusted": float,
+    "pstars": str,
+    "alpha": float,
+    "alpha_adjusted": float,
+    "rejected": bool,
+    "effect_size": float,
+    "effect_size_metric": str,
+    "effect_size_interpretation": str,
+    "effect_size_secondary": float,
+    "effect_size_secondary_metric": str,
+    "effect_size_secondary_interpretation": str,
+    "power": float,
+    "H0": str,
 }
 
 
-def normalize_result(result: Dict[str, Any], fill_missing: bool = True) -> Dict[str, Any]:
+def normalize_result(
+    result: Dict[str, Any], fill_missing: bool = True
+) -> Dict[str, Any]:
     """
     Normalize a test result dictionary to standard format.
 
@@ -116,24 +130,29 @@ def normalize_result(result: Dict[str, Any], fill_missing: bool = True) -> Dict[
                 normalized[col] = default
 
     # Use adjusted pvalue if available, otherwise use raw pvalue
-    pvalue_for_decision = normalized.get('pvalue_adjusted', normalized.get('pvalue'))
-    alpha_for_decision = normalized.get('alpha_adjusted', normalized.get('alpha', 0.05))
+    pvalue_for_decision = normalized.get(
+        "pvalue_adjusted", normalized.get("pvalue")
+    )
+    alpha_for_decision = normalized.get(
+        "alpha_adjusted", normalized.get("alpha", 0.05)
+    )
 
     # Compute pstars based on adjusted pvalue if available
-    if 'pstars' not in normalized and pvalue_for_decision is not None:
+    if "pstars" not in normalized and pvalue_for_decision is not None:
         from ._formatters import p2stars
-        normalized['pstars'] = p2stars(pvalue_for_decision)
+
+        normalized["pstars"] = p2stars(pvalue_for_decision)
 
     # Compute rejected based on adjusted criteria if available
-    if 'rejected' not in normalized and pvalue_for_decision is not None:
-        normalized['rejected'] = pvalue_for_decision < alpha_for_decision
+    if "rejected" not in normalized and pvalue_for_decision is not None:
+        normalized["rejected"] = pvalue_for_decision < alpha_for_decision
 
     return normalized
 
 
 def to_dataframe(
     results: Union[Dict[str, Any], List[Dict[str, Any]]],
-    normalize: bool = True
+    normalize: bool = True,
 ) -> pd.DataFrame:
     """
     Convert test result(s) to DataFrame.
@@ -181,7 +200,7 @@ def force_dataframe(
     columns: Optional[List[str]] = None,
     fill_na: bool = True,
     defaults: Optional[Dict[str, Any]] = None,
-    enforce_types: bool = True
+    enforce_types: bool = True,
 ) -> pd.DataFrame:
     """
     Ensure DataFrame output with consistent columns and types.
@@ -299,8 +318,7 @@ def to_dict(df: pd.DataFrame, row: int = 0) -> Dict[str, Any]:
 
 
 def combine_results(
-    results_list: List[Union[Dict, pd.DataFrame]],
-    **kwargs
+    results_list: List[Union[Dict, pd.DataFrame]], **kwargs
 ) -> pd.DataFrame:
     """
     Combine multiple test results into a single DataFrame.
@@ -347,7 +365,7 @@ def export_results(
     results: Union[Dict[str, Any], List[Dict[str, Any]], pd.DataFrame],
     path: str,
     format: Optional[str] = None,
-    **kwargs
+    **kwargs,
 ) -> str:
     """
     Export test results to various formats.
@@ -389,7 +407,7 @@ def export_results(
     # Infer format from extension if not provided
     if format is None:
         _, ext = os.path.splitext(path)
-        format = ext.lstrip('.').lower()
+        format = ext.lstrip(".").lower()
 
     # Convert to DataFrame
     if not isinstance(results, pd.DataFrame):
@@ -398,36 +416,37 @@ def export_results(
         df = results
 
     # Export based on format
-    if format == 'csv':
+    if format == "csv":
         df.to_csv(path, index=False, **kwargs)
         # Add signature as comment
-        with open(path, 'a') as f:
+        with open(path, "a") as f:
             f.write(f"\n# {_get_scitex_signature('excel')}\n")
-    elif format in ['txt', 'tsv']:
-        df.to_csv(path, index=False, sep='\t', **kwargs)
+    elif format in ["txt", "tsv"]:
+        df.to_csv(path, index=False, sep="\t", **kwargs)
         # Add signature
-        with open(path, 'a') as f:
+        with open(path, "a") as f:
             f.write(f"\n{_get_scitex_signature('text')}")
-    elif format == 'json':
+    elif format == "json":
         # Export JSON with metadata
         import json
+
         data = {
-            'data': df.to_dict('records'),
-            'metadata': {
-                'generated_by': 'SciTeX Stats',
-                'timestamp': _get_scitex_signature('excel').split(' | ')[1],
-                'description': 'Professional Statistical Analysis Framework for Scientific Computing'
-            }
+            "data": df.to_dict("records"),
+            "metadata": {
+                "generated_by": "SciTeX Stats",
+                "timestamp": _get_scitex_signature("excel").split(" | ")[1],
+                "description": "Professional Statistical Analysis Framework for Scientific Computing",
+            },
         }
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             json.dump(data, f, indent=2, **kwargs)
-    elif format == 'xlsx':
+    elif format == "xlsx":
         df.to_excel(path, index=False, **kwargs)
-    elif format in ['latex', 'tex']:
+    elif format in ["latex", "tex"]:
         latex_str = df.to_latex(index=False, **kwargs)
         # Add signature as LaTeX comment
         latex_str += f"\n% {_get_scitex_signature('excel')}\n"
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             f.write(latex_str)
     else:
         raise ValueError(
@@ -441,126 +460,10 @@ def export_results(
 def export_excel_styled(
     results: Union[Dict[str, Any], List[Dict[str, Any]], pd.DataFrame],
     path: str,
-    **kwargs
+    **kwargs,
 ) -> str:
-    """
-    Export results to Excel with conditional formatting and colors.
-
-    Parameters
-    ----------
-    results : dict, list of dict, or DataFrame
-        Test results to export
-    path : str
-        Output Excel file path
-    **kwargs : dict
-        Additional arguments
-
-    Returns
-    -------
-    str
-        Path to exported file
-
-    Notes
-    -----
-    Color coding:
-    - Red background: p < 0.001 (***)
-    - Orange background: p < 0.01 (**)
-    - Yellow background: p < 0.05 (*)
-    - Light gray: p >= 0.05 (ns)
-
-    Examples
-    --------
-    >>> results = [result1, result2, result3]
-    >>> export_excel_styled(results, 'results.xlsx')
-    'results.xlsx'
-    """
-    try:
-        from openpyxl import load_workbook
-        from openpyxl.styles import PatternFill, Font
-    except ImportError:
-        raise ImportError(
-            "openpyxl is required for styled Excel export. "
-            "Install with: pip install openpyxl"
-        )
-
-    # Convert to DataFrame
-    if not isinstance(results, pd.DataFrame):
-        df = force_dataframe(results)
-    else:
-        df = results
-
-    # Export to Excel
-    df.to_excel(path, index=False, **kwargs)
-
-    # Load workbook for styling
-    wb = load_workbook(path)
-    ws = wb.active
-
-    # Define color fills
-    fill_red = PatternFill(start_color="FF6B6B", end_color="FF6B6B", fill_type="solid")
-    fill_orange = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
-    fill_yellow = PatternFill(start_color="FFE66D", end_color="FFE66D", fill_type="solid")
-    fill_gray = PatternFill(start_color="E8E8E8", end_color="E8E8E8", fill_type="solid")
-
-    # Font for significant results
-    font_bold = Font(bold=True)
-
-    # Find pvalue column
-    if 'pvalue' in df.columns:
-        pvalue_col_idx = df.columns.get_loc('pvalue') + 1  # Excel is 1-indexed
-
-        # Apply conditional formatting
-        for row_idx, pvalue in enumerate(df['pvalue'], start=2):  # Start from row 2 (after header)
-            cell = ws.cell(row=row_idx, column=pvalue_col_idx)
-
-            if pd.notna(pvalue):
-                # Apply color based on p-value
-                if pvalue < 0.001:
-                    cell.fill = fill_red
-                    cell.font = font_bold
-                elif pvalue < 0.01:
-                    cell.fill = fill_orange
-                    cell.font = font_bold
-                elif pvalue < 0.05:
-                    cell.fill = fill_yellow
-                    cell.font = font_bold
-                else:
-                    cell.fill = fill_gray
-
-            # Also highlight the entire row if significant
-            if pd.notna(pvalue) and pvalue < 0.05:
-                for col_idx in range(1, len(df.columns) + 1):
-                    ws.cell(row=row_idx, column=col_idx).font = font_bold
-
-    # Adjust column widths
-    for column in ws.columns:
-        max_length = 0
-        column_letter = column[0].column_letter
-        for cell in column:
-            try:
-                if len(str(cell.value)) > max_length:
-                    max_length = len(str(cell.value))
-            except:
-                pass
-        adjusted_width = min(max_length + 2, 50)
-        ws.column_dimensions[column_letter].width = adjusted_width
-
-    # Freeze top row for smooth scrolling
-    ws.freeze_panes = 'A2'
-
-    # Add SciTeX Stats signature at the bottom
-    last_row = len(df) + 3  # +2 for header and empty row, +1 for signature row
-    signature_cell = ws.cell(row=last_row, column=1)
-    signature_cell.value = _get_scitex_signature('excel')
-    signature_cell.font = Font(italic=True, size=9, color="666666")
-
-    # Merge cells for signature
-    ws.merge_cells(start_row=last_row, start_column=1, end_row=last_row, end_column=len(df.columns))
-
-    # Save styled workbook
-    wb.save(path)
-
-    return path
+    """ """
+    pass
 
 
 def export_report(
@@ -568,7 +471,7 @@ def export_report(
     path: str,
     title: str = "Statistical Analysis Report",
     include_summary: bool = True,
-    **kwargs
+    **kwargs,
 ) -> str:
     """
     Export formatted report with colored highlights.
@@ -617,32 +520,33 @@ def export_report(
 
     # Detect format
     _, ext = os.path.splitext(path)
-    format_type = ext.lstrip('.').lower()
+    format_type = ext.lstrip(".").lower()
 
     # Generate report based on format
-    if format_type == 'html':
+    if format_type == "html":
         return _export_report_html(df, path, title, include_summary)
-    elif format_type == 'md':
+    elif format_type == "md":
         return _export_report_markdown(df, path, title, include_summary)
     else:  # txt or other
         return _export_report_text(df, path, title, include_summary)
 
 
-def _get_scitex_signature(format_type='html'):
+def _get_scitex_signature(format_type="html"):
     """Generate SciTeX Stats signature for branding."""
     import datetime
+
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    if format_type == 'html':
+    if format_type == "html":
         return f"""
         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd; text-align: center; color: #666; font-size: 12px;">
             <p>Generated by <strong style="color: #4CAF50;">SciTeX Stats</strong> | {timestamp}</p>
             <p style="font-size: 10px;">Professional Statistical Analysis Framework for Scientific Computing</p>
         </div>
         """
-    elif format_type == 'markdown':
+    elif format_type == "markdown":
         return f"\n\n---\n\n*Generated by **SciTeX Stats** | {timestamp}*\n\n*Professional Statistical Analysis Framework for Scientific Computing*\n"
-    elif format_type == 'text':
+    elif format_type == "text":
         return f"\n\n{'='*80}\nGenerated by SciTeX Stats | {timestamp}\nProfessional Statistical Analysis Framework for Scientific Computing\n{'='*80}\n"
     else:
         return f"Generated by SciTeX Stats | {timestamp}"
@@ -652,12 +556,12 @@ def _export_report_html(df, path, title, include_summary):
     """Generate HTML report with styling."""
     # Generate summary
     summary_html = ""
-    if include_summary and 'pvalue' in df.columns:
+    if include_summary and "pvalue" in df.columns:
         n_total = len(df)
-        n_sig_001 = (df['pvalue'] < 0.001).sum()
-        n_sig_01 = ((df['pvalue'] >= 0.001) & (df['pvalue'] < 0.01)).sum()
-        n_sig_05 = ((df['pvalue'] >= 0.01) & (df['pvalue'] < 0.05)).sum()
-        n_ns = (df['pvalue'] >= 0.05).sum()
+        n_sig_001 = (df["pvalue"] < 0.001).sum()
+        n_sig_01 = ((df["pvalue"] >= 0.001) & (df["pvalue"] < 0.01)).sum()
+        n_sig_05 = ((df["pvalue"] >= 0.01) & (df["pvalue"] < 0.05)).sum()
+        n_ns = (df["pvalue"] >= 0.05).sum()
 
         summary_html = f"""
         <div class="summary">
@@ -675,19 +579,23 @@ def _export_report_html(df, path, title, include_summary):
     # Style function for DataFrame
     def style_pvalue(val):
         if pd.isna(val):
-            return ''
+            return ""
         if val < 0.001:
-            return 'background-color: #FF6B6B; font-weight: bold; color: white;'
+            return (
+                "background-color: #FF6B6B; font-weight: bold; color: white;"
+            )
         elif val < 0.01:
-            return 'background-color: #FFA500; font-weight: bold; color: white;'
+            return (
+                "background-color: #FFA500; font-weight: bold; color: white;"
+            )
         elif val < 0.05:
-            return 'background-color: #FFE66D; font-weight: bold;'
+            return "background-color: #FFE66D; font-weight: bold;"
         else:
-            return 'background-color: #E8E8E8;'
+            return "background-color: #E8E8E8;"
 
     # Apply styling
-    if 'pvalue' in df.columns:
-        styled = df.style.applymap(style_pvalue, subset=['pvalue'])
+    if "pvalue" in df.columns:
+        styled = df.style.applymap(style_pvalue, subset=["pvalue"])
     else:
         styled = df.style
 
@@ -748,7 +656,7 @@ def _export_report_html(df, path, title, include_summary):
     </html>
     """
 
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         f.write(html_content)
 
     return path
@@ -759,10 +667,10 @@ def _export_report_markdown(df, path, title, include_summary):
     lines = [f"# {title}\n"]
 
     # Summary
-    if include_summary and 'pvalue' in df.columns:
+    if include_summary and "pvalue" in df.columns:
         n_total = len(df)
-        n_sig = (df['pvalue'] < 0.05).sum()
-        n_ns = (df['pvalue'] >= 0.05).sum()
+        n_sig = (df["pvalue"] < 0.05).sum()
+        n_ns = (df["pvalue"] >= 0.05).sum()
 
         lines.append("## Summary\n")
         lines.append(f"- Total tests: {n_total}")
@@ -774,10 +682,10 @@ def _export_report_markdown(df, path, title, include_summary):
     lines.append(df.to_markdown(index=False))
 
     # Add signature
-    lines.append(_get_scitex_signature('markdown'))
+    lines.append(_get_scitex_signature("markdown"))
 
-    with open(path, 'w') as f:
-        f.write('\n'.join(lines))
+    with open(path, "w") as f:
+        f.write("\n".join(lines))
 
     return path
 
@@ -787,9 +695,9 @@ def _export_report_text(df, path, title, include_summary):
     lines = [title, "=" * len(title), ""]
 
     # Summary
-    if include_summary and 'pvalue' in df.columns:
+    if include_summary and "pvalue" in df.columns:
         n_total = len(df)
-        n_sig = (df['pvalue'] < 0.05).sum()
+        n_sig = (df["pvalue"] < 0.05).sum()
 
         lines.append("SUMMARY")
         lines.append(f"Total tests: {n_total}")
@@ -801,10 +709,10 @@ def _export_report_text(df, path, title, include_summary):
     lines.append(df.to_string(index=False))
 
     # Add signature
-    lines.append(_get_scitex_signature('text'))
+    lines.append(_get_scitex_signature("text"))
 
-    with open(path, 'w') as f:
-        f.write('\n'.join(lines))
+    with open(path, "w") as f:
+        f.write("\n".join(lines))
 
     return path
 
@@ -814,7 +722,7 @@ def export_summary(
     path: str,
     columns: Optional[List[str]] = None,
     format: Optional[str] = None,
-    **kwargs
+    **kwargs,
 ) -> str:
     """
     Export summary of test results (selected columns only).
@@ -854,18 +762,18 @@ def export_summary(
     # Default summary columns
     if columns is None:
         columns = [
-            'test_method',
-            'var_x',
-            'var_y',
-            'n_x',
-            'n_y',
-            'statistic',
-            'pvalue',
-            'pstars',
-            'rejected',
-            'effect_size',
-            'effect_size_metric',
-            'effect_size_interpretation',
+            "test_method",
+            "var_x",
+            "var_y",
+            "n_x",
+            "n_y",
+            "statistic",
+            "pvalue",
+            "pstars",
+            "rejected",
+            "effect_size",
+            "effect_size_metric",
+            "effect_size_interpretation",
         ]
 
     # Convert to DataFrame
@@ -884,14 +792,22 @@ def export_summary(
 
 def convert_results(
     results: Union[Dict[str, Any], List[Dict[str, Any]], pd.DataFrame],
-    return_as: Literal['dict', 'dataframe', 'markdown', 'json', 'excel', 'latex', 'html', 'text'] = 'dict',
-    path: Optional[str] = None,
-    **kwargs
+    return_as: Literal[
+        "dict",
+        "dataframe",
+        "markdown",
+        "json",
+        "latex",
+        "html",
+        "text",
+    ] = "dict",
+    **kwargs,
 ) -> Union[dict, List[dict], pd.DataFrame, str]:
     """
-    Convert results to specified format.
+    Convert statistical test results to specified format.
 
-    This is the universal converter used by return_as parameter in all test functions.
+    This is a pure format converter - does NOT save files.
+    For saving, use scitex.io.save() after conversion.
 
     Parameters
     ----------
@@ -903,118 +819,90 @@ def convert_results(
         - 'dataframe': pandas DataFrame
         - 'markdown': Markdown table string
         - 'json': JSON string
-        - 'excel': Export to Excel (requires path)
         - 'latex': LaTeX table string
         - 'html': HTML table string
         - 'text': Plain text table string
-    path : str, optional
-        Output file path (required for 'excel', optional for others)
-        If provided, saves to file and returns path
     **kwargs : dict
-        Additional arguments passed to export/format functions
+        Additional arguments passed to format functions
 
     Returns
     -------
     output : dict, list, DataFrame, or str
         Converted results in requested format
 
+    Notes
+    -----
+    This function only handles format conversion. To save results to files,
+    convert to DataFrame first, then use scitex.io.save():
+
+    >>> df = convert_results(results, return_as='dataframe')
+    >>> stx.io.save(df, 'results.xlsx')
+
     Examples
     --------
     >>> result = {'pvalue': 0.01, 'var_x': 'A', 'var_y': 'B'}
+
+    # Convert to different formats
     >>> convert_results(result, return_as='dict')
     {'pvalue': 0.01, 'var_x': 'A', 'var_y': 'B'}
 
-    >>> convert_results(result, return_as='dataframe')
+    >>> df = convert_results(result, return_as='dataframe')
     # Returns DataFrame
 
     >>> convert_results(result, return_as='markdown')
     '| var_x | var_y | pvalue |\\n|-------|-------|--------|...'
 
-    >>> convert_results(result, return_as='excel', path='results.xlsx')
-    'results.xlsx'
-    """
-    # Convert to DataFrame first for most formats
-    if not isinstance(results, pd.DataFrame) and return_as != 'dict':
-        df = force_dataframe(results)
-    else:
-        df = results if isinstance(results, pd.DataFrame) else results
+    >>> latex_str = convert_results(result, return_as='latex')
 
-    # Handle each format
-    if return_as == 'dict':
+    # To save to file, use stx.io.save
+    >>> import scitex as stx
+    >>> df = convert_results(result, return_as='dataframe')
+    >>> stx.io.save(df, 'results.xlsx')  # Uses stx.io.save for file operations
+    """
+    # Handle each format - pure conversion, no file I/O
+    if return_as == "dict":
         if isinstance(results, dict):
             return results
         elif isinstance(results, list):
             return results
         elif isinstance(results, pd.DataFrame):
-            return df.to_dict('records') if len(df) > 1 else to_dict(df, row=0)
+            return (
+                results.to_dict("records")
+                if len(results) > 1
+                else to_dict(results, row=0)
+            )
 
-    elif return_as == 'dataframe':
+    elif return_as == "dataframe":
         return force_dataframe(results)
 
-    elif return_as == 'markdown':
+    elif return_as == "markdown":
         df_out = force_dataframe(results)
-        output = df_out.to_markdown(index=False)
-        if path:
-            with open(path, 'w') as f:
-                f.write(output)
-            return path
-        return output
+        return df_out.to_markdown(index=False, **kwargs)
 
-    elif return_as == 'json':
+    elif return_as == "json":
         df_out = force_dataframe(results)
-        output = df_out.to_json(orient='records', indent=2)
-        if path:
-            with open(path, 'w') as f:
-                f.write(output)
-            return path
-        return output
+        return df_out.to_json(orient="records", indent=2, **kwargs)
 
-    elif return_as == 'excel':
-        if not path:
-            raise ValueError("path is required for excel format")
-        return export_excel_styled(results, path, **kwargs)
-
-    elif return_as == 'latex':
+    elif return_as == "latex":
         df_out = force_dataframe(results)
-        output = df_out.to_latex(index=False, **kwargs)
-        if path:
-            with open(path, 'w') as f:
-                f.write(output)
-            return path
-        return output
+        return df_out.to_latex(index=False, **kwargs)
 
-    elif return_as == 'html':
+    elif return_as == "html":
         df_out = force_dataframe(results)
-        output = df_out.to_html(index=False, **kwargs)
-        if path:
-            with open(path, 'w') as f:
-                f.write(output)
-            return path
-        return output
+        return df_out.to_html(index=False, **kwargs)
 
-    elif return_as == 'text':
+    elif return_as == "text":
         df_out = force_dataframe(results)
-        output = df_out.to_string(index=False, **kwargs)
-        if path:
-            with open(path, 'w') as f:
-                f.write(output)
-            return path
-        return output
+        return df_out.to_string(index=False, **kwargs)
 
-    elif return_as == 'csv':
+    elif return_as == "csv":
         df_out = force_dataframe(results)
-        if path:
-            df_out.to_csv(path, index=False, **kwargs)
-            # Add signature as comment
-            with open(path, 'a') as f:
-                f.write(f"\n# {_get_scitex_signature('text').strip()}\n")
-            return path
         return df_out.to_csv(index=False, **kwargs)
 
     else:
         raise ValueError(
             f"Unknown return_as format: {return_as}. "
-            f"Use 'dict', 'dataframe', 'markdown', 'json', 'excel', 'latex', 'html', 'text', or 'csv'"
+            f"Use 'dict', 'dataframe', 'markdown', 'json', 'latex', 'html', or 'text'"
         )
 
 
@@ -1022,18 +910,20 @@ def convert_results(
 as_dataframe = force_dataframe
 
 __all__ = [
-    'normalize_result',
-    'to_dataframe',
-    'force_dataframe',
-    'to_dict',
-    'combine_results',
-    'convert_results',
-    'export_results',
-    'export_summary',
-    'export_excel_styled',
-    'export_report',
-    'as_dataframe',
-    'STANDARD_COLUMNS',
-    'STANDARD_DEFAULTS',
-    'COLUMN_TYPES',
+    "normalize_result",
+    "to_dataframe",
+    "force_dataframe",
+    "to_dict",
+    "combine_results",
+    "convert_results",
+    "export_results",
+    "export_summary",
+    "export_excel_styled",
+    "export_report",
+    "as_dataframe",
+    "STANDARD_COLUMNS",
+    "STANDARD_DEFAULTS",
+    "COLUMN_TYPES",
 ]
+
+# EOF

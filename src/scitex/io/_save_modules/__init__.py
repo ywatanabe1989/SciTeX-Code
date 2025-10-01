@@ -30,6 +30,7 @@ from ._hdf5 import _save_hdf5 as save_hdf5
 from ._matlab import _save_matlab as save_matlab
 from ._catboost import _save_catboost as save_catboost
 from ._text import _save_text as save_text
+from ._tex import _save_tex as save_tex
 from ._html import save_html
 from ._image import save_image
 from ._mp4 import _mk_mp4 as save_mp4
@@ -57,6 +58,7 @@ __all__ = [
     "save_matlab",
     "save_catboost",
     "save_text",
+    "save_tex",
     "save_html",
     "save_image",
     "save_mp4",

@@ -218,7 +218,7 @@ def main(args):
     ax.legend(handles=legend_elements, loc='upper left')
 
     # Save
-    stx.io.save(fig, './p2stars_demo.png')
+    stx.io.save(fig, './p2stars_demo.jpg')
     logger.info("Visualization saved")
 
     return 0

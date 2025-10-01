@@ -33,8 +33,9 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
 from scipy import stats
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -49,9 +50,11 @@ def test_mannwhitneyu(
     alternative: Literal['two-sided', 'less', 'greater'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform Mann-Whitney U test (Wilcoxon rank-sum test).
 
@@ -67,29 +70,31 @@ def test_mannwhitneyu(
         Significance level
     plot : bool, default False
         Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: 'Mann-Whitney U test'
-        - statistic_name: 'U'
         - statistic: U-statistic value
         - pvalue: p-value
-        - pstars: Significance stars
-        - rejected: Whether null hypothesis is rejected
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected
         - effect_size: Rank-biserial correlation
         - effect_size_metric: 'rank-biserial correlation'
         - effect_size_interpretation: Interpretation
         - n_x, n_y: Sample sizes
         - var_x, var_y: Variable labels
         - H0: Null hypothesis description
-    fig : matplotlib.figure.Figure, optional
-        Figure with visualizations (only if plot=True)
 
     Notes
     -----
@@ -157,15 +162,22 @@ def test_mannwhitneyu(
 
     Examples
     --------
-    >>> # Two samples with different medians
+    >>> # Basic usage
     >>> x = np.array([1, 2, 3, 4, 5])
     >>> y = np.array([3, 4, 5, 6, 7])
     >>> result = test_mannwhitneyu(x, y)
     >>> result['rejected']
     True
 
-    >>> # With visualization
-    >>> result, fig = test_mannwhitneyu(x, y, plot=True)
+    >>> # With auto-created figure
+    >>> result = test_mannwhitneyu(x, y, plot=True)
+
+    >>> # Plot on existing axes
+    >>> fig, ax = plt.subplots()
+    >>> result = test_mannwhitneyu(x, y, ax=ax)
+
+    >>> # With verbose output
+    >>> result = test_mannwhitneyu(x, y, verbose=True)
     """
     from ...utils._formatters import p2stars
     from ...utils._normalizers import force_dataframe, convert_results
@@ -205,16 +217,15 @@ def test_mannwhitneyu(
     # Compile results
     result = {
         'test_method': 'Mann-Whitney U test',
-        'statistic_name': 'U',
         'statistic': round(u_stat, decimals),
         'n_x': n_x,
         'n_y': n_y,
         'var_x': var_x,
         'var_y': var_y,
         'pvalue': round(pvalue, decimals),
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': rejected,
+        'significant': rejected,
         'effect_size': round(r, decimals),
         'effect_size_metric': 'rank-biserial correlation',
         'effect_size_interpretation': effect_interp,
@@ -227,10 +238,20 @@ def test_mannwhitneyu(
     else:
         result['recommendation'] = "No significant difference in medians detected."
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"Mann-Whitney U: U = {u_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Rank-biserial r = {r:.3f} ({effect_interp})")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_mannwhitneyu(x, y, var_x, var_y, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_mannwhitneyu(x, y, var_x, var_y, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
@@ -238,43 +259,59 @@ def test_mannwhitneyu(
     elif return_as not in ['dict', 'dataframe']:
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_mannwhitneyu(x, y, var_x, var_y, result):
-    """Create visualization for Mann-Whitney U test."""
-    fig, axes = stx.plt.subplots(2, 2, figsize=(14, 10))
-
-    # Plot 1: Box plots with individual points
-    ax = axes[0, 0]
-
+def _plot_mannwhitneyu(x, y, var_x, var_y, result, ax):
+    """Create violin+swarm visualization on given axes."""
     positions = [0, 1]
-    box_data = [x, y]
-    bp = ax.boxplot(
-        box_data,
+    data = [x, y]
+    colors = ["C0", "C1"]
+
+    # Violin plot (background, transparent)
+    parts = ax.violinplot(
+        data,
         positions=positions,
-        widths=0.4,
-        patch_artist=True,
-        showfliers=False
+        widths=0.6,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
     )
 
-    # Color boxes
-    colors = ['lightblue', 'lightcoral']
-    for patch, color in zip(bp['boxes'], colors):
-        patch.set_facecolor(color)
+    for i, pc in enumerate(parts["bodies"]):
+        pc.set_facecolor(colors[i])
+        pc.set_alpha(0.3)
+        pc.set_edgecolor(colors[i])
+        pc.set_linewidth(1.5)
 
-    # Add jittered points
+    # Swarm plot (foreground - scatter in front!)
     np.random.seed(42)
-    for i, vals in enumerate(box_data):
+    for i, vals in enumerate(data):
         y_vals = vals
         x_vals = np.random.normal(positions[i], 0.04, size=len(vals))
-        ax.scatter(x_vals, y_vals, alpha=0.5, s=30)
+        ax.scatter(
+            x_vals, y_vals,
+            alpha=0.6,
+            s=40,
+            color=colors[i],
+            edgecolors='white',
+            linewidths=0.5,
+            zorder=3  # In front!
+        )
 
-    # Add significance annotation
+    # Add median lines
+    for i, vals in enumerate(data):
+        median = np.median(vals)
+        ax.hlines(
+            median,
+            positions[i] - 0.3,
+            positions[i] + 0.3,
+            colors='black',
+            linewidth=2,
+            zorder=4
+        )
+
+    # Significance stars
     y_max = max(np.max(x), np.max(y))
     y_min = min(np.min(x), np.min(y))
     y_range = y_max - y_min
@@ -283,7 +320,7 @@ def _plot_mannwhitneyu(x, y, var_x, var_y, result):
     ax.plot([0, 1], [sig_y, sig_y], 'k-', linewidth=1.5)
     ax.text(
         0.5, sig_y + y_range * 0.02,
-        result['pstars'],
+        result['stars'],
         ha='center', va='bottom',
         fontsize=14, fontweight='bold'
     )
@@ -291,91 +328,8 @@ def _plot_mannwhitneyu(x, y, var_x, var_y, result):
     ax.set_xticks(positions)
     ax.set_xticklabels([var_x, var_y])
     ax.set_ylabel('Value')
-    ax.set_title(f'Mann-Whitney U Test\nU = {result["statistic"]:.1f}, p = {result["pvalue"]:.4f}')
+    ax.set_title(f"Mann-Whitney U Test\nU = {result['statistic']:.2f}, p = {result['pvalue']:.4f} {result['stars']}")
     ax.grid(True, alpha=0.3, axis='y')
-
-    # Plot 2: Histograms
-    ax = axes[0, 1]
-
-    bins = np.histogram_bin_edges(np.concatenate([x, y]), bins='auto')
-    ax.hist(x, bins=bins, alpha=0.5, label=var_x, density=True, edgecolor='black')
-    ax.hist(y, bins=bins, alpha=0.5, label=var_y, density=True, edgecolor='black')
-
-    # Add median lines
-    ax.axvline(np.median(x), color='blue', linestyle='--', linewidth=2, alpha=0.7,
-               label=f'{var_x} median')
-    ax.axvline(np.median(y), color='red', linestyle='--', linewidth=2, alpha=0.7,
-               label=f'{var_y} median')
-
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Density')
-    ax.set_title('Distribution Comparison')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Plot 3: Rank distribution
-    ax = axes[1, 0]
-
-    # Combine data and compute ranks
-    combined = np.concatenate([x, y])
-    ranks = stats.rankdata(combined)
-
-    n_x = len(x)
-    ranks_x = ranks[:n_x]
-    ranks_y = ranks[n_x:]
-
-    # Plot rank distributions
-    ax.hist(ranks_x, bins=20, alpha=0.5, label=f'{var_x} ranks', edgecolor='black')
-    ax.hist(ranks_y, bins=20, alpha=0.5, label=f'{var_y} ranks', edgecolor='black')
-
-    # Add mean rank lines
-    ax.axvline(np.mean(ranks_x), color='blue', linestyle='--', linewidth=2,
-               label=f'{var_x} mean rank: {np.mean(ranks_x):.1f}')
-    ax.axvline(np.mean(ranks_y), color='red', linestyle='--', linewidth=2,
-               label=f'{var_y} mean rank: {np.mean(ranks_y):.1f}')
-
-    ax.set_xlabel('Rank')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Rank Distribution')
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3)
-
-    # Plot 4: Cumulative distribution
-    ax = axes[1, 1]
-
-    x_sorted = np.sort(x)
-    y_sorted = np.sort(y)
-
-    ecdf_x = np.arange(1, len(x) + 1) / len(x)
-    ecdf_y = np.arange(1, len(y) + 1) / len(y)
-
-    ax.step(x_sorted, ecdf_x, where='post', linewidth=2, label=var_x, color='blue')
-    ax.step(y_sorted, ecdf_y, where='post', linewidth=2, label=var_y, color='red')
-
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Cumulative Probability')
-    ax.set_title('Empirical CDF Comparison')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Add text with results
-    text_str = (
-        f"U = {result['statistic']:.1f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
-        f"r = {result['effect_size']:.3f} ({result['effect_size_interpretation']})\n"
-        f"n₁ = {result['n_x']}, n₂ = {result['n_y']}"
-    )
-    ax.text(
-        0.98, 0.02, text_str,
-        transform=ax.transAxes,
-        verticalalignment='bottom',
-        horizontalalignment='right',
-        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
-        fontsize=9
-    )
-
-    plt.tight_layout()
-    return fig
 
 
 """Main function"""
@@ -392,12 +346,7 @@ def main(args):
     x1 = np.random.normal(5, 1, 30)
     y1 = np.random.normal(6, 1, 30)
 
-    result1 = test_mannwhitneyu(x1, y1, var_x='Group A', var_y='Group B')
-
-    logger.info(f"U = {result1['statistic']:.1f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
-    logger.info(f"r = {result1['effect_size']:.3f} ({result1['effect_size_interpretation']})")
-    logger.info(f"Recommendation: {result1['recommendation']}")
+    result1 = test_mannwhitneyu(x1, y1, var_x='Group A', var_y='Group B', verbose=True)
 
     # Example 2: Non-normal data
     logger.info("\n=== Example 2: Non-normal (skewed) data ===")
@@ -405,11 +354,7 @@ def main(args):
     x2 = np.random.exponential(2, 40)
     y2 = np.random.exponential(3, 40)
 
-    result2 = test_mannwhitneyu(x2, y2, var_x='Exp(λ=0.5)', var_y='Exp(λ=0.33)')
-
-    logger.info(f"U = {result2['statistic']:.1f}")
-    logger.info(f"p = {result2['pvalue']:.4f} {result2['pstars']}")
-    logger.info(f"r = {result2['effect_size']:.3f}")
+    result2 = test_mannwhitneyu(x2, y2, var_x='Exp(λ=0.5)', var_y='Exp(λ=0.33)', verbose=True)
 
     # Example 3: With outliers
     logger.info("\n=== Example 3: Data with outliers ===")
@@ -417,9 +362,7 @@ def main(args):
     x3 = np.concatenate([np.random.normal(0, 1, 35), [10, 12]])
     y3 = np.random.normal(0.5, 1, 40)
 
-    result3 = test_mannwhitneyu(x3, y3, var_x='With Outliers', var_y='Normal')
-
-    logger.info(f"U = {result3['statistic']:.1f}, p = {result3['pvalue']:.4f}")
+    result3 = test_mannwhitneyu(x3, y3, var_x='With Outliers', var_y='Normal', verbose=True)
     logger.info("Mann-Whitney U is robust to outliers")
 
     # Example 4: Ordinal data (Likert scale)
@@ -428,10 +371,7 @@ def main(args):
     likert1 = np.random.choice([1, 2, 3, 4, 5], size=50, p=[0.05, 0.15, 0.40, 0.30, 0.10])
     likert2 = np.random.choice([1, 2, 3, 4, 5], size=50, p=[0.05, 0.10, 0.25, 0.35, 0.25])
 
-    result4 = test_mannwhitneyu(likert1, likert2, var_x='Condition A', var_y='Condition B')
-
-    logger.info(f"U = {result4['statistic']:.1f}")
-    logger.info(f"p = {result4['pvalue']:.4f} {result4['pstars']}")
+    result4 = test_mannwhitneyu(likert1, likert2, var_x='Condition A', var_y='Condition B', verbose=True)
     logger.info(f"Medians: {np.median(likert1):.1f} vs {np.median(likert2):.1f}")
 
     # Example 5: One-sided tests
@@ -440,11 +380,11 @@ def main(args):
     x5 = np.random.normal(5, 1, 40)
     y5 = np.random.normal(6, 1, 40)
 
-    result_two = test_mannwhitneyu(x5, y5, alternative='two-sided')
-    result_less = test_mannwhitneyu(x5, y5, alternative='less')
+    logger.info("Two-sided:")
+    result_two = test_mannwhitneyu(x5, y5, alternative='two-sided', verbose=True)
 
-    logger.info(f"Two-sided: p = {result_two['pvalue']:.4f} {result_two['pstars']}")
-    logger.info(f"One-sided (less): p = {result_less['pvalue']:.4f} {result_less['pstars']}")
+    logger.info("\nOne-sided (less):")
+    result_less = test_mannwhitneyu(x5, y5, alternative='less', verbose=True)
 
     # Example 6: With visualization
     logger.info("\n=== Example 6: Complete analysis with visualization ===")
@@ -452,16 +392,15 @@ def main(args):
     x6 = np.random.gamma(2, 2, 50)
     y6 = np.random.gamma(3, 2, 50)
 
-    result6, fig6 = test_mannwhitneyu(
+    result6 = test_mannwhitneyu(
         x6, y6,
         var_x='Gamma(k=2)',
         var_y='Gamma(k=3)',
-        plot=True
+        plot=True,
+        verbose=True
     )
-
-    logger.info(f"U = {result6['statistic']:.1f}, p = {result6['pvalue']:.4f}")
-    stx.io.save(fig6, './mannwhitneyu_demo.png')
-    logger.info("Visualization saved")
+    stx.io.save(stx.plt.gcf(), "./mannwhitneyu_example6.jpg")
+    stx.plt.close()
 
     # Example 7: Comparison with t-test
     logger.info("\n=== Example 7: Mann-Whitney U vs t-test ===")
@@ -472,22 +411,20 @@ def main(args):
     x_norm = np.random.normal(5, 1, 50)
     y_norm = np.random.normal(5.5, 1, 50)
 
-    mwu_result = test_mannwhitneyu(x_norm, y_norm)
-    ttest_result = test_ttest_ind(x_norm, y_norm)
-
-    logger.info(f"Mann-Whitney U: p = {mwu_result['pvalue']:.4f}")
-    logger.info(f"t-test:         p = {ttest_result['pvalue']:.4f}")
+    logger.info("Mann-Whitney U:")
+    mwu_result = test_mannwhitneyu(x_norm, y_norm, verbose=True)
+    logger.info("\nt-test:")
+    ttest_result = test_ttest_ind(x_norm, y_norm, verbose=True)
 
     # Non-normal data - MWU more appropriate
     x_exp = np.random.exponential(2, 50)
     y_exp = np.random.exponential(2.5, 50)
 
-    mwu_result2 = test_mannwhitneyu(x_exp, y_exp)
-    ttest_result2 = test_ttest_ind(x_exp, y_exp)
-
     logger.info(f"\nFor exponential data:")
-    logger.info(f"Mann-Whitney U: p = {mwu_result2['pvalue']:.4f}")
-    logger.info(f"t-test:         p = {ttest_result2['pvalue']:.4f}")
+    logger.info("Mann-Whitney U:")
+    mwu_result2 = test_mannwhitneyu(x_exp, y_exp, verbose=True)
+    logger.info("\nt-test:")
+    ttest_result2 = test_ttest_ind(x_exp, y_exp, verbose=True)
     logger.info("Mann-Whitney U is more reliable for non-normal data")
 
     # Example 8: Comparison with Brunner-Munzel

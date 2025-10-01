@@ -185,7 +185,7 @@ def _setup_matplotlib(
     Parameters
     ----------
     plt : module
-        Matplotlib.pyplot module
+        Matplotlib.pyplot module (will be replaced with scitex.plt)
     agg : bool
         Whether to use Agg backend
     **mpl_kwargs : dict
@@ -194,15 +194,18 @@ def _setup_matplotlib(
     Returns
     -------
     tuple
-        (plt, CC) - Configured pyplot module and color cycle
+        (plt, CC) - Configured scitex.plt module and color cycle
     """
     if plt is not None:
         plt.close("all")
-        plt, CC = configure_mpl(plt, **mpl_kwargs)
+        _, CC = configure_mpl(plt, **mpl_kwargs)
         CC["gray"] = CC["grey"]
         if agg:
             matplotlib.use("Agg")
-        return plt, CC
+
+        # Replace matplotlib.pyplot with scitex.plt to get wrapped functions
+        import scitex.plt as stx_plt
+        return stx_plt, CC
     return plt, None
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-01 05:32:39 (ywatanabe)"
+# Timestamp: "2025-10-01 18:14:34 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/stats/tests/nonparametric/_test_kruskal.py
 # ----------------------------------------
 from __future__ import annotations
@@ -29,9 +29,10 @@ IO:
 
 """Imports"""
 import argparse
-from typing import List, Literal, Optional, Tuple, Union
+from typing import List, Literal, Optional, Union
 
 import matplotlib
+import matplotlib.axes
 import numpy as np
 import pandas as pd
 import scitex as stx
@@ -48,14 +49,11 @@ def test_kruskal(
     var_names: Optional[List[str]] = None,
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal["dict", "dataframe"] = "dict",
     decimals: int = 3,
-) -> Union[
-    dict,
-    pd.DataFrame,
-    Tuple[dict, "matplotlib.figure.Figure"],
-    Tuple[pd.DataFrame, "matplotlib.figure.Figure"],
-]:
+    verbose: bool = False,
+) -> Union[dict, pd.DataFrame]:
     """
     Perform Kruskal-Wallis H test for independent samples.
 
@@ -69,21 +67,25 @@ def test_kruskal(
         Significance level
     plot : bool, default False
         Whether to generate box plots
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: 'Kruskal-Wallis H test'
-        - statistic_name: 'H'
         - statistic: H-statistic value
         - pvalue: p-value
-        - pstars: Significance stars
-        - rejected: Whether null hypothesis is rejected
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected
         - effect_size: Epsilon-squared (ε²)
         - effect_size_metric: 'epsilon-squared'
         - effect_size_interpretation: Interpretation of epsilon-squared
@@ -91,8 +93,6 @@ def test_kruskal(
         - n_samples: Sample sizes for each group
         - var_names: Group labels
         - H0: Null hypothesis description
-    fig : matplotlib.figure.Figure, optional
-        Figure object with box plots (only if plot=True)
 
     Notes
     -----
@@ -228,15 +228,14 @@ def test_kruskal(
     # Compile results
     result = {
         "test_method": "Kruskal-Wallis H test",
-        "statistic_name": "H",
         "statistic": round(h_stat, decimals),
         "n_groups": n_groups,
         "n_samples": n_samples,
         "var_names": var_names,
         "pvalue": round(pvalue, decimals),
-        "pstars": p2stars(pvalue),
+        "stars": p2stars(pvalue),
         "alpha": alpha,
-        "rejected": rejected,
+        "significant": rejected,
         "effect_size": round(effect_size, decimals),
         "effect_size_metric": "epsilon-squared",
         "effect_size_interpretation": effect_size_interp,
@@ -252,10 +251,24 @@ def test_kruskal(
     else:
         result["recommendation"] = "No significant difference between groups."
 
+    # Log results if verbose
+    if verbose:
+        logger.info(
+            f"Kruskal-Wallis: H = {h_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}"
+        )
+        logger.info(
+            f"Epsilon-squared = {effect_size:.3f} ({effect_size_interp})"
+        )
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_kruskal(groups, var_names, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_kruskal(groups, var_names, result, ax)
 
     # Convert to requested format
     if return_as == "dataframe":
@@ -264,113 +277,84 @@ def test_kruskal(
         # Use universal converter for other formats
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_kruskal(groups, var_names, result):
-    """Create box plots for Kruskal-Wallis test visualization."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(14, 6))
+def _plot_kruskal(groups, var_names, result, ax):
+    """Create violin+swarm visualization on given axes."""
+    n_groups = len(groups)
+    positions = np.arange(n_groups)
+    colors = [f"C{i}" for i in range(n_groups)]
 
-    # Plot 1: Box plots
-    ax = axes[0]
-
-    # Prepare data for box plot
-    positions = np.arange(1, len(groups) + 1)
-    bp = ax.boxplot(
-        groups,
-        positions=positions,
-        labels=var_names,
-        patch_artist=True,
-        widths=0.6,
-    )
-
-    # Color boxes
-    colors = stx.plt.cm.Set2(np.linspace(0, 1, len(groups)))
-    for patch, color in zip(bp["boxes"], colors):
-        patch.set_facecolor(color)
-        patch.set_alpha(0.7)
-
-    ax.set_ylabel("Value")
-    ax.set_title("Group Comparison (Kruskal-Wallis Test)")
-    ax.grid(True, alpha=0.3, axis="y")
-
-    # Add significance annotation
-    if result["rejected"]:
-        y_max = max(np.max(g) for g in groups)
-        y_range = y_max - min(np.min(g) for g in groups)
-        y_pos = y_max + 0.1 * y_range
-
-        ax.plot([1, len(groups)], [y_pos, y_pos], "k-", linewidth=1.5)
-        ax.text(
-            (1 + len(groups)) / 2,
-            y_pos + 0.02 * y_range,
-            f"H = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['pstars']}",
-            ha="center",
-            va="bottom",
-            fontsize=10,
-            fontweight="bold",
-        )
-
-    # Add text with results
-    text_str = (
-        f"H = {result['statistic']:.3f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
-        f"ε² = {result['effect_size']:.3f} ({result['effect_size_interpretation']})\n"
-        f"Rejected: {result['rejected']}"
-    )
-    ax.text(
-        0.02,
-        0.98,
-        text_str,
-        transform=ax.transAxes,
-        verticalalignment="top",
-        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
-        fontsize=10,
-    )
-
-    # Plot 2: Violin plots
-    ax = axes[1]
-
+    # Violin plot (background, transparent)
     parts = ax.violinplot(
         groups,
         positions=positions,
-        widths=0.7,
-        showmeans=True,
-        showmedians=True,
+        widths=0.6,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
     )
 
-    # Color violin plots
     for i, pc in enumerate(parts["bodies"]):
         pc.set_facecolor(colors[i])
-        pc.set_alpha(0.7)
+        pc.set_alpha(0.3)
+        pc.set_edgecolor(colors[i])
+        pc.set_linewidth(1.5)
+
+    # Swarm plot (foreground - scatter in front!)
+    np.random.seed(42)
+    for i, vals in enumerate(groups):
+        y_vals = vals
+        x_vals = np.random.normal(positions[i], 0.04, size=len(vals))
+        ax.scatter(
+            x_vals,
+            y_vals,
+            alpha=0.6,
+            s=40,
+            color=colors[i],
+            edgecolors="white",
+            linewidths=0.5,
+            zorder=3,  # In front!
+        )
+
+    # Add median lines
+    for i, vals in enumerate(groups):
+        median = np.median(vals)
+        ax.hlines(
+            median,
+            positions[i] - 0.3,
+            positions[i] + 0.3,
+            colors="black",
+            linewidth=2,
+            zorder=4,
+        )
+
+    # Significance annotation
+    if result["rejected"]:
+        y_max = max(np.max(g) for g in groups)
+        y_min = min(np.min(g) for g in groups)
+        y_range = y_max - y_min
+        y_pos = y_max + 0.1 * y_range
+
+        ax.plot([0, n_groups - 1], [y_pos, y_pos], "k-", linewidth=1.5)
+        ax.text(
+            (n_groups - 1) / 2,
+            y_pos + 0.02 * y_range,
+            result["stars"],
+            ha="center",
+            va="bottom",
+            fontsize=14,
+            fontweight="bold",
+        )
 
     ax.set_xticks(positions)
     ax.set_xticklabels(var_names)
     ax.set_ylabel("Value")
-    ax.set_title("Distribution Comparison (Violin Plot)")
+    ax.set_title(
+        f"Kruskal-Wallis Test\nH = {result['statistic']:.2f}, p = {result['pvalue']:.4f} {result['stars']}"
+    )
     ax.grid(True, alpha=0.3, axis="y")
-
-    # Add median values as text
-    medians = [np.median(g) for g in groups]
-    for i, (pos, med) in enumerate(zip(positions, medians)):
-        ax.text(
-            pos,
-            med,
-            f"{med:.2f}",
-            ha="center",
-            va="bottom",
-            fontsize=9,
-            fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.7),
-        )
-
-    plt.tight_layout()
-
-    return fig
 
 
 """Main function"""
@@ -391,16 +375,8 @@ def main(args):
     group3 = np.random.normal(9, 1, 30)
 
     result1 = test_kruskal(
-        [group1, group2, group3], var_names=["Group A", "Group B", "Group C"]
+        [group1, group2, group3], var_names=["Group A", "Group B", "Group C"], verbose=True
     )
-
-    logger.info(f"H = {result1['statistic']:.3f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
-    logger.info(
-        f"ε² = {result1['effect_size']:.3f} ({result1['effect_size_interpretation']})"
-    )
-    logger.info(f"Rejected: {result1['rejected']}")
-    logger.info(f"Recommendation: {result1['recommendation']}")
 
     # Example 2: No significant difference
     logger.info("\n=== Example 2: No significant difference ===")
@@ -412,13 +388,10 @@ def main(args):
     result2 = test_kruskal(
         [group1, group2, group3],
         var_names=["Control", "Treatment 1", "Treatment 2"],
+        verbose=True
     )
 
-    logger.info(f"H = {result2['statistic']:.3f}")
-    logger.info(f"p = {result2['pvalue']:.4f}")
-    logger.info(f"Rejected: {result2['rejected']}")
-
-    # Example 3: Non-normal data with outliers
+    # Example 3: Non-normal data with outliers (with visualization)
     logger.info("\n=== Example 3: Non-normal data with outliers ===")
 
     group1 = np.concatenate(
@@ -427,20 +400,14 @@ def main(args):
     group2 = np.random.exponential(3, 27)
     group3 = np.random.exponential(4, 28)
 
-    result3, fig3 = test_kruskal(
+    result3 = test_kruskal(
         [group1, group2, group3],
         var_names=["Exponential 1", "Exponential 2", "Exponential 3"],
         plot=True,
+        verbose=True
     )
-
-    logger.info(f"H = {result3['statistic']:.3f}")
-    logger.info(f"p = {result3['pvalue']:.4f} {result3['pstars']}")
-    logger.info(
-        f"ε² = {result3['effect_size']:.3f} ({result3['effect_size_interpretation']})"
-    )
-
-    stx.io.save(fig3, "./kruskal_test_demo.png")
-    logger.info("Visualization saved")
+    stx.io.save(stx.plt.gcf(), "./kruskal_example3.jpg")
+    stx.plt.close()
 
     # Example 4: Four groups comparison
     logger.info("\n=== Example 4: Four groups comparison ===")
@@ -453,12 +420,7 @@ def main(args):
     result4 = test_kruskal(
         [group1, group2, group3, group4],
         var_names=["Dose 0", "Dose 1", "Dose 2", "Dose 3"],
-    )
-
-    logger.info(f"H = {result4['statistic']:.3f}")
-    logger.info(f"p = {result4['pvalue']:.4f} {result4['pstars']}")
-    logger.info(
-        f"ε² = {result4['effect_size']:.3f} ({result4['effect_size_interpretation']})"
+        verbose=True
     )
 
     # Example 5: Ordinal data (Likert scale)
@@ -478,10 +440,8 @@ def main(args):
     result5 = test_kruskal(
         [likert1, likert2, likert3],
         var_names=["Condition A", "Condition B", "Condition C"],
+        verbose=True
     )
-
-    logger.info(f"H = {result5['statistic']:.3f}")
-    logger.info(f"p = {result5['pvalue']:.4f} {result5['pstars']}")
     logger.info(
         f"Medians: {np.median(likert1):.1f}, {np.median(likert2):.1f}, {np.median(likert3):.1f}"
     )
@@ -499,7 +459,7 @@ def main(args):
     # Perform overall test
     overall = test_kruskal(groups, var_names=names)
 
-    if overall["rejected"]:
+    if overall["significant"]:
         logger.info(
             "Overall test significant. Performing post-hoc pairwise comparisons..."
         )
@@ -514,7 +474,7 @@ def main(args):
                 pairwise_results.append(result)
                 logger.info(
                     f"{names[i]} vs {names[j]}: "
-                    f"p = {result['pvalue']:.4f} {result['pstars']}"
+                    f"p = {result['pvalue']:.4f} {result['stars']}"
                 )
 
         # Apply Bonferroni correction
@@ -525,7 +485,7 @@ def main(args):
             logger.info(
                 f"{res['var_x']} vs {res['var_y']}: "
                 f"p_adjusted = {res['pvalue_adjusted']:.4f}, "
-                f"rejected = {res['rejected']}"
+                f"significant = {res['significant']}"
             )
 
     # Example 7: Export results

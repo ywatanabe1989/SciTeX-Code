@@ -27,12 +27,17 @@ IO:
 """
 
 """Imports"""
+import argparse
 import numpy as np
 import pandas as pd
 from typing import Union, Optional, Literal, Tuple, List
 from scipy import stats
+import scitex as stx
+from scitex.logging import getLogger
 from ...utils._formatters import p2stars
 from ...utils._normalizers import convert_results
+
+logger = getLogger(__name__)
 
 try:
     import matplotlib
@@ -186,8 +191,8 @@ def test_cochran_q(
         - n_conditions: Number of conditions
         - proportions: Success proportion for each condition
         - n_successes: Number of successes per condition
-        - rejected: Whether to reject null hypothesis
-        - significant: Same as rejected
+        - significant: Whether to reject null hypothesis
+        - stars: Significance stars
 
     If plot=True, returns tuple of (result, figure)
 
@@ -349,9 +354,8 @@ def test_cochran_q(
         'n_successes': [int(n) for n in n_successes],
         'proportions': [round(float(p), decimals) for p in proportions],
         'alpha': alpha,
-        'rejected': pvalue < alpha,
         'significant': pvalue < alpha,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
     }
 
     # Generate plot if requested
@@ -390,9 +394,9 @@ def _plot_cochran_q(data, result, condition_names):
 
     ax.set_xticks(range(n_conditions))
     ax.set_xticklabels(condition_names, rotation=45, ha='right')
-    ax.set_xlabel('Condition', fontsize=12)
-    ax.set_ylabel('Cumulative Successes', fontsize=12)
-    ax.set_title('Individual Subject Patterns', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Condition')
+    ax.set_ylabel('Cumulative Successes')
+    ax.set_title('Individual Subject Patterns', fontweight='bold')
     ax.set_ylim([0, n_subjects])
     ax.grid(True, alpha=0.3, axis='y')
 
@@ -406,13 +410,13 @@ def _plot_cochran_q(data, result, condition_names):
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width()/2., height,
                f'{count}/{n_subjects}\n({proportions[i]:.1%})',
-               ha='center', va='bottom', fontsize=10)
+               ha='center', va='bottom')
 
     ax.set_xticks(range(n_conditions))
     ax.set_xticklabels(condition_names, rotation=45, ha='right')
-    ax.set_xlabel('Condition', fontsize=12)
-    ax.set_ylabel('Proportion of Successes', fontsize=12)
-    ax.set_title('Success Proportions', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Condition')
+    ax.set_ylabel('Proportion of Successes')
+    ax.set_title('Success Proportions', fontweight='bold')
     ax.set_ylim([0, 1.0])
     ax.grid(True, alpha=0.3, axis='y')
 
@@ -430,7 +434,7 @@ def _plot_cochran_q(data, result, condition_names):
     result_text += "=" * 30 + "\n\n"
     result_text += f"Q = {result['statistic']:.3f}\n"
     result_text += f"df = {result['df']}\n"
-    result_text += f"p-value = {result['pvalue']:.4f} {result['pstars']}\n\n"
+    result_text += f"p-value = {result['pvalue']:.4f} {result['stars']}\n\n"
     result_text += f"Effect size (W) = {result['effect_size']:.3f}\n"
     result_text += f"Interpretation:\n  {result['effect_size_interpretation']}\n\n"
     result_text += f"Subjects: {result['n_subjects']}\n"
@@ -443,7 +447,6 @@ def _plot_cochran_q(data, result, condition_names):
 
     ax.text(0.1, 0.5, result_text,
            transform=ax.transAxes,
-           fontsize=10,
            verticalalignment='center',
            fontfamily='monospace',
            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
@@ -451,25 +454,11 @@ def _plot_cochran_q(data, result, condition_names):
     plt.tight_layout()
     return fig
 
+"""Main function"""
+def main(args):
 
-if __name__ == "__main__":
-    import sys
-    import argparse
-    import scitex as stx
 
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args([])
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
-        sys=sys,
-        plt=plt,
-        args=args,
-        file=__FILE__,
-        verbose=True,
-        agg=True,
-    )
-
-    logger = stx.logging.getLogger(__name__)
 
     logger.info("=" * 70)
     logger.info("Cochran's Q Test Examples")
@@ -494,15 +483,17 @@ if __name__ == "__main__":
         [0, 0, 0, 1],
     ])
 
-    result = test_cochran_q(
+    result, _ = test_cochran_q(
         data,
         condition_names=['Visit 1', 'Visit 2', 'Visit 3', 'Visit 4'],
         plot=True
     )
 
-    logger.info(f"Q = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['pstars']}")
+    logger.info(f"Q = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['stars']}")
     logger.info(f"Effect size (W) = {result['effect_size']:.3f} ({result['effect_size_interpretation']})")
     logger.info(f"Proportions: {[f'{p:.1%}' for p in result['proportions']]}")
+    stx.io.save(plt.gcf(), "./.dev/cochran_q_example1.jpg")
+    plt.close()
 
     # Example 2: Symptom presence (binary)
     logger.info("\n[Example 2] Symptom presence across 3 time points")
@@ -519,7 +510,7 @@ if __name__ == "__main__":
         [1, 1, 1],
     ])
 
-    result_symptom = test_cochran_q(
+    result_symptom, _ = test_cochran_q(
         symptom_data,
         condition_names=['Baseline', 'Week 2', 'Week 4'],
         plot=True
@@ -527,6 +518,8 @@ if __name__ == "__main__":
 
     logger.info(f"Q({result_symptom['df']}) = {result_symptom['statistic']:.3f}")
     logger.info(f"p-value = {result_symptom['pvalue']:.4f}")
+    stx.io.save(plt.gcf(), "./.dev/cochran_q_example2.jpg")
+    plt.close()
 
     # Example 3: Comparison with Friedman test
     logger.info("\n[Example 3] Comparison: Cochran Q vs Friedman")
@@ -555,7 +548,7 @@ if __name__ == "__main__":
         'Success': values
     })
 
-    result_long = test_cochran_q(
+    result_long, _ = test_cochran_q(
         df_long,
         subject_col='Subject',
         condition_col='TimePoint',
@@ -564,19 +557,55 @@ if __name__ == "__main__":
     )
 
     logger.info(f"Q = {result_long['statistic']:.3f}, p = {result_long['pvalue']:.4f}")
+    stx.io.save(plt.gcf(), "./.dev/cochran_q_example4.jpg")
+    plt.close()
 
     # Example 5: Export results
     logger.info("\n[Example 5] Export results")
     logger.info("-" * 70)
 
-    convert_results(result, return_as='excel', path='./cochran_q_results.xlsx')
+    df_result = convert_results(result, return_as='dataframe')
+    df_result.to_excel('./cochran_q_results.xlsx', index=False)
     logger.info("Saved to: ./cochran_q_results.xlsx")
+
+
+    return 0
+
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    return parser.parse_args()
+
+
+def run_main():
+    """Initialize SciTeX framework and run main."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=args.verbose,
+        agg=True,
+    )
+
+    exit_status = main(args)
 
     stx.session.close(
         CONFIG,
-        verbose=False,
-        notify=False,
-        exit_status=0,
+        verbose=args.verbose,
+        exit_status=exit_status,
     )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

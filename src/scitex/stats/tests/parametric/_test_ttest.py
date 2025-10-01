@@ -32,8 +32,10 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple
+from typing import Union, Optional, Literal
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -49,8 +51,10 @@ def test_ttest_ind(
     equal_var: bool = True,
     alpha: float = 0.05,
     plot: bool = False,
-    return_as: Literal['dict', 'dataframe'] = 'dict'
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    ax: Optional[matplotlib.axes.Axes] = None,
+    return_as: Literal['dict', 'dataframe'] = 'dict',
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform independent samples t-test.
 
@@ -76,26 +80,28 @@ def test_ttest_ind(
         Significance level
     plot : bool, default False
         Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: Name of test performed
-        - statistic_name: 't'
         - statistic: t-statistic value
         - pvalue: p-value
-        - pstars: Significance stars
-        - rejected: Whether null hypothesis is rejected
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected
         - effect_size: Cohen's d
         - power: Statistical power
         - n_x, n_y: Sample sizes
         - var_x, var_y: Variable labels
         - H0: Null hypothesis description
-    fig : matplotlib.figure.Figure, optional
-        Figure object (only if plot=True)
 
     Notes
     -----
@@ -128,12 +134,16 @@ def test_ttest_ind(
     >>> result['pvalue']
     0.109...
 
-    >>> # With visualization
-    >>> result, fig = test_ttest_ind(x, y, plot=True)
+    >>> # With auto-created figure
+    >>> result = test_ttest_ind(x, y, plot=True)
+
+    >>> # Plot on existing axes
+    >>> fig, ax = plt.subplots()
+    >>> result = test_ttest_ind(x, y, ax=ax)
 
     >>> # As DataFrame
     >>> df = test_ttest_ind(x, y, return_as='dataframe')
-    >>> df['pstars'].iloc[0]
+    >>> df['stars'].iloc[0]
     'ns'
     """
     from ...utils._effect_size import cohens_d
@@ -188,7 +198,6 @@ def test_ttest_ind(
     # Compile results
     result = {
         'test_method': test_method,
-        'statistic_name': 't',
         'statistic': t_stat,
         'alternative': alternative,
         'n_x': n_x,
@@ -196,9 +205,9 @@ def test_ttest_ind(
         'var_x': var_x,
         'var_y': var_y,
         'pvalue': pvalue,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': pvalue < alpha,
+        'significant': pvalue < alpha,
         'effect_size': effect_size,
         'effect_size_metric': "Cohen's d",
         'effect_size_interpretation': effect_size_interpretation,
@@ -206,77 +215,77 @@ def test_ttest_ind(
         'H0': H0,
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"{test_method}: t = {t_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"Cohen's d = {effect_size:.3f} ({effect_size_interpretation}), power = {power:.3f}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_ttest_ind(x, y, var_x, var_y, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_ttest_ind(x, y, var_x, var_y, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
         result = force_dataframe(result)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_ttest_ind(x, y, var_x, var_y, result):
-    """Create visualization for independent t-test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
-
-    # Prepare data
-    data_x = pd.DataFrame({'value': x, 'group': var_x})
-    data_y = pd.DataFrame({'value': y, 'group': var_y})
-    data = pd.concat([data_x, data_y], ignore_index=True)
-
-    # Plot 1: Histogram + swarm plot
-    ax = axes[0]
-
-    # Histogram
-    bins = np.histogram_bin_edges(
-        np.concatenate([x, y]),
-        bins='auto'
-    )
-    ax.hist(x, bins=bins, alpha=0.5, label=var_x, density=True)
-    ax.hist(y, bins=bins, alpha=0.5, label=var_y, density=True)
-
-    # Add mean lines
-    ax.axvline(np.mean(x), color='blue', linestyle='--', linewidth=2, alpha=0.7)
-    ax.axvline(np.mean(y), color='orange', linestyle='--', linewidth=2, alpha=0.7)
-
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Density')
-    ax.set_title(f'Distribution Comparison {result["pstars"]}')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Plot 2: Box plot + swarm plot
-    ax = axes[1]
-
-    # Box plot
+def _plot_ttest_ind(x, y, var_x, var_y, result, ax):
+    """Create violin+swarm visualization for independent t-test on given axes."""
     positions = [0, 1]
     box_data = [x, y]
-    bp = ax.boxplot(
+    colors = ["C0", "C1"]  # Use default matplotlib colors
+
+    # Violin plot (in background)
+    parts = ax.violinplot(
         box_data,
         positions=positions,
-        widths=0.4,
-        patch_artist=True,
-        showfliers=False
+        widths=0.6,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
     )
 
-    # Color boxes
-    colors = ['lightblue', 'lightcoral']
-    for patch, color in zip(bp['boxes'], colors):
-        patch.set_facecolor(color)
+    # Color violin plots
+    for i, pc in enumerate(parts["bodies"]):
+        pc.set_facecolor(colors[i])
+        pc.set_alpha(0.3)
+        pc.set_edgecolor(colors[i])
+        pc.set_linewidth(1.5)
 
-    # Swarm plot (simplified - add jittered points)
+    # Swarm plot (in front) - jittered scatter points
     np.random.seed(42)
     for i, vals in enumerate(box_data):
         y_vals = vals
         x_vals = np.random.normal(positions[i], 0.04, size=len(vals))
-        ax.scatter(x_vals, y_vals, alpha=0.5, s=30)
+        ax.scatter(
+            x_vals, y_vals,
+            alpha=0.6,
+            s=40,
+            color=colors[i],
+            edgecolors='white',
+            linewidths=0.5,
+            zorder=3  # Ensure points are in front
+        )
+
+    # Add mean lines
+    for i, vals in enumerate(box_data):
+        mean = np.mean(vals)
+        ax.hlines(
+            mean,
+            positions[i] - 0.3,
+            positions[i] + 0.3,
+            colors='black',
+            linewidth=2,
+            zorder=4
+        )
 
     # Add significance stars
     y_max = max(np.max(x), np.max(y))
@@ -287,7 +296,7 @@ def _plot_ttest_ind(x, y, var_x, var_y, result):
     ax.plot([0, 1], [sig_y, sig_y], 'k-', linewidth=1.5)
     ax.text(
         0.5, sig_y + y_range * 0.02,
-        result['pstars'],
+        result['stars'],
         ha='center',
         va='bottom',
         fontsize=14,
@@ -298,16 +307,13 @@ def _plot_ttest_ind(x, y, var_x, var_y, result):
     ax.set_xticklabels([var_x, var_y])
     ax.set_ylabel('Value')
     ax.set_title(
+        f"{result['test_method']}\n"
         f"t = {result['statistic']:.2f}, "
-        f"p = {result['pvalue']:.4f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"d = {result['effect_size']:.2f}, "
         f"power = {result['power']:.2f}"
     )
     ax.grid(True, alpha=0.3, axis='y')
-
-    plt.tight_layout()
-
-    return fig
 
 
 def test_ttest_rel(
@@ -318,8 +324,9 @@ def test_ttest_rel(
     alternative: Literal['two-sided', 'greater', 'less'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict'
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+) -> Union[dict, pd.DataFrame]:
     """
     Perform paired samples t-test (related/dependent samples).
 
@@ -343,6 +350,9 @@ def test_ttest_rel(
         Significance level
     plot : bool, default False
         Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
 
@@ -350,8 +360,6 @@ def test_ttest_rel(
     -------
     results : dict or DataFrame
         Test results (same structure as test_ttest_ind)
-    fig : matplotlib.figure.Figure, optional
-        Figure object (only if plot=True)
 
     Notes
     -----
@@ -394,7 +402,9 @@ def test_ttest_rel(
     0.001...
 
     >>> # With visualization
-    >>> result, fig = test_ttest_rel(before, after, plot=True)
+    >>> fig, ax = plt.subplots()
+    >>> result = test_ttest_rel(before, after, ax=ax)
+    >>> plt.show()
     """
     from ...utils._effect_size import cohens_d, interpret_cohens_d
     from ...utils._power import power_ttest
@@ -444,16 +454,15 @@ def test_ttest_rel(
     # Compile results
     result = {
         'test_method': "Paired t-test",
-        'statistic_name': 't',
         'statistic': t_stat,
         'alternative': alternative,
         'n_pairs': n_pairs,
         'var_x': var_x,
         'var_y': var_y,
         'pvalue': pvalue,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': pvalue < alpha,
+        'significant': pvalue < alpha,
         'effect_size': effect_size,
         'effect_size_metric': "Cohen's d (paired)",
         'effect_size_interpretation': effect_size_interpretation,
@@ -461,32 +470,25 @@ def test_ttest_rel(
         'H0': H0,
     }
 
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_ttest_rel(x, y, var_x, var_y, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_ttest_rel(x, y, var_x, var_y, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
         result = force_dataframe(result)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_ttest_rel(x, y, var_x, var_y, result):
-    """Create visualization for paired t-test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
-
-    # Compute differences
-    diff = x - y
-
-    # Plot 1: Before-after plot
-    ax = axes[0]
-
+def _plot_ttest_rel(x, y, var_x, var_y, result, ax):
+    """Create visualization for paired t-test on given axes."""
     # Plot paired lines
     for i in range(len(x)):
         ax.plot([0, 1], [x[i], y[i]], 'o-', color='gray', alpha=0.3)
@@ -500,41 +502,15 @@ def _plot_ttest_rel(x, y, var_x, var_y, result):
     ax.set_xticks([0, 1])
     ax.set_xticklabels([var_x, var_y])
     ax.set_ylabel('Value')
-    ax.set_title(f'Paired Measurements {result["pstars"]}')
-    ax.legend()
-    ax.grid(True, alpha=0.3, axis='y')
-
-    # Plot 2: Difference distribution
-    ax = axes[1]
-
-    # Histogram of differences
-    ax.hist(diff, bins='auto', alpha=0.7, edgecolor='black', density=True)
-
-    # Add mean difference line
-    ax.axvline(np.mean(diff), color='red', linestyle='--', linewidth=2,
-               label=f'Mean diff = {np.mean(diff):.2f}')
-    ax.axvline(0, color='black', linestyle='-', linewidth=1, alpha=0.5)
-
-    # Add normal curve overlay
-    mu_diff, sigma_diff = np.mean(diff), np.std(diff, ddof=1)
-    x_fit = np.linspace(np.min(diff), np.max(diff), 100)
-    y_fit = stats.norm.pdf(x_fit, mu_diff, sigma_diff)
-    ax.plot(x_fit, y_fit, 'r-', linewidth=2, alpha=0.7)
-
-    ax.set_xlabel(f'Difference ({var_x} - {var_y})')
-    ax.set_ylabel('Density')
     ax.set_title(
+        f"Paired t-test\n"
         f"t = {result['statistic']:.2f}, "
-        f"p = {result['pvalue']:.4f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"d = {result['effect_size']:.2f}, "
         f"power = {result.get('power', np.nan):.2f}"
     )
     ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-
-    return fig
+    ax.grid(True, alpha=0.3, axis='y')
 
 
 def test_ttest_1samp(
@@ -544,8 +520,9 @@ def test_ttest_1samp(
     alternative: Literal['two-sided', 'greater', 'less'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict'
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+) -> Union[dict, pd.DataFrame]:
     """
     Perform one-sample t-test.
 
@@ -564,8 +541,8 @@ def test_ttest_1samp(
         - 'less': mean < popmean
     alpha : float, default 0.05
         Significance level
-    plot : bool, default False
-        Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If provided, plots visualization on given axes.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
 
@@ -573,8 +550,6 @@ def test_ttest_1samp(
     -------
     results : dict or DataFrame
         Test results
-    fig : matplotlib.figure.Figure, optional
-        Figure object (only if plot=True)
 
     Notes
     -----
@@ -657,7 +632,6 @@ def test_ttest_1samp(
     # Compile results
     result = {
         'test_method': "One-sample t-test",
-        'statistic_name': 't',
         'statistic': t_stat,
         'alternative': alternative,
         'n_x': n_x,
@@ -665,9 +639,9 @@ def test_ttest_1samp(
         'popmean': popmean,
         'sample_mean': float(np.mean(x)),
         'pvalue': pvalue,
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': pvalue < alpha,
+        'significant': pvalue < alpha,
         'effect_size': effect_size,
         'effect_size_metric': "Cohen's d (one-sample)",
         'effect_size_interpretation': effect_size_interpretation,
@@ -675,55 +649,19 @@ def test_ttest_1samp(
         'H0': H0,
     }
 
-    # Generate plot if requested
-    fig = None
-    if plot:
-        fig = _plot_ttest_1samp(x, popmean, var_x, result)
+    # Generate plot if ax provided
+    if ax is not None:
+        _plot_ttest_1samp(x, popmean, var_x, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
         result = force_dataframe(result)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_ttest_1samp(x, popmean, var_x, result):
-    """Create visualization for one-sample t-test."""
-    fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
-
-    # Plot 1: Histogram with reference line
-    ax = axes[0]
-
-    # Histogram
-    ax.hist(x, bins='auto', alpha=0.7, edgecolor='black', density=True)
-
-    # Add sample mean line
-    ax.axvline(np.mean(x), color='blue', linestyle='--', linewidth=2,
-               label=f'Sample mean = {np.mean(x):.2f}')
-
-    # Add population mean reference line
-    ax.axvline(popmean, color='red', linestyle='-', linewidth=2,
-               label=f'H0: μ = {popmean}')
-
-    # Add normal curve overlay
-    mu, sigma = np.mean(x), np.std(x, ddof=1)
-    x_fit = np.linspace(np.min(x), np.max(x), 100)
-    y_fit = stats.norm.pdf(x_fit, mu, sigma)
-    ax.plot(x_fit, y_fit, 'b-', linewidth=2, alpha=0.5)
-
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Density')
-    ax.set_title(f'Sample Distribution {result["pstars"]}')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Plot 2: Box plot with reference
-    ax = axes[1]
-
+def _plot_ttest_1samp(x, popmean, var_x, result, ax):
+    """Create visualization for one-sample t-test on given axes."""
     # Box plot
     bp = ax.boxplot([x], positions=[0], widths=0.4, patch_artist=True, showfliers=True)
     bp['boxes'][0].set_facecolor('lightblue')
@@ -733,7 +671,7 @@ def _plot_ttest_1samp(x, popmean, var_x, result):
                label=f'H0: μ = {popmean}')
 
     # Add confidence interval
-    ci = stats.t.interval(1 - alpha, len(x) - 1,
+    ci = stats.t.interval(1 - result['alpha'], len(x) - 1,
                           loc=np.mean(x),
                           scale=stats.sem(x))
     ax.plot([0, 0], ci, 'b-', linewidth=3, label=f'{int((1-result["alpha"])*100)}% CI')
@@ -742,17 +680,14 @@ def _plot_ttest_1samp(x, popmean, var_x, result):
     ax.set_xticklabels([var_x])
     ax.set_ylabel('Value')
     ax.set_title(
+        f"One-sample t-test\n"
         f"t = {result['statistic']:.2f}, "
-        f"p = {result['pvalue']:.4f}\n"
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
         f"d = {result['effect_size']:.2f}, "
         f"power = {result.get('power', np.nan):.2f}"
     )
     ax.legend()
     ax.grid(True, alpha=0.3, axis='y')
-
-    plt.tight_layout()
-
-    return fig
 
 
 """Main function"""
@@ -773,15 +708,8 @@ def main(args):
         x1, y1,
         var_x='Control',
         var_y='Treatment',
-        return_as='dict'
+        verbose=True
     )
-
-    logger.info(f"Test: {result1['test_method']}")
-    logger.info(f"t = {result1['statistic']:.3f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
-    logger.info(f"Effect size: {result1['effect_size']:.3f}")
-    logger.info(f"Power: {result1['power']:.3f}")
-    logger.info(f"Rejected: {result1['rejected']}")
 
     # Example 2: Non-significant difference
     logger.info("\n=== Example 2: Non-significant difference ===")
@@ -792,13 +720,9 @@ def main(args):
     result2 = test_ttest_ind(
         x2, y2,
         var_x='Group A',
-        var_y='Group B'
+        var_y='Group B',
+        verbose=True
     )
-
-    logger.info(f"t = {result2['statistic']:.3f}")
-    logger.info(f"p = {result2['pvalue']:.4f} {result2['pstars']}")
-    logger.info(f"Effect size: {result2['effect_size']:.3f}")
-    logger.info(f"Power: {result2['power']:.3f}")
 
     # Example 3: Welch's t-test (unequal variances)
     logger.info("\n=== Example 3: Welch's t-test ===")
@@ -810,12 +734,9 @@ def main(args):
         x3, y3,
         var_x='Low Variance',
         var_y='High Variance',
-        equal_var=False
+        equal_var=False,
+        verbose=True
     )
-
-    logger.info(f"Test: {result3['test_method']}")
-    logger.info(f"t = {result3['statistic']:.3f}")
-    logger.info(f"p = {result3['pvalue']:.4f} {result3['pstars']}")
 
     # Example 4: One-sided test
     logger.info("\n=== Example 4: One-sided test ===")
@@ -823,11 +744,8 @@ def main(args):
     x4 = np.random.normal(0, 1, 50)
     y4 = np.random.normal(0.6, 1, 50)
 
-    result4_two = test_ttest_ind(x4, y4, alternative='two-sided')
-    result4_one = test_ttest_ind(x4, y4, alternative='less')
-
-    logger.info(f"Two-sided: p = {result4_two['pvalue']:.4f} {result4_two['pstars']}")
-    logger.info(f"One-sided:  p = {result4_one['pvalue']:.4f} {result4_one['pstars']}")
+    test_ttest_ind(x4, y4, alternative='two-sided', verbose=True)
+    test_ttest_ind(x4, y4, alternative='less', verbose=True)
 
     # Example 5: With visualization
     logger.info("\n=== Example 5: With visualization ===")
@@ -835,15 +753,15 @@ def main(args):
     x5 = np.random.normal(10, 2, 60)
     y5 = np.random.normal(12, 2, 60)
 
-    result5, fig5 = test_ttest_ind(
+    result5 = test_ttest_ind(
         x5, y5,
         var_x='Baseline',
         var_y='Follow-up',
-        plot=True
+        plot=True,
+        verbose=True
     )
-
-    stx.io.save(fig5, './ttest_ind_demo.png')
-    logger.info("Visualization saved")
+    stx.io.save(plt.gcf(), "./.dev/ttest_ind_example5.jpg")
+    plt.close()
 
     # Example 6: DataFrame output
     logger.info("\n=== Example 6: DataFrame output ===")
@@ -868,7 +786,7 @@ def main(args):
         results_list.append(result)
 
     df_all = combine_results(results_list)
-    logger.info(f"\n{df_all[['var_x', 'var_y', 'pvalue', 'pstars', 'effect_size', 'power']]}")
+    logger.info(f"\n{df_all[['var_x', 'var_y', 'pvalue', 'stars', 'effect_size', 'power']]}")
 
     return 0
 

@@ -18,18 +18,17 @@ Tests association between two binary categorical variables with small sample siz
 """
 
 from typing import Union, Optional, Literal, Tuple
+import argparse
 import numpy as np
 import pandas as pd
 from scipy import stats
+import matplotlib.axes
+import scitex as stx
+from scitex.logging import getLogger
 from ...utils._formatters import p2stars
 from ...utils._normalizers import force_dataframe, convert_results
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    HAS_PLT = True
-except ImportError:
-    HAS_PLT = False
+logger = getLogger(__name__)
 
 
 def odds_ratio_ci(a: int, b: int, c: int, d: int, alpha: float = 0.05) -> Tuple[float, float]:
@@ -124,9 +123,11 @@ def test_fisher(
     alternative: Literal['two-sided', 'less', 'greater'] = 'two-sided',
     alpha: float = 0.05,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Fisher's exact test for 2×2 contingency tables.
 
@@ -151,14 +152,18 @@ def test_fisher(
         Significance level for confidence interval
     plot : bool, default False
         If True, create visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes to plot on. If provided, plot is set to True
     return_as : {'dict', 'dataframe'}, default 'dict'
         Return format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        If True, print test results to logger
 
     Returns
     -------
-    result : dict or DataFrame or (dict, Figure)
+    result : dict or DataFrame
         Test results with:
         - test_method: Name of test
         - statistic: Odds ratio
@@ -312,10 +317,22 @@ def test_fisher(
         'var_col': var_col,
     }
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"Fisher: OR = {or_val:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"95% CI [{ci_lower:.3f}, {ci_upper:.3f}], {interpretation}")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
-    if plot and HAS_PLT:
-        fig = _plot_fisher([[a, b], [c, d]], or_val, pvalue, ci_lower, ci_upper, var_row, var_col)
+    if plot:
+        if ax is None:
+            fig, axes = stx.plt.subplots(1, 2, figsize=(12, 5))
+            _plot_fisher_full([[a, b], [c, d]], or_val, pvalue, ci_lower, ci_upper, var_row, var_col, axes)
+        else:
+            _plot_fisher_simple([[a, b], [c, d]], or_val, pvalue, ci_lower, ci_upper, var_row, var_col, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
@@ -323,20 +340,12 @@ def test_fisher(
     elif return_as not in ['dict', 'dataframe']:
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot and HAS_PLT:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_fisher(observed, or_val, pvalue, ci_lower, ci_upper, var_row, var_col):
-    """Create visualization for Fisher's exact test."""
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
+def _plot_fisher_full(observed, or_val, pvalue, ci_lower, ci_upper, var_row, var_col, axes):
+    """Create 2-panel visualization for Fisher's exact test."""
     observed = np.array(observed)
-    a, b = observed[0]
-    c, d = observed[1]
 
     # Panel 1: 2×2 table heatmap
     ax = axes[0]
@@ -349,24 +358,13 @@ def _plot_fisher(observed, or_val, pvalue, ci_lower, ci_upper, var_row, var_col)
     ax.set_xticklabels(['C1', 'C2'])
     ax.set_yticklabels(['R1', 'R2'])
 
-    # Add values and marginals
+    # Add values
     for i in range(2):
         for j in range(2):
             ax.text(j, i, f'{observed[i,j]:.0f}',
                    ha='center', va='center', color='white', fontsize=20, fontweight='bold')
 
-    # Add row/column sums
-    for i in range(2):
-        row_sum = observed[i].sum()
-        ax.text(2.3, i, f'{row_sum:.0f}', ha='left', va='center', fontsize=14)
-    for j in range(2):
-        col_sum = observed[:, j].sum()
-        ax.text(j, 2.3, f'{col_sum:.0f}', ha='center', va='top', fontsize=14)
-
-    ax.set_xlim(-0.5, 1.5)
-    ax.set_ylim(1.5, -0.5)
-
-    plt.colorbar(im, ax=ax)
+    stx.plt.colorbar(im, ax=ax)
 
     # Panel 2: Odds ratio with confidence interval
     ax = axes[1]
@@ -391,65 +389,82 @@ def _plot_fisher(observed, or_val, pvalue, ci_lower, ci_upper, var_row, var_col)
 
     ax.set_ylim(-0.5, 0.5)
     ax.set_yticks([])
-    ax.set_xlabel('Odds Ratio (log scale)', fontsize=12)
+    ax.set_xlabel('Odds Ratio (log scale)')
 
     stars = p2stars(pvalue)
-    title = f"Fisher's Exact Test {stars}\n"
-    title += f"OR = {or_val:.3f}, 95% CI [{ci_lower:.3f}, {ci_upper:.3f}]\n"
-    title += f"p = {pvalue:.4f}"
-    ax.set_title(title, fontsize=12)
-
+    ax.set_title(f"OR = {or_val:.3f} {stars}, 95% CI [{ci_lower:.3f}, {ci_upper:.3f}]")
     ax.grid(True, alpha=0.3, axis='x')
     ax.legend(loc='upper right')
 
-    plt.tight_layout()
 
-    return fig
+def _plot_fisher_simple(observed, or_val, pvalue, ci_lower, ci_upper, var_row, var_col, ax):
+    """Create simplified single-panel OR plot on given axes."""
+    # Plot OR point estimate
+    ax.plot([or_val], [0], 'o', markersize=12, color='darkblue', zorder=3)
+
+    # Plot CI
+    ax.plot([ci_lower, ci_upper], [0, 0], '-', linewidth=2, color='darkblue', zorder=2)
+    ax.plot([ci_lower, ci_lower], [-0.1, 0.1], '-', linewidth=2, color='darkblue', zorder=2)
+    ax.plot([ci_upper, ci_upper], [-0.1, 0.1], '-', linewidth=2, color='darkblue', zorder=2)
+
+    # Add reference line at OR = 1
+    ax.axvline(1, color='red', linestyle='--', linewidth=2, alpha=0.5, label='OR = 1')
+
+    # Set x-axis (log scale for OR)
+    if or_val > 0:
+        x_min = min(0.1, ci_lower * 0.5)
+        x_max = max(10, ci_upper * 2)
+        ax.set_xlim(x_min, x_max)
+        ax.set_xscale('log')
+
+    ax.set_ylim(-0.5, 0.5)
+    ax.set_yticks([])
+    ax.set_xlabel('Odds Ratio (log scale)')
+
+    stars = p2stars(pvalue)
+    ax.set_title(f"Fisher: OR = {or_val:.3f} {stars}")
+    ax.grid(True, alpha=0.3, axis='x')
+    ax.legend()
 
 
 # Example usage
-if __name__ == '__main__':
+
+"""Main function"""
+def main(args):
     import matplotlib
-    matplotlib.use('Agg')
-    from pathlib import Path
 
-    output_dir = Path(__file__).parent / '_test_fisher_out'
-    output_dir.mkdir(exist_ok=True)
-
-    print("=" * 70)
-    print("Fisher's Exact Test - Examples")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("Fisher's Exact Test - Examples")
+    logger.info("=" * 70)
 
     # Example 1: Small sample treatment study
-    print("\nExample 1: Small sample treatment study")
-    print("-" * 70)
+    logger.info("\nExample 1: Small sample treatment study")
+    logger.info("-" * 70)
     observed1 = [[8, 2], [1, 5]]  # Treatment: Success/Failure
-    result1, fig1 = test_fisher(observed1, var_row='Treatment', var_col='Outcome', plot=True)
-    print(force_dataframe(result1))
-    print(f"OR = {result1['statistic']:.2f}, 95% CI [{result1['ci_lower']:.2f}, {result1['ci_upper']:.2f}]")
-    fig1.savefig(output_dir / 'example1_treatment_study.png', dpi=150, bbox_inches='tight')
-    plt.close(fig1)
+    result1 = test_fisher(observed1, var_row='Treatment', var_col='Outcome',
+                         plot=True, verbose=True)
+    logger.info(force_dataframe(result1))
+    stx.io.save(stx.plt.gcf(), "fisher_example1.jpg")
+    stx.plt.close()
 
     # Example 2: Case-control study (exposure × disease)
-    print("\nExample 2: Case-control study")
-    print("-" * 70)
+    logger.info("\nExample 2: Case-control study")
+    logger.info("-" * 70)
     observed2 = [[12, 5], [8, 20]]  # Exposure: Cases/Controls
-    result2, fig2 = test_fisher(observed2, var_row='Exposure', var_col='Disease', plot=True)
-    print(force_dataframe(result2))
-    print(f"Interpretation: {result2['effect_size_interpretation']}")
-    fig2.savefig(output_dir / 'example2_case_control.png', dpi=150, bbox_inches='tight')
-    plt.close(fig2)
+    result2 = test_fisher(observed2, var_row='Exposure', var_col='Disease',
+                         plot=True, verbose=True)
+    logger.info(force_dataframe(result2))
+    stx.io.save(stx.plt.gcf(), "fisher_example2.jpg")
+    stx.plt.close()
 
     # Example 3: One-tailed test (expect positive association)
-    print("\nExample 3: One-tailed test (alternative='greater')")
-    print("-" * 70)
+    logger.info("\nExample 3: One-tailed test (alternative='greater')")
+    logger.info("-" * 70)
     observed3 = [[10, 2], [3, 8]]
-    result3_two = test_fisher(observed3, alternative='two-sided', plot=False)
-    result3_greater = test_fisher(observed3, alternative='greater', plot=False)
-    print("Two-tailed:")
-    print(f"  OR = {result3_two['statistic']:.2f}, p = {result3_two['pvalue']:.4f}")
-    print("One-tailed (greater):")
-    print(f"  OR = {result3_greater['statistic']:.2f}, p = {result3_greater['pvalue']:.4f}")
+    logger.info("Two-tailed:")
+    result3_two = test_fisher(observed3, alternative='two-sided', verbose=True)
+    logger.info("\nOne-tailed (greater):")
+    result3_greater = test_fisher(observed3, alternative='greater', verbose=True)
 
     # Example 4: Using pandas DataFrame with labels
     print("\nExample 4: Using pandas DataFrame")
@@ -459,10 +474,10 @@ if __name__ == '__main__':
                        columns=['Success', 'Failure'])
     df4.index.name = 'Group'
     df4.columns.name = 'Outcome'
-    result4, fig4 = test_fisher(df4, plot=True)
+    result4 = test_fisher(df4, plot=True)
     print(force_dataframe(result4))
-    fig4.savefig(output_dir / 'example4_dataframe.png', dpi=150, bbox_inches='tight')
-    plt.close(fig4)
+    plt.gcf().savefig('example4_dataframe.jpg', dpi=150, bbox_inches='tight')
+    plt.close()
 
     # Example 5: Compare Fisher vs Chi-square
     print("\nExample 5: Compare Fisher's exact vs Chi-square")
@@ -481,51 +496,92 @@ if __name__ == '__main__':
     print("\nExample 6: Very small sample (chi-square not recommended)")
     print("-" * 70)
     observed6 = [[2, 3], [1, 4]]
-    result6, fig6 = test_fisher(observed6, var_row='Group', var_col='Response', plot=True)
+    result6 = test_fisher(observed6, var_row='Group', var_col='Response', plot=True)
     print(force_dataframe(result6))
     print("Fisher's exact test is ideal for small samples")
-    fig6.savefig(output_dir / 'example6_small_sample.png', dpi=150, bbox_inches='tight')
-    plt.close(fig6)
+    plt.gcf().savefig('example6_small_sample.jpg', dpi=150, bbox_inches='tight')
+    plt.close()
 
     # Example 7: Strong association
     print("\nExample 7: Strong positive association")
     print("-" * 70)
     observed7 = [[20, 2], [3, 18]]
-    result7, fig7 = test_fisher(observed7, var_row='Factor A', var_col='Factor B', plot=True)
+    result7 = test_fisher(observed7, var_row='Factor A', var_col='Factor B', plot=True)
     print(force_dataframe(result7))
     print(f"Very strong association: OR = {result7['statistic']:.1f}")
-    fig7.savefig(output_dir / 'example7_strong_association.png', dpi=150, bbox_inches='tight')
-    plt.close(fig7)
+    plt.gcf().savefig('example7_strong_association.jpg', dpi=150, bbox_inches='tight')
+    plt.close()
 
     # Example 8: No association (OR ≈ 1)
     print("\nExample 8: No association")
     print("-" * 70)
     observed8 = [[10, 10], [10, 10]]
-    result8, fig8 = test_fisher(observed8, plot=True)
+    result8 = test_fisher(observed8, plot=True)
     print(force_dataframe(result8))
     print(f"OR = {result8['statistic']:.2f} ≈ 1 (no association)")
-    fig8.savefig(output_dir / 'example8_no_association.png', dpi=150, bbox_inches='tight')
-    plt.close(fig8)
+    plt.gcf().savefig('example8_no_association.jpg', dpi=150, bbox_inches='tight')
+    plt.close()
 
     # Example 9: Negative association (OR < 1)
     print("\nExample 9: Negative association (OR < 1)")
     print("-" * 70)
     observed9 = [[2, 15], [12, 8]]
-    result9, fig9 = test_fisher(observed9, var_row='Treatment', var_col='Adverse Event', plot=True)
+    result9 = test_fisher(observed9, var_row='Treatment', var_col='Adverse Event', plot=True)
     print(force_dataframe(result9))
     print(f"OR = {result9['statistic']:.3f} < 1 (negative association)")
-    fig9.savefig(output_dir / 'example9_negative_association.png', dpi=150, bbox_inches='tight')
-    plt.close(fig9)
+    plt.gcf().savefig('example9_negative_association.jpg', dpi=150, bbox_inches='tight')
+    plt.close()
 
     # Example 10: Export to various formats
     print("\nExample 10: Export to various formats")
     print("-" * 70)
     result10 = test_fisher(observed2, var_row='Exposure', var_col='Disease', return_as='dataframe')
-    convert_results(result10, return_as='csv', path=output_dir / 'fisher_demo.csv')
-    convert_results(result10, return_as='latex', path=output_dir / 'fisher_demo.tex')
+    result10.to_csv('fisher_demo.csv', index=False)
+    stx.io.save(result10, 'fisher_demo.tex')
     print("Exported to CSV and LaTeX formats")
     print(result10)
 
-    print(f"\n{'='*70}")
-    print(f"All examples completed. Output saved to: {output_dir}")
-    print(f"{'='*70}")
+    logger.info(f"\n{'='*70}")
+    logger.info("All examples completed")
+    logger.info(f"{'='*70}")
+
+    return 0
+
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    return parser.parse_args()
+
+
+def run_main():
+    """Initialize SciTeX framework and run main."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        verbose=args.verbose,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=args.verbose,
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
+
+# EOF

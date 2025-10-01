@@ -878,7 +878,7 @@ result, fig = test_kruskal(groups, plot=True)
 
 # Save with SciTeX
 import scitex as stx
-stx.io.save(fig, './my_plot.png')
+stx.io.save(fig, './my_plot.jpg')
 ```
 
 ---

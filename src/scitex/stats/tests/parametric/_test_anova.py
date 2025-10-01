@@ -33,8 +33,10 @@ import sys
 import argparse
 import numpy as np
 import pandas as pd
-from typing import Union, Optional, Literal, Tuple, List
+from typing import Union, Optional, Literal, List
 from scipy import stats
+import matplotlib.pyplot as plt
+import matplotlib.axes
 import scitex as stx
 from scitex.logging import getLogger
 
@@ -47,9 +49,11 @@ def test_anova(
     alpha: float = 0.05,
     check_assumptions: bool = True,
     plot: bool = False,
+    ax: Optional[matplotlib.axes.Axes] = None,
     return_as: Literal['dict', 'dataframe'] = 'dict',
-    decimals: int = 3
-) -> Union[dict, pd.DataFrame, Tuple[dict, 'matplotlib.figure.Figure'], Tuple[pd.DataFrame, 'matplotlib.figure.Figure']]:
+    decimals: int = 3,
+    verbose: bool = False
+) -> Union[dict, pd.DataFrame]:
     """
     Perform one-way ANOVA for independent samples.
 
@@ -64,22 +68,26 @@ def test_anova(
     check_assumptions : bool, default True
         Whether to check normality and homogeneity assumptions
     plot : bool, default False
-        Whether to generate box plots
+        Whether to generate visualization
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If None and plot=True, creates new figure.
+        If provided, automatically enables plotting.
     return_as : {'dict', 'dataframe'}, default 'dict'
         Output format
     decimals : int, default 3
         Number of decimal places for rounding
+    verbose : bool, default False
+        Whether to print test results
 
     Returns
     -------
     results : dict or DataFrame
         Test results including:
         - test_method: 'One-way ANOVA'
-        - statistic_name: 'F'
         - statistic: F-statistic value
         - pvalue: p-value
-        - pstars: Significance stars
-        - rejected: Whether null hypothesis is rejected
+        - stars: Significance stars
+        - significant: Whether null hypothesis is rejected
         - effect_size: Eta-squared (η²)
         - effect_size_metric: 'eta-squared'
         - effect_size_interpretation: Interpretation of eta-squared
@@ -90,8 +98,6 @@ def test_anova(
         - var_names: Group labels
         - assumptions_met: Whether assumptions are satisfied
         - H0: Null hypothesis description
-    fig : matplotlib.figure.Figure, optional
-        Figure object with box plots (only if plot=True)
 
     Notes
     -----
@@ -164,12 +170,16 @@ def test_anova(
     >>> result['rejected']
     True
 
-    >>> # With custom names and plot
-    >>> result, fig = test_anova(
+    >>> # With auto-created figure
+    >>> result = test_anova(
     ...     [group1, group2, group3],
     ...     var_names=['Control', 'Treatment 1', 'Treatment 2'],
     ...     plot=True
     ... )
+
+    >>> # Plot on existing axes
+    >>> fig, ax = plt.subplots()
+    >>> result = test_anova([group1, group2, group3], ax=ax)
 
     >>> # Export results
     >>> from scitex.stats.utils._normalizers import convert_results
@@ -249,7 +259,6 @@ def test_anova(
     # Compile results
     result = {
         'test_method': 'One-way ANOVA',
-        'statistic_name': 'F',
         'statistic': round(f_stat, decimals),
         'n_groups': n_groups,
         'n_samples': n_samples,
@@ -257,9 +266,9 @@ def test_anova(
         'df_within': df_within,
         'var_names': var_names,
         'pvalue': round(pvalue, decimals),
-        'pstars': p2stars(pvalue),
+        'stars': p2stars(pvalue),
         'alpha': alpha,
-        'rejected': rejected,
+        'significant': rejected,
         'effect_size': round(effect_size, decimals),
         'effect_size_metric': 'eta-squared',
         'effect_size_interpretation': effect_size_interp,
@@ -272,7 +281,7 @@ def test_anova(
         result['assumption_warnings'] = assumption_warnings
 
     # Add post-hoc recommendation if significant
-    if rejected:
+    if result['significant']:
         if assumptions_met:
             result['recommendation'] = (
                 "Significant difference detected. Perform post-hoc pairwise comparisons "
@@ -286,10 +295,20 @@ def test_anova(
     else:
         result['recommendation'] = "No significant difference between groups."
 
+    # Log results if verbose
+    if verbose:
+        logger.info(f"One-way ANOVA: F({df_between}, {df_within}) = {f_stat:.3f}, p = {pvalue:.4f} {p2stars(pvalue)}")
+        logger.info(f"η² = {effect_size:.3f} ({effect_size_interp})")
+
+    # Auto-enable plotting if ax is provided
+    if ax is not None:
+        plot = True
+
     # Generate plot if requested
-    fig = None
     if plot:
-        fig = _plot_anova(groups, var_names, result)
+        if ax is None:
+            fig, ax = stx.plt.subplots()
+        _plot_anova(groups, var_names, result, ax)
 
     # Convert to requested format
     if return_as == 'dataframe':
@@ -298,41 +317,75 @@ def test_anova(
         # Use universal converter for other formats
         return convert_results(result, return_as=return_as)
 
-    # Return based on plot option
-    if plot:
-        return result, fig
-    else:
-        return result
+    return result
 
 
-def _plot_anova(groups, var_names, result):
-    """Create visualizations for ANOVA results."""
-    fig, axes = stx.plt.subplots(2, 2, figsize=(14, 12))
-
-    # Plot 1: Box plots
-    ax = axes[0, 0]
-
+def _plot_anova(groups, var_names, result, ax):
+    """Create violin+swarm visualization for ANOVA results on given axes."""
     positions = np.arange(1, len(groups) + 1)
-    bp = ax.boxplot(
+    n_groups = len(groups)
+
+    # Use matplotlib default color cycle
+    prop_cycle = stx.plt.rcParams['axes.prop_cycle']
+    colors = prop_cycle.by_key()['color'][:n_groups]
+
+    # Violin plot (in background)
+    parts = ax.violinplot(
         groups,
         positions=positions,
-        labels=var_names,
-        patch_artist=True,
-        widths=0.6
+        widths=0.6,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
     )
 
-    # Color boxes
-    colors = stx.plt.cm.Set2(np.linspace(0, 1, len(groups)))
-    for patch, color in zip(bp['boxes'], colors):
-        patch.set_facecolor(color)
-        patch.set_alpha(0.7)
+    # Color violin plots
+    for i, pc in enumerate(parts["bodies"]):
+        pc.set_facecolor(colors[i])
+        pc.set_alpha(0.3)
+        pc.set_edgecolor(colors[i])
+        pc.set_linewidth(1.5)
 
+    # Swarm plot (in front) - jittered scatter points
+    np.random.seed(42)
+    for i, vals in enumerate(groups):
+        y_vals = vals
+        x_vals = np.random.normal(positions[i], 0.04, size=len(vals))
+        ax.scatter(
+            x_vals, y_vals,
+            alpha=0.6,
+            s=40,
+            color=colors[i],
+            edgecolors='white',
+            linewidths=0.5,
+            zorder=3  # Ensure points are in front
+        )
+
+    # Add mean lines
+    for i, vals in enumerate(groups):
+        mean = np.mean(vals)
+        ax.hlines(
+            mean,
+            positions[i] - 0.3,
+            positions[i] + 0.3,
+            colors='black',
+            linewidth=2,
+            zorder=4
+        )
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels(var_names)
     ax.set_ylabel('Value')
-    ax.set_title('Group Comparison (One-way ANOVA)')
+    ax.set_title(
+        f"One-way ANOVA\n"
+        f"F({result['df_between']}, {result['df_within']}) = {result['statistic']:.3f}, "
+        f"p = {result['pvalue']:.4f} {result['stars']}\n"
+        f"η² = {result['effect_size']:.3f} ({result['effect_size_interpretation']})"
+    )
     ax.grid(True, alpha=0.3, axis='y')
 
     # Add significance annotation
-    if result['rejected']:
+    if result['significant']:
         y_max = max(np.max(g) for g in groups)
         y_range = y_max - min(np.min(g) for g in groups)
         y_pos = y_max + 0.1 * y_range
@@ -340,92 +393,9 @@ def _plot_anova(groups, var_names, result):
         ax.plot([1, len(groups)], [y_pos, y_pos], 'k-', linewidth=1.5)
         ax.text(
             (1 + len(groups)) / 2, y_pos + 0.02 * y_range,
-            f"F({result['df_between']},{result['df_within']}) = {result['statistic']:.3f}, p = {result['pvalue']:.4f} {result['pstars']}",
-            ha='center', va='bottom', fontsize=10, fontweight='bold'
+            result['stars'],
+            ha='center', va='bottom', fontsize=14, fontweight='bold'
         )
-
-    # Add text with results
-    text_str = (
-        f"F({result['df_between']}, {result['df_within']}) = {result['statistic']:.3f}\n"
-        f"p = {result['pvalue']:.4f} {result['pstars']}\n"
-        f"η² = {result['effect_size']:.3f} ({result['effect_size_interpretation']})\n"
-        f"Assumptions met: {result['assumptions_met']}"
-    )
-    ax.text(
-        0.02, 0.98, text_str,
-        transform=ax.transAxes,
-        verticalalignment='top',
-        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
-        fontsize=9
-    )
-
-    # Plot 2: Violin plots
-    ax = axes[0, 1]
-
-    parts = ax.violinplot(
-        groups,
-        positions=positions,
-        widths=0.7,
-        showmeans=True,
-        showmedians=True
-    )
-
-    # Color violin plots
-    for i, pc in enumerate(parts['bodies']):
-        pc.set_facecolor(colors[i])
-        pc.set_alpha(0.7)
-
-    ax.set_xticks(positions)
-    ax.set_xticklabels(var_names)
-    ax.set_ylabel('Value')
-    ax.set_title('Distribution Comparison')
-    ax.grid(True, alpha=0.3, axis='y')
-
-    # Add mean values as text
-    means = [np.mean(g) for g in groups]
-    for i, (pos, mean) in enumerate(zip(positions, means)):
-        ax.text(
-            pos, mean,
-            f'{mean:.2f}',
-            ha='center', va='bottom',
-            fontsize=9, fontweight='bold',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7)
-        )
-
-    # Plot 3: Histogram overlays
-    ax = axes[1, 0]
-
-    for i, (group, name, color) in enumerate(zip(groups, var_names, colors)):
-        ax.hist(group, bins='auto', alpha=0.5, label=name, color=color, edgecolor='black')
-
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Distribution Overlays')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Plot 4: Q-Q plots for normality check
-    ax = axes[1, 1]
-
-    for i, (group, name, color) in enumerate(zip(groups, var_names, colors)):
-        (osm, osr), (slope, intercept, r) = stats.probplot(group, dist='norm')
-        ax.scatter(osm, osr, alpha=0.6, s=20, color=color, label=name)
-
-    # Add reference line
-    all_osm = np.concatenate([stats.probplot(g, dist='norm')[0][0] for g in groups])
-    ax.plot([all_osm.min(), all_osm.max()],
-            [all_osm.min(), all_osm.max()],
-            'r--', linewidth=2, label='Normal')
-
-    ax.set_xlabel('Theoretical Quantiles')
-    ax.set_ylabel('Sample Quantiles')
-    ax.set_title('Q-Q Plots (Normality Check)')
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-
-    return fig
 
 
 """Main function"""
@@ -445,11 +415,12 @@ def main(args):
 
     result1 = test_anova(
         [group1, group2, group3],
-        var_names=['Group A', 'Group B', 'Group C']
+        var_names=['Group A', 'Group B', 'Group C'],
+        verbose=True
     )
 
     logger.info(f"F({result1['df_between']}, {result1['df_within']}) = {result1['statistic']:.3f}")
-    logger.info(f"p = {result1['pvalue']:.4f} {result1['pstars']}")
+    logger.info(f"p = {result1['pvalue']:.4f} {result1['stars']}")
     logger.info(f"η² = {result1['effect_size']:.3f} ({result1['effect_size_interpretation']})")
     logger.info(f"Assumptions met: {result1['assumptions_met']}")
     logger.info(f"Recommendation: {result1['recommendation']}")
@@ -463,12 +434,13 @@ def main(args):
 
     result2 = test_anova(
         [group1, group2, group3],
-        var_names=['Control', 'Treatment 1', 'Treatment 2']
+        var_names=['Control', 'Treatment 1', 'Treatment 2'],
+        verbose=True
     )
 
     logger.info(f"F({result2['df_between']}, {result2['df_within']}) = {result2['statistic']:.3f}")
     logger.info(f"p = {result2['pvalue']:.4f}")
-    logger.info(f"Rejected: {result2['rejected']}")
+    logger.info(f"Significant: {result2['significant']}")
 
     # Example 3: With visualization
     logger.info("\n=== Example 3: Complete analysis with visualization ===")
@@ -478,18 +450,14 @@ def main(args):
     group3 = np.random.normal(14, 2, 25)
     group4 = np.random.normal(16, 2, 25)
 
-    result3, fig3 = test_anova(
+    result3 = test_anova(
         [group1, group2, group3, group4],
         var_names=['Dose 0', 'Dose 1', 'Dose 2', 'Dose 3'],
-        plot=True
+        plot=True,
+        verbose=True
     )
-
-    logger.info(f"F({result3['df_between']}, {result3['df_within']}) = {result3['statistic']:.3f}")
-    logger.info(f"p = {result3['pvalue']:.4f} {result3['pstars']}")
-    logger.info(f"η² = {result3['effect_size']:.3f} ({result3['effect_size_interpretation']})")
-
-    stx.io.save(fig3, './anova_test_demo.png')
-    logger.info("Visualization saved")
+    stx.io.save(plt.gcf(), "./.dev/anova_example3.jpg")
+    plt.close()
 
     # Example 4: Assumption violation - unequal variances
     logger.info("\n=== Example 4: Unequal variances ===")
@@ -501,7 +469,8 @@ def main(args):
     result4 = test_anova(
         [group1, group2, group3],
         var_names=['Group A', 'Group B', 'Group C'],
-        check_assumptions=True
+        check_assumptions=True,
+        verbose=True
     )
 
     logger.info(f"F = {result4['statistic']:.3f}, p = {result4['pvalue']:.4f}")
@@ -520,7 +489,8 @@ def main(args):
     result5 = test_anova(
         [group1, group2, group3],
         var_names=['Exp 1', 'Exp 2', 'Exp 3'],
-        check_assumptions=True
+        check_assumptions=True,
+        verbose=True
     )
 
     logger.info(f"F = {result5['statistic']:.3f}, p = {result5['pvalue']:.4f}")
@@ -538,9 +508,9 @@ def main(args):
     names = ['Group A', 'Group B', 'Group C']
 
     # Perform overall ANOVA
-    overall = test_anova(groups, var_names=names)
+    overall = test_anova(groups, var_names=names, verbose=True)
 
-    if overall['rejected'] and overall['assumptions_met']:
+    if overall['significant'] and overall['assumptions_met']:
         logger.info("Overall ANOVA significant. Performing post-hoc pairwise t-tests...")
 
         # Pairwise comparisons
@@ -555,7 +525,7 @@ def main(args):
                 logger.info(
                     f"{names[i]} vs {names[j]}: "
                     f"t = {result['statistic']:.3f}, "
-                    f"p = {result['pvalue']:.4f} {result['pstars']}"
+                    f"p = {result['pvalue']:.4f} {result['stars']}"
                 )
 
         # Apply Bonferroni correction
@@ -566,7 +536,7 @@ def main(args):
             logger.info(
                 f"{res['var_x']} vs {res['var_y']}: "
                 f"p_adjusted = {res['pvalue_adjusted']:.4f}, "
-                f"rejected = {res['rejected']}"
+                f"significant = {res['significant']}"
             )
 
     # Example 7: Comparison with Kruskal-Wallis
@@ -581,8 +551,8 @@ def main(args):
         np.random.exponential(4, 30)
     ]
 
-    anova_result = test_anova(groups_exp, check_assumptions=False)
-    kruskal_result = test_kruskal(groups_exp)
+    anova_result = test_anova(groups_exp, check_assumptions=False, verbose=True)
+    kruskal_result = test_kruskal(groups_exp, verbose=True)
 
     logger.info(f"ANOVA:   F = {anova_result['statistic']:.3f}, p = {anova_result['pvalue']:.4f}")
     logger.info(f"Kruskal: H = {kruskal_result['statistic']:.3f}, p = {kruskal_result['pvalue']:.4f}")
@@ -601,11 +571,11 @@ def main(args):
     logger.info(f"\nDataFrame shape: {df.shape}")
 
     # Export to Excel
-    convert_results(test_results, return_as='excel', path='./anova_tests.xlsx')
+    convert_results(test_results, return_as='excel', path='./.dev/anova_tests.xlsx')
     logger.info("Results exported to Excel")
 
     # Export to CSV
-    convert_results(test_results, return_as='csv', path='./anova_tests.csv')
+    convert_results(test_results, return_as='csv', path='./.dev/anova_tests.csv')
     logger.info("Results exported to CSV")
 
     return 0
