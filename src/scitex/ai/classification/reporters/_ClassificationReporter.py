@@ -189,6 +189,8 @@ class ClassificationReporter(BaseClassificationReporter):
         fold: Optional[int] = None,
         task: Optional[str] = None,
         verbose: bool = True,
+        model=None,
+        feature_names: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Calculate metrics for classification.
@@ -214,6 +216,10 @@ class ClassificationReporter(BaseClassificationReporter):
             Task identifier. If None and no tasks exist, creates "default" task.
         verbose : bool, default True
             Whether to print progress
+        model : object, optional
+            Trained model for automatic feature importance extraction
+        feature_names : List[str], optional
+            Feature names for feature importance (required if model is provided)
 
         Returns
         -------
@@ -234,6 +240,8 @@ class ClassificationReporter(BaseClassificationReporter):
                     labels=labels,
                     fold=fold,
                     verbose=verbose,
+                    model=model,
+                    feature_names=feature_names,
                 )
             else:
                 # Stay in single-task mode
@@ -244,6 +252,8 @@ class ClassificationReporter(BaseClassificationReporter):
                     labels=labels,
                     fold=fold,
                     verbose=verbose,
+                    model=model,
+                    feature_names=feature_names,
                 )
 
         # Multi-task mode
@@ -265,6 +275,8 @@ class ClassificationReporter(BaseClassificationReporter):
             labels=labels,
             fold=fold,
             verbose=verbose,
+            model=model,
+            feature_names=feature_names,
         )
 
     def save(

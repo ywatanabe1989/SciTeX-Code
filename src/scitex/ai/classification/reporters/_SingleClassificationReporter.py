@@ -79,6 +79,9 @@ FILENAME_PATTERNS = {
     "y_proba": "fold-{fold:02d}_y-proba.npy",
     # Metrics dashboard
     "metrics_summary": "fold-{fold:02d}_metrics-summary.jpg",
+    # Feature importance
+    "feature_importance_json": "fold-{fold:02d}_feature-importance.json",
+    "feature_importance_jpg": "fold-{fold:02d}_feature-importance.jpg",
     # Classification report edge cases (when CSV conversion fails)
     "classification_report_json": "fold-{fold:02d}_classification-report.json",
     "classification_report_txt": "fold-{fold:02d}_classification-report.txt",
@@ -91,6 +94,8 @@ FILENAME_PATTERNS = {
     "cv_summary_roc_curve_jpg": "cv-summary_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
     "cv_summary_pr_curve_csv": "cv-summary_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
     "cv_summary_pr_curve_jpg": "cv-summary_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "cv_summary_feature_importance_json": "cv-summary_feature-importance_n-{n_folds}.json",
+    "cv_summary_feature_importance_jpg": "cv-summary_feature-importance_n-{n_folds}.jpg",
     "cv_summary_summary": "cv-summary_summary.json",
     # Folds all edge cases (when balanced_acc is None)
     "cv_summary_confusion_matrix_csv_no_bacc": "cv-summary_confusion-matrix_n-{n_folds}.csv",
@@ -209,6 +214,8 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         store_y_true: bool = False,
         store_y_pred: bool = False,
         store_y_proba: bool = False,
+        model=None,
+        feature_names: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Calculate and save classification metrics using unified API.
@@ -233,6 +240,10 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             Save y_pred as numpy array (.npy)
         store_y_proba : bool, default False
             Save y_proba as numpy array (.npy)
+        model : object, optional
+            Trained model for feature importance extraction
+        feature_names : List[str], optional
+            Feature names for feature importance (required if model is provided)
 
         Returns
         -------
@@ -327,6 +338,28 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # Generate plots if requested
         self._create_plots(y_true, y_pred, y_proba, labels, fold, metrics)
+
+        # Handle feature importance automatically if model provided
+        if model is not None and feature_names is not None:
+            try:
+                from scitex.ml.feature_selection import extract_feature_importance
+                importance_dict = extract_feature_importance(
+                    model, feature_names, method="auto"
+                )
+                if importance_dict:
+                    # Store in fold metrics for cross-fold aggregation
+                    metrics["feature_importance"] = importance_dict
+                    self.fold_metrics[fold]["feature_importance"] = importance_dict
+
+                    # Save feature importance
+                    fold_dir = f"fold_{fold:02d}"
+                    filename = FILENAME_PATTERNS["feature_importance_json"].format(fold=fold)
+                    self.storage.save(importance_dict, f"{fold_dir}/{filename}")
+
+                    if verbose:
+                        logger.info(f"  Feature importance extracted and saved")
+            except Exception as e:
+                logger.warning(f"Could not extract feature importance: {e}")
 
         # Save raw predictions if requested
         if store_y_true or store_y_pred or store_y_proba:
@@ -733,6 +766,23 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                     "values": self._round_numeric(values.tolist()),
                 }
 
+        # Aggregate feature importance across folds
+        feature_importances_list = []
+        for fold_metrics in self.fold_metrics.values():
+            if "feature_importance" in fold_metrics:
+                feature_importances_list.append(fold_metrics["feature_importance"])
+
+        if feature_importances_list:
+            from scitex.ml.feature_selection import (
+                aggregate_feature_importances,
+                create_feature_importance_dataframe,
+            )
+
+            aggregated_importances = aggregate_feature_importances(
+                feature_importances_list
+            )
+            summary["feature_importance"] = aggregated_importances
+
         return summary
 
     def create_cv_aggregation_visualizations(
@@ -808,7 +858,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         Parameters
         ----------
         model : object
-            Fitted classifier (must have feature_importances_)
+            Fitted classifier (must have feature_importances_ or coef_)
         feature_names : List[str]
             Names of features
         fold : int, optional
@@ -819,39 +869,40 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         Dict[str, float]
             Dictionary of feature importances {feature_name: importance}
         """
-        if not hasattr(model, "feature_importances_"):
-            logger.warning(
-                f"Model {type(model).__name__} does not support feature_importances_"
+        # Use centralized metric calculation
+        from scitex.ml.metrics import calc_feature_importance
+
+        try:
+            importance_dict, importances = calc_feature_importance(
+                model, feature_names
             )
+        except ValueError as e:
+            logger.warning(f"Could not extract feature importance: {e}")
             return {}
 
-        importances = model.feature_importances_
-        importance_dict = {
-            name: float(imp) for name, imp in zip(feature_names, importances)
-        }
+        # Already sorted by calc_feature_importance
+        sorted_importances = list(importance_dict.items())
 
-        # Sort by importance
-        sorted_importances = sorted(
-            importance_dict.items(), key=lambda x: x[1], reverse=True
-        )
-
-        # Save as JSON
-        fold_dir = self._create_subdir_if_needed(
-            f"fold_{fold:02d}" if fold is not None else "all"
-        )
+        # Save as JSON using FILENAME_PATTERNS
+        fold_subdir = f"fold_{fold:02d}" if fold is not None else "cv_summary"
+        json_filename = FILENAME_PATTERNS["feature_importance_json"].format(fold=fold)
         self.storage.save(
-            dict(sorted_importances), fold_dir / "feature_importance.json"
+            dict(sorted_importances), f"{fold_subdir}/{json_filename}"
         )
 
-        # Create visualization
+        # Create visualization using FILENAME_PATTERNS
+        jpg_filename = FILENAME_PATTERNS["feature_importance_jpg"].format(fold=fold)
+        save_path = self.output_dir / fold_subdir / jpg_filename
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+
         self.plotter.create_feature_importance_plot(
             feature_importance=importances,
             feature_names=feature_names,
-            save_path=fold_dir / "feature_importance.jpg",
+            save_path=save_path,
             title=(
-                f"Feature Importance (Fold {fold})"
+                f"Feature Importance (Fold {fold:02d})"
                 if fold is not None
-                else "Feature Importance"
+                else "Feature Importance (CV Summary)"
             ),
         )
 
@@ -897,51 +948,25 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             feature_stats.items(), key=lambda x: x[1]["mean"], reverse=True
         )
 
-        # Save as JSON
-        summary_dir = self._create_subdir_if_needed("cv_summary")
+        # Save as JSON using FILENAME_PATTERNS
+        n_folds = len(all_importances)
+        json_filename = FILENAME_PATTERNS["cv_summary_feature_importance_json"].format(n_folds=n_folds)
         self.storage.save(
             dict(sorted_features),
-            summary_dir / "feature_importance_summary.json",
+            f"cv_summary/{json_filename}",
         )
 
-        # Create visualization with error bars
-        import matplotlib.pyplot as plt
+        # Create visualization using centralized plotting function
+        from scitex.ml.plt import plot_feature_importance_cv_summary
 
-        fig, ax = plt.subplots(figsize=(12, 8))
-        names = [item[0] for item in sorted_features]
-        means = [item[1]["mean"] for item in sorted_features]
-        stds = [item[1]["std"] for item in sorted_features]
+        jpg_filename = FILENAME_PATTERNS["cv_summary_feature_importance_jpg"].format(n_folds=n_folds)
+        save_path = self.output_dir / "cv_summary" / jpg_filename
+        save_path.parent.mkdir(parents=True, exist_ok=True)
 
-        y_pos = np.arange(len(names))
-        ax.barh(
-            y_pos,
-            means,
-            xerr=stds,
-            color="steelblue",
-            alpha=0.8,
-            edgecolor="black",
-            capsize=5,
-            error_kw={"linewidth": 2},
+        fig = plot_feature_importance_cv_summary(
+            all_importances=all_importances,
+            spath=save_path,
         )
-        ax.set_yticks(y_pos)
-        ax.set_yticklabels(
-            [n.replace("_", " ").title() for n in names], fontsize=9
-        )
-        ax.invert_yaxis()
-        ax.set_xlabel("Mean Importance ± Std", fontsize=11, fontweight="bold")
-        ax.set_title(
-            "Feature Importance Summary (All Folds)",
-            fontsize=13,
-            fontweight="bold",
-        )
-        ax.grid(True, alpha=0.3, axis="x")
-        plt.tight_layout()
-
-        # Save figure
-        from scitex.io import save as stx_io_save
-
-        stx_io_save(fig, str(summary_dir / "feature_importance_summary.jpg"))
-        plt.close(fig)
 
         logger.info("Saved feature importance summary")
 
@@ -1263,6 +1288,10 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         # Extract summary statistics for reporting
         if "metrics_summary" in summary:
             results["summary"] = summary["metrics_summary"]
+
+        # Add feature importance if available
+        if "feature_importance" in summary:
+            results["summary"]["feature_importance"] = summary["feature_importance"]
 
         # Add per-fold results
         for fold, fold_data in self.fold_metrics.items():

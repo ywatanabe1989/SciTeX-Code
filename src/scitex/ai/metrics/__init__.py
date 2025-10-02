@@ -26,6 +26,10 @@ from ._calc_silhouette_score import (
     calc_silhouette_score_block,
     calc_silhouette_samples_block,
 )
+from ._calc_feature_importance import (
+    calc_feature_importance,
+    calc_permutation_importance,
+)
 
 __all__ = [
     "calc_bacc",
@@ -42,6 +46,8 @@ __all__ = [
     "calc_silhouette_samples_slow",
     "calc_silhouette_score_block",
     "calc_silhouette_samples_block",
+    "calc_feature_importance",
+    "calc_permutation_importance",
     # # Legacy names for backward compatibility
     # "bACC",
     # "balanced_accuracy",

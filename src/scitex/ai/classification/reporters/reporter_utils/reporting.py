@@ -228,7 +228,37 @@ def generate_org_report(
                         row += f" {mean:.3f} ± {std:.3f} |"
                         f.write(row + "\n")
             f.write("\n")
-        
+
+        # Feature Importance section
+        if 'summary' in results and 'feature_importance' in results['summary']:
+            f.write("* Feature Importance\n\n")
+            feature_imp = results['summary']['feature_importance']
+
+            if 'mean' in feature_imp:
+                # Create feature importance table
+                f.write("| Feature | Mean | Std | Min | Max | CV |\n")
+                f.write("|---------|------|-----|-----|-----|----|\n")
+
+                # Sort by mean importance (descending)
+                features_sorted = sorted(
+                    feature_imp['mean'].items(),
+                    key=lambda x: x[1],
+                    reverse=True
+                )
+
+                for feature_name, mean_imp in features_sorted:
+                    std_imp = feature_imp['std'].get(feature_name, 0)
+                    min_imp = feature_imp['min'].get(feature_name, 0)
+                    max_imp = feature_imp['max'].get(feature_name, 0)
+                    cv_imp = feature_imp['cv'].get(feature_name, 0)
+
+                    f.write(f"| {feature_name} | {mean_imp:.3f} | {std_imp:.3f} | "
+                           f"{min_imp:.3f} | {max_imp:.3f} | {cv_imp:.3f} |\n")
+                f.write("\n")
+
+                f.write("*Note:* CV = Coefficient of Variation (std/mean), "
+                       "indicating stability across folds.\n\n")
+
         # Visualizations section
         if include_plots and 'plots' in results:
             f.write("* Visualizations\n\n")
