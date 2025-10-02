@@ -47,63 +47,64 @@ logger = getLogger(__name__)
 
 
 # Filename patterns for consistent naming across the reporter
-# Note: fold_{fold:02d} comes first to group files by fold when sorted
+# Note: fold-{fold:02d} comes first to group files by fold when sorted
+# Convention: hyphens within chunks, underscores between chunks
 FILENAME_PATTERNS = {
     # Individual fold metrics (with metric value in filename)
-    "fold_metric_with_value": "fold_{fold:02d}_{metric_name}_{value:.3f}.json",
-    "fold_metric": "fold_{fold:02d}_{metric_name}.json",
+    "fold_metric_with_value": "fold-{fold:02d}_{metric_name}-{value:.3f}.json",
+    "fold_metric": "fold-{fold:02d}_{metric_name}.json",
 
     # Confusion matrix
-    "confusion_matrix_csv": "fold_{fold:02d}_confusion_matrix_bacc_{bacc:.3f}.csv",
-    "confusion_matrix_csv_no_bacc": "fold_{fold:02d}_confusion_matrix.csv",
-    "confusion_matrix_jpg": "fold_{fold:02d}_confusion_matrix_bacc_{bacc:.3f}.jpg",
-    "confusion_matrix_jpg_no_bacc": "fold_{fold:02d}_confusion_matrix.jpg",
+    "confusion_matrix_csv": "fold-{fold:02d}_confusion-matrix_bacc-{bacc:.3f}.csv",
+    "confusion_matrix_csv_no_bacc": "fold-{fold:02d}_confusion-matrix.csv",
+    "confusion_matrix_jpg": "fold-{fold:02d}_confusion-matrix_bacc-{bacc:.3f}.jpg",
+    "confusion_matrix_jpg_no_bacc": "fold-{fold:02d}_confusion-matrix.jpg",
 
     # Classification report
-    "classification_report": "fold_{fold:02d}_classification_report.csv",
+    "classification_report": "fold-{fold:02d}_classification-report.csv",
 
     # ROC curve
-    "roc_curve_csv": "fold_{fold:02d}_roc_curve_auc_{auc:.3f}.csv",
-    "roc_curve_csv_no_auc": "fold_{fold:02d}_roc_curve.csv",
-    "roc_curve_jpg": "fold_{fold:02d}_roc_curve_auc_{auc:.3f}.jpg",
-    "roc_curve_jpg_no_auc": "fold_{fold:02d}_roc_curve.jpg",
+    "roc_curve_csv": "fold-{fold:02d}_roc-curve_auc-{auc:.3f}.csv",
+    "roc_curve_csv_no_auc": "fold-{fold:02d}_roc-curve.csv",
+    "roc_curve_jpg": "fold-{fold:02d}_roc-curve_auc-{auc:.3f}.jpg",
+    "roc_curve_jpg_no_auc": "fold-{fold:02d}_roc-curve.jpg",
 
     # PR curve
-    "pr_curve_csv": "fold_{fold:02d}_pr_curve_ap_{ap:.3f}.csv",
-    "pr_curve_csv_no_ap": "fold_{fold:02d}_pr_curve.csv",
-    "pr_curve_jpg": "fold_{fold:02d}_pr_curve_ap_{ap:.3f}.jpg",
-    "pr_curve_jpg_no_ap": "fold_{fold:02d}_pr_curve.jpg",
+    "pr_curve_csv": "fold-{fold:02d}_pr-curve_ap-{ap:.3f}.csv",
+    "pr_curve_csv_no_ap": "fold-{fold:02d}_pr-curve.csv",
+    "pr_curve_jpg": "fold-{fold:02d}_pr-curve_ap-{ap:.3f}.jpg",
+    "pr_curve_jpg_no_ap": "fold-{fold:02d}_pr-curve.jpg",
 
     # Features and predictions
-    "features": "fold_{fold:02d}_features.json",
-    "prediction_metrics": "fold_{fold:02d}_prediction_metrics.json",
+    "features": "fold-{fold:02d}_features.json",
+    "prediction_metrics": "fold-{fold:02d}_prediction-metrics.json",
 
     # Raw prediction data
-    "y_true": "fold_{fold:02d}_y_true.npy",
-    "y_pred": "fold_{fold:02d}_y_pred.npy",
-    "y_proba": "fold_{fold:02d}_y_proba.npy",
+    "y_true": "fold-{fold:02d}_y-true.npy",
+    "y_pred": "fold-{fold:02d}_y-pred.npy",
+    "y_proba": "fold-{fold:02d}_y-proba.npy",
 
     # Metrics dashboard
-    "metrics_summary": "fold_{fold:02d}_metrics_summary.jpg",
+    "metrics_summary": "fold-{fold:02d}_metrics-summary.jpg",
 
     # Classification report edge cases (when CSV conversion fails)
-    "classification_report_json": "fold_{fold:02d}_classification_report.json",
-    "classification_report_txt": "fold_{fold:02d}_classification_report.txt",
+    "classification_report_json": "fold-{fold:02d}_classification-report.json",
+    "classification_report_txt": "fold-{fold:02d}_classification-report.txt",
 
     # Folds all (CV summary)
-    "folds_all_metric": "folds_all_{metric_name}_mean_{mean:.3f}_std_{std:.3f}_n{n_folds}.json",
-    "folds_all_confusion_matrix_csv": "folds_all_confusion_matrix_bacc_{mean:.3f}_{std:.3f}_n{n_folds}.csv",
-    "folds_all_confusion_matrix_jpg": "folds_all_confusion_matrix_bacc_{mean:.3f}_{std:.3f}_n{n_folds}.jpg",
-    "folds_all_classification_report": "folds_all_classification_report_n{n_folds}.csv",
-    "folds_all_roc_curve_csv": "folds_all_roc_curve_auc_{mean:.3f}_{std:.3f}_n{n_folds}.csv",
-    "folds_all_roc_curve_jpg": "folds_all_roc_curve_auc_{mean:.3f}_{std:.3f}_n{n_folds}.jpg",
-    "folds_all_pr_curve_csv": "folds_all_pr_curve_ap_{mean:.3f}_{std:.3f}_n{n_folds}.csv",
-    "folds_all_pr_curve_jpg": "folds_all_pr_curve_ap_{mean:.3f}_{std:.3f}_n{n_folds}.jpg",
-    "folds_all_summary": "folds_all_summary.json",
+    "folds_all_metric": "folds-all_{metric_name}_mean-{mean:.3f}_std-{std:.3f}_n-{n_folds}.json",
+    "folds_all_confusion_matrix_csv": "folds-all_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "folds_all_confusion_matrix_jpg": "folds-all_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "folds_all_classification_report": "folds-all_classification-report_n-{n_folds}.csv",
+    "folds_all_roc_curve_csv": "folds-all_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "folds_all_roc_curve_jpg": "folds-all_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "folds_all_pr_curve_csv": "folds-all_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "folds_all_pr_curve_jpg": "folds-all_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "folds_all_summary": "folds-all_summary.json",
 
     # Folds all edge cases (when balanced_acc is None)
-    "folds_all_confusion_matrix_csv_no_bacc": "folds_all_confusion_matrix_n{n_folds}.csv",
-    "folds_all_confusion_matrix_jpg_no_bacc": "folds_all_confusion_matrix_n{n_folds}.jpg",
+    "folds_all_confusion_matrix_csv_no_bacc": "folds-all_confusion-matrix_n-{n_folds}.csv",
+    "folds_all_confusion_matrix_jpg_no_bacc": "folds-all_confusion-matrix_n-{n_folds}.jpg",
 }
 
 
