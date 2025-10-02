@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex plt module."""

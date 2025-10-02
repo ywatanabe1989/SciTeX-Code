@@ -4,9 +4,7 @@
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/_subplots/_export_as_csv_formatters/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_export_as_csv_formatters/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

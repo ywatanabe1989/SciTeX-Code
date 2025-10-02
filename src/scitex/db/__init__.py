@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/db/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Database operations module for scitex."""

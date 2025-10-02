@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex IO module with lazy imports to avoid circular dependencies."""

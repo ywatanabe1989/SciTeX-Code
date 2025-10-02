@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_modules/_sqlite3.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/_load_modules/_sqlite3.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

@@ -248,8 +248,8 @@ def demo_with_classifier():
         
         # Save metrics (if reporter is available)
         try:
-            reporter.calc_balanced_accuracy(y[test_idx], y_pred, fold)
-            reporter.calc_confusion_matrix(y[test_idx], y_pred, fold)
+            reporter.calc_bacc(y[test_idx], y_pred, fold)
+            reporter.calc_conf_mat(y[test_idx], y_pred, fold)
             reporter.calc_roc_auc(y[test_idx], y_proba[:, 1], fold)
         except Exception as e:
             pass  # Reporter may not be fully configured

@@ -4,18 +4,16 @@
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/ai/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex AI module for machine learning and artificial intelligence utilities."""
 
+# Lazy imports to avoid loading heavy dependencies eagerly
 from .classification import ClassificationReporter
 from .training._LearningCurveLogger import LearningCurveLogger
 from .training._EarlyStopping import EarlyStopping
 from .loss import MultiTaskLoss
-from ._gen_ai import GenAI
 from .classification import ClassifierServer
 from .optim import get_optimizer, set_optimizer
 
@@ -24,7 +22,7 @@ from . import activation
 from . import classification
 from . import clustering
 from . import feature_extraction
-from . import layer
+# from . import layer
 from . import loss
 from . import metrics
 from . import optim
@@ -34,13 +32,20 @@ from . import sklearn
 from . import training
 from . import utils
 
+# Lazy import for GenAI (heavy anthropic dependency)
+def __getattr__(name):
+    if name == "GenAI":
+        from ._gen_ai import GenAI
+        return GenAI
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 __all__ = [
     # "Classifiers",  # Moved to .old directory
     "LearningCurveLogger",
     "ClassificationReporter",
     "EarlyStopping",
     "MultiTaskLoss",
-    "GenAI",
+    "GenAI",  # Lazy loaded
     "ClassifierServer",
     "get_optimizer",
     "set_optimizer",
@@ -50,7 +55,7 @@ __all__ = [
     "clustering",
     "feature_extraction",
     # "genai",
-    "layer",
+    # "layer",
     "loss",
     "metrics",
     "optim",

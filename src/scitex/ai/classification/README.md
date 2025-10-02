@@ -38,7 +38,7 @@ src/scitex/ai/classification/
 
 ```python
 from scitex.ai.classification.reporter_utils import (
-    calc_balanced_accuracy,
+    calc_bacc,
     calc_mcc,
     MetricStorage,
     create_summary_table,
@@ -46,7 +46,7 @@ from scitex.ai.classification.reporter_utils import (
 )
 
 # Calculate metrics
-ba = calc_balanced_accuracy(y_true, y_pred, fold=0)
+ba = calc_bacc(y_true, y_pred, fold=0)
 mcc = calc_mcc(y_true, y_pred, fold=0)
 
 # Store results
@@ -76,9 +76,9 @@ for fold in range(n_folds):
     y_pred, y_proba = train_and_predict(...)
     
     # Calculate and save metrics (automatically organized)
-    reporter.calc_balanced_accuracy(y_true, y_pred, fold)
+    reporter.calc_bacc(y_true, y_pred, fold)
     reporter.calc_mcc(y_true, y_pred, fold)
-    reporter.calc_confusion_matrix(y_true, y_pred, fold)
+    reporter.calc_conf_mat(y_true, y_pred, fold)
     
     # Add custom objects with path-based API
     reporter.add(fig, f"plots/roc_curve_fold_{fold:02d}.jpg")
@@ -98,9 +98,9 @@ reporter.generate_report()
 All metric calculations are pure functions without side effects:
 
 ```python
-from scitex.ai.classification.reporter_utils import calc_balanced_accuracy
+from scitex.ai.classification.reporter_utils import calc_bacc
 
-result = calc_balanced_accuracy(y_true, y_pred, fold=0)
+result = calc_bacc(y_true, y_pred, fold=0)
 # Returns: {'metric': 'balanced_accuracy', 'value': 0.85, 'fold': 0}
 ```
 

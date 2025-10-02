@@ -5,9 +5,7 @@
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/stats/desc/_nan_v01-20250920_145731.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2024-11-25 20:51:05 (ywatanabe)"

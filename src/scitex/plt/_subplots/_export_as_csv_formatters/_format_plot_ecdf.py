@@ -6,9 +6,7 @@
 import os
 import pandas as pd
 
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_export_as_csv_formatters/_format_plot_ecdf.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

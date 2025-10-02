@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save_modules/_save_listed_scalars_as_csv.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/_save_modules/_save_listed_scalars_as_csv.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2024-11-02 21:26:48 (ywatanabe)"

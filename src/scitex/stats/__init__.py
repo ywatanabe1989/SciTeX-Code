@@ -19,6 +19,7 @@ from . import effect_sizes
 from . import power
 from . import utils
 from . import posthoc
+from . import descriptive
 
 __all__ = [
     # Main submodules
@@ -28,6 +29,7 @@ __all__ = [
     "power",
     "utils",
     "posthoc",
+    "descriptive",
 ]
 
 __version__ = "2.0.0"

@@ -5,9 +5,7 @@
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/scholar/database/_ScholarDatabaseIntegration.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2025-08-01 14:20:00"

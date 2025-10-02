@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Classification utilities with unified API."""
 
-# Import the unified reporter - the only public API
-from .reporters import ClassificationReporter
+# Import reporters
+from .reporters import ClassificationReporter, SingleTaskClassificationReporter
 
 # Import other existing modules
 from ._ClassifierServer import ClassifierServer
@@ -25,8 +25,9 @@ from .time_series import (
 CVExperiment = CrossValidationExperiment
 
 __all__ = [
-    # Main reporter (unified API)
+    # Reporters
     "ClassificationReporter",
+    "SingleTaskClassificationReporter",
     # Classifier management
     "ClassifierServer",
     # Cross-validation

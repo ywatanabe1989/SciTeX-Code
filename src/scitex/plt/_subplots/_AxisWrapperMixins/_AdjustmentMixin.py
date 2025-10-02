@@ -4,9 +4,7 @@
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/.claude-worktree/scitex_repo/src/scitex/plt/_subplots/_AxisWrapperMixins/_AdjustmentMixin.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_AxisWrapperMixins/_AdjustmentMixin.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -62,11 +60,13 @@ class AdjustmentMixin:
             tight_layout=tight_layout
         )
 
-    def legend(self, loc: str = "upper left", **kwargs) -> None:
+    def legend(self, *args, loc: str = "upper left", **kwargs) -> None:
         """Places legend at specified location, with support for outside positions.
 
         Parameters
         ----------
+        *args : tuple
+            Positional arguments (handles, labels) as in matplotlib
         loc : str
             Legend position. Standard matplotlib positions plus:
             - "outer": Automatically place legend outside plot area (right side)
@@ -80,12 +80,13 @@ class AdjustmentMixin:
             For "separate": can include 'filename' (default: 'legend.png')
         """
         import matplotlib.pyplot as plt
-        
+
         # Handle special cases
         if loc == "outer":
             # Place legend outside on the right, adjusting figure to make room
             legend = self._axis_mpl.legend(
-                loc='center left', 
+                *args,
+                loc='center left',
                 bbox_to_anchor=(1.02, 0.5),
                 **kwargs
             )
@@ -203,8 +204,8 @@ class AdjustmentMixin:
 
         if loc in outside_positions:
             location, bbox = outside_positions[loc]
-            return self._axis_mpl.legend(loc=location, bbox_to_anchor=bbox, **kwargs)
-        return self._axis_mpl.legend(loc=loc, **kwargs)
+            return self._axis_mpl.legend(*args, loc=location, bbox_to_anchor=bbox, **kwargs)
+        return self._axis_mpl.legend(*args, loc=loc, **kwargs)
 
     def set_xyt(
         self,

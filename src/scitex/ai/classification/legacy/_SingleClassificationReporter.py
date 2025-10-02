@@ -5,9 +5,7 @@
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ai/classification/_SingleClassificationReporter.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -799,8 +797,8 @@ class SingleTaskClassificationReporter:
             ROC AUC score
         """
         # Use scitex.ai.plt utilities for consistent plotting
-        from scitex.ai.plt.aucs.pre_rec_auc import pre_rec_auc
-        from scitex.ai.plt.aucs.roc_auc import roc_auc
+        from scitex.ml.plt._plot_pre_rec_curve import pre_rec_auc
+        from scitex.ml.plt._plot_roc_curve import roc_auc
 
         unique_classes = sorted(list(_np.unique(true_class)))
         n_classes = len(unique_classes)
@@ -826,13 +824,13 @@ class SingleTaskClassificationReporter:
             )
         )
 
-        # Use scitex.ai.plt.aucs.roc_auc for ROC curve with automatic saving
+        # Use scitex.ml.plt._plot_roc_curve for ROC curve with automatic saving
         fig_roc, roc_metrics = roc_auc(
             _plt, true_class, pred_proba_2class, labels, spath=roc_spath
         )
         roc_auc_score = roc_metrics["roc_auc"][1]  # Get AUC for positive class
 
-        # Use scitex.ai.plt.aucs.pre_rec_auc for Precision-Recall curve with automatic saving
+        # Use scitex.ml.plt._plot_pre_rec_curve for Precision-Recall curve with automatic saving
         fig_prerec, prerec_metrics = pre_rec_auc(
             _plt, true_class, pred_proba_2class, labels, spath=prerec_spath
         )

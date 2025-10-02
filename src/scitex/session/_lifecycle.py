@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 01:35:47 (ywatanabe)"
+# Timestamp: "2025-10-02 10:21:02 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/session/_lifecycle.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/session/_lifecycle.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -205,6 +203,7 @@ def _setup_matplotlib(
 
         # Replace matplotlib.pyplot with scitex.plt to get wrapped functions
         import scitex.plt as stx_plt
+
         return stx_plt, CC
     return plt, None
 
@@ -232,7 +231,7 @@ def _simplify_relative_path(sdir: str) -> str:
     """
     base_path = _os.getcwd()
     relative_sdir = _os.path.relpath(sdir, base_path) if base_path else sdir
-    simplified_path = relative_sdir.replace("scripts/", "./").replace(
+    simplified_path = relative_sdir.replace("scripts/", "./scripts/").replace(
         "RUNNING/", ""
     )
     # Remove date-time pattern and random string

@@ -71,7 +71,7 @@ for fold_idx in range(n_folds):
     # Train and predict...
     
     # Calculate metrics (auto-saved)
-    reporter.calc_balanced_accuracy(y_test, y_pred)
+    reporter.calc_bacc(y_test, y_pred)
     reporter.calc_mcc(y_test, y_pred)
     reporter.calc_roc_auc(y_test, y_proba)
     

@@ -5,9 +5,7 @@
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ai/classification/reporter_utils/reporting.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -159,8 +157,33 @@ def generate_org_report(
         config = results.get('config', {})
         n_folds = config.get('n_folds', len(results.get('folds', [])))
         
+        # Dataset information (sample sizes) - extract from folds
+        f.write("* Dataset Information\n\n")
+        if 'folds' in results and results['folds']:
+            # Create table header
+            sample_header = "| Fold | Train Total | Train Seizure | Train Interictal | Test Total | Test Seizure | Test Interictal |"
+            sample_separator = "|------|-------------|---------------|------------------|------------|--------------|-----------------|"
+
+            f.write(sample_header + "\n")
+            f.write(sample_separator + "\n")
+
+            # Add sample size info for each fold if available
+            for fold_data in results['folds']:
+                fold_id = fold_data.get('fold_id', '?')
+                # Sample sizes might be in fold_data directly or we need to compute
+                n_train = fold_data.get('n_train', '-')
+                n_test = fold_data.get('n_test', '-')
+                n_train_seizure = fold_data.get('n_train_seizure', '-')
+                n_train_interictal = fold_data.get('n_train_interictal', '-')
+                n_test_seizure = fold_data.get('n_test_seizure', '-')
+                n_test_interictal = fold_data.get('n_test_interictal', '-')
+
+                row = f"| {fold_id:02d} | {n_train} | {n_train_seizure} | {n_train_interictal} | {n_test} | {n_test_seizure} | {n_test_interictal} |"
+                f.write(row + "\n")
+            f.write("\n")
+
         f.write("* Summary Performance\n\n")
-        
+
         # Create comprehensive metrics table including per-fold values
         if 'summary' in results and results['summary']:
             # Build header with fold columns
@@ -171,35 +194,35 @@ def generate_org_report(
                 separator += "---------|"
             header += " Mean ± Std |"
             separator += "------------|"
-            
+
             f.write(header + "\n")
             f.write(separator + "\n")
-            
+
             # Display metrics in specific order
             metric_order = ['balanced_accuracy', 'mcc', 'roc_auc', 'pr_auc']
             metric_display_names = {
                 'balanced_accuracy': 'Balanced Accuracy',
-                'mcc': 'MCC', 
+                'mcc': 'MCC',
                 'roc_auc': 'ROC AUC',
                 'pr_auc': 'PR AUC'
             }
-            
+
             # Collect fold values
             for metric_name in metric_order:
                 if metric_name in results['summary']:
                     stats = results['summary'][metric_name]
                     if isinstance(stats, dict) and 'mean' in stats:
                         row = f"| {metric_display_names.get(metric_name, metric_name)} |"
-                        
-                        # Add individual fold values
+
+                        # Add individual fold values (rounded to 3 digits)
                         fold_values = stats.get('values', [])
                         for i in range(n_folds):
                             if i < len(fold_values):
                                 row += f" {fold_values[i]:.3f} |"
                             else:
                                 row += " - |"
-                        
-                        # Add mean ± std
+
+                        # Add mean ± std (rounded to 3 digits)
                         mean = stats.get('mean', 0)
                         std = stats.get('std', 0)
                         row += f" {mean:.3f} ± {std:.3f} |"

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 02:13:01 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporter_utils/storage.py
+# Timestamp: "2025-10-02 06:48:06 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/reporter_utils/storage.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ml/classification/reporter_utils/storage.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -25,7 +23,6 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 import numpy as np
-import pandas as pd
 
 
 class MetricStorage:
@@ -123,26 +120,44 @@ class MetricStorage:
             print(f"Warning: Failed to save {relative_path}: {e}")
             return full_path.absolute()
 
-    def _save_json(self, data: Any, path: Path, verbose: bool = True) -> None:
+    def _save_json(
+        self, data: Any, full_path: Path, verbose: bool = True
+        ) -> None:
         """Save data as JSON with proper formatting."""
+        import json
+
         # Ensure JSON serializable
         if hasattr(data, "tolist"):  # numpy arrays
             data = data.tolist()
 
-        from scitex.io import save as stx_io_save
+        # Ensure parent directory exists
+        full_path.parent.mkdir(parents=True, exist_ok=True)
 
-        stx_io_save(data, path)
-        # with open(path, "w") as f:
-        #     json.dump(data, f, indent=2, ensure_ascii=False)
+        with open(full_path, "w") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
-        # if verbose or self.verbose:
-        #     logger.info("Saved to: {str(path)}")
+        if verbose or self.verbose:
+            import scitex.logging as logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Saved to: {full_path}")
 
-    def _save_csv(self, data: Any, path: Path) -> None:
+    def _save_csv(self, data: Any, full_path: Path) -> None:
         """Save data as CSV."""
-        from scitex.io import save as stx_io_save
+        import pandas as pd
 
-        stx_io_save(data, path)
+        # Ensure parent directory exists
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+
+        if isinstance(data, pd.DataFrame):
+            data.to_csv(full_path, index=True)
+        else:
+            # Assume it's array-like
+            pd.DataFrame(data).to_csv(full_path, index=False)
+
+        if self.verbose:
+            import scitex.logging as logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Saved to: {full_path}")
 
         # if isinstance(data, pd.DataFrame):
         #     # data.to_csv(path, index=True)
@@ -165,21 +180,23 @@ class MetricStorage:
         #     with open(path, "w") as f:
         #         f.write(str(data))
 
-    def _save_figure(self, figure, path: Path) -> None:
+    def _save_figure(self, figure, full_path: Path) -> None:
         """Save matplotlib figure."""
         from scitex.io import save as stx_io_save
 
-        stx_io_save(figure, path)
+        # fullpath = Path(str(self.base_dir)) / path
+        stx_io_save(figure, full_path)
         # if hasattr(figure, "savefig"):
         #     figure.savefig(path, dpi=300, bbox_inches="tight")
         # else:
         #     raise ValueError("Object is not a matplotlib figure")
 
-    def _save_text(self, data: Any, path: Path) -> None:
+    def _save_text(self, data: Any, full_path: Path) -> None:
         """Save data as text file."""
         from scitex.io import save as stx_io_save
 
-        stx_io_save(data, path)
+        # fullpath = Path(str(self.base_dir)) / path
+        stx_io_save(data, full_path)
         # with open(path, "w") as f:
         #     f.write(str(data))
 

@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/utils/h5_to_zarr.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/utils/h5_to_zarr.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

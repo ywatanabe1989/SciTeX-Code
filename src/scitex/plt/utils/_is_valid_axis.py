@@ -4,9 +4,7 @@
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/utils/_is_valid_axis.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/utils/_is_valid_axis.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

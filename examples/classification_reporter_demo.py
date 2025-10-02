@@ -151,11 +151,11 @@ def demo_advanced_usage():
         y_proba = clf.predict_proba(X_test)
         
         # Calculate metrics individually (for more control)
-        ba = reporter.calc_balanced_accuracy(y_test, y_pred)
+        ba = reporter.calc_bacc(y_test, y_pred)
         mcc = reporter.calc_mcc(y_test, y_pred)
-        cm = reporter.calc_confusion_matrix(y_test, y_pred, plot=True)
+        cm = reporter.calc_conf_mat(y_test, y_pred, plot=True)
         roc = reporter.calc_roc_auc(y_test, y_proba, plot=True)
-        pr = reporter.calc_pr_auc(y_test, y_proba, plot=True)
+        pr = reporter.calc_pre_rec_auc(y_test, y_proba, plot=True)
         
         # Add custom analysis
         import pandas as pd

@@ -4,9 +4,7 @@
 # File: ./src/scitex/io/_load_modules/_pdf.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/_load_modules/_pdf.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

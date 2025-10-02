@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/db/_sqlite3/_SQLite3Mixins/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2024-11-12 09:29:50 (ywatanabe)"

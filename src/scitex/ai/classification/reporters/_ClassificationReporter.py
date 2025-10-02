@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 14:48:00 (ywatanabe)"
+# Timestamp: "2025-10-02 06:38:58 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/_ClassificationReporter.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ml/classification/reporters/_ClassificationReporter.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """
 Unified Classification Reporter.
 
@@ -37,6 +36,18 @@ class ClassificationReporter(BaseClassificationReporter):
     - Single task: Just use it without specifying tasks
     - Multiple tasks: Specify tasks upfront or create them dynamically
     - Seamless switching between single and multi-task workflows
+
+    Features:
+    - Comprehensive metrics calculation (balanced accuracy, MCC, ROC-AUC, PR-AUC, etc.)
+    - Automated visualization generation:
+      * Confusion matrices
+      * ROC and Precision-Recall curves
+      * Feature importance plots (via plotter)
+      * CV aggregation plots with faded fold lines
+      * Comprehensive metrics dashboard
+    - Multi-format report generation (Org, Markdown, LaTeX, HTML, DOCX, PDF)
+    - Cross-validation support with automatic fold aggregation
+    - Multi-task classification tracking
 
     Parameters
     ----------
@@ -67,6 +78,18 @@ class ClassificationReporter(BaseClassificationReporter):
     >>> reporter = ClassificationReporter("./results")
     >>> reporter.calculate_metrics(y_true1, y_pred1, task="task1")
     >>> reporter.calculate_metrics(y_true2, y_pred2, task="task2")
+
+    >>> # Feature importance visualization (via plotter)
+    >>> reporter._single_reporter.plotter.create_feature_importance_plot(
+    ...     feature_importance=importances,
+    ...     feature_names=feature_names,
+    ...     save_path="./results/feature_importance.png"
+    ... )
+
+    >>> # CV aggregation plots (automatically created on save_summary)
+    >>> for fold in range(5):
+    ...     metrics = reporter.calculate_metrics(y_true, y_pred, y_proba, fold=fold)
+    >>> reporter.save_summary()  # Creates CV aggregation plots with faded fold lines
     """
 
     def __init__(
@@ -383,6 +406,73 @@ class ClassificationReporter(BaseClassificationReporter):
             "required_metrics": self.required_metrics,
         }
         self.storage.save(config_data, "config.json")
+
+    def save_feature_importance(
+        self,
+        model,
+        feature_names: List[str],
+        fold: Optional[int] = None,
+        task: Optional[str] = None,
+    ) -> Dict[str, float]:
+        """
+        Calculate and save feature importance for tree-based models.
+
+        Parameters
+        ----------
+        model : object
+            Fitted classifier (must have feature_importances_)
+        feature_names : List[str]
+            Names of features
+        fold : int, optional
+            Fold number for tracking
+        task : str, optional
+            Task name for multi-task mode
+
+        Returns
+        -------
+        Dict[str, float]
+            Dictionary of feature importances {feature_name: importance}
+        """
+        # Single-task mode
+        if not self.tasks and self._single_reporter:
+            return self._single_reporter.save_feature_importance(
+                model, feature_names, fold
+            )
+
+        # Multi-task mode
+        if task is not None and task in self.reporters:
+            return self.reporters[task].save_feature_importance(
+                model, feature_names, fold
+            )
+
+        return {}
+
+    def save_feature_importance_summary(
+        self,
+        all_importances: List[Dict[str, float]],
+        task: Optional[str] = None,
+    ) -> None:
+        """
+        Create summary visualization of feature importances across all folds.
+
+        Parameters
+        ----------
+        all_importances : List[Dict[str, float]]
+            List of feature importance dicts from each fold
+        task : str, optional
+            Task name for multi-task mode
+        """
+        # Single-task mode
+        if not self.tasks and self._single_reporter:
+            return self._single_reporter.save_feature_importance_summary(
+                all_importances
+            )
+
+        # Multi-task mode
+        if task is not None and task in self.reporters:
+            return self.reporters[task].save_feature_importance_summary(
+                all_importances
+            )
 
     def __repr__(self) -> str:
         if not self.tasks:

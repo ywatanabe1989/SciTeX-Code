@@ -1,8 +1,35 @@
 <!-- ---
-!-- Timestamp: 2025-09-22 14:43:32
+!-- Timestamp: 2025-10-02 08:19:38
 !-- Author: ywatanabe
 !-- File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/TODO.md
 !-- --- -->
+
+
+- [ ] ./scripts/pac/classification/classify_pac.py
+  - [ ] This is not working well due to label problems (str vs int, insufficient targets and pred classes): 
+
+- [ ] they are not handling edge cases smartly: /home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/reporter_utils/metrics.py
+
+- [ ] metrics should be written here as a centralized utilities:
+    ~/proj/scitex_repo/src/scitex/ml/metrics/
+
+- [ ] in the past, we used such code but they are dirty and not separated to
+  calculation and plotting:
+  /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/plt:
+    drwxr-sr-x  5 ywatanabe punim2354 4.0K Sep  7 11:50 .
+    drwxr-sr-x 19 ywatanabe punim2354 4.0K Sep 22 14:51 ..
+    drwxr-sr-x  5 ywatanabe punim2354 4.0K Sep  7 08:38 aucs
+    drwxr-sr-x  3 ywatanabe punim2354 4.0K Sep  7 08:32 _conf_mat_out
+    -rwxr-xr-x  1 ywatanabe punim2354  17K Oct  2 07:15 _conf_mat.py
+    -rwxr-xr-x  1 ywatanabe punim2354  17K Sep  7 11:39 _conf_mat_v01.py
+    -rwxr-xr-x  1 ywatanabe punim2354  602 Jul  1 21:35 __init__.py
+    -rwxr-xr-x  1 ywatanabe punim2354 6.2K Jul  1 21:35 _learning_curve.py
+    -rwxr-xr-x  1 ywatanabe punim2354 4.2K Jul 14 17:30 _optuna_study.py
+    drwxr-sr-x  2 ywatanabe punim2354 4.0K Oct  2 07:20 __pycache__
+   
+────────────────────────────────────────────────────────────────────────────────                         ✗ Auto-update failed · Try claude doctor or npm i -g 
+                         @anthropic-ai/claude-code
+
 
 - [ ] Create reporters directory
   - Current
