@@ -336,9 +336,9 @@ class MultipleTasksClassificationReporter(BaseClassificationReporter):
         >>> # Save aggregated data for a specific task
         >>> reporter.save(
         ...     df_results,
-        ...     "cv_summary/analysis.csv",
+        ...     "folds_all/analysis.csv",
         ...     task="task2"
-        ... )  # Saves to: task2/cv_summary/analysis.csv
+        ... )  # Saves to: task2/folds_all/analysis.csv
 
         >>> # Save global summary across all tasks
         >>> reporter.save(

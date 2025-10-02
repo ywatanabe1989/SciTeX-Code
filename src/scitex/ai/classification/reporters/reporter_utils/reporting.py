@@ -240,8 +240,8 @@ def generate_org_report(
             f.write("#+END_EXPORT\n\n")
             
             # CV Summary confusion matrix first
-            cv_summary_plots = {k: v for k, v in results['plots'].items() if 'cv_summary' in k}
-            cm_plots = [v for k, v in cv_summary_plots.items() if 'confusion_matrix' in k]
+            folds_all_plots = {k: v for k, v in results['plots'].items() if 'folds_all' in k}
+            cm_plots = [v for k, v in folds_all_plots.items() if 'confusion_matrix' in k]
             
             if cm_plots:
                 for plot_path in cm_plots:
@@ -292,7 +292,7 @@ def generate_org_report(
             f.write("#+END_EXPORT\n\n")
             
             # CV Summary ROC curve
-            roc_plots = [v for k, v in cv_summary_plots.items() if 'roc_curve' in k]
+            roc_plots = [v for k, v in folds_all_plots.items() if 'roc_curve' in k]
             if roc_plots:
                 for plot_path in roc_plots:
                     rel_path = _make_relative_path(output_path.parent,
@@ -342,7 +342,7 @@ def generate_org_report(
             f.write("#+END_EXPORT\n\n")
             
             # CV Summary PR curve
-            pr_plots = [v for k, v in cv_summary_plots.items() if 'pr_curve' in k]
+            pr_plots = [v for k, v in folds_all_plots.items() if 'pr_curve' in k]
             if pr_plots:
                 for plot_path in pr_plots:
                     rel_path = _make_relative_path(output_path.parent,
@@ -557,13 +557,13 @@ def generate_markdown_report(
         if include_plots and 'plots' in results:
             f.write("## CV Summary Results\n\n")
             
-            # Find cv_summary plots
-            cv_summary_plots = {k: v for k, v in results['plots'].items() 
-                            if 'cv_summary' in k}
+            # Find folds_all plots
+            folds_all_plots = {k: v for k, v in results['plots'].items() 
+                            if 'folds_all' in k}
             
-            if cv_summary_plots:
+            if folds_all_plots:
                 # Confusion Matrix
-                cm_plots = [v for k, v in cv_summary_plots.items() 
+                cm_plots = [v for k, v in folds_all_plots.items() 
                            if 'confusion_matrix' in k]
                 if cm_plots:
                     f.write("### CV Summary Confusion Matrix\n\n")
@@ -573,7 +573,7 @@ def generate_markdown_report(
                         f.write(f"![Confusion Matrix]({rel_path})\n\n")
                 
                 # ROC Curve
-                roc_plots = [v for k, v in cv_summary_plots.items() 
+                roc_plots = [v for k, v in folds_all_plots.items() 
                             if 'roc_curve' in k]
                 if roc_plots:
                     f.write("### CV Summary ROC Curve\n\n")
@@ -583,7 +583,7 @@ def generate_markdown_report(
                         f.write(f"![ROC Curve]({rel_path})\n\n")
                 
                 # PR Curve
-                pr_plots = [v for k, v in cv_summary_plots.items() 
+                pr_plots = [v for k, v in folds_all_plots.items() 
                            if 'pr_curve' in k]
                 if pr_plots:
                     f.write("### CV Summary Precision-Recall Curve\n\n")
@@ -706,17 +706,17 @@ def generate_latex_report(
             f.write("\\section{Visualizations}\n\n")
             
             # CV Summary plots
-            cv_summary_plots = {k: v for k, v in results['plots'].items() 
-                            if 'cv_summary' in k}
+            folds_all_plots = {k: v for k, v in results['plots'].items() 
+                            if 'folds_all' in k}
             
-            if cv_summary_plots:
+            if folds_all_plots:
                 # Find specific plot types
                 for plot_type, title in [
                     ('confusion_matrix', 'CV Summary Confusion Matrix'),
                     ('roc_curve', 'CV Summary ROC Curve'),
                     ('pr_curve', 'CV Summary Precision-Recall Curve')
                 ]:
-                    type_plots = [v for k, v in cv_summary_plots.items() 
+                    type_plots = [v for k, v in folds_all_plots.items() 
                                  if plot_type in k]
                     if type_plots:
                         f.write(f"\\subsection{{{title}}}\n\n")
@@ -727,7 +727,7 @@ def generate_latex_report(
                             f.write("\\centering\n")
                             f.write(f"\\includegraphics[width=0.8\\textwidth]{{{rel_path}}}\n")
                             f.write(f"\\caption{{{title}}}\n")
-                            f.write(f"\\label{{fig:{plot_type}_cv_summary}}\n")
+                            f.write(f"\\label{{fig:{plot_type}_folds_all}}\n")
                             f.write("\\end{figure}\n\n")
         
         f.write("\\end{document}\n")
@@ -848,20 +848,20 @@ def export_for_paper(
         plots_dir = output_dir / "figures"
         plots_dir.mkdir(exist_ok=True)
         
-        # Copy cv_summary plots with standardized names
-        cv_summary_plots = {k: v for k, v in results['plots'].items() 
-                        if 'cv_summary' in k}
+        # Copy folds_all plots with standardized names
+        folds_all_plots = {k: v for k, v in results['plots'].items() 
+                        if 'folds_all' in k}
         
-        for plot_key, plot_path in cv_summary_plots.items():
+        for plot_key, plot_path in folds_all_plots.items():
             src_path = base_dir / plot_path
             if src_path.exists():
                 # Standardize filename
                 if 'confusion_matrix' in plot_key:
-                    dest_name = "confusion_matrix_cv_summary.jpg"
+                    dest_name = "confusion_matrix_folds_all.jpg"
                 elif 'roc_curve' in plot_key:
-                    dest_name = "roc_curve_cv_summary.jpg"
+                    dest_name = "roc_curve_folds_all.jpg"
                 elif 'pr_curve' in plot_key:
-                    dest_name = "pr_curve_cv_summary.jpg"
+                    dest_name = "pr_curve_folds_all.jpg"
                 else:
                     dest_name = src_path.name
                 

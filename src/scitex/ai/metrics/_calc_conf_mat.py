@@ -78,6 +78,10 @@ def calc_conf_mat(
             "normalize": normalize,
         }
     except Exception as e:
+        import sys
+        print(f"ERROR in calc_conf_mat: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
         return {
             "metric": "confusion_matrix",
             "value": None,

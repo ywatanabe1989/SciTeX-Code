@@ -28,10 +28,10 @@ def _solve_intersection(f1, a, b):
     return (x_f, y_f)
 
 
-def _to_onehot(labels, n_classes):
-    """Convert labels to one-hot encoding."""
+def _to_onehot(class_indices, n_classes):
+    """Convert class indices to one-hot encoding."""
     eye = np.eye(n_classes, dtype=int)
-    return eye[labels]
+    return eye[class_indices]
 
 
 def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
@@ -62,7 +62,20 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
     # Use label_binarize to be multi-label like settings
     n_classes = len(labels)
-    true_class_onehot = _to_onehot(true_class, n_classes)
+
+    # Handle 1D pred_proba (binary classification with only positive class probabilities)
+    if pred_proba.ndim == 1:
+        # Convert to 2D: [P(class=0), P(class=1)]
+        pred_proba = np.column_stack([1 - pred_proba, pred_proba])
+
+    # Convert string labels to integer indices if needed
+    if true_class.dtype.kind in ('U', 'S', 'O'):  # Unicode, bytes, or object (string)
+        label_to_idx = {label: idx for idx, label in enumerate(labels)}
+        true_class_idx = np.array([label_to_idx[tc] for tc in true_class])
+    else:
+        true_class_idx = true_class
+
+    true_class_onehot = _to_onehot(true_class_idx, n_classes)
 
     # For each class
     precision = dict()
@@ -187,7 +200,10 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
     # Save figure if spath is provided
     if spath is not None:
-        stx.io.save(fig, spath, use_caller_path=True)
+        from pathlib import Path
+        # Resolve to absolute path to prevent _out directory creation
+        spath_abs = Path(spath).resolve() if isinstance(spath, (str, Path)) else spath
+        stx.io.save(fig, str(spath_abs), use_caller_path=False)
 
     return fig, metrics
 

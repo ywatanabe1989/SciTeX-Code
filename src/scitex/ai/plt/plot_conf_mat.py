@@ -250,7 +250,7 @@ def plot_conf_mat(
         vmax = np.array(cm).max().astype(int)
         norm = matplotlib.colors.Normalize(vmin=0, vmax=vmax)
         cbar = fig.colorbar(
-            plt.cm.ScalarMappable(norm=norm, cmap="Blues"),
+            matplotlib.cm.ScalarMappable(norm=norm, cmap="Blues"),
             cax=cax,
         )
         cbar.locator = ticker.MaxNLocator(nbins=4)
@@ -258,7 +258,10 @@ def plot_conf_mat(
         cbar.outline.set_edgecolor("white")
 
     if spath is not None:
-        scitex.io.save(fig, spath, use_caller_path=True)
+        from pathlib import Path
+        # Resolve to absolute path to prevent _out directory creation
+        spath_abs = Path(spath).resolve() if isinstance(spath, (str, Path)) else spath
+        scitex.io.save(fig, str(spath_abs), use_caller_path=False)
 
     return fig, cm
 

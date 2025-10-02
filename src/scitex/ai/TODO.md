@@ -75,7 +75,7 @@
   - [X] scitex.ml.plt now imports from scitex.ml.metrics (backward compat)
 - [X] stx.ml.metrics should handle metrics calculation
   - [X] This module can be referenced from stx.ml.plt and stx.ml.ClassificationReporter, and user-manual scripts
-  - [X] All classification metrics centralized in scitex.ml.metrics.classification
+  - [X] All classification metrics centralized in scitex.ml.metrics
   - [X] In binary cases, both one- and two-column posterior formats should be handled gracefully
     - [X] 2D with 2 columns: uses column 1 for positive class
     - [X] 1D array: uses directly

@@ -506,4 +506,256 @@ def create_classification_reporter(
     """
     return ClassificationReporter(output_dir, tasks=tasks, **kwargs)
 
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Test ClassificationReporter with sample data"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="./.dev/classification_reporter_test_out",
+        help="Output directory for test results (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--n-samples",
+        type=int,
+        default=100,
+        help="Number of samples to generate (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--n-folds",
+        type=int,
+        default=3,
+        help="Number of CV folds (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--task-type",
+        type=str,
+        choices=["binary", "multiclass", "multitask"],
+        default="binary",
+        help="Type of classification task (default: %(default)s)"
+    )
+
+    return parser.parse_args()
+
+
+def main(args):
+    """Test ClassificationReporter functionality."""
+    from sklearn.datasets import make_classification
+    from sklearn.model_selection import StratifiedKFold
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.ensemble import RandomForestClassifier
+
+    # Create output directory
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 60)
+    print("ClassificationReporter Test")
+    print("=" * 60)
+    print(f"Task type: {args.task_type}")
+    print(f"Output dir: {output_dir}")
+    print(f"Samples: {args.n_samples}, Folds: {args.n_folds}")
+    print()
+
+    if args.task_type == "binary":
+        # Binary classification
+        print("Testing Binary Classification...")
+        X, y = make_classification(
+            n_samples=args.n_samples,
+            n_features=20,
+            n_classes=2,
+            n_informative=15,
+            n_redundant=5,
+            random_state=42
+        )
+        labels = ["Negative", "Positive"]
+
+        reporter = ClassificationReporter(output_dir / "binary", track=True)
+
+        # Cross-validation
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+        model = LogisticRegression(random_state=42, max_iter=1000)
+
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+            X_train, X_test = X[train_idx], X[test_idx]
+            y_train, y_test = y[train_idx], y[test_idx]
+
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            y_proba = model.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=labels,
+                fold=fold
+            )
+
+        # Generate reports
+        reporter.save_summary()
+        print(f"✓ Binary classification results saved to: {output_dir / 'binary'}")
+
+    elif args.task_type == "multiclass":
+        # Multiclass classification
+        print("Testing Multiclass Classification...")
+        X, y = make_classification(
+            n_samples=args.n_samples,
+            n_features=20,
+            n_classes=4,
+            n_informative=15,
+            n_redundant=5,
+            n_clusters_per_class=1,
+            random_state=42
+        )
+        labels = ["Class_A", "Class_B", "Class_C", "Class_D"]
+
+        reporter = ClassificationReporter(output_dir / "multiclass", track=True)
+
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+        model = RandomForestClassifier(n_estimators=50, random_state=42)
+
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+            X_train, X_test = X[train_idx], X[test_idx]
+            y_train, y_test = y[train_idx], y[test_idx]
+
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            y_proba = model.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=labels,
+                fold=fold
+            )
+
+        reporter.save_summary()
+        print(f"✓ Multiclass classification results saved to: {output_dir / 'multiclass'}")
+
+    elif args.task_type == "multitask":
+        # Multi-task classification
+        print("Testing Multi-task Classification...")
+
+        # Task 1: Binary
+        X1, y1 = make_classification(
+            n_samples=args.n_samples, n_features=20, n_classes=2, random_state=42
+        )
+
+        # Task 2: Multiclass
+        X2, y2 = make_classification(
+            n_samples=args.n_samples, n_features=20, n_classes=3, random_state=43
+        )
+
+        reporter = ClassificationReporter(
+            output_dir / "multitask",
+            tasks=["binary_task", "multiclass_task"],
+            track=True
+        )
+
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+
+        # Task 1
+        model1 = LogisticRegression(random_state=42, max_iter=1000)
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X1, y1)):
+            X_train, X_test = X1[train_idx], X1[test_idx]
+            y_train, y_test = y1[train_idx], y1[test_idx]
+
+            model1.fit(X_train, y_train)
+            y_pred = model1.predict(X_test)
+            y_proba = model1.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=["Neg", "Pos"],
+                fold=fold,
+                task="binary_task"
+            )
+
+        # Task 2
+        model2 = RandomForestClassifier(n_estimators=50, random_state=42)
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X2, y2)):
+            X_train, X_test = X2[train_idx], X2[test_idx]
+            y_train, y_test = y2[train_idx], y2[test_idx]
+
+            model2.fit(X_train, y_train)
+            y_pred = model2.predict(X_test)
+            y_proba = model2.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=["A", "B", "C"],
+                fold=fold,
+                task="multiclass_task"
+            )
+
+        reporter.save_summary()
+        print(f"✓ Multi-task classification results saved to: {output_dir / 'multitask'}")
+
+    print()
+    print("=" * 60)
+    print("Test Complete!")
+    print("=" * 60)
+    print(f"\nCreated files in: {output_dir}")
+
+    # List all created files
+    import subprocess
+    result = subprocess.run(
+        ["find", str(output_dir), "-type", "f"],
+        capture_output=True,
+        text=True
+    )
+    if result.stdout:
+        files = sorted(result.stdout.strip().split('\n'))
+        print(f"\nTotal files created: {len(files)}")
+        print("\nFile tree:")
+        subprocess.run(["tree", str(output_dir)])
+
+    return 0
+
+
+def run_main():
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+    import scitex as stx
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
+
 # EOF

@@ -36,16 +36,23 @@ try:
     import matplotlib
     import matplotlib.pyplot as plt
 
+    # Try to import seaborn for enhanced visualizations
+    try:
+        import seaborn as sns
+    except ImportError:
+        sns = None
+
     # Import scitex plotting functions
     import scitex as stx
-    from scitex.ml.plt.plot_conf_mat import conf_mat
-    from scitex.ml.plt.plot_roc_curve import roc_auc
-    from scitex.ml.plt.plot_pre_rec_curve import pre_rec_auc
+    from scitex.ml.plt.plot_conf_mat import plot_conf_mat as conf_mat
+    from scitex.ml.plt.plot_roc_curve import plot_roc_curve as roc_auc
+    from scitex.ml.plt.plot_pre_rec_curve import plot_pre_rec_curve as pre_rec_auc
 
     PLOTTING_AVAILABLE = True
 except ImportError:
     PLOTTING_AVAILABLE = False
     plt = None
+    sns = None
     conf_mat = None
     roc_auc = None
     pre_rec_auc = None
@@ -173,7 +180,7 @@ class Plotter:
 
         try:
             # Delegate to centralized roc_auc function from stx.ml.plt
-            fig = roc_auc(
+            fig, _ = roc_auc(
                 true_class=y_true,
                 pred_proba=y_proba,
                 labels=labels or [],
@@ -181,6 +188,10 @@ class Plotter:
             )
             return fig
         except Exception as e:
+            import sys
+            print(f"ERROR in create_roc_curve: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc()
             if self.verbose:
                 warnings.warn(f"Failed to create ROC curve: {e}", UserWarning)
             return None
@@ -222,7 +233,7 @@ class Plotter:
 
         try:
             # Delegate to centralized pre_rec_auc function from stx.ml.plt
-            fig = pre_rec_auc(
+            fig, _ = pre_rec_auc(
                 true_class=y_true,
                 pred_proba=y_proba,
                 labels=labels or [],
@@ -230,6 +241,10 @@ class Plotter:
             )
             return fig
         except Exception as e:
+            import sys
+            print(f"ERROR in create_precision_recall_curve: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc()
             if self.verbose:
                 warnings.warn(f"Failed to create PR curve: {e}", UserWarning)
             return None
@@ -238,6 +253,7 @@ class Plotter:
         self,
         y_true: np.ndarray,
         y_proba: np.ndarray,
+        labels: Optional[List[str]] = None,
         save_path: Optional[Union[str, Path]] = None,
         verbose: bool = True,
         title: str = "ROC Curve (Overall)",
@@ -316,13 +332,12 @@ class Plotter:
 
             if save_path:
                 try:
+                    from pathlib import Path
                     from scitex.io import save as stx_io_save
 
-                    # Ensure save_path is a string
-                    save_path_str = str(save_path) if save_path else None
-                    if save_path_str:
-                        stx_io_save(fig, save_path_str, verbose=True, use_caller_path=False)  # Internal use
-                        print(f"DEBUG: Saved ROC curve to {save_path_str}")
+                    # Resolve to absolute path to prevent _out directory creation
+                    save_path_abs = Path(save_path).resolve() if isinstance(save_path, (str, Path)) else save_path
+                    stx_io_save(fig, str(save_path_abs), verbose=True, use_caller_path=False)
                 except Exception as save_error:
                     print(f"ERROR: Failed to save ROC curve: {save_error}")
                     import traceback
@@ -344,6 +359,7 @@ class Plotter:
         self,
         y_true: np.ndarray,
         y_proba: np.ndarray,
+        labels: Optional[List[str]] = None,
         save_path: Optional[Union[str, Path]] = None,
         verbose: bool = True,
         title: str = "Precision-Recall Curve (Overall)",
@@ -417,12 +433,12 @@ class Plotter:
                 return None
 
             if save_path:
+                from pathlib import Path
                 from scitex.io import save as stx_io_save
 
-                # Ensure save_path is a string
-                save_path_str = str(save_path) if save_path else None
-                if save_path_str:
-                    stx_io_save(fig, save_path_str, verbose=verbose or self.verbose, use_caller_path=False)
+                # Resolve to absolute path to prevent _out directory creation
+                save_path_abs = Path(save_path).resolve() if isinstance(save_path, (str, Path)) else save_path
+                stx_io_save(fig, str(save_path_abs), verbose=verbose or self.verbose, use_caller_path=False)
 
             plt.close(fig)  # Clean up
             return fig
@@ -621,8 +637,19 @@ class Plotter:
                 else:
                     y_proba_pos = y_proba
 
-                precision, recall, _ = precision_recall_curve(y_true, y_proba_pos)
-                avg_precision = average_precision_score(y_true, y_proba_pos)
+                # Convert string labels to integer indices if needed
+                y_true_for_pr = y_true
+                if y_true.dtype.kind in ('U', 'S', 'O'):  # Unicode, bytes, or object (string)
+                    if labels:
+                        label_to_idx = {label: idx for idx, label in enumerate(labels)}
+                        y_true_for_pr = np.array([label_to_idx[yt] for yt in y_true])
+                    else:
+                        unique_labels = np.unique(y_true)
+                        label_to_idx = {label: idx for idx, label in enumerate(unique_labels)}
+                        y_true_for_pr = np.array([label_to_idx[yt] for yt in y_true])
+
+                precision, recall, _ = precision_recall_curve(y_true_for_pr, y_proba_pos)
+                avg_precision = average_precision_score(y_true_for_pr, y_proba_pos)
 
                 ax.plot(recall, precision,
                        label=f'AP = {avg_precision:.3f}', linewidth=2)
@@ -697,8 +724,11 @@ class Plotter:
 
             # Save figure
             if save_path:
+                from pathlib import Path
                 from scitex.io import save as stx_io_save
-                stx_io_save(fig, save_path, verbose=verbose or self.verbose, use_caller_path=False)
+                # Resolve to absolute path to prevent _out directory creation
+                save_path_abs = Path(save_path).resolve() if isinstance(save_path, (str, Path)) else save_path
+                stx_io_save(fig, str(save_path_abs), verbose=verbose or self.verbose, use_caller_path=False)
 
             return fig
 
@@ -864,7 +894,6 @@ class Plotter:
 
             from sklearn.metrics import (auc, average_precision_score,
                                        precision_recall_curve, roc_curve)
-            from scipy import interp
 
             fig, ax = plt.subplots(figsize=(8, 8))
 
@@ -884,6 +913,18 @@ class Plotter:
                 y_proba = fold_data['y_proba']
                 fold_idx = fold_data.get('fold', 0)
 
+                # Convert string labels to integer indices if needed
+                y_true_numeric = y_true
+                if y_true.dtype.kind in ('U', 'S', 'O'):  # Unicode, bytes, or object (string)
+                    if class_labels and len(class_labels) >= 2:
+                        label_to_idx = {label: idx for idx, label in enumerate(class_labels)}
+                        y_true_numeric = np.array([label_to_idx.get(yt, 0) for yt in y_true])
+                    else:
+                        # Infer labels from unique values
+                        unique_labels = np.unique(y_true)
+                        label_to_idx = {label: idx for idx, label in enumerate(unique_labels)}
+                        y_true_numeric = np.array([label_to_idx[yt] for yt in y_true])
+
                 # Handle binary classification
                 if y_proba.ndim == 2 and y_proba.shape[1] == 2:
                     y_proba_pos = y_proba[:, 1]
@@ -893,10 +934,10 @@ class Plotter:
                     # Multiclass - use first class for now
                     # TODO: Extend for multiclass support
                     y_proba_pos = y_proba[:, 0]
-                    y_true = (y_true == 0).astype(int)
+                    y_true_numeric = (y_true_numeric == 0).astype(int)
 
                 if curve_type == 'roc':
-                    fpr, tpr, _ = roc_curve(y_true, y_proba_pos)
+                    fpr, tpr, _ = roc_curve(y_true_numeric, y_proba_pos)
                     roc_auc = auc(fpr, tpr)
                     aucs.append(roc_auc)
 
@@ -910,8 +951,8 @@ class Plotter:
                     tprs.append(interp_tpr)
 
                 else:  # pr
-                    precision, recall, _ = precision_recall_curve(y_true, y_proba_pos)
-                    ap = average_precision_score(y_true, y_proba_pos)
+                    precision, recall, _ = precision_recall_curve(y_true_numeric, y_proba_pos)
+                    ap = average_precision_score(y_true_numeric, y_proba_pos)
                     aps.append(ap)
 
                     if show_individual_folds:
