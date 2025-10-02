@@ -65,6 +65,8 @@ class TimeSeriesStratifiedSplit(BaseCrossValidator):
         Number of samples to exclude between train and test (default: 0)
     stratify : bool
         Whether to maintain class proportions (default: True)
+    random_state : int, optional
+        Random seed for reproducibility (default: None)
     
     Examples
     --------
@@ -87,12 +89,15 @@ class TimeSeriesStratifiedSplit(BaseCrossValidator):
         val_ratio: float = 0.1,
         gap: int = 0,
         stratify: bool = True,
+        random_state: Optional[int] = None,
     ):
         self.n_splits = n_splits
         self.test_ratio = test_ratio
         self.val_ratio = val_ratio
         self.gap = gap
         self.stratify = stratify
+        self.random_state = random_state
+        self.rng = np.random.default_rng(random_state)
     
     def split(
         self,

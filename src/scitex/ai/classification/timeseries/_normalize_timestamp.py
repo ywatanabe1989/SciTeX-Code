@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-09-22 15:21:06 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/time_series/_normalize_timestamp.py
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/timeseries/_normalize_timestamp.py
 # ----------------------------------------
 from __future__ import annotations
 import os

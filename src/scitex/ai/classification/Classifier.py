@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2024-12-12 06:49:15 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/ai/ClassifierServer.py
+# File: ./scitex_repo/src/scitex/ai/Classifier.py
 
 THIS_FILE = (
-    "/data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/ClassifierServer.py"
+    "/data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/ai/Classifier.py"
 )
 
 """
@@ -50,13 +50,13 @@ from sklearn.svm import SVC as _SVC
 from sklearn.svm import LinearSVC as _LinearSVC
 
 
-class ClassifierServer:
+class Classifier:
     """
     Server for initializing various scikit-learn classifiers with consistent interface.
 
     Example
     -------
-    >>> clf_server = ClassifierServer(class_weight={0: 1.0, 1: 2.0}, random_state=42)
+    >>> clf_server = Classifier(class_weight={0: 1.0, 1: 2.0}, random_state=42)
     >>> clf = clf_server("SVC", scaler=_StandardScaler())
     >>> print(clf_server.list)
     ['CatBoostClassifier', 'Perceptron', ...]
@@ -127,5 +127,5 @@ class ClassifierServer:
 
 
 if __name__ == "__main__":
-    clf_server = ClassifierServer()
+    clf_server = Classifier()
     clf = clf_server("SVC", scaler=_StandardScaler())

@@ -14,7 +14,7 @@ from .classification import ClassificationReporter
 from .training._LearningCurveLogger import LearningCurveLogger
 from .training._EarlyStopping import EarlyStopping
 from .loss import MultiTaskLoss
-from .classification import ClassifierServer
+from .classification import Classifier
 from .optim import get_optimizer, set_optimizer
 
 # Import submodules to make them accessible
@@ -46,7 +46,7 @@ __all__ = [
     "EarlyStopping",
     "MultiTaskLoss",
     "GenAI",  # Lazy loaded
-    "ClassifierServer",
+    "Classifier",
     "get_optimizer",
     "set_optimizer",
     # Submodules

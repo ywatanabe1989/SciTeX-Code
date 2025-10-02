@@ -28,7 +28,7 @@ from sklearn.metrics.pairwise import pairwise_distances as _pairwise_distances
 from sklearn.utils import check_random_state as _check_random_state
 
 
-def silhouette_score_slow(
+def calc_silhouette_score_slow(
     X, labels, metric="euclidean", sample_size=None, random_state=None, **kwds
 ):
     """Compute the mean Silhouette Coefficient of all samples.
@@ -98,10 +98,10 @@ def silhouette_score_slow(
             raise ValueError("Distance matrix cannot be precomputed")
         else:
             X, labels = X[indices], labels[indices]
-    return _np.mean(silhouette_samples_slow(X, labels, metric=metric, **kwds))
+    return _np.mean(calc_silhouette_samples_slow(X, labels, metric=metric, **kwds))
 
 
-def silhouette_samples_slow(X, labels, metric="euclidean", **kwds):
+def calc_silhouette_samples_slow(X, labels, metric="euclidean", **kwds):
     """Compute the Silhouette Coefficient for each sample.
 
     The Silhoeutte Coefficient is a measure of how well samples are clustered
@@ -230,7 +230,7 @@ def _nearest_cluster_distance_slow(X, labels, metric, i):
     return b
 
 
-def silhouette_score_block(
+def calc_silhouette_score_block(
     X, labels, metric="euclidean", sample_size=None, random_state=None, n_jobs=1, **kwds
 ):
     """Compute the mean Silhouette Coefficient of all samples.
@@ -299,11 +299,11 @@ def silhouette_score_block(
         else:
             X, labels = X[indices], labels[indices]
     return _np.mean(
-        silhouette_samples_block(X, labels, metric=metric, n_jobs=n_jobs, **kwds)
+        calc_silhouette_samples_block(X, labels, metric=metric, n_jobs=n_jobs, **kwds)
     )
 
 
-def silhouette_samples_block(X, labels, metric="euclidean", n_jobs=1, **kwds):
+def calc_silhouette_samples_block(X, labels, metric="euclidean", n_jobs=1, **kwds):
     """Compute the Silhouette Coefficient for each sample.
 
     The Silhoeutte Coefficient is a measure of how well samples are clustered
@@ -484,13 +484,20 @@ if __name__ == "__main__":
     t = time.time() - t0
     print("Scikit silhouette (%fs): %f" % (t, s))
     t0 = time.time()
-    s = silhouette_score_block(X, y)
+    s = calc_silhouette_score_block(X, y)
     t = time.time() - t0
     print("Block silhouette (%fs): %f" % (t, s))
     t0 = time.time()
-    s = silhouette_score_block(X, y, n_jobs=2)
+    s = calc_silhouette_score_block(X, y, n_jobs=2)
     t = time.time() - t0
     print("Block silhouette parallel (%fs): %f" % (t, s))
 
+
+
+# Backward compatibility aliases (deprecated, will be removed in future)
+silhouette_score_slow = calc_silhouette_score_slow
+silhouette_samples_slow = calc_silhouette_samples_slow
+silhouette_score_block = calc_silhouette_score_block
+silhouette_samples_block = calc_silhouette_samples_block
 
 # EOF

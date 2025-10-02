@@ -90,10 +90,12 @@ class TimeSeriesBlockingSplit(BaseCrossValidator):
     ...     # Output shows same subjects in both sets but different time periods
     """
     
-    def __init__(self, n_splits: int = 5, test_ratio: float = 0.2, val_ratio: float = 0.0):
+    def __init__(self, n_splits: int = 5, test_ratio: float = 0.2, val_ratio: float = 0.0, random_state: Optional[int] = None):
         self.n_splits = n_splits
         self.test_ratio = test_ratio
         self.val_ratio = val_ratio
+        self.random_state = random_state
+        self.rng = np.random.default_rng(random_state)
     
     def split(
         self,

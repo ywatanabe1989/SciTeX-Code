@@ -1,7 +1,7 @@
 #!/bin/bash
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-09-22 17:50:10 (ywatanabe)"
-# File: ./src/scitex/ml/classification/time_series/run_all.sh
+# File: ./src/scitex/ml/classification/timeseries/run_all.sh
 
 THIS_DIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
 LOG_PATH="$THIS_DIR/.$(basename $0).log"
@@ -20,11 +20,11 @@ echo_warning() { echo -e "${YELLOW}$1${NC}"; }
 echo_error() { echo -e "${RED}$1${NC}"; }
 # ---------------------------------------
 
-python -m  scitex.ml.classification.time_series._TimeSeriesBlockingSplit
-python -m  scitex.ml.classification.time_series._TimeSeriesCalendarSplit
-python -m  scitex.ml.classification.time_series._TimeSeriesMetadata
-python -m  scitex.ml.classification.time_series._TimeSeriesSlidingWindowSplit
-python -m  scitex.ml.classification.time_series._TimeSeriesStrategy
-python -m  scitex.ml.classification.time_series._TimeSeriesStratifiedSplit
+python -m  scitex.ml.classification.timeseries._TimeSeriesBlockingSplit
+python -m  scitex.ml.classification.timeseries._TimeSeriesCalendarSplit
+python -m  scitex.ml.classification.timeseries._TimeSeriesMetadata
+python -m  scitex.ml.classification.timeseries._TimeSeriesSlidingWindowSplit
+python -m  scitex.ml.classification.timeseries._TimeSeriesStrategy
+python -m  scitex.ml.classification.timeseries._TimeSeriesStratifiedSplit
 
 # EOF

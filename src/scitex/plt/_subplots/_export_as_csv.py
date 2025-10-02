@@ -33,6 +33,7 @@ from ._export_as_csv_formatters import (_format_bar, _format_barh,
                                         _format_plot_median_iqr,
                                         _format_plot_raster,
                                         _format_plot_rectangle,
+                                        _format_plot_scatter,
                                         _format_plot_scatter_hist,
                                         _format_plot_shaded_line,
                                         _format_plot_violin, _format_scatter,
@@ -199,6 +200,8 @@ def format_record(record):
         return _format_plot_raster(id, tracked_dict, kwargs)
     elif method == "plot_rectangle":
         return _format_plot_rectangle(id, tracked_dict, kwargs)
+    elif method == "plot_scatter":
+        return _format_plot_scatter(id, tracked_dict, kwargs)
     elif method == "plot_scatter_hist":
         return _format_plot_scatter_hist(id, tracked_dict, kwargs)
     elif method == "plot_shaded_line":

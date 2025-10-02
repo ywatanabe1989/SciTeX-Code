@@ -15,6 +15,17 @@ from ._calc_clf_report import calc_clf_report
 from ._calc_roc_auc import calc_roc_auc
 from ._calc_pre_rec_auc import calc_pre_rec_auc
 from ._calc_bacc_from_conf_mat import calc_bacc_from_conf_mat
+from ._calc_seizure_prediction_metrics import (
+    calc_seizure_window_prediction_metrics,
+    calc_seizure_event_prediction_metrics,
+    calc_seizure_prediction_metrics,  # backward compat alias
+)
+from ._calc_silhouette_score import (
+    calc_silhouette_score_slow,
+    calc_silhouette_samples_slow,
+    calc_silhouette_score_block,
+    calc_silhouette_samples_block,
+)
 
 __all__ = [
     "calc_bacc",
@@ -24,6 +35,13 @@ __all__ = [
     "calc_roc_auc",
     "calc_pre_rec_auc",
     "calc_bacc_from_conf_mat",
+    "calc_seizure_window_prediction_metrics",
+    "calc_seizure_event_prediction_metrics",
+    "calc_seizure_prediction_metrics",  # backward compat alias
+    "calc_silhouette_score_slow",
+    "calc_silhouette_samples_slow",
+    "calc_silhouette_score_block",
+    "calc_silhouette_samples_block",
     # # Legacy names for backward compatibility
     # "bACC",
     # "balanced_accuracy",

@@ -18,7 +18,7 @@ src/scitex/ai/classification/
 ├── __init__.py
 ├── README.md (this file)
 ├── _Classifiers.py              # Classifier implementations
-├── _ClassifierServer.py          # Server for classifier services
+├── Classifier.py          # Server for classifier services
 ├── _ClassificationReporter.py   # Base reporter class
 ├── _SingleClassificationReporter.py    # Single-task reporter
 ├── _MultiClassificationReporter.py     # Multi-task reporter

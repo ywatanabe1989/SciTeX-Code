@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-09-21 20:45:00 (ywatanabe)"
-# File: time_series/__init__.py
+# File: timeseries/__init__.py
 
 """
 Time series cross-validation utilities for classification.

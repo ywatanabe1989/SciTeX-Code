@@ -42,6 +42,7 @@ from scitex.plt._subplots._export_as_csv_formatters import _format_plot_mean_std
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_median_iqr
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_raster
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_rectangle
+from scitex.plt._subplots._export_as_csv_formatters import _format_plot_scatter
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_scatter_hist
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_shaded_line
 from scitex.plt._subplots._export_as_csv_formatters import _format_plot_violin

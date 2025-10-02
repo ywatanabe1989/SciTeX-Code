@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-09-21 20:20:00 (ywatanabe)"
-# File: time_series_cv_demo.py
+# File: timeseries_cv_demo.py
 
 """
 Examples demonstrating the time series cross-validation modules.
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 
 
-def generate_synthetic_time_series(
+def generate_synthetic_timeseries(
     n_samples: int = 1000,
     n_features: int = 10,
     n_groups: int = None,
@@ -93,7 +93,7 @@ def demo_basic_splitters():
     )
     
     # Generate data
-    X, y, timestamps, _ = generate_synthetic_time_series(n_samples=500)
+    X, y, timestamps, _ = generate_synthetic_timeseries(n_samples=500)
     
     print("\n1. StratifiedTimeSeriesSplit (maintains class balance)")
     print("-" * 40)
@@ -124,7 +124,7 @@ def demo_basic_splitters():
     # Generate data with groups
     print("\n3. BlockingTimeSeriesSplit (for multiple time series)")
     print("-" * 40)
-    X_grouped, y_grouped, timestamps_grouped, groups = generate_synthetic_time_series(
+    X_grouped, y_grouped, timestamps_grouped, groups = generate_synthetic_timeseries(
         n_samples=500, n_groups=5
     )
     
@@ -162,11 +162,11 @@ def demo_coordinator():
         
         # Generate appropriate data
         if scenario_name == "Imbalanced classes":
-            X, y, timestamps, groups = generate_synthetic_time_series(
+            X, y, timestamps, groups = generate_synthetic_timeseries(
                 n_samples, n_features, n_groups, imbalance_ratio=0.2
             )
         else:
-            X, y, timestamps, groups = generate_synthetic_time_series(
+            X, y, timestamps, groups = generate_synthetic_timeseries(
                 n_samples, n_features, n_groups
             )
         
@@ -210,7 +210,7 @@ def demo_with_classifier():
     )
     
     # Generate data
-    X, y, timestamps, _ = generate_synthetic_time_series(n_samples=1000)
+    X, y, timestamps, _ = generate_synthetic_timeseries(n_samples=1000)
     
     # Setup coordinator
     coordinator = TimeSeriesCVCoordinator(
@@ -223,7 +223,7 @@ def demo_with_classifier():
     
     # Initialize reporter
     reporter = SingleTaskClassificationReporter(
-        name="time_series_demo",
+        name="timeseries_demo",
         output_dir="./ts_cv_demo_results"
     )
     
@@ -266,7 +266,7 @@ def demo_train_val_test_split():
     from scitex.ml.classification import TimeSeriesCVCoordinator
     
     # Generate data
-    X, y, timestamps, _ = generate_synthetic_time_series(n_samples=1000)
+    X, y, timestamps, _ = generate_synthetic_timeseries(n_samples=1000)
     
     # Setup coordinator with validation split
     coordinator = TimeSeriesCVCoordinator(
@@ -317,7 +317,7 @@ def visualize_cv_splits():
     
     # Generate data
     n_samples = 200
-    X, y, timestamps, _ = generate_synthetic_time_series(n_samples=n_samples)
+    X, y, timestamps, _ = generate_synthetic_timeseries(n_samples=n_samples)
     
     fig, axes = plt.subplots(3, 1, figsize=(12, 8))
     

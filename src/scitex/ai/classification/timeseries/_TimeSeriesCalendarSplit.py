@@ -101,6 +101,7 @@ class TimeSeriesCalendarSplit(BaseCrossValidator):
         n_val_intervals: int = 0,
         gap_intervals: int = 0,
         step_intervals: int = 1,
+        random_state: Optional[int] = None,
     ):
         self.interval = interval
         self.n_train_intervals = n_train_intervals
@@ -108,6 +109,8 @@ class TimeSeriesCalendarSplit(BaseCrossValidator):
         self.n_val_intervals = n_val_intervals
         self.gap_intervals = gap_intervals
         self.step_intervals = step_intervals
+        self.random_state = random_state
+        self.rng = np.random.default_rng(random_state)
     
     def split(
         self,

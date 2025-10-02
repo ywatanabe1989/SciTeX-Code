@@ -78,7 +78,7 @@ Legend: T=Train intervals, V=Validation intervals, S=teSt intervals
 Single time series with stratification to maintain class balance and optional validation set.
 
 ```python
-from scitex.ml.classification.time_series import TimeSeriesStratifiedSplit
+from scitex.ml.classification.timeseries import TimeSeriesStratifiedSplit
 
 splitter = TimeSeriesStratifiedSplit(
     n_splits=5,
@@ -98,7 +98,7 @@ for train_idx, val_idx, test_idx in splitter.split_with_val(X, y, timestamps):
 Multiple independent time series (e.g., different patients/subjects) with optional validation set.
 
 ```python
-from scitex.ml.classification.time_series import TimeSeriesBlockingSplit
+from scitex.ml.classification.timeseries import TimeSeriesBlockingSplit
 
 splitter = TimeSeriesBlockingSplit(
     n_splits=3, 
@@ -121,7 +121,7 @@ for train_idx, val_idx, test_idx in splitter.split_with_val(X, y, timestamps, gr
 Fixed-size sliding windows through time with configurable gaps and optional validation set.
 
 ```python
-from scitex.ml.classification.time_series import TimeSeriesSlidingWindowSplit
+from scitex.ml.classification.timeseries import TimeSeriesSlidingWindowSplit
 
 splitter = TimeSeriesSlidingWindowSplit(
     window_size=100,  # 100 samples for training window
@@ -146,7 +146,7 @@ for train_idx, val_idx, test_idx in splitter.split_with_val(X, y, timestamps):
 Calendar-based splitting (monthly, weekly, daily intervals) with optional validation set.
 
 ```python
-from scitex.ml.classification.time_series import TimeSeriesCalendarSplit
+from scitex.ml.classification.timeseries import TimeSeriesCalendarSplit
 
 # Monthly splits
 splitter = TimeSeriesCalendarSplit(
@@ -174,7 +174,7 @@ for train_idx, val_idx, test_idx in splitter.split_with_val(X, y, timestamps=dat
 Handles various timestamp formats automatically:
 
 ```python
-from scitex.ml.classification.time_series import normalize_timestamp
+from scitex.ml.classification.timeseries import normalize_timestamp
 
 # Convert any format to standard string
 normalized = normalize_timestamp("2023/01/15 14:30:00", return_as="str")
@@ -200,7 +200,7 @@ All time series splitters now support optional validation sets through the `spli
 ### Example with Validation Sets
 
 ```python
-from scitex.ml.classification.time_series import TimeSeriesStratifiedSplit
+from scitex.ml.classification.timeseries import TimeSeriesStratifiedSplit
 from sklearn.ensemble import RandomForestClassifier
 
 # Create splitter with validation
@@ -300,7 +300,7 @@ reporter.save_summary()
 
 Run module tests:
 ```bash
-python -m pytest tests/test_time_series_cv.py
+python -m pytest tests/test_timeseries_cv.py
 ```
 
 ## Contributing

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-02 07:55:27 (ywatanabe)"
+# Timestamp: "2025-10-03 01:21:52 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/_SingleClassificationReporter.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/ml/classification/reporters/_SingleClassificationReporter.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from pprint import pprint
 
@@ -33,8 +37,7 @@ from scitex.logging import getLogger
 from ._BaseClassificationReporter import (BaseClassificationReporter,
                                           ReporterConfig)
 # Import original metric calculation functions (these are good)
-from .reporter_utils import (calc_bacc,
-                             calc_clf_report, calc_conf_mat,
+from .reporter_utils import (calc_bacc, calc_clf_report, calc_conf_mat,
                              calc_mcc, calc_pre_rec_auc, calc_roc_auc)
 from .reporter_utils._Plotter import Plotter
 from .reporter_utils.reporting import (create_summary_statistics,
@@ -53,58 +56,45 @@ FILENAME_PATTERNS = {
     # Individual fold metrics (with metric value in filename)
     "fold_metric_with_value": "fold-{fold:02d}_{metric_name}-{value:.3f}.json",
     "fold_metric": "fold-{fold:02d}_{metric_name}.json",
-
     # Confusion matrix
     "confusion_matrix_csv": "fold-{fold:02d}_confusion-matrix_bacc-{bacc:.3f}.csv",
     "confusion_matrix_csv_no_bacc": "fold-{fold:02d}_confusion-matrix.csv",
     "confusion_matrix_jpg": "fold-{fold:02d}_confusion-matrix_bacc-{bacc:.3f}.jpg",
     "confusion_matrix_jpg_no_bacc": "fold-{fold:02d}_confusion-matrix.jpg",
-
     # Classification report
     "classification_report": "fold-{fold:02d}_classification-report.csv",
-
     # ROC curve
     "roc_curve_csv": "fold-{fold:02d}_roc-curve_auc-{auc:.3f}.csv",
     "roc_curve_csv_no_auc": "fold-{fold:02d}_roc-curve.csv",
     "roc_curve_jpg": "fold-{fold:02d}_roc-curve_auc-{auc:.3f}.jpg",
     "roc_curve_jpg_no_auc": "fold-{fold:02d}_roc-curve.jpg",
-
     # PR curve
     "pr_curve_csv": "fold-{fold:02d}_pr-curve_ap-{ap:.3f}.csv",
     "pr_curve_csv_no_ap": "fold-{fold:02d}_pr-curve.csv",
     "pr_curve_jpg": "fold-{fold:02d}_pr-curve_ap-{ap:.3f}.jpg",
     "pr_curve_jpg_no_ap": "fold-{fold:02d}_pr-curve.jpg",
-
-    # Features and predictions
-    "features": "fold-{fold:02d}_features.json",
-    "prediction_metrics": "fold-{fold:02d}_prediction-metrics.json",
-
-    # Raw prediction data
+    # Raw prediction data (optional, enabled via calculate_metrics parameters)
     "y_true": "fold-{fold:02d}_y-true.npy",
     "y_pred": "fold-{fold:02d}_y-pred.npy",
     "y_proba": "fold-{fold:02d}_y-proba.npy",
-
     # Metrics dashboard
     "metrics_summary": "fold-{fold:02d}_metrics-summary.jpg",
-
     # Classification report edge cases (when CSV conversion fails)
     "classification_report_json": "fold-{fold:02d}_classification-report.json",
     "classification_report_txt": "fold-{fold:02d}_classification-report.txt",
-
     # Folds all (CV summary)
-    "folds_all_metric": "folds-all_{metric_name}_mean-{mean:.3f}_std-{std:.3f}_n-{n_folds}.json",
-    "folds_all_confusion_matrix_csv": "folds-all_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
-    "folds_all_confusion_matrix_jpg": "folds-all_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
-    "folds_all_classification_report": "folds-all_classification-report_n-{n_folds}.csv",
-    "folds_all_roc_curve_csv": "folds-all_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
-    "folds_all_roc_curve_jpg": "folds-all_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
-    "folds_all_pr_curve_csv": "folds-all_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
-    "folds_all_pr_curve_jpg": "folds-all_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
-    "folds_all_summary": "folds-all_summary.json",
-
+    "cv_summary_metric": "cv-summary_{metric_name}_mean-{mean:.3f}_std-{std:.3f}_n-{n_folds}.json",
+    "cv_summary_confusion_matrix_csv": "cv-summary_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "cv_summary_confusion_matrix_jpg": "cv-summary_confusion-matrix_bacc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "cv_summary_classification_report": "cv-summary_classification-report_n-{n_folds}.csv",
+    "cv_summary_roc_curve_csv": "cv-summary_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "cv_summary_roc_curve_jpg": "cv-summary_roc-curve_auc-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "cv_summary_pr_curve_csv": "cv-summary_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.csv",
+    "cv_summary_pr_curve_jpg": "cv-summary_pr-curve_ap-{mean:.3f}_{std:.3f}_n-{n_folds}.jpg",
+    "cv_summary_summary": "cv-summary_summary.json",
     # Folds all edge cases (when balanced_acc is None)
-    "folds_all_confusion_matrix_csv_no_bacc": "folds-all_confusion-matrix_n-{n_folds}.csv",
-    "folds_all_confusion_matrix_jpg_no_bacc": "folds-all_confusion-matrix_n-{n_folds}.jpg",
+    "cv_summary_confusion_matrix_csv_no_bacc": "cv-summary_confusion-matrix_n-{n_folds}.csv",
+    "cv_summary_confusion_matrix_jpg_no_bacc": "cv-summary_confusion-matrix_n-{n_folds}.jpg",
 }
 
 
@@ -192,6 +182,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         # Store all predictions for overall curves
         self.all_predictions: List[Dict[str, Any]] = []
 
+        if verbose:
+            logger.info(
+                f"{self.__class__.__name__} initialized with output directory: {self.output_dir}"
+            )
+
     def set_session_config(self, config: Any) -> None:
         """
         Set the SciTeX session CONFIG object for inclusion in reports.
@@ -211,6 +206,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         labels: Optional[List[str]] = None,
         fold: Optional[int] = None,
         verbose=True,
+        store_y_true: bool = False,
+        store_y_pred: bool = False,
+        store_y_proba: bool = False,
     ) -> Dict[str, Any]:
         """
         Calculate and save classification metrics using unified API.
@@ -227,6 +225,14 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             Class labels for display
         fold : int, optional
             Fold index for cross-validation
+        verbose : bool, default True
+            Print progress messages
+        store_y_true : bool, default False
+            Save y_true as numpy array (.npy)
+        store_y_pred : bool, default False
+            Save y_pred as numpy array (.npy)
+        store_y_proba : bool, default False
+            Save y_proba as numpy array (.npy)
 
         Returns
         -------
@@ -261,9 +267,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         metrics = {}
 
         # Core metrics (always calculated) - pass fold to all metrics
-        metrics["balanced_accuracy"] = calc_bacc(
-            y_true, y_pred, fold=fold
-        )
+        metrics["balanced_accuracy"] = calc_bacc(y_true, y_pred, fold=fold)
         metrics["mcc"] = calc_mcc(y_true, y_pred, fold=fold)
 
         metrics["confusion_matrix"] = calc_conf_mat(
@@ -276,9 +280,22 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         # AUC metrics (only if probabilities available)
         if y_proba is not None:
             try:
-                from scitex.ml.metrics import calc_roc_auc, calc_pre_rec_auc
-                metrics["roc_auc"] = calc_roc_auc(y_true, y_proba, labels=labels, fold=fold, return_curve=False)
-                metrics["pr_auc"] = calc_pre_rec_auc(y_true, y_proba, labels=labels, fold=fold, return_curve=False)
+                from scitex.ml.metrics import calc_pre_rec_auc, calc_roc_auc
+
+                metrics["roc_auc"] = calc_roc_auc(
+                    y_true,
+                    y_proba,
+                    labels=labels,
+                    fold=fold,
+                    return_curve=False,
+                )
+                metrics["pr_auc"] = calc_pre_rec_auc(
+                    y_true,
+                    y_proba,
+                    labels=labels,
+                    fold=fold,
+                    return_curve=False,
+                )
             except Exception as e:
                 logger.warning(f"Could not calculate AUC metrics: {e}")
 
@@ -310,6 +327,22 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # Generate plots if requested
         self._create_plots(y_true, y_pred, y_proba, labels, fold, metrics)
+
+        # Save raw predictions if requested
+        if store_y_true or store_y_pred or store_y_proba:
+            fold_dir = f"fold_{fold:02d}"
+
+            if store_y_true:
+                filename = FILENAME_PATTERNS["y_true"].format(fold=fold)
+                self.storage.save(y_true, filename, fold_dir)
+
+            if store_y_pred:
+                filename = FILENAME_PATTERNS["y_pred"].format(fold=fold)
+                self.storage.save(y_pred, filename, fold_dir)
+
+            if store_y_proba and y_proba is not None:
+                filename = FILENAME_PATTERNS["y_proba"].format(fold=fold)
+                self.storage.save(y_proba, filename, fold_dir)
 
         return metrics
 
@@ -359,20 +392,24 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 if cm_df is not None:
                     # Create filename with balanced accuracy
                     if balanced_acc is not None:
-                        cm_filename = FILENAME_PATTERNS["confusion_matrix_csv"].format(
-                            fold=fold, bacc=balanced_acc
-                        )
+                        cm_filename = FILENAME_PATTERNS[
+                            "confusion_matrix_csv"
+                        ].format(fold=fold, bacc=balanced_acc)
                     else:
-                        cm_filename = FILENAME_PATTERNS["confusion_matrix_csv_no_bacc"].format(
-                            fold=fold
-                        )
+                        cm_filename = FILENAME_PATTERNS[
+                            "confusion_matrix_csv_no_bacc"
+                        ].format(fold=fold)
 
                     # Save with index=True to preserve row labels
-                    self.storage.save(cm_df, f"{fold_dir}/{cm_filename}", index=True)
+                    self.storage.save(
+                        cm_df, f"{fold_dir}/{cm_filename}", index=True
+                    )
 
             elif metric_name == "classification_report":
                 # Save classification report with consistent naming
-                report_filename = FILENAME_PATTERNS["classification_report"].format(fold=fold)
+                report_filename = FILENAME_PATTERNS[
+                    "classification_report"
+                ].format(fold=fold)
                 if isinstance(actual_value, pd.DataFrame):
                     # Reset index to make it an ordinary column with name
                     report_df = actual_value.reset_index()
@@ -389,14 +426,18 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                         )
                     except:
                         # Save as JSON if DataFrame conversion fails
-                        report_filename = FILENAME_PATTERNS["classification_report_json"].format(fold=fold)
+                        report_filename = FILENAME_PATTERNS[
+                            "classification_report_json"
+                        ].format(fold=fold)
                         self.storage.save(
                             actual_value,
                             f"{fold_dir}/{report_filename}",
                         )
                 else:
                     # String or other format
-                    report_filename = FILENAME_PATTERNS["classification_report_txt"].format(fold=fold)
+                    report_filename = FILENAME_PATTERNS[
+                        "classification_report_txt"
+                    ].format(fold=fold)
                     self.storage.save(
                         actual_value, f"{fold_dir}/{report_filename}"
                     )
@@ -406,7 +447,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             ):
                 # Save with value in filename
                 filename = FILENAME_PATTERNS["fold_metric_with_value"].format(
-                    fold=fold, metric_name="balanced_accuracy", value=balanced_acc
+                    fold=fold,
+                    metric_name="balanced_accuracy",
+                    value=balanced_acc,
                 )
                 save_metric(
                     actual_value,
@@ -484,6 +527,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
             # Normalize labels to integers for sklearn curve functions
             from scitex.ml.metrics import _normalize_labels
+
             y_true_norm, _, _, _ = _normalize_labels(y_true, y_true)
 
             # ROC curve data
@@ -500,7 +544,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             self.storage.save(roc_df, f"{fold_dir}/{roc_filename}")
 
             # PR curve data
-            precision, recall, _ = precision_recall_curve(y_true_norm, y_proba_pos)
+            precision, recall, _ = precision_recall_curve(
+                y_true_norm, y_proba_pos
+            )
             avg_precision = average_precision_score(y_true_norm, y_proba_pos)
 
             # Create PR curve DataFrame with Recall and Precision columns
@@ -553,7 +599,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 )
             else:
                 title = f"Confusion Matrix (Fold {fold:02d})"
-                filename = FILENAME_PATTERNS["confusion_matrix_jpg_no_bacc"].format(fold=fold)
+                filename = FILENAME_PATTERNS[
+                    "confusion_matrix_jpg_no_bacc"
+                ].format(fold=fold)
 
             self.plotter.create_confusion_matrix_plot(
                 cm_data,
@@ -572,7 +620,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                     fold=fold, auc=roc_auc_val
                 )
             else:
-                roc_filename = FILENAME_PATTERNS["roc_curve_jpg_no_auc"].format(fold=fold)
+                roc_filename = FILENAME_PATTERNS[
+                    "roc_curve_jpg_no_auc"
+                ].format(fold=fold)
 
             self.plotter.create_roc_curve(
                 y_true,
@@ -590,7 +640,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                     fold=fold, ap=pr_auc_val
                 )
             else:
-                pr_filename = FILENAME_PATTERNS["pr_curve_jpg_no_ap"].format(fold=fold)
+                pr_filename = FILENAME_PATTERNS["pr_curve_jpg_no_ap"].format(
+                    fold=fold
+                )
 
             self.plotter.create_precision_recall_curve(
                 y_true,
@@ -602,7 +654,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # NEW: Create comprehensive metrics visualization dashboard
         # This automatically creates a 4-panel figure with confusion matrix, ROC, PR curve, and metrics table
-        summary_filename = FILENAME_PATTERNS["metrics_summary"].format(fold=fold)
+        summary_filename = FILENAME_PATTERNS["metrics_summary"].format(
+            fold=fold
+        )
         self.plotter.create_metrics_visualization(
             metrics=metrics,
             y_true=y_true,
@@ -612,7 +666,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             save_path=fold_dir / summary_filename,
             title="Classification Metrics Dashboard",
             fold=fold,
-            verbose=False  # Already have verbose output from individual plots
+            verbose=False,  # Already have verbose output from individual plots
         )
 
     def get_summary(self) -> Dict[str, Any]:
@@ -698,18 +752,20 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         Parameters
         ----------
         output_dir : Path, optional
-            Directory to save plots (defaults to folds_all)
+            Directory to save plots (defaults to cv_summary)
         show_individual_folds : bool, default True
             Whether to show individual fold curves
         fold_alpha : float, default 0.15
             Transparency for individual fold curves (0-1)
         """
         if not self.all_predictions:
-            logger.warning("No predictions stored for CV aggregation visualizations")
+            logger.warning(
+                "No predictions stored for CV aggregation visualizations"
+            )
             return
 
         if output_dir is None:
-            output_dir = self._create_subdir_if_needed("folds_all")
+            output_dir = self._create_subdir_if_needed("cv_summary")
             output_dir.mkdir(parents=True, exist_ok=True)
 
         n_folds = len(self.all_predictions)
@@ -718,11 +774,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         roc_save_path = output_dir / f"roc_cv_aggregation_n{n_folds}.jpg"
         self.plotter.create_cv_aggregation_plot(
             fold_predictions=self.all_predictions,
-            curve_type='roc',
+            curve_type="roc",
             save_path=roc_save_path,
             show_individual_folds=show_individual_folds,
             fold_alpha=fold_alpha,
-            title=f'ROC Curves - Cross Validation (n={n_folds} folds)',
+            title=f"ROC Curves - Cross Validation (n={n_folds} folds)",
             verbose=True,
         )
         logger.info(f"Created CV aggregation ROC plot with faded fold lines")
@@ -731,11 +787,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         pr_save_path = output_dir / f"pr_cv_aggregation_n{n_folds}.jpg"
         self.plotter.create_cv_aggregation_plot(
             fold_predictions=self.all_predictions,
-            curve_type='pr',
+            curve_type="pr",
             save_path=pr_save_path,
             show_individual_folds=show_individual_folds,
             fold_alpha=fold_alpha,
-            title=f'Precision-Recall Curves - Cross Validation (n={n_folds} folds)',
+            title=f"Precision-Recall Curves - Cross Validation (n={n_folds} folds)",
             verbose=True,
         )
         logger.info(f"Created CV aggregation PR plot with faded fold lines")
@@ -780,10 +836,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         )
 
         # Save as JSON
-        fold_dir = self._create_subdir_if_needed(f"fold_{fold:02d}" if fold is not None else "all")
+        fold_dir = self._create_subdir_if_needed(
+            f"fold_{fold:02d}" if fold is not None else "all"
+        )
         self.storage.save(
-            dict(sorted_importances),
-            fold_dir / "feature_importance.json"
+            dict(sorted_importances), fold_dir / "feature_importance.json"
         )
 
         # Create visualization
@@ -791,10 +848,17 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             feature_importance=importances,
             feature_names=feature_names,
             save_path=fold_dir / "feature_importance.jpg",
-            title=f"Feature Importance (Fold {fold})" if fold is not None else "Feature Importance",
+            title=(
+                f"Feature Importance (Fold {fold})"
+                if fold is not None
+                else "Feature Importance"
+            ),
         )
 
-        logger.info(f"Saved feature importance" + (f" for fold {fold}" if fold is not None else ""))
+        logger.info(
+            f"Saved feature importance"
+            + (f" for fold {fold}" if fold is not None else "")
+        )
 
         return importance_dict
 
@@ -834,10 +898,10 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         )
 
         # Save as JSON
-        summary_dir = self._create_subdir_if_needed("folds_all")
+        summary_dir = self._create_subdir_if_needed("cv_summary")
         self.storage.save(
             dict(sorted_features),
-            summary_dir / "feature_importance_summary.json"
+            summary_dir / "feature_importance_summary.json",
         )
 
         # Create visualization with error bars
@@ -860,7 +924,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             error_kw={"linewidth": 2},
         )
         ax.set_yticks(y_pos)
-        ax.set_yticklabels([n.replace("_", " ").title() for n in names], fontsize=9)
+        ax.set_yticklabels(
+            [n.replace("_", " ").title() for n in names], fontsize=9
+        )
         ax.invert_yaxis()
         ax.set_xlabel("Mean Importance ± Std", fontsize=11, fontweight="bold")
         ax.set_title(
@@ -873,12 +939,13 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # Save figure
         from scitex.io import save as stx_io_save
+
         stx_io_save(fig, str(summary_dir / "feature_importance_summary.jpg"))
         plt.close(fig)
 
         logger.info("Saved feature importance summary")
 
-    def create_folds_all_curves(self, summary: Dict[str, Any]) -> None:
+    def create_cv_summary_curves(self, summary: Dict[str, Any]) -> None:
         """
         Create CV summary ROC and PR curves from aggregated predictions.
         """
@@ -933,12 +1000,12 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             pr_mean = overall_pr["value"]
             pr_std = 0.0
 
-        # Create folds_all directory
-        folds_all_dir = self._create_subdir_if_needed("folds_all")
-        folds_all_dir.mkdir(parents=True, exist_ok=True)
+        # Create cv_summary directory
+        cv_summary_dir = self._create_subdir_if_needed("cv_summary")
+        cv_summary_dir.mkdir(parents=True, exist_ok=True)
 
         # Save CV summary curve data
-        self._save_folds_all_curve_data(
+        self._save_cv_summary_curve_data(
             all_y_true,
             all_y_proba,
             roc_mean,
@@ -950,18 +1017,21 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # Normalize labels to integers for sklearn curve functions in plotter
         from scitex.ml.metrics import _normalize_labels
-        all_y_true_norm, _, label_names, _ = _normalize_labels(all_y_true, all_y_true)
+
+        all_y_true_norm, _, label_names, _ = _normalize_labels(
+            all_y_true, all_y_true
+        )
 
         # ROC Curve with mean±std and n_folds in filename
         roc_title = f"ROC Curve (CV Summary) - AUC: {roc_mean:.3f} ± {roc_std:.3f} (n={n_folds})"
-        roc_filename = FILENAME_PATTERNS["folds_all_roc_curve_jpg"].format(
+        roc_filename = FILENAME_PATTERNS["cv_summary_roc_curve_jpg"].format(
             mean=roc_mean, std=roc_std, n_folds=n_folds
         )
         self.plotter.create_overall_roc_curve(
             all_y_true_norm,
             all_y_proba,
             labels=label_names,
-            save_path=folds_all_dir / roc_filename,
+            save_path=cv_summary_dir / roc_filename,
             title=roc_title,
             auc_mean=roc_mean,
             auc_std=roc_std,
@@ -970,14 +1040,14 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # PR Curve with mean±std and n_folds in filename
         pr_title = f"Precision-Recall Curve (CV Summary) - AP: {pr_mean:.3f} ± {pr_std:.3f} (n={n_folds})"
-        pr_filename = FILENAME_PATTERNS["folds_all_pr_curve_jpg"].format(
+        pr_filename = FILENAME_PATTERNS["cv_summary_pr_curve_jpg"].format(
             mean=pr_mean, std=pr_std, n_folds=n_folds
         )
         self.plotter.create_overall_pr_curve(
             all_y_true_norm,
             all_y_proba,
             labels=label_names,
-            save_path=folds_all_dir / pr_filename,
+            save_path=cv_summary_dir / pr_filename,
             title=pr_title,
             ap_mean=pr_mean,
             ap_std=pr_std,
@@ -991,7 +1061,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             f"Created CV summary PR curve: AP = {pr_mean:.3f} ± {pr_std:.3f} (n={n_folds})"
         )
 
-    def _save_folds_all_curve_data(
+    def _save_cv_summary_curve_data(
         self,
         y_true: np.ndarray,
         y_proba: np.ndarray,
@@ -1005,7 +1075,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         from sklearn.metrics import (auc, average_precision_score,
                                      precision_recall_curve, roc_curve)
 
-        folds_all_dir = "folds_all"
+        cv_summary_dir = "cv_summary"
 
         # Handle binary vs multiclass
         if y_proba.ndim == 1 or y_proba.shape[1] == 2:
@@ -1017,6 +1087,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
             # Normalize labels to integers for sklearn curve functions
             from scitex.ml.metrics import _normalize_labels
+
             y_true_norm, _, _, _ = _normalize_labels(y_true, y_true)
 
             # ROC curve data
@@ -1027,25 +1098,27 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             roc_df = pd.DataFrame({"FPR": fpr, "TPR": tpr})
 
             # Save with mean±std and n_folds in filename
-            roc_filename = FILENAME_PATTERNS["folds_all_roc_curve_csv"].format(
-                mean=roc_mean, std=roc_std, n_folds=n_folds
-            )
-            self.storage.save(roc_df, f"{folds_all_dir}/{roc_filename}")
+            roc_filename = FILENAME_PATTERNS[
+                "cv_summary_roc_curve_csv"
+            ].format(mean=roc_mean, std=roc_std, n_folds=n_folds)
+            self.storage.save(roc_df, f"{cv_summary_dir}/{roc_filename}")
 
             # PR curve data
-            precision, recall, _ = precision_recall_curve(y_true_norm, y_proba_pos)
+            precision, recall, _ = precision_recall_curve(
+                y_true_norm, y_proba_pos
+            )
             avg_precision = average_precision_score(y_true_norm, y_proba_pos)
 
             # Create PR curve DataFrame with Recall and Precision columns
             pr_df = pd.DataFrame({"Recall": recall, "Precision": precision})
 
             # Save with mean±std and n_folds in filename
-            pr_filename = FILENAME_PATTERNS["folds_all_pr_curve_csv"].format(
+            pr_filename = FILENAME_PATTERNS["cv_summary_pr_curve_csv"].format(
                 mean=pr_mean, std=pr_std, n_folds=n_folds
             )
-            self.storage.save(pr_df, f"{folds_all_dir}/{pr_filename}")
+            self.storage.save(pr_df, f"{cv_summary_dir}/{pr_filename}")
 
-    def save_folds_all_confusion_matrix(
+    def save_cv_summary_confusion_matrix(
         self, summary: Dict[str, Any]
     ) -> None:
         """
@@ -1087,9 +1160,9 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                     labels = cm_data["labels"]
                     break
 
-        # Save as CSV with labels in folds_all directory
-        folds_all_dir = self._create_subdir_if_needed("folds_all")
-        folds_all_dir.mkdir(parents=True, exist_ok=True)
+        # Save as CSV with labels in cv_summary directory
+        cv_summary_dir = self._create_subdir_if_needed("cv_summary")
+        cv_summary_dir.mkdir(parents=True, exist_ok=True)
 
         # Get balanced accuracy stats for filename
         balanced_acc_mean = None
@@ -1105,11 +1178,15 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
 
         # Create filename with mean±std and n_folds
         if balanced_acc_mean is not None and balanced_acc_std is not None:
-            cm_filename = FILENAME_PATTERNS["folds_all_confusion_matrix_csv"].format(
+            cm_filename = FILENAME_PATTERNS[
+                "cv_summary_confusion_matrix_csv"
+            ].format(
                 mean=balanced_acc_mean, std=balanced_acc_std, n_folds=n_folds
             )
         else:
-            cm_filename = FILENAME_PATTERNS["folds_all_confusion_matrix_csv_no_bacc"].format(n_folds=n_folds)
+            cm_filename = FILENAME_PATTERNS[
+                "cv_summary_confusion_matrix_csv_no_bacc"
+            ].format(n_folds=n_folds)
 
         if labels:
             cm_df = pd.DataFrame(
@@ -1121,11 +1198,11 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             cm_df = pd.DataFrame(overall_cm)
 
         # Save with proper filename (with index=True to preserve row labels)
-        self.storage.save(cm_df, f"folds_all/{cm_filename}", index=True)
+        self.storage.save(cm_df, f"cv_summary/{cm_filename}", index=True)
 
         # Create plot for CV summary confusion matrix
-        folds_all_dir = self._create_subdir_if_needed("folds_all")
-        folds_all_dir.mkdir(parents=True, exist_ok=True)
+        cv_summary_dir = self._create_subdir_if_needed("cv_summary")
+        cv_summary_dir.mkdir(parents=True, exist_ok=True)
 
         # Calculate balanced accuracy mean and std for overall confusion matrix title
         balanced_acc_mean = None
@@ -1140,18 +1217,22 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         # Create title with balanced accuracy stats and filename with mean±std and n_folds
         if balanced_acc_mean is not None and balanced_acc_std is not None:
             title = f"Confusion Matrix (CV Summary) - Balanced Acc: {balanced_acc_mean:.3f} ± {balanced_acc_std:.3f} (n={n_folds})"
-            filename = FILENAME_PATTERNS["folds_all_confusion_matrix_jpg"].format(
+            filename = FILENAME_PATTERNS[
+                "cv_summary_confusion_matrix_jpg"
+            ].format(
                 mean=balanced_acc_mean, std=balanced_acc_std, n_folds=n_folds
             )
         else:
             title = f"Confusion Matrix (CV Summary) (n={n_folds})"
-            filename = FILENAME_PATTERNS["folds_all_confusion_matrix_jpg_no_bacc"].format(n_folds=n_folds)
+            filename = FILENAME_PATTERNS[
+                "cv_summary_confusion_matrix_jpg_no_bacc"
+            ].format(n_folds=n_folds)
 
         # Create the plot with enhanced title
         self.plotter.create_confusion_matrix_plot(
             overall_cm,
             labels=labels,
-            save_path=folds_all_dir / filename,
+            save_path=cv_summary_dir / filename,
             title=title,
         )
 
@@ -1196,10 +1277,18 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 # Construct the storage_out path where scitex.io.save actually saves files
                 # Pattern: {calling_file_dir}/storage_out/{relative_path}
                 calling_file_dir = Path(__file__).parent / "reporter_utils"
-                storage_out_path = calling_file_dir / "storage_out" / self.output_dir / f"fold_{fold:02d}" / "features.json"
+                storage_out_path = (
+                    calling_file_dir
+                    / "storage_out"
+                    / self.output_dir
+                    / f"fold_{fold:02d}"
+                    / "features.json"
+                )
 
                 # Also try regular path in case storage behavior changes
-                regular_path = self.output_dir / f"fold_{fold:02d}" / "features.json"
+                regular_path = (
+                    self.output_dir / f"fold_{fold:02d}" / "features.json"
+                )
 
                 features_json = None
                 if storage_out_path.exists():
@@ -1208,11 +1297,17 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                     features_json = regular_path
 
                 if features_json:
-                    with open(features_json, 'r') as f:
+                    with open(features_json, "r") as f:
                         features_data = json.load(f)
                         # Add sample size info if available
-                        for key in ['n_train', 'n_test', 'n_train_seizure',
-                                   'n_train_interictal', 'n_test_seizure', 'n_test_interictal']:
+                        for key in [
+                            "n_train",
+                            "n_test",
+                            "n_train_seizure",
+                            "n_train_interictal",
+                            "n_test_seizure",
+                            "n_test_interictal",
+                        ]:
                             if key in features_data:
                                 fold_result[key] = int(features_data[key])
             except Exception:
@@ -1221,19 +1316,22 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             results["folds"].append(fold_result)
 
         # Add plot references with unified structure
-        # CV summary plots in folds_all directory
-        folds_all_dir = self.output_dir / "folds_all"
-        if folds_all_dir.exists():
-            for plot_file in folds_all_dir.glob("*.jpg"):
-                plot_key = f"folds_all_{plot_file.stem}"
+        # CV summary plots in cv_summary directory
+        cv_summary_dir = self.output_dir / "cv_summary"
+        if cv_summary_dir.exists():
+            for plot_file in cv_summary_dir.glob("*.jpg"):
+                plot_key = f"cv_summary_{plot_file.stem}"
                 results["plots"][plot_key] = str(
                     plot_file.relative_to(self.output_dir)
                 )
 
         # Per-fold plots in fold directories
         for fold_dir in sorted(self.output_dir.glob("fold_*")):
+            # Extract fold number (directory is fold_XX, filename starts with fold-XX)
             fold_num = fold_dir.name.replace("fold_", "")
             for plot_file in fold_dir.glob("*.jpg"):
+                # Use just the stem as the plot key since filename already contains fold info
+                # e.g., "fold-00_confusion-matrix_bacc-0.500" becomes plot key "fold_00_confusion-matrix"
                 plot_key = f"fold_{fold_num}_{plot_file.stem}"
                 results["plots"][plot_key] = str(
                     plot_file.relative_to(self.output_dir)
@@ -1299,21 +1397,21 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         except Exception as e:
             logger.warning(f"Could not generate PDF report: {e}")
 
-        # Skip paper_exports - all data is already available in fold_XX/ and folds_all/
+        # Skip paper_exports - all data is already available in fold_XX/ and cv_summary/
         # with descriptive filenames perfect for sharing
 
         return generated_files
 
     def save_summary(
-        self, filename: str = "folds_all/summary.json", verbose: bool = True
+        self, filename: str = "cv_summary/summary.json", verbose: bool = True
     ) -> Path:
         """
         Save summary to file, create CV summary visualizations, and generate reports.
 
         Parameters
         ----------
-        filename : str, default "folds_all/summary.json"
-            Filename for summary (now in folds_all directory)
+        filename : str, default "cv_summary/summary.json"
+            Filename for summary (now in cv_summary directory)
 
         Returns
         -------
@@ -1353,39 +1451,38 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             logger.warning(f"Could not load CONFIG.yaml: {e}")
 
         # Save CV summary metrics with proper filenames
-        self._save_folds_all_metrics(summary)
+        self._save_cv_summary_metrics(summary)
 
         # Save and plot CV summary confusion matrix
-        self.save_folds_all_confusion_matrix(summary)
+        self.save_cv_summary_confusion_matrix(summary)
 
         # Create CV summary ROC and PR curves
-        self.create_folds_all_curves(summary)
+        self.create_cv_summary_curves(summary)
 
         # Create CV aggregation visualizations with faded fold lines
         self.create_cv_aggregation_visualizations(
-            show_individual_folds=True,
-            fold_alpha=0.15
+            show_individual_folds=True, fold_alpha=0.15
         )
 
         # Save CV summary classification report
-        self._save_folds_all_classification_report(summary)
+        self._save_cv_summary_classification_report(summary)
 
         # Generate comprehensive reports in multiple formats
         self.generate_reports()
 
-        # Ensure folds_all directory exists
-        folds_all_dir = self._create_subdir_if_needed("folds_all")
-        folds_all_dir.mkdir(parents=True, exist_ok=True)
+        # Ensure cv_summary directory exists
+        cv_summary_dir = self._create_subdir_if_needed("cv_summary")
+        cv_summary_dir.mkdir(parents=True, exist_ok=True)
 
         if verbose:
             print()
             logger.info("Summary:")
             pprint(summary)
 
-        # Save summary in folds_all directory
-        return self.storage.save(summary, "folds_all/summary.json")
+        # Save summary in cv_summary directory
+        return self.storage.save(summary, "cv_summary/summary.json")
 
-    def _save_folds_all_metrics(self, summary: Dict[str, Any]) -> None:
+    def _save_cv_summary_metrics(self, summary: Dict[str, Any]) -> None:
         """
         Save individual CV summary metrics with mean/std/n_folds in filenames.
         """
@@ -1393,7 +1490,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             return
 
         n_folds = len(self.fold_metrics)
-        folds_all_dir = "folds_all"
+        cv_summary_dir = "cv_summary"
 
         for metric_name, stats in summary["metrics_summary"].items():
             if isinstance(stats, dict) and "mean" in stats:
@@ -1401,21 +1498,24 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 std_val = stats.get("std", 0)
 
                 # Create filename with mean_std_n format
-                filename = FILENAME_PATTERNS["folds_all_metric"].format(
-                    metric_name=metric_name, mean=mean_val, std=std_val, n_folds=n_folds
+                filename = FILENAME_PATTERNS["cv_summary_metric"].format(
+                    metric_name=metric_name,
+                    mean=mean_val,
+                    std=std_val,
+                    n_folds=n_folds,
                 )
 
                 # Save metric statistics
-                self.storage.save(stats, f"{folds_all_dir}/{filename}")
+                self.storage.save(stats, f"{cv_summary_dir}/{filename}")
 
-    def _save_folds_all_classification_report(
+    def _save_cv_summary_classification_report(
         self, summary: Dict[str, Any]
     ) -> None:
         """
         Save CV summary classification report with mean ± std (n_folds=X) format.
         """
         n_folds = len(self.fold_metrics)
-        folds_all_dir = "folds_all"
+        cv_summary_dir = "cv_summary"
 
         # Collect classification reports from all folds
         all_reports = []
@@ -1429,17 +1529,19 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                 if isinstance(report, pd.DataFrame):
                     # Convert DataFrame to dict format expected by aggregation
                     # Assumes DataFrame has 'class' column and metric columns
-                    if 'class' in report.columns:
+                    if "class" in report.columns:
                         report_dict = {}
                         for _, row in report.iterrows():
-                            class_name = row['class']
+                            class_name = row["class"]
                             report_dict[class_name] = {
-                                col: row[col] for col in report.columns if col != 'class'
+                                col: row[col]
+                                for col in report.columns
+                                if col != "class"
                             }
                         report = report_dict
                     else:
                         # DataFrame with class names as index
-                        report = report.to_dict('index')
+                        report = report.to_dict("index")
 
                 if isinstance(report, dict):
                     all_reports.append(report)
@@ -1491,10 +1593,14 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
                         std_support = np.std(values)
                         if std_support > 0:
                             # Show mean±std if there's variability across folds
-                            summary_report[cls][metric] = f"{mean_support:.1f} ± {std_support:.1f} (total={total_support})"
+                            summary_report[cls][
+                                metric
+                            ] = f"{mean_support:.1f} ± {std_support:.1f} (total={total_support})"
                         else:
                             # If constant across folds, just show the value
-                            summary_report[cls][metric] = f"{int(mean_support)} per fold (total={total_support})"
+                            summary_report[cls][
+                                metric
+                            ] = f"{int(mean_support)} per fold (total={total_support})"
                     else:
                         mean_val = np.mean(values)
                         std_val = np.std(values)
@@ -1532,12 +1638,12 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
             report_df = report_df.rename(columns={"index": "class"})
 
             # Save as CSV
-            filename = FILENAME_PATTERNS["folds_all_classification_report"].format(
-                n_folds=n_folds
-            )
+            filename = FILENAME_PATTERNS[
+                "cv_summary_classification_report"
+            ].format(n_folds=n_folds)
             self.storage.save(
                 report_df,
-                f"{folds_all_dir}/{filename}",
+                f"{cv_summary_dir}/{filename}",
             )
 
     def save(
@@ -1556,7 +1662,7 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         relative_path : Union[str, Path]
             Relative path from output_dir or fold directory. Examples:
             - When fold is provided: "custom_metrics.json" → "fold_00/custom_metrics.json"
-            - When fold is None: "folds_all/results.csv" → "folds_all/results.csv"
+            - When fold is None: "cv_summary/results.csv" → "cv_summary/results.csv"
         fold : Optional[int], default None
             If provided, automatically prepends "fold_{fold:02d}/" to the path
 
@@ -1574,10 +1680,10 @@ class SingleTaskClassificationReporter(BaseClassificationReporter):
         ...     fold=0
         ... )  # Saves to: fold_00/custom_metrics.json
 
-        >>> # Save to folds_all (no fold)
+        >>> # Save to cv_summary (no fold)
         >>> reporter.save(
         ...     df_results,
-        ...     "folds_all/final_analysis.csv"
+        ...     "cv_summary/final_analysis.csv"
         ... )
 
         >>> # Save to reports directory
