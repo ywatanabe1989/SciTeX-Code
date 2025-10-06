@@ -301,9 +301,34 @@ class LibraryManager:
 
         logger.info(f"Saved paper to master Scholar library: {paper_id}")
 
-        if self.project in ["master", "MASTER"]:
-            self._ensure_project_symlink(
-                title, year, authors, paper_id, master_storage_path
+        # Create project symlink if project is specified and not MASTER
+        if self.project and self.project not in ["master", "MASTER"]:
+            # Generate readable name with metrics
+            first_author = "Unknown"
+            if authors and len(authors) > 0:
+                author_parts = authors[0].split()
+                first_author = author_parts[-1] if len(author_parts) > 1 else author_parts[0]
+                first_author = "".join(c for c in first_author if c.isalnum() or c == "-")[:20]
+
+            year_str = f"{year:04d}" if year else "0000"
+
+            journal_clean = "Unknown"
+            if journal:
+                journal_clean = "".join(c for c in journal if c.isalnum() or c in " ").replace(" ", "")[:30]
+                if not journal_clean:
+                    journal_clean = "Unknown"
+
+            # Get citation count and impact factor from metadata
+            cc = comprehensive_metadata.get("citation_count", 0) or 0
+            if_val = comprehensive_metadata.get("journal_impact_factor", 0.0) or 0.0
+
+            # Format: CC000000-IF032-2016-Author-Journal
+            readable_name = f"CC{cc:06d}-IF{int(if_val):03d}-{year_str}-{first_author}-{journal_clean}"
+
+            self._create_project_symlink(
+                master_storage_path=master_storage_path,
+                project=self.project,
+                readable_name=readable_name
             )
 
         return paper_id

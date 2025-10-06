@@ -103,9 +103,9 @@ class Scholar:
         self.project = self.config.resolve("project", project, "default")
         self.workspace_dir = self.config.path_manager.workspace_dir
 
-        # Create project directory with description if provided
-        if project and project_description:
-            self._create_project_metadata(project, project_description)
+        # Auto-create project directory if it doesn't exist
+        if project:
+            self._ensure_project_exists(project, project_description)
 
         # Initialize service components (lazy loading for better performance)
         # Use mangled names for private properties
@@ -119,9 +119,17 @@ class Scholar:
             None  # ScholarLibrary for high-level operations
         )
 
-        logger.info(
-            f"Scholar initialized (project: {project}, workspace: {self.workspace_dir})"
-        )
+        # Show user-friendly initialization message with library location
+        library_path = self.config.get_library_dir()
+        if project:
+            project_path = library_path / project
+            logger.info(
+                f"Scholar initialized with project '{project}' at {project_path}"
+            )
+        else:
+            logger.info(
+                f"Scholar initialized (library: {library_path})"
+            )
 
     # ----------------------------------------
     # Enrichers
@@ -186,6 +194,10 @@ class Scholar:
 
         # Enrich the provided papers collection
         enriched_list = []
+
+        # Handle asyncio properly - check if we're in an event loop
+        import nest_asyncio
+        nest_asyncio.apply()  # Allow nested event loops
 
         for paper in papers:
             try:
@@ -721,12 +733,133 @@ class Scholar:
         if not project_name:
             raise ValueError("No project specified")
 
-        # Load papers from library
-        # For now, return empty Papers until this is implemented
+        # Load papers from library by reading symlinks in project directory
         from ..core.Papers import Papers
+        from ..core.Paper import Paper
+        import json
 
         logger.info(f"Loading papers from project: {project_name}")
-        return Papers([], project=project_name)
+
+        library_dir = self.config.get_library_dir()
+        project_dir = library_dir / project_name
+
+        if not project_dir.exists():
+            logger.warning(f"Project directory does not exist: {project_dir}")
+            return Papers([], project=project_name)
+
+        papers = []
+        for item in project_dir.iterdir():
+            # Skip info directory and metadata files
+            if item.name in ["info", "project_metadata.json", "README.md"]:
+                continue
+
+            # Follow symlink to MASTER directory
+            if item.is_symlink():
+                master_path = item.resolve()
+                if master_path.exists():
+                    # Load metadata.json from MASTER directory
+                    metadata_file = master_path / "metadata.json"
+                    if metadata_file.exists():
+                        try:
+                            with open(metadata_file, 'r') as f:
+                                metadata = json.load(f)
+
+                            # Handle both flat and nested metadata structures
+                            # Nested structure: {"id": {...}, "basic": {...}, "publication": {...}}
+                            # Flat structure: {"doi": ..., "title": ..., ...}
+
+                            # Extract DOI
+                            doi = metadata.get("doi") or (metadata.get("id", {}).get("doi") if "id" in metadata else None)
+
+                            # Extract basic metadata
+                            if "basic" in metadata:
+                                # Nested structure
+                                title = metadata["basic"].get("title")
+                                authors = metadata["basic"].get("authors")
+                                year = metadata["basic"].get("year")
+                                abstract = metadata["basic"].get("abstract")
+                                keywords = metadata["basic"].get("keywords")
+                            else:
+                                # Flat structure
+                                title = metadata.get("title")
+                                authors = metadata.get("authors")
+                                year = metadata.get("year")
+                                abstract = metadata.get("abstract")
+                                keywords = metadata.get("keywords")
+
+                            # Extract publication metadata
+                            if "publication" in metadata:
+                                # Nested structure
+                                journal = metadata["publication"].get("journal")
+                                publisher = metadata["publication"].get("publisher")
+                                volume = metadata["publication"].get("volume")
+                                issue = metadata["publication"].get("issue")
+                                pages = metadata["publication"].get("pages")
+                            else:
+                                # Flat structure
+                                journal = metadata.get("journal")
+                                publisher = metadata.get("publisher")
+                                volume = metadata.get("volume")
+                                issue = metadata.get("issue")
+                                pages = metadata.get("pages")
+
+                            # Extract citation metadata
+                            citation_count = None
+                            if "citation_count" in metadata:
+                                cc_value = metadata["citation_count"]
+                                if isinstance(cc_value, dict):
+                                    # Nested structure with citation_count object
+                                    citation_count = cc_value.get("count") or cc_value.get("total")
+                                else:
+                                    # Direct integer value
+                                    citation_count = cc_value
+
+                            # Extract URLs
+                            if "url" in metadata and isinstance(metadata["url"], dict):
+                                # Nested structure
+                                url = metadata["url"].get("url")
+                                pdf_url = metadata["url"].get("pdf")
+                            else:
+                                # Flat structure
+                                url = metadata.get("url")
+                                pdf_url = metadata.get("pdf_url")
+
+                            # Extract metrics
+                            journal_impact_factor = metadata.get("journal_impact_factor")
+                            if "metrics" in metadata:
+                                journal_impact_factor = journal_impact_factor or metadata["metrics"].get("journal_impact_factor")
+
+                            # Create Paper object from metadata
+                            paper = Paper(
+                                doi=doi,
+                                title=title,
+                                authors=authors,
+                                year=year,
+                                journal=journal,
+                                abstract=abstract,
+                                citation_count=citation_count,
+                                journal_impact_factor=journal_impact_factor,
+                                keywords=keywords,
+                                url=url,
+                                pdf_url=pdf_url,
+                                publisher=publisher,
+                                volume=volume,
+                                issue=issue,
+                                pages=pages,
+                            )
+
+                            # Add PDF path info if available
+                            if "pdf_path" in metadata:
+                                pdf_full_path = library_dir / metadata["pdf_path"]
+                                if pdf_full_path.exists():
+                                    paper.pdf_local_path = str(pdf_full_path)
+
+                            papers.append(paper)
+                        except Exception as e:
+                            logger.warning(f"Failed to load metadata from {metadata_file}: {e}")
+
+        logger.info(f"Loaded {len(papers)} papers from project: {project_name}")
+        return Papers(papers, project=project_name)
 
     def load_bibtex(self, bibtex_input: Union[str, Path]) -> Papers:
         """Load Papers collection from BibTeX file or content.
@@ -862,10 +995,62 @@ class Scholar:
     # ----------------------------------------
     # Project Handlers
     # ----------------------------------------
+    def _ensure_project_exists(
+        self, project: str, description: Optional[str] = None
+    ) -> Path:
+        """Ensure project directory exists, create if needed (PRIVATE).
+
+        Args:
+            project: Project name
+            description: Optional project description
+
+        Returns:
+            Path to the project directory
+        """
+        project_dir = self.config.get_library_dir() / project
+        info_dir = project_dir / "info"
+
+        # Create project and info directories
+        if not project_dir.exists():
+            project_dir.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Auto-created project directory: {project}")
+
+        # Ensure info directory exists
+        info_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create/move metadata file to info directory
+        old_metadata_file = project_dir / "project_metadata.json"  # Old location
+        metadata_file = info_dir / "project_metadata.json"  # New location
+
+        # Move existing metadata file if it exists in old location
+        if old_metadata_file.exists() and not metadata_file.exists():
+            import shutil
+            shutil.move(str(old_metadata_file), str(metadata_file))
+            logger.info(f"Moved project metadata to info directory")
+
+        # Create metadata file if it doesn't exist
+        if not metadata_file.exists():
+            metadata = {
+                "name": project,
+                "description": description or f"Papers for {project} project",
+                "created": datetime.now().isoformat(),
+                "created_by": "SciTeX Scholar",
+                "auto_created": True,
+            }
+
+            with open(metadata_file, "w") as f:
+                json.dump(metadata, f, indent=2)
+
+            logger.info(f"Created project metadata in info directory: {project}")
+
+        return project_dir
+
     def _create_project_metadata(
         self, project: str, description: Optional[str] = None
     ) -> Path:
         """Create project directory and metadata (PRIVATE).
+
+        DEPRECATED: Use _ensure_project_exists instead.
 
         Args:
             project: Project name
@@ -874,23 +1059,8 @@ class Scholar:
         Returns:
             Path to the created project directory
         """
-        project_dir = self.config.get_library_dir() / project
-        project_dir.mkdir(parents=True, exist_ok=True)
-
-        # Create project metadata
-        metadata = {
-            "name": project,
-            "description": description,
-            "created": datetime.now().isoformat(),
-            "created_by": "SciTeX Scholar",
-        }
-
-        metadata_file = project_dir / "project_metadata.json"
-        with open(metadata_file, "w") as f:
-            json.dump(metadata, f, indent=2)
-
-        logger.info(f"Project created: {project} at {project_dir}")
-        return project_dir
+        # Just use the new method that puts metadata in info directory
+        return self._ensure_project_exists(project, description)
 
     def list_projects(self) -> List[Dict[str, Any]]:
         """List all projects in the Scholar library.

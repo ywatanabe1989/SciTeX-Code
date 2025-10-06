@@ -1,31 +1,29 @@
+# ============================================
 # Core Scientific Computing
+# ============================================
 numpy
 scipy
 pandas
 matplotlib
 seaborn
+plotly
+
+# ============================================
+# Machine Learning & Statistics
+# ============================================
 scikit-learn
 scikit-image
 statsmodels
+imbalanced-learn
+umap-learn
+sktime
+catboost
+optuna
 sympy
-plotly
 
-# Data Processing & File Handling
-PyYAML
-ruamel.yaml
-Pyarrow
-h5py
-openpyxl
-xlrd
-python-docx
-lxml
-lxml_html_clean
-xarray
-pymatreader
-Pillow
-zarr
-
-# Machine Learning & AI
+# ============================================
+# Deep Learning & AI
+# ============================================
 torch
 torchvision
 torchaudio
@@ -35,15 +33,49 @@ accelerate
 bitsandbytes
 fairscale
 pytorch_pretrained_vit
-einops
-optuna
-catboost
-umap-learn
-sktime
-imbalanced-learn
 pytorch-optimizer
+einops
+# wavelets-pytorch
 
+# ============================================
+# AI Services & APIs
+# ============================================
+openai
+anthropic
+google-genai
+groq
+llama-stack
+
+# ============================================
+# Data Processing & File Formats
+# ============================================
+h5py
+openpyxl
+xlrd
+python-docx
+lxml
+lxml_html_clean
+xarray
+pymatreader
+zarr
+Pyarrow
+PyYAML
+ruamel.yaml
+xmltodict
+
+# ============================================
+# Image & PDF Processing
+# ============================================
+Pillow
+opencv-python
+PyPDF2
+pdfplumber
+PyMuPDF
+pytesseract
+
+# ============================================
 # Specialized Scientific Analysis
+# ============================================
 mne
 obspy
 pyedflib
@@ -52,46 +84,50 @@ tensorpac
 ripple_detection
 geom_median
 
-# AI Services
-openai
-anthropic
-google-genai
-groq
-llama-stack
-
-# Web & APIs
+# ============================================
+# Web Scraping & APIs
+# ============================================
 requests
-fastapi
-flask
 aiohttp
+nest-asyncio
 selenium
 webdriver-manager
 bs4
 html2text
 google-search-results
 googlesearch-python
+crawl4ai
+scholarly
+pymed
 
-# Jupyter & Notebooks
+# ============================================
+# Web Frameworks
+# ============================================
+fastapi
+flask
+streamlit
+
+# ============================================
+# Jupyter & Interactive Development
+# ============================================
 jupyterlab
 jupyter-collaboration
 ipykernel
-papermill
 ipython
 ipdb
+papermill
+jupytext
+nbsphinx
 
-# PDF Processing
-PyPDF2
-pdfplumber
-PyMuPDF
-
-# Signal Processing
-wavelets-pytorch
-
+# ============================================
 # Database
+# ============================================
 sqlalchemy
 psycopg2-binary
 
-# Development & Testing
+# ============================================
+# Testing & Quality Assurance
+# ============================================
 pytest
 pytest-cov
 pytest-xdist
@@ -99,45 +135,64 @@ pytest-timeout
 pytest-mock
 pytest-env
 pytest-asyncio
+pytest-testmon
+
+# ============================================
+# Code Quality & Formatting
+# ============================================
 black
 isort
 flake8
 mypy
 pylint
 pre-commit
+autopep8
+pyupgrade
 ruff-lsp
 pyright
 python-lsp-server
 pyls
 jedi
+rope
+
+# ============================================
+# Profiling & Performance
+# ============================================
 line-profiler
 memory-profiler
-rope
-autopep8
-pyupgrade
 
+# ============================================
 # Documentation
+# ============================================
 sphinx
 sphinx-rtd-theme
 sphinx-autodoc-typehints
 sphinx-autobuild
 myst-parser
-nbsphinx
 docutils<0.18
+markdown
+markdown2
+pygments
 
+# ============================================
 # Build & Distribution
+# ============================================
 build
 twine
 wheel
 setuptools
 six
 
+# ============================================
 # Type Hints
+# ============================================
 types-requests
 types-PyYAML
 types-setuptools
 
-# Utilities
+# ============================================
+# General Utilities
+# ============================================
 joblib
 psutil
 packaging
@@ -154,38 +209,34 @@ chardet
 termplotlib
 tldr
 attrdict
-joypy
-julius
-sounddevice
-tk
-markdown
-markdown2
-pygments
-xmltodict
-streamlit
 tabulate
 reportlab
 readability
 readability-lxml
 python-magic
+thefuzz
+pyautogui
 
+# ============================================
+# Audio & Media
+# ============================================
+sounddevice
+joypy
+julius
+
+# ============================================
 # Version Control
+# ============================================
 GitPython
 
-# Other
+# ============================================
+# Other Specialized Packages
+# ============================================
 pebble
 impact-factor
-scholarly
-crawl4ai
-pytesseract
-pyautogui
-pymed
-thefuzz
+tk
 
-opencv-python
-pillow
-numpy
-pytesseract
-jupytext
-pytest-testmon
-nphash
+# ============================================
+# Note: Removed packages that don't exist on PyPI:
+# - nphash (doesn't exist)
+# ============================================

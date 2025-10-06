@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-06 11:24:56
+!-- Timestamp: 2025-10-06 12:36:01
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -53,18 +53,17 @@ pip install -e .
 ### Basic Workflow
 
 ```bash
-# 1. Create a new project
-python -m scitex.scholar --project myresearch --create-project --description "My research papers"
+# 1. Enrich a BibTeX file (resolve DOIs, abstracts, citations) with automatic project creation
+python -m scitex.scholar --bibtex papers.bib --project myresearch --enrich --output enriched.bib
 
-# 2. Enrich a BibTeX file (resolve DOIs, abstracts, citations)
-python -m scitex.scholar --bibtex papers.bib --enrich --output enriched.bib
-
-# 3. Download PDFs to MASTER library with project organization
+# 2. Download PDFs to MASTER library with project organization (requires authentication)
 python -m scitex.scholar --bibtex enriched.bib --project myresearch --download
 
-# 4. Do everything in one command
+# Or do both in one command (if you have authentication set up)
 python -m scitex.scholar --bibtex papers.bib --project myresearch --enrich --download
 ```
+
+**Note**: Projects are created automatically when first used - no need for explicit creation!
 
 ### Complete Working Example: Neurovista Dataset
 
@@ -72,36 +71,30 @@ python -m scitex.scholar --bibtex papers.bib --project myresearch --enrich --dow
 # Navigate to scholar directory
 cd /home/ywatanabe/proj/scitex_repo/src/scitex/scholar
 
-# Step 1: Create project
-python -m scitex.scholar \
-    --project neurovista \
-    --create-project \
-    --description "NeuroVista seizure prediction study papers"
-
-# Step 2: Enrich the neurovista BibTeX file
+# Step 1: Enrich the neurovista BibTeX file (project created automatically)
 python -m scitex.scholar \
     --bibtex data/neurovista.bib \
     --enrich \
-    --output data/neurovista_enriched.bib
+    --output data/neurovista_enriched.bib \
+    --project neurovista
 
-# Step 3: Download all PDFs (stored in MASTER with project symlinks)
+# Step 2: Download all PDFs (stored in MASTER with project symlinks)
 python -m scitex.scholar \
     --bibtex data/neurovista_enriched.bib \
     --project neurovista \
     --download
 
-# Step 4: Check what was downloaded
+# Step 3: Check what was downloaded
 python -m scitex.scholar --project neurovista --list
 
-# Step 5: Export high-impact papers only
+# Step 4: Export high-impact papers only
 python -m scitex.scholar \
     --project neurovista \
     --min-citations 100 \
     --min-impact-factor 10.0 \
-    --export bibtex \
-    --output data/neurovista_high_impact.bib
+    --export data/neurovista_high_impact.bib
 
-# Step 6: View library statistics
+# Step 5: View library statistics
 python -m scitex.scholar --stats
 ```
 
@@ -136,15 +129,14 @@ python -m scitex.scholar \
 --list, -l              # List papers in project
 --search QUERY, -s      # Search papers in library
 --stats                 # Show library statistics
---export FORMAT         # Export project (bibtex, csv, json)
+--export FILE           # Export project (format from extension: .bib, .csv, .json)
 ```
 
 ### Project Management
 
 ```bash
---project NAME, -p      # Project name for persistent storage
---create-project        # Create new project
---description TEXT      # Project description
+--project NAME, -p              # Project name for persistent storage (auto-created when needed)
+--project-description TEXT      # Optional project description
 ```
 
 ### Filtering Options
@@ -188,8 +180,7 @@ python -m scitex.scholar \
 python -m scitex.scholar \
     --project seizure_review \
     --year-min 2020 \
-    --export bibtex \
-    --output data/recent_seizure_papers.bib
+    --export data/recent_seizure_papers.bib
 ```
 
 ### Example 2: Single Paper Download (Working Examples)
@@ -231,7 +222,9 @@ python -m scitex.scholar --project neurovista --search "EEG"
 python -m scitex.scholar --stats
 
 # Export project to different formats
-python -m scitex.scholar --project neurovista --export json --output papers.json
+python -m scitex.scholar --project neurovista --export papers.json
+python -m scitex.scholar --project neurovista --export papers.bib
+python -m scitex.scholar --project neurovista --export papers.csv  # Coming soon
 ```
 
 ## 🐍 Python API

@@ -36,12 +36,11 @@ EXAMPLES:
   python -m scitex.scholar --bibtex papers.bib --project important \\
       --min-citations 100 --min-impact-factor 10.0 --download
 
-  # Create project and list papers
-  python -m scitex.scholar --project myresearch --create-project --description "My research"
+  # List papers in a project (auto-creates project if needed)
   python -m scitex.scholar --project myresearch --list
 
   # Search and export
-  python -m scitex.scholar --project myresearch --search "neural" --export bibtex
+  python -m scitex.scholar --project myresearch --search "neural" --export neural_papers.bib
 
 STORAGE: ~/.scitex/scholar/library/
   MASTER/8DIGITID/  - Centralized storage (no duplicates)
@@ -111,14 +110,9 @@ KEY FEATURES:
         help="Project name for organizing papers (stored in ~/.scitex/scholar/library/PROJECT)"
     )
     project_group.add_argument(
-        "--create-project",
-        action="store_true",
-        help="Create a new project directory with metadata"
-    )
-    project_group.add_argument(
-        "--description",
+        "--project-description",
         type=str,
-        help="Project description (use with --create-project)"
+        help="Optional project description (project created automatically when needed)"
     )
 
     # Operations
@@ -160,15 +154,16 @@ KEY FEATURES:
                                               "Save results in various formats")
     export_group.add_argument(
         "--export",
-        choices=["bibtex", "csv", "json"],
-        help="Export format for project papers (bibtex, csv, or json)"
+        type=str,
+        metavar="FILE",
+        help="Export project papers to file (format inferred from extension: .bib, .csv, .json)"
     )
     export_group.add_argument(
         "--output",
         "-o",
         type=str,
         metavar="FILE",
-        help="Output file path for enriched data or exports"
+        help="Output file path for enriched data"
     )
 
     # Filtering options
@@ -279,6 +274,54 @@ async def handle_bibtex_operations(args, scholar):
         saved_ids = scholar.save_papers_to_library(papers)
         logger.info(f"Saved {len(saved_ids)} papers to library")
 
+        # Save BibTeX files to the project's info/bibtex directory
+        library_dir = scholar.config.get_library_dir()
+        project_bibtex_dir = library_dir / args.project / "info" / "bibtex"
+        project_bibtex_dir.mkdir(parents=True, exist_ok=True)
+
+        import shutil
+
+        # Save the original input BibTeX
+        if bibtex_path and bibtex_path.exists():
+            original_filename = bibtex_path.name
+            project_original_path = project_bibtex_dir / original_filename
+            if not project_original_path.exists() or project_original_path.samefile(bibtex_path) == False:
+                shutil.copy2(bibtex_path, project_original_path)
+                logger.info(f"Saved original BibTeX to project library: {project_original_path}")
+
+        # Save the enriched output BibTeX
+        if args.output:
+            output_filename = Path(args.output).name
+            project_output_path = project_bibtex_dir / output_filename
+            if not project_output_path.exists() or project_output_path.samefile(Path(args.output)) == False:
+                shutil.copy2(args.output, project_output_path)
+                logger.info(f"Saved enriched BibTeX to project library: {project_output_path}")
+
+        # Create/update merged.bib with all BibTeX files in the project
+        from scitex.scholar.storage.BibTeXHandler import BibTeXHandler
+        bibtex_handler = BibTeXHandler(project=args.project, config=scholar.config)
+
+        # Get all BibTeX files in the project directory
+        bibtex_files = list(project_bibtex_dir.glob("*.bib"))
+        # Exclude merged.bib itself if it exists
+        bibtex_files = [f for f in bibtex_files if f.name != "merged.bib"]
+
+        if bibtex_files:
+            merged_path = project_bibtex_dir / "merged.bib"
+            # Use the merge_bibtex_files method which handles duplicates and adds separators
+            merged_papers = bibtex_handler.merge_bibtex_files(bibtex_files)
+            bibtex_handler.papers_to_bibtex(merged_papers, merged_path)
+            logger.info(f"Created merged.bib from {len(bibtex_files)} BibTeX files with {len(merged_papers)} unique papers: {merged_path}")
+
+            # Create bibliography.bib symlink at project root pointing to merged.bib
+            bibliography_link = library_dir / args.project / "bibliography.bib"
+            if bibliography_link.exists():
+                bibliography_link.unlink()  # Remove existing link/file
+
+            # Create relative symlink: bibliography.bib -> info/bibtex/merged.bib
+            bibliography_link.symlink_to("info/bibtex/merged.bib")
+            logger.info(f"Created bibliography.bib symlink at project root")
+
     return 0
 
 
@@ -330,14 +373,7 @@ async def handle_doi_operations(args, scholar):
 async def handle_project_operations(args, scholar):
     """Handle project-specific operations."""
 
-    # Create project if requested
-    if args.create_project:
-        project_dir = scholar._create_project_metadata(
-            args.project,
-            description=args.description
-        )
-        logger.success(f"Created project: {args.project} at {project_dir}")
-        return 0
+    # Projects are auto-created when needed, no need for explicit creation
 
     # List papers in project
     if args.list:
@@ -346,12 +382,17 @@ async def handle_project_operations(args, scholar):
         logger.info(f"Papers: {len(papers)}")
 
         for i, paper in enumerate(papers[:20], 1):  # Show first 20
-            title = paper.title[:60] + "..." if len(paper.title) > 60 else paper.title
+            title = paper.title or "No title"
+            title = title[:60] + "..." if len(title) > 60 else title
             info = []
             if paper.year:
                 info.append(str(paper.year))
             if paper.doi:
                 info.append(paper.doi)
+
+            # Check if PDF exists
+            pdf_status = "✓ PDF" if hasattr(paper, 'pdf_local_path') and paper.pdf_local_path else "✗ No PDF"
+            info.append(pdf_status)
 
             print(f"{i:3d}. {title}")
             if info:
@@ -378,23 +419,28 @@ async def handle_project_operations(args, scholar):
     if args.export:
         papers = scholar.load_project(args.project)
 
-        if args.output:
-            output_path = Path(args.output)
-        else:
-            output_path = Path(f"{args.project}_export.{args.export}")
+        # Export path is the value of --export argument
+        output_path = Path(args.export)
 
-        if args.export == "bibtex":
+        # Infer format from extension
+        extension = output_path.suffix.lower()
+
+        if extension in ['.bib', '.bibtex']:
             scholar.save_papers_as_bibtex(papers, output_path)
-        elif args.export == "csv":
+        elif extension == '.csv':
             # TODO: Implement CSV export
             logger.warning("CSV export not yet implemented")
             return 1
-        elif args.export == "json":
+        elif extension == '.json':
             import json
             with open(output_path, 'w') as f:
                 json.dump([p.to_dict() for p in papers], f, indent=2, default=str)
+        else:
+            logger.error(f"Unsupported export format: {extension}")
+            logger.info("Supported formats: .bib, .bibtex, .json, .csv (coming soon)")
+            return 1
 
-        logger.success(f"Exported to: {output_path}")
+        logger.success(f"Exported {len(papers)} papers to: {output_path}")
 
     return 0
 
@@ -416,7 +462,11 @@ async def main_async():
     # Initialize Scholar
     from scitex.scholar.core.Scholar import Scholar
 
-    scholar = Scholar(project=args.project) if args.project else Scholar()
+    # Initialize Scholar with project and optional description
+    scholar = Scholar(
+        project=args.project,
+        project_description=args.project_description if hasattr(args, 'project_description') else None
+    ) if args.project else Scholar()
 
     try:
         # Route to appropriate handler based on input
