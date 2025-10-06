@@ -62,23 +62,9 @@ class Papers:
                 if isinstance(item, Paper):
                     self._papers.append(item)
                 elif isinstance(item, dict):
-                    # Handle dict input for compatibility
-                    try:
-                        if "basic" in item:
-                            # Old structured format
-                            from scitex.scholar.utils.paper_utils import (
-                                paper_from_structured,
-                            )
-
-                            paper = paper_from_structured(**item)
-                        else:
-                            # Flat format
-                            paper = Paper(**item)
-                        self._papers.append(paper)
-                    except Exception as e:
-                        logger.warning(
-                            f"Failed to create Paper from dict: {e}"
-                        )
+                    # Handle dict input - Pydantic handles validation
+                    paper = Paper.from_dict(item)
+                    self._papers.append(paper)
                 else:
                     logger.warning(f"Skipping invalid item type: {type(item)}")
 
@@ -478,32 +464,30 @@ class Papers:
         return cls(papers)
 
     @staticmethod
-    def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Optional[Paper]:
+    def _bibtex_entry_to_paper(entry: Dict[str, Any]) -> Paper:
         """Convert BibTeX entry to Paper object.
 
         Args:
             entry: BibTeX entry dictionary
 
         Returns:
-            Paper object or None if conversion fails
+            Paper object
         """
-        try:
-            # Get fields from BibTeX entry
-            fields = {k.lower(): v for k, v in entry.items()}
+        # Get fields from BibTeX entry
+        fields = {k.lower(): v for k, v in entry.items()}
 
-            # Parse authors
-            authors = []
-            if "author" in fields:
-                author_str = fields["author"]
-                authors = [a.strip() for a in author_str.split(" and ")]
+        # Parse authors
+        authors = []
+        if "author" in fields:
+            author_str = fields["author"]
+            authors = [a.strip() for a in author_str.split(" and ")]
 
-            # Parse year
-            year = None
-            if "year" in fields:
-                try:
-                    year = int(str(fields["year"]))
-                except ValueError:
-                    pass
+        # Parse year - let Pydantic handle validation
+        year = None
+        if "year" in fields:
+            year_str = str(fields["year"])
+            if year_str.isdigit():
+                year = int(year_str)
 
             # Parse keywords
             keywords = []
@@ -533,15 +517,28 @@ class Papers:
                 "pdf": fields.get("url"),
             }
 
-            # Use utility function for structured data
-            from scitex.scholar.utils.paper_utils import paper_from_structured
+            # Create Paper with Pydantic structure
+            paper = Paper()
 
-            paper = paper_from_structured(
-                basic=basic_data,
-                id=id_data,
-                publication=publication_data,
-                url=url_data,
-            )
+            # Set basic metadata
+            paper.metadata.basic.title = basic_data.get("title", "")
+            paper.metadata.basic.authors = basic_data.get("authors")
+            paper.metadata.basic.abstract = basic_data.get("abstract")
+            paper.metadata.basic.year = basic_data.get("year")
+            paper.metadata.basic.keywords = basic_data.get("keywords")
+
+            # Set ID metadata
+            if id_data.get("doi"):
+                paper.metadata.set_doi(id_data["doi"])
+            paper.metadata.id.pmid = id_data.get("pmid")
+            paper.metadata.id.arxiv_id = id_data.get("arxiv_id")
+
+            # Set publication metadata
+            paper.metadata.publication.journal = publication_data.get("journal")
+
+            # Set URL metadata
+            if url_data.get("pdf"):
+                paper.metadata.url.pdfs.append({"url": url_data["pdf"], "source": "bibtex"})
 
             # Store original BibTeX fields for later reconstruction
             paper._original_bibtex_fields = fields.copy()
@@ -549,10 +546,6 @@ class Papers:
             paper._bibtex_key = entry.get("key", "")
 
             return paper
-
-        except Exception as e:
-            logger.warning(f"Failed to convert BibTeX entry to Paper: {e}")
-            return None
 
     def save(
         self,
@@ -687,27 +680,37 @@ if __name__ == "__main__":
         print("=" * 60)
 
         # Create test papers
-        papers = Papers(
-            [
-                Paper(title="Paper 1", year=2023, journal="Nature"),
-                Paper(title="Paper 2", year=2024, journal="Science"),
-                Paper(title="Paper 3", year=2022, journal="Cell"),
-            ]
-        )
+        # Create sample papers with Pydantic structure
+        p1 = Paper()
+        p1.metadata.basic.title = "Paper 1"
+        p1.metadata.basic.year = 2023
+        p1.metadata.publication.journal = "Nature"
+
+        p2 = Paper()
+        p2.metadata.basic.title = "Paper 2"
+        p2.metadata.basic.year = 2024
+        p2.metadata.publication.journal = "Science"
+
+        p3 = Paper()
+        p3.metadata.basic.title = "Paper 3"
+        p3.metadata.basic.year = 2022
+        p3.metadata.publication.journal = "Cell"
+
+        papers = Papers([p1, p2, p3])
 
         print(f"\n1. Collection: {papers}")
         print(f"   Count: {len(papers)}")
-        print(f"   First: {papers[0].title}")
+        print(f"   First: {papers[0].metadata.basic.title}")
 
         # Test filtering
-        recent = papers.filter(lambda p: p.year >= 2023)
+        recent = papers.filter(lambda p: p.metadata.basic.year and p.metadata.basic.year >= 2023)
         print(f"\n2. Filtered (year >= 2023): {len(recent)} papers")
 
         # Test sorting
-        sorted_papers = papers.sort_by(lambda p: p.year or 0)
+        sorted_papers = papers.sort_by(lambda p: p.metadata.basic.year or 0)
         print(f"\n3. Sorted by year:")
         for p in sorted_papers:
-            print(f"   {p.year}: {p.title}")
+            print(f"   {p.metadata.basic.year}: {p.metadata.basic.title}")
 
         print("\n✅ Papers class simplified!")
         print("   - Reduced from 39 to ~15 methods")

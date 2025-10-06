@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-10-07 09:19:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/metadata_converters.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/core/metadata_converters.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 """
 Converters between typed metadata structures and dict/DotDict formats.
 
@@ -7,38 +18,37 @@ Provides bidirectional conversion to maintain backward compatibility
 while enabling type-safe operations.
 """
 
-from __future__ import annotations
-from typing import Dict, Any, Union
+from typing import Any, Dict
 
 try:
     from .metadata_types import (
-        CompletePaperMetadata,
-        PaperMetadataStructure,
-        IDMetadata,
         BasicMetadata,
         CitationCountMetadata,
-        PublicationMetadata,
-        URLMetadata,
-        PathMetadata,
-        SystemMetadata,
         ContainerMetadata,
+        IDMetadata,
+        Paper,
+        PaperMetadataStructure,
+        PathMetadata,
+        PublicationMetadata,
+        SystemMetadata,
+        URLMetadata,
     )
 except ImportError:
     from metadata_types import (
-        CompletePaperMetadata,
-        PaperMetadataStructure,
-        IDMetadata,
         BasicMetadata,
         CitationCountMetadata,
-        PublicationMetadata,
-        URLMetadata,
-        PathMetadata,
-        SystemMetadata,
         ContainerMetadata,
+        IDMetadata,
+        Paper,
+        PaperMetadataStructure,
+        PathMetadata,
+        PublicationMetadata,
+        SystemMetadata,
+        URLMetadata,
     )
 
 
-def dict_to_typed_metadata(data: Dict[str, Any]) -> CompletePaperMetadata:
+def dict_to_typed_metadata(data: Dict[str, Any]) -> Paper:
     """
     Convert dictionary to typed metadata structure.
 
@@ -46,12 +56,14 @@ def dict_to_typed_metadata(data: Dict[str, Any]) -> CompletePaperMetadata:
         data: Dictionary containing metadata and container sections
 
     Returns:
-        CompletePaperMetadata: Typed metadata structure
+        Paper: Typed metadata structure
     """
-    return CompletePaperMetadata.from_dict(data)
+    return Paper.from_dict(data)
 
 
-def typed_to_dict_metadata(typed_metadata: CompletePaperMetadata) -> Dict[str, Any]:
+def typed_to_dict_metadata(
+    typed_metadata: Paper,
+) -> Dict[str, Any]:
     """
     Convert typed metadata structure to dictionary.
 
@@ -131,7 +143,9 @@ def add_source_to_engines(
     # Parse path
     parts = field_path.split(".")
     if len(parts) < 2:
-        raise ValueError(f"Invalid field path: {field_path}. Must be section.field format.")
+        raise ValueError(
+            f"Invalid field path: {field_path}. Must be section.field format."
+        )
 
     section = parts[0]
     field = parts[1]
@@ -159,7 +173,11 @@ def add_source_to_engines(
 
 
 def merge_metadata_sources(
-    existing: Dict[str, Any], new: Dict[str, Any], section: str, field: str, new_source: str
+    existing: Dict[str, Any],
+    new: Dict[str, Any],
+    section: str,
+    field: str,
+    new_source: str,
 ) -> None:
     """
     Merge metadata from new source into existing, tracking sources.
@@ -196,7 +214,9 @@ def merge_metadata_sources(
     add_source_to_engines(existing, f"{section}.{field}", new_source)
 
 
-def get_field_sources(metadata_dict: Dict[str, Any], field_path: str) -> list[str]:
+def get_field_sources(
+    metadata_dict: Dict[str, Any], field_path: str
+) -> list[str]:
     """
     Get list of sources that provided data for a field.
 
@@ -233,6 +253,5 @@ def get_field_sources(metadata_dict: Dict[str, Any], field_path: str) -> list[st
         return engines
     else:
         return []
-
 
 # EOF

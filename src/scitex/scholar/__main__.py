@@ -346,7 +346,7 @@ async def handle_bibtex_operations(args, scholar):
 
     # Download PDFs if requested (after library save so symlinks exist)
     if args.download:
-        dois = [p.doi for p in papers if p.doi]
+        dois = [p.metadata.id.doi for p in papers if p.metadata.id.doi]
         if dois:
             logger.info(f"Downloading PDFs for {len(dois)} papers...")
             results = await scholar.download_pdfs_from_dois_async(dois)
@@ -432,7 +432,11 @@ async def handle_doi_operations(args, scholar):
         from scitex.scholar.core.Paper import Paper
         from scitex.scholar.core.Papers import Papers
 
-        papers_list = [Paper(doi=doi) for doi in dois]
+        papers_list = []
+        for doi in dois:
+            p = Paper()
+            p.metadata.id.doi = doi
+            papers_list.append(p)
         papers = Papers(papers_list, project=args.project)
 
         logger.info("Enriching papers from DOIs...")
@@ -488,11 +492,11 @@ async def handle_project_operations(args, scholar):
         # Filter to papers with DOIs that don't already have PDFs
         dois_to_download = []
         for paper in papers:
-            if paper.doi:
+            if paper.metadata.id.doi:
                 # Check if PDF already exists
-                has_pdf = hasattr(paper, 'pdf_local_path') and paper.pdf_local_path
+                has_pdf = paper.path.pdf_local and len(paper.path.pdf_local) > 0
                 if not has_pdf:
-                    dois_to_download.append(paper.doi)
+                    dois_to_download.append(paper.metadata.id.doi)
 
         if dois_to_download:
             logger.info(f"Downloading PDFs for {len(dois_to_download)} papers without PDFs...")
@@ -510,16 +514,16 @@ async def handle_project_operations(args, scholar):
         logger.info(f"Papers: {len(papers)}")
 
         for i, paper in enumerate(papers[:20], 1):  # Show first 20
-            title = paper.title or "No title"
+            title = paper.metadata.basic.title or "No title"
             title = title[:60] + "..." if len(title) > 60 else title
             info = []
-            if paper.year:
-                info.append(str(paper.year))
-            if paper.doi:
-                info.append(paper.doi)
+            if paper.metadata.basic.year:
+                info.append(str(paper.metadata.basic.year))
+            if paper.metadata.id.doi:
+                info.append(paper.metadata.id.doi)
 
-            # Check if PDF exists
-            pdf_status = "✓ PDF" if hasattr(paper, 'pdf_local_path') and paper.pdf_local_path else "✗ No PDF"
+            # Check if PDF exists in path section
+            pdf_status = "✓ PDF" if paper.metadata.path.pdfs and len(paper.metadata.path.pdfs) > 0 else "✗ No PDF"
             info.append(pdf_status)
 
             print(f"{i:3d}. {title}")
@@ -540,8 +544,11 @@ async def handle_project_operations(args, scholar):
         logger.info(f"Found: {len(results)} papers")
 
         for i, paper in enumerate(results[:10], 1):  # Show first 10
-            title = paper.title[:60] + "..." if len(paper.title) > 60 else paper.title
-            print(f"{i:3d}. {title} ({paper.year or 'n/a'})")
+            title = paper.metadata.basic.title or "No title"
+            if len(title) > 60:
+                title = title[:60] + "..."
+            year = paper.metadata.basic.year or 'n/a'
+            print(f"{i:3d}. {title} ({year})")
 
     # Export project
     if args.export:

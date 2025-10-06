@@ -149,14 +149,16 @@ def main():
                 ScholarConfig,
             )
 
-            # Create paper object
+            # Create paper object with Pydantic structure
+            paper = Paper()
+            paper.metadata.basic.title = args.title or "Unknown"
             if args.doi:
-                paper = Paper({"title": args.title or "Unknown", "doi": args.doi})
-            else:
-                paper = Paper({"title": args.title or "Unknown", "url": args.url})
+                paper.metadata.set_doi(args.doi)
+            if args.url:
+                paper.metadata.url.publisher = args.url
 
             print(f"\n🎯 SciTeX Scholar - Paywalled PDF Downloader")
-            print(f"📄 Paper: {paper.title}")
+            print(f"📄 Paper: {paper.metadata.basic.title}")
             print(f"🔗 {'DOI' if args.doi else 'URL'}: {args.doi or args.url}")
             print(f"🏢 Project: {args.project}")
             print(f"🔐 Using institutional authentication")
@@ -183,9 +185,10 @@ def main():
                     success = bool(saved_paths)
                     pdf_path = saved_paths[0] if saved_paths else None
                 else:
+                    title = paper.metadata.basic.title or "untitled"
                     pdf_path = await downloader.download_from_url(
                         args.url,
-                        output_path=f"/tmp/scholar_downloads/{args.project}/{paper.title[:30]}.pdf"
+                        output_path=f"/tmp/scholar_downloads/{args.project}/{title[:30]}.pdf"
                     )
                     success = bool(pdf_path)
 

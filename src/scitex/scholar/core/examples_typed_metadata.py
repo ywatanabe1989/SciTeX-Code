@@ -7,7 +7,7 @@ This demonstrates how to use the new type-safe metadata system.
 """
 
 from metadata_types import (
-    CompletePaperMetadata,
+    Paper,
     PaperMetadataStructure,
     IDMetadata,
     BasicMetadata,
@@ -30,7 +30,7 @@ def example_1_create_typed_metadata():
     print("=" * 60)
 
     # Create a paper with typed metadata
-    paper = CompletePaperMetadata()
+    paper = Paper()
 
     # Set ID information
     paper.metadata.id.doi = "10.1234/example.2024"
@@ -259,7 +259,7 @@ def example_6_type_safety():
     print("Example 6: Type safety benefits")
     print("=" * 60)
 
-    paper = CompletePaperMetadata()
+    paper = Paper()
 
     # Type checkers and IDEs will catch these errors:
     # paper.metadata.basic.year = "2024"  # Error: Expected int, got str

@@ -83,18 +83,19 @@ class JCRImpactFactorEngine:
         journal_cache = {}  # Cache to avoid repeated lookups
 
         for paper in papers:
-            if paper.journal and not paper.journal_impact_factor:
+            journal = paper.metadata.publication.journal
+            if journal and not paper.metadata.publication.impact_factor:
                 # Use cache if available
-                if paper.journal in journal_cache:
-                    if journal_cache[paper.journal]:
-                        paper.journal_impact_factor = journal_cache[paper.journal]
+                if journal in journal_cache:
+                    if journal_cache[journal]:
+                        paper.metadata.publication.impact_factor = journal_cache[journal]
                         enriched_count += 1
                 else:
                     # Look up and cache
-                    if_value = self.get_impact_factor(paper.journal)
-                    journal_cache[paper.journal] = if_value
+                    if_value = self.get_impact_factor(journal)
+                    journal_cache[journal] = if_value
                     if if_value:
-                        paper.journal_impact_factor = if_value
+                        paper.metadata.publication.impact_factor = if_value
                         enriched_count += 1
 
         if enriched_count > 0:

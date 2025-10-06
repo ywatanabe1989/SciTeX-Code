@@ -12,7 +12,7 @@ The typed metadata system provides **type-safe** data structures for Scholar pap
 paper = {"basic": {"year": "2024"}}  # Wrong type, but no error
 
 # ✅ New way - type checked
-paper = CompletePaperMetadata()
+paper = Paper()
 paper.metadata.basic.year = "2024"  # Type checker catches this error
 paper.metadata.basic.year = 2024    # ✓ Correct
 ```
@@ -36,7 +36,7 @@ paper.metadata.basic.title_engines = ["input", "CrossRef", "OpenAlex"]
 ## Structure
 
 ```
-CompletePaperMetadata
+Paper
 ├── metadata: PaperMetadataStructure
 │   ├── id: IDMetadata
 │   │   ├── doi: Optional[str]
@@ -67,10 +67,10 @@ CompletePaperMetadata
 ### Creating New Metadata
 
 ```python
-from scitex.scholar.core.metadata_types import CompletePaperMetadata
+from scitex.scholar.core.metadata_types import Paper
 
 # Create empty paper
-paper = CompletePaperMetadata()
+paper = Paper()
 
 # Set fields with type safety
 paper.metadata.id.doi = "10.1234/example.2024"
@@ -175,7 +175,7 @@ paper = {
 ### New Typed System
 ```python
 # New approach
-paper = CompletePaperMetadata()
+paper = Paper()
 paper.metadata.id.doi = "10.1234/example"
 paper.metadata.id.doi_engines = ["input"]
 paper.metadata.basic.title = "Example"

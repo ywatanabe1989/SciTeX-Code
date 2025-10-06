@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-07 02:37:01
+!-- Timestamp: 2025-10-07 10:10:15
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -84,17 +84,17 @@ python -m scitex.scholar \
     --project neurovista \
     --download
 
-# Step 2: Check what was downloaded
+# Step 3: Check what was downloaded
 python -m scitex.scholar --project neurovista --list
 
-# Step 3: Export high-impact papers only
+# Step 4: Export high-impact papers only
 python -m scitex.scholar \
     --project neurovista \
     --min-citations 100 \
     --min-impact-factor 10.0 \
     --export data/neurovista_high_impact.bib
 
-# Step 4: View library statistics
+# Step 5: View library statistics
 python -m scitex.scholar --stats
 ```
 

@@ -149,19 +149,21 @@ class Scholar:
             try:
                 # Use ScholarEngine to search and enrich
                 results = await self._scholar_engine.search_async(
-                    title=paper.title,
-                    year=paper.year,
-                    authors=paper.authors[0] if paper.authors else None,
+                    title=paper.metadata.basic.title,
+                    year=paper.metadata.basic.year,
+                    authors=paper.metadata.basic.authors[0] if paper.metadata.basic.authors else None,
                 )
 
                 # Create a copy to avoid modifying original
                 enriched_paper = self._merge_enrichment_data(paper, results)
                 enriched_list.append(enriched_paper)
-                logger.info(f"Enriched: {paper.title[:50]}...")
+                title = paper.metadata.basic.title or "No title"
+                logger.info(f"Enriched: {title[:50]}...")
 
             except Exception as e:
+                title = paper.metadata.basic.title or "No title"
                 logger.warning(
-                    f"Failed to enrich paper '{paper.title[:50]}...': {e}"
+                    f"Failed to enrich paper '{title[:50]}...': {e}"
                 )
                 enriched_list.append(paper)  # Keep original if enrichment fails
 
@@ -204,20 +206,22 @@ class Scholar:
                 # Use ScholarEngine to search and enrich
                 results = asyncio.run(
                     self._scholar_engine.search_async(
-                        title=paper.title,
-                        year=paper.year,
-                        authors=paper.authors[0] if paper.authors else None,
+                        title=paper.metadata.basic.title,
+                        year=paper.metadata.basic.year,
+                        authors=paper.metadata.basic.authors[0] if paper.metadata.basic.authors else None,
                     )
                 )
 
                 # Create a copy to avoid modifying original
                 enriched_paper = self._merge_enrichment_data(paper, results)
                 enriched_list.append(enriched_paper)
-                logger.info(f"Enriched: {paper.title[:50]}...")
+                title = paper.metadata.basic.title or "No title"
+                logger.info(f"Enriched: {title[:50]}...")
 
             except Exception as e:
+                title = paper.metadata.basic.title or "No title"
                 logger.warning(
-                    f"Failed to enrich paper '{paper.title[:50]}...': {e}"
+                    f"Failed to enrich paper '{title[:50]}...': {e}"
                 )
                 enriched_list.append(
                     paper
@@ -279,36 +283,29 @@ class Scholar:
             enriched_count = 0
 
             for paper in papers:
-                if paper.journal and paper.journal not in journals_cache:
+                journal = paper.metadata.publication.journal
+                if journal and journal not in journals_cache:
                     try:
                         # Calculate impact factor for the journal
-                        result = calculator.calculate_impact_factor(
-                            paper.journal
-                        )
+                        result = calculator.calculate_impact_factor(journal)
                         if result and "impact_factors" in result:
                             # Store the 2-year impact factor
-                            journals_cache[paper.journal] = result[
+                            journals_cache[journal] = result[
                                 "impact_factors"
                             ].get("classical_2year")
                         else:
-                            journals_cache[paper.journal] = None
+                            journals_cache[journal] = None
                     except Exception as e:
                         logger.debug(
-                            f"Could not get impact factor for {paper.journal}: {e}"
+                            f"Could not get impact factor for {journal}: {e}"
                         )
-                        journals_cache[paper.journal] = None
+                        journals_cache[journal] = None
 
                 # Add journal impact factor to paper if available
-                if (
-                    paper.journal in journals_cache
-                    and journals_cache[paper.journal]
-                ):
-                    if (
-                        not hasattr(paper, "journal_impact_factor")
-                        or not paper.journal_impact_factor
-                    ):
-                        paper.journal_impact_factor = journals_cache[
-                            paper.journal
+                if journal in journals_cache and journals_cache[journal]:
+                    if not paper.metadata.publication.impact_factor:
+                        paper.metadata.publication.impact_factor = journals_cache[
+                            journal
                         ]
                         enriched_count += 1
 
@@ -339,53 +336,54 @@ class Scholar:
         # Extract from the combined metadata structure
         # ID section
         if "id" in results:
-            if results["id"].get("doi") and not enriched.doi:
-                enriched.doi = results["id"]["doi"]
-            if results["id"].get("pmid") and not enriched.pmid:
-                enriched.pmid = results["id"]["pmid"]
-            if results["id"].get("arxiv_id") and not enriched.arxiv_id:
-                enriched.arxiv_id = results["id"]["arxiv_id"]
+            if results["id"].get("doi") and not enriched.metadata.id.doi:
+                enriched.metadata.set_doi(results["id"]["doi"])
+            if results["id"].get("pmid") and not enriched.metadata.id.pmid:
+                enriched.metadata.id.pmid = results["id"]["pmid"]
+            if results["id"].get("arxiv_id") and not enriched.metadata.id.arxiv_id:
+                enriched.metadata.id.arxiv_id = results["id"]["arxiv_id"]
             # Note: corpus_id, semantic_id, ieee_id are in results but not in Paper dataclass
 
         # Basic metadata section
         if "basic" in results:
             # Always update abstract if found (key enrichment goal)
             if results["basic"].get("abstract"):
-                enriched.abstract = results["basic"]["abstract"]
+                enriched.metadata.basic.abstract = results["basic"]["abstract"]
 
             # Update title if more complete
             if results["basic"].get("title"):
                 new_title = results["basic"]["title"]
-                if not enriched.title or len(new_title) > len(enriched.title):
-                    enriched.title = new_title
+                current_title = enriched.metadata.basic.title or ""
+                if not current_title or len(new_title) > len(current_title):
+                    enriched.metadata.basic.title = new_title
 
             # Update authors if found
-            if results["basic"].get("authors") and not enriched.authors:
-                enriched.authors = results["basic"]["authors"]
+            if results["basic"].get("authors") and not enriched.metadata.basic.authors:
+                enriched.metadata.basic.authors = results["basic"]["authors"]
 
             # Update year if found
-            if results["basic"].get("year") and not enriched.year:
-                enriched.year = results["basic"]["year"]
+            if results["basic"].get("year") and not enriched.metadata.basic.year:
+                enriched.metadata.basic.year = results["basic"]["year"]
 
             # Update keywords if found
-            if results["basic"].get("keywords") and not enriched.keywords:
-                enriched.keywords = results["basic"]["keywords"]
+            if results["basic"].get("keywords") and not enriched.metadata.basic.keywords:
+                enriched.metadata.basic.keywords = results["basic"]["keywords"]
 
         # Publication metadata
         if "publication" in results:
-            if results["publication"].get("journal") and not enriched.journal:
-                enriched.journal = results["publication"]["journal"]
+            if results["publication"].get("journal") and not enriched.metadata.publication.journal:
+                enriched.metadata.publication.journal = results["publication"]["journal"]
             if (
                 results["publication"].get("publisher")
-                and not enriched.publisher
+                and not enriched.metadata.publication.publisher
             ):
-                enriched.publisher = results["publication"]["publisher"]
-            if results["publication"].get("volume") and not enriched.volume:
-                enriched.volume = results["publication"]["volume"]
-            if results["publication"].get("issue") and not enriched.issue:
-                enriched.issue = results["publication"]["issue"]
-            if results["publication"].get("pages") and not enriched.pages:
-                enriched.pages = results["publication"]["pages"]
+                enriched.metadata.publication.publisher = results["publication"]["publisher"]
+            if results["publication"].get("volume") and not enriched.metadata.publication.volume:
+                enriched.metadata.publication.volume = results["publication"]["volume"]
+            if results["publication"].get("issue") and not enriched.metadata.publication.issue:
+                enriched.metadata.publication.issue = results["publication"]["issue"]
+            if results["publication"].get("pages") and not enriched.metadata.publication.pages:
+                enriched.metadata.publication.pages = results["publication"]["pages"]
 
         # Citation metadata
         if "citation_count" in results:
@@ -395,21 +393,20 @@ class Scholar:
             ].get("total")
             if count:
                 # Always take the maximum citation count
-                # Note: citation_count is now a DotDict, access .total
-                current_count = enriched.citation_count if isinstance(enriched.citation_count, int) else (enriched.citation_count.total if hasattr(enriched.citation_count, 'total') else 0)
-                if (
-                    not current_count
-                    or count > current_count
-                ):
-                    enriched.citation_count = count  # This will set citation_count.total via backward compat
+                current_count = enriched.metadata.citation_count.total or 0
+                if not current_count or count > current_count:
+                    enriched.metadata.citation_count.total = count
             # Note: influential_citation_count is in results but not in Paper dataclass
 
         # URL metadata
         if "url" in results:
-            if results["url"].get("pdf") and not enriched.pdf_url:
-                enriched.pdf_url = results["url"]["pdf"]
-            if results["url"].get("url") and not enriched.url:
-                enriched.url = results["url"]["url"]
+            if results["url"].get("pdf"):
+                # Check if this PDF is not already in the list
+                pdf_url = results["url"]["pdf"]
+                if not any(p.get("url") == pdf_url for p in enriched.metadata.url.pdfs):
+                    enriched.metadata.url.pdfs.append({"url": pdf_url, "source": "enrichment"})
+            if results["url"].get("url") and not enriched.metadata.url.publisher:
+                enriched.metadata.url.publisher = results["url"]["url"]
 
         # Note: Metrics section (journal_impact_factor, h_index) not stored in Paper dataclass
 
@@ -647,7 +644,8 @@ class Scholar:
                         # Try to load paper from DOI to get metadata
                         from scitex.scholar.core.Paper import Paper
                         from scitex.scholar.core.Papers import Papers
-                        temp_paper = Paper(doi=doi)
+                        temp_paper = Paper()
+                        temp_paper.metadata.id.doi = doi
                         # Try to enrich to get author/year/journal using async method
                         temp_papers = Papers([temp_paper])
                         enriched = await self.enrich_papers_async(temp_papers)
@@ -656,21 +654,23 @@ class Scholar:
 
                         # Generate readable name from metadata
                         first_author = "Unknown"
-                        if temp_paper.authors and len(temp_paper.authors) > 0:
-                            author_parts = temp_paper.authors[0].split()
+                        authors = temp_paper.metadata.basic.authors
+                        if authors and len(authors) > 0:
+                            author_parts = authors[0].split()
                             if len(author_parts) > 1:
                                 first_author = author_parts[-1]  # Last name
                             else:
                                 first_author = author_parts[0]
 
-                        year_str = str(temp_paper.year) if temp_paper.year else "Unknown"
+                        year = temp_paper.metadata.basic.year
+                        year_str = str(year) if year else "Unknown"
 
                         journal_clean = "Unknown"
-                        if temp_paper.journal:
+                        journal = temp_paper.metadata.publication.journal
+                        if journal:
                             # Clean journal name - remove special chars, keep alphanumeric
                             journal_clean = "".join(
-                                c for c in temp_paper.journal
-                                if c.isalnum() or c in " "
+                                c for c in journal if c.isalnum() or c in " "
                             ).replace(" ", "")
                             if not journal_clean:
                                 journal_clean = "Unknown"
@@ -705,20 +705,8 @@ class Scholar:
 
                     # Add enriched paper metadata if available
                     if temp_paper:
-                        # Add all paper fields to metadata
-                        paper_dict = temp_paper.to_dict() if hasattr(temp_paper, 'to_dict') else {
-                            "title": temp_paper.title,
-                            "authors": temp_paper.authors,
-                            "year": temp_paper.year,
-                            "journal": temp_paper.journal,
-                            "abstract": temp_paper.abstract,
-                            "citation_count": temp_paper.citation_count,
-                            "journal_impact_factor": temp_paper.journal_impact_factor,
-                            "keywords": temp_paper.keywords,
-                            "url": temp_paper.url,
-                            "pdf_url": temp_paper.pdf_url,
-                            "publisher": temp_paper.publisher,
-                        }
+                        # Use Pydantic to_dict() for Paper
+                        paper_dict = temp_paper.to_dict()
                         # Merge paper metadata
                         for key, value in paper_dict.items():
                             if value is not None and key not in ["doi", "scitex_id"]:
@@ -797,7 +785,11 @@ class Scholar:
             papers = self.load_bibtex(bibtex_input)
 
         # Extract DOIs from papers
-        dois = [paper.doi for paper in papers if paper.doi]
+        dois = [
+            paper.metadata.id.doi
+            for paper in papers
+            if paper.metadata.id.doi
+        ]
 
         if not dois:
             logger.warning("No papers with DOIs found in BibTeX input")
@@ -857,95 +849,8 @@ class Scholar:
                             with open(metadata_file, 'r') as f:
                                 metadata = json.load(f)
 
-                            # Handle both flat and nested metadata structures
-                            # Nested structure: {"id": {...}, "basic": {...}, "publication": {...}}
-                            # Flat structure: {"doi": ..., "title": ..., ...}
-
-                            # Extract DOI
-                            doi = metadata.get("doi") or (metadata.get("id", {}).get("doi") if "id" in metadata else None)
-
-                            # Extract basic metadata
-                            if "basic" in metadata:
-                                # Nested structure
-                                title = metadata["basic"].get("title")
-                                authors = metadata["basic"].get("authors")
-                                year = metadata["basic"].get("year")
-                                abstract = metadata["basic"].get("abstract")
-                                keywords = metadata["basic"].get("keywords")
-                            else:
-                                # Flat structure
-                                title = metadata.get("title")
-                                authors = metadata.get("authors")
-                                year = metadata.get("year")
-                                abstract = metadata.get("abstract")
-                                keywords = metadata.get("keywords")
-
-                            # Extract publication metadata
-                            if "publication" in metadata:
-                                # Nested structure
-                                journal = metadata["publication"].get("journal")
-                                publisher = metadata["publication"].get("publisher")
-                                volume = metadata["publication"].get("volume")
-                                issue = metadata["publication"].get("issue")
-                                pages = metadata["publication"].get("pages")
-                            else:
-                                # Flat structure
-                                journal = metadata.get("journal")
-                                publisher = metadata.get("publisher")
-                                volume = metadata.get("volume")
-                                issue = metadata.get("issue")
-                                pages = metadata.get("pages")
-
-                            # Extract citation metadata
-                            citation_count = None
-                            if "citation_count" in metadata:
-                                cc_value = metadata["citation_count"]
-                                if isinstance(cc_value, dict):
-                                    # Nested structure with citation_count object
-                                    citation_count = cc_value.get("count") or cc_value.get("total")
-                                else:
-                                    # Direct integer value
-                                    citation_count = cc_value
-
-                            # Extract URLs
-                            if "url" in metadata and isinstance(metadata["url"], dict):
-                                # Nested structure
-                                url = metadata["url"].get("url")
-                                pdf_url = metadata["url"].get("pdf")
-                            else:
-                                # Flat structure
-                                url = metadata.get("url")
-                                pdf_url = metadata.get("pdf_url")
-
-                            # Extract metrics
-                            journal_impact_factor = metadata.get("journal_impact_factor")
-                            if "metrics" in metadata:
-                                journal_impact_factor = journal_impact_factor or metadata["metrics"].get("journal_impact_factor")
-
-                            # Create Paper object from metadata
-                            paper = Paper(
-                                doi=doi,
-                                title=title,
-                                authors=authors,
-                                year=year,
-                                journal=journal,
-                                abstract=abstract,
-                                citation_count=citation_count,
-                                journal_impact_factor=journal_impact_factor,
-                                keywords=keywords,
-                                url=url,
-                                pdf_url=pdf_url,
-                                publisher=publisher,
-                                volume=volume,
-                                issue=issue,
-                                pages=pages,
-                            )
-
-                            # Add PDF path info if available
-                            if "pdf_path" in metadata:
-                                pdf_full_path = library_dir / metadata["pdf_path"]
-                                if pdf_full_path.exists():
-                                    paper.pdf_local_path = str(pdf_full_path)
+                            # Create Paper object using from_dict class method
+                            paper = Paper.from_dict(metadata)
 
                             papers.append(paper)
                         except Exception as e:
@@ -1381,6 +1286,8 @@ class Scholar:
 __all__ = ["Scholar"]
 
 if __name__ == "__main__":
+    from scitex.scholar.core.Paper import Paper
+    from scitex.scholar.core.Papers import Papers
 
     def main():
         """Demonstrate Scholar class usage - Clean API Demo."""
@@ -1443,31 +1350,26 @@ if __name__ == "__main__":
         # Demonstrate paper and project operations
         print("4. Working with Papers:")
 
-        # Create some sample papers
-        sample_papers = [
-            Paper(
-                title="Vision Transformer: An Image Is Worth 16x16 Words",
-                authors=["Dosovitskiy, Alexey", "Beyer, Lucas"],
-                journal="ICLR",
-                year=2021,
-                doi="10.48550/arXiv.2010.11929",
-                keywords=[
-                    "vision transformer",
-                    "computer vision",
-                    "attention",
-                ],
-                project="neural_networks_2024",
-            ),
-            Paper(
-                title="Scaling Laws for Neural Language Models",
-                authors=["Kaplan, Jared", "McCandlish, Sam"],
-                journal="arXiv preprint",
-                year=2020,
-                doi="10.48550/arXiv.2001.08361",
-                keywords=["scaling laws", "language models", "GPT"],
-                project="neural_networks_2024",
-            ),
-        ]
+        # Create some sample papers with Pydantic structure
+        p1 = Paper()
+        p1.metadata.basic.title = "Vision Transformer: An Image Is Worth 16x16 Words"
+        p1.metadata.basic.authors = ["Dosovitskiy, Alexey", "Beyer, Lucas"]
+        p1.metadata.basic.year = 2021
+        p1.metadata.basic.keywords = ["vision transformer", "computer vision", "attention"]
+        p1.metadata.publication.journal = "ICLR"
+        p1.metadata.set_doi("10.48550/arXiv.2010.11929")
+        p1.container.projects = ["neural_networks_2024"]
+
+        p2 = Paper()
+        p2.metadata.basic.title = "Scaling Laws for Neural Language Models"
+        p2.metadata.basic.authors = ["Kaplan, Jared", "McCandlish, Sam"]
+        p2.metadata.basic.year = 2020
+        p2.metadata.basic.keywords = ["scaling laws", "language models", "GPT"]
+        p2.metadata.publication.journal = "arXiv preprint"
+        p2.metadata.set_doi("10.48550/arXiv.2001.08361")
+        p2.container.projects = ["neural_networks_2024"]
+
+        sample_papers = [p1, p2]
 
         # Create Papers collection
         papers = Papers(
@@ -1497,7 +1399,7 @@ if __name__ == "__main__":
             """
 
             # Demonstrate BibTeX loading
-            papers_from_bibtex = scholar.from_bibtex(sample_bibtex.strip())
+            papers_from_bibtex = scholar.load_bibtex(sample_bibtex.strip())
             print(f"   📄 Loaded {len(papers_from_bibtex)} papers from BibTeX")
 
             # Demonstrate project loading
@@ -1540,7 +1442,7 @@ if __name__ == "__main__":
         print(f"   ⚙️  Scholar directory: {scholar.config.paths.scholar_dir}")
         print(f"   ⚙️  Library directory: {scholar.config.get_library_dir()}")
         print(
-            f"   ⚙️  Debug mode: {config.resolve('debug_mode', default=False)}"
+            f"   ⚙️  Debug mode: {scholar.config.resolve('debug_mode', default=False)}"
         )
         print()
 

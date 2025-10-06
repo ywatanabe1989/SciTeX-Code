@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-06 21:02:39 (ywatanabe)"
+# Timestamp: "2025-10-07 10:47:02 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Paper.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,501 +11,572 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-__FILE__ = __file__
+"""
+Type-safe metadata structures for Scholar papers with runtime validation.
 
-"""Paper class for SciTeX Scholar module.
-
-Paper is a DotDict-based container that mirrors BASE_STRUCTURE exactly.
-This ensures single source of truth - Paper structure IS BASE_STRUCTURE.
-All operations are handled by utility functions in scitex.scholar.utils.paper_utils.
+This module uses Pydantic for:
+- Runtime type validation
+- Automatic type coercion
+- JSON key aliasing (e.g., "2025" -> y2025)
+- Clean serialization/deserialization
 """
 
-import copy
-from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Any, Dict, List, Optional
 
-from scitex.dict import DotDict
-from scitex.scholar.engines.utils import BASE_STRUCTURE
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
-class Paper(DotDict):
-    """A scientific paper - DotDict container matching BASE_STRUCTURE exactly.
+class IDMetadata(BaseModel):
+    """Identification metadata with source tracking."""
 
-    This class inherits from DotDict and initializes with BASE_STRUCTURE.
-    All operations on papers are handled by:
-    - Scholar class for high-level operations
-    - Utility functions in paper_utils for conversions
+    doi: Optional[str] = None
+    doi_engines: List[str] = Field(default_factory=list)
 
-    Usage:
-        # Create empty paper with BASE_STRUCTURE
-        paper = Paper()
+    arxiv_id: Optional[str] = None
+    arxiv_id_engines: List[str] = Field(default_factory=list)
 
-        # Access nested fields naturally
-        paper.id.doi = "10.1234/test"
-        paper.basic.title = "My Paper"
-        paper.basic.authors = ["Smith, J.", "Doe, A."]
-        paper.citation_count.total = 85
-        paper.citation_count.y2025 = 10
-        paper.url.openurl_resolved = "https://..."
-        paper.container.library_id = "C74FDF10"
+    pmid: Optional[str] = None
+    pmid_engines: List[str] = Field(default_factory=list)
 
-        # Create from existing data
-        paper = Paper(data_dict)
+    semantic_id: Optional[str] = None
+    semantic_id_engines: List[str] = Field(default_factory=list)
 
-        # Convert to plain dict
-        plain_dict = paper.to_dict()
-    """
+    ieee_id: Optional[str] = None
+    ieee_id_engines: List[str] = Field(default_factory=list)
 
-    def __init__(self, data: Optional[Union[Dict, DotDict]] = None):
-        """Initialize Paper with BASE_STRUCTURE and optional data.
+    scholar_id: Optional[str] = None
+    scholar_id_engines: List[str] = Field(default_factory=list)
 
-        Args:
-            data: Optional dictionary to populate the paper with
-        """
-        # Start with a deep copy of BASE_STRUCTURE
-        structure = copy.deepcopy(BASE_STRUCTURE)
-
-        # Add container section for Paper-specific metadata
-        structure["container"] = {
-            "library_id": None,
-            "scitex_id": None,
-            "created_at": datetime.now().isoformat(),
-            "created_by": "SciTeX Scholar",
-            "updated_at": datetime.now().isoformat(),
-            "project": None,
-            "projects": [],
-            "master_storage_path": None,
-            "readable_name": None,
-            "metadata_file": None,
-            "pdf_downloaded_at": None,
-            "pdf_size_bytes": None,
-        }
-
-        # Initialize with structure
-        super().__init__(structure)
-
-        # If data provided, update with it
-        if data is not None:
-            self._update_from_data(data)
-
-    def __getattr__(self, key):
-        """Override to provide backward compatibility with flat field access."""
-        # Try parent class first
-        try:
-            return super().__getattr__(key)
-        except AttributeError:
-            pass
-
-        # Backward compatibility mappings for flat field access
-        flat_to_nested = {
-            # Basic fields
-            "title": ("basic", "title"),
-            "authors": ("basic", "authors"),
-            "year": ("basic", "year"),
-            "abstract": ("basic", "abstract"),
-            "keywords": ("basic", "keywords"),
-
-            # ID fields
-            "doi": ("id", "doi"),
-            "pmid": ("id", "pmid"),
-            "arxiv_id": ("id", "arxiv_id"),
-            "library_id": ("container", "library_id"),
-            "scholar_id": ("id", "scholar_id"),
-
-            # Publication fields
-            "journal": ("publication", "journal"),
-            "volume": ("publication", "volume"),
-            "issue": ("publication", "issue"),
-            "publisher": ("publication", "publisher"),
-            "impact_factor": ("publication", "impact_factor"),
-            "pages": ("publication", "first_page"),  # Return first_page for legacy pages
-
-            # URL fields
-            "url": ("url", "doi"),
-            "pdf_url": ("url", "pdfs"),  # Returns list
-            "openaccess_url": ("url", "openurl_resolved"),
-
-            # Container fields
-            "project": ("container", "project"),
-            "created_at": ("container", "created_at"),
-            "updated_at": ("container", "updated_at"),
-
-            # Legacy names
-            "citation_count": ("citation_count", "total"),
-            "journal_impact_factor": ("publication", "impact_factor"),
-        }
-
-        # Special handling for pdf_url - return first item from list
-        if key == "pdf_url":
-            try:
-                pdfs = self._data.get("url", {}).get("pdfs")
-                if pdfs and isinstance(pdfs, list) and len(pdfs) > 0:
-                    return pdfs[0] if isinstance(pdfs[0], str) else pdfs[0].get("url")
-                return None
-            except (KeyError, TypeError, AttributeError):
-                return None
-
-        if key in flat_to_nested:
-            section, field = flat_to_nested[key]
-            try:
-                return self._data[section][field]
-            except (KeyError, TypeError):
-                return None
-
-        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{key}'")
-
-    def __setattr__(self, key, value):
-        """Override to provide backward compatibility with flat field access."""
-        # Allow setting internal _data
-        if key == "_data" or key.startswith("_"):
-            super().__setattr__(key, value)
-            return
-
-        # Backward compatibility mappings
-        flat_to_nested = {
-            "title": ("basic", "title"),
-            "authors": ("basic", "authors"),
-            "year": ("basic", "year"),
-            "abstract": ("basic", "abstract"),
-            "keywords": ("basic", "keywords"),
-            "doi": ("id", "doi"),
-            "pmid": ("id", "pmid"),
-            "arxiv_id": ("id", "arxiv_id"),
-            "library_id": ("container", "library_id"),
-            "scholar_id": ("id", "scholar_id"),
-            "journal": ("publication", "journal"),
-            "volume": ("publication", "volume"),
-            "issue": ("publication", "issue"),
-            "publisher": ("publication", "publisher"),
-            "impact_factor": ("publication", "impact_factor"),
-            "pages": ("publication", "first_page"),
-            "url": ("url", "doi"),
-            "openaccess_url": ("url", "openurl_resolved"),
-            "project": ("container", "project"),
-            "created_at": ("container", "created_at"),
-            "updated_at": ("container", "updated_at"),
-            "citation_count": ("citation_count", "total"),
-            "journal_impact_factor": ("publication", "impact_factor"),
-        }
-
-        # Special handling for pages - split if contains dash
-        if key == "pages" and value and "-" in str(value):
-            first, last = str(value).split("-", 1)
-            self._data["publication"]["first_page"] = first.strip()
-            self._data["publication"]["last_page"] = last.strip()
-            return
-
-        # Special handling for pdf_url - store as list
-        if key == "pdf_url" and value:
-            if not self._data.get("url"):
-                self._data["url"] = {}
-            self._data["url"]["pdfs"] = [value] if isinstance(value, str) else value
-            return
-
-        if key in flat_to_nested:
-            section, field = flat_to_nested[key]
-            try:
-                self._data[section][field] = value
-            except (KeyError, TypeError):
-                super().__setattr__(key, value)
-        else:
-            super().__setattr__(key, value)
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
 
 
-    def _update_from_data(self, data: Union[Dict, DotDict]):
-        """Update Paper from dictionary, handling both flat and nested formats.
+class BasicMetadata(BaseModel):
+    """Basic bibliographic metadata with source tracking."""
 
-        Args:
-            data: Dictionary with paper data (can be flat or nested)
-        """
-        if isinstance(data, DotDict):
-            data = data.to_dict()
+    title: Optional[str] = None
+    title_engines: List[str] = Field(default_factory=list)
 
-        # If data has the full structure (metadata + container), use it
-        if "metadata" in data and "container" in data:
-            self.update(data)
-        # If data has BASE_STRUCTURE sections, update metadata
-        elif "id" in data and "basic" in data:
-            self.update({"metadata": data})
-        # Otherwise, assume flat format and map to structure
-        else:
-            self._map_flat_to_structure(data)
+    authors: Optional[List[str]] = None
+    authors_engines: List[str] = Field(default_factory=list)
 
-    def _map_flat_to_structure(self, flat_data: Dict):
-        """Map flat dictionary to nested BASE_STRUCTURE format.
+    year: Optional[int] = None
+    year_engines: List[str] = Field(default_factory=list)
 
-        Args:
-            flat_data: Flat dictionary with fields like doi, title, etc.
-        """
-        # ID section
-        if "doi" in flat_data:
-            self.id.doi = flat_data["doi"]
-            if "doi_source" in flat_data:
-                self.id.doi_engines = flat_data["doi_source"]
-        if "arxiv_id" in flat_data:
-            self.id.arxiv_id = flat_data["arxiv_id"]
-        if "pmid" in flat_data:
-            self.id.pmid = flat_data["pmid"]
-        if "semantic_id" in flat_data:
-            self.id.semantic_id = flat_data["semantic_id"]
-        if "ieee_id" in flat_data:
-            self.id.ieee_id = flat_data["ieee_id"]
-        if "scholar_id" in flat_data or "scitex_id" in flat_data:
-            self.id.scholar_id = flat_data.get("scholar_id") or flat_data.get(
-                "scitex_id"
+    abstract: Optional[str] = None
+    abstract_engines: List[str] = Field(default_factory=list)
+
+    keywords: Optional[List[str]] = None
+    keywords_engines: List[str] = Field(default_factory=list)
+
+    type: Optional[str] = None  # article, conference, preprint, etc.
+    type_engines: List[str] = Field(default_factory=list)
+
+    @field_validator("year")
+    @classmethod
+    def validate_year(cls, v):
+        """Validate year is reasonable."""
+        if v is not None and (v < 1900 or v > 2100):
+            raise ValueError(
+                f"Year {v} is outside reasonable range (1900-2100)"
             )
+        return v
 
-        # Basic section
-        if "title" in flat_data:
-            self.basic.title = flat_data["title"]
-            if "title_source" in flat_data:
-                self.basic.title_engines = flat_data["title_source"]
-        if "authors" in flat_data:
-            self.basic.authors = flat_data["authors"]
-            if "authors_source" in flat_data:
-                self.basic.authors_engines = flat_data["authors_source"]
-        if "year" in flat_data:
-            self.basic.year = flat_data["year"]
-            if "year_source" in flat_data:
-                self.basic.year_engines = flat_data["year_source"]
-        if "abstract" in flat_data:
-            self.basic.abstract = flat_data["abstract"]
-            if "abstract_source" in flat_data:
-                self.basic.abstract_engines = flat_data["abstract_source"]
-        if "keywords" in flat_data:
-            self.basic.keywords = flat_data["keywords"]
-        if "type" in flat_data:
-            self.basic.type = flat_data["type"]
-
-        # Citation count section
-        if "citation_count" in flat_data:
-            self.citation_count.total = flat_data["citation_count"]
-        for year in range(2015, 2026):
-            year_key = f"citation_{year}"
-            if year_key in flat_data:
-                self.citation_count[str(year)] = flat_data[year_key]
-
-        # Publication section
-        if "journal" in flat_data:
-            self.publication.journal = flat_data["journal"]
-            if "journal_source" in flat_data:
-                self.publication.journal_engines = flat_data["journal_source"]
-        if "short_journal" in flat_data:
-            self.publication.short_journal = flat_data["short_journal"]
-        if (
-            "impact_factor" in flat_data
-            or "journal_impact_factor" in flat_data
-        ):
-            self.publication.impact_factor = flat_data.get(
-                "impact_factor"
-            ) or flat_data.get("journal_impact_factor")
-        if "issn" in flat_data:
-            self.publication.issn = flat_data["issn"]
-        if "volume" in flat_data:
-            self.publication.volume = flat_data["volume"]
-        if "issue" in flat_data:
-            self.publication.issue = flat_data["issue"]
-        if "pages" in flat_data:
-            pages = flat_data["pages"]
-            if pages and "-" in str(pages):
-                first, last = str(pages).split("-", 1)
-                self.publication.first_page = first.strip()
-                self.publication.last_page = last.strip()
-        if "first_page" in flat_data:
-            self.publication.first_page = flat_data["first_page"]
-        if "last_page" in flat_data:
-            self.publication.last_page = flat_data["last_page"]
-        if "publisher" in flat_data:
-            self.publication.publisher = flat_data["publisher"]
-
-        # URL section
-        if "url" in flat_data or "url_doi" in flat_data:
-            self.url.doi = flat_data.get("url_doi") or flat_data.get("url")
-        if "url_publisher" in flat_data:
-            self.url.publisher = flat_data["url_publisher"]
-            self.url.publisher_engines = "ScholarURLFinder"
-        if "url_openurl_query" in flat_data:
-            self.url.openurl_query = flat_data["url_openurl_query"]
-        if (
-            "url_openurl_resolved" in flat_data
-            or "openaccess_url" in flat_data
-        ):
-            self.url.openurl_resolved = flat_data.get(
-                "url_openurl_resolved"
-            ) or flat_data.get("openaccess_url")
-            self.url.openurl_resolved_engines = "ScholarURLFinder"
-        if "urls_pdf" in flat_data:
-            self.url.pdfs = flat_data["urls_pdf"]
-            self.url.pdfs_engines = "ScholarURLFinder"
-        elif "pdf_url" in flat_data:
-            self.url.pdfs = [flat_data["pdf_url"]]
-        if "urls_supplementary" in flat_data:
-            self.url.supplementary_files = flat_data["urls_supplementary"]
-        if "urls_additional" in flat_data:
-            self.url.additional_files = flat_data["urls_additional"]
-
-        # Path section
-        if "pdf_path" in flat_data:
-            self.path.pdfs = [flat_data["pdf_path"]]
-            self.path.pdfs_engines = "ParallelPDFDownloader"
-        if "paths_pdf" in flat_data:
-            self.path.pdfs = flat_data["paths_pdf"]
-        if "paths_supplementary" in flat_data:
-            self.path.supplementary_files = flat_data["paths_supplementary"]
-        if "paths_additional" in flat_data:
-            self.path.additional_files = flat_data["paths_additional"]
-
-        # System section
-        for engine in [
-            "arXiv",
-            "CrossRef",
-            "CrossRefLocal",
-            "OpenAlex",
-            "PubMed",
-            "Semantic_Scholar",
-            "URL",
-        ]:
-            key = f"searched_by_{engine}"
-            if key in flat_data:
-                self.system[key] = flat_data[key]
-
-        # Container section
-        if "library_id" in flat_data:
-            self.container.library_id = flat_data["library_id"]
-        if "scitex_id" in flat_data:
-            self.container.scitex_id = flat_data["scitex_id"]
-        if "created_at" in flat_data:
-            self.container.created_at = flat_data["created_at"]
-        if "created_by" in flat_data:
-            self.container.created_by = flat_data["created_by"]
-        if "updated_at" in flat_data:
-            self.container.updated_at = flat_data["updated_at"]
-        if "project" in flat_data:
-            self.container.project = flat_data["project"]
-        if "projects" in flat_data:
-            self.container.projects = flat_data["projects"]
-        if "master_storage_path" in flat_data:
-            self.container.master_storage_path = flat_data[
-                "master_storage_path"
-            ]
-        if "readable_name" in flat_data:
-            self.container.readable_name = flat_data["readable_name"]
-        if "metadata_file" in flat_data:
-            self.container.metadata_file = flat_data["metadata_file"]
-        if "pdf_downloaded_at" in flat_data:
-            self.container.pdf_downloaded_at = flat_data["pdf_downloaded_at"]
-        if "pdf_size_bytes" in flat_data:
-            self.container.pdf_size_bytes = flat_data["pdf_size_bytes"]
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
 
 
-# For backward compatibility, provide methods as module-level functions
-def to_dict(paper: Paper) -> Dict:
-    """Convert paper to dictionary."""
-    return paper.to_dict()
+class CitationCountMetadata(BaseModel):
+    """Citation count metadata with yearly breakdown and source tracking."""
+
+    total: Optional[int] = None
+    total_engines: List[str] = Field(default_factory=list)
+
+    # Yearly counts - use Field(alias=...) to map JSON "2025" to Python y2025
+    y2025: Optional[int] = Field(None, alias="2025")
+    y2025_engines: List[str] = Field(
+        default_factory=list, alias="2025_engines"
+    )
+
+    y2024: Optional[int] = Field(None, alias="2024")
+    y2024_engines: List[str] = Field(
+        default_factory=list, alias="2024_engines"
+    )
+
+    y2023: Optional[int] = Field(None, alias="2023")
+    y2023_engines: List[str] = Field(
+        default_factory=list, alias="2023_engines"
+    )
+
+    y2022: Optional[int] = Field(None, alias="2022")
+    y2022_engines: List[str] = Field(
+        default_factory=list, alias="2022_engines"
+    )
+
+    y2021: Optional[int] = Field(None, alias="2021")
+    y2021_engines: List[str] = Field(
+        default_factory=list, alias="2021_engines"
+    )
+
+    y2020: Optional[int] = Field(None, alias="2020")
+    y2020_engines: List[str] = Field(
+        default_factory=list, alias="2020_engines"
+    )
+
+    y2019: Optional[int] = Field(None, alias="2019")
+    y2019_engines: List[str] = Field(
+        default_factory=list, alias="2019_engines"
+    )
+
+    y2018: Optional[int] = Field(None, alias="2018")
+    y2018_engines: List[str] = Field(
+        default_factory=list, alias="2018_engines"
+    )
+
+    y2017: Optional[int] = Field(None, alias="2017")
+    y2017_engines: List[str] = Field(
+        default_factory=list, alias="2017_engines"
+    )
+
+    y2016: Optional[int] = Field(None, alias="2016")
+    y2016_engines: List[str] = Field(
+        default_factory=list, alias="2016_engines"
+    )
+
+    y2015: Optional[int] = Field(None, alias="2015")
+    y2015_engines: List[str] = Field(
+        default_factory=list, alias="2015_engines"
+    )
+
+    @field_validator(
+        "total",
+        "y2025",
+        "y2024",
+        "y2023",
+        "y2022",
+        "y2021",
+        "y2020",
+        "y2019",
+        "y2018",
+        "y2017",
+        "y2016",
+        "y2015",
+    )
+    @classmethod
+    def validate_citation_counts(cls, v):
+        """Validate citation counts are non-negative."""
+        if v is not None and v < 0:
+            raise ValueError(f"Citation count cannot be negative: {v}")
+        return v
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too  # Allow both "2025" and "y2025"
+
+    def model_dump(self, **kwargs) -> Dict[str, Any]:
+        """Custom serialization to use aliases in output."""
+        # Remove by_alias from kwargs if present to avoid duplicate
+        kwargs.pop("by_alias", None)
+        data = super().model_dump(by_alias=True, **kwargs)
+        return data
 
 
-def to_bibtex(paper: Paper, include_enriched: bool = True) -> str:
-    """Convert paper to BibTeX."""
-    from scitex.scholar.utils.paper_utils import paper_to_bibtex
+class PublicationMetadata(BaseModel):
+    """Publication venue metadata with source tracking."""
 
-    return paper_to_bibtex(paper, include_enriched=include_enriched)
+    journal: Optional[str] = None
+    journal_engines: List[str] = Field(default_factory=list)
+
+    short_journal: Optional[str] = None
+    short_journal_engines: List[str] = Field(default_factory=list)
+
+    impact_factor: Optional[float] = None
+    impact_factor_engines: List[str] = Field(default_factory=list)
+
+    issn: Optional[str] = None
+    issn_engines: List[str] = Field(default_factory=list)
+
+    volume: Optional[str] = None
+    volume_engines: List[str] = Field(default_factory=list)
+
+    issue: Optional[str] = None
+    issue_engines: List[str] = Field(default_factory=list)
+
+    first_page: Optional[str] = None
+    first_page_engines: List[str] = Field(default_factory=list)
+
+    last_page: Optional[str] = None
+    last_page_engines: List[str] = Field(default_factory=list)
+
+    pages: Optional[str] = None
+    pages_engines: List[str] = Field(default_factory=list)
+
+    publisher: Optional[str] = None
+    publisher_engines: List[str] = Field(default_factory=list)
+
+    @field_validator("impact_factor")
+    @classmethod
+    def validate_impact_factor(cls, v):
+        """Validate impact factor is non-negative."""
+        if v is not None and v < 0:
+            raise ValueError(f"Impact factor cannot be negative: {v}")
+        return v
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
 
 
-def save_to_library(paper: Paper, force: bool = False) -> str:
-    """Save paper to library."""
-    from scitex.scholar.config import ScholarConfig
-    from scitex.scholar.storage import ScholarLibrary
-    from scitex.scholar.utils.paper_utils import save_paper_to_library
+class URLMetadata(BaseModel):
+    """URL metadata with source tracking."""
 
-    config = ScholarConfig()
-    library = ScholarLibrary(project=paper.container.project, config=config)
-    return save_paper_to_library(paper, library, force=force)
+    doi: Optional[str] = None
+    doi_engines: List[str] = Field(default_factory=list)
+
+    publisher: Optional[str] = None
+    publisher_engines: List[str] = Field(default_factory=list)
+
+    openurl_query: Optional[str] = None
+    openurl_engines: List[str] = Field(default_factory=list)
+
+    openurl_resolved: List[str] = Field(default_factory=list)
+    openurl_resolved_engines: List[str] = Field(default_factory=list)
+
+    pdfs: List[Dict[str, str]] = Field(default_factory=list)
+    pdfs_engines: List[str] = Field(default_factory=list)
+
+    supplementary_files: List[str] = Field(default_factory=list)
+    supplementary_files_engines: List[str] = Field(default_factory=list)
+
+    additional_files: List[str] = Field(default_factory=list)
+    additional_files_engines: List[str] = Field(default_factory=list)
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
 
 
-def from_library(library_id: str, config=None) -> Paper:
-    """Create Paper from library."""
-    from scitex.scholar.config import ScholarConfig
-    from scitex.scholar.storage import ScholarLibrary
-    from scitex.scholar.utils.paper_utils import load_paper_from_library
+class PathMetadata(BaseModel):
+    """Local file path metadata with source tracking."""
 
-    config = config or ScholarConfig()
-    library = ScholarLibrary(project="default", config=config)
-    return load_paper_from_library(library_id, library)
+    pdfs: List[str] = Field(default_factory=list)
+    pdfs_engines: List[str] = Field(default_factory=list)
+
+    supplementary_files: List[str] = Field(default_factory=list)
+    supplementary_files_engines: List[str] = Field(default_factory=list)
+
+    additional_files: List[str] = Field(default_factory=list)
+    additional_files_engines: List[str] = Field(default_factory=list)
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
 
 
-# For backward compatibility with Paper.from_library classmethod
-Paper.from_library = classmethod(
-    lambda cls, library_id, config=None: from_library(library_id, config)
-)
+class SystemMetadata(BaseModel):
+    """System tracking metadata (which engines were used to search)."""
+
+    searched_by_arXiv: Optional[bool] = None
+    searched_by_CrossRef: Optional[bool] = None
+    searched_by_CrossRefLocal: Optional[bool] = None
+    searched_by_OpenAlex: Optional[bool] = None
+    searched_by_PubMed: Optional[bool] = None
+    searched_by_Semantic_Scholar: Optional[bool] = None
+    searched_by_URL: Optional[bool] = None
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
+
+
+class PaperMetadataStructure(BaseModel):
+    """Complete paper metadata structure with nested typed sections."""
+
+    id: IDMetadata = Field(default_factory=IDMetadata)
+    basic: BasicMetadata = Field(default_factory=BasicMetadata)
+    citation_count: CitationCountMetadata = Field(
+        default_factory=CitationCountMetadata
+    )
+    publication: PublicationMetadata = Field(
+        default_factory=PublicationMetadata
+    )
+    url: URLMetadata = Field(default_factory=URLMetadata)
+    path: PathMetadata = Field(default_factory=PathMetadata)
+    system: SystemMetadata = Field(default_factory=SystemMetadata)
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
+
+    @model_validator(mode="after")
+    def sync_doi_and_url(self):
+        """Automatically sync DOI and URL fields.
+
+        When DOI is set, ensure url.doi is the full URL.
+        When url.doi is set, extract DOI if possible.
+        """
+        # If we have a DOI but no URL, create URL from DOI
+        if self.id.doi and not self.url.doi:
+            self.url.doi = f"https://doi.org/{self.id.doi}"
+
+        # If we have a URL but no DOI, try to extract DOI from URL
+        elif self.url.doi and not self.id.doi:
+            url = self.url.doi
+            if "doi.org/" in url:
+                # Extract DOI from URL like "https://doi.org/10.1234/abcd"
+                self.id.doi = url.split("doi.org/")[-1]
+
+        # If both exist, ensure they're consistent
+        elif self.id.doi and self.url.doi:
+            expected_url = f"https://doi.org/{self.id.doi}"
+            # Normalize URL format
+            if not self.url.doi.startswith("https://"):
+                if self.url.doi.startswith("http://"):
+                    self.url.doi = "https://" + self.url.doi[7:]
+                else:
+                    self.url.doi = f"https://doi.org/{self.id.doi}"
+
+        return self
+
+    def set_doi(self, doi: str):
+        """Set DOI and automatically sync URL.
+
+        Use this method instead of direct assignment for automatic sync.
+        """
+        self.id.doi = doi
+        if doi:
+            self.url.doi = f"https://doi.org/{doi}"
+
+    def set_doi_url(self, url: str):
+        """Set DOI URL and automatically extract/sync DOI.
+
+        Use this method instead of direct assignment for automatic sync.
+        """
+        self.url.doi = url
+        if url and "doi.org/" in url:
+            self.id.doi = url.split("doi.org/")[-1]
+
+    def model_dump(self, **kwargs) -> Dict[str, Any]:
+        """Custom serialization to ensure nested models use aliases."""
+        # Remove by_alias from kwargs if present to avoid duplicate
+        kwargs.pop("by_alias", None)
+        return {
+            "id": self.id.model_dump(by_alias=True, **kwargs),
+            "basic": self.basic.model_dump(by_alias=True, **kwargs),
+            "citation_count": self.citation_count.model_dump(
+                by_alias=True, **kwargs
+            ),
+            "publication": self.publication.model_dump(
+                by_alias=True, **kwargs
+            ),
+            "url": self.url.model_dump(by_alias=True, **kwargs),
+            "path": self.path.model_dump(by_alias=True, **kwargs),
+            "system": self.system.model_dump(by_alias=True, **kwargs),
+        }
+
+
+class ContainerMetadata(BaseModel):
+    """Container metadata for system tracking."""
+
+    scitex_id: Optional[str] = None
+    library_id: Optional[str] = None
+    created_at: Optional[str] = None
+    created_by: Optional[str] = None
+    updated_at: Optional[str] = None
+    projects: List[str] = Field(default_factory=list)
+    master_storage_path: Optional[str] = None
+    readable_name: Optional[str] = None
+    metadata_file: Optional[str] = None
+    pdf_downloaded_at: Optional[str] = None
+    pdf_size_bytes: Optional[int] = None
+
+    @field_validator("pdf_size_bytes")
+    @classmethod
+    def validate_pdf_size(cls, v):
+        """Validate PDF size is non-negative."""
+        if v is not None and v < 0:
+            raise ValueError(f"PDF size cannot be negative: {v}")
+        return v
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
+
+
+class Paper(BaseModel):
+    """Complete paper with metadata and container."""
+
+    metadata: PaperMetadataStructure = Field(
+        default_factory=PaperMetadataStructure
+    )
+    container: ContainerMetadata = Field(default_factory=ContainerMetadata)
+
+    class Config:
+        populate_by_name = True
+        validate_assignment = True  # Validate on attribute assignment too
+
+    def model_dump(self, **kwargs) -> Dict[str, Any]:
+        """Custom serialization to ensure all nested models use aliases."""
+        # Remove by_alias from kwargs if present to avoid duplicate
+        kwargs.pop("by_alias", None)
+        return {
+            "metadata": self.metadata.model_dump(by_alias=True, **kwargs),
+            "container": self.container.model_dump(by_alias=True, **kwargs),
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Paper":
+        """Create from dictionary (for loading from JSON).
+
+        Uses Pydantic's model_validate which handles:
+        - Type validation
+        - Type coercion (e.g., "2024" -> 2024)
+        - Field aliases (e.g., "2025" -> y2025)
+        """
+        return cls.model_validate(data)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization.
+
+        Alias for model_dump() for backward compatibility.
+        """
+        return self.model_dump()
 
 
 if __name__ == "__main__":
+    import json
+    from pprint import pprint
 
-    def main():
-        """Demonstrate Paper class usage as DotDict with BASE_STRUCTURE."""
-        print("=" * 60)
-        print("Paper Class - DotDict with BASE_STRUCTURE Demo")
-        print("=" * 60)
+    print("=" * 80)
+    print("Paper Class - Pydantic Type-Safe Metadata with Runtime Validation")
+    print("=" * 80)
 
-        # Paper is now a DotDict initialized with BASE_STRUCTURE
-        paper = Paper()
+    # 1. Create empty paper
+    print("\n1. Create empty Paper:")
+    paper = Paper()
+    print(f"   Empty paper created: {type(paper).__name__}")
 
-        # Set values using dot notation (matches BASE_STRUCTURE exactly!)
-        paper.id.doi = "10.5555/3295222.3295349"
-        paper.basic.title = "Attention Is All You Need"
-        paper.basic.authors = [
-            "Vaswani, Ashish",
-            "Shazeer, Noam",
-            "Parmar, Niki",
-        ]
-        paper.basic.year = 2017
-        paper.basic.abstract = "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks..."
-        paper.basic.keywords = ["transformer", "attention", "neural networks"]
-        paper.publication.journal = (
-            "Advances in Neural Information Processing Systems"
-        )
-        paper.citation_count.total = 50000
-        paper.citation_count["2024"] = 5000
-        paper.container.project = "transformer_papers"
-        paper.url.doi = "https://doi.org/10.5555/3295222.3295349"
-        paper.url.pdfs = ["https://arxiv.org/pdf/1706.03762.pdf"]
+    # 2. Set basic metadata
+    print("\n2. Set basic metadata:")
+    paper.metadata.basic.title = "Attention Is All You Need"
+    paper.metadata.basic.authors = [
+        "Vaswani, Ashish",
+        "Shazeer, Noam",
+        "Parmar, Niki",
+    ]
+    paper.metadata.basic.year = 2017
+    paper.metadata.basic.abstract = "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks."
+    paper.metadata.basic.keywords = [
+        "transformer",
+        "attention",
+        "neural networks",
+    ]
+    print(f"   Title: {paper.metadata.basic.title}")
+    print(f"   Authors: {paper.metadata.basic.authors[:2]}...")
+    print(f"   Year: {paper.metadata.basic.year}")
 
-        print("1. Paper structure matches BASE_STRUCTURE:")
-        print(f"   DOI: {paper.id.doi}")
-        print(f"   Title: {paper.basic.title}")
-        print(f"   Authors: {len(paper.basic.authors)} authors")
-        print(f"   Citations (total): {paper.citation_count.total}")
-        print(f"   Citations (2024): {paper.citation_count['2024']}")
-        print(f"   URL: {paper.url.doi}")
-        print()
+    # 3. Set DOI (auto-syncs URL)
+    print("\n3. Set DOI (auto-syncs DOI URL):")
+    paper.metadata.set_doi("10.48550/arXiv.1706.03762")
+    print(f"   DOI: {paper.metadata.id.doi}")
+    print(f"   DOI URL (auto-synced): {paper.metadata.url.doi}")
 
-        print("2. Create from flat dict:")
-        flat_data = {
-            "doi": "10.1234/test",
-            "title": "Test Paper",
-            "authors": ["Test, A."],
-            "year": 2025,
-            "citation_count": 10,
+    # 4. Set publication details
+    print("\n4. Set publication details:")
+    paper.metadata.publication.journal = "NeurIPS"
+    paper.metadata.publication.volume = "30"
+    paper.metadata.publication.impact_factor = 12.345
+    print(f"   Journal: {paper.metadata.publication.journal}")
+    print(f"   Volume: {paper.metadata.publication.volume}")
+    print(f"   Impact Factor: {paper.metadata.publication.impact_factor}")
+
+    # 5. Set citation counts with year breakdown
+    print("\n5. Set citation counts:")
+    paper.metadata.citation_count.total = 85432
+    paper.metadata.citation_count.y2024 = 15234
+    paper.metadata.citation_count.y2023 = 18765
+    print(f"   Total citations: {paper.metadata.citation_count.total}")
+    print(f"   2024 citations: {paper.metadata.citation_count.y2024}")
+    print(f"   2023 citations: {paper.metadata.citation_count.y2023}")
+
+    # 6. Set container metadata
+    print("\n6. Set container metadata:")
+    paper.container.projects = ["transformers_research", "nlp_2024"]
+    paper.container.library_id = "ABC12345"
+    paper.container.readable_name = "Vaswani-2017-NeurIPS"
+    print(f"   Projects: {paper.container.projects}")
+    print(f"   Library ID: {paper.container.library_id}")
+    print(f"   Readable name: {paper.container.readable_name}")
+
+    # 7. Demonstrate type validation
+    print("\n7. Type validation (validate_assignment=True):")
+    print("   ✓ Automatic type coercion: year='2017' -> 2017 (int)")
+    paper.metadata.basic.year = "2017"  # String coerced to int
+    print(
+        f"     Result: {paper.metadata.basic.year} (type: {type(paper.metadata.basic.year).__name__})"
+    )
+
+    print("   ✓ Range validation: year must be 1900-2100")
+    try:
+        paper.metadata.basic.year = 1800  # Too old
+        print("     ERROR: Should have raised ValidationError")
+    except Exception as e:
+        print(f"     Correctly rejected: {type(e).__name__}")
+
+    print("   ✓ Non-negative validation: citations cannot be negative")
+    try:
+        paper.metadata.citation_count.total = -100
+        print("     ERROR: Should have raised ValidationError")
+    except Exception as e:
+        print(f"     Correctly rejected: {type(e).__name__}")
+
+    # Reset to valid value
+    paper.metadata.basic.year = 2017
+    paper.metadata.citation_count.total = 85432
+
+    # 8. Serialize to JSON (with aliases)
+    print("\n8. Serialize to JSON with field aliases:")
+    paper_dict = paper.to_dict()
+    print("   Year fields use numeric keys in JSON:")
+    print(
+        f"     '2024': {paper_dict['metadata']['citation_count'].get('2024')}"
+    )
+    print(
+        f"     '2023': {paper_dict['metadata']['citation_count'].get('2023')}"
+    )
+
+    # 9. Create from dictionary
+    print("\n9. Load from dictionary (from_dict):")
+    sample_data = {
+        "metadata": {
+            "basic": {
+                "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+                "year": 2019,
+            },
+            "id": {"doi": "10.18653/v1/N19-1423"},
+            "citation_count": {
+                "2024": 5678,  # Numeric key maps to y2024
+                "total": 45000,
+            },
         }
-        paper2 = Paper(flat_data)
-        print(f"   Title: {paper2.basic.title}")
-        print(f"   DOI: {paper2.id.doi}")
-        print()
+    }
 
-        print("3. Convert to dict:")
-        paper_dict = paper.to_dict()
-        print(f"   Top-level keys: {list(paper_dict.keys())}")
-        print(f"   ID section keys: {list(paper_dict['id'].keys())[:3]}...")
-        print()
+    paper2 = Paper.from_dict(sample_data)
+    print(f"   Title: {paper2.metadata.basic.title}")
+    print(f"   Year: {paper2.metadata.basic.year}")
+    print(f"   DOI: {paper2.metadata.id.doi}")
+    print(f"   DOI URL (auto-synced): {paper2.metadata.url.doi}")
+    print(f"   2024 citations: {paper2.metadata.citation_count.y2024}")
 
-        print("✨ Paper is now a DotDict with BASE_STRUCTURE!")
-        print("   - True single source of truth")
-        print("   - Nested access: paper.id.doi, paper.citation_count.total")
-        print("   - Matches JSON format exactly")
-        print("   - Handles both flat and nested input")
+    # 10. Show JSON structure
+    print("\n10. Full JSON structure (first 500 chars):")
+    json_str = json.dumps(paper.to_dict(), indent=2)
+    print(f"   {json_str[:500]}...")
 
-    main()
-
-# python -m scitex.scholar.core.Paper
+    print("\n" + "=" * 80)
+    print("✅ Paper class demonstration complete!")
+    print("=" * 80)
 
 # EOF
