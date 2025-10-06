@@ -455,17 +455,71 @@ class Scholar:
     # PDF Downloaders
     # ----------------------------------------
     async def download_pdfs_from_dois_async(
-        self, dois: List[str], output_dir: Optional[Path] = None
+        self, dois: List[str], output_dir: Optional[Path] = None, use_parallel: Optional[bool] = None
     ) -> Dict[str, int]:
-        """Download PDFs for given DOIs using ScholarURLFinder and ScholarPDFDownloader.
+        """Download PDFs for given DOIs with optional parallel processing.
 
         Args:
             dois: List of DOI strings
             output_dir: Output directory (uses config default if None)
+            use_parallel: Whether to use parallel downloads (None = auto from config)
 
         Returns:
             Dictionary with download statistics
         """
+        # Check if parallel download should be used
+        pdf_config = self.config.get("pdf_download", {})
+        use_parallel = use_parallel if use_parallel is not None else pdf_config.get("use_parallel", True)
+
+        if use_parallel and len(dois) > 1:
+            # Use parallel downloader for multiple DOIs
+            from scitex.scholar.download.ParallelPDFDownloader import ParallelPDFDownloader
+
+            logger.info(f"Using parallel download for {len(dois)} DOIs")
+
+            # Prepare papers with metadata for parallel download
+            papers_with_metadata = []
+            for doi in dois:
+                try:
+                    # Try to get existing metadata from library
+                    paper_data = {"doi": doi}
+
+                    # Check if paper already exists in library
+                    import hashlib
+                    paper_id = hashlib.md5(doi.encode()).hexdigest()[:8].upper()
+                    library_dir = self.config.get_library_dir()
+                    metadata_file = library_dir / "MASTER" / paper_id / "metadata.json"
+
+                    if metadata_file.exists():
+                        import json
+                        with open(metadata_file, 'r') as f:
+                            existing_metadata = json.load(f)
+                            paper_data.update(existing_metadata)
+
+                    papers_with_metadata.append(paper_data)
+                except Exception as e:
+                    logger.debug(f"Could not load metadata for {doi}: {e}")
+                    papers_with_metadata.append({"doi": doi})
+
+            # Initialize parallel downloader
+            parallel_downloader = ParallelPDFDownloader(config=self.config, use_parallel=True)
+
+            # Download in parallel
+            results = await parallel_downloader.download_batch(
+                papers_with_metadata,
+                project=self.project,
+                library_dir=self.config.get_library_dir()
+            )
+
+            return results
+        else:
+            # Use sequential download for single DOI or when parallel disabled
+            return await self._download_pdfs_sequential(dois, output_dir)
+
+    async def _download_pdfs_sequential(
+        self, dois: List[str], output_dir: Optional[Path] = None
+    ) -> Dict[str, int]:
+        """Sequential PDF download (original implementation).
         from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
         from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 

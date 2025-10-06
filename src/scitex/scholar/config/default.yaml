@@ -27,6 +27,17 @@ max_workers: 4
 verify_ssl: true
 
 # ----------------------------------------
+# PDF Download
+# ----------------------------------------
+pdf_download:
+  max_parallel: ${SCITEX_SCHOLAR_PDF_MAX_PARALLEL:-3}  # Max concurrent Chrome instances
+  use_parallel: ${SCITEX_SCHOLAR_PDF_USE_PARALLEL:-true}  # Enable parallel downloads
+  delay_between_starts: 5  # Seconds between starting workers
+  default_delay: 10  # Default delay between downloads
+  retry_attempts: 3
+  timeout: 60  # Seconds per download attempt
+
+# ----------------------------------------
 # cache
 # ----------------------------------------
 use_cache_search: true
