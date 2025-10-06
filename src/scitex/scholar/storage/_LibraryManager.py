@@ -15,10 +15,14 @@ import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from collections import OrderedDict
+import copy
 
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.utils import TextNormalizer
+from scitex.scholar.storage._DeduplicationManager import DeduplicationManager
+from scitex.scholar.engines.utils import standardize_metadata, BASE_STRUCTURE
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +42,126 @@ class LibraryManager:
         self.library_master_dir = self.config.get_library_dir() / "MASTER"
         self.single_doi_resolver = single_doi_resolver
         self._source_filename = "papers"
+        self.dedup_manager = DeduplicationManager(config=self.config)
+
+    def _dotdict_to_dict(self, obj):
+        """Recursively convert DotDict to plain dict for JSON serialization."""
+        from scitex.dict import DotDict
+
+        if isinstance(obj, DotDict):
+            return {k: self._dotdict_to_dict(v) for k, v in obj._data.items()}
+        elif isinstance(obj, dict):
+            return {k: self._dotdict_to_dict(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._dotdict_to_dict(item) for item in obj]
+        else:
+            return obj
+
+    def _add_engine_to_list(self, engines_list: list, source: str) -> None:
+        """Helper to add source to engines list if not already present."""
+        if source and source not in engines_list:
+            engines_list.append(source)
+
+    def _convert_to_standardized_metadata(self, flat_metadata: Dict) -> OrderedDict:
+        """Convert flat metadata dict to standardized nested structure with _engines tracking."""
+        standardized = copy.deepcopy(BASE_STRUCTURE)
+
+        # Map flat fields to standardized structure
+        # ID section
+        if "doi" in flat_metadata:
+            standardized["id"]["doi"] = flat_metadata["doi"]
+            self._add_engine_to_list(standardized["id"]["doi_engines"], flat_metadata.get("doi_source"))
+        if "scitex_id" in flat_metadata:
+            standardized["id"]["scholar_id"] = flat_metadata["scitex_id"]
+
+        # Basic section
+        if "title" in flat_metadata:
+            standardized["basic"]["title"] = flat_metadata["title"]
+            self._add_engine_to_list(standardized["basic"]["title_engines"], flat_metadata.get("title_source"))
+        if "authors" in flat_metadata:
+            standardized["basic"]["authors"] = flat_metadata["authors"]
+            self._add_engine_to_list(standardized["basic"]["authors_engines"], flat_metadata.get("authors_source"))
+        if "year" in flat_metadata:
+            standardized["basic"]["year"] = flat_metadata["year"]
+            self._add_engine_to_list(standardized["basic"]["year_engines"], flat_metadata.get("year_source"))
+        if "abstract" in flat_metadata:
+            standardized["basic"]["abstract"] = flat_metadata["abstract"]
+            self._add_engine_to_list(standardized["basic"]["abstract_engines"], flat_metadata.get("abstract_source"))
+
+        # Citation count section
+        if "citation_count" in flat_metadata:
+            cc_value = flat_metadata["citation_count"]
+            # Handle both scalar (4) and dict ({"total": 4}) formats
+            if isinstance(cc_value, dict):
+                # If it's a dict, extract the total value
+                standardized["citation_count"]["total"] = cc_value.get("total")
+                self._add_engine_to_list(
+                    standardized["citation_count"]["total_engines"],
+                    cc_value.get("total_source")
+                )
+                # Copy yearly breakdowns if present
+                for year in ["2025", "2024", "2023", "2022", "2021", "2020",
+                            "2019", "2018", "2017", "2016", "2015"]:
+                    if year in cc_value:
+                        standardized["citation_count"][year] = cc_value[year]
+                        if f"{year}_source" in cc_value:
+                            self._add_engine_to_list(
+                                standardized["citation_count"][f"{year}_engines"],
+                                cc_value.get(f"{year}_source")
+                            )
+            else:
+                # If it's a scalar, just assign it to total
+                standardized["citation_count"]["total"] = cc_value
+                self._add_engine_to_list(
+                    standardized["citation_count"]["total_engines"],
+                    flat_metadata.get("citation_count_source")
+                )
+
+        # Publication section
+        if "journal" in flat_metadata:
+            standardized["publication"]["journal"] = flat_metadata["journal"]
+            self._add_engine_to_list(standardized["publication"]["journal_engines"], flat_metadata.get("journal_source"))
+        if "short_journal" in flat_metadata:
+            standardized["publication"]["short_journal"] = flat_metadata["short_journal"]
+        if "impact_factor" in flat_metadata:
+            standardized["publication"]["impact_factor"] = flat_metadata["impact_factor"]
+        if "issn" in flat_metadata:
+            standardized["publication"]["issn"] = flat_metadata["issn"]
+        if "volume" in flat_metadata:
+            standardized["publication"]["volume"] = flat_metadata["volume"]
+        if "issue" in flat_metadata:
+            standardized["publication"]["issue"] = flat_metadata["issue"]
+        if "pages" in flat_metadata:
+            # Split pages into first_page and last_page if needed
+            pages = flat_metadata["pages"]
+            if pages and "-" in str(pages):
+                first, last = str(pages).split("-", 1)
+                standardized["publication"]["first_page"] = first.strip()
+                standardized["publication"]["last_page"] = last.strip()
+        if "publisher" in flat_metadata:
+            standardized["publication"]["publisher"] = flat_metadata["publisher"]
+
+        # URL section
+        if "url_doi" in flat_metadata:
+            standardized["url"]["doi"] = flat_metadata["url_doi"]
+        if "url_publisher" in flat_metadata:
+            standardized["url"]["publisher"] = flat_metadata["url_publisher"]
+            self._add_engine_to_list(standardized["url"]["publisher_engines"], "ScholarURLFinder")
+        if "url_openurl_query" in flat_metadata:
+            standardized["url"]["openurl_query"] = flat_metadata["url_openurl_query"]
+        if "url_openurl_resolved" in flat_metadata:
+            standardized["url"]["openurl_resolved"] = flat_metadata["url_openurl_resolved"]
+            self._add_engine_to_list(standardized["url"]["openurl_resolved_engines"], "ScholarURLFinder")
+        if "urls_pdf" in flat_metadata:
+            standardized["url"]["pdfs"] = flat_metadata["urls_pdf"]
+            self._add_engine_to_list(standardized["url"]["pdfs_engines"], "ScholarURLFinder")
+
+        # Path section
+        if "pdf_path" in flat_metadata:
+            standardized["path"]["pdfs"] = [flat_metadata["pdf_path"]]
+            standardized["path"]["pdfs_engines"] = "ParallelPDFDownloader"
+
+        return standardized
 
     def _call_path_manager_get_storage_paths(self, paper_info: Dict, collection_name: str = "MASTER") -> Dict[str, Any]:
         """Helper to call PathManager's get_paper_storage_paths with proper parameters."""
@@ -190,21 +314,37 @@ class LibraryManager:
                 authors = metadata.get("authors")
                 paper_info["authors"] = authors or []
 
-        # Call PathManager with individual parameters
-        storage_path, readable_name, paper_id = self.config.path_manager.get_paper_storage_paths(
-            doi=doi,
-            title=title,
-            authors=authors or [],
-            year=year,
-            journal=journal,
-            project="MASTER"
-        )
+        # Check for existing paper first (deduplication)
+        check_metadata = {
+            "doi": doi,
+            "title": title,
+            "authors": authors or [],
+            "year": year
+        }
+        existing_paper_dir = self.dedup_manager.check_for_existing_paper(check_metadata)
 
-        # Use provided library_id if available, otherwise use generated paper_id
-        if library_id:
-            paper_id = library_id
+        if existing_paper_dir:
+            logger.info(f"Found existing paper: {existing_paper_dir.name}")
+            # Update existing paper instead of creating new
+            master_storage_path = existing_paper_dir
+            paper_id = existing_paper_dir.name
+            readable_name = None  # Will be determined from existing symlinks
+        else:
+            # Call PathManager with individual parameters for new paper
+            storage_path, readable_name, paper_id = self.config.path_manager.get_paper_storage_paths(
+                doi=doi,
+                title=title,
+                authors=authors or [],
+                year=year,
+                journal=journal,
+                project="MASTER"
+            )
+            master_storage_path = storage_path
 
-        master_storage_path = storage_path
+            # Use provided library_id if available, otherwise use generated paper_id
+            if library_id:
+                paper_id = library_id
+
         master_metadata_file = master_storage_path / "metadata.json"
 
         existing_metadata = {}
@@ -294,42 +434,56 @@ class LibraryManager:
             "metadata_file": str(master_metadata_file),
         }
 
+        # Store plain dict version for JSON serialization
+        comprehensive_metadata_plain = self._dotdict_to_dict(comprehensive_metadata)
+
+        # Convert to standardized format before saving
+        standardized_metadata = self._convert_to_standardized_metadata(comprehensive_metadata_plain)
+
+        # Wrap with Paper container properties
+        final_structure = OrderedDict([
+            ("metadata", standardized_metadata),
+            ("container", OrderedDict([
+                ("scitex_id", comprehensive_metadata_plain.get("scitex_id")),
+                ("library_id", paper_id),
+                ("created_at", comprehensive_metadata_plain.get("created_at")),
+                ("created_by", comprehensive_metadata_plain.get("created_by")),
+                ("updated_at", comprehensive_metadata_plain.get("updated_at")),
+                ("projects", comprehensive_metadata_plain.get("projects", [])),
+                ("master_storage_path", str(master_storage_path)),
+                ("readable_name", readable_name),
+                ("metadata_file", str(master_metadata_file)),
+                ("pdf_downloaded_at", comprehensive_metadata_plain.get("pdf_downloaded_at")),
+                ("pdf_size_bytes", comprehensive_metadata_plain.get("pdf_size_bytes")),
+            ]))
+        ])
+
         with open(master_metadata_file, "w") as file_:
             json.dump(
-                comprehensive_metadata, file_, indent=2, ensure_ascii=False
+                final_structure, file_, indent=2, ensure_ascii=False
             )
 
         logger.info(f"Saved paper to master Scholar library: {paper_id}")
 
         # Create project symlink if project is specified and not MASTER
         if self.project and self.project not in ["master", "MASTER"]:
-            # Generate readable name with metrics
-            first_author = "Unknown"
-            if authors and len(authors) > 0:
-                author_parts = authors[0].split()
-                first_author = author_parts[-1] if len(author_parts) > 1 else author_parts[0]
-                first_author = "".join(c for c in first_author if c.isalnum() or c == "-")[:20]
+            try:
+                # Use centralized naming logic - use original comprehensive_metadata (not plain)
+                readable_name = self._generate_readable_name(
+                    comprehensive_metadata=comprehensive_metadata,
+                    master_storage_path=master_storage_path,
+                    authors=authors,
+                    year=year,
+                    journal=journal
+                )
 
-            year_str = f"{year:04d}" if year else "0000"
-
-            journal_clean = "Unknown"
-            if journal:
-                journal_clean = "".join(c for c in journal if c.isalnum() or c in " ").replace(" ", "")[:30]
-                if not journal_clean:
-                    journal_clean = "Unknown"
-
-            # Get citation count and impact factor from metadata
-            cc = comprehensive_metadata.get("citation_count", 0) or 0
-            if_val = comprehensive_metadata.get("journal_impact_factor", 0.0) or 0.0
-
-            # Format: CC000000-IF032-2016-Author-Journal
-            readable_name = f"CC{cc:06d}-IF{int(if_val):03d}-{year_str}-{first_author}-{journal_clean}"
-
-            self._create_project_symlink(
-                master_storage_path=master_storage_path,
-                project=self.project,
-                readable_name=readable_name
-            )
+                self._create_project_symlink(
+                    master_storage_path=master_storage_path,
+                    project=self.project,
+                    readable_name=readable_name
+                )
+            except Exception as exc_:
+                logger.error(f"Failed to create symlink for {paper_id}: {exc_}")
 
         return paper_id
 
@@ -671,15 +825,145 @@ class LibraryManager:
 
         return complete_metadata
 
+    def _generate_readable_name(
+        self,
+        comprehensive_metadata: Dict,
+        master_storage_path: Path,
+        authors: Optional[List[str]] = None,
+        year: Optional[int] = None,
+        journal: Optional[str] = None
+    ) -> str:
+        """Generate readable symlink name from metadata.
+
+        Single source of truth for symlink naming format.
+        """
+        # Extract author
+        first_author = "Unknown"
+        if authors and len(authors) > 0:
+            author_parts = authors[0].split()
+            first_author = author_parts[-1] if len(author_parts) > 1 else author_parts[0]
+            first_author = "".join(c for c in first_author if c.isalnum() or c == "-")[:20]
+
+        # Format year (handle DotDict and other non-int types)
+        from scitex.dict import DotDict
+        if isinstance(year, DotDict):
+            # Extract value if it's a DotDict
+            year = None  # Can't extract year from DotDict structure, use Unknown
+
+        # Convert to int if it's a string representation
+        if isinstance(year, str) and year.isdigit():
+            year = int(year)
+
+        # Only use year if it's actually an int
+        if isinstance(year, int):
+            year_str = f"{year:04d}"
+        else:
+            year_str = "0000"
+
+        # Clean journal name (replace spaces with hyphens)
+        journal_clean = "Unknown"
+        if journal:
+            # Keep alphanumeric and spaces, then replace spaces with hyphens
+            journal_clean = "".join(c for c in journal if c.isalnum() or c in " ").replace(" ", "-")[:30]
+            if not journal_clean:
+                journal_clean = "Unknown"
+
+        # Get citation count and impact factor (handle both flat and nested formats)
+        # Check if this is the nested structure from file (has "metadata" key)
+        if "metadata" in comprehensive_metadata:
+            # Nested structure from file
+            metadata_section = comprehensive_metadata.get("metadata", {})
+
+            # Extract citation count from nested structure
+            cc_val = metadata_section.get("citation_count", {})
+            if isinstance(cc_val, dict):
+                cc = cc_val.get("total", 0) or 0
+            else:
+                cc = cc_val or 0
+
+            # Extract impact factor from nested structure
+            publication_section = metadata_section.get("publication", {})
+            if_val = publication_section.get("impact_factor", 0.0) or 0.0
+
+        else:
+            # Flat structure (during initial save)
+            cc_val = comprehensive_metadata.get("citation_count", 0)
+            if isinstance(cc_val, dict):
+                cc = cc_val.get("total", 0) or 0
+            else:
+                cc = cc_val or 0
+
+            # Try multiple paths for impact_factor
+            if_val = (
+                comprehensive_metadata.get("journal_impact_factor")
+                or comprehensive_metadata.get("impact_factor")
+                or comprehensive_metadata.get("publication", {}).get("impact_factor")
+            )
+            if isinstance(if_val, dict):
+                if_val = if_val.get("value", 0.0) or 0.0
+            else:
+                if_val = if_val or 0.0
+
+        # Check PDF status with more granular states
+        pdf_files = list(master_storage_path.glob("*.pdf"))
+        screenshot_dir = master_storage_path / "screenshots"
+        has_screenshots = screenshot_dir.exists() and any(screenshot_dir.iterdir())
+        downloading_marker = master_storage_path / ".downloading"
+
+        if downloading_marker.exists():
+            # Download in progress
+            pdf_status_letter = "r"
+        elif pdf_files:
+            # Has PDF = Successful
+            pdf_status_letter = "s"
+        elif has_screenshots:
+            # Has screenshots but no PDF = Failed (attempted but failed)
+            pdf_status_letter = "f"
+        else:
+            # No PDF, no screenshots = Pending (not attempted yet)
+            pdf_status_letter = "p"
+
+        # Format: CC_000000-PDF_s-IF_032-2016-Author-Journal
+        # PDF status: r=running, s=successful, f=failed, p=pending
+        readable_name = f"CC_{cc:06d}-PDF_{pdf_status_letter}-IF_{int(if_val):03d}-{year_str}-{first_author}-{journal_clean}"
+
+        return readable_name
+
     def _create_project_symlink(
         self, master_storage_path: Path, project: str, readable_name: str
     ) -> Optional[Path]:
-        """Create symlink in project directory pointing to master storage."""
+        """Create symlink in project directory pointing to master storage.
+
+        Removes old symlinks for the same paper with different statuses
+        (e.g., removes PDF_p when creating PDF_s).
+        """
 
         try:
             project_dir = self.config.path_manager.get_library_dir(project)
             symlink_path = project_dir / readable_name
 
+            # Extract the master ID from the target path to find old symlinks
+            master_id = master_storage_path.name
+
+            # Remove old symlinks pointing to the same master entry
+            # but with different statuses (PDF_p, PDF_f, PDF_s)
+            for existing_link in project_dir.iterdir():
+                if not existing_link.is_symlink():
+                    continue
+
+                # Check if this symlink points to the same master entry
+                try:
+                    target = existing_link.resolve()
+                    if target.name == master_id and existing_link.name != readable_name:
+                        # This is an old symlink for the same paper
+                        logger.debug(f"Removing old symlink: {existing_link.name}")
+                        existing_link.unlink()
+                except Exception as e:
+                    # Handle broken symlinks
+                    logger.debug(f"Skipping broken symlink {existing_link.name}: {e}")
+                    continue
+
+            # Create new symlink
             if not symlink_path.exists():
                 relative_path = os.path.relpath(
                     master_storage_path, project_dir
@@ -689,7 +973,7 @@ class LibraryManager:
                     f"Created project symlink: {symlink_path} -> {relative_path}"
                 )
             else:
-                logger.info(f"Project symlink already exists: {symlink_path}")
+                logger.debug(f"Project symlink already exists: {symlink_path}")
 
             return symlink_path
 

@@ -370,21 +370,30 @@ class ScholarBrowserManager(BrowserMixin):
                 return True
             else:
                 logger.debug(f"Starting Xvfb display :{self.display}")
+                # Kill any existing Xvfb on this display first
+                subprocess.run(["pkill", "-f", f"Xvfb.*:{self.display}"], capture_output=True)
+                time.sleep(0.5)
+
                 subprocess.Popen(
                     [
                         "Xvfb",
                         f":{self.display}",
                         "-screen",
                         "0",
-                        "1920x1080x24",
-                        "-ac",
+                        "1920x1080x24",  # 24-bit color depth for better rendering
+                        "-ac",  # Disable access control
                         "+extension",
-                        "GLX",
-                        "+render",
-                        "-noreset",
-                    ]
+                        "GLX",  # OpenGL support
+                        "+extension",
+                        "RANDR",  # Screen resize support
+                        "+render",  # Render extension for better graphics
+                        "-noreset",  # Don't reset after last client exits
+                        "-dpi",
+                        "96",  # Standard DPI
+                    ],
+                    env={**os.environ, "DISPLAY": f":{self.display}"}
                 )
-                time.sleep(2)
+                time.sleep(3)  # Give Xvfb more time to initialize properly
                 return self._verify_xvfb_running()
         except Exception as e:
             logger.error(f"Cannot verify Xvfb: {e}")

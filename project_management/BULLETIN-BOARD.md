@@ -297,4 +297,54 @@ mcp__playwright__browser_click(element="PMC link")
 3. Process remaining 70+ papers systematically
 4. Use MCP for all JavaScript-protected sources
 
+---
+
+## 🔧 FIXED ISSUE: Screenshot Capture During PDF Downloads
+
+**Fixed by:** Claude Code (Debugger Agent)
+**Date:** 2025-10-06
+**Priority:** HIGH
+
+### Issue Description
+Screenshots were not being saved during PDF download attempts, preventing debugging of download failures.
+
+### Root Cause Analysis
+1. **ParallelPDFDownloader was using the wrong class**: It was instantiating `ScholarPDFDownloader` instead of `ScholarPDFDownloaderWithScreenshots`
+2. **Method mismatch**: The download method was calling `download_from_url()` instead of `download_from_url_with_screenshots()`
+3. **Both parallel and sequential paths affected**: The parallel downloader (used by default) wasn't configured for screenshots
+
+### Solution Implemented
+1. **Updated ParallelPDFDownloader.py**:
+   - Added import for `ScholarPDFDownloaderWithScreenshots` with fallback
+   - Modified worker initialization to use screenshot-enabled downloader when available
+   - Updated `_download_single_pdf()` to call `download_from_url_with_screenshots()` method
+   - Added proper paper_id generation for screenshot directory structure
+
+2. **Enhanced logging**:
+   - Added detailed logging in `_capture_screenshot_async()` for debugging
+   - Success/error messages now include full path and file size information
+
+### Code Changes
+- **Files Modified**:
+  - `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ParallelPDFDownloader.py`
+  - `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshots.py`
+
+### Testing
+- Created test script: `/home/ywatanabe/proj/scitex_repo/.dev/test_screenshot_download.py`
+- Screenshots will now be saved to: `~/.scitex/scholar/library/MASTER/{PAPER_ID}/screenshots/`
+- Logs will be saved to: `~/.scitex/scholar/library/MASTER/{PAPER_ID}/logs/`
+
+### Configuration
+Screenshot capture is now enabled by default with:
+- `screenshot_interval`: 2.0 seconds between periodic captures
+- `capture_on_failure`: True (capture on download failures)
+- `capture_during_success`: False (skip on successful downloads)
+
+### Next Steps
+1. Run test script to verify screenshot capture
+2. Monitor screenshot directories during next batch download
+3. Review captured screenshots to identify common failure patterns
+
+---
+
 <!-- EOF -->

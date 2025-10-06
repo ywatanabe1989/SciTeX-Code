@@ -24,6 +24,21 @@ class BibTeXHandler:
         self.project = project
         self.config = config
 
+    def _extract_primitive(self, value):
+        """Extract primitive value from DotDict or nested structure."""
+        from scitex.dict import DotDict
+
+        if value is None:
+            return None
+        if isinstance(value, DotDict):
+            # Convert DotDict to plain dict first
+            value = dict(value)
+        if isinstance(value, dict):
+            # For nested dict structures, return as-is
+            return value
+        # Return primitive types as-is
+        return value
+
     def papers_from_bibtex(
         self, bibtex_input: Union[str, Path]
     ) -> List["Paper"]:
@@ -114,9 +129,13 @@ class BibTeXHandler:
 
         basic_data = {
             "title": title,
+            "title_source": "input",
             "authors": authors,
+            "authors_source": "input" if authors else None,
             "abstract": fields.get("abstract", ""),
+            "abstract_source": "input" if fields.get("abstract") else None,
             "year": int(fields.get("year")) if fields.get("year") else None,
+            "year_source": "input" if fields.get("year") else None,
             "keywords": (
                 fields.get("keywords", "").split(", ")
                 if fields.get("keywords")
@@ -126,20 +145,37 @@ class BibTeXHandler:
 
         id_data = {
             "doi": fields.get("doi"),
+            "doi_source": "input" if fields.get("doi") else None,
             "pmid": fields.get("pmid"),
+            "pmid_source": "input" if fields.get("pmid") else None,
             "arxiv_id": fields.get("eprint"),
+            "arxiv_id_source": "input" if fields.get("eprint") else None,
         }
 
         publication_data = {
             "journal": fields.get("journal"),
+            "journal_source": "input" if fields.get("journal") else None,
         }
 
         # Parse citation count
         citation_count_data = None
         if "citation_count" in fields:
             try:
-                citation_count_data = {"total": int(fields["citation_count"])}
-            except (ValueError, TypeError):
+                # Try parsing as JSON first (for enriched BibTeX files)
+                import json
+                cc_raw = fields["citation_count"]
+                if isinstance(cc_raw, str) and cc_raw.strip().startswith("{"):
+                    citation_count_data = json.loads(cc_raw)
+                    # Add source if not present
+                    if "total_source" not in citation_count_data:
+                        citation_count_data["total_source"] = "input"
+                else:
+                    # Simple integer format
+                    citation_count_data = {
+                        "total": int(cc_raw),
+                        "total_source": "input"
+                    }
+            except (ValueError, TypeError, json.JSONDecodeError):
                 pass
 
         url_data = {
@@ -162,13 +198,14 @@ class BibTeXHandler:
         # Handle journal_impact_factor separately since paper_from_structured doesn't support it
         if "journal_impact_factor" in fields:
             try:
-                paper.journal_impact_factor = float(fields["journal_impact_factor"])
+                paper.publication.impact_factor = float(fields["journal_impact_factor"])
             except (ValueError, TypeError):
                 pass
 
-        paper._original_bibtex_fields = fields.copy()
-        paper._bibtex_entry_type = entry.get("entry_type", "misc")
-        paper._bibtex_key = entry.get("key", "")
+        # Set BibTeX metadata as special fields
+        paper["_original_bibtex_fields"] = fields.copy()
+        paper["_bibtex_entry_type"] = entry.get("entry_type", "misc")
+        paper["_bibtex_key"] = entry.get("key", "")
 
         self._handle_enriched_metadata(paper, fields)
 
@@ -181,7 +218,7 @@ class BibTeXHandler:
         if "citation_count" in fields:
             try:
                 paper.citation_count.total = int(fields["citation_count"])
-                paper.citation_count.source = fields.get(
+                paper.citation_count.total_engines = fields.get(
                     "citation_count_source", "bibtex"
                 )
             except (ValueError, AttributeError):
@@ -191,7 +228,7 @@ class BibTeXHandler:
             if "impact_factor" in field_name and "JCR" in field_name:
                 try:
                     paper.publication.impact_factor = float(fields[field_name])
-                    paper.publication.impact_factor_source = fields.get(
+                    paper.publication.impact_factor_engines = fields.get(
                         "impact_factor_source", "bibtex"
                     )
                     break
@@ -201,7 +238,8 @@ class BibTeXHandler:
         for field_name in fields:
             if "quartile" in field_name and "JCR" in field_name:
                 try:
-                    paper.publication.journal_quartile = fields[field_name]
+                    # Store in system or publication section
+                    paper.publication["journal_quartile"] = fields[field_name]
                     break
                 except AttributeError:
                     pass
@@ -213,7 +251,14 @@ class BibTeXHandler:
                 pass
         if "pages" in fields:
             try:
-                paper.publication.pages = fields["pages"]
+                # Split pages into first_page and last_page
+                pages = fields["pages"]
+                if pages and "-" in str(pages):
+                    first, last = str(pages).split("-", 1)
+                    paper.publication.first_page = first.strip()
+                    paper.publication.last_page = last.strip()
+                else:
+                    paper.publication.first_page = pages
             except AttributeError:
                 pass
 
@@ -262,26 +307,25 @@ class BibTeXHandler:
         if paper.pages:
             fields["pages"] = paper.pages
 
-        # Metrics
-        if paper.citation_count is not None:
-            fields["citation_count"] = str(paper.citation_count)
-        if paper.journal_impact_factor is not None:
-            fields["journal_impact_factor"] = str(paper.journal_impact_factor)
+        # Metrics - handle both int and DotDict (backward compat returns .total)
+        citation_count_val = paper.citation_count
+        # Convert to int if it's a number, otherwise it's already an int via backward compat
+        if citation_count_val is not None and citation_count_val != 0:
+            if isinstance(citation_count_val, (int, float)):
+                fields["citation_count"] = str(int(citation_count_val))
+            elif citation_count_val:  # Non-zero, non-None
+                fields["citation_count"] = str(citation_count_val)
+
+        impact_factor_val = paper.journal_impact_factor
+        if impact_factor_val is not None:
+            if isinstance(impact_factor_val, (int, float)):
+                fields["journal_impact_factor"] = str(impact_factor_val)
+            elif impact_factor_val:
+                fields["journal_impact_factor"] = str(impact_factor_val)
 
         # URLs
         if paper.pdf_url:
-            fields["url"] = paper.pdf_url
-
-        # Enrichment metadata (if available)
-        if paper.citation_count and paper.citation_count > 0:
-            fields["citation_count"] = str(paper.citation_count)
-            if hasattr(paper, "citation_count_source"):
-                fields["citation_count_source"] = paper.citation_count_source
-
-        if hasattr(paper, "journal_impact_factor") and paper.journal_impact_factor:
-            fields["journal_impact_factor"] = str(paper.journal_impact_factor)
-            if hasattr(paper, "journal_impact_factor_source"):
-                fields["journal_impact_factor_source"] = paper.journal_impact_factor_source
+            fields["url"] = paper.pdf_url if isinstance(paper.pdf_url, str) else str(paper.pdf_url)
 
         # Include original BibTeX fields if they exist
         if hasattr(paper, "_original_bibtex_fields"):
@@ -571,9 +615,35 @@ class BibTeXHandler:
             merged.url = donor.url
 
         # Take maximum citation count
-        if donor.citation_count:
-            if not merged.citation_count or donor.citation_count > merged.citation_count:
-                merged.citation_count = donor.citation_count
+        # Extract actual integer value, handling various structures
+        def get_citation_count_value(cc):
+            """Extract integer from citation_count (may be int, dict, or DotDict)."""
+            if cc is None:
+                return None
+            # Handle dict/DotDict structures
+            if isinstance(cc, (dict, )):
+                # Try common keys
+                for key in ['value', 'count', 'total', 'citations']:
+                    if key in cc:
+                        val = cc[key]
+                        if val is not None:
+                            try:
+                                return int(val)
+                            except (ValueError, TypeError):
+                                pass
+                return None
+            # Try direct conversion for primitives
+            try:
+                return int(cc)
+            except (ValueError, TypeError):
+                return None
+
+        donor_cc = get_citation_count_value(donor.citation_count) if donor.citation_count else None
+        merged_cc = get_citation_count_value(merged.citation_count) if merged.citation_count else None
+
+        if donor_cc is not None:
+            if merged_cc is None or donor_cc > merged_cc:
+                merged.citation_count = donor_cc
 
         # Merge authors (union, preserving order)
         if donor.authors and not merged.authors:

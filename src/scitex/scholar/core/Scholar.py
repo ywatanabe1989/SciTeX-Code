@@ -262,7 +262,7 @@ class Scholar:
 
         # Add impact_factor module to path if needed
         impact_factor_path = (
-            Path(__file__).parent.parent / "externals/impact_factor/src"
+            Path(__file__).parent.parent / "externals/impact_factor_calculator/src"
         )
         if (
             impact_factor_path.exists()
@@ -395,11 +395,13 @@ class Scholar:
             ].get("total")
             if count:
                 # Always take the maximum citation count
+                # Note: citation_count is now a DotDict, access .total
+                current_count = enriched.citation_count if isinstance(enriched.citation_count, int) else (enriched.citation_count.total if hasattr(enriched.citation_count, 'total') else 0)
                 if (
-                    not enriched.citation_count
-                    or count > enriched.citation_count
+                    not current_count
+                    or count > current_count
                 ):
-                    enriched.citation_count = count
+                    enriched.citation_count = count  # This will set citation_count.total via backward compat
             # Note: influential_citation_count is in results but not in Paper dataclass
 
         # URL metadata
@@ -485,8 +487,8 @@ class Scholar:
                     paper_data = {"doi": doi}
 
                     # Check if paper already exists in library
-                    import hashlib
-                    paper_id = hashlib.md5(doi.encode()).hexdigest()[:8].upper()
+                    # Use PathManager for consistent ID generation
+                    paper_id = self.config.path_manager._generate_paper_id(doi=doi)
                     library_dir = self.config.get_library_dir()
                     metadata_file = library_dir / "MASTER" / paper_id / "metadata.json"
 
@@ -501,8 +503,12 @@ class Scholar:
                     logger.debug(f"Could not load metadata for {doi}: {e}")
                     papers_with_metadata.append({"doi": doi})
 
-            # Initialize parallel downloader
-            parallel_downloader = ParallelPDFDownloader(config=self.config, use_parallel=True)
+            # Initialize parallel downloader with auth_manager
+            parallel_downloader = ParallelPDFDownloader(
+                config=self.config,
+                auth_manager=self._auth_manager,
+                use_parallel=True
+            )
 
             # Download in parallel
             results = await parallel_downloader.download_batch(
@@ -519,9 +525,16 @@ class Scholar:
     async def _download_pdfs_sequential(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
-        """Sequential PDF download (original implementation)."""
+        """Sequential PDF download with screenshot documentation."""
         from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
-        from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
+
+        # Try to use enhanced downloader with screenshots
+        try:
+            from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import ScholarPDFDownloaderWithScreenshots
+            use_screenshots = True
+        except ImportError:
+            from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
+            use_screenshots = False
 
         results = {"downloaded": 0, "failed": 0, "errors": 0}
 
@@ -536,11 +549,23 @@ class Scholar:
             config=self.config,
             use_cache=True
         )
-        pdf_downloader = ScholarPDFDownloader(
-            context=context,
-            config=self.config,
-            use_cache=True
-        )
+
+        # Use screenshot-enabled downloader if available
+        if use_screenshots:
+            pdf_downloader = ScholarPDFDownloaderWithScreenshots(
+                context=context,
+                config=self.config,
+                use_cache=True,
+                screenshot_interval=3.0,
+                capture_on_failure=True,
+                capture_during_success=True  # Always capture for documentation
+            )
+        else:
+            pdf_downloader = ScholarPDFDownloader(
+                context=context,
+                config=self.config,
+                use_cache=True
+            )
 
         # Get library paths
         import json
@@ -581,11 +606,25 @@ class Scholar:
                     # Download to temp location first
                     temp_output = Path("/tmp") / f"{doi.replace('/', '_').replace(':', '_')}.pdf"
 
-                    # Try to download
-                    result = await pdf_downloader.download_from_url(
-                        pdf_url=pdf_url,
-                        output_path=temp_output
-                    )
+                    # Try to download with screenshots if available
+                    if use_screenshots and hasattr(pdf_downloader, 'download_from_url_with_screenshots'):
+                        # Generate paper ID for screenshot storage using PathManager
+                        paper_id = self.config.path_manager._generate_paper_id(doi=doi)
+                        result, screenshots = await pdf_downloader.download_from_url_with_screenshots(
+                            pdf_url=pdf_url,
+                            output_path=temp_output,
+                            doi=doi,
+                            paper_id=paper_id,
+                            retry_with_screenshots=True
+                        )
+                        if screenshots:
+                            logger.debug(f"Captured {len(screenshots)} screenshots for {doi}")
+                    else:
+                        # Regular download without screenshots
+                        result = await pdf_downloader.download_from_url(
+                            pdf_url=pdf_url,
+                            output_path=temp_output
+                        )
 
                     if result and result.exists():
                         downloaded_path = result
@@ -594,8 +633,8 @@ class Scholar:
                 if downloaded_path:
                     # Step 4: Store PDF in MASTER library with proper organization
 
-                    # Generate unique ID from DOI
-                    paper_id = hashlib.md5(doi.encode()).hexdigest()[:8].upper()
+                    # Generate unique ID from DOI using PathManager
+                    paper_id = self.config.path_manager._generate_paper_id(doi=doi)
 
                     # Create MASTER storage directory
                     storage_path = master_dir / paper_id

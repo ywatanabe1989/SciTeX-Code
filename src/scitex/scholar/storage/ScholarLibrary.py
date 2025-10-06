@@ -41,6 +41,21 @@ class ScholarLibrary:
         """Load paper metadata from library."""
         return self._cache_manager.load_paper_metadata(library_id)
 
+    def _extract_primitive(self, value):
+        """Extract primitive value from DotDict or nested structure."""
+        from scitex.dict import DotDict
+
+        if value is None:
+            return None
+        if isinstance(value, DotDict):
+            # Convert DotDict to plain dict first
+            value = dict(value)
+        if isinstance(value, dict):
+            # For nested dict structures, return as-is (will be handled by save_resolved_paper)
+            return value
+        # Return primitive types as-is
+        return value
+
     def save_paper(self, paper: "Paper", force: bool = False) -> str:
         """Save paper to library with explicit parameters."""
         # Extract all available fields from paper object
@@ -48,32 +63,33 @@ class ScholarLibrary:
 
         return self._library_manager.save_resolved_paper(
             # Required fields
-            title=getattr(paper, 'title', paper_dict.get('title', '')),
-            doi=getattr(paper, 'doi', paper_dict.get('doi', '')),
+            title=self._extract_primitive(getattr(paper, 'title', paper_dict.get('title', ''))),
+            doi=self._extract_primitive(getattr(paper, 'doi', paper_dict.get('doi', ''))),
 
             # Optional bibliographic fields
-            year=getattr(paper, 'year', paper_dict.get('year')),
-            authors=getattr(paper, 'authors', paper_dict.get('authors')),
-            journal=getattr(paper, 'journal', paper_dict.get('journal')),
-            abstract=getattr(paper, 'abstract', paper_dict.get('abstract')),
+            year=self._extract_primitive(getattr(paper, 'year', paper_dict.get('year'))),
+            authors=self._extract_primitive(getattr(paper, 'authors', paper_dict.get('authors'))),
+            journal=self._extract_primitive(getattr(paper, 'journal', paper_dict.get('journal'))),
+            abstract=self._extract_primitive(getattr(paper, 'abstract', paper_dict.get('abstract'))),
 
             # Additional bibliographic fields
-            volume=getattr(paper, 'volume', paper_dict.get('volume')),
-            issue=getattr(paper, 'issue', paper_dict.get('issue')),
-            pages=getattr(paper, 'pages', paper_dict.get('pages')),
-            publisher=getattr(paper, 'publisher', paper_dict.get('publisher')),
-            issn=getattr(paper, 'issn', paper_dict.get('issn')),
+            volume=self._extract_primitive(getattr(paper, 'volume', paper_dict.get('volume'))),
+            issue=self._extract_primitive(getattr(paper, 'issue', paper_dict.get('issue'))),
+            pages=self._extract_primitive(getattr(paper, 'pages', paper_dict.get('pages'))),
+            publisher=self._extract_primitive(getattr(paper, 'publisher', paper_dict.get('publisher'))),
+            issn=self._extract_primitive(getattr(paper, 'issn', paper_dict.get('issn'))),
 
             # Enrichment fields
-            citation_count=getattr(paper, 'citation_count', paper_dict.get('citation_count')),
+            citation_count=self._extract_primitive(getattr(paper, 'citation_count', paper_dict.get('citation_count'))),
+            impact_factor=self._extract_primitive(getattr(paper, 'journal_impact_factor', paper_dict.get('journal_impact_factor'))),
 
             # Source tracking
-            doi_source=getattr(paper, 'doi_source', paper_dict.get('doi_source')),
-            title_source=getattr(paper, 'title_source', paper_dict.get('title_source')),
-            abstract_source=getattr(paper, 'abstract_source', paper_dict.get('abstract_source')),
+            doi_source=self._extract_primitive(getattr(paper, 'doi_source', paper_dict.get('doi_source'))),
+            title_source=self._extract_primitive(getattr(paper, 'title_source', paper_dict.get('title_source'))),
+            abstract_source=self._extract_primitive(getattr(paper, 'abstract_source', paper_dict.get('abstract_source'))),
 
             # Library management
-            library_id=getattr(paper, 'library_id', paper_dict.get('library_id')),
+            library_id=self._extract_primitive(getattr(paper, 'library_id', paper_dict.get('library_id'))),
             project=self.project,
         )
 

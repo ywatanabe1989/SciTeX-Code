@@ -151,9 +151,9 @@ def main():
 
             # Create paper object
             if args.doi:
-                paper = Paper(title=args.title or "Unknown", doi=args.doi)
+                paper = Paper({"title": args.title or "Unknown", "doi": args.doi})
             else:
-                paper = Paper(title=args.title or "Unknown", url=args.url)
+                paper = Paper({"title": args.title or "Unknown", "url": args.url})
 
             print(f"\n🎯 SciTeX Scholar - Paywalled PDF Downloader")
             print(f"📄 Paper: {paper.title}")

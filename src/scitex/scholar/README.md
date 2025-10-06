@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-06 12:36:01
+!-- Timestamp: 2025-10-07 02:37:01
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -71,30 +71,30 @@ python -m scitex.scholar --bibtex papers.bib --project myresearch --enrich --dow
 # Navigate to scholar directory
 cd /home/ywatanabe/proj/scitex_repo/src/scitex/scholar
 
-# Step 1: Enrich the neurovista BibTeX file (project created automatically)
+# Step 1: Enrich the neurovista BibTeX file
 python -m scitex.scholar \
     --bibtex data/neurovista.bib \
-    --enrich \
     --output data/neurovista_enriched.bib \
-    --project neurovista
+    --project neurovista \
+    --enrich
 
-# Step 2: Download all PDFs (stored in MASTER with project symlinks)
+# Step 2: Create project directory, and download all PDFs
 python -m scitex.scholar \
     --bibtex data/neurovista_enriched.bib \
     --project neurovista \
     --download
 
-# Step 3: Check what was downloaded
+# Step 2: Check what was downloaded
 python -m scitex.scholar --project neurovista --list
 
-# Step 4: Export high-impact papers only
+# Step 3: Export high-impact papers only
 python -m scitex.scholar \
     --project neurovista \
     --min-citations 100 \
     --min-impact-factor 10.0 \
     --export data/neurovista_high_impact.bib
 
-# Step 5: View library statistics
+# Step 4: View library statistics
 python -m scitex.scholar --stats
 ```
 

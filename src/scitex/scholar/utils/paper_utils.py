@@ -84,9 +84,12 @@ def paper_from_structured(
             'publisher': publication.get('publisher'),
         })
 
-    # Process citation count
-    if citation_count:
-        paper_data['citation_count'] = citation_count.get('total')
+    # Process citation count (handle both dict and scalar)
+    if citation_count is not None:
+        if isinstance(citation_count, dict):
+            paper_data['citation_count'] = citation_count.get('total')
+        else:
+            paper_data['citation_count'] = citation_count
 
     # Process URL data
     if url:
@@ -99,7 +102,8 @@ def paper_from_structured(
     # Remove None values to use dataclass defaults
     paper_data = {k: v for k, v in paper_data.items() if v is not None}
 
-    return Paper(**paper_data)
+    # Paper is now DotDict-based, pass dict not kwargs
+    return Paper(paper_data)
 
 
 def paper_from_bibtex_entry(entry: Dict[str, Any]) -> "Paper":
