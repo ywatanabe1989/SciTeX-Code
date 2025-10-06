@@ -4,16 +4,18 @@
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/_subplots/_export_as_csv_formatters/_format_scatter.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_export_as_csv_formatters/_format_scatter.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import pandas as pd
 
 def _format_scatter(id, tracked_dict, kwargs):
-    """Format data from a scatter call."""
+    """Format data from a scatter call (matplotlib ax.scatter or seaborn scatter).
+
+    Note: For plot_scatter (wrapper method), use _format_plot_scatter instead.
+    This formatter expects data in args format: tracked_dict['args'] = (x, y).
+    """
     # Check if tracked_dict is empty or not a dictionary
     if not tracked_dict or not isinstance(tracked_dict, dict):
         return pd.DataFrame()

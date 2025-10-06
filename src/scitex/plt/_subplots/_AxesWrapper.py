@@ -4,9 +4,7 @@
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/_subplots/_AxesWrapper.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_AxesWrapper.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

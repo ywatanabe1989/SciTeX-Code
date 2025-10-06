@@ -4,9 +4,7 @@
 # File: ./src/scitex/io/_save_modules/_bibtex.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/_save_modules/_bibtex.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

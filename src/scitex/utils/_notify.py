@@ -4,9 +4,7 @@
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/utils/_notify.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/utils/_notify.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2024-11-24 17:54:38 (ywatanabe)"

@@ -10,7 +10,7 @@ The AI module is organized into several submodules:
 
 - **`genai`** - Generative AI integration with multiple providers (OpenAI, Anthropic, Google, etc.)
 - **`training`** - Training utilities (EarlyStopping, LearningCurveLogger)
-- **`classification`** - Classification tools (ClassificationReporter, ClassifierServer)
+- **`classification`** - Classification tools (ClassificationReporter, Classifier)
 
 ### Neural Network Components
 

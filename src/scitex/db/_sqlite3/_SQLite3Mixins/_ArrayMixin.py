@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-16 15:40:38 (ywatanabe)"
+# Timestamp: "2025-10-02 05:56:30 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_ArrayMixin.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/db/_sqlite3/_SQLite3Mixins/_ArrayMixin.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -166,13 +164,6 @@ class _ArrayMixin:
             self.execute(query, tuple(all_values))
 
             if verbose:
-                # from scitex.str import printc
-
-                # printc(
-                #     f"Saved {len(data)} arrays to `{table_name}` table "
-                #     f"in `{self.db_path}`",
-                #     c="green",
-                # )
                 logger.success(
                     f"Saved {len(data)} arrays to `{table_name}` table "
                     f"in `{self.db_path}`"

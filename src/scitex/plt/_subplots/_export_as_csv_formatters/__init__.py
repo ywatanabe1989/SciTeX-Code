@@ -4,9 +4,7 @@
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/_subplots/_export_as_csv_formatters/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_export_as_csv_formatters/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -43,6 +41,7 @@ from ._format_plot_mean_std import _format_plot_mean_std
 from ._format_plot_median_iqr import _format_plot_median_iqr
 from ._format_plot_raster import _format_plot_raster
 from ._format_plot_rectangle import _format_plot_rectangle
+from ._format_plot_scatter import _format_plot_scatter
 from ._format_plot_scatter_hist import _format_plot_scatter_hist
 from ._format_plot_shaded_line import _format_plot_shaded_line
 from ._format_plot_violin import _format_plot_violin

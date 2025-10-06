@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-06 11:00:00
+!-- Timestamp: 2025-10-06 11:24:56
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/README.md
 !-- --- -->
@@ -363,14 +363,14 @@ graph LR
 
 ## Citation
 
-If you use SciTeX Scholar in your research, please cite:
+If you use SciTeX in your research, please cite:
 
 ```bibtex
-@software{scitex_scholar,
-  title = {SciTeX Scholar: Unified Scientific Literature Management System},
+@software{scitex,
+  title = {SciTeX: A Python Toolbox for Scientific Research},
   author = {Yusuke Watanabe},
   year = {2025},
-  url = {https://github.com/ywatanabe1989/SciTeX-Code/tree/main/src/scitex/scholar}
+  url = {https://github.com/ywatanabe1989/SciTeX-Code}
 }
 ```
 

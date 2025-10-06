@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """Classification utilities with unified API."""
 
-# Import the unified reporter - the only public API
-from .reporters import ClassificationReporter
+# Import reporters
+from .reporters import ClassificationReporter, SingleTaskClassificationReporter
 
 # Import other existing modules
-from ._ClassifierServer import ClassifierServer
-from .cross_validation import CrossValidationExperiment, quick_experiment
+from .Classifier import Classifier
+from .CrossValidationExperiment import CrossValidationExperiment, quick_experiment
 
 # Import time series module
-from . import time_series
+from . import timeseries
 
 # Import time series CV utilities from submodule
-from .time_series import (
+from .timeseries import (
     TimeSeriesStratifiedSplit,
     TimeSeriesBlockingSplit,
     TimeSeriesSlidingWindowSplit,
@@ -25,17 +25,18 @@ from .time_series import (
 CVExperiment = CrossValidationExperiment
 
 __all__ = [
-    # Main reporter (unified API)
+    # Reporters
     "ClassificationReporter",
+    "SingleTaskClassificationReporter",
     # Classifier management
-    "ClassifierServer",
+    "Classifier",
     # Cross-validation
     "CrossValidationExperiment",
     "CVExperiment",  # Alias
     "quick_experiment",
     # Time series module
-    "time_series",
-    # Time series CV splitters (re-exported from time_series module)
+    "timeseries",
+    # Time series CV splitters (re-exported from timeseries module)
     "TimeSeriesStratifiedSplit",
     "TimeSeriesBlockingSplit",
     "TimeSeriesSlidingWindowSplit",

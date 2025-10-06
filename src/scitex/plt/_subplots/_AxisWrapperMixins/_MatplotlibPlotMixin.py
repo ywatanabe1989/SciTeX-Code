@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-05-18 17:51:44 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py
 # ----------------------------------------
 import os
 
-__FILE__ = "./src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py"
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -892,5 +892,155 @@ class MatplotlibPlotMixin:
         self._track(track, id, method_name, tracked_dict, None)
 
         return self._axis_mpl, plot_df
+
+    # Standard matplotlib plot methods with plot_ prefix
+    def plot_bar(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib bar plot with tracking support."""
+        method_name = "plot_bar"
+
+        with self._no_tracking():
+            result = self._axis_mpl.bar(*args, **kwargs)
+
+        # Track bar data
+        if len(args) >= 2:
+            tracked_dict = {"bar_df": pd.DataFrame({"x": args[0], "height": args[1]})}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_barh(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib horizontal bar plot with tracking support."""
+        method_name = "plot_barh"
+
+        with self._no_tracking():
+            result = self._axis_mpl.barh(*args, **kwargs)
+
+        # Track bar data
+        if len(args) >= 2:
+            tracked_dict = {"barh_df": pd.DataFrame({"y": args[0], "width": args[1]})}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_scatter(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib scatter plot with tracking support."""
+        method_name = "plot_scatter"
+
+        with self._no_tracking():
+            result = self._axis_mpl.scatter(*args, **kwargs)
+
+        # Track scatter data
+        if len(args) >= 2:
+            tracked_dict = {"scatter_df": pd.DataFrame({"x": args[0], "y": args[1]})}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_errorbar(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib errorbar plot with tracking support."""
+        method_name = "plot_errorbar"
+
+        with self._no_tracking():
+            result = self._axis_mpl.errorbar(*args, **kwargs)
+
+        # Track errorbar data
+        if len(args) >= 2:
+            df_dict = {"x": args[0], "y": args[1]}
+            if "yerr" in kwargs:
+                df_dict["yerr"] = kwargs["yerr"]
+            if "xerr" in kwargs:
+                df_dict["xerr"] = kwargs["xerr"]
+            tracked_dict = {"errorbar_df": pd.DataFrame(df_dict)}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_fill_between(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib fill_between with tracking support."""
+        method_name = "plot_fill_between"
+
+        with self._no_tracking():
+            result = self._axis_mpl.fill_between(*args, **kwargs)
+
+        # Track fill_between data
+        if len(args) >= 3:
+            tracked_dict = {"fill_between_df": pd.DataFrame({
+                "x": args[0],
+                "y1": args[1],
+                "y2": args[2] if len(args) > 2 else 0
+            })}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_contour(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib contour plot with tracking support."""
+        method_name = "plot_contour"
+
+        with self._no_tracking():
+            result = self._axis_mpl.contour(*args, **kwargs)
+
+        # Track contour data
+        if len(args) >= 3:
+            # Flatten 2D arrays for CSV export
+            X, Y, Z = args[0], args[1], args[2]
+            tracked_dict = {"contour_df": pd.DataFrame({
+                "X": np.ravel(X),
+                "Y": np.ravel(Y),
+                "Z": np.ravel(Z)
+            })}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_imshow(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib imshow with tracking support."""
+        method_name = "plot_imshow"
+
+        with self._no_tracking():
+            result = self._axis_mpl.imshow(*args, **kwargs)
+
+        # Track image data
+        if len(args) >= 1:
+            tracked_dict = {"imshow_df": pd.DataFrame(args[0])}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_boxplot(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib boxplot with tracking support."""
+        method_name = "plot_boxplot"
+
+        with self._no_tracking():
+            result = self._axis_mpl.boxplot(*args, **kwargs)
+
+        # Track boxplot data
+        if len(args) >= 1:
+            data = args[0]
+            if isinstance(data, list):
+                tracked_dict = {"boxplot_df": pd.DataFrame(data)}
+            else:
+                tracked_dict = {"boxplot_df": pd.DataFrame({"data": data})}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
+
+    def plot_violinplot(self, *args, track: bool = True, id: Optional[str] = None, **kwargs):
+        """Wrapper for matplotlib violinplot with tracking support."""
+        method_name = "plot_violinplot"
+
+        with self._no_tracking():
+            result = self._axis_mpl.violinplot(*args, **kwargs)
+
+        # Track violin data
+        if len(args) >= 1:
+            data = args[0]
+            if isinstance(data, list):
+                tracked_dict = {"violinplot_df": pd.DataFrame(data)}
+            else:
+                tracked_dict = {"violinplot_df": pd.DataFrame({"data": data})}
+            self._track(track, id, method_name, tracked_dict, None)
+
+        return result
 
 # EOF

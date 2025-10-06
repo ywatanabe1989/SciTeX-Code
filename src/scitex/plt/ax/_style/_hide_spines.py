@@ -4,9 +4,7 @@
 # File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/.claude-worktree/scitex_repo/src/scitex/plt/ax/_style/_hide_spines.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/ax/_style/_hide_spines.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

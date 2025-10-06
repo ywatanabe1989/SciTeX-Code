@@ -4,9 +4,7 @@
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/src/scitex/plt/_subplots/_export_as_csv_formatters/_format_plot.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/_subplots/_export_as_csv_formatters/_format_plot.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -43,8 +41,22 @@ def _format_plot(id, tracked_dict, kwargs):
         if isinstance(args, tuple) and len(args) > 0:
             if len(args) == 1:
                 args_value = args[0]
+
+                # Convert to numpy for consistent handling
+                if hasattr(args_value, 'values'):  # pandas Series/DataFrame
+                    args_value = args_value.values
+                args_value = np.asarray(args_value)
+
+                # 2D array: extract x and y columns
                 if hasattr(args_value, 'ndim') and args_value.ndim == 2:
                     x, y = args_value[:, 0], args_value[:, 1]
+                    df = pd.DataFrame({f"{id}_plot_x": x, f"{id}_plot_y": y})
+                    return df
+
+                # 1D array: generate x from indices (common case: plot(y))
+                elif hasattr(args_value, 'ndim') and args_value.ndim == 1:
+                    x = np.arange(len(args_value))
+                    y = args_value
                     df = pd.DataFrame({f"{id}_plot_x": x, f"{id}_plot_y": y})
                     return df
 

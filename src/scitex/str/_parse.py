@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/str/_parse.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/str/_parse.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

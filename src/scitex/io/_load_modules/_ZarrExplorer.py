@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_ZarrExplorer.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/io/_ZarrExplorer.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

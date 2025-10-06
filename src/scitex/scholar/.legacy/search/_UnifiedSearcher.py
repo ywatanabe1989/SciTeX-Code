@@ -4,9 +4,7 @@
 # File: ./src/scitex/scholar/_search_unified.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/scholar/search/_UnifiedSearcher.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

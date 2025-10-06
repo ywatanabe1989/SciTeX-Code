@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 02:13:01 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporter_utils/storage.py
+# Timestamp: "2025-10-02 21:15:33 (ywatanabe)"
+# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/reporter_utils/storage.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ml/classification/reporter_utils/storage.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -15,6 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 Storage utilities for classification reporters.
 
 Enhanced version of storage utilities with:
+- Consistent use of stx.io.save for all file operations
 - Lazy directory creation
 - Numerical precision control
 - Better error handling
@@ -25,7 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 import numpy as np
-import pandas as pd
+from scitex.io import save as stx_io_save
 
 
 class MetricStorage:
@@ -75,10 +74,12 @@ class MetricStorage:
             return data
 
     def save(
-        self, data: Any, relative_path: Union[str, Path], verbose=True
+        self, data: Any, relative_path: Union[str, Path], verbose=True, **kwargs
     ) -> Path:
         """
         Save data with lazy directory creation and precision control.
+
+        Uses stx.io.save for all file operations to ensure consistency.
 
         Parameters
         ----------
@@ -86,102 +87,44 @@ class MetricStorage:
             Data to save
         relative_path : Union[str, Path]
             Path relative to base_dir
+        verbose : bool, optional
+            Print save confirmation
+        **kwargs : dict
+            Additional keyword arguments passed to stx.io.save (e.g., index=True for CSV)
 
         Returns
         -------
         Path
             Absolute path to saved file
         """
-        # Round numerical values
+        # Round numerical values for precision control
         data = self._round_numeric(data)
 
-        # Construct full path
-        full_path = self.base_dir / relative_path
+        # Construct full path and resolve to absolute
+        full_path = (self.base_dir / relative_path).resolve()
 
         # Create directory only when actually needed
         full_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Determine format from extension
-        extension = full_path.suffix.lower()
-
         try:
-            # Save based on extension
-            if extension == ".json":
-                self._save_json(data, full_path)
-            elif extension == ".csv":
-                self._save_csv(data, full_path)
-            elif extension in [".png", ".jpg", ".jpeg", ".pdf", ".svg"]:
-                self._save_figure(data, full_path)
-            elif extension in [".txt", ".md"]:
-                self._save_text(data, full_path)
-            else:
-                raise ValueError(f"Unsupported file extension: {extension}")
+            # Use stx.io.save for all file types (handles json, csv, figures, text, etc.)
+            # IMPORTANT: use_caller_path=False to avoid nested directory issues
+            # IMPORTANT: full_path must be absolute to prevent _out directory creation
+            stx_io_save(data, str(full_path), use_caller_path=False, **kwargs)
+
+            if verbose or self.verbose:
+                import scitex.logging as logging
+                logger = logging.getLogger(__name__)
+                logger.info(f"Saved to: {full_path}")
 
             return full_path.absolute()
 
         except Exception as e:
-            print(f"Warning: Failed to save {relative_path}: {e}")
+            import scitex.logging as logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to save {relative_path}: {e}")
             return full_path.absolute()
 
-    def _save_json(self, data: Any, path: Path, verbose: bool = True) -> None:
-        """Save data as JSON with proper formatting."""
-        # Ensure JSON serializable
-        if hasattr(data, "tolist"):  # numpy arrays
-            data = data.tolist()
-
-        from scitex.io import save as stx_io_save
-
-        stx_io_save(data, path)
-        # with open(path, "w") as f:
-        #     json.dump(data, f, indent=2, ensure_ascii=False)
-
-        # if verbose or self.verbose:
-        #     logger.info("Saved to: {str(path)}")
-
-    def _save_csv(self, data: Any, path: Path) -> None:
-        """Save data as CSV."""
-        from scitex.io import save as stx_io_save
-
-        stx_io_save(data, path)
-
-        # if isinstance(data, pd.DataFrame):
-        #     # data.to_csv(path, index=True)
-        #     stx_io_save(data, path)
-        # elif isinstance(data, dict):
-        #     # Convert dict to DataFrame
-        #     df = pd.DataFrame([data])
-        #     # df.to_csv(path, index=False)
-        #     stx_io_save(df, path)
-        # elif isinstance(data, np.ndarray):
-        #     # Save numpy array as CSV
-        #     if data.ndim == 2:
-        #         # pd.DataFrame(data).to_csv(path, index=False)
-        #         stx_io_save(pd.DataFrame(data), path)
-        #     else:
-        #         # pd.Series(data).to_csv(path, index=False)
-        #         stx_io_save(pd.Series(data), path)
-        # else:
-        #     # Try to convert to string representation
-        #     with open(path, "w") as f:
-        #         f.write(str(data))
-
-    def _save_figure(self, figure, path: Path) -> None:
-        """Save matplotlib figure."""
-        from scitex.io import save as stx_io_save
-
-        stx_io_save(figure, path)
-        # if hasattr(figure, "savefig"):
-        #     figure.savefig(path, dpi=300, bbox_inches="tight")
-        # else:
-        #     raise ValueError("Object is not a matplotlib figure")
-
-    def _save_text(self, data: Any, path: Path) -> None:
-        """Save data as text file."""
-        from scitex.io import save as stx_io_save
-
-        stx_io_save(data, path)
-        # with open(path, "w") as f:
-        #     f.write(str(data))
 
 
 def save_metric(
@@ -209,7 +152,8 @@ def save_metric(
     Path
         Path to saved file
     """
-    path = Path(path)
+    # Resolve to absolute path to prevent _out directory creation
+    path = Path(path).resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
 
     # Round numerical values recursively
@@ -236,14 +180,10 @@ def save_metric(
     if fold is not None:
         data["fold"] = fold
 
-    from scitex.io import save as stx_io_save
+    # IMPORTANT: use_caller_path=False and absolute path to avoid nested directory issues
+    stx_io_save(data, str(path), use_caller_path=False)
 
-    stx_io_save(data, path)
-    # Save as JSON
-    # with open(path, "w") as f:
-    #     json.dump(data, f, indent=2, ensure_ascii=False)
-
-    return path.absolute()
+    return path
 
 
 def create_directory_structure_lazy(

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 01:35:47 (ywatanabe)"
+# Timestamp: "2025-10-02 10:21:02 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/session/_lifecycle.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/session/_lifecycle.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -185,7 +183,7 @@ def _setup_matplotlib(
     Parameters
     ----------
     plt : module
-        Matplotlib.pyplot module
+        Matplotlib.pyplot module (will be replaced with scitex.plt)
     agg : bool
         Whether to use Agg backend
     **mpl_kwargs : dict
@@ -194,15 +192,19 @@ def _setup_matplotlib(
     Returns
     -------
     tuple
-        (plt, CC) - Configured pyplot module and color cycle
+        (plt, CC) - Configured scitex.plt module and color cycle
     """
     if plt is not None:
         plt.close("all")
-        plt, CC = configure_mpl(plt, **mpl_kwargs)
+        _, CC = configure_mpl(plt, **mpl_kwargs)
         CC["gray"] = CC["grey"]
         if agg:
             matplotlib.use("Agg")
-        return plt, CC
+
+        # Replace matplotlib.pyplot with scitex.plt to get wrapped functions
+        import scitex.plt as stx_plt
+
+        return stx_plt, CC
     return plt, None
 
 
@@ -229,7 +231,7 @@ def _simplify_relative_path(sdir: str) -> str:
     """
     base_path = _os.getcwd()
     relative_sdir = _os.path.relpath(sdir, base_path) if base_path else sdir
-    simplified_path = relative_sdir.replace("scripts/", "./").replace(
+    simplified_path = relative_sdir.replace("scripts/", "./scripts/").replace(
         "RUNNING/", ""
     )
     # Remove date-time pattern and random string

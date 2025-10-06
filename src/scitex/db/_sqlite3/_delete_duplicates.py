@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_delete_duplicates.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/db/_sqlite3/_delete_duplicates.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 # Time-stamp: "2024-11-11 14:16:58 (ywatanabe)"

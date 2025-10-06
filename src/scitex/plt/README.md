@@ -962,7 +962,7 @@ x = np.linspace(0, 10, 100)
 n_lines = 5
 
 # Act
-colors = scitex.plt.color.get_colors_from_cmap(n=n_lines, cmap='viridis')
+colors = scitex.plt.color.get_colors_from_conf_matap(n=n_lines, cmap='viridis')
 for i, color in enumerate(colors):
     y = np.sin(x + i * np.pi/4)
     ax.plot(x, y, color=color, label=f'Line {i+1}', linewidth=2, id=f'line_{i}')
@@ -1401,7 +1401,7 @@ scitex.plt.tpl(x, y)  # Creates ASCII plot in terminal
 - **`export_as_csv()`**, **`export_as_csv_for_sigmaplot()`**
 
 ### Color Utilities
-- **`scitex.plt.color.get_colors_from_cmap()`**, **`interpolate()`**, **`vizualize_colors()`**
+- **`scitex.plt.color.get_colors_from_conf_matap()`**, **`interpolate()`**, **`vizualize_colors()`**
 
 ### Advanced Scientific Features  
 - **`scitex.str.auto_factor_axis()`** - Automatic factor-out-of-digits notation

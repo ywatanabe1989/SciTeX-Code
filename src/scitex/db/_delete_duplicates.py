@@ -4,9 +4,7 @@
 # File: ./src/scitex/db/_delete_duplicates.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/db/_delete_duplicates.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-05-01 17:11:28 (ywatanabe)"
-# File: /home/ywatanabe/proj/_scitex_repo/src/scitex/plt/_subplots/_AxisWrapper.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/_subplots/_AxisWrapper.py
 # ----------------------------------------
 import os
 
-__FILE__ = "./src/scitex/plt/_subplots/_AxisWrapper.py"
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

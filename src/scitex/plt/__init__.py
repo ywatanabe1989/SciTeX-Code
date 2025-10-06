@@ -4,9 +4,7 @@
 # File: /ssh:sp:/home/ywatanabe/proj/SciTeX-Code/src/scitex/plt/__init__.py
 # ----------------------------------------
 import os
-__FILE__ = (
-    "./src/scitex/plt/__init__.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 """Scitex plt module."""
@@ -40,10 +38,31 @@ def figure(*args, **kwargs):
         _figure = _figure_func
     return _figure(*args, **kwargs)
 
+def tight_layout(**kwargs):
+    """
+    Wrapper for matplotlib.pyplot.tight_layout that suppresses the layout change warning.
+
+    This function calls tight_layout on the current figure and suppresses the common
+    UserWarning: "The figure layout has changed to tight" which is informational
+    and typically not actionable.
+
+    Parameters
+    ----------
+    **kwargs
+        All keyword arguments are passed to matplotlib.pyplot.tight_layout()
+    """
+    import warnings
+    import matplotlib.pyplot as plt
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="The figure layout has changed to tight")
+        plt.tight_layout(**kwargs)
+
 __all__ = [
     "termplot",
     "subplots",
     "figure",
+    "tight_layout",
     "utils",
     "color",
 ]

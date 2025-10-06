@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-22 14:48:00 (ywatanabe)"
+# Timestamp: "2025-10-02 06:38:58 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/classification/reporters/_ClassificationReporter.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/ml/classification/reporters/_ClassificationReporter.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """
 Unified Classification Reporter.
 
@@ -37,6 +36,18 @@ class ClassificationReporter(BaseClassificationReporter):
     - Single task: Just use it without specifying tasks
     - Multiple tasks: Specify tasks upfront or create them dynamically
     - Seamless switching between single and multi-task workflows
+
+    Features:
+    - Comprehensive metrics calculation (balanced accuracy, MCC, ROC-AUC, PR-AUC, etc.)
+    - Automated visualization generation:
+      * Confusion matrices
+      * ROC and Precision-Recall curves
+      * Feature importance plots (via plotter)
+      * CV aggregation plots with faded fold lines
+      * Comprehensive metrics dashboard
+    - Multi-format report generation (Org, Markdown, LaTeX, HTML, DOCX, PDF)
+    - Cross-validation support with automatic fold aggregation
+    - Multi-task classification tracking
 
     Parameters
     ----------
@@ -67,6 +78,18 @@ class ClassificationReporter(BaseClassificationReporter):
     >>> reporter = ClassificationReporter("./results")
     >>> reporter.calculate_metrics(y_true1, y_pred1, task="task1")
     >>> reporter.calculate_metrics(y_true2, y_pred2, task="task2")
+
+    >>> # Feature importance visualization (via plotter)
+    >>> reporter._single_reporter.plotter.create_feature_importance_plot(
+    ...     feature_importance=importances,
+    ...     feature_names=feature_names,
+    ...     save_path="./results/feature_importance.png"
+    ... )
+
+    >>> # CV aggregation plots (automatically created on save_summary)
+    >>> for fold in range(5):
+    ...     metrics = reporter.calculate_metrics(y_true, y_pred, y_proba, fold=fold)
+    >>> reporter.save_summary()  # Creates CV aggregation plots with faded fold lines
     """
 
     def __init__(
@@ -384,6 +407,73 @@ class ClassificationReporter(BaseClassificationReporter):
         }
         self.storage.save(config_data, "config.json")
 
+    def save_feature_importance(
+        self,
+        model,
+        feature_names: List[str],
+        fold: Optional[int] = None,
+        task: Optional[str] = None,
+    ) -> Dict[str, float]:
+        """
+        Calculate and save feature importance for tree-based models.
+
+        Parameters
+        ----------
+        model : object
+            Fitted classifier (must have feature_importances_)
+        feature_names : List[str]
+            Names of features
+        fold : int, optional
+            Fold number for tracking
+        task : str, optional
+            Task name for multi-task mode
+
+        Returns
+        -------
+        Dict[str, float]
+            Dictionary of feature importances {feature_name: importance}
+        """
+        # Single-task mode
+        if not self.tasks and self._single_reporter:
+            return self._single_reporter.save_feature_importance(
+                model, feature_names, fold
+            )
+
+        # Multi-task mode
+        if task is not None and task in self.reporters:
+            return self.reporters[task].save_feature_importance(
+                model, feature_names, fold
+            )
+
+        return {}
+
+    def save_feature_importance_summary(
+        self,
+        all_importances: List[Dict[str, float]],
+        task: Optional[str] = None,
+    ) -> None:
+        """
+        Create summary visualization of feature importances across all folds.
+
+        Parameters
+        ----------
+        all_importances : List[Dict[str, float]]
+            List of feature importance dicts from each fold
+        task : str, optional
+            Task name for multi-task mode
+        """
+        # Single-task mode
+        if not self.tasks and self._single_reporter:
+            return self._single_reporter.save_feature_importance_summary(
+                all_importances
+            )
+
+        # Multi-task mode
+        if task is not None and task in self.reporters:
+            return self.reporters[task].save_feature_importance_summary(
+                all_importances
+            )
+
     def __repr__(self) -> str:
         if not self.tasks:
             return f"ClassificationReporter(output_dir='{self.output_dir}', tasks=None)"
@@ -415,5 +505,257 @@ def create_classification_reporter(
         Configured reporter instance
     """
     return ClassificationReporter(output_dir, tasks=tasks, **kwargs)
+
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Test ClassificationReporter with sample data"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="./.dev/classification_reporter_test_out",
+        help="Output directory for test results (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--n-samples",
+        type=int,
+        default=100,
+        help="Number of samples to generate (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--n-folds",
+        type=int,
+        default=3,
+        help="Number of CV folds (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--task-type",
+        type=str,
+        choices=["binary", "multiclass", "multitask"],
+        default="binary",
+        help="Type of classification task (default: %(default)s)"
+    )
+
+    return parser.parse_args()
+
+
+def main(args):
+    """Test ClassificationReporter functionality."""
+    from sklearn.datasets import make_classification
+    from sklearn.model_selection import StratifiedKFold
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.ensemble import RandomForestClassifier
+
+    # Create output directory
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 60)
+    print("ClassificationReporter Test")
+    print("=" * 60)
+    print(f"Task type: {args.task_type}")
+    print(f"Output dir: {output_dir}")
+    print(f"Samples: {args.n_samples}, Folds: {args.n_folds}")
+    print()
+
+    if args.task_type == "binary":
+        # Binary classification
+        print("Testing Binary Classification...")
+        X, y = make_classification(
+            n_samples=args.n_samples,
+            n_features=20,
+            n_classes=2,
+            n_informative=15,
+            n_redundant=5,
+            random_state=42
+        )
+        labels = ["Negative", "Positive"]
+
+        reporter = ClassificationReporter(output_dir / "binary", track=True)
+
+        # Cross-validation
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+        model = LogisticRegression(random_state=42, max_iter=1000)
+
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+            X_train, X_test = X[train_idx], X[test_idx]
+            y_train, y_test = y[train_idx], y[test_idx]
+
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            y_proba = model.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=labels,
+                fold=fold
+            )
+
+        # Generate reports
+        reporter.save_summary()
+        print(f"✓ Binary classification results saved to: {output_dir / 'binary'}")
+
+    elif args.task_type == "multiclass":
+        # Multiclass classification
+        print("Testing Multiclass Classification...")
+        X, y = make_classification(
+            n_samples=args.n_samples,
+            n_features=20,
+            n_classes=4,
+            n_informative=15,
+            n_redundant=5,
+            n_clusters_per_class=1,
+            random_state=42
+        )
+        labels = ["Class_A", "Class_B", "Class_C", "Class_D"]
+
+        reporter = ClassificationReporter(output_dir / "multiclass", track=True)
+
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+        model = RandomForestClassifier(n_estimators=50, random_state=42)
+
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+            X_train, X_test = X[train_idx], X[test_idx]
+            y_train, y_test = y[train_idx], y[test_idx]
+
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            y_proba = model.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=labels,
+                fold=fold
+            )
+
+        reporter.save_summary()
+        print(f"✓ Multiclass classification results saved to: {output_dir / 'multiclass'}")
+
+    elif args.task_type == "multitask":
+        # Multi-task classification
+        print("Testing Multi-task Classification...")
+
+        # Task 1: Binary
+        X1, y1 = make_classification(
+            n_samples=args.n_samples, n_features=20, n_classes=2, random_state=42
+        )
+
+        # Task 2: Multiclass
+        X2, y2 = make_classification(
+            n_samples=args.n_samples, n_features=20, n_classes=3, random_state=43
+        )
+
+        reporter = ClassificationReporter(
+            output_dir / "multitask",
+            tasks=["binary_task", "multiclass_task"],
+            track=True
+        )
+
+        cv = StratifiedKFold(n_splits=args.n_folds, shuffle=True, random_state=42)
+
+        # Task 1
+        model1 = LogisticRegression(random_state=42, max_iter=1000)
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X1, y1)):
+            X_train, X_test = X1[train_idx], X1[test_idx]
+            y_train, y_test = y1[train_idx], y1[test_idx]
+
+            model1.fit(X_train, y_train)
+            y_pred = model1.predict(X_test)
+            y_proba = model1.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=["Neg", "Pos"],
+                fold=fold,
+                task="binary_task"
+            )
+
+        # Task 2
+        model2 = RandomForestClassifier(n_estimators=50, random_state=42)
+        for fold, (train_idx, test_idx) in enumerate(cv.split(X2, y2)):
+            X_train, X_test = X2[train_idx], X2[test_idx]
+            y_train, y_test = y2[train_idx], y2[test_idx]
+
+            model2.fit(X_train, y_train)
+            y_pred = model2.predict(X_test)
+            y_proba = model2.predict_proba(X_test)
+
+            reporter.calculate_metrics(
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+                labels=["A", "B", "C"],
+                fold=fold,
+                task="multiclass_task"
+            )
+
+        reporter.save_summary()
+        print(f"✓ Multi-task classification results saved to: {output_dir / 'multitask'}")
+
+    print()
+    print("=" * 60)
+    print("Test Complete!")
+    print("=" * 60)
+    print(f"\nCreated files in: {output_dir}")
+
+    # List all created files
+    import subprocess
+    result = subprocess.run(
+        ["find", str(output_dir), "-type", "f"],
+        capture_output=True,
+        text=True
+    )
+    if result.stdout:
+        files = sorted(result.stdout.strip().split('\n'))
+        print(f"\nTotal files created: {len(files)}")
+        print("\nFile tree:")
+        subprocess.run(["tree", str(output_dir)])
+
+    return 0
+
+
+def run_main():
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+    import matplotlib.pyplot as plt
+    import scitex as stx
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF
