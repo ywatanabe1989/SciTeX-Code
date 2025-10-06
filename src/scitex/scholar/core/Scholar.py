@@ -468,7 +468,7 @@ class Scholar:
             Dictionary with download statistics
         """
         # Check if parallel download should be used
-        pdf_config = self.config.get("pdf_download", {})
+        pdf_config = self.config.get("pdf_download") or {}
         use_parallel = use_parallel if use_parallel is not None else pdf_config.get("use_parallel", True)
 
         if use_parallel and len(dois) > 1:
@@ -519,7 +519,7 @@ class Scholar:
     async def _download_pdfs_sequential(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
-        """Sequential PDF download (original implementation).
+        """Sequential PDF download (original implementation)."""
         from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
         from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 

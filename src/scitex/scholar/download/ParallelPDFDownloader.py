@@ -13,8 +13,7 @@ import random
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.scholar.auth import BrowserAuthenticator
-from scitex.scholar.browser import BrowserManager
+from scitex.scholar.browser.local.ScholarBrowserManager import ScholarBrowserManager
 from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 
@@ -59,7 +58,7 @@ class ParallelPDFDownloader:
         self.config = config or ScholarConfig()
 
         # Use cascade configuration: direct params > config > defaults
-        pdf_config = self.config.get("pdf_download", {})
+        pdf_config = self.config.get("pdf_download") or {}
 
         self.max_workers = max_workers if max_workers is not None else pdf_config.get("max_parallel", 3)
         self.use_parallel = use_parallel if use_parallel is not None else pdf_config.get("use_parallel", True)
@@ -71,7 +70,6 @@ class ParallelPDFDownloader:
         self.timeout = pdf_config.get("timeout", 60)
 
         # Check authentication status
-        self.authenticator = BrowserAuthenticator(config=self.config)
         self.has_auth = self._check_authentication()
 
         # Disable parallel if no authentication
@@ -231,8 +229,9 @@ class ParallelPDFDownloader:
         logger.info(f"Worker {worker_id}: Starting with {len(papers)} papers")
 
         # Create worker-specific browser manager
-        browser_manager = BrowserManager(
+        browser_manager = ScholarBrowserManager(
             config=self.config,
+            browser_mode="stealth",
             profile_suffix=f"_worker_{worker_id}"
         )
 
@@ -303,7 +302,7 @@ class ParallelPDFDownloader:
         """Download papers sequentially (fallback when no auth or parallel disabled)."""
 
         # Use single browser instance
-        browser_manager = BrowserManager(config=self.config)
+        browser_manager = ScholarBrowserManager(config=self.config, browser_mode="stealth")
 
         try:
             browser, context = await browser_manager.get_authenticated_browser_and_context_async()
