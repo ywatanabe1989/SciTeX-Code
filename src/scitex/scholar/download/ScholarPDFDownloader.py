@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 11:18:18 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/ScholarPDFDownloader.py
+# Timestamp: "2025-10-04 09:50:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -286,12 +286,14 @@ class ScholarPDFDownloader:
         page = None
         try:
             page = await self.context.new_page()
-            
+
             # Human-like delay before navigation
-            await HumanBehavior.random_delay_async(1000, 2000, "before navigation")
-            
+            await HumanBehavior.random_delay_async(
+                1000, 2000, "before navigation"
+            )
+
             await page.goto(pdf_url, wait_until="load", timeout=30_000)
-            
+
             # Wait for PDF to fully load
             await HumanBehavior.random_delay_async(2000, 3000, "PDF loading")
 
@@ -302,19 +304,21 @@ class ScholarPDFDownloader:
 
             # Simulate human PDF viewing behavior (lighter version)
             await HumanBehavior.random_delay_async(1000, 2000, "viewing PDF")
-            
+
             # Standard download button approach
             await show_grid_async(page)
             await click_center_async(page)
-            
+
             is_downloaded = (
                 await click_download_button_from_chrome_pdf_viewer_async(
                     page, output_path
                 )
             )
-            
+
             # Wait for download
-            await HumanBehavior.random_delay_async(1000, 2000, "after download click")
+            await HumanBehavior.random_delay_async(
+                1000, 2000, "after download click"
+            )
             await page.close()
 
             if is_downloaded:
@@ -429,10 +433,6 @@ if __name__ == "__main__":
         )
 
     asyncio.run(main_async())
-
-# SUCCESS: Downloaded: /tmp/hippocampal_ripples-by-stealth.pdf (1.5 MB)
-# SUCCESS: Downloaded via Chrome PDF Viewer: from https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf to /tmp/hippocampal_ripples-by-stealth.pdf
-# SUCCESS: PDF downloaded successfully to: /tmp/hippocampal_ripples-by-stealth.pdf
 
 # python -m scitex.scholar.download.ScholarPDFDownloader
 

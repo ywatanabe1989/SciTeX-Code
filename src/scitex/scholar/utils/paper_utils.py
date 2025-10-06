@@ -125,6 +125,22 @@ def paper_from_bibtex_entry(entry: Dict[str, Any]) -> "Paper":
     if 'keywords' in entry:
         keywords = [k.strip() for k in entry['keywords'].split(',') if k.strip()]
 
+    # Parse citation count
+    citation_count = None
+    if 'citation_count' in entry:
+        try:
+            citation_count = int(entry['citation_count'])
+        except (ValueError, TypeError):
+            pass
+
+    # Parse journal impact factor
+    journal_impact_factor = None
+    if 'journal_impact_factor' in entry:
+        try:
+            journal_impact_factor = float(entry['journal_impact_factor'])
+        except (ValueError, TypeError):
+            pass
+
     return Paper(
         title=entry.get('title', '').strip('{}'),
         authors=authors,
@@ -137,6 +153,8 @@ def paper_from_bibtex_entry(entry: Dict[str, Any]) -> "Paper":
         issue=entry.get('number'),  # BibTeX uses 'number' for issue
         pages=entry.get('pages'),
         publisher=entry.get('publisher'),
+        citation_count=citation_count,
+        journal_impact_factor=journal_impact_factor,
         url=entry.get('url'),
         sources={'bibtex': 'original_import'},
     )

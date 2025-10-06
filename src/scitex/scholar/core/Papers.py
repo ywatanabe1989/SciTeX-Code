@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-30 06:10:00 (ywatanabe)"
+# Timestamp: "2025-09-30 22:24:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/core/Papers.py
 # ----------------------------------------
 from __future__ import annotations
@@ -21,15 +21,7 @@ Business logic has been moved to Scholar and utility functions.
 """
 
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterator,
-    List,
-    Optional,
-    Union,
-)
+from typing import Any, Callable, Dict, Iterator, List, Optional, Union
 
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
@@ -74,16 +66,21 @@ class Papers:
                 elif isinstance(item, dict):
                     # Handle dict input for compatibility
                     try:
-                        if 'basic' in item:
+                        if "basic" in item:
                             # Old structured format
-                            from scitex.scholar.utils.paper_utils import paper_from_structured
+                            from scitex.scholar.utils.paper_utils import (
+                                paper_from_structured,
+                            )
+
                             paper = paper_from_structured(**item)
                         else:
                             # Flat format
                             paper = Paper(**item)
                         self._papers.append(paper)
                     except Exception as e:
-                        logger.warning(f"Failed to create Paper from dict: {e}")
+                        logger.warning(
+                            f"Failed to create Paper from dict: {e}"
+                        )
                 else:
                     logger.warning(f"Skipping invalid item type: {type(item)}")
 
@@ -109,7 +106,9 @@ class Papers:
             Single Paper if integer index, Papers collection if slice
         """
         if isinstance(index, slice):
-            return Papers(self._papers[index], project=self.project, config=self.config)
+            return Papers(
+                self._papers[index], project=self.project, config=self.config
+            )
         return self._papers[index]
 
     def __repr__(self) -> str:
@@ -129,9 +128,17 @@ class Papers:
         """Custom dir for better discoverability."""
         base_attrs = object.__dir__(self)
         custom_attrs = [
-            'papers', 'filter', 'sort_by', 'append', 'extend',
-            'to_list', 'summary', 'to_dict', 'to_dataframe',
-            'from_bibtex', 'save'
+            "papers",
+            "filter",
+            "sort_by",
+            "append",
+            "extend",
+            "to_list",
+            "summary",
+            "to_dict",
+            "to_dataframe",
+            "from_bibtex",
+            "save",
         ]
         return sorted(set(base_attrs + custom_attrs))
 
@@ -194,7 +201,7 @@ class Papers:
         author: Optional[str] = None,
         keyword: Optional[str] = None,
         publisher: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> "Papers":
         """Filter papers by condition or criteria.
 
@@ -273,11 +280,14 @@ class Papers:
         # If a lambda/function condition is provided, use it
         if condition is not None and callable(condition):
             filtered = [p for p in self._papers if condition(p)]
-            logger.info(f"Lambda filter: {len(self._papers)} -> {len(filtered)} papers")
+            logger.info(
+                f"Lambda filter: {len(self._papers)} -> {len(filtered)} papers"
+            )
             return Papers(filtered, project=self.project, config=self.config)
 
         # Otherwise use criteria-based filtering
         from scitex.scholar.utils.papers_utils import filter_papers_advanced
+
         result = filter_papers_advanced(
             self,
             year_min=year_min,
@@ -285,10 +295,12 @@ class Papers:
             has_doi=has_doi,
             has_abstract=has_abstract,
             has_pdf=has_pdf,
-            min_citations=min_citations or kwargs.get('min_citations'),
-            max_citations=max_citations or kwargs.get('max_citations'),
-            min_impact_factor=min_impact_factor or kwargs.get('min_impact_factor'),
-            max_impact_factor=max_impact_factor or kwargs.get('max_impact_factor'),
+            min_citations=min_citations or kwargs.get("min_citations"),
+            max_citations=max_citations or kwargs.get("max_citations"),
+            min_impact_factor=min_impact_factor
+            or kwargs.get("min_impact_factor"),
+            max_impact_factor=max_impact_factor
+            or kwargs.get("max_impact_factor"),
             journal=journal,
             author=author,
             keyword=keyword,
@@ -360,15 +372,22 @@ class Papers:
                 print(f"{p.citation_count} citations - {p.title[:50]}...")
         """
         if not criteria:
-            return Papers(self._papers, project=self.project, config=self.config)
+            return Papers(
+                self._papers, project=self.project, config=self.config
+            )
 
         # Handle single lambda
         if len(criteria) == 1 and callable(criteria[0]):
-            sorted_papers = sorted(self._papers, key=criteria[0], reverse=reverse)
-            return Papers(sorted_papers, project=self.project, config=self.config)
+            sorted_papers = sorted(
+                self._papers, key=criteria[0], reverse=reverse
+            )
+            return Papers(
+                sorted_papers, project=self.project, config=self.config
+            )
 
         # Handle field names
         from scitex.scholar.utils.papers_utils import sort_papers_multi
+
         return sort_papers_multi(self, list(criteria), reverse=reverse)
 
     # =========================================================================
@@ -389,7 +408,9 @@ class Papers:
         Returns:
             Papers collection
         """
-        logger.warning("Papers.from_bibtex() is deprecated. Use Scholar.from_bibtex() instead.")
+        logger.warning(
+            "Papers.from_bibtex() is deprecated. Use Scholar.from_bibtex() instead."
+        )
 
         # Check if it's a file path
         if isinstance(bibtex_input, (str, Path)):
@@ -418,10 +439,12 @@ class Papers:
 
         logger.info(f"Loading BibTeX from {file_path}")
 
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             bib_db = bibtexparser.load(f)
 
-        logger.info(f"Loaded {len(bib_db.entries)} BibTeX entries from {file_path}")
+        logger.info(
+            f"Loaded {len(bib_db.entries)} BibTeX entries from {file_path}"
+        )
 
         papers = []
         for entry in bib_db.entries:
@@ -537,7 +560,7 @@ class Papers:
         self,
         output_path: Union[str, Path],
         format: Optional[str] = "auto",
-        **kwargs
+        **kwargs,
     ) -> None:
         """Save papers to file.
 
@@ -549,7 +572,9 @@ class Papers:
             format: Output format (auto, bibtex, json, csv)
             **kwargs: Additional options
         """
-        logger.warning("Papers.save() is deprecated. Use Scholar.export_bibtex() instead.")
+        logger.warning(
+            "Papers.save() is deprecated. Use Scholar.export_bibtex() instead."
+        )
 
         output_path = Path(output_path)
 
@@ -569,19 +594,25 @@ class Papers:
 
         if format.lower() == "bibtex":
             from scitex.scholar.utils.papers_utils import papers_to_bibtex
+
             bibtex_content = papers_to_bibtex(self, output_path=None)
             output_path.write_text(bibtex_content)
             logger.success(f"Saved {len(self)} papers to {output_path}")
 
         elif format.lower() == "json":
             import json
+
             from scitex.scholar.utils.papers_utils import papers_to_dict
-            with open(output_path, 'w', encoding='utf-8') as f:
-                json.dump(papers_to_dict(self), f, indent=2, ensure_ascii=False)
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                json.dump(
+                    papers_to_dict(self), f, indent=2, ensure_ascii=False
+                )
             logger.success(f"Saved {len(self)} papers to {output_path}")
 
         elif format.lower() == "csv":
             from scitex.scholar.utils.papers_utils import papers_to_dataframe
+
             df = papers_to_dataframe(self)
             df.to_csv(output_path, index=False)
             logger.success(f"Saved {len(self)} papers to {output_path}")
@@ -598,6 +629,7 @@ class Papers:
             Dictionary representation
         """
         from scitex.scholar.utils.papers_utils import papers_to_dict
+
         return papers_to_dict(self)
 
     def to_dataframe(self) -> Any:
@@ -610,6 +642,7 @@ class Papers:
         """
         try:
             from scitex.scholar.utils.papers_utils import papers_to_dataframe
+
             return papers_to_dataframe(self)
         except ImportError:
             logger.error("pandas is required for to_dataframe()")
@@ -624,6 +657,7 @@ class Papers:
             Dictionary with statistics
         """
         from scitex.scholar.utils.papers_utils import papers_statistics
+
         return papers_statistics(self)
 
     # =========================================================================
@@ -655,11 +689,13 @@ if __name__ == "__main__":
         print("=" * 60)
 
         # Create test papers
-        papers = Papers([
-            Paper(title="Paper 1", year=2023, journal="Nature"),
-            Paper(title="Paper 2", year=2024, journal="Science"),
-            Paper(title="Paper 3", year=2022, journal="Cell"),
-        ])
+        papers = Papers(
+            [
+                Paper(title="Paper 1", year=2023, journal="Nature"),
+                Paper(title="Paper 2", year=2024, journal="Science"),
+                Paper(title="Paper 3", year=2022, journal="Cell"),
+            ]
+        )
 
         print(f"\n1. Collection: {papers}")
         print(f"   Count: {len(papers)}")

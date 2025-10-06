@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-30 07:00:56 (ywatanabe)"
+# Timestamp: "2025-10-04 10:10:54 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -128,6 +128,46 @@ class Scholar:
     # ----------------------------------------
     # Enrichers
     # ----------------------------------------
+    async def enrich_papers_async(self, papers: Papers) -> Papers:
+        """Async version of enrich_papers for use in async contexts.
+
+        Args:
+            papers: Papers collection to enrich.
+
+        Returns:
+            Enriched Papers collection
+        """
+        enriched_list = []
+
+        for paper in papers:
+            try:
+                # Use ScholarEngine to search and enrich
+                results = await self._scholar_engine.search_async(
+                    title=paper.title,
+                    year=paper.year,
+                    authors=paper.authors[0] if paper.authors else None,
+                )
+
+                # Create a copy to avoid modifying original
+                enriched_paper = self._merge_enrichment_data(paper, results)
+                enriched_list.append(enriched_paper)
+                logger.info(f"Enriched: {paper.title[:50]}...")
+
+            except Exception as e:
+                logger.warning(
+                    f"Failed to enrich paper '{paper.title[:50]}...': {e}"
+                )
+                enriched_list.append(paper)  # Keep original if enrichment fails
+
+        from ..core.Papers import Papers
+        enriched_papers = Papers(enriched_list, project=self.project)
+
+        # Add impact factors as post-processing step
+        if self.config.resolve("enrich_impact_factors", None, True):
+            enriched_papers = self._enrich_impact_factors(enriched_papers)
+
+        return enriched_papers
+
     def enrich_papers(
         self, papers: Optional[Papers] = None
     ) -> Union[Papers, Dict[str, int]]:
@@ -194,20 +234,30 @@ class Scholar:
         """
         # Try JCR database first (fast)
         try:
-            from scitex.scholar.engines.JCRImpactFactorEngine import JCRImpactFactorEngine
+            from scitex.scholar.engines.JCRImpactFactorEngine import (
+                JCRImpactFactorEngine,
+            )
+
             jcr_engine = JCRImpactFactorEngine()
             papers = jcr_engine.enrich_papers(papers)
             return papers
         except Exception as e:
-            logger.debug(f"JCR engine unavailable: {e}, falling back to calculation method")
+            logger.debug(
+                f"JCR engine unavailable: {e}, falling back to calculation method"
+            )
 
         # Fallback to calculation method (slower but always available)
         import sys
         from pathlib import Path
 
         # Add impact_factor module to path if needed
-        impact_factor_path = Path(__file__).parent.parent / "externals/impact_factor/src"
-        if impact_factor_path.exists() and str(impact_factor_path) not in sys.path:
+        impact_factor_path = (
+            Path(__file__).parent.parent / "externals/impact_factor/src"
+        )
+        if (
+            impact_factor_path.exists()
+            and str(impact_factor_path) not in sys.path
+        ):
             sys.path.insert(0, str(impact_factor_path))
 
         try:
@@ -222,22 +272,34 @@ class Scholar:
                 if paper.journal and paper.journal not in journals_cache:
                     try:
                         # Calculate impact factor for the journal
-                        result = calculator.calculate_impact_factor(paper.journal)
+                        result = calculator.calculate_impact_factor(
+                            paper.journal
+                        )
                         if result and "impact_factors" in result:
                             # Store the 2-year impact factor
-                            journals_cache[paper.journal] = result["impact_factors"].get(
-                                "classical_2year"
-                            )
+                            journals_cache[paper.journal] = result[
+                                "impact_factors"
+                            ].get("classical_2year")
                         else:
                             journals_cache[paper.journal] = None
                     except Exception as e:
-                        logger.debug(f"Could not get impact factor for {paper.journal}: {e}")
+                        logger.debug(
+                            f"Could not get impact factor for {paper.journal}: {e}"
+                        )
                         journals_cache[paper.journal] = None
 
                 # Add journal impact factor to paper if available
-                if paper.journal in journals_cache and journals_cache[paper.journal]:
-                    if not hasattr(paper, 'journal_impact_factor') or not paper.journal_impact_factor:
-                        paper.journal_impact_factor = journals_cache[paper.journal]
+                if (
+                    paper.journal in journals_cache
+                    and journals_cache[paper.journal]
+                ):
+                    if (
+                        not hasattr(paper, "journal_impact_factor")
+                        or not paper.journal_impact_factor
+                    ):
+                        paper.journal_impact_factor = journals_cache[
+                            paper.journal
+                        ]
                         enriched_count += 1
 
             if enriched_count > 0:
@@ -303,7 +365,10 @@ class Scholar:
         if "publication" in results:
             if results["publication"].get("journal") and not enriched.journal:
                 enriched.journal = results["publication"]["journal"]
-            if results["publication"].get("publisher") and not enriched.publisher:
+            if (
+                results["publication"].get("publisher")
+                and not enriched.publisher
+            ):
                 enriched.publisher = results["publication"]["publisher"]
             if results["publication"].get("volume") and not enriched.volume:
                 enriched.volume = results["publication"]["volume"]
@@ -315,10 +380,15 @@ class Scholar:
         # Citation metadata
         if "citation_count" in results:
             # Try both "count" and "total" fields
-            count = results["citation_count"].get("count") or results["citation_count"].get("total")
+            count = results["citation_count"].get("count") or results[
+                "citation_count"
+            ].get("total")
             if count:
                 # Always take the maximum citation count
-                if not enriched.citation_count or count > enriched.citation_count:
+                if (
+                    not enriched.citation_count
+                    or count > enriched.citation_count
+                ):
                     enriched.citation_count = count
             # Note: influential_citation_count is in results but not in Paper dataclass
 
@@ -374,10 +444,10 @@ class Scholar:
     # ----------------------------------------
     # PDF Downloaders
     # ----------------------------------------
-    async def download_pdfs_async(
+    async def download_pdfs_from_dois_async(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
-        """Download PDFs using the current browser and URL handler services.
+        """Download PDFs for given DOIs using ScholarURLFinder and ScholarPDFDownloader.
 
         Args:
             dois: List of DOI strings
@@ -386,7 +456,8 @@ class Scholar:
         Returns:
             Dictionary with download statistics
         """
-        from scitex.scholar.metadata.urls import URLHandler
+        from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
+        from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 
         results = {"downloaded": 0, "failed": 0, "errors": 0}
 
@@ -394,53 +465,247 @@ class Scholar:
         browser, context = (
             await self._browser_manager.get_authenticated_browser_and_context_async()
         )
-        url_handler = URLHandler(context)
+
+        # Initialize URL finder and PDF downloader
+        url_finder = ScholarURLFinder(
+            context=context,
+            config=self.config,
+            use_cache=True
+        )
+        pdf_downloader = ScholarPDFDownloader(
+            context=context,
+            config=self.config,
+            use_cache=True
+        )
+
+        # Get library paths
+        import json
+        import shutil
+        import hashlib
+        from datetime import datetime
+
+        library_dir = self.config.get_library_dir()
+        master_dir = library_dir / "MASTER"
+        project_dir = library_dir / self.project
+        master_dir.mkdir(parents=True, exist_ok=True)
+        project_dir.mkdir(parents=True, exist_ok=True)
 
         for doi in dois:
             try:
-                # Get all URLs for the DOI (including PDF URLs)
-                urls = await url_handler.get_all_urls(doi=doi)
-                pdf_urls = [
-                    url_entry["url"] for url_entry in urls.get("url_pdf", [])
-                ]
+                logger.info(f"Processing DOI: {doi}")
 
-                for pdf_url in pdf_urls:
-                    # Try to download the PDF
-                    response = await context.request.get(pdf_url)
-                    if response.ok and response.headers.get(
-                        "content-type", ""
-                    ).startswith("application/pdf"):
-                        content = await response.body()
-                        output_path = (
-                            output_dir or Path("/tmp")
-                        ) / f"{doi.replace('/', '_')}.pdf"
-                        output_path.parent.mkdir(parents=True, exist_ok=True)
+                # Step 1: Find URLs for the DOI
+                urls = await url_finder.find_urls(doi)
 
-                        with open(output_path, "wb") as f:
-                            f.write(content)
+                # Step 2: Get PDF URLs
+                pdf_urls = urls.get("urls_pdf", [])
 
-                        logger.success(f"Downloaded: {doi} to {output_path}")
-                        results["downloaded"] += 1
-                        break  # Success, move to next DOI
+                if not pdf_urls:
+                    logger.warning(f"No PDF URLs found for DOI: {doi}")
+                    results["failed"] += 1
+                    continue
+
+                # Step 3: Try to download from each PDF URL
+                downloaded_path = None
+                for pdf_entry in pdf_urls:
+                    # Handle both dict and string formats
+                    pdf_url = pdf_entry.get("url") if isinstance(pdf_entry, dict) else pdf_entry
+
+                    if not pdf_url:
+                        continue
+
+                    # Download to temp location first
+                    temp_output = Path("/tmp") / f"{doi.replace('/', '_').replace(':', '_')}.pdf"
+
+                    # Try to download
+                    result = await pdf_downloader.download_from_url(
+                        pdf_url=pdf_url,
+                        output_path=temp_output
+                    )
+
+                    if result and result.exists():
+                        downloaded_path = result
+                        break
+
+                if downloaded_path:
+                    # Step 4: Store PDF in MASTER library with proper organization
+
+                    # Generate unique ID from DOI
+                    paper_id = hashlib.md5(doi.encode()).hexdigest()[:8].upper()
+
+                    # Create MASTER storage directory
+                    storage_path = master_dir / paper_id
+                    storage_path.mkdir(parents=True, exist_ok=True)
+
+                    # Try to get paper metadata to generate readable name
+                    readable_name = None
+                    temp_paper = None
+                    try:
+                        # Try to load paper from DOI to get metadata
+                        from scitex.scholar.core.Paper import Paper
+                        from scitex.scholar.core.Papers import Papers
+                        temp_paper = Paper(doi=doi)
+                        # Try to enrich to get author/year/journal using async method
+                        temp_papers = Papers([temp_paper])
+                        enriched = await self.enrich_papers_async(temp_papers)
+                        if enriched and len(enriched) > 0:
+                            temp_paper = enriched[0]
+
+                        # Generate readable name from metadata
+                        first_author = "Unknown"
+                        if temp_paper.authors and len(temp_paper.authors) > 0:
+                            author_parts = temp_paper.authors[0].split()
+                            if len(author_parts) > 1:
+                                first_author = author_parts[-1]  # Last name
+                            else:
+                                first_author = author_parts[0]
+
+                        year_str = str(temp_paper.year) if temp_paper.year else "Unknown"
+
+                        journal_clean = "Unknown"
+                        if temp_paper.journal:
+                            # Clean journal name - remove special chars, keep alphanumeric
+                            journal_clean = "".join(
+                                c for c in temp_paper.journal
+                                if c.isalnum() or c in " "
+                            ).replace(" ", "")
+                            if not journal_clean:
+                                journal_clean = "Unknown"
+
+                        # Format: Author-Year-Journal
+                        readable_name = f"{first_author}-{year_str}-{journal_clean}"
+                    except:
+                        pass
+
+                    # Fallback to DOI if metadata extraction failed
+                    if not readable_name:
+                        readable_name = f"DOI_{doi.replace('/', '_').replace(':', '_')}"
+
+                    # Copy PDF to MASTER storage with ORIGINAL filename to track how downloaded
+                    # The PDF filename preserves the DOI format for tracking
+                    pdf_filename = f"DOI_{doi.replace('/', '_').replace(':', '_')}.pdf"
+                    master_pdf_path = storage_path / pdf_filename
+                    shutil.copy2(downloaded_path, master_pdf_path)
+
+                    # Create or update metadata with full enriched data
+                    metadata_file = storage_path / "metadata.json"
+                    if metadata_file.exists():
+                        with open(metadata_file, 'r') as f:
+                            metadata = json.load(f)
+                    else:
+                        metadata = {
+                            "doi": doi,
+                            "scitex_id": paper_id,
+                            "created_at": datetime.now().isoformat(),
+                            "created_by": "SciTeX Scholar"
+                        }
+
+                    # Add enriched paper metadata if available
+                    if temp_paper:
+                        # Add all paper fields to metadata
+                        paper_dict = temp_paper.to_dict() if hasattr(temp_paper, 'to_dict') else {
+                            "title": temp_paper.title,
+                            "authors": temp_paper.authors,
+                            "year": temp_paper.year,
+                            "journal": temp_paper.journal,
+                            "abstract": temp_paper.abstract,
+                            "citation_count": temp_paper.citation_count,
+                            "journal_impact_factor": temp_paper.journal_impact_factor,
+                            "keywords": temp_paper.keywords,
+                            "url": temp_paper.url,
+                            "pdf_url": temp_paper.pdf_url,
+                            "publisher": temp_paper.publisher,
+                        }
+                        # Merge paper metadata
+                        for key, value in paper_dict.items():
+                            if value is not None and key not in ["doi", "scitex_id"]:
+                                metadata[key] = value
+
+                    # Add PDF information
+                    metadata["pdf_path"] = str(master_pdf_path.relative_to(library_dir))
+                    metadata["pdf_downloaded_at"] = datetime.now().isoformat()
+                    metadata["pdf_size_bytes"] = master_pdf_path.stat().st_size
+                    metadata["updated_at"] = datetime.now().isoformat()
+
+                    # Save updated metadata
+                    with open(metadata_file, 'w') as f:
+                        json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+                    # Create symlink in project directory with readable name
+                    if self.project not in ["master", "MASTER"]:
+                        project_link = project_dir / readable_name
+                        if not project_link.exists():
+                            project_link.symlink_to(f"../MASTER/{paper_id}")
+
+                    # Clean up temp file
+                    downloaded_path.unlink()
+
+                    logger.success(f"Downloaded PDF for {doi}: MASTER/{paper_id}/{pdf_filename}")
+                    results["downloaded"] += 1
                 else:
-                    logger.warning(f"No PDF found for DOI: {doi}")
+                    logger.warning(f"Failed to download any PDF for DOI: {doi}")
                     results["failed"] += 1
 
             except Exception as e:
-                logger.error(f"Failed to download {doi}: {e}")
+                logger.error(f"Failed to process {doi}: {e}")
+                results["errors"] += 1
                 results["failed"] += 1
 
         await self._browser_manager.close()
         logger.info(f"PDF download complete: {results}")
         return results
 
-    def download_pdfs(
+    def download_pdfs_from_dois(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
-        """Synchronous wrapper for PDF downloads."""
+        """Download PDFs for given DOIs.
+
+        Args:
+            dois: List of DOI strings
+            output_dir: Output directory (uses config default if None)
+
+        Returns:
+            Dictionary with download statistics
+        """
         import asyncio
 
-        return asyncio.run(self.download_pdfs_async(dois, output_dir))
+        return asyncio.run(
+            self.download_pdfs_from_dois_async(dois, output_dir)
+        )
+
+    def download_pdfs_from_bibtex(
+        self,
+        bibtex_input: Union[str, Path, Papers],
+        output_dir: Optional[Path] = None,
+    ) -> Dict[str, int]:
+        """Download PDFs from BibTeX file or Papers collection.
+
+        Args:
+            bibtex_input: BibTeX file path, content string, or Papers collection
+            output_dir: Output directory (uses config default if None)
+
+        Returns:
+            Dictionary with download statistics
+        """
+        # Load papers if bibtex_input is not already Papers
+        if isinstance(bibtex_input, Papers):
+            papers = bibtex_input
+        else:
+            papers = self.load_bibtex(bibtex_input)
+
+        # Extract DOIs from papers
+        dois = [paper.doi for paper in papers if paper.doi]
+
+        if not dois:
+            logger.warning("No papers with DOIs found in BibTeX input")
+            return {"downloaded": 0, "failed": 0, "errors": 0}
+
+        logger.info(
+            f"Found {len(dois)} papers with DOIs out of {len(papers)} total papers"
+        )
+
+        # Download PDFs using DOI method
+        return self.download_pdfs_from_dois(dois, output_dir)
 
     # ----------------------------------------
     # Loaders
@@ -813,7 +1078,9 @@ class Scholar:
     # ----------------------------------------
     def from_bibtex(self, bibtex_input: Union[str, Path]) -> Papers:
         """DEPRECATED: Use load_bibtex() instead."""
-        logger.warning("from_bibtex() is deprecated. Use load_bibtex() instead.")
+        logger.warning(
+            "from_bibtex() is deprecated. Use load_bibtex() instead."
+        )
         return self.load_bibtex(bibtex_input)
 
     def enrich(
@@ -867,7 +1134,7 @@ if __name__ == "__main__":
         print("-" * 60)
         scholar = Scholar(
             project="demo_project",
-            project_description="Demo project for testing Scholar API"
+            project_description="Demo project for testing Scholar API",
         )
         print(f"✓ Scholar initialized")
         print(f"  Project: {scholar.project}")

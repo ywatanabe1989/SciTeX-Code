@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-27 01:22:28 (ywatanabe)"
+# Timestamp: "2025-09-30 22:26:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/cli/_CentralArgumentParser.py
 # ----------------------------------------
 from __future__ import annotations
@@ -43,33 +43,6 @@ class CentralArgumentParser:
         """Import and get parsers with descriptions from command modules."""
         parsers = {}
         descriptions = {}
-
-        # try:
-        #     from .enrich_bibtex import create_parser
-
-        #     parser = create_parser()
-        #     parsers["enrich-bibtex"] = parser
-        #     descriptions["enrich-bibtex"] = parser.description
-        # except ImportError:
-        #     pass
-
-        # try:
-        #     from .resolve_doi import create_parser
-
-        #     parser = create_parser()
-        #     parsers["resolve-doi"] = parser
-        #     descriptions["resolve-doi"] = parser.description
-        # except ImportError:
-        #     pass
-
-        try:
-            from .resolve_and_enrich import create_parser
-
-            parser = create_parser()
-            parsers["resolve-and-enrich"] = parser
-            descriptions["resolve-and-enrich"] = parser.description
-        except ImportError as ie:
-            logger.warn(str(ie))
 
         try:
             from .chrome import create_parser

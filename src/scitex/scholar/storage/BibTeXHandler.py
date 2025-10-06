@@ -136,6 +136,14 @@ class BibTeXHandler:
             "journal": fields.get("journal"),
         }
 
+        # Parse citation count
+        citation_count_data = None
+        if "citation_count" in fields:
+            try:
+                citation_count_data = {"total": int(fields["citation_count"])}
+            except (ValueError, TypeError):
+                pass
+
         url_data = {
             "pdf": fields.get("url"),
         }
@@ -147,10 +155,18 @@ class BibTeXHandler:
             basic=basic_data,
             id=id_data,
             publication=publication_data,
+            citation_count=citation_count_data,
             url=url_data,
             project=self.project,
             # config is not stored in Paper anymore
         )
+
+        # Handle journal_impact_factor separately since paper_from_structured doesn't support it
+        if "journal_impact_factor" in fields:
+            try:
+                paper.journal_impact_factor = float(fields["journal_impact_factor"])
+            except (ValueError, TypeError):
+                pass
 
         paper._original_bibtex_fields = fields.copy()
         paper._bibtex_entry_type = entry.get("entry_type", "misc")
@@ -247,6 +263,12 @@ class BibTeXHandler:
             fields["volume"] = paper.volume
         if paper.pages:
             fields["pages"] = paper.pages
+
+        # Metrics
+        if paper.citation_count is not None:
+            fields["citation_count"] = str(paper.citation_count)
+        if paper.journal_impact_factor is not None:
+            fields["journal_impact_factor"] = str(paper.journal_impact_factor)
 
         # URLs
         if paper.pdf_url:
