@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 06:16:27 (ywatanabe)"
+# Timestamp: "2025-10-08 06:31:25 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -454,21 +454,6 @@ if __name__ == "__main__":
         pprint(urls)
 
     asyncio.run(main_async())
-
-
-# Navigation: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=https://doi.org/10.1109/jbhi.2025.3556775 -> https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
-# INFO: Loaded 681 Zotero translators
-# INFO: Loaded Zotero JavaScript modules successfully
-# INFO: Executing Zotero translator: HighWire 2.0
-# INFO: Closed popup with selector: button.close
-# Translator error: ZU.fieldIsValidForType is not a function
-# Zotero Translator did not extract any URLs from https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
-# FAIL: Not found any PDF URLs from https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
-# Screenshot saved: /home/ywatanabe/.scitex/scholar/workspace/screenshots/ScholarURLFinder/https:/doi.org/10.1109/jbhi.2025.3556775 - No PDFs Found-20251008_000358.png
-# {'url_doi': 'https://doi.org/10.1109/jbhi.2025.3556775',
-#  'url_openurl_query': 'https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=https://doi.org/10.1109/jbhi.2025.3556775',
-#  'url_openurl_resolved': 'https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541',
-#  'url_publisher': 'https://ieeexplore.ieee.org/document/10946758'}
 
 # python -m scitex.scholar.url.ScholarURLFinder
 

@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-08 06:01:00
+!-- Timestamp: 2025-10-08 06:17:43
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -49,7 +49,7 @@ run_neurovista_pipeline() {
     echo "$n_pdfs PDFs found" 2>&1 | tee -a $LOG_PATH 2>&1
 }
 
-run_neurovista_pipeline
+run_neurovista_pipeline true
 ```
 
 - [ ] Manual Investigation

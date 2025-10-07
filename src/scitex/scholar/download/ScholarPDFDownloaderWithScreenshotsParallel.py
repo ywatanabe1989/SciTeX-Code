@@ -557,6 +557,17 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                 await browser_manager.get_authenticated_browser_and_context_async()
             )
 
+            # Initialize authentication gateway for this worker
+            from scitex.scholar.auth.AuthenticationGateway import (
+                AuthenticationGateway,
+            )
+
+            auth_gateway = AuthenticationGateway(
+                auth_manager=self.auth_manager,
+                browser_manager=browser_manager,
+                config=self.config,
+            )
+
             # Initialize downloaders for this worker
             url_finder = ScholarURLFinder(
                 context=context, config=self.config, use_cache=True
@@ -584,7 +595,14 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
                     # Get publisher-specific delays
                     if doi:
-                        # Find URLs for the DOI
+                        # NEW: Prepare authentication context BEFORE URL finding
+                        # This establishes publisher-specific cookies if needed
+                        url_context = await auth_gateway.prepare_context_async(
+                            doi=doi, context=context
+                        )
+
+                        # Find URLs for the DOI (using authenticated context)
+                        # The gateway has already visited OpenURL if authentication was needed
                         urls = await url_finder.find_urls(doi)
                         pdf_urls = urls.get("urls_pdf", [])
 

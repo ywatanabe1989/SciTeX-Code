@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 00:01:18 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/ArXivEngine.py
+# Timestamp: "2025-10-08 06:23:39 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/individual/ArXivEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/engines/individual/ArXivEngine.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from typing import Dict, List, Optional, Union
 
@@ -24,7 +28,7 @@ from tenacity import (
 
 from scitex import logging
 
-from ..utils import standardize_metadata
+from ..utils._standardize_metadata import standardize_metadata
 from ._BaseDOIEngine import BaseDOIEngine
 
 logger = logging.getLogger(__name__)
@@ -115,7 +119,9 @@ class ArXivEngine(BaseDOIEngine):
                 return_as=return_as,
             )
 
-    def _build_arxiv_search_query(self, title: str, authors: Optional[List[str]] = None) -> str:
+    def _build_arxiv_search_query(
+        self, title: str, authors: Optional[List[str]] = None
+    ) -> str:
         """Build arXiv search query handling special characters.
 
         ArXiv's exact title search with quotes fails on special characters like (LSTM).
@@ -124,19 +130,32 @@ class ArXivEngine(BaseDOIEngine):
         import re
 
         # Extract significant words from title (>3 chars, skip common words)
-        stop_words = {'the', 'and', 'for', 'with', 'from', 'using', 'based', 'into', 'that', 'this'}
-        words = re.findall(r'\b\w+\b', title.lower())
-        keywords = [w for w in words if len(w) > 3 and w not in stop_words][:8]  # Limit to 8 keywords
+        stop_words = {
+            "the",
+            "and",
+            "for",
+            "with",
+            "from",
+            "using",
+            "based",
+            "into",
+            "that",
+            "this",
+        }
+        words = re.findall(r"\b\w+\b", title.lower())
+        keywords = [w for w in words if len(w) > 3 and w not in stop_words][
+            :8
+        ]  # Limit to 8 keywords
 
         # Build query with title keywords
-        query_parts = [f'ti:{word}' for word in keywords]
+        query_parts = [f"ti:{word}" for word in keywords]
 
         # Add first author if available for better precision
         if authors and len(authors) > 0:
             first_author_surname = authors[0].split()[-1]
-            query_parts.append(f'au:{first_author_surname}')
+            query_parts.append(f"au:{first_author_surname}")
 
-        return ' AND '.join(query_parts)
+        return " AND ".join(query_parts)
 
     @retry(
         stop=stop_after_attempt(3),
@@ -150,7 +169,9 @@ class ArXivEngine(BaseDOIEngine):
         title: str,
         year: Optional[Union[int, str]] = None,
         authors: Optional[List[str]] = None,
-        max_results: Optional[int] = 5,  # Increased from 1 to get more candidates
+        max_results: Optional[
+            int
+        ] = 5,  # Increased from 1 to get more candidates
         return_as: Optional[str] = "dict",
     ) -> Optional[Dict]:
         """Search by metadata other than doi"""

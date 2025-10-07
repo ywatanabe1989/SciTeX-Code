@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 18:12:39 (ywatanabe)"
+# Timestamp: "2025-10-08 06:20:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -611,6 +611,7 @@ if __name__ == "__main__":
     async def main_async():
         # Query
         TITLE = "Attention is All You Need"
+        TITLE = "Epileptic seizure forecasting with long short-term memory (LSTM) neural networks"
         DOI = "10.1038/nature14539"
 
         # Example: Unified Engine
