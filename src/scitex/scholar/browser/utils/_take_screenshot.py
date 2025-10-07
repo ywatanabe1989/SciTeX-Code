@@ -26,7 +26,24 @@ async def take_screenshot(
     full_page: bool = False,
     config: ScholarConfig = None,
 ):
-    """Take screenshot for debugging purposes."""
+    """
+    Take screenshot for debugging purposes.
+
+    DEPRECATED: Consider using scitex.browser.debugging.show_popup_and_capture_async instead.
+    That function provides both visual popup feedback AND screenshots in one call.
+
+    Example migration:
+        # Old:
+        await take_screenshot(page, "ScholarURLFinder", "No PDFs Found")
+
+        # New (recommended):
+        from scitex.browser.debugging import show_popup_and_capture_async
+        await show_popup_and_capture_async(
+            page,
+            "No PDFs Found",
+            screenshot_category="ScholarURLFinder"
+        )
+    """
     try:
         config = config or ScholarConfig()
         screenshot_category_dir = config.get_screenshots_dir(category)

@@ -24,8 +24,10 @@ Authentication-aware redirect handling for academic publishers.
 ### `_close_unwanted_pages.py`
 Closes unwanted browser pages during paper downloads.
 
-### `_take_screenshot.py`
+### `_take_screenshot.py` (Deprecated)
 Takes timestamped screenshots for debugging paper download flows.
+
+**Note**: Consider using `scitex.browser.debugging.show_popup_and_capture_async` instead, which provides both visual popup feedback AND screenshots in one call.
 
 ### `JSLoader.py`
 Loads JavaScript utilities for browser automation.
