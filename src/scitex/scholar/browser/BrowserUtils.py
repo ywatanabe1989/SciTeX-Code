@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-15 18:40:35 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/BrowserUtils.py
+# Timestamp: "2025-10-08 05:13:54 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/BrowserUtils.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/browser/BrowserUtils.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import asyncio
 from typing import Any, Dict, List, Optional
@@ -425,7 +429,9 @@ class BrowserUtils:
 
             elif action == "navigate":
                 try:
-                    await page.goto(value, wait_until="domcontentloaded", timeout=30000)
+                    await page.goto(
+                        value, wait_until="domcontentloaded", timeout=30000
+                    )
                     await page.wait_for_load_state("networkidle")
                 except Exception as e:
                     logger.error(f"Navigation failed: {e}")
@@ -447,7 +453,11 @@ async def main():
         page = await browser.new_page()
 
         print("=== GitHub Login Sequence ===")
-        await page.goto("https://github.com/login", wait_until="domcontentloaded", timeout=30000)
+        await page.goto(
+            "https://github.com/login",
+            wait_until="domcontentloaded",
+            timeout=30000,
+        )
         await page.wait_for_load_state("networkidle")
         await asyncio.sleep(2)
 
@@ -470,7 +480,9 @@ async def main():
             await asyncio.sleep(3)
 
         print("\n=== Google Search Demo ===")
-        await page.goto("https://google.com", wait_until="domcontentloaded", timeout=30000)
+        await page.goto(
+            "https://google.com", wait_until="domcontentloaded", timeout=30000
+        )
         await page.wait_for_load_state("networkidle")
         await asyncio.sleep(2)
 

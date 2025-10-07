@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-30 07:26:11 (ywatanabe)"
+# Timestamp: "2025-10-08 05:01:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_formatters.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/logging/_formatters.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 """Custom formatters for SciTeX logging."""
 
 import logging
@@ -30,7 +34,6 @@ class SciTeXConsoleFormatter(logging.Formatter):
     RESET = "\033[0m"
 
     def format(self, record):
-        """Format the log record with colors for terminal output."""
         if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
             levelname = record.levelname
             if levelname in self.COLORS:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 00:17:02 (ywatanabe)"
+# Timestamp: "2025-10-08 06:04:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -263,11 +263,6 @@ KEY FEATURES:
         "--stop-download",
         action="store_true",
         help="Stop all running Scholar downloads and browser instances",
-    )
-    system_group.add_argument(
-        "--update-symlinks",
-        action="store_true",
-        help="Update all symlinks in project(s) to reflect current status (PDF availability, citation count, etc.)",
     )
 
     return parser
@@ -615,25 +610,25 @@ async def handle_project_operations(args, scholar):
 
         # Count different PDF statuses from symlinks
         pdf_counts = {
-            "PDF_s": 0,  # Success
-            "PDF_f": 0,  # Failed
-            "PDF_p": 0,  # Pending
-            "PDF_r": 0,  # Running
+            "PDF-0p": 0,  # Pending
+            "PDF-1r": 0,  # Running
+            "PDF-2f": 0,  # Failed
+            "PDF-3s": 0,  # Success
         }
 
         if project_dir.exists():
             for item in project_dir.iterdir():
                 if item.is_symlink():
                     symlink_name = item.name
-                    # Extract PDF status from symlink name (format: CC_XXXXXX-PDF_X-IF_XXX-...)
-                    if "-PDF_s-" in symlink_name:
-                        pdf_counts["PDF_s"] += 1
-                    elif "-PDF_f-" in symlink_name:
-                        pdf_counts["PDF_f"] += 1
-                    elif "-PDF_p-" in symlink_name:
-                        pdf_counts["PDF_p"] += 1
-                    elif "-PDF_r-" in symlink_name:
-                        pdf_counts["PDF_r"] += 1
+                    # Extract PDF status from symlink name (format: CC_XXXXXX-PDF-X-IF_XXX-...)
+                    if "PDF-0p" in symlink_name:
+                        pdf_counts["PDF-0p"] += 1
+                    elif "PDF-1r" in symlink_name:
+                        pdf_counts["PDF-1r"] += 1
+                    elif "PDF-2f" in symlink_name:
+                        pdf_counts["PDF-2f"] += 1
+                    elif "PDF-3s" in symlink_name:
+                        pdf_counts["PDF-3s"] += 1
 
         total_papers = len(papers)
 
@@ -642,16 +637,16 @@ async def handle_project_operations(args, scholar):
         logger.info(f"Papers: {total_papers}")
         logger.info("")
         logger.info("PDF Status:")
-        logger.success(f"  ✓ Downloaded (PDF_s): {pdf_counts['PDF_s']}")
-        logger.error(f"  ✗ Failed (PDF_f):     {pdf_counts['PDF_f']}")
-        logger.warning(f"  ⧗ Pending (PDF_p):    {pdf_counts['PDF_p']}")
-        logger.info(f"  ⟳ Running (PDF_r):    {pdf_counts['PDF_r']}")
+        logger.success(f"  ✓ Downloaded (PDF-3s): {pdf_counts['PDF-3s']}")
+        logger.error(f"  ✗ Failed (PDF-2f):     {pdf_counts['PDF-2f']}")
+        logger.warning(f"  ⧗ Pending (PDF-0p):    {pdf_counts['PDF-0p']}")
+        logger.info(f"  ⟳ Running (PDF-1r):    {pdf_counts['PDF-1r']}")
 
         # Calculate coverage
         if total_papers > 0:
-            coverage = (pdf_counts["PDF_s"] / total_papers) * 100
+            coverage = (pdf_counts["PDF-3s"] / total_papers) * 100
             logger.info(
-                f"\nCoverage: {pdf_counts['PDF_s']}/{total_papers} ({coverage:.1f}%)"
+                f"\nCoverage: {pdf_counts['PDF-3s']}/{total_papers} ({coverage:.1f}%)"
             )
 
         logger.info("")
@@ -675,13 +670,13 @@ async def handle_project_operations(args, scholar):
                 for item in project_dir.iterdir():
                     if item.is_symlink() and item.resolve().name == scholar_id:
                         symlink_name = item.name
-                        if "-PDF_s-" in symlink_name:
+                        if "PDF-3s" in symlink_name:
                             pdf_status = "✓ PDF"
-                        elif "-PDF_f-" in symlink_name:
+                        elif "PDF-2f" in symlink_name:
                             pdf_status = "✗ Failed"
-                        elif "-PDF_p-" in symlink_name:
+                        elif "PDF-0p" in symlink_name:
                             pdf_status = "⧗ Pending"
-                        elif "-PDF_r-" in symlink_name:
+                        elif "PDF-1r" in symlink_name:
                             pdf_status = "⟳ Running"
                         break
 
@@ -759,14 +754,6 @@ async def main_async():
     # Set up logging
     if args.debug:
         logging.set_level(logging.DEBUG)
-
-    # Handle update-symlinks command
-    if args.update_symlinks:
-        from scitex.scholar.storage.update_symlinks import SymlinkUpdater
-
-        updater = SymlinkUpdater(project=args.project)
-        updater.run()
-        return
 
     # Handle stop-download command
     if args.stop_download:
@@ -873,9 +860,7 @@ async def main_async():
     )
 
     # Update symlinks when project is specified (ensures metadata is current)
-    if (
-        args.project and not args.update_symlinks
-    ):  # Don't do it twice if --update-symlinks is explicit
+    if args.project:
         try:
             from scitex.scholar.storage._LibraryManager import LibraryManager
 

@@ -1,52 +1,426 @@
+./FULL_DOWNLOAD_LOG.txt
+0 PDFs found
+Scholar initialized with project 'neurovista' at /home/ywatanabe/.scitex/scholar/library/neurovista
+Loading BibTeX: data/neurovista.bib
+Loaded 30 BibTeX entries from data/neurovista.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers
+Enriching papers...
+Enriched: Prediction of seizure likelihood with a long-term,...
+Enriched: Epileptic seizure forecasting with long short-term...
+Enriched: Neural State Monitoring in the Treatment of Epilep...
+Enriched: Leveraging Channel Coherence in Long-Term iEEG Dat...
+Enriched: Forecasting Seizures in Dogs with Naturally Occurr...
+Enriched: Crowdsourcing seizure detection: algorithm develop...
+Enriched: Distributed brain co-processor for tracking spikes...
+Enriched: Circadian and multiday seizure periodicities, and ...
+Enriched: A novel implanted device to wirelessly record and ...
+Enriched: Neurovista: Concept to first-in-man: The war story...
+Enriched: Novel subscalp and intracranial devices to wireles...
+Enriched: Societal return on investment may greatly exceed f...
+Enriched: Seizure forecasting with ultra long-term EEG signa...
+Enriched: Cloud computing for seizure detection in implanted...
+Enriched: Chronic iEEG recordings and interictal spike rate ...
+Enriched: Seizure pathways and seizure durations can vary in...
+Enriched: Multiple mechanisms shape the relationship between...
+Enriched: Regulating Next-Generation Implantable Brain-Compu...
+Enriched: Critical slowing down as a biomarker for seizure s...
+Enriched: Epileptic Seizure Prediction Using Big Data and De...
+Enriched: Using Long Short-Term Memory (LSTM) recurrent neur...
+Enriched: Epilepsyecosystem.org: crowd-sourcing reproducible...
+Enriched: The circadian profile of epilepsy improves seizure...
+Enriched: Seizure Forecasting by High-Frequency Activity (80...
+Enriched: On the performance of seizure prediction machine l...
+Enriched: Forecasting Seizures Using Intracranial EEG Measur...
+Enriched: Path Signatures for Seizure Forecasting...
+Enriched: Welcome to the 3rd International Workshop on Seizu...
+Enriched: Seizure pathways: A model-based investigation...
+Enriched: FPGA Implementation of Epileptic Seizure Detection...
+Added impact factors to 20 papers using JCR database
+Saved BibTeX to data/neurovista_enriched.bib
+Saved enriched BibTeX to: data/neurovista_enriched.bib
+Saving to project: neurovista
+Saved paper to MASTER Scholar library: 1CDA22A9
+Saved paper to MASTER Scholar library: 02452894
+Saved paper to MASTER Scholar library: 4011B3A2
+Saved paper to MASTER Scholar library: D7D3ADE9
+Saved paper to MASTER Scholar library: 8A1B8E08
+Saved paper to MASTER Scholar library: 1CC76612
+Saved paper to MASTER Scholar library: 5DE96505
+Saved paper to MASTER Scholar library: C74FDF10
+Saved paper to MASTER Scholar library: 3ADFFF45
+Saved paper to MASTER Scholar library: 508BAEDC
+Saved paper to MASTER Scholar library: AF2ECE5C
+Saved paper to MASTER Scholar library: 420BEE7F
+Saved paper to MASTER Scholar library: 6875476B
+Saved paper to MASTER Scholar library: 36DA45DE
+Saved paper to MASTER Scholar library: F8448703
+Saved paper to MASTER Scholar library: 62F2B887
+Saved paper to MASTER Scholar library: DCDE3DC7
+Saved paper to MASTER Scholar library: D26B4E35
+Saved paper to MASTER Scholar library: 95470ADC
+Saved paper to MASTER Scholar library: 6375819C
+Saved paper to MASTER Scholar library: 8E650A41
+Saved paper to MASTER Scholar library: BC643ED1
+Saved paper to MASTER Scholar library: 0F9573A8
+Saved paper to MASTER Scholar library: 79D07D2F
+Saved paper to MASTER Scholar library: 5FEB60BC
+Saved paper to MASTER Scholar library: A8B89915
+Saved paper to MASTER Scholar library: C6961090
+Saved paper to MASTER Scholar library: F45A8E5A
+Saved paper to MASTER Scholar library: 3F7B339B
+Saved paper to MASTER Scholar library: 39305E03
+Saved 30/30 papers to library
+Saved 30 papers to library with symlinks created
+Saved original BibTeX to project library: /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista.bib
+Saved enriched BibTeX to project library: /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Loaded 30 BibTeX entries from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista.bib
+Loaded 30 BibTeX entries from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Merge complete: 30 unique papers from 60 total (30 duplicates)
+Saved BibTeX to /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/merged.bib
+Created merged.bib from 2 BibTeX files with 30 unique papers: /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/merged.bib
+Created bibliography.bib symlink at project root
+Scholar initialized with project 'neurovista' at /home/ywatanabe/.scitex/scholar/library/neurovista
+Loading BibTeX: data/neurovista_enriched.bib
+Loaded 30 BibTeX entries from data/neurovista_enriched.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers
+Using --enrich and --download together
+RECOMMENDED: Run as two separate steps for better reliability:
+  Step 1: python -m scitex.scholar --bibtex input.bib --output enriched.bib --project PROJECT --enrich
+  Step 2: python -m scitex.scholar --bibtex enriched.bib --project PROJECT --download
+Enriching papers...
+Enriched: Prediction of seizure likelihood with a long-term,...
+Enriched: Epileptic seizure forecasting with long short-term...
+Enriched: Neural State Monitoring in the Treatment of Epilep...
+Enriched: Leveraging Channel Coherence in Long-Term iEEG Dat...
+Enriched: Forecasting Seizures in Dogs with Naturally Occurr...
+Enriched: Crowdsourcing seizure detection: algorithm develop...
+Enriched: Distributed brain co-processor for tracking spikes...
+Enriched: Circadian and multiday seizure periodicities, and ...
+Enriched: A novel implanted device to wirelessly record and ...
+Enriched: Neurovista: Concept to first-in-man: The war story...
+Enriched: Novel subscalp and intracranial devices to wireles...
+Enriched: Societal return on investment may greatly exceed f...
+Enriched: Seizure forecasting with ultra long-term EEG signa...
+Enriched: Cloud computing for seizure detection in implanted...
+Enriched: Chronic iEEG recordings and interictal spike rate ...
+Enriched: Seizure pathways and seizure durations can vary in...
+Enriched: Multiple mechanisms shape the relationship between...
+Enriched: Regulating Next-Generation Implantable Brain-Compu...
+Enriched: Critical slowing down as a biomarker for seizure s...
+Enriched: Epileptic Seizure Prediction Using Big Data and De...
+Enriched: Using Long Short-Term Memory (LSTM) recurrent neur...
+Enriched: Epilepsyecosystem.org: crowd-sourcing reproducible...
+Enriched: The circadian profile of epilepsy improves seizure...
+Enriched: Seizure Forecasting by High-Frequency Activity (80...
+Enriched: On the performance of seizure prediction machine l...
+Enriched: Forecasting Seizures Using Intracranial EEG Measur...
+Enriched: Path Signatures for Seizure Forecasting...
+Enriched: Welcome to the 3rd International Workshop on Seizu...
+Enriched: Seizure pathways: A model-based investigation...
+Enriched: FPGA Implementation of Epileptic Seizure Detection...
+No impact factors added (already present or not found)
+Saved BibTeX to data/neurovista_enriched_enriched.bib
+Saved enriched BibTeX to: data/neurovista_enriched_enriched.bib
+Saving to project: neurovista
+Saved paper to MASTER Scholar library: 1CDA22A9
+Saved paper to MASTER Scholar library: 02452894
+Saved paper to MASTER Scholar library: 4011B3A2
+Saved paper to MASTER Scholar library: D7D3ADE9
+Saved paper to MASTER Scholar library: 8A1B8E08
+Saved paper to MASTER Scholar library: 1CC76612
+Saved paper to MASTER Scholar library: 5DE96505
+Saved paper to MASTER Scholar library: C74FDF10
+Saved paper to MASTER Scholar library: 3ADFFF45
+Saved paper to MASTER Scholar library: 508BAEDC
+Saved paper to MASTER Scholar library: AF2ECE5C
+Saved paper to MASTER Scholar library: 420BEE7F
+Saved paper to MASTER Scholar library: 6875476B
+Saved paper to MASTER Scholar library: 36DA45DE
+Saved paper to MASTER Scholar library: F8448703
+Saved paper to MASTER Scholar library: 62F2B887
+Saved paper to MASTER Scholar library: DCDE3DC7
+Saved paper to MASTER Scholar library: D26B4E35
+Saved paper to MASTER Scholar library: 95470ADC
+Saved paper to MASTER Scholar library: 6375819C
+Saved paper to MASTER Scholar library: 8E650A41
+Saved paper to MASTER Scholar library: BC643ED1
+Saved paper to MASTER Scholar library: 0F9573A8
+Saved paper to MASTER Scholar library: 79D07D2F
+Saved paper to MASTER Scholar library: 5FEB60BC
+Saved paper to MASTER Scholar library: A8B89915
+Saved paper to MASTER Scholar library: C6961090
+Saved paper to MASTER Scholar library: F45A8E5A
+Saved paper to MASTER Scholar library: 3F7B339B
+Saved paper to MASTER Scholar library: 39305E03
+Saved 30/30 papers to library
+Saved 30 papers to library with symlinks created
+Downloading PDFs for 28 papers...
+Screenshot-enabled PDF downloader is available
+Using parallel download for 28 DOIs
+Found valid authentication session (expires in 2.2h)
+Logging downloads to: /home/ywatanabe/.scitex/scholar/library/neurovista/info/logs/download_20251008_055105.log
+Filtered to 10 papers needing download (skipped 18 with existing PDFs)
+Batch contains papers from 1 journals
+Publisher distribution: {'elsevier.com': 2, 'mdpi.com': 1, 'frontiersin.org': 3, 'unknown': 4}
+Adjusted max_workers from 8 to 3 based on 3 unique publishers
+Preparing 3 worker profiles...
+All 3 worker profiles prepared
+Starting parallel downloads with 3 workers
+2025-10-08 05:51:05.476994 - Started worker 0 with 4 papers
+2025-10-08 05:51:06.506385 - Started worker 1 with 3 papers
+2025-10-08 05:51:08.539939 - Started worker 2 with 3 papers
+Worker 0: Starting with 4 papers
+Worker 0: Using profile name: system_worker_0
+Syncing profile: system_worker_0 ← system
+Profile sync complete: system_worker_0 ← system (28 files, 12.0MB, 0.20s)
+Worker 0: Profile synced from system profile
+Loaded session from cache (/home/ywatanabe/.scitex/scholar/cache/auth/openathens.json): 14 cookies (expires in 2h 10m)
+Worker 1: Starting with 3 papers
+Worker 1: Using profile name: system_worker_1
+Syncing profile: system_worker_1 ← system
+Profile sync complete: system_worker_1 ← system (26 files, 12.0MB, 0.20s)
+Worker 1: Profile synced from system profile
+Worker 2: Starting with 3 papers
+Worker 2: Using profile name: system_worker_2
+Syncing profile: system_worker_2 ← system
+Profile sync complete: system_worker_2 ← system (36 files, 12.2MB, 0.21s)
+Worker 2: Profile synced from system profile
+Verified live authentication at https://my.openathens.net/account
+Verified live authentication at https://my.openathens.net/account
+Verified live authentication at https://my.openathens.net/account
+All 6/6 extensions installed
+_XSERVTransmkdir: Mode of /tmp/.X11-unix should be set to 1777
+_XSERVTransSocketCreateListener: failed to bind listener
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: failed to create listener for unix
+Xvfb display :99 is running
+All 6/6 extensions installed
+Xvfb display :99 is running
+All 6/6 extensions installed
+Xvfb display :99 is running
+Loaded 4 authentication cookies into persistent browser context
+Using persistent context with profile and extensions
+Worker 0 [1/4]: Processing Unknown...
+Using cached full results for DOI: 10.25259/sni_230_2020
+Worker 0: No PDF URLs found for Unknown
+Worker 0 [2/4]: Processing Unknown...
+Using cached full results for DOI: 10.3389/fvets.2022.1014269
+Loaded 4 authentication cookies into persistent browser context
+Using persistent context with profile and extensions
+Worker 2 [1/3]: Processing Unknown...
+Using cached full results for DOI: 10.3390/brainsci9070156
+Worker 2: No PDF URLs found for Unknown
+Worker 2 [2/3]: Processing Unknown...
 
-0
-/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/library/neurovista/
+----------------------------------------
+ScholarURLFinder finding PDF URLs for 10.1016/j.ebiom.2017.11.032...
+----------------------------------------
+No PDFs from publisher URL, resolving OpenURL...
+Loaded 4 authentication cookies into persistent browser context
+Using persistent context with profile and extensions
+Worker 1 [1/3]: Processing Unknown...
+Using cached full results for DOI: 10.1016/s1474-4422(13)70075-9
+Worker 1: No PDF URLs found for Unknown
+Worker 1 [2/3]: Processing Unknown...
+Using cached full results for DOI: 10.1088/1741-2552/aaf92e
+Worker 1: No PDF URLs found for Unknown
+Worker 1 [3/3]: Processing Unknown...
+Using cached full results for DOI: 10.2139/ssrn.5293145
+Worker 1: No PDF URLs found for Unknown
+Worker 1: Completed
+Worker 2: Error processing paper: Page.wait_for_timeout: Target page, context or browser has been closed
+Worker 2 [3/3]: Processing Unknown...
+Using cached full results for DOI: 10.3389/fnins.2024.1417748
+Worker 2: No PDF URLs found for Unknown
+Worker 2: Completed
+Created project symlink: /home/ywatanabe/.scitex/scholar/library/neurovista/PDF-1r_CC-000003_IF-002_2022_Loscher_Frontiers-in-Veterinary-Scienc -> ../MASTER/AF2ECE5C
+Using screenshot-enabled download for 10.3389/fvets.2022.1014269 (paper_id: AF2ECE5C)
+Cache hit: https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2022.1014269/pdf -> /tmp/worker_0_10.3389_fvets.2022.1014269.pdf (1.97 MiB)
+Created project symlink: /home/ywatanabe/.scitex/scholar/library/neurovista/PDF-2f_CC-000003_IF-002_2022_Loscher_Frontiers-in-Veterinary-Scienc -> ../MASTER/AF2ECE5C
+Worker 0 [3/4]: Processing Unknown...
+Using cached full results for DOI: 10.3389/fnins.2024.1472747
+Worker 0: No PDF URLs found for Unknown
+Worker 0 [4/4]: Processing Unknown...
+
+----------------------------------------
+ScholarURLFinder finding PDF URLs for 10.1212/wnl.0000000000200348...
+----------------------------------------
+Loaded 681 Zotero translators
+Loaded Zotero JavaScript modules successfully
+Executing Zotero translator: Atypon Journals
+Translator error: ZU.doPost is not a function
+Zotero Translator did not extract any URLs from https://www.neurology.org/doi/10.1212/WNL.0000000000200348
+Publisher-specific patterns did not match any PDF URLs from https://www.neurology.org/doi/10.1212/WNL.0000000000200348
+Found 1 unique PDF URLs from https://www.neurology.org/doi/10.1212/WNL.0000000000200348
+  - direct_link: 1 URLs
+Found 1 PDFs from publisher URL - skipping OpenURL resolution
+Created project symlink: /home/ywatanabe/.scitex/scholar/library/neurovista/PDF-1r_CC-000004_IF-007_2022_Chen_Neurology -> ../MASTER/79D07D2F
+Using screenshot-enabled download for 10.1212/wnl.0000000000200348 (paper_id: 79D07D2F)
+Trying method: Direct Download
+Trying direct download from https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348
+Trying method: Chrome PDF
+Chrome PDF Viewer failed to download from https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348 to /tmp/worker_0_10.1212_wnl.0000000000200348.pdf: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348", waiting until "networkidle"
+
+Trying method: From Response Body
+Trying to download https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348 from response body
+Failed download from response body
+All download methods failed for https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348
+Retrying download with screenshot documentation for https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348
+Retrying with chrome_pdf method and screenshots
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055406_195-chrome_pdf_initial.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055406_195-chrome_pdf_initial.png
+  Size: 8588 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055406_276-interval_001.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055406_276-interval_001.png
+  Size: 8588 bytes
+After navigation - Expected: https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348
+After navigation - Actual: https://www.neurology.org/doi/abs/10.1212/WNL.0000000000200348
+URL redirect detected: https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348 -> https://www.neurology.org/doi/abs/10.1212/WNL.0000000000200348
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055410_812-interval_002.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055410_812-interval_002.png
+  Size: 799561 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055415_989-chrome_pdf_loaded.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055415_989-chrome_pdf_loaded.png
+  Size: 800264 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055418_406-interval_003.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055418_406-interval_003.png
+  Size: 804757 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055419_820-chrome_pdf_viewer_detected.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055419_820-chrome_pdf_viewer_detected.png
+  Size: 805814 bytes
+Chrome PDF method failed: click_download_for_chrome_pdf_viewer_async() missing 1 required positional argument: 'output_path'
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055423_024-chrome_pdf_error_click_download_for_chrome_pdf_.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055423_024-chrome_pdf_error_click_download_for_chrome_pdf_.png
+  Size: 805814 bytes
+Retrying with direct method and screenshots
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055424_632-direct_initial.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055424_632-direct_initial.png
+  Size: 8588 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055424_717-interval_001.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055424_717-interval_001.png
+  Size: 8588 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055429_264-interval_002.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055429_264-interval_002.png
+  Size: 799132 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055430_989-direct_final_state.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055430_989-direct_final_state.png
+  Size: 799937 bytes
+Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n')>
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts loaded
+
+Retrying with response method and screenshots
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055435_769-response_initial.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055435_769-response_initial.png
+  Size: 8588 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055442_198-response_loaded.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055442_198-response_loaded.png
+  Size: 799132 bytes
+Screenshot saved: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots/20251008_055445_891-response_not_pdf.png
+  Directory: /home/ywatanabe/.scitex/scholar/library/MASTER/79D07D2F/screenshots
+  Filename: 20251008_055445_891-response_not_pdf.png
+  Size: 800264 bytes
+Error capturing failure screenshots: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.neurology.org/doi/pdf/10.1212/WNL.0000000000200348", waiting until "networkidle"
+
+Worker 0: Captured 5 screenshots for 10.1212/wnl.0000000000200348
+Created project symlink: /home/ywatanabe/.scitex/scholar/library/neurovista/PDF-2f_CC-000004_IF-007_2022_Chen_Neurology -> ../MASTER/79D07D2F
+Worker 0: Completed
+============================================================
+Download Statistics:
+  Total papers:      10
+  Downloaded:        0
+  Failed:            10
+  Skipped:           18
+============================================================
+Downloaded: 0, Failed: 10
+Saved original BibTeX to project library: /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Loaded 30 BibTeX entries from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista.bib
+Loaded 30 BibTeX entries from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Created 30 papers from BibTeX file
+Loaded 30 papers from /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/neurovista_enriched.bib
+Merge complete: 30 unique papers from 60 total (30 duplicates)
+Saved BibTeX to /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/merged.bib
+Created merged.bib from 2 BibTeX files with 30 unique papers: /home/ywatanabe/.scitex/scholar/library/neurovista/info/bibtex/merged.bib
+Created bibliography.bib symlink at project root
+/home/ywatanabe/.scitex/scholar/library/neurovista/
 ├── bibliography.bib -> info/bibtex/merged.bib
-├── CC_000000-PDF_f-IF_000-2007-Schelter-Unknown -> ../MASTER/F45A8E5A
-├── CC_000000-PDF_f-IF_000-2023-Payne-Unknown -> ../MASTER/02452894
-├── CC_000000-PDF_f-IF_006-2025-Lu-IEEE-Journal-of-Biomedical-and -> ../MASTER/D7D3ADE9
-├── CC_000000-PDF_p-IF_003-2019-Baldassano-Journal-of-Neural-Engineering -> ../MASTER/36DA45DE
-├── CC_000000-PDF_p-IF_003-2024-Andrade-Frontiers-in-Neuroscience -> ../MASTER/5FEB60BC
-├── CC_000000-PDF_p-IF_003-2024-Yang-Clinical-Neurophysiology -> ../MASTER/6875476B
-├── CC_000001-PDF_p-IF_000-2022-Ahmad-2022-4th-Novel-Intelligent-and -> ../MASTER/39305E03
-├── CC_000001-PDF_p-IF_000-2022-Schroeder-arXiv-Cornell-University -> ../MASTER/F8448703
-├── CC_000001-PDF_p-IF_000-2023-Haderlein-ArXiv -> ../MASTER/C6961090
-├── CC_000001-PDF_p-IF_000-2025-Sirbu-ArXiv -> ../MASTER/D26B4E35
-├── CC_000001-PDF_s-IF_000-2021-Schroeder-arXiv-Cornell-University -> ../MASTER/62F2B887
-├── CC_000002-PDF_p-IF_000-2021-Dilorenzo-Surgical-Neurology-Internation -> ../MASTER/420BEE7F
-├── CC_000002-PDF_p-IF_003-2024-Chambers-Frontiers-in-Neuroscience -> ../MASTER/8E650A41
-├── CC_000003-PDF_f-IF_002-2022-Loscher-Frontiers-in-Veterinary-Scienc -> ../MASTER/AF2ECE5C
-├── CC_000004-PDF_p-IF_007-2022-Chen-Neurology -> ../MASTER/79D07D2F
-├── CC_000005-PDF_s-IF_000-2019-Dilorenzo-Surgical-Neurology-Internation -> ../MASTER/508BAEDC
-├── CC_000012-PDF_p-IF_004-2022-Schroeder-Brain-Communications -> ../MASTER/DCDE3DC7
-├── CC_000017-PDF_p-IF_002-2019-Dilorenzo-Brain-Sciences -> ../MASTER/4011B3A2
-├── CC_000036-PDF_p-IF_004-2022-Sladky-Brain-communications -> ../MASTER/5DE96505
-├── CC_000052-PDF_p-IF_003-2018-Karoly-PLoS-Computational-Biology -> ../MASTER/3F7B339B
-├── CC_000078-PDF_f-IF_002-2015-Brinkmann-PLoS-ONE -> ../MASTER/A8B89915
-├── CC_000085-PDF_p-IF_004-2020-Gregg-Brain-Communications -> ../MASTER/C74FDF10
-├── CC_000110-PDF_p-IF_002-2011-Davis-Epilepsy-Research -> ../MASTER/3ADFFF45
-├── CC_000113-PDF_p-IF_010-2017-Baldassano-Brain -> ../MASTER/1CC76612
-├── CC_000125-PDF_p-IF_002-2014-Howbert-PLoS-ONE -> ../MASTER/8A1B8E08
-├── CC_000178-PDF_p-IF_010-2018-Kuhlmann-Brain -> ../MASTER/BC643ED1
-├── CC_000195-PDF_p-IF_010-2017-Karoly-Brain -> ../MASTER/0F9573A8
-├── CC_000208-PDF_p-IF_014-2020-Maturana-Nature-Communications -> ../MASTER/95470ADC
-├── CC_000279-PDF_p-IF_009-2017-Kiral-Kornek-EBioMedicine -> ../MASTER/6375819C
-├── CC_000812-PDF_f-IF_000-2013-Cook-The-Lancet-Neurology -> ../MASTER/1CDA22A9
-└── info
-    ├── bibtex
-    │   ├── merged.bib
-    │   ├── neurovista.bib
-    │   └── neurovista_enriched.bib
-    ├── logs
-    │   └── download_20251008_004009.log
-    └── project_metadata.json
+├── info
+│   ├── bibtex
+│   │   ├── merged.bib
+│   │   ├── neurovista.bib
+│   │   └── neurovista_enriched.bib
+│   ├── logs
+│   │   ├── download_20251008_004009.log
+│   │   ├── download_20251008_051520.log
+│   │   ├── download_20251008_051721.log
+│   │   ├── download_20251008_051818.log
+│   │   ├── download_20251008_052351.log
+│   │   ├── download_20251008_052800.log
+│   │   ├── download_20251008_053914.log
+│   │   ├── download_20251008_054047.log
+│   │   ├── download_20251008_054148.log
+│   │   ├── download_20251008_054943.log
+│   │   └── download_20251008_055105.log
+│   └── project_metadata.json
+├── PDF-1r_CC-000012_IF-004_2022_Schroeder_Brain-Communications -> ../MASTER/DCDE3DC7
+├── PDF-1r_CC-000110_IF-002_2011_Davis_Epilepsy-Research -> ../MASTER/3ADFFF45
+├── PDF-1r_CC-000113_IF-010_2017_Baldassano_Brain -> ../MASTER/1CC76612
+├── PDF-2f_CC-000000_IF-000_2007_Schelter_Unknown -> ../MASTER/F45A8E5A
+├── PDF-2f_CC-000000_IF-000_2023_Payne_Unknown -> ../MASTER/02452894
+├── PDF-2f_CC-000000_IF-003_2019_Baldassano_Journal-of-Neural-Engineering -> ../MASTER/36DA45DE
+├── PDF-2f_CC-000000_IF-003_2024_Andrade_Frontiers-in-Neuroscience -> ../MASTER/5FEB60BC
+├── PDF-2f_CC-000001_IF-000_2025_Sirbu_ArXiv -> ../MASTER/D26B4E35
+├── PDF-2f_CC-000002_IF-000_2021_Dilorenzo_Surgical-Neurology-Internation -> ../MASTER/420BEE7F
+├── PDF-2f_CC-000002_IF-003_2024_Chambers_Frontiers-in-Neuroscience -> ../MASTER/8E650A41
+├── PDF-2f_CC-000003_IF-002_2022_Loscher_Frontiers-in-Veterinary-Scienc -> ../MASTER/AF2ECE5C
+├── PDF-2f_CC-000004_IF-007_2022_Chen_Neurology -> ../MASTER/79D07D2F
+├── PDF-2f_CC-000017_IF-002_2019_Dilorenzo_Brain-Sciences -> ../MASTER/4011B3A2
+├── PDF-2f_CC-000279_IF-009_2017_Kiral-Kornek_EBioMedicine -> ../MASTER/6375819C
+├── PDF-2f_CC-000812_IF-000_2013_Cook_The-Lancet-Neurology -> ../MASTER/1CDA22A9
+├── PDF-3s_CC-000000_IF-003_2024_Yang_Clinical-Neurophysiology -> ../MASTER/6875476B
+├── PDF-3s_CC-000000_IF-006_2025_Lu_IEEE-Journal-of-Biomedical-and -> ../MASTER/D7D3ADE9
+├── PDF-3s_CC-000001_IF-000_2021_Schroeder_arXiv-Cornell-University -> ../MASTER/62F2B887
+├── PDF-3s_CC-000001_IF-000_2022_Ahmad_2022-4th-Novel-Intelligent-and -> ../MASTER/39305E03
+├── PDF-3s_CC-000001_IF-000_2022_Schroeder_arXiv-Cornell-University -> ../MASTER/F8448703
+├── PDF-3s_CC-000001_IF-000_2023_Haderlein_ArXiv -> ../MASTER/C6961090
+├── PDF-3s_CC-000005_IF-000_2019_Dilorenzo_Surgical-Neurology-Internation -> ../MASTER/508BAEDC
+├── PDF-3s_CC-000036_IF-004_2022_Sladky_Brain-communications -> ../MASTER/5DE96505
+├── PDF-3s_CC-000052_IF-003_2018_Karoly_PLoS-Computational-Biology -> ../MASTER/3F7B339B
+├── PDF-3s_CC-000078_IF-002_2015_Brinkmann_PLoS-ONE -> ../MASTER/A8B89915
+├── PDF-3s_CC-000085_IF-004_2020_Gregg_Brain-Communications -> ../MASTER/C74FDF10
+├── PDF-3s_CC-000125_IF-002_2014_Howbert_PLoS-ONE -> ../MASTER/8A1B8E08
+├── PDF-3s_CC-000178_IF-010_2018_Kuhlmann_Brain -> ../MASTER/BC643ED1
+├── PDF-3s_CC-000195_IF-010_2017_Karoly_Brain -> ../MASTER/0F9573A8
+└── PDF-3s_CC-000208_IF-014_2020_Maturana_Nature-Communications -> ../MASTER/95470ADC
 
-34 directories, 6 files
-0
-~/.scitex/scholar/library/neurovista/
-└── info
-    └── bibtex
-        └── seizure_prediction_enriched.bib
-
-3 directories, 1 file
-0
+34 directories, 16 files
+0 PDFs found

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 04:08:00 (ywatanabe)"
+# Timestamp: "2025-10-08 05:14:22 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/browser/utils/_click_and_wait.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from typing import Dict, Optional
 
@@ -51,8 +55,11 @@ async def click_and_wait(
             'timed_out': bool,
         }
     """
-    from scitex.browser.debugging import highlight_element_async
-    from ._show_popup_and_capture_async import show_popup_and_capture_async
+    from scitex.browser.debugging import (
+        highlight_element_async,
+        show_popup_and_capture_async,
+    )
+
     from ._wait_redirects import wait_redirects
 
     page = link.page

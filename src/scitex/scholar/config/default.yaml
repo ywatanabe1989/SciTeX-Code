@@ -1,4 +1,4 @@
-# Timestamp: "2025-10-07 23:55:32 (ywatanabe)"
+# Timestamp: "2025-10-08 04:57:11 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -75,7 +75,7 @@ notification_email: ${UNIMELB_EMAIL:-null}
 notification_from_email: ${SCITEX_EMAIL_AGENT:-"agent@scitex.ai"}
 
 # Screenshot settings
-capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-false}
+capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-true}
 
 # ----------------------------------------
 # browser:
@@ -525,115 +525,138 @@ publisher_pdf_rules:
 # ----------------------------------------
 # Configuration for authentication gateway pattern
 # Defines which publishers require authentication and preferred providers
-authentication:
-  # Active authentication provider (openathens, ezproxy, shibboleth)
-  active_provider: openathens
+# Active authentication provider (openathens, ezproxy, shibboleth)
+auth_active_provider: openathens
 
-  # Authentication endpoint patterns for redirect waiting
-  # These are intermediate endpoints that perform client-side redirects
-  auth_endpoint_patterns:
-    # OpenAthens
-    - "go.openathens.net"
-    - "login.openathens.net"
-    # Elsevier
-    - "auth.elsevier.com"
-    - "login.elsevier.com"
-    - "secure.jbs.elsevierhealth.com"
-    # Nature
-    - "idp.nature.com"
-    # Generic SSO patterns
-    - "shibboleth"
-    - "saml"
-    - "/ShibAuth/"
-    - "/authenticate"
-    - "/login"
-    - "/signin"
-    - "/sso/"
+# Authentication endpoint patterns for redirect waiting
+# These are intermediate endpoints that perform client-side redirects
+auth_endpoint_patterns:
+  # OpenAthens
+  - "go.openathens.net"
+  - "login.openathens.net"
+  # Elsevier
+  - "auth.elsevier.com"
+  - "login.elsevier.com"
+  - "secure.jbs.elsevierhealth.com"
+  # Nature
+  - "idp.nature.com"
+  # Generic SSO patterns
+  - "shibboleth"
+  - "saml"
+  - "/ShibAuth/"
+  - "/authenticate"
+  - "/login"
+  - "/signin"
+  - "/sso/"
 
-  # Article URL indicators (for detecting final destination)
-  article_url_patterns:
-    - "/science/article/"
-    - "/articles/"
-    - "/content/"
-    - "/full/"
-    - "/fulltext/"
-    - "/doi/full/"
-    - "/doi/abs/"
-    - "/doi/pdf/"
-    - ".pdf"
+# Article URL indicators (for detecting final destination)
+article_url_patterns:
+  - "/science/article/"
+  - "/articles/"
+  - "/content/"
+  - "/full/"
+  - "/fulltext/"
+  - "/doi/full/"
+  - "/doi/abs/"
+  - "/doi/pdf/"
+  - ".pdf"
 
-  # Publishers requiring authentication (paywalled content)
-  # Gateway will visit OpenURL to establish publisher-specific session cookies
-  paywalled_publishers:
-    - name: IEEE
-      doi_prefixes:
-        - "10.1109"  # IEEE DOI prefix
-      domain_patterns:
-        - "ieeexplore.ieee.org"
-        - "ieee.org"
-      preferred_provider: openathens
+# Publishers requiring authentication (paywalled content)
+# Gateway will visit OpenURL to establish publisher-specific session cookies
+paywalled_publishers:
+  - name: IEEE
+    doi_prefixes:
+      - "10.1109"  # IEEE DOI prefix
+    domain_patterns:
+      - "ieeexplore.ieee.org"
+      - "ieee.org"
+    preferred_provider: openathens
 
-    - name: Springer
-      doi_prefixes:
-        - "10.1007"  # Springer DOI prefix
-      domain_patterns:
-        - "link.springer.com"
-        - "springer.com"
-        - "springernature.com"
-      preferred_provider: openathens
+  - name: Springer
+    doi_prefixes:
+      - "10.1007"  # Springer DOI prefix
+    domain_patterns:
+      - "link.springer.com"
+      - "springer.com"
+      - "springernature.com"
+    preferred_provider: openathens
 
-    - name: Wiley
-      doi_prefixes:
-        - "10.1002"  # Wiley DOI prefix
-        - "10.1111"  # Wiley alternate prefix
-      domain_patterns:
-        - "onlinelibrary.wiley.com"
-        - "wiley.com"
-      preferred_provider: openathens
+  - name: Wiley
+    doi_prefixes:
+      - "10.1002"  # Wiley DOI prefix
+      - "10.1111"  # Wiley alternate prefix
+    domain_patterns:
+      - "onlinelibrary.wiley.com"
+      - "wiley.com"
+    preferred_provider: openathens
 
-    - name: Nature
-      doi_prefixes:
-        - "10.1038"  # Nature DOI prefix
-      domain_patterns:
-        - "nature.com"
-        - "springernature.com"
-      preferred_provider: openathens
+  - name: Nature
+    doi_prefixes:
+      - "10.1038"  # Nature DOI prefix
+    domain_patterns:
+      - "nature.com"
+      - "springernature.com"
+    preferred_provider: openathens
 
-    - name: ScienceDirect
-      doi_prefixes:
-        - "10.1016"  # Elsevier/ScienceDirect DOI prefix
-      domain_patterns:
-        - "sciencedirect.com"
-        - "elsevier.com"
-      preferred_provider: openathens
+  - name: ScienceDirect
+    doi_prefixes:
+      - "10.1016"  # Elsevier/ScienceDirect DOI prefix
+    domain_patterns:
+      - "sciencedirect.com"
+      - "elsevier.com"
+    preferred_provider: openathens
 
-    - name: Taylor & Francis
-      domain_patterns:
-        - "tandfonline.com"
-        - "taylorfrancis.com"
-      preferred_provider: openathens
+  - name: Taylor & Francis
+    domain_patterns:
+      - "tandfonline.com"
+      - "taylorfrancis.com"
+    preferred_provider: openathens
 
-    - name: Oxford University Press
-      domain_patterns:
-        - "academic.oup.com"
-        - "oup.com"
-      preferred_provider: openathens
+  - name: Oxford University Press
+    domain_patterns:
+      - "academic.oup.com"
+      - "oup.com"
+    preferred_provider: openathens
 
-    - name: Cambridge University Press
-      domain_patterns:
-        - "cambridge.org"
-      preferred_provider: openathens
+  - name: Cambridge University Press
+    domain_patterns:
+      - "cambridge.org"
+    preferred_provider: openathens
 
-    - name: SAGE
-      domain_patterns:
-        - "journals.sagepub.com"
-        - "sagepub.com"
-      preferred_provider: openathens
+  - name: SAGE
+    domain_patterns:
+      - "journals.sagepub.com"
+      - "sagepub.com"
+    preferred_provider: openathens
 
-    - name: ACS Publications
-      domain_patterns:
-        - "pubs.acs.org"
-        - "acs.org"
-      preferred_provider: openathens
+  - name: ACS Publications
+    domain_patterns:
+      - "pubs.acs.org"
+      - "acs.org"
+    preferred_provider: openathens
+
+  - name: IOP Publishing
+    doi_prefixes:
+      - "10.1088"  # IOP DOI prefix
+    domain_patterns:
+      - "iopscience.iop.org"
+      - "iop.org"
+    preferred_provider: openathens
+
+  - name: SSRN
+    doi_prefixes:
+      - "10.2139"  # SSRN DOI prefix
+    domain_patterns:
+      - "ssrn.com"
+      - "papers.ssrn.com"
+    preferred_provider: openathens
+
+  - name: Lancet
+    doi_prefixes:
+      - "10.1016"  # Lancet uses Elsevier DOIs (same as ScienceDirect)
+    domain_patterns:
+      - "thelancet.com"
+      - "lancet.com"
+    preferred_provider: openathens
 
 # EOF

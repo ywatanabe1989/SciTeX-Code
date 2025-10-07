@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 01:45:50 (ywatanabe)"
+# Timestamp: "2025-10-08 06:12:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -544,6 +544,7 @@ if __name__ == "__main__":
         doi = "10.1016/j.cell.2025.07.007"
         doi = "10.1126/science.aao0702"
         doi = "https://doi.org/10.1109/jbhi.2025.3556775"
+        doi = "https://doi.org/10.1088/1741-2552/aaf92e"
         urls = await url_finder.find_urls(
             doi=doi,
         )

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 04:18:00 (ywatanabe)"
+# Timestamp: "2025-10-08 05:07:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/browser/utils/_wait_redirects.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 Enhanced redirect waiter that handles authentication endpoints properly.
@@ -41,20 +45,25 @@ def _load_auth_patterns() -> tuple[List[str], List[str]]:
         return _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
 
     try:
-        from ...config import get_config
-        config = get_config()
-        _AUTH_ENDPOINTS = config.get("authentication", {}).get("auth_endpoint_patterns", [])
-        _ARTICLE_PATTERNS = config.get("authentication", {}).get("article_url_patterns", [])
+        from ...config import ScholarConfig
+
+        config = ScholarConfig()
+        _AUTH_ENDPOINTS = config.resolve("auth_endpoint_patterns", None)
+        _ARTICLE_PATTERNS = config.resolve("article_url_patterns", None)
 
         if not _AUTH_ENDPOINTS:
-            logger.warning("No auth_endpoint_patterns in config, using fallback")
+            logger.warning(
+                "No auth_endpoint_patterns in config, using fallback"
+            )
             _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
         if not _ARTICLE_PATTERNS:
             logger.warning("No article_url_patterns in config, using fallback")
             _ARTICLE_PATTERNS = _get_fallback_article_patterns()
 
     except Exception as e:
-        logger.warning(f"Failed to load patterns from config: {e}, using fallback")
+        logger.warning(
+            f"Failed to load patterns from config: {e}, using fallback"
+        )
         _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
         _ARTICLE_PATTERNS = _get_fallback_article_patterns()
 
@@ -64,20 +73,34 @@ def _load_auth_patterns() -> tuple[List[str], List[str]]:
 def _get_fallback_auth_patterns() -> List[str]:
     """Fallback auth patterns if config fails."""
     return [
-        "go.openathens.net", "login.openathens.net",
-        "auth.elsevier.com", "login.elsevier.com",
-        "idp.nature.com", "secure.jbs.elsevierhealth.com",
-        "shibboleth", "saml", "/ShibAuth/",
-        "/authenticate", "/login", "/signin", "/sso/",
+        "go.openathens.net",
+        "login.openathens.net",
+        "auth.elsevier.com",
+        "login.elsevier.com",
+        "idp.nature.com",
+        "secure.jbs.elsevierhealth.com",
+        "shibboleth",
+        "saml",
+        "/ShibAuth/",
+        "/authenticate",
+        "/login",
+        "/signin",
+        "/sso/",
     ]
 
 
 def _get_fallback_article_patterns() -> List[str]:
     """Fallback article patterns if config fails."""
     return [
-        "/science/article/", "/articles/", "/content/",
-        "/full/", "/fulltext/", "/doi/full/", "/doi/abs/",
-        "/doi/pdf/", ".pdf",
+        "/science/article/",
+        "/articles/",
+        "/content/",
+        "/full/",
+        "/fulltext/",
+        "/doi/full/",
+        "/doi/abs/",
+        "/doi/pdf/",
+        ".pdf",
     ]
 
 
@@ -123,9 +146,9 @@ def is_final_article_url(url: str) -> bool:
 
 async def wait_redirects(
     page: Page,
-    timeout: int = 30000,
+    timeout: int = 30_000,
     max_redirects: int = 30,
-    show_progress: bool = False,
+    show_progress: bool = True,
     track_chain: bool = True,
     wait_for_idle: bool = True,
     auth_aware: bool = True,  # New parameter
@@ -146,14 +169,17 @@ async def wait_redirects(
         dict with redirect information
     """
     if show_progress:
-        try:
-            from ._show_popup_and_capture_async import show_popup_and_capture_async
-        except ImportError:
-            logger.warning("show_popup_and_capture_async not available")
-            show_progress = False
+        from scitex.browser import show_popup_and_capture_async
 
     start_time = asyncio.get_event_loop().time()
     start_url = page.url
+
+    if show_progress:
+        await show_popup_and_capture_async(
+            page,
+            f"Waiting for redirects (max {timeout/1000:.0f}s)...",
+            duration_ms=timeout
+        )
 
     # Tracking variables
     redirect_chain = [] if track_chain else None
