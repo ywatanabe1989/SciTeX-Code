@@ -28,9 +28,9 @@ async def detect_chrome_pdf_viewer_async(page):
     This function does NOT wait for networkidle to avoid redundant waits.
     """
 
-    from ..debugging import show_popup_and_capture
+    from ..debugging import show_popup_and_capture_async
 
-    await show_popup_and_capture(page, "Detecting Chrome PDF Viewer...")
+    await show_popup_and_capture_async(page, "Detecting Chrome PDF Viewer...")
 
     # Try multiple detection methods
     detected = await page.evaluate(
@@ -82,11 +82,11 @@ async def detect_chrome_pdf_viewer_async(page):
 
     if detected:
         logger.debug("PDF viewer detected")
-        await show_popup_and_capture(page, "✓ PDF viewer elements found!")
+        await show_popup_and_capture_async(page, "✓ PDF viewer elements found!")
         return True
     else:
         logger.debug("PDF viewer not detected")
-        await show_popup_and_capture(page, "✗ No PDF viewer elements found")
+        await show_popup_and_capture_async(page, "✗ No PDF viewer elements found")
         return False
 
 
