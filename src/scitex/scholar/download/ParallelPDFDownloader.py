@@ -187,6 +187,64 @@ class ParallelPDFDownloader:
                 return limits
         return PUBLISHER_LIMITS["default"]
 
+    def _filter_papers_by_pdf_status(
+        self,
+        papers: List[Dict],
+        library_dir: Path,
+        project: str
+    ) -> List[Dict]:
+        """Filter papers to only include those needing download.
+
+        Checks actual PDF status on disk (not just metadata) to avoid
+        wasting workers on papers that already have PDFs.
+
+        Args:
+            papers: List of paper dicts with metadata
+            library_dir: Library directory path
+            project: Project name
+
+        Returns:
+            Filtered list of papers that need downloading
+        """
+        papers_to_download = []
+        master_dir = library_dir / "MASTER"
+
+        for paper in papers:
+            doi = paper.get("doi")
+            if not doi:
+                # No DOI, can't download
+                continue
+
+            # Get paper ID and check for existing PDF
+            paper_id = self.config.path_manager._generate_paper_id(doi=doi)
+            paper_dir = master_dir / paper_id
+
+            if not paper_dir.exists():
+                # Paper directory doesn't exist, needs download
+                papers_to_download.append(paper)
+                continue
+
+            # Check for actual PDF files
+            pdf_files = list(paper_dir.glob("*.pdf"))
+
+            if pdf_files:
+                # PDF already exists, skip
+                logger.debug(f"Skipping {paper_id}: PDF already exists")
+                self.stats["skipped"] += 1
+                continue
+
+            # Check for .downloading marker (download in progress)
+            downloading_marker = paper_dir / ".downloading"
+            if downloading_marker.exists():
+                logger.debug(f"Skipping {paper_id}: Download already in progress")
+                self.stats["skipped"] += 1
+                continue
+
+            # Paper needs download
+            papers_to_download.append(paper)
+
+        return papers_to_download
+
     async def download_batch(
         self,
         papers_with_metadata: List[Dict],
@@ -232,16 +290,48 @@ class ParallelPDFDownloader:
 
             logger.info(f"Logging downloads to: {log_file}")
 
+        # Filter papers by PDF status before worker allocation
+        papers_to_download = self._filter_papers_by_pdf_status(
+            papers_with_metadata,
+            library_dir,
+            project
+        )
+
+        if not papers_to_download:
+            logger.info("All papers already have PDFs (status: PDF_s)")
+            return self.stats
+
+        # Update stats with filtered count
+        self.stats["total"] = len(papers_to_download)
+        logger.info(f"Filtered to {len(papers_to_download)} papers needing download (skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)")
+
         # Analyze journals/publishers in the batch
-        self._analyze_batch(papers_with_metadata)
+        self._analyze_batch(papers_to_download)
 
         try:
             if self.use_parallel and self.max_workers > 1:
+                # Preemptively create worker profiles to avoid crashes
+                await self._prepare_worker_profiles_async(self.max_workers)
+
                 logger.info(f"Starting parallel downloads with {self.max_workers} workers")
-                return await self._download_parallel(papers_with_metadata, project, library_dir)
+                result = await self._download_parallel(papers_to_download, project, library_dir)
             else:
                 logger.info("Using sequential downloads (no parallel)")
-                return await self._download_sequential(papers_with_metadata, project, library_dir)
+                result = await self._download_sequential(papers_to_download, project, library_dir)
+
+            # Log final statistics
+            logger.info("=" * 60)
+            logger.info("Download Statistics:")
+            logger.info(f"  Total papers:      {self.stats['total']}")
+            logger.info(f"  Downloaded:        {self.stats['downloaded']}")
+            logger.info(f"  Failed:            {self.stats['failed']}")
+            logger.info(f"  Skipped:           {self.stats['skipped']}")
+            if self.stats['downloaded'] > 0:
+                success_rate = (self.stats['downloaded'] / self.stats['total']) * 100
+                logger.info(f"  Success rate:      {success_rate:.1f}%")
+            logger.info("=" * 60)
+
+            return result
         finally:
             # Clean up log file handler
             if self.log_file_handler:
@@ -249,6 +339,42 @@ class ParallelPDFDownloader:
                 stdlib_logging.getLogger().removeHandler(self.log_file_handler)
                 self.log_file_handler.close()
                 self.log_file_handler = None
+
+    async def _prepare_worker_profiles_async(self, num_workers: int) -> None:
+        """Preemptively create worker profiles to avoid browser crashes.
+
+        Creates worker profiles for all potential workers BEFORE starting downloads.
+        This prevents crashes from multiple Chrome instances trying to use the same profile.
+
+        Args:
+            num_workers: Number of worker profiles to create
+        """
+        from scitex.scholar.browser.local.utils._ChromeProfileManager import ChromeProfileManager
+
+        logger.info(f"Preparing {num_workers} worker profiles...")
+
+        for worker_id in range(num_workers):
+            worker_profile_name = f"system_worker_{worker_id}"
+            profile_manager = ChromeProfileManager(worker_profile_name, config=self.config)
+
+            # Check if profile already exists and is valid
+            if profile_manager.profile_dir.exists():
+                # Verify profile has extensions
+                if profile_manager.check_extensions_installed(verbose=False):
+                    logger.debug(f"Worker profile {worker_id}: Already exists with extensions")
+                    continue
+                else:
+                    logger.debug(f"Worker profile {worker_id}: Exists but missing extensions, resyncing")
+
+            # Sync from system profile (creates profile if doesn't exist)
+            sync_success = profile_manager.sync_from_profile(source_profile_name="system")
+
+            if sync_success:
+                logger.debug(f"Worker profile {worker_id}: Created successfully")
+            else:
+                logger.warn(f"Worker profile {worker_id}: Sync failed, will use empty profile")
+
+        logger.success(f"All {num_workers} worker profiles prepared")
 
     def _analyze_batch(self, papers: List[Dict]) -> None:
         """Analyze batch to understand publisher distribution."""
@@ -339,12 +465,27 @@ class ParallelPDFDownloader:
 
         logger.info(f"Worker {worker_id}: Starting with {len(papers)} papers")
 
-        # Create worker-specific browser manager
+        # Create worker-specific browser manager with unique profile per worker
+        # This prevents Chrome from crashing due to multiple instances sharing same user-data-dir
+        # Profile name format: system_worker_0, system_worker_1, etc.
+        worker_profile_name = f"system_worker_{worker_id}"
+        logger.info(f"Worker {worker_id}: Using profile name: {worker_profile_name}")
+
+        # Sync extensions and cookies from system profile to worker profile
+        from scitex.scholar.browser.local.utils._ChromeProfileManager import ChromeProfileManager
+        profile_manager = ChromeProfileManager(worker_profile_name, config=self.config)
+        sync_success = profile_manager.sync_from_profile(source_profile_name="system")
+
+        if sync_success:
+            logger.success(f"Worker {worker_id}: Profile synced from system profile")
+        else:
+            logger.warn(f"Worker {worker_id}: Profile sync failed, proceeding with empty profile")
+
         browser_manager = ScholarBrowserManager(
             config=self.config,
             auth_manager=self.auth_manager,
             browser_mode="stealth",
-            chrome_profile_name="system"
+            chrome_profile_name=worker_profile_name
         )
 
         try:
@@ -406,9 +547,37 @@ class ParallelPDFDownloader:
 
                         else:
                             logger.warning(f"Worker {worker_id}: No PDF URLs found for {title}")
+
+                            # Mark as attempted so it shows as failed (PDF_f) not pending (PDF_p)
+                            paper_id = self.config.path_manager._generate_paper_id(doi=doi)
+                            master_dir = self.config.path_manager.get_library_master_dir()
+                            paper_dir = master_dir / paper_id
+                            paper_dir.mkdir(parents=True, exist_ok=True)
+                            attempted_marker = paper_dir / ".download_attempted"
+                            download_log = paper_dir / "download_log.txt"
+
+                            if not attempted_marker.exists():
+                                attempted_marker.touch()
+                                from datetime import datetime
+                                with open(attempted_marker, 'w') as f:
+                                    f.write(f"Download attempted at: {datetime.now().isoformat()}\n")
+
+                            # Write to download log
+                            if not download_log.exists():
+                                from datetime import datetime
+                                with open(download_log, 'w') as f:
+                                    f.write(f"Download Log for {doi}\n")
+                                    f.write(f"{'=' * 60}\n")
+                                    f.write(f"Started at: {datetime.now().isoformat()}\n")
+                                    f.write(f"Worker ID: {worker_id}\n")
+                                    f.write(f"Paper ID: {paper_id}\n")
+                                    f.write(f"\nSTATUS: NO PDF URLS FOUND\n")
+                                    f.write(f"The URL finder could not locate any PDF download links.\n")
+                                    f.write(f"{'=' * 60}\n")
+
                             # Save URL info even when no PDF URLs found
                             self._save_url_info_only(paper, urls, project, library_dir)
-                            self.stats["skipped"] += 1
+                            self.stats["failed"] += 1
                     else:
                         logger.warning(f"Worker {worker_id}: No DOI for {title}")
                         self.stats["skipped"] += 1
@@ -416,6 +585,12 @@ class ParallelPDFDownloader:
                 except Exception as e:
                     logger.error(f"Worker {worker_id}: Error processing paper: {e}")
                     self.stats["failed"] += 1
+
+        except Exception as e:
+            import traceback
+            logger.error(f"Worker {worker_id}: Fatal error - {e}")
+            logger.error(traceback.format_exc())
+            raise
 
         finally:
             # Clean up browser for this worker
@@ -518,19 +693,60 @@ class ParallelPDFDownloader:
 
         # Create .downloading marker to show download in progress (PDF_r status)
         downloading_marker = None
+        attempted_marker = None
+        download_log = None
         if paper_id:
             master_dir = self.config.path_manager.get_library_master_dir()
             paper_dir = master_dir / paper_id
             paper_dir.mkdir(parents=True, exist_ok=True)
             downloading_marker = paper_dir / ".downloading"
+            attempted_marker = paper_dir / ".download_attempted"
+            download_log = paper_dir / "download_log.txt"
             downloading_marker.touch()
 
+            # Update symlink to PDF_r (running) status to show download in progress
+            from scitex.scholar.storage._LibraryManager import LibraryManager
+            library_manager = LibraryManager(config=self.config, project=project)
+            library_manager.update_symlink(
+                master_storage_path=paper_dir,
+                project=project
+            )
+
         try:
+            # Create .download_attempted marker at the start of first download attempt
+            # This tracks that we tried, even if we fail before screenshots
+            if attempted_marker and not attempted_marker.exists():
+                attempted_marker.touch()
+                # Write timestamp for debugging
+                with open(attempted_marker, 'w') as f:
+                    from datetime import datetime
+                    f.write(f"Download attempted at: {datetime.now().isoformat()}\n")
+
+            # Initialize download log
+            if download_log:
+                from datetime import datetime
+                with open(download_log, 'w') as f:
+                    f.write(f"Download Log for {doi}\n")
+                    f.write(f"{'=' * 60}\n")
+                    f.write(f"Started at: {datetime.now().isoformat()}\n")
+                    f.write(f"Worker ID: {worker_id}\n")
+                    f.write(f"Paper ID: {paper_id}\n")
+                    f.write(f"\nAttempting {len(pdf_urls)} PDF URL(s):\n")
+
             # Try each PDF URL until success
-            for pdf_entry in pdf_urls:
+            for i, pdf_entry in enumerate(pdf_urls, 1):
                 pdf_url = pdf_entry.get("url") if isinstance(pdf_entry, dict) else pdf_entry
                 if not pdf_url:
+                    if download_log:
+                        with open(download_log, 'a') as f:
+                            f.write(f"\nURL {i}: Empty/invalid URL, skipped\n")
                     continue
+
+                # Log URL attempt
+                if download_log:
+                    with open(download_log, 'a') as f:
+                        f.write(f"\n{'-' * 60}\n")
+                        f.write(f"URL {i}/{len(pdf_urls)}: {pdf_url}\n")
 
                 # Download to temp location
                 temp_output = Path("/tmp") / f"worker_{worker_id}_{doi.replace('/', '_').replace(':', '_')}.pdf"
@@ -538,6 +754,10 @@ class ParallelPDFDownloader:
                 try:
                     # Use screenshot-enabled download if available
                     if USE_SCREENSHOTS and hasattr(pdf_downloader, 'download_from_url_with_screenshots'):
+                        if download_log:
+                            with open(download_log, 'a') as f:
+                                f.write("Method: Screenshot-enabled download\n")
+
                         logger.info(f"Using screenshot-enabled download for {doi} (paper_id: {paper_id})")
                         result, screenshots = await pdf_downloader.download_from_url_with_screenshots(
                             pdf_url=pdf_url,
@@ -548,20 +768,45 @@ class ParallelPDFDownloader:
                         )
                         if screenshots:
                             logger.info(f"Worker {worker_id}: Captured {len(screenshots)} screenshots for {doi}")
+                            if download_log:
+                                with open(download_log, 'a') as f:
+                                    f.write(f"Screenshots captured: {len(screenshots)}\n")
                     else:
                         # Fallback to regular download
+                        if download_log:
+                            with open(download_log, 'a') as f:
+                                f.write("Method: Regular download (no screenshots)\n")
+
                         result = await pdf_downloader.download_from_url(
                             pdf_url=pdf_url,
                             output_path=temp_output
                         )
 
                     if result and result.exists():
-                        # Remove .downloading marker BEFORE saving to library
+                        # Log success
+                        if download_log:
+                            with open(download_log, 'a') as f:
+                                from datetime import datetime
+                                f.write(f"Status: SUCCESS\n")
+                                f.write(f"Completed at: {datetime.now().isoformat()}\n")
+                                f.write(f"PDF size: {result.stat().st_size} bytes\n")
+
+                        # Remove .downloading marker BEFORE updating symlink
                         # so symlink shows PDF_s (successful) not PDF_r (running)
                         if downloading_marker and downloading_marker.exists():
                             downloading_marker.unlink()
 
+                        # Remove .download_attempted marker on success
+                        # (we only keep it for failed attempts)
+                        if attempted_marker and attempted_marker.exists():
+                            attempted_marker.unlink()
+
+                        # Remove download log on success (only keep for failures)
+                        if download_log and download_log.exists():
+                            download_log.unlink()
+
                         # Save to library with metadata including URL info
+                        # Note: _save_to_library() handles symlink update to PDF_s status
                         saved = self._save_to_library(paper, result, project, library_dir, url_info=url_info)
 
                         # Clean up temp file
@@ -570,13 +815,40 @@ class ParallelPDFDownloader:
                         return saved
 
                 except Exception as e:
-                    logger.debug(f"Worker {worker_id}: Failed to download from {pdf_url}: {e}")
+                    error_msg = str(e)
+                    logger.debug(f"Worker {worker_id}: Failed to download from {pdf_url}: {error_msg}")
+
+                    # Log failure reason
+                    if download_log:
+                        with open(download_log, 'a') as f:
+                            f.write(f"Status: FAILED\n")
+                            f.write(f"Error: {error_msg}\n")
                     continue
+
+            # All URLs failed
+            if download_log:
+                with open(download_log, 'a') as f:
+                    from datetime import datetime
+                    f.write(f"\n{'=' * 60}\n")
+                    f.write(f"FINAL STATUS: ALL ATTEMPTS FAILED\n")
+                    f.write(f"Completed at: {datetime.now().isoformat()}\n")
+
+            # Update symlink to PDF_f (failed) status
+            if paper_id:
+                # Remove .downloading marker first so symlink shows PDF_f not PDF_r
+                if downloading_marker and downloading_marker.exists():
+                    downloading_marker.unlink()
+
+                library_manager = LibraryManager(config=self.config, project=project)
+                library_manager.update_symlink(
+                    master_storage_path=paper_dir,
+                    project=project
+                )
 
             return False
 
         finally:
-            # Remove .downloading marker if still exists (download failed)
+            # Remove .downloading marker if still exists (download failed/error)
             if downloading_marker and downloading_marker.exists():
                 downloading_marker.unlink()
 
@@ -689,24 +961,14 @@ class ParallelPDFDownloader:
             with open(metadata_file, 'w') as f:
                 json.dump(metadata, f, indent=2, default=str)
 
-            # Delegate symlink creation to LibraryManager to maintain single source of truth
+            # Update symlink to reflect PDF_s (success) status
+            # This uses LibraryManager.update_symlink() which re-generates the readable name
+            # based on current state (PDF exists, no .downloading marker)
             if project:
                 master_storage_path = library_dir / "MASTER" / paper_id
-
-                # Use LibraryManager's centralized naming logic
-                readable_name = self.library_manager._generate_readable_name(
-                    comprehensive_metadata=metadata,
+                self.library_manager.update_symlink(
                     master_storage_path=master_storage_path,
-                    authors=metadata.get("authors"),
-                    year=metadata.get("year"),
-                    journal=metadata.get("journal")
-                )
-
-                # Create symlink using LibraryManager's method
-                self.library_manager._create_project_symlink(
-                    master_storage_path=master_storage_path,
-                    project=project,
-                    readable_name=readable_name
+                    project=project
                 )
 
                 logger.info(f"Saved PDF to library: {paper_id}")

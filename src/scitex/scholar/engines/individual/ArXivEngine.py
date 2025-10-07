@@ -115,6 +115,29 @@ class ArXivEngine(BaseDOIEngine):
                 return_as=return_as,
             )
 
+    def _build_arxiv_search_query(self, title: str, authors: Optional[List[str]] = None) -> str:
+        """Build arXiv search query handling special characters.
+
+        ArXiv's exact title search with quotes fails on special characters like (LSTM).
+        Use keyword-based search instead for better results.
+        """
+        import re
+
+        # Extract significant words from title (>3 chars, skip common words)
+        stop_words = {'the', 'and', 'for', 'with', 'from', 'using', 'based', 'into', 'that', 'this'}
+        words = re.findall(r'\b\w+\b', title.lower())
+        keywords = [w for w in words if len(w) > 3 and w not in stop_words][:8]  # Limit to 8 keywords
+
+        # Build query with title keywords
+        query_parts = [f'ti:{word}' for word in keywords]
+
+        # Add first author if available for better precision
+        if authors and len(authors) > 0:
+            first_author_surname = authors[0].split()[-1]
+            query_parts.append(f'au:{first_author_surname}')
+
+        return ' AND '.join(query_parts)
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
@@ -127,7 +150,7 @@ class ArXivEngine(BaseDOIEngine):
         title: str,
         year: Optional[Union[int, str]] = None,
         authors: Optional[List[str]] = None,
-        max_results: Optional[int] = 1,
+        max_results: Optional[int] = 5,  # Increased from 1 to get more candidates
         return_as: Optional[str] = "dict",
     ) -> Optional[Dict]:
         """Search by metadata other than doi"""
@@ -139,8 +162,11 @@ class ArXivEngine(BaseDOIEngine):
                 return_as=return_as,
             )
 
+        # Build search query using keywords instead of exact title
+        search_query = self._build_arxiv_search_query(title, authors)
+
         params = {
-            "search_query": f'ti:"{title}"',
+            "search_query": search_query,
             "start": 0,
             "max_results": max_results,
             "sortBy": "relevance",

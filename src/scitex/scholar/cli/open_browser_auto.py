@@ -25,7 +25,7 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from scitex.scholar.config import ScholarConfig
-from scitex.scholar.utils.url_utils import get_best_url
+from scitex.scholar.cli._url_utils import get_best_url
 from scitex.logging import getLogger
 
 logger = getLogger(__name__)

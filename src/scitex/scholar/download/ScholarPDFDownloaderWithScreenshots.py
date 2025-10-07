@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Timestamp: "2025-10-07 16:16:45 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshots.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshots.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Enhanced PDF downloader with screenshot capture capabilities for debugging."""
 
 import asyncio
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Union, Dict, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from playwright.async_api import BrowserContext, Page
 
@@ -33,7 +44,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         self.capture_during_success = capture_during_success
         self.screenshot_tasks = {}  # Track screenshot tasks per page
 
-    def _get_screenshot_dir(self, doi: str = None, paper_id: str = None) -> Path:
+    def _get_screenshot_dir(
+        self, doi: str = None, paper_id: str = None
+    ) -> Path:
         """Get the screenshot directory for a paper.
 
         WARNING: paper_id should always be provided to ensure consistency.
@@ -96,7 +109,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         success: bool,
         error_message: str = None,
         console_logs: List[str] = None,
-        network_logs: List[Dict] = None
+        network_logs: List[Dict] = None,
     ) -> Optional[Path]:
         """Save detailed download attempt log."""
         import json
@@ -113,7 +126,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             "success": success,
             "error_message": error_message,
             "console_logs": console_logs or [],
-            "network_logs": network_logs or []
+            "network_logs": network_logs or [],
         }
 
         log_path = logs_dir / f"{timestamp}-{method}.json"
@@ -132,35 +145,52 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         page: Page,
         description: str,
         doi: str = None,
-        paper_id: str = None
+        paper_id: str = None,
     ) -> Optional[Path]:
         """Capture a single screenshot with timestamp and description."""
         try:
             screenshot_dir = self._get_screenshot_dir(doi, paper_id)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Include milliseconds
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[
+                :-3
+            ]  # Include milliseconds
 
             # Sanitize description for filename
             safe_description = "".join(
-                c if c.isalnum() or c in "-_" else "_"
-                for c in description
-            )[:50]  # Limit length
+                c if c.isalnum() or c in "-_" else "_" for c in description
+            )[
+                :50
+            ]  # Limit length
 
-            screenshot_path = screenshot_dir / f"{timestamp}-{safe_description}.png"
+            screenshot_path = (
+                screenshot_dir / f"{timestamp}-{safe_description}.png"
+            )
 
-            logger.debug(f"Attempting to save screenshot to: {screenshot_path}")
+            logger.debug(
+                f"Attempting to save screenshot to: {screenshot_path}"
+            )
 
             # Wait for page to be fully loaded before screenshot (helps with Xvfb rendering)
             try:
-                await page.wait_for_load_state("networkidle", timeout=3000)
-                await page.wait_for_timeout(500)  # Additional 500ms for Xvfb to render
-            except:
-                pass  # Continue even if timeout
+                await page.wait_for_load_state(
+                    "domcontentloaded", timeout=5000
+                )
+                await page.wait_for_load_state("load", timeout=5000)
+                # Extra wait for Xvfb to render (virtual display needs more time)
+                await page.wait_for_timeout(
+                    2000
+                )  # Increased from 500ms to 2s for Xvfb
+            except Exception as e:
+                # If page is blank/not navigated, just wait minimum time
+                logger.debug(
+                    f"Page load wait failed ({e}), continuing with minimum wait"
+                )
+                await page.wait_for_timeout(1000)
 
             # Capture full page screenshot
             await page.screenshot(
                 path=str(screenshot_path),
                 full_page=True,
-                timeout=5000  # 5 second timeout for screenshot
+                timeout=5000,  # 5 second timeout for screenshot
             )
 
             logger.success(f"Screenshot saved: {screenshot_path}")
@@ -181,7 +211,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         page: Page,
         doi: str = None,
         paper_id: str = None,
-        stop_event: asyncio.Event = None
+        stop_event: asyncio.Event = None,
     ):
         """Capture screenshots at regular intervals until stopped."""
         screenshot_count = 0
@@ -190,17 +220,13 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             while not stop_event or not stop_event.is_set():
                 screenshot_count += 1
                 await self._capture_screenshot_async(
-                    page,
-                    f"interval_{screenshot_count:03d}",
-                    doi,
-                    paper_id
+                    page, f"interval_{screenshot_count:03d}", doi, paper_id
                 )
 
                 # Wait for interval or stop signal
                 try:
                     await asyncio.wait_for(
-                        stop_event.wait(),
-                        timeout=self.screenshot_interval
+                        stop_event.wait(), timeout=self.screenshot_interval
                     )
                     break  # Stop event was set
                 except asyncio.TimeoutError:
@@ -217,7 +243,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         output_path: Union[str, Path],
         doi: str = None,
         paper_id: str = None,
-        retry_with_screenshots: bool = True
+        retry_with_screenshots: bool = True,
     ) -> Tuple[Optional[Path], List[Path]]:
         """
         Download PDF with screenshot capture.
@@ -247,44 +273,60 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
 
         # If failed and retry with screenshots is enabled
         if retry_with_screenshots and self.capture_on_failure:
-            logger.info(f"Retrying download with screenshot documentation for {pdf_url}")
+            logger.info(
+                f"Retrying download with screenshot documentation for {pdf_url}"
+            )
 
             # Retry each method with screenshots
             methods = [
                 ("chrome_pdf", self._retry_chrome_pdf_with_screenshots),
                 ("direct", self._retry_direct_with_screenshots),
-                ("response", self._retry_response_with_screenshots)
+                ("response", self._retry_response_with_screenshots),
             ]
 
             for method_name, method_func in methods:
-                logger.info(f"Retrying with {method_name} method and screenshots")
+                logger.info(
+                    f"Retrying with {method_name} method and screenshots"
+                )
                 result, method_screenshots = await method_func(
                     pdf_url, output_path, doi, paper_id
                 )
                 screenshot_paths.extend(method_screenshots)
 
                 if result:
-                    logger.success(f"Download succeeded with {method_name} method")
+                    logger.success(
+                        f"Download succeeded with {method_name} method"
+                    )
                     return result, screenshot_paths
 
         # All methods failed - capture final failure state
         if self.capture_on_failure:
             page = await self.context.new_page()
             try:
-                await page.goto(pdf_url, timeout=30000, wait_until="networkidle")
+                await page.goto(
+                    pdf_url, timeout=30000, wait_until="networkidle"
+                )
 
                 # Capture multiple aspects of the failure
-                await self._capture_screenshot_async(page, "final_failure_state", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, "final_failure_state", doi, paper_id
+                )
 
                 # Check for common error indicators
                 if await page.query_selector("text=/access denied/i"):
-                    await self._capture_screenshot_async(page, "access_denied", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "access_denied", doi, paper_id
+                    )
 
                 if await page.query_selector("text=/captcha/i"):
-                    await self._capture_screenshot_async(page, "captcha_detected", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "captcha_detected", doi, paper_id
+                    )
 
                 if await page.query_selector("text=/404|not found/i"):
-                    await self._capture_screenshot_async(page, "not_found_error", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "not_found_error", doi, paper_id
+                    )
 
             except Exception as e:
                 logger.warning(f"Error capturing failure screenshots: {e}")
@@ -298,7 +340,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         pdf_url: str,
         output_path: Path,
         doi: str = None,
-        paper_id: str = None
+        paper_id: str = None,
     ) -> Tuple[Optional[Path], List[Path]]:
         """Retry Chrome PDF viewer method with screenshots and logging."""
         screenshots = []
@@ -312,19 +354,29 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             page = await self.context.new_page()
 
             # Set up console log capture
-            page.on("console", lambda msg: console_logs.append({
-                "timestamp": datetime.now().isoformat(),
-                "level": msg.type,
-                "text": msg.text
-            }))
+            page.on(
+                "console",
+                lambda msg: console_logs.append(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "level": msg.type,
+                        "text": msg.text,
+                    }
+                ),
+            )
 
             # Set up network log capture
-            page.on("response", lambda response: network_logs.append({
-                "timestamp": datetime.now().isoformat(),
-                "url": response.url,
-                "status": response.status,
-                "headers": dict(response.headers)
-            }))
+            page.on(
+                "response",
+                lambda response: network_logs.append(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "url": response.url,
+                        "status": response.status,
+                        "headers": dict(response.headers),
+                    }
+                ),
+            )
 
             # Start periodic screenshots
             screenshot_task = asyncio.create_task(
@@ -334,7 +386,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             )
 
             # Initial screenshot
-            ss = await self._capture_screenshot_async(page, "chrome_pdf_initial", doi, paper_id)
+            ss = await self._capture_screenshot_async(
+                page, "chrome_pdf_initial", doi, paper_id
+            )
             if ss:
                 screenshots.append(ss)
 
@@ -343,19 +397,23 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             await page.wait_for_timeout(3000)
 
             # Check if PDF viewer loaded
-            ss = await self._capture_screenshot_async(page, "chrome_pdf_loaded", doi, paper_id)
+            ss = await self._capture_screenshot_async(
+                page, "chrome_pdf_loaded", doi, paper_id
+            )
             if ss:
                 screenshots.append(ss)
 
             # Try download button
             from scitex.scholar.browser import (
+                click_download_button_from_chrome_pdf_viewer_async,
                 detect_pdf_viewer_async,
-                click_download_button_from_chrome_pdf_viewer_async
             )
 
             is_pdf_viewer = await detect_pdf_viewer_async(page)
             if is_pdf_viewer:
-                await self._capture_screenshot_async(page, "chrome_pdf_viewer_detected", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, "chrome_pdf_viewer_detected", doi, paper_id
+                )
 
                 # Set up download handler
                 download_path = None
@@ -372,22 +430,37 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                 await page.wait_for_timeout(5000)
 
                 if download_path and download_path.exists():
-                    await self._capture_screenshot_async(page, "chrome_pdf_success", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "chrome_pdf_success", doi, paper_id
+                    )
                     # Save success log
                     await self._save_download_log(
-                        doi, paper_id, "chrome_pdf", pdf_url, True,
-                        console_logs=console_logs, network_logs=network_logs
+                        doi,
+                        paper_id,
+                        "chrome_pdf",
+                        pdf_url,
+                        True,
+                        console_logs=console_logs,
+                        network_logs=network_logs,
                     )
                     return output_path, screenshots
 
         except Exception as e:
             logger.warning(f"Chrome PDF method failed: {e}")
             if page:
-                await self._capture_screenshot_async(page, f"chrome_pdf_error_{str(e)[:30]}", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, f"chrome_pdf_error_{str(e)[:30]}", doi, paper_id
+                )
             # Save failure log
             await self._save_download_log(
-                doi, paper_id, "chrome_pdf", pdf_url, False,
-                error_message=str(e), console_logs=console_logs, network_logs=network_logs
+                doi,
+                paper_id,
+                "chrome_pdf",
+                pdf_url,
+                False,
+                error_message=str(e),
+                console_logs=console_logs,
+                network_logs=network_logs,
             )
         finally:
             stop_event.set()
@@ -403,7 +476,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         pdf_url: str,
         output_path: Path,
         doi: str = None,
-        paper_id: str = None
+        paper_id: str = None,
     ) -> Tuple[Optional[Path], List[Path]]:
         """Retry direct download method with screenshots."""
         screenshots = []
@@ -432,7 +505,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             page.on("download", handle_download)
 
             # Initial screenshot
-            ss = await self._capture_screenshot_async(page, "direct_initial", doi, paper_id)
+            ss = await self._capture_screenshot_async(
+                page, "direct_initial", doi, paper_id
+            )
             if ss:
                 screenshots.append(ss)
 
@@ -441,21 +516,29 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                 await page.goto(pdf_url, wait_until="load", timeout=30000)
             except Exception as nav_error:
                 if "ERR_ABORTED" in str(nav_error):
-                    logger.info("ERR_ABORTED detected - likely direct download")
+                    logger.info(
+                        "ERR_ABORTED detected - likely direct download"
+                    )
                     await page.wait_for_timeout(5000)
 
             # Check if download occurred
             if download_occurred and output_path.exists():
-                await self._capture_screenshot_async(page, "direct_success", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, "direct_success", doi, paper_id
+                )
                 return output_path, screenshots
 
             # Capture final state
-            await self._capture_screenshot_async(page, "direct_final_state", doi, paper_id)
+            await self._capture_screenshot_async(
+                page, "direct_final_state", doi, paper_id
+            )
 
         except Exception as e:
             logger.warning(f"Direct download method failed: {e}")
             if page:
-                await self._capture_screenshot_async(page, f"direct_error_{str(e)[:30]}", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, f"direct_error_{str(e)[:30]}", doi, paper_id
+                )
         finally:
             stop_event.set()
             if screenshot_task:
@@ -470,7 +553,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         pdf_url: str,
         output_path: Path,
         doi: str = None,
-        paper_id: str = None
+        paper_id: str = None,
     ) -> Tuple[Optional[Path], List[Path]]:
         """Retry response body method with screenshots."""
         screenshots = []
@@ -480,14 +563,20 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             page = await self.context.new_page()
 
             # Initial screenshot
-            ss = await self._capture_screenshot_async(page, "response_initial", doi, paper_id)
+            ss = await self._capture_screenshot_async(
+                page, "response_initial", doi, paper_id
+            )
             if ss:
                 screenshots.append(ss)
 
-            response = await page.goto(pdf_url, wait_until="load", timeout=60000)
+            response = await page.goto(
+                pdf_url, wait_until="load", timeout=60000
+            )
 
             # Screenshot after navigation
-            ss = await self._capture_screenshot_async(page, "response_loaded", doi, paper_id)
+            ss = await self._capture_screenshot_async(
+                page, "response_loaded", doi, paper_id
+            )
             if ss:
                 screenshots.append(ss)
 
@@ -499,17 +588,28 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                     with open(output_path, "wb") as f:
                         f.write(content)
 
-                    await self._capture_screenshot_async(page, "response_success", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "response_success", doi, paper_id
+                    )
                     return output_path, screenshots
                 else:
-                    await self._capture_screenshot_async(page, "response_not_pdf", doi, paper_id)
+                    await self._capture_screenshot_async(
+                        page, "response_not_pdf", doi, paper_id
+                    )
             else:
-                await self._capture_screenshot_async(page, f"response_status_{response.status if response else 'none'}", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page,
+                    f"response_status_{response.status if response else 'none'}",
+                    doi,
+                    paper_id,
+                )
 
         except Exception as e:
             logger.warning(f"Response body method failed: {e}")
             if page:
-                await self._capture_screenshot_async(page, f"response_error_{str(e)[:30]}", doi, paper_id)
+                await self._capture_screenshot_async(
+                    page, f"response_error_{str(e)[:30]}", doi, paper_id
+                )
         finally:
             if page:
                 await page.close()
@@ -523,7 +623,7 @@ async def download_pdf_with_screenshots(
     doi: str,
     pdf_urls: List[str],
     paper_id: str = None,
-    output_dir: Path = None
+    output_dir: Path = None,
 ) -> Tuple[Optional[Path], List[Path]]:
     """
     Download PDF with screenshot documentation.
@@ -538,7 +638,7 @@ async def download_pdf_with_screenshots(
         Tuple of (pdf_path, screenshot_paths)
     """
     from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (
-        ScholarPDFDownloaderWithScreenshots
+        ScholarPDFDownloaderWithScreenshots,
     )
 
     if not paper_id:
@@ -551,7 +651,9 @@ async def download_pdf_with_screenshots(
         paper_id = self.config.path_manager._generate_paper_id(doi=doi)
 
     # Get browser context
-    browser, context = await self._browser_manager.get_authenticated_browser_and_context_async()
+    browser, context = (
+        await self._browser_manager.get_authenticated_browser_and_context_async()
+    )
 
     # Create enhanced downloader
     downloader = ScholarPDFDownloaderWithScreenshots(
@@ -559,20 +661,24 @@ async def download_pdf_with_screenshots(
         config=self.config,
         screenshot_interval=2.0,
         capture_on_failure=True,
-        capture_during_success=True  # Always capture for documentation
+        capture_during_success=True,  # Always capture for documentation
     )
 
     # Try each PDF URL
     all_screenshots = []
     for pdf_url in pdf_urls:
-        temp_output = Path("/tmp") / f"{doi.replace('/', '_').replace(':', '_')}.pdf"
+        temp_output = (
+            Path("/tmp") / f"{doi.replace('/', '_').replace(':', '_')}.pdf"
+        )
 
-        pdf_path, screenshots = await downloader.download_from_url_with_screenshots(
-            pdf_url=pdf_url,
-            output_path=temp_output,
-            doi=doi,
-            paper_id=paper_id,
-            retry_with_screenshots=True
+        pdf_path, screenshots = (
+            await downloader.download_from_url_with_screenshots(
+                pdf_url=pdf_url,
+                output_path=temp_output,
+                doi=doi,
+                paper_id=paper_id,
+                retry_with_screenshots=True,
+            )
         )
 
         all_screenshots.extend(screenshots)
@@ -583,10 +689,51 @@ async def download_pdf_with_screenshots(
                 final_path = output_dir / f"DOI_{doi.replace('/', '_')}.pdf"
                 final_path.parent.mkdir(parents=True, exist_ok=True)
                 import shutil
+
                 shutil.move(str(pdf_path), str(final_path))
                 return final_path, all_screenshots
 
             return pdf_path, all_screenshots
 
-    logger.warning(f"All download attempts failed for DOI {doi}. Screenshots saved: {len(all_screenshots)}")
+    logger.warning(
+        f"All download attempts failed for DOI {doi}. Screenshots saved: {len(all_screenshots)}"
+    )
     return None, all_screenshots
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main_async():
+        from scitex.scholar import (
+            ScholarAuthManager,
+            ScholarBrowserManager,
+            ScholarURLFinder,
+        )
+
+        browser_manager = ScholarBrowserManager(
+            chrome_profile_name="system",
+            browser_mode="stealth",
+            auth_manager=ScholarAuthManager(),
+            use_zenrows_proxy=False,
+        )
+        browser, context = (
+            await browser_manager.get_authenticated_browser_and_context_async()
+        )
+        pdf_downloader = ScholarPDFDownloaderWithScreenshots(context)
+
+        # Parameters
+        PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
+        OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
+
+        # Main
+        saved_path = await pdf_downloader.download_from_url(
+            PDF_URL,
+            OUTPUT_PATH,
+        )
+
+    asyncio.run(main_async())
+
+# python -m scitex.scholar.download.ScholarPDFDownloader
+
+# EOF

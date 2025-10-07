@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-04 09:50:02 (ywatanabe)"
+# Timestamp: "2025-10-07 16:15:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/download/ScholarPDFDownloader.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import asyncio
 import base64

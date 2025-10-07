@@ -153,8 +153,12 @@ class SemanticScholarEngine(BaseDOIEngine):
 
         self._handle_rate_limit()
         url = f"{self.base_url}/paper/search"
+
+        # Clean title to remove meta characters that might interfere with search
+        cleaned_title = self._clean_query(title)
+
         params = {
-            "query": title,
+            "query": cleaned_title,
             "fields": "title,year,authors,externalIds,url,venue,abstract",
             "limit": 10,
         }
@@ -280,6 +284,8 @@ class SemanticScholarEngine(BaseDOIEngine):
         external_ids = paper.get("externalIds", {})
         doi = external_ids.get("DOI")
         corpus_id = external_ids.get("CorpusId")
+        arxiv_id = external_ids.get("ArXiv")
+        pmid = external_ids.get("PubMed")
 
         metadata = {
             "id": {
@@ -287,6 +293,10 @@ class SemanticScholarEngine(BaseDOIEngine):
                 "doi_engines": [self.name] if doi else None,
                 "corpus_id": corpus_id,
                 "corpus_id_engines": [self.name] if corpus_id else None,
+                "arxiv_id": arxiv_id,
+                "arxiv_id_engines": [self.name] if arxiv_id else None,
+                "pmid": pmid,
+                "pmid_engines": [self.name] if pmid else None,
             },
             "basic": {
                 "title": paper_title if paper_title else None,
@@ -311,6 +321,10 @@ class SemanticScholarEngine(BaseDOIEngine):
                 "doi_engines": [self.name] if doi else None,
                 "publisher": paper.get("url") if paper.get("url") else None,
                 "publisher_engines": [self.name] if paper.get("url") else None,
+                "arxiv": f"https://arxiv.org/abs/{arxiv_id}" if arxiv_id else None,
+                "arxiv_engines": [self.name] if arxiv_id else None,
+                "corpus_id": f"https://www.semanticscholar.org/paper/{corpus_id}" if corpus_id else None,
+                "corpus_id_engines": [self.name] if corpus_id else None,
             },
             "system": {
                 f"searched_by_{self.name}": True,
@@ -326,6 +340,69 @@ class SemanticScholarEngine(BaseDOIEngine):
 
     def _clean_doi(self, doi: str) -> str:
         return doi.strip() if doi else doi
+
+    async def convert_corpus_id_to_doi_async(self, corpus_id: str, page) -> Optional[str]:
+        """Convert Semantic Scholar Corpus ID to DOI by navigating to page and extracting.
+
+        Args:
+            corpus_id: Corpus ID (e.g., "262046731" or "CorpusId:262046731")
+            page: Playwright Page object for navigation
+
+        Returns:
+            DOI string if found, None otherwise
+        """
+        if not corpus_id:
+            return None
+
+        # Clean corpus_id (remove CorpusId: prefix if present)
+        if not corpus_id.isdigit():
+            corpus_id = corpus_id.replace("CorpusId:", "")
+
+        # Create Semantic Scholar URL
+        url = f"https://www.semanticscholar.org/paper/{corpus_id}"
+        logger.info(f"Navigating to Semantic Scholar page: {url}")
+
+        try:
+            # Navigate to the page
+            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            await page.wait_for_timeout(2000)  # Wait for content to load
+
+            # Try to extract DOI from page content
+            # Method 1: Look for DOI in meta tags
+            doi_meta = await page.query_selector('meta[name="citation_doi"]')
+            if doi_meta:
+                doi = await doi_meta.get_attribute("content")
+                if doi:
+                    logger.info(f"Found DOI in meta tag for Corpus ID {corpus_id}: {doi}")
+                    return doi
+
+            # Method 2: Look for DOI link in page
+            doi_link = await page.query_selector('a[href*="doi.org"]')
+            if doi_link:
+                href = await doi_link.get_attribute("href")
+                if href and "doi.org/" in href:
+                    doi = href.split("doi.org/")[-1].split("?")[0].split("#")[0]
+                    logger.info(f"Found DOI in link for Corpus ID {corpus_id}: {doi}")
+                    return doi
+
+            # Method 3: Search for DOI pattern in page text
+            content = await page.content()
+            import re
+            doi_pattern = r'10\.\d{4,}/[-._;()/:\w]+'
+            matches = re.findall(doi_pattern, content)
+            if matches:
+                doi = matches[0]  # Take first match
+                logger.info(f"Found DOI pattern in content for Corpus ID {corpus_id}: {doi}")
+                return doi
+
+            logger.warning(f"No DOI found on Semantic Scholar page for Corpus ID {corpus_id}")
+            return None
+
+        except Exception as e:
+            logger.error(f"Error extracting DOI from Corpus ID {corpus_id}: {e}")
+            return None
+
+    # Note: _clean_query() is inherited from BaseDOIEngine
 
 
 if __name__ == "__main__":

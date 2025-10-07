@@ -38,6 +38,9 @@ class IDMetadata(BaseModel):
     pmid: Optional[str] = None
     pmid_engines: List[str] = Field(default_factory=list)
 
+    corpus_id: Optional[str] = None
+    corpus_id_engines: List[str] = Field(default_factory=list)
+
     semantic_id: Optional[str] = None
     semantic_id_engines: List[str] = Field(default_factory=list)
 
@@ -238,6 +241,12 @@ class URLMetadata(BaseModel):
     publisher: Optional[str] = None
     publisher_engines: List[str] = Field(default_factory=list)
 
+    arxiv: Optional[str] = None
+    arxiv_engines: List[str] = Field(default_factory=list)
+
+    corpus_id: Optional[str] = None
+    corpus_id_engines: List[str] = Field(default_factory=list)
+
     openurl_query: Optional[str] = None
     openurl_engines: List[str] = Field(default_factory=list)
 
@@ -311,32 +320,68 @@ class PaperMetadataStructure(BaseModel):
         validate_assignment = True  # Validate on attribute assignment too
 
     @model_validator(mode="after")
-    def sync_doi_and_url(self):
-        """Automatically sync DOI and URL fields.
+    def sync_ids_and_urls(self):
+        """Automatically sync ID and URL fields with source tracking.
 
-        When DOI is set, ensure url.doi is the full URL.
-        When url.doi is set, extract DOI if possible.
+        Generates URLs from IDs and vice versa for:
+        - DOI ↔ url.doi
+        - arXiv ID ↔ url.arxiv
+        - Corpus ID ↔ url.corpus_id
         """
-        # If we have a DOI but no URL, create URL from DOI
+        # DOI sync
         if self.id.doi and not self.url.doi:
             self.url.doi = f"https://doi.org/{self.id.doi}"
-
-        # If we have a URL but no DOI, try to extract DOI from URL
+            if self.id.doi_engines and "PaperMetadataStructure" not in self.url.doi_engines:
+                self.url.doi_engines = self.id.doi_engines.copy() if self.id.doi_engines else []
+                if "PaperMetadataStructure" not in self.url.doi_engines:
+                    self.url.doi_engines.append("PaperMetadataStructure")
         elif self.url.doi and not self.id.doi:
             url = self.url.doi
             if "doi.org/" in url:
-                # Extract DOI from URL like "https://doi.org/10.1234/abcd"
                 self.id.doi = url.split("doi.org/")[-1]
-
-        # If both exist, ensure they're consistent
+                if self.url.doi_engines and "PaperMetadataStructure" not in self.id.doi_engines:
+                    self.id.doi_engines = self.url.doi_engines.copy() if self.url.doi_engines else []
+                    if "PaperMetadataStructure" not in self.id.doi_engines:
+                        self.id.doi_engines.append("PaperMetadataStructure")
         elif self.id.doi and self.url.doi:
-            expected_url = f"https://doi.org/{self.id.doi}"
-            # Normalize URL format
             if not self.url.doi.startswith("https://"):
                 if self.url.doi.startswith("http://"):
                     self.url.doi = "https://" + self.url.doi[7:]
                 else:
                     self.url.doi = f"https://doi.org/{self.id.doi}"
+
+        # arXiv sync
+        if self.id.arxiv_id and not self.url.arxiv:
+            self.url.arxiv = f"https://arxiv.org/abs/{self.id.arxiv_id}"
+            if self.id.arxiv_id_engines and "PaperMetadataStructure" not in self.url.arxiv_engines:
+                self.url.arxiv_engines = self.id.arxiv_id_engines.copy() if self.id.arxiv_id_engines else []
+                if "PaperMetadataStructure" not in self.url.arxiv_engines:
+                    self.url.arxiv_engines.append("PaperMetadataStructure")
+        elif self.url.arxiv and not self.id.arxiv_id:
+            url = self.url.arxiv
+            if "arxiv.org/abs/" in url:
+                self.id.arxiv_id = url.split("arxiv.org/abs/")[-1].split("?")[0].split("#")[0]
+                if self.url.arxiv_engines and "PaperMetadataStructure" not in self.id.arxiv_id_engines:
+                    self.id.arxiv_id_engines = self.url.arxiv_engines.copy() if self.url.arxiv_engines else []
+                    if "PaperMetadataStructure" not in self.id.arxiv_id_engines:
+                        self.id.arxiv_id_engines.append("PaperMetadataStructure")
+
+        # Corpus ID sync
+        if self.id.corpus_id and not self.url.corpus_id:
+            corpus_id_clean = str(self.id.corpus_id).replace("CorpusId:", "")
+            self.url.corpus_id = f"https://www.semanticscholar.org/paper/{corpus_id_clean}"
+            if self.id.corpus_id_engines and "PaperMetadataStructure" not in self.url.corpus_id_engines:
+                self.url.corpus_id_engines = self.id.corpus_id_engines.copy() if self.id.corpus_id_engines else []
+                if "PaperMetadataStructure" not in self.url.corpus_id_engines:
+                    self.url.corpus_id_engines.append("PaperMetadataStructure")
+        elif self.url.corpus_id and not self.id.corpus_id:
+            url = self.url.corpus_id
+            if "semanticscholar.org/paper/" in url:
+                self.id.corpus_id = url.split("semanticscholar.org/paper/")[-1].split("?")[0].split("#")[0]
+                if self.url.corpus_id_engines and "PaperMetadataStructure" not in self.id.corpus_id_engines:
+                    self.id.corpus_id_engines = self.url.corpus_id_engines.copy() if self.url.corpus_id_engines else []
+                    if "PaperMetadataStructure" not in self.id.corpus_id_engines:
+                        self.id.corpus_id_engines.append("PaperMetadataStructure")
 
         return self
 

@@ -56,10 +56,12 @@ class ChromeProfileManager:
         self, profile_name: str, config: Optional[ScholarConfig] = None
     ):
         self.config = config or ScholarConfig()
-        assert profile_name in self.AVAILABLE_PROFILE_NAMES
+        # Allow dynamic profile names (e.g., worker_0, worker_1) for parallel downloads
+        # assert profile_name in self.AVAILABLE_PROFILE_NAMES
 
         self.profile_name = profile_name
         self.profile_dir = self.config.get_chrome_cache_dir(profile_name)
+        logger.debug(f"ChromeProfileManager: profile_name={self.profile_name}, profile_dir={self.profile_dir}")
 
     def _get_extension_statuses(self, profile_dir: Path) -> Dict[str, bool]:
         """Get detailed status of each extension."""
@@ -259,6 +261,107 @@ class ChromeProfileManager:
 
         except Exception as e:
             logger.error(f"Error handling dialogs: {e}")
+            return False
+
+    def sync_from_profile(self, source_profile_name: str = "system") -> bool:
+        """
+        Sync extensions and cookies from source profile to this profile.
+
+        Args:
+            source_profile_name: Name of source profile (default: "system")
+
+        Returns:
+            True if sync succeeded, False otherwise
+        """
+        import shutil
+
+        source_profile_dir = self.config.get_chrome_cache_dir(source_profile_name)
+
+        if not source_profile_dir.exists():
+            logger.error(f"Source profile does not exist: {source_profile_dir}")
+            return False
+
+        # Create target profile directory if needed
+        self.profile_dir.mkdir(parents=True, exist_ok=True)
+        (self.profile_dir / "Default").mkdir(parents=True, exist_ok=True)
+
+        synced_items = []
+
+        # Sync extensions
+        source_extensions = source_profile_dir / "Default" / "Extensions"
+        target_extensions = self.profile_dir / "Default" / "Extensions"
+
+        if source_extensions.exists():
+            if target_extensions.exists():
+                shutil.rmtree(target_extensions)
+            shutil.copytree(source_extensions, target_extensions)
+            synced_items.append("extensions")
+            logger.debug(f"Synced extensions from {source_profile_name} to {self.profile_name}")
+
+        # Sync cookies (Chrome stores cookies in Cookies file)
+        source_cookies = source_profile_dir / "Default" / "Cookies"
+        target_cookies = self.profile_dir / "Default" / "Cookies"
+
+        if source_cookies.exists():
+            shutil.copy2(source_cookies, target_cookies)
+            synced_items.append("cookies")
+            logger.debug(f"Synced cookies from {source_profile_name} to {self.profile_name}")
+
+        # Sync Preferences (contains extension settings and other preferences)
+        source_prefs = source_profile_dir / "Default" / "Preferences"
+        target_prefs = self.profile_dir / "Default" / "Preferences"
+
+        if source_prefs.exists():
+            shutil.copy2(source_prefs, target_prefs)
+            synced_items.append("preferences")
+            logger.debug(f"Synced preferences from {source_profile_name} to {self.profile_name}")
+
+        # Sync Local State (contains profile metadata)
+        source_local_state = source_profile_dir / "Local State"
+        target_local_state = self.profile_dir / "Local State"
+
+        if source_local_state.exists():
+            shutil.copy2(source_local_state, target_local_state)
+            synced_items.append("local_state")
+            logger.debug(f"Synced local state from {source_profile_name} to {self.profile_name}")
+
+        # Sync Chrome account login data
+        login_files = [
+            "Login Data",
+            "Login Data For Account",
+            "Account Web Data",
+        ]
+
+        for login_file in login_files:
+            source_file = source_profile_dir / "Default" / login_file
+            target_file = self.profile_dir / "Default" / login_file
+
+            if source_file.exists():
+                shutil.copy2(source_file, target_file)
+                if login_file not in synced_items:
+                    synced_items.append("login_data")
+                logger.debug(f"Synced {login_file} from {source_profile_name} to {self.profile_name}")
+
+        # Sync Accounts directory (Chrome account info)
+        source_accounts = source_profile_dir / "Default" / "Accounts"
+        target_accounts = self.profile_dir / "Default" / "Accounts"
+
+        if source_accounts.exists():
+            if target_accounts.exists():
+                shutil.rmtree(target_accounts)
+            shutil.copytree(source_accounts, target_accounts)
+            if "login_data" not in synced_items:
+                synced_items.append("login_data")
+            logger.debug(f"Synced Accounts directory from {source_profile_name} to {self.profile_name}")
+
+        if synced_items:
+            logger.success(
+                f"Profile sync complete: {self.profile_name} ← {source_profile_name} "
+                f"({', '.join(synced_items)})"
+            )
+            return True
+        else:
+            logger.warn(f"No items to sync from {source_profile_name}")
             return False
 
 

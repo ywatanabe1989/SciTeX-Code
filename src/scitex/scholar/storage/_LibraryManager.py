@@ -245,9 +245,12 @@ class LibraryManager:
 
     def save_resolved_paper(
         self,
-        # Required bibliographic fields
-        title: str,
-        doi: str,
+        # Can accept either a Paper object or individual fields
+        paper_data: Optional['Paper'] = None,
+
+        # Required bibliographic fields (if not providing paper_data)
+        title: Optional[str] = None,
+        doi: Optional[str] = None,
 
         # Optional bibliographic fields
         authors: Optional[List[str]] = None,
@@ -287,6 +290,32 @@ class LibraryManager:
         **kwargs  # For backward compatibility
     ) -> str:
         """Save successfully resolved paper to Scholar library."""
+
+        # If paper_data is provided, extract fields from it
+        if paper_data is not None:
+            if hasattr(paper_data, 'metadata'):
+                # Pydantic Paper object
+                title = title or (paper_data.metadata.basic.title or '')
+                doi = doi or (paper_data.metadata.id.doi or '')
+                authors = authors or paper_data.metadata.basic.authors
+                year = year or paper_data.metadata.basic.year
+                journal = journal or paper_data.metadata.publication.journal
+                abstract = abstract or paper_data.metadata.basic.abstract
+                publisher = publisher or paper_data.metadata.publication.publisher
+                impact_factor = impact_factor or paper_data.metadata.publication.impact_factor
+                library_id = library_id or paper_data.container.library_id
+            elif isinstance(paper_data, dict):
+                # Dict paper object
+                title = title or paper_data.get('title', '')
+                doi = doi or paper_data.get('doi', '')
+                authors = authors or paper_data.get('authors', [])
+                year = year or paper_data.get('year')
+                journal = journal or paper_data.get('journal')
+                abstract = abstract or paper_data.get('abstract')
+                publisher = publisher or paper_data.get('publisher')
+                impact_factor = impact_factor or paper_data.get('impact_factor')
+                library_id = library_id or paper_data.get('scitex_id') or paper_data.get('scholar_id')
+
         # Handle legacy parameters
         if paper_id and not library_id:
             library_id = paper_id
@@ -909,6 +938,16 @@ class LibraryManager:
         screenshot_dir = master_storage_path / "screenshots"
         has_screenshots = screenshot_dir.exists() and any(screenshot_dir.iterdir())
         downloading_marker = master_storage_path / ".downloading"
+        attempted_marker = master_storage_path / ".download_attempted"
+
+        # Extract DOI from metadata to check availability
+        doi = None
+        if "metadata" in comprehensive_metadata:
+            # Nested structure from file
+            doi = comprehensive_metadata.get("metadata", {}).get("id", {}).get("doi")
+        else:
+            # Flat structure (during initial save)
+            doi = comprehensive_metadata.get("doi")
 
         if downloading_marker.exists():
             # Download in progress
@@ -919,8 +958,14 @@ class LibraryManager:
         elif has_screenshots:
             # Has screenshots but no PDF = Failed (attempted but failed)
             pdf_status_letter = "f"
+        elif attempted_marker.exists():
+            # Download was attempted but failed early (before screenshots)
+            pdf_status_letter = "f"
+        elif not doi:
+            # No DOI = Failed (cannot download without identifier)
+            pdf_status_letter = "f"
         else:
-            # No PDF, no screenshots = Pending (not attempted yet)
+            # No PDF, no screenshots, no attempts, has DOI = Pending (not attempted yet)
             pdf_status_letter = "p"
 
         # Format: CC_000000-PDF_s-IF_032-2016-Author-Journal
@@ -928,6 +973,74 @@ class LibraryManager:
         readable_name = f"CC_{cc:06d}-PDF_{pdf_status_letter}-IF_{int(if_val):03d}-{year_str}-{first_author}-{journal_clean}"
 
         return readable_name
+
+    def update_symlink(
+        self,
+        master_storage_path: Path,
+        project: str,
+        metadata: Optional[Dict] = None
+    ) -> Optional[Path]:
+        """Update project symlink to reflect current paper status.
+
+        This should be called whenever paper status changes (pending → running → success/failed).
+        Generates new readable name based on current state (checking .downloading marker, PDFs, etc.)
+        and updates the symlink accordingly.
+
+        Args:
+            master_storage_path: Path to paper in master library
+            project: Project name
+            metadata: Optional metadata dict (if not provided, will read from file)
+
+        Returns:
+            Path to the created symlink, or None if failed
+        """
+        try:
+            # Load metadata if not provided
+            if metadata is None:
+                metadata_file = master_storage_path / "metadata.json"
+                if metadata_file.exists():
+                    import json
+                    with open(metadata_file, 'r') as f:
+                        metadata = json.load(f)
+                else:
+                    logger.warning(f"No metadata found for {master_storage_path.name}")
+                    return None
+
+            # Extract metadata from nested structure if needed
+            # Metadata file has structure: {"metadata": {"basic": {...}, "id": {...}, ...}, "container": {...}}
+            if "metadata" in metadata:
+                # Nested structure from file
+                meta_section = metadata.get("metadata", {})
+                basic_section = meta_section.get("basic", {})
+                pub_section = meta_section.get("publication", {})
+
+                authors = basic_section.get("authors")
+                year = basic_section.get("year")
+                journal = pub_section.get("journal")
+            else:
+                # Flat structure (should not happen when reading from file, but handle it)
+                authors = metadata.get('authors')
+                year = metadata.get('year')
+                journal = metadata.get('journal')
+
+            # Generate readable name based on current state
+            readable_name = self._generate_readable_name(
+                comprehensive_metadata=metadata,
+                master_storage_path=master_storage_path,
+                authors=authors,
+                year=year,
+                journal=journal
+            )
+
+            # Create/update symlink
+            return self._create_project_symlink(
+                master_storage_path=master_storage_path,
+                project=project,
+                readable_name=readable_name
+            )
+        except Exception as exc_:
+            logger.error(f"Failed to update symlink for {master_storage_path.name}: {exc_}")
+            return None
 
     def _create_project_symlink(
         self, master_storage_path: Path, project: str, readable_name: str

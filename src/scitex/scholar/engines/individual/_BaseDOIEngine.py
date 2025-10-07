@@ -113,6 +113,35 @@ class BaseDOIEngine(ABC):
         """Get user agent string. Override in subclasses if needed."""
         return f"SciTeX/1.0 (mailto:{self.email})"
 
+    def _clean_query(self, query: str) -> str:
+        """Clean query string by removing meta characters that might interfere with API search.
+
+        Meta characters like parentheses, brackets, special symbols can cause search issues
+        in various APIs. This strips them while preserving the core searchable text.
+
+        Args:
+            query: Raw query string (e.g., title with special characters)
+
+        Returns:
+            Cleaned query string suitable for API search
+
+        Example:
+            >>> engine._clean_query("Memory (LSTM) neural networks")
+            'Memory LSTM neural networks'
+        """
+        if not query:
+            return query
+
+        # Remove common meta characters but keep alphanumeric, spaces, and basic punctuation
+        # Keep: letters, numbers, spaces, hyphens, periods, commas
+        # Remove: ()[]{}!@#$%^&*+=<>?/\|~`"':;
+        cleaned = re.sub(r'[()[\]{}!@#$%^&*+=<>?/\\|~`"\':;]', ' ', query)
+
+        # Collapse multiple spaces into one
+        cleaned = re.sub(r'\s+', ' ', cleaned)
+
+        return cleaned.strip()
+
     def _make_request_with_retry(
         self,
         url: str,
