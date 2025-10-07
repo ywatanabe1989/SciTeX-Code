@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:50:57 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_click_download_button_from_chrome_pdf_viewer_async.py
+# Timestamp: "2025-08-20 10:55:39 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/click_download_for_chrome_pdf_viewer.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = (
-    "./src/scitex/scholar/browser/utils/_click_download_button_from_chrome_pdf_viewer_async.py"
-)
+__FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-
-__FILE__ = __file__
 
 from pathlib import Path
 from typing import Optional
@@ -21,11 +17,11 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def click_download_for_chrome_pdf_viewer_async(
+async def click_download_for_chrome_pdf_viewer(
     page, spath_pdf
 ) -> Optional[Path]:
     """Download PDF from Chrome PDF viewer with dynamic waiting."""
-    from . import show_popup_and_capture_async
+    from scitex.browser.debugging import show_popup_and_capture
 
     try:
         spath_pdf = Path(spath_pdf)
@@ -42,9 +38,7 @@ async def click_download_for_chrome_pdf_viewer_async(
         download = await download_info.value
 
         # Monitor download progress
-        await show_popup_and_capture_async(
-            page, "Monitoring download process..."
-        )
+        await show_popup_and_capture(page, "Monitoring download process...")
         download_path = await download.path()
         await page.wait_for_timeout(10_000)
         if download_path:
@@ -61,5 +55,11 @@ async def click_download_for_chrome_pdf_viewer_async(
     except Exception as ee:
         logger.error(f"Chrome page download failed: {ee}")
         return False
+
+
+
+# Backward compatibility alias
+click_download_for_chrome_pdf_viewer_async = click_download_for_chrome_pdf_viewer
+
 
 # EOF

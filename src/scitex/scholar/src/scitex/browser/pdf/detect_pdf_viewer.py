@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-08-19 10:05:53 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_detect_chrome_pdf_viewer_async.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/detect_chrome_pdf_viewer.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -14,16 +14,16 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def detect_chrome_pdf_viewer_async(page):
+async def detect_chrome_pdf_viewer(page):
     """
     Detect if Chrome PDF viewer is present on the page.
 
     NOTE: Caller should wait for networkidle BEFORE calling this function.
     This function does NOT wait for networkidle to avoid redundant waits.
     """
-    from . import show_popup_and_capture_async
+    from scitex.browser.debugging import show_popup_and_capture
 
-    await show_popup_and_capture_async(page, "Detecting Chrome PDF Viewer...")
+    await show_popup_and_capture(page, "Detecting Chrome PDF Viewer...")
 
     # Try multiple detection methods
     detected = await page.evaluate(
@@ -75,11 +75,17 @@ async def detect_chrome_pdf_viewer_async(page):
 
     if detected:
         logger.debug("PDF viewer detected")
-        await show_popup_and_capture_async(page, "✓ PDF viewer elements found!")
+        await show_popup_and_capture(page, "✓ PDF viewer elements found!")
         return True
     else:
         logger.debug("PDF viewer not detected")
-        await show_popup_and_capture_async(page, "✗ No PDF viewer elements found")
+        await show_popup_and_capture(page, "✗ No PDF viewer elements found")
         return False
+
+
+
+# Backward compatibility alias
+detect_chrome_pdf_viewer_async = detect_chrome_pdf_viewer
+
 
 # EOF

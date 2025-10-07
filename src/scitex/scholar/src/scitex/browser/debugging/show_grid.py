@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-08-19 10:06:43 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_show_grid_async.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/debugging/show_grid.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -9,10 +9,10 @@ __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-async def show_grid_async(page):
-    from . import show_popup_and_capture_async
+async def show_grid(page):
+    from scitex.browser.debugging import show_popup_and_capture
 
-    await show_popup_and_capture_async(page, "Showing Grid...")
+    await show_popup_and_capture(page, "Showing Grid...")
     await page.evaluate(
         """() => {
         const canvas = document.createElement('canvas');
@@ -58,5 +58,11 @@ async def show_grid_async(page):
         document.body.appendChild(canvas);
     }"""
     )
+
+
+
+# Backward compatibility alias
+show_grid_async = show_grid
+
 
 # EOF

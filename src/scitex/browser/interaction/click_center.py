@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-08-20 06:49:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_center_async.py
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/utils/click_center.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -9,7 +9,7 @@ __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-async def click_center_async(page):
+async def click_center(page):
     from . import show_popup_and_capture_async
 
     await show_popup_and_capture_async(page, "Clicking the center of the page...")
@@ -19,5 +19,10 @@ async def click_center_async(page):
     clicked = await page.mouse.click(center_x, center_y)
     await page.wait_for_timeout(1_000)
     return clicked
+
+
+# Backward compatibility alias
+click_center_async = click_center
+
 
 # EOF
