@@ -1,4 +1,4 @@
-# Timestamp: "2025-10-07 12:55:20 (ywatanabe)"
+# Timestamp: "2025-10-07 23:55:32 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -29,20 +29,22 @@ verify_ssl: true
 # ----------------------------------------
 # PDF Download
 # ----------------------------------------
-pdf_download:
-  max_parallel: ${SCITEX_SCHOLAR_PDF_MAX_PARALLEL:-8}  # Max concurrent Chrome instances
-  use_parallel: ${SCITEX_SCHOLAR_PDF_USE_PARALLEL:-true}  # Enable parallel downloads
-  delay_between_starts: 5  # Seconds between starting workers
-  default_delay: 10  # Default delay between downloads
-  retry_attempts: 3
-  timeout: 60  # Seconds per download attempt
+max_parallel: ${SCITEX_SCHOLAR_PDF_MAX_PARALLEL:-8}
+use_parallel: ${SCITEX_SCHOLAR_PDF_USE_PARALLEL:-true}
+delay_between_starts: 0.1
+default_delay: 10
+retry_attempts: 3
+timeout: 60
 
 # ----------------------------------------
 # cache
 # ----------------------------------------
-use_cache_search: true
-use_cache_url_finder: true
-use_cache_pdf_downloader: true
+# use_cache_search: ${SCITEX_SCHOLAR_USE_CACHE_SEARCH:-true}
+# use_cache_url_finder: ${SCITEX_SCHOLAR_USE_CACHE_URL_FINDER:-true}
+# use_cache_pdf_downloader: ${SCITEX_SCHOLAR_USE_CACHE_PDF_DOWNLOADER:-true}
+use_cache_search: ${SCITEX_SCHOLAR_USE_CACHE_SEARCH:-false}
+use_cache_url_finder: ${SCITEX_SCHOLAR_USE_CACHE_URL_FINDER:-false}
+use_cache_pdf_downloader: ${SCITEX_SCHOLAR_USE_CACHE_PDF_DOWNLOADER:-false}
 
 
 # ----------------------------------------
@@ -167,6 +169,10 @@ openurl_available_from_patterns:
   - "Available from PNAS"
   - "Available from Science"
   - "Available from AAAS"
+  - "Available from IEEE"
+  - "Available from Institute of Physics"
+  - "Available from Unpaywall"
+  - "Available from Open Access"
 
 # available_from_patterns:
 #   # Generic available patterns

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-23 00:09:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/ScholarEngine.py
+# Timestamp: "2025-10-07 18:12:39 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/engines/ScholarEngine.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import asyncio
 import hashlib
@@ -500,7 +504,9 @@ class ScholarEngine:
         if not valid_engines:
             # Return all engine results without validation if nothing matches
             # This allows partial enrichment even if title validation fails
-            logger.warning("No engines returned matching metadata, using all results")
+            logger.warning(
+                "No engines returned matching metadata, using all results"
+            )
             valid_engines = {k: v for k, v in engine_results.items() if v}
 
         # If still no valid engines, return empty structure

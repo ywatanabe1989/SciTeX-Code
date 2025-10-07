@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-10-07 22:45:24 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_EZProxyAuthenticator.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/auth/library/_EZProxyAuthenticator.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 # Time-stamp: "2025-08-01 12:30:00"
 # Author: Yusuke Watanabe
-# File: _EZProxyAuthenticator.py
 
 """
 EZProxy authentication for institutional access to academic papers.
@@ -11,7 +21,6 @@ This module provides authentication through EZProxy systems
 to enable legal PDF downloads via institutional subscriptions.
 """
 
-import asyncio
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -21,13 +30,14 @@ from urllib.parse import quote, urlparse
 from scitex import logging
 
 try:
-    from playwright.async_api import async_playwright, Page, Browser
+    from playwright.async_api import Browser, Page, async_playwright
 except ImportError:
     async_playwright = None
     Page = None
     Browser = None
 
 from scitex.errors import ScholarError
+
 from ._BaseAuthenticator import BaseAuthenticator
 
 logger = logging.getLogger(__name__)
@@ -35,6 +45,7 @@ logger = logging.getLogger(__name__)
 
 class EZProxyError(ScholarError):
     """Raised when EZProxy authentication fails."""
+
     pass
 
 
@@ -92,18 +103,21 @@ class EZProxyAuthenticator(BaseAuthenticator):
 
         # Session cache directory
         self.cache_dir = (
-            cache_dir or Path.home() / ".scitex" / "scholar" / "ezproxy_sessions"
+            cache_dir
+            or Path.home() / ".scitex" / "scholar" / "ezproxy_sessions"
         )
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Session file path
-        self.session_file = self.cache_dir / f"session_{self._get_session_async_key()}.json"
+        self.session_file = (
+            self.cache_dir / f"session_{self._get_session_async_key()}.json"
+        )
 
         # Session management
         self._cookies: Dict[str, str] = {}
         self._full_cookies: List[Dict[str, Any]] = []
         self._session_expiry: Optional[datetime] = None
-        
+
         # Load existing session
         self._load_session()
 
@@ -122,7 +136,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
             try:
                 with open(self.session_file, "r") as f:
                     data = json.load(f)
-                    
+
                 # Check if session is expired
                 expiry_str = data.get("expiry")
                 if expiry_str:
@@ -178,7 +192,10 @@ class EZProxyAuthenticator(BaseAuthenticator):
         # Check existing session
         if not force and await self.is_authenticate_async():
             logger.info("Using existing EZProxy session")
-            return {"cookies": self._cookies, "full_cookies": self._full_cookies}
+            return {
+                "cookies": self._cookies,
+                "full_cookies": self._full_cookies,
+            }
 
         if not self.proxy_url:
             raise EZProxyError("EZProxy URL not configured")
@@ -188,42 +205,47 @@ class EZProxyAuthenticator(BaseAuthenticator):
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 headless=not self.debug_mode,
-                args=['--disable-blink-features=AutomationControlled']
+                args=["--disable-blink-features=AutomationControlled"],
             )
-            
+
             try:
                 context = await browser.new_context(
-                    user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
                 )
                 page = await context.new_page()
-                
+
                 # Navigate to EZProxy login
                 await page.goto(self.proxy_url, wait_until="networkidle")
-                
+
                 # Detect login form type
                 login_performed = False
-                
+
                 # Try standard username/password fields
-                if await page.query_selector("input[type='text'], input[name='user'], input[name='username']"):
+                if await page.query_selector(
+                    "input[type='text'], input[name='user'], input[name='username']"
+                ):
                     username_field = await page.query_selector(
                         "input[type='text'], input[name='user'], input[name='username']"
                     )
                     password_field = await page.query_selector(
                         "input[type='password'], input[name='pass'], input[name='password']"
                     )
-                    
+
                     if username_field and password_field:
                         # Get credentials if not provided
                         if not self.username:
                             self.username = input("EZProxy username: ")
                         if not self.password:
                             import getpass
-                            self.password = getpass.getpass("EZProxy password: ")
-                        
+
+                            self.password = getpass.getpass(
+                                "EZProxy password: "
+                            )
+
                         # Fill credentials
                         await username_field.fill(self.username)
                         await password_field.fill(self.password)
-                        
+
                         # Find and click login button
                         login_button = await page.query_selector(
                             "input[type='submit'], button[type='submit'], button:has-text('Login'), button:has-text('Sign in')"
@@ -231,7 +253,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         if login_button:
                             await login_button.click()
                             login_performed = True
-                
+
                 # If no standard form, check for SSO redirect
                 if not login_performed:
                     # Look for institutional SSO links
@@ -241,11 +263,11 @@ class EZProxyAuthenticator(BaseAuthenticator):
                     if sso_link:
                         await sso_link.click()
                         await page.wait_for_load_state("networkidle")
-                        
+
                         # Handle SSO authentication (institution-specific)
                         logger.info("Redirected to institutional SSO")
                         # This would need institution-specific handling
-                
+
                 # Wait for authentication to complete
                 if login_performed:
                     try:
@@ -253,7 +275,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         await page.wait_for_function(
                             """() => {
                                 // Check for common success indicators
-                                if (window.location.href.includes('menu') || 
+                                if (window.location.href.includes('menu') ||
                                     window.location.href.includes('connect') ||
                                     document.body.textContent.includes('successfully logged in')) {
                                     return true;
@@ -264,29 +286,32 @@ class EZProxyAuthenticator(BaseAuthenticator):
                                 }
                                 return false;
                             }""",
-                            timeout=30000
+                            timeout=30000,
                         )
                     except Exception as e:
                         if "Login failed" in str(e):
                             raise EZProxyError("Invalid credentials")
                         # Continue if timeout - might still be authenticate_async
-                
+
                 # Extract cookies
                 cookies = await context.cookies()
-                
+
                 # Convert cookies to format needed
                 self._cookies = {c["name"]: c["value"] for c in cookies}
                 self._full_cookies = cookies
-                
+
                 # Set session expiry (typically 8 hours for EZProxy)
                 self._session_expiry = datetime.now() + timedelta(hours=8)
-                
+
                 # Save session
                 self._save_session_async()
-                
+
                 logger.info("EZProxy authentication successful")
-                return {"cookies": self._cookies, "full_cookies": self._full_cookies}
-                
+                return {
+                    "cookies": self._cookies,
+                    "full_cookies": self._full_cookies,
+                }
+
             except Exception as e:
                 logger.error(f"EZProxy authentication failed: {e}")
                 raise EZProxyError(f"Authentication failed: {str(e)}")
@@ -306,28 +331,30 @@ class EZProxyAuthenticator(BaseAuthenticator):
         # Check if we have session data
         if not self._cookies or not self._session_expiry:
             return False
-            
+
         # Check if session is expired
         if datetime.now() > self._session_expiry:
             logger.info("EZProxy session expired")
             return False
-            
+
         # If requested, verify session is still valid
         if verify_live and self.proxy_url:
             try:
                 async with async_playwright() as p:
                     browser = await p.chromium.launch(headless=True)
                     context = await browser.new_context()
-                    
+
                     # Add cookies
                     await context.add_cookies(self._full_cookies)
-                    
+
                     page = await context.new_page()
-                    
+
                     # Try to access a proxied resource
                     test_url = f"{self.proxy_url}/menu"
-                    response = await page.goto(test_url, wait_until="networkidle")
-                    
+                    response = await page.goto(
+                        test_url, wait_until="networkidle"
+                    )
+
                     # Check if we're still logged in
                     if response and response.status == 200:
                         # Check for login form - if present, session invalid
@@ -337,21 +364,21 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         is_valid = login_form is None
                     else:
                         is_valid = False
-                        
+
                     await browser.close()
-                    
+
                     if not is_valid:
                         logger.info("EZProxy session no longer valid")
                         self._cookies = {}
                         self._full_cookies = []
                         self._session_expiry = None
-                        
+
                     return is_valid
-                    
+
             except Exception as e:
                 logger.warn(f"Failed to verify session: {e}")
                 return False
-                
+
         return True
 
     async def get_auth_headers_async(self) -> Dict[str, str]:
@@ -370,24 +397,28 @@ class EZProxyAuthenticator(BaseAuthenticator):
         self._cookies = {}
         self._full_cookies = []
         self._session_expiry = None
-        
+
         # Remove session file
         if self.session_file.exists():
             self.session_file.unlink()
-            
+
         logger.info("Logged out from EZProxy")
 
     async def get_session_info_async(self) -> Dict[str, Any]:
         """Get information about current session."""
         is_authenticate_async = await self.is_authenticate_async()
-        
+
         return {
             "authenticate_async": is_authenticate_async,
             "provider": "EZProxy",
             "username": self.username,
             "institution": self.institution,
             "proxy_url": self.proxy_url,
-            "session_expiry": self._session_expiry.isoformat() if self._session_expiry else None,
+            "session_expiry": (
+                self._session_expiry.isoformat()
+                if self._session_expiry
+                else None
+            ),
             "cookies_count": len(self._cookies),
         }
 
@@ -409,8 +440,8 @@ class EZProxyAuthenticator(BaseAuthenticator):
             return url
 
         # URL encode the target URL
-        encoded_url = quote(url, safe='')
-        
+        encoded_url = quote(url, safe="")
+
         # Different EZProxy configurations use different patterns
         # Try to detect the pattern from the proxy URL
         if "/login" in self.proxy_url:
@@ -418,7 +449,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
             return f"{self.proxy_url}?url={encoded_url}"
         else:
             # Add login path
-            base_url = self.proxy_url.rstrip('/')
+            base_url = self.proxy_url.rstrip("/")
             return f"{base_url}/login?url={encoded_url}"
 
     async def create_authenticate_async_browser(self) -> tuple[Browser, Any]:
@@ -437,16 +468,16 @@ class EZProxyAuthenticator(BaseAuthenticator):
         p = await async_playwright().start()
         browser = await p.chromium.launch(
             headless=not self.debug_mode,
-            args=['--disable-blink-features=AutomationControlled']
+            args=["--disable-blink-features=AutomationControlled"],
         )
-        
+
         context = await browser.new_context(
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         )
-        
+
         # Add authentication cookies
         await context.add_cookies(self._full_cookies)
-        
+
         return browser, context
 
 # EOF

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:47:29 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/_BrowserAuthenticator.py
+# Timestamp: "2025-10-07 22:46:13 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_BrowserAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/_BrowserAuthenticator.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -21,8 +23,6 @@ from typing import Any, Dict, List, Optional
 from playwright.async_api import Page, async_playwright
 
 from scitex import logging
-
-# from scitex.scholar.browser import BrowserUtils
 from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
 
 from ..browser.local._BrowserMixin import BrowserMixin

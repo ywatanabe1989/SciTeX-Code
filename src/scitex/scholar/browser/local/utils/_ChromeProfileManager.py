@@ -265,7 +265,7 @@ class ChromeProfileManager:
 
     def sync_from_profile(self, source_profile_name: str = "system") -> bool:
         """
-        Sync extensions and cookies from source profile to this profile.
+        Sync extensions and cookies from source profile to this profile using rsync.
 
         Args:
             source_profile_name: Name of source profile (default: "system")
@@ -273,7 +273,7 @@ class ChromeProfileManager:
         Returns:
             True if sync succeeded, False otherwise
         """
-        import shutil
+        import time
 
         source_profile_dir = self.config.get_chrome_cache_dir(source_profile_name)
 
@@ -283,85 +283,74 @@ class ChromeProfileManager:
 
         # Create target profile directory if needed
         self.profile_dir.mkdir(parents=True, exist_ok=True)
-        (self.profile_dir / "Default").mkdir(parents=True, exist_ok=True)
 
-        synced_items = []
+        logger.info(f"Syncing profile: {self.profile_name} ← {source_profile_name}")
+        logger.debug(f"  Source: {source_profile_dir}")
+        logger.debug(f"  Target: {self.profile_dir}")
 
-        # Sync extensions
-        source_extensions = source_profile_dir / "Default" / "Extensions"
-        target_extensions = self.profile_dir / "Default" / "Extensions"
-
-        if source_extensions.exists():
-            if target_extensions.exists():
-                shutil.rmtree(target_extensions)
-            shutil.copytree(source_extensions, target_extensions)
-            synced_items.append("extensions")
-            logger.debug(f"Synced extensions from {source_profile_name} to {self.profile_name}")
-
-        # Sync cookies (Chrome stores cookies in Cookies file)
-        source_cookies = source_profile_dir / "Default" / "Cookies"
-        target_cookies = self.profile_dir / "Default" / "Cookies"
-
-        if source_cookies.exists():
-            shutil.copy2(source_cookies, target_cookies)
-            synced_items.append("cookies")
-            logger.debug(f"Synced cookies from {source_profile_name} to {self.profile_name}")
-
-        # Sync Preferences (contains extension settings and other preferences)
-        source_prefs = source_profile_dir / "Default" / "Preferences"
-        target_prefs = self.profile_dir / "Default" / "Preferences"
-
-        if source_prefs.exists():
-            shutil.copy2(source_prefs, target_prefs)
-            synced_items.append("preferences")
-            logger.debug(f"Synced preferences from {source_profile_name} to {self.profile_name}")
-
-        # Sync Local State (contains profile metadata)
-        source_local_state = source_profile_dir / "Local State"
-        target_local_state = self.profile_dir / "Local State"
-
-        if source_local_state.exists():
-            shutil.copy2(source_local_state, target_local_state)
-            synced_items.append("local_state")
-            logger.debug(f"Synced local state from {source_profile_name} to {self.profile_name}")
-
-        # Sync Chrome account login data
-        login_files = [
-            "Login Data",
-            "Login Data For Account",
-            "Account Web Data",
+        # Use rsync to sync entire profile directory
+        # -a: archive mode (preserves permissions, timestamps, symlinks)
+        # -u: skip files newer on receiver
+        # -v: verbose output
+        # --stats: show transfer statistics
+        # --delete: delete files not in source (keep profiles identical)
+        rsync_cmd = [
+            "rsync",
+            "-auv",
+            "--stats",
+            "--delete",
+            f"{source_profile_dir}/",
+            f"{self.profile_dir}/"
         ]
 
-        for login_file in login_files:
-            source_file = source_profile_dir / "Default" / login_file
-            target_file = self.profile_dir / "Default" / login_file
+        start_time = time.time()
 
-            if source_file.exists():
-                shutil.copy2(source_file, target_file)
-                if login_file not in synced_items:
-                    synced_items.append("login_data")
-                logger.debug(f"Synced {login_file} from {source_profile_name} to {self.profile_name}")
-
-        # Sync Accounts directory (Chrome account info)
-        source_accounts = source_profile_dir / "Default" / "Accounts"
-        target_accounts = self.profile_dir / "Default" / "Accounts"
-
-        if source_accounts.exists():
-            if target_accounts.exists():
-                shutil.rmtree(target_accounts)
-            shutil.copytree(source_accounts, target_accounts)
-            if "login_data" not in synced_items:
-                synced_items.append("login_data")
-            logger.debug(f"Synced Accounts directory from {source_profile_name} to {self.profile_name}")
-
-        if synced_items:
-            logger.success(
-                f"Profile sync complete: {self.profile_name} ← {source_profile_name} "
-                f"({', '.join(synced_items)})"
+        try:
+            result = subprocess.run(
+                rsync_cmd,
+                capture_output=True,
+                text=True,
+                check=True
             )
+
+            elapsed = time.time() - start_time
+
+            # Parse rsync stats
+            stats_lines = result.stdout.strip().split('\n')
+            transferred_files = 0
+            total_size = 0
+
+            for line in stats_lines:
+                if 'Number of regular files transferred:' in line:
+                    transferred_files = int(line.split(':')[1].strip())
+                elif 'Total transferred file size:' in line:
+                    size_str = line.split(':')[1].strip().split()[0]
+                    total_size = int(size_str.replace(',', ''))
+
+            # Log detailed results
+            if transferred_files > 0:
+                size_mb = total_size / (1024 * 1024)
+                logger.success(
+                    f"Profile sync complete: {self.profile_name} ← {source_profile_name} "
+                    f"({transferred_files} files, {size_mb:.1f}MB, {elapsed:.2f}s)"
+                )
+            else:
+                logger.debug(
+                    f"Profile sync complete: {self.profile_name} ← {source_profile_name} "
+                    f"(no changes, {elapsed:.2f}s)"
+                )
+
+            # Log verbose output at debug level
+            if result.stdout:
+                logger.debug(f"rsync output:\n{result.stdout}")
+
             return True
-        else:
-            logger.warn(f"No items to sync from {source_profile_name}")
+
+        except subprocess.CalledProcessError as e:
+            logger.error(f"rsync failed (exit code {e.returncode}): {e.stderr}")
+            return False
+        except FileNotFoundError:
+            logger.error("rsync command not found - please install rsync")
             return False
 
 

@@ -159,7 +159,7 @@ class LibraryManager:
         # Path section
         if "pdf_path" in flat_metadata:
             standardized["path"]["pdfs"] = [flat_metadata["pdf_path"]]
-            standardized["path"]["pdfs_engines"] = "ParallelPDFDownloader"
+            standardized["path"]["pdfs_engines"] = "ScholarPDFDownloaderWithScreenshotsParallel"
 
         return standardized
 

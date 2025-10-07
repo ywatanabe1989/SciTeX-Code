@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-07 16:04:30
+!-- Timestamp: 2025-10-07 18:22:11
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -11,27 +11,41 @@
 
 ``` bash
 run_neurovista_pipeline() {
-    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l
+    LOG_PATH="./FULL_DOWNLOAD_LOG.txt"
+    echo > $LOG_PATH
+    
+    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l | tee -a $LOG_PATH    
 
     # Start fresh
     rm -rf ~/.scitex/scholar/library/* # for fresh start
+    rm -f ~/.scitex/scholar/cache/url_finder/*.json
     
     cd ~/proj/scitex_repo/src/scitex/scholar
     python -m scitex.scholar \
         --bibtex data/neurovista.bib \
         --output data/neurovista_enriched.bib \
-        --project neurovista
+        --project neurovista \
+        | tee -a $LOG_PATH
 
     python -m scitex.scholar \
         --bibtex data/neurovista_enriched.bib \
         --project neurovista \
-        --download
+        --download \
+        | tee -a $LOG_PATH
 
-    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l
+
+    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | tee -a $LOG_PATH
+    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l | tee -a $LOG_PATH
+    
+    
 }
 
 run_neurovista_pipeline
 ```
+
+- [ ] Creating workers takes time
+  - [ ] Are the profile files not rsynced effectively?
+  - [ ] Are the profile files not kept persistently?
 
 - [ ] Symlink status updates (PDF_r/PDF_s/PDF_f) - PARTIAL FIX
   - [x] Added LibraryManager.update_symlink() method for explicit symlink updates
@@ -90,28 +104,34 @@ run_neurovista_pipeline
 
 - [ ] Manual Investigation
   1. 39305E03 - Ahmad 2022 (IEEE conference, not subscribed)
+     ~/proj/scitex_repo/src/scitex/scholar/scholar/library/neurovista/CC_000001-PDF_p-IF_000-2022-Ahmad-2022-4th-Novel-Intelligent-and/
      Already resolved: https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:9942273&searchWithin=%22Document%20Title%22:FPGA%20Implementation%20of%20Epileptic%20Seizure%20Detection%20using%20Artificial%20Neural%20Network
      For IEEE, we can find a button to open the PDF with chrome viewer
      Might be possible to build link from information given:
      For example, the URL for this entry is: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9942397
         
   2. D26B4E35 - Sirbu 2025 (SSRN preprint)
+     ~/proj/scitex_repo/src/scitex/scholar/scholar/library/neurovista/CC_000001-PDF_p-IF_000-2025-Sirbu-ArXiv/
      Captcha might block
      OpenURL query must be resolved from "Unpaywall" link
      "openurl_query": "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=10.2139/ssrn.5293145"
      Open Access version of full text found via Unpaywall
   3. 36DA45DE - Baldassano 2019 (IOP Journal of Neural Engineering)
+     ~/proj/scitex_repo/src/scitex/scholar/scholar/library/neurovista/CC_000000-PDF_p-IF_003-2019-Baldassano-Journal-of-Neural-Engineering/
      Available from Institute of Physics Journals
   4. 3ADFFF45 - Davis 2011 (Epilepsy Research)
+     ~/proj/scitex_repo/src/scitex/scholar/scholar/library/neurovista/CC_000110-PDF_p-IF_002-2011-Davis-Epilepsy-Research/
      Science direct
      Needs to click "Access through your institution"
      Needs wait until the journal page with "View PDF" button shown
      Maybe this is strictly paywalled
   5. D7D3ADE9 - Lu 2025 (IEEE Journal)
+     ~/proj/scitex_repo/src/scitex/scholar/scholar/library/neurovista/CC_000000-PDF_p-IF_006-2025-Lu-IEEE-Journal-of-Biomedical-and/
     Available from IEEE Electronic Library (IEL) Journals 
   6. 1CDA22A9 - Cook 2013 (Lancet Neurology)
      Resolved: https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(13)70075-9/fulltext
      OpenFlare captcha there
+
 
 - LOG:
 

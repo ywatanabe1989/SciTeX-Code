@@ -472,7 +472,7 @@ class Scholar:
 
         if use_parallel and len(dois) > 1:
             # Use parallel downloader for multiple DOIs
-            from scitex.scholar.download.ParallelPDFDownloader import ParallelPDFDownloader
+            from scitex.scholar.download.ScholarPDFDownloaderWithScreenshotsParallel import ScholarPDFDownloaderWithScreenshotsParallel
 
             logger.info(f"Using parallel download for {len(dois)} DOIs")
 
@@ -501,7 +501,7 @@ class Scholar:
                     papers_with_metadata.append({"doi": doi})
 
             # Initialize parallel downloader with auth_manager
-            parallel_downloader = ParallelPDFDownloader(
+            parallel_downloader = ScholarPDFDownloaderWithScreenshotsParallel(
                 config=self.config,
                 auth_manager=self._auth_manager,
                 use_parallel=True

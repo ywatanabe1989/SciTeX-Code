@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-07 15:23:14 (ywatanabe)"
+# Timestamp: "2025-10-07 22:47:16 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_OpenAthensAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/library/_OpenAthensAuthenticator.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -28,12 +30,12 @@ from typing import Any, Dict, List, Optional
 from playwright.async_api import async_playwright
 
 from scitex import logging
-
 from scitex.errors import ScholarError
 from scitex.scholar.config import ScholarConfig
+
 from .._BrowserAuthenticator import BrowserAuthenticator
-from ._BaseAuthenticator import BaseAuthenticator
 from ._AuthCacheManager import AuthCacheManager
+from ._BaseAuthenticator import BaseAuthenticator
 from ._LockManager import LockManager
 from ._SessionManager import SessionManager
 

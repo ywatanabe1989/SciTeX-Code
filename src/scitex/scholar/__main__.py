@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-06 10:00:00 (ywatanabe)"
+# Timestamp: "2025-10-07 23:54:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/__main__.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 ""
 
@@ -15,43 +19,12 @@ import argparse
 import asyncio
 import sys
 from pathlib import Path
-from typing import Optional
 
 from scitex import logging
 
 logger = logging.getLogger(__name__)
 
-
-def cleanup_scholar_processes(signal_num=None, frame=None):
-    """Cleanup function to stop all Scholar browser processes gracefully."""
-    if signal_num:
-        logger.info(f"Received signal {signal_num}, cleaning up Scholar processes...")
-
-    try:
-        import subprocess
-        # Kill Chrome/Chromium processes (suppress stderr)
-        subprocess.run(
-            ["pkill", "-f", "chrome"],
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            check=False
-        )
-        subprocess.run(
-            ["pkill", "-f", "chromium"],
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            check=False
-        )
-
-        # Kill Xvfb displays
-        subprocess.run(
-            ["pkill", "Xvfb"],
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            check=False
-        )
-    except Exception as e:
-        logger.debug(f"Cleanup error: {e}")
+from scholar.utils._cleanup_scholar_processes import cleanup_scholar_processes
 
 
 def create_parser():
@@ -119,163 +92,164 @@ KEY FEATURES:
     )
 
     # Input sources
-    input_group = parser.add_argument_group("Input Sources",
-                                             "Specify papers to process (can combine with operations)")
+    input_group = parser.add_argument_group(
+        "Input Sources",
+        "Specify papers to process (can combine with operations)",
+    )
     input_group.add_argument(
         "--bibtex",
         type=str,
         metavar="FILE",
-        help="Path to BibTeX file containing paper references"
+        help="Path to BibTeX file containing paper references",
     )
     input_group.add_argument(
         "--doi",
         type=str,
         metavar="DOI",
-        help='Single DOI to process (e.g., "10.1038/nature12373")'
+        help='Single DOI to process (e.g., "10.1038/nature12373")',
     )
     input_group.add_argument(
         "--dois",
         type=str,
         nargs="+",
         metavar="DOI",
-        help='Multiple DOIs to process (space-separated)'
+        help="Multiple DOIs to process (space-separated)",
     )
     input_group.add_argument(
         "--title",
         type=str,
-        help="Paper title for DOI resolution or library search"
+        help="Paper title for DOI resolution or library search",
     )
 
     # Project management
-    project_group = parser.add_argument_group("Project Management",
-                                               "Organize papers in persistent project libraries")
+    project_group = parser.add_argument_group(
+        "Project Management", "Organize papers in persistent project libraries"
+    )
     project_group.add_argument(
         "--project",
         "-p",
         type=str,
         metavar="NAME",
-        help="Project name for organizing papers (stored in ~/.scitex/scholar/library/PROJECT)"
+        help="Project name for organizing papers (stored in ~/.scitex/scholar/library/PROJECT)",
     )
     project_group.add_argument(
         "--project-description",
         type=str,
-        help="Optional project description (project created automatically when needed)"
+        help="Optional project description (project created automatically when needed)",
     )
 
     # Operations
-    ops_group = parser.add_argument_group("Operations",
-                                           "Actions to perform (can combine multiple)")
+    ops_group = parser.add_argument_group(
+        "Operations", "Actions to perform (can combine multiple)"
+    )
     ops_group.add_argument(
         "--enrich",
         "-e",
         action="store_true",
         default=True,
-        help="Enrich papers with metadata (DOIs, abstracts, citations, impact factors) [Default: True when loading BibTeX]"
+        help="Enrich papers with metadata (DOIs, abstracts, citations, impact factors) [Default: True when loading BibTeX]",
     )
     ops_group.add_argument(
         "--no-enrich",
         dest="enrich",
         action="store_false",
-        help="Skip enrichment step (not recommended if you need DOIs for download)"
+        help="Skip enrichment step (not recommended if you need DOIs for download)",
     )
     ops_group.add_argument(
         "--download",
         "-d",
         action="store_true",
-        help="Download PDFs to MASTER library with project symlinks (skips already downloaded PDFs)"
+        help="Download PDFs to MASTER library with project symlinks (skips already downloaded PDFs)",
     )
     ops_group.add_argument(
         "--download-force",
         action="store_true",
-        help="Force re-download all PDFs, even if already downloaded (refresh)"
+        help="Force re-download all PDFs, even if already downloaded (refresh)",
     )
     ops_group.add_argument(
         "--list",
         "-l",
         action="store_true",
-        help="List all papers in specified project"
+        help="List all papers in specified project",
     )
     ops_group.add_argument(
         "--search",
         "-s",
         type=str,
         metavar="QUERY",
-        help="Search papers by title, author, or keyword"
+        help="Search papers by title, author, or keyword",
     )
     ops_group.add_argument(
         "--stats",
         action="store_true",
-        help="Display library statistics (projects, papers, storage)"
+        help="Display library statistics (projects, papers, storage)",
     )
     ops_group.add_argument(
         "--deduplicate",
         action="store_true",
-        help="Find and merge duplicate papers in MASTER library"
+        help="Find and merge duplicate papers in MASTER library",
     )
     ops_group.add_argument(
         "--deduplicate-dry-run",
         action="store_true",
-        help="Preview what deduplication would do without making changes"
+        help="Preview what deduplication would do without making changes",
     )
 
     # Export options
-    export_group = parser.add_argument_group("Export Options",
-                                              "Save results in various formats")
+    export_group = parser.add_argument_group(
+        "Export Options", "Save results in various formats"
+    )
     export_group.add_argument(
         "--export",
         type=str,
         metavar="FILE",
-        help="Export project papers to file (format inferred from extension: .bib, .csv, .json)"
+        help="Export project papers to file (format inferred from extension: .bib, .csv, .json)",
     )
     export_group.add_argument(
         "--output",
         "-o",
         type=str,
         metavar="FILE",
-        help="Output file path for enriched data"
+        help="Output file path for enriched data",
     )
 
     # Filtering options
-    filter_group = parser.add_argument_group("Filtering Options",
-                                              "Filter papers before operations")
-    filter_group.add_argument(
-        "--year-min",
-        type=int,
-        help="Minimum publication year (e.g., 2020)"
+    filter_group = parser.add_argument_group(
+        "Filtering Options", "Filter papers before operations"
     )
     filter_group.add_argument(
-        "--year-max",
-        type=int,
-        help="Maximum publication year (e.g., 2024)"
+        "--year-min", type=int, help="Minimum publication year (e.g., 2020)"
     )
     filter_group.add_argument(
-        "--min-citations",
-        type=int,
-        help="Minimum citation count required"
+        "--year-max", type=int, help="Maximum publication year (e.g., 2024)"
+    )
+    filter_group.add_argument(
+        "--min-citations", type=int, help="Minimum citation count required"
     )
     filter_group.add_argument(
         "--min-impact-factor",
         type=float,
-        help="Minimum journal impact factor (JCR 2024)"
+        help="Minimum journal impact factor (JCR 2024)",
     )
     filter_group.add_argument(
         "--has-pdf",
         action="store_true",
-        help="Only include papers with downloaded PDFs"
+        help="Only include papers with downloaded PDFs",
     )
 
     # System options
-    system_group = parser.add_argument_group("System Options",
-                                              "Control execution behavior")
+    system_group = parser.add_argument_group(
+        "System Options", "Control execution behavior"
+    )
     system_group.add_argument(
         "--debug",
         action="store_true",
-        help="Enable detailed debug output and error traces"
+        help="Enable detailed debug output and error traces",
     )
     system_group.add_argument(
         "--no-cache",
         action="store_true",
-        help="Disable URL caching (forces fresh lookups)"
+        help="Disable URL caching (forces fresh lookups)",
     )
     system_group.add_argument(
         "--browser",
@@ -283,17 +257,17 @@ KEY FEATURES:
         const="manual",
         choices=["stealth", "interactive", "manual"],
         default="stealth",
-        help="Browser mode: 'stealth'=hidden downloads, 'interactive'=visible downloads, 'manual'=open browser for manual downloading with auto-linking (use alone without --download)"
+        help="Browser mode: 'stealth'=hidden downloads, 'interactive'=visible downloads, 'manual'=open browser for manual downloading with auto-linking (use alone without --download)",
     )
     system_group.add_argument(
         "--stop-download",
         action="store_true",
-        help="Stop all running Scholar downloads and browser instances"
+        help="Stop all running Scholar downloads and browser instances",
     )
     system_group.add_argument(
         "--update-symlinks",
         action="store_true",
-        help="Update all symlinks in project(s) to reflect current status (PDF availability, citation count, etc.)"
+        help="Update all symlinks in project(s) to reflect current status (PDF availability, citation count, etc.)",
     )
 
     return parser
@@ -316,26 +290,42 @@ async def handle_bibtex_operations(args, scholar):
     # Warn if using both enrich and download together
     if args.enrich and (args.download or args.download_force):
         logger.warning("Using --enrich and --download together")
-        logger.warning("RECOMMENDED: Run as two separate steps for better reliability:")
-        logger.warning("  Step 1: python -m scitex.scholar --bibtex input.bib --output enriched.bib --project PROJECT --enrich")
-        logger.warning("  Step 2: python -m scitex.scholar --bibtex enriched.bib --project PROJECT --download")
+        logger.warning(
+            "RECOMMENDED: Run as two separate steps for better reliability:"
+        )
+        logger.warning(
+            "  Step 1: python -m scitex.scholar --bibtex input.bib --output enriched.bib --project PROJECT --enrich"
+        )
+        logger.warning(
+            "  Step 2: python -m scitex.scholar --bibtex enriched.bib --project PROJECT --download"
+        )
 
     # Set download flag if download_force is used
     if args.download_force:
         args.download = True
+
         # Disable URL finder cache when forcing downloads to retry previously failed URLs
         import os
-        os.environ['SCITEX_SCHOLAR_USE_CACHE_URL_FINDER'] = 'false'
+
+        os.environ["SCITEX_SCHOLAR_USE_CACHE_PDF_DOWNLOADER"] = "false"
         logger.info("Download force enabled: URL finder cache disabled")
 
     # Apply filters if specified
-    if any([args.year_min, args.year_max, args.min_citations, args.min_impact_factor, args.has_pdf]):
+    if any(
+        [
+            args.year_min,
+            args.year_max,
+            args.min_citations,
+            args.min_impact_factor,
+            args.has_pdf,
+        ]
+    ):
         papers = papers.filter(
             year_min=args.year_min,
             year_max=args.year_max,
             min_citations=args.min_citations,
             min_impact_factor=args.min_impact_factor,
-            has_pdf=args.has_pdf if args.has_pdf else None
+            has_pdf=args.has_pdf if args.has_pdf else None,
         )
         logger.info(f"After filtering: {len(papers)} papers")
 
@@ -349,7 +339,9 @@ async def handle_bibtex_operations(args, scholar):
             output_path = Path(args.output)
         else:
             # Auto-generate enriched filename
-            output_path = bibtex_path.parent / f"{bibtex_path.stem}_enriched.bib"
+            output_path = (
+                bibtex_path.parent / f"{bibtex_path.stem}_enriched.bib"
+            )
 
         scholar.save_papers_as_bibtex(papers, output_path)
         logger.success(f"Saved enriched BibTeX to: {output_path}")
@@ -358,7 +350,9 @@ async def handle_bibtex_operations(args, scholar):
     if args.project:
         logger.info(f"Saving to project: {args.project}")
         saved_ids = scholar.save_papers_to_library(papers)
-        logger.info(f"Saved {len(saved_ids)} papers to library with symlinks created")
+        logger.info(
+            f"Saved {len(saved_ids)} papers to library with symlinks created"
+        )
 
     # Download PDFs if requested (after library save so symlinks exist)
     if args.download:
@@ -366,7 +360,9 @@ async def handle_bibtex_operations(args, scholar):
         if dois:
             logger.info(f"Downloading PDFs for {len(dois)} papers...")
             results = await scholar.download_pdfs_from_dois_async(dois)
-            logger.info(f"Downloaded: {results['downloaded']}, Failed: {results['failed']}")
+            logger.info(
+                f"Downloaded: {results['downloaded']}, Failed: {results['failed']}"
+            )
         else:
             logger.warning("No DOIs found for PDF download")
 
@@ -383,21 +379,34 @@ async def handle_bibtex_operations(args, scholar):
         if bibtex_path and bibtex_path.exists():
             original_filename = bibtex_path.name
             project_original_path = project_bibtex_dir / original_filename
-            if not project_original_path.exists() or project_original_path.samefile(bibtex_path) == False:
+            if (
+                not project_original_path.exists()
+                or project_original_path.samefile(bibtex_path) == False
+            ):
                 shutil.copy2(bibtex_path, project_original_path)
-                logger.info(f"Saved original BibTeX to project library: {project_original_path}")
+                logger.info(
+                    f"Saved original BibTeX to project library: {project_original_path}"
+                )
 
         # Save the enriched output BibTeX
         if args.output:
             output_filename = Path(args.output).name
             project_output_path = project_bibtex_dir / output_filename
-            if not project_output_path.exists() or project_output_path.samefile(Path(args.output)) == False:
+            if (
+                not project_output_path.exists()
+                or project_output_path.samefile(Path(args.output)) == False
+            ):
                 shutil.copy2(args.output, project_output_path)
-                logger.info(f"Saved enriched BibTeX to project library: {project_output_path}")
+                logger.info(
+                    f"Saved enriched BibTeX to project library: {project_output_path}"
+                )
 
         # Create/update merged.bib with all BibTeX files in the project
         from scitex.scholar.storage.BibTeXHandler import BibTeXHandler
-        bibtex_handler = BibTeXHandler(project=args.project, config=scholar.config)
+
+        bibtex_handler = BibTeXHandler(
+            project=args.project, config=scholar.config
+        )
 
         # Get all BibTeX files in the project directory
         bibtex_files = list(project_bibtex_dir.glob("*.bib"))
@@ -409,7 +418,9 @@ async def handle_bibtex_operations(args, scholar):
             # Use the merge_bibtex_files method which handles duplicates and adds separators
             merged_papers = bibtex_handler.merge_bibtex_files(bibtex_files)
             bibtex_handler.papers_to_bibtex(merged_papers, merged_path)
-            logger.info(f"Created merged.bib from {len(bibtex_files)} BibTeX files with {len(merged_papers)} unique papers: {merged_path}")
+            logger.info(
+                f"Created merged.bib from {len(bibtex_files)} BibTeX files with {len(merged_papers)} unique papers: {merged_path}"
+            )
 
             # Create bibliography.bib symlink at project root pointing to merged.bib
             bibliography_link = library_dir / args.project / "bibliography.bib"
@@ -441,7 +452,9 @@ async def handle_doi_operations(args, scholar):
     # Download PDFs if requested
     if args.download:
         results = await scholar.download_pdfs_from_dois_async(dois)
-        logger.info(f"Downloaded: {results['downloaded']}, Failed: {results['failed']}")
+        logger.info(
+            f"Downloaded: {results['downloaded']}, Failed: {results['failed']}"
+        )
 
     # Enrich if requested (create Papers from DOIs first)
     if args.enrich:
@@ -488,14 +501,16 @@ async def handle_project_operations(args, scholar):
             "-m",
             "scitex.scholar.cli.open_browser_auto",
             "--project",
-            args.project
+            args.project,
         ]
 
         # Add flags based on args
         if args.has_pdf is False:
             cmd.append("--all")
 
-        logger.info(f"Opening browser with auto-tracking for project: {args.project}")
+        logger.info(
+            f"Opening browser with auto-tracking for project: {args.project}"
+        )
         result = subprocess.run(cmd)
         return result.returncode
 
@@ -511,18 +526,31 @@ async def handle_project_operations(args, scholar):
             # Check if DOI exists (non-empty string)
             if paper.metadata.id.doi and paper.metadata.id.doi.strip():
                 # Check if PDF already exists
-                has_pdf = paper.metadata.path.pdfs and len(paper.metadata.path.pdfs) > 0
+                has_pdf = (
+                    paper.metadata.path.pdfs
+                    and len(paper.metadata.path.pdfs) > 0
+                )
 
                 # Download if: no PDF OR download_force flag is set
                 if not has_pdf or args.download_force:
                     dois_to_download.append(paper.metadata.id.doi)
-            elif not paper.metadata.path.pdfs or len(paper.metadata.path.pdfs) == 0:
+            elif (
+                not paper.metadata.path.pdfs
+                or len(paper.metadata.path.pdfs) == 0
+            ):
                 # Paper has no DOI and no PDF - mark as failed with explanation
-                from scitex.scholar.storage._LibraryManager import LibraryManager
-                library_manager = LibraryManager(config=scholar.config, project=args.project)
+                from scitex.scholar.storage._LibraryManager import (
+                    LibraryManager,
+                )
+
+                library_manager = LibraryManager(
+                    config=scholar.config, project=args.project
+                )
 
                 paper_id = paper.container.scitex_id
-                master_dir = scholar.config.path_manager.get_library_master_dir()
+                master_dir = (
+                    scholar.config.path_manager.get_library_master_dir()
+                )
                 paper_dir = master_dir / paper_id
                 paper_dir.mkdir(parents=True, exist_ok=True)
 
@@ -533,13 +561,17 @@ async def handle_project_operations(args, scholar):
                 if not attempted_marker.exists():
                     attempted_marker.touch()
                     from datetime import datetime
-                    with open(attempted_marker, 'w') as f:
-                        f.write(f"Download attempted at: {datetime.now().isoformat()}\n")
+
+                    with open(attempted_marker, "w") as f:
+                        f.write(
+                            f"Download attempted at: {datetime.now().isoformat()}\n"
+                        )
 
                 if not download_log.exists():
                     from datetime import datetime
+
                     title = paper.metadata.basic.title or "Unknown"
-                    with open(download_log, 'w') as f:
+                    with open(download_log, "w") as f:
                         f.write(f"Download Log\n")
                         f.write(f"{'=' * 60}\n")
                         f.write(f"Paper: {title}\n")
@@ -553,13 +585,23 @@ async def handle_project_operations(args, scholar):
 
         if dois_to_download:
             if args.download_force:
-                logger.info(f"Force re-downloading PDFs for {len(dois_to_download)} papers...")
+                logger.info(
+                    f"Force re-downloading PDFs for {len(dois_to_download)} papers..."
+                )
             else:
-                logger.info(f"Downloading PDFs for {len(dois_to_download)} papers without PDFs...")
-            results = await scholar.download_pdfs_from_dois_async(dois_to_download)
-            logger.info(f"Download complete: {results['downloaded']} downloaded, {results['failed']} failed")
+                logger.info(
+                    f"Downloading PDFs for {len(dois_to_download)} papers without PDFs..."
+                )
+            results = await scholar.download_pdfs_from_dois_async(
+                dois_to_download
+            )
+            logger.info(
+                f"Download complete: {results['downloaded']} downloaded, {results['failed']} failed"
+            )
         else:
-            logger.info("All papers in project already have PDFs or no DOIs available")
+            logger.info(
+                "    All papers in project already have PDFs or no DOIs available"
+            )
 
         return 0
 
@@ -607,8 +649,10 @@ async def handle_project_operations(args, scholar):
 
         # Calculate coverage
         if total_papers > 0:
-            coverage = (pdf_counts['PDF_s'] / total_papers) * 100
-            logger.info(f"\nCoverage: {pdf_counts['PDF_s']}/{total_papers} ({coverage:.1f}%)")
+            coverage = (pdf_counts["PDF_s"] / total_papers) * 100
+            logger.info(
+                f"\nCoverage: {pdf_counts['PDF_s']}/{total_papers} ({coverage:.1f}%)"
+            )
 
         logger.info("")
 
@@ -664,7 +708,7 @@ async def handle_project_operations(args, scholar):
             title = paper.metadata.basic.title or "No title"
             if len(title) > 60:
                 title = title[:60] + "..."
-            year = paper.metadata.basic.year or 'n/a'
+            year = paper.metadata.basic.year or "n/a"
             print(f"{i:3d}. {title} ({year})")
 
     # Export project
@@ -677,19 +721,24 @@ async def handle_project_operations(args, scholar):
         # Infer format from extension
         extension = output_path.suffix.lower()
 
-        if extension in ['.bib', '.bibtex']:
+        if extension in [".bib", ".bibtex"]:
             scholar.save_papers_as_bibtex(papers, output_path)
-        elif extension == '.csv':
+        elif extension == ".csv":
             # TODO: Implement CSV export
             logger.warning("CSV export not yet implemented")
             return 1
-        elif extension == '.json':
+        elif extension == ".json":
             import json
-            with open(output_path, 'w') as f:
-                json.dump([p.to_dict() for p in papers], f, indent=2, default=str)
+
+            with open(output_path, "w") as f:
+                json.dump(
+                    [p.to_dict() for p in papers], f, indent=2, default=str
+                )
         else:
             logger.error(f"Unsupported export format: {extension}")
-            logger.info("Supported formats: .bib, .bibtex, .json, .csv (coming soon)")
+            logger.info(
+                "    Supported formats: .bib, .bibtex, .json, .csv (coming soon)"
+            )
             return 1
 
         logger.success(f"Exported {len(papers)} papers to: {output_path}")
@@ -713,7 +762,8 @@ async def main_async():
 
     # Handle update-symlinks command
     if args.update_symlinks:
-        from scitex.scholar.utils.update_symlinks import SymlinkUpdater
+        from scitex.scholar.storage.update_symlinks import SymlinkUpdater
+
         updater = SymlinkUpdater(project=args.project)
         updater.run()
         return
@@ -724,7 +774,9 @@ async def main_async():
         import signal
         import os
 
-        logger.info("Stopping all Scholar downloads and browser instances...")
+        logger.info(
+            "    Stopping all Scholar downloads and browser instances..."
+        )
 
         # Kill Chrome/Chromium processes (redirect stderr to suppress permission warnings)
         try:
@@ -732,19 +784,27 @@ async def main_async():
                 ["pkill", "-f", "chrome"],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                check=False
+                check=False,
             )
             # Only warn if there was a real error (not just permission denied)
-            if result.returncode not in [0, 1]:  # 0=killed, 1=no processes found
-                stderr_text = result.stderr.decode('utf-8', errors='ignore')
-                if stderr_text and "Operation not permitted" not in stderr_text:
-                    logger.warning(f"Issue stopping Chrome: {stderr_text.strip()}")
+            if result.returncode not in [
+                0,
+                1,
+            ]:  # 0=killed, 1=no processes found
+                stderr_text = result.stderr.decode("utf-8", errors="ignore")
+                if (
+                    stderr_text
+                    and "Operation not permitted" not in stderr_text
+                ):
+                    logger.warning(
+                        f"Issue stopping Chrome: {stderr_text.strip()}"
+                    )
 
             result = subprocess.run(
                 ["pkill", "-f", "chromium"],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                check=False
+                check=False,
             )
             logger.info("✓ Stopped browser instances")
         except Exception as e:
@@ -756,12 +816,17 @@ async def main_async():
                 ["pkill", "-f", "python.*scholar.*download"],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                check=False
+                check=False,
             )
             if result.returncode not in [0, 1]:
-                stderr_text = result.stderr.decode('utf-8', errors='ignore')
-                if stderr_text and "Operation not permitted" not in stderr_text:
-                    logger.warning(f"Issue stopping Scholar processes: {stderr_text.strip()}")
+                stderr_text = result.stderr.decode("utf-8", errors="ignore")
+                if (
+                    stderr_text
+                    and "Operation not permitted" not in stderr_text
+                ):
+                    logger.warning(
+                        f"Issue stopping Scholar processes: {stderr_text.strip()}"
+                    )
             logger.info("✓ Stopped Scholar download processes")
         except Exception as e:
             logger.debug(f"Error stopping scholar processes: {e}")
@@ -772,12 +837,17 @@ async def main_async():
                 ["pkill", "Xvfb"],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                check=False
+                check=False,
             )
             if result.returncode not in [0, 1]:
-                stderr_text = result.stderr.decode('utf-8', errors='ignore')
-                if stderr_text and "Operation not permitted" not in stderr_text:
-                    logger.warning(f"Issue stopping Xvfb: {stderr_text.strip()}")
+                stderr_text = result.stderr.decode("utf-8", errors="ignore")
+                if (
+                    stderr_text
+                    and "Operation not permitted" not in stderr_text
+                ):
+                    logger.warning(
+                        f"Issue stopping Xvfb: {stderr_text.strip()}"
+                    )
             logger.info("✓ Stopped virtual displays")
         except Exception as e:
             logger.debug(f"Error stopping Xvfb: {e}")
@@ -789,20 +859,35 @@ async def main_async():
     from scitex.scholar.core.Scholar import Scholar
 
     # Initialize Scholar with project and optional description
-    scholar = Scholar(
-        project=args.project,
-        project_description=args.project_description if hasattr(args, 'project_description') else None
-    ) if args.project else Scholar()
+    scholar = (
+        Scholar(
+            project=args.project,
+            project_description=(
+                args.project_description
+                if hasattr(args, "project_description")
+                else None
+            ),
+        )
+        if args.project
+        else Scholar()
+    )
 
     # Update symlinks when project is specified (ensures metadata is current)
-    if args.project and not args.update_symlinks:  # Don't do it twice if --update-symlinks is explicit
+    if (
+        args.project and not args.update_symlinks
+    ):  # Don't do it twice if --update-symlinks is explicit
         try:
             from scitex.scholar.storage._LibraryManager import LibraryManager
-            library_manager = LibraryManager(config=scholar.config, project=args.project)
+
+            library_manager = LibraryManager(
+                config=scholar.config, project=args.project
+            )
 
             # Quick symlink update (only regenerates if needed)
             master_dir = scholar.config.path_manager.get_library_master_dir()
-            project_dir = scholar.config.path_manager.get_library_dir(args.project)
+            project_dir = scholar.config.path_manager.get_library_dir(
+                args.project
+            )
 
             if master_dir.exists() and project_dir.exists():
                 # Get all papers in this project
@@ -816,10 +901,13 @@ async def main_async():
 
                     # Check if this paper belongs to the project
                     import json
+
                     with open(metadata_file) as f:
                         metadata = json.load(f)
 
-                    projects = metadata.get("container", {}).get("projects", [])
+                    projects = metadata.get("container", {}).get(
+                        "projects", []
+                    )
                     if args.project not in projects:
                         continue
 
@@ -838,13 +926,13 @@ async def main_async():
                         master_storage_path=paper_dir,
                         authors=authors,
                         year=year,
-                        journal=journal
+                        journal=journal,
                     )
 
                     library_manager._create_project_symlink(
                         master_storage_path=paper_dir,
                         project=args.project,
-                        readable_name=readable_name
+                        readable_name=readable_name,
                     )
                     updated += 1
 
@@ -866,13 +954,17 @@ async def main_async():
 
         elif args.deduplicate or args.deduplicate_dry_run:
             # Run deduplication
-            from scitex.scholar.storage._DeduplicationManager import DeduplicationManager
+            from scitex.scholar.storage._DeduplicationManager import (
+                DeduplicationManager,
+            )
 
             dedup_manager = DeduplicationManager(config=scholar.config)
             dry_run = args.deduplicate_dry_run
 
             if dry_run:
-                logger.info("Running deduplication in DRY RUN mode - no changes will be made")
+                logger.info(
+                    "    Running deduplication in DRY RUN mode - no changes will be made"
+                )
 
             stats = dedup_manager.deduplicate_library(dry_run=dry_run)
 
@@ -882,19 +974,27 @@ async def main_async():
             logger.info(f"  Total duplicates: {stats['duplicates_found']}")
 
             if not dry_run:
-                logger.info(f"  Duplicates merged: {stats['duplicates_merged']}")
+                logger.info(
+                    f"  Duplicates merged: {stats['duplicates_merged']}"
+                )
                 logger.info(f"  Directories removed: {stats['dirs_removed']}")
-                if stats.get('broken_symlinks_removed', 0) > 0:
-                    logger.info(f"  Broken symlinks cleaned: {stats['broken_symlinks_removed']}")
-                if stats['errors'] > 0:
+                if stats.get("broken_symlinks_removed", 0) > 0:
+                    logger.info(
+                        f"  Broken symlinks cleaned: {stats['broken_symlinks_removed']}"
+                    )
+                if stats["errors"] > 0:
                     logger.warning(f"  Errors encountered: {stats['errors']}")
 
-            if stats['duplicates_found'] == 0:
+            if stats["duplicates_found"] == 0:
                 logger.success("✓ No duplicates found - library is clean!")
             elif dry_run:
-                logger.info(f"\nRun with --deduplicate to merge {stats['duplicates_found']} duplicates")
+                logger.info(
+                    f"\nRun with --deduplicate to merge {stats['duplicates_found']} duplicates"
+                )
             else:
-                logger.success(f"✓ Successfully merged {stats['duplicates_merged']} duplicates")
+                logger.success(
+                    f"✓ Successfully merged {stats['duplicates_merged']} duplicates"
+                )
 
         elif args.stats:
             # Show library statistics
@@ -906,10 +1006,12 @@ async def main_async():
             print(f"Storage: {stats['storage_mb']:.1f} MB")
             print(f"Library path: {stats['library_path']}")
 
-            if stats['projects']:
+            if stats["projects"]:
                 print("\n📁 Projects:")
-                for project in stats['projects']:
-                    print(f"  - {project['name']}: {project['papers_count']} papers")
+                for project in stats["projects"]:
+                    print(
+                        f"  - {project['name']}: {project['papers_count']} papers"
+                    )
 
             return 0
 
@@ -922,6 +1024,7 @@ async def main_async():
         logger.error(f"Error: {e}")
         if args.debug:
             import traceback
+
             traceback.print_exc()
         return 1
 

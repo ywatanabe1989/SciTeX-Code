@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 04:41:22 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/_AuthenticationStrategyResolver.py
+# Timestamp: "2025-10-07 22:45:56 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationStrategyResolver.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/_AuthenticationStrategyResolver.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
