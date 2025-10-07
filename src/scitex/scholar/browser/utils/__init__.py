@@ -19,6 +19,9 @@ from scitex.browser.interaction import (
     click_center_async,
     click_with_fallbacks_async,
     fill_with_fallbacks_async,
+    PopupHandler,
+    close_popups_async,
+    ensure_no_popups_async,
 )
 
 # Backward compatibility aliases (old names without _async suffix)
@@ -49,6 +52,9 @@ __all__ = [
     "click_center_async",
     "click_with_fallbacks_async",
     "fill_with_fallbacks_async",
+    "PopupHandler",
+    "close_popups_async",
+    "ensure_no_popups_async",
     # Backward compatibility (old names without _async suffix)
     "show_popup_message_async",
     "show_popup_and_capture",

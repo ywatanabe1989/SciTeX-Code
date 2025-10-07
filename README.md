@@ -138,6 +138,8 @@ Reusable Playwright automation utilities organized by category:
 - `click_center_async`: Click center of viewport
 - `click_with_fallbacks_async`: Robust clicking with multiple strategies
 - `fill_with_fallbacks_async`: Form filling with fallbacks
+- `close_popups_async`: Handle cookie banners, modals, newsletters
+- `PopupHandler`: Advanced popup handling class
 
 ```python
 from scitex.browser.debugging import show_popup_and_capture_async

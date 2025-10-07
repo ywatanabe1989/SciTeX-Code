@@ -86,10 +86,26 @@ Click, fill, and navigation utilities with robust fallback strategies.
 - Multiple fill strategies
 - Handles various input types
 
+**`close_popups_async`**
+- Detects and closes cookie banners, modals, newsletters
+- Comprehensive popup detection and handling
+- Configurable behavior (cookies, other popups)
+
+**`PopupHandler`**
+- Class-based popup handling for advanced use cases
+- Detect, close, and track handled popups
+
 #### Example
 ```python
-from scitex.browser.interaction import click_with_fallbacks_async
+from scitex.browser.interaction import (
+    click_with_fallbacks_async,
+    close_popups_async,
+)
 
+# Simple popup handling
+await close_popups_async(page, handle_cookies=True, close_others=True)
+
+# Click with fallbacks
 await click_with_fallbacks_async(page, "#submit-button", "Submit")
 ```
 

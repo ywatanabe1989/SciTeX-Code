@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File: _handle_popups_async.py
+# Timestamp: "2025-10-08 04:22:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/interaction/handle_popups.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = __file__
+__DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-Comprehensive popup handler for browser automation.
+Universal popup handler for browser automation.
 
 Detects and closes various types of popups including:
 - Cookie consent banners
@@ -12,6 +18,8 @@ Detects and closes various types of popups including:
 - AI assistant promotions
 - Authentication prompts
 - General modal dialogs
+
+This is a universal utility that works across any website.
 """
 
 import asyncio
@@ -326,7 +334,7 @@ class PopupHandler:
         return total_handled
 
 
-async def handle_popups_async(
+async def close_popups_async(
     page: Page,
     handle_cookies: bool = True,
     close_others: bool = True,

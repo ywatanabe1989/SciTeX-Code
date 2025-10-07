@@ -27,9 +27,6 @@ Closes unwanted browser pages during paper downloads.
 ### `_take_screenshot.py`
 Takes timestamped screenshots for debugging paper download flows.
 
-### `_handle_popups_async.py`
-Handles publisher-specific popups (cookie consent, subscriptions, etc.).
-
 ### `JSLoader.py`
 Loads JavaScript utilities for browser automation.
 
@@ -50,6 +47,8 @@ These utilities are imported from `scitex.browser` for convenience:
 - `click_center_async` - Click viewport center
 - `click_with_fallbacks_async` - Robust clicking
 - `fill_with_fallbacks_async` - Form filling
+- `close_popups_async` - Handle cookie banners and modals
+- `PopupHandler` - Advanced popup handling
 
 ### Backward Compatibility Aliases
 
