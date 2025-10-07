@@ -59,6 +59,21 @@ def find_pdf_urls_by_publisher_patterns(page, url: str) -> List[str]:
             f"https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber={doc_id}"
         )
 
+    # IOP Publishing
+    elif "iopscience.iop.org" in url and "/article/" in url:
+        # Pattern: /article/10.1088/1741-2552/aaf92e
+        # PDF URL: /article/10.1088/1741-2552/aaf92e/pdf
+        if not url.endswith("/pdf"):
+            urls_pdf.append(url.rstrip("/") + "/pdf")
+        # Also try: /article/10.1088/1741-2552/aaf92e/pdf/metrics
+        # Some IOP articles have different PDF locations
+        doi_match = re.search(r"/article/(10\.\d+/[\w\-\.]+)", url)
+        if doi_match:
+            doi = doi_match.group(1)
+            # Alternative PDF locations for IOP
+            urls_pdf.append(f"https://iopscience.iop.org/article/{doi}/pdf")
+            urls_pdf.append(f"https://iopscience.iop.org/article/{doi}/pdf/metrics")
+
     # MDPI
     elif "mdpi.com" in url and "/htm" in url:
         urls_pdf.append(url.replace("/htm", "/pdf"))
