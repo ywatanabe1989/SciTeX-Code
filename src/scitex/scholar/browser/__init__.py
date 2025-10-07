@@ -15,7 +15,9 @@ from .local.ScholarBrowserManager import ScholarBrowserManager
 from .utils import (
     click_center_async,
     click_download_for_chrome_pdf_viewer_async,
+    close_popups_async,
     detect_chrome_pdf_viewer_async,
+    PopupHandler,
     show_grid_async,
     show_popup_and_capture_async,
 )
@@ -27,10 +29,11 @@ __all__ = [
     "ScholarBrowserManager",
     # "BrowserUtils",
     # "PlaywrightVision",
-    "show_popup_and_capture_async",
     "click_center_async",
     "click_download_for_chrome_pdf_viewer_async",
+    "close_popups_async",
     "detect_chrome_pdf_viewer_async",
+    "PopupHandler",
     "show_grid_async",
     "show_popup_and_capture_async",
     # "ZenRowsRemoteScholarBrowserManager",
