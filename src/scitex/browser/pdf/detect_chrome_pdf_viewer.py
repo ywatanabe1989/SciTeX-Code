@@ -90,7 +90,4 @@ async def detect_chrome_pdf_viewer_async(page):
         return False
 
 
-# Backward compatibility alias
-detect_chrome_pdf_viewer_async = detect_chrome_pdf_viewer
-
 # EOF

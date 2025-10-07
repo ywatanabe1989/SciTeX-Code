@@ -65,7 +65,4 @@ async def show_grid_async(page):
     )
 
 
-# Backward compatibility alias
-show_grid_async = show_grid
-
 # EOF

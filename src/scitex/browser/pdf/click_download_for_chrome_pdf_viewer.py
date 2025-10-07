@@ -93,9 +93,4 @@ async def click_download_for_chrome_pdf_viewer_async(
         return False
 
 
-# Backward compatibility alias
-click_download_for_chrome_pdf_viewer_async = (
-    click_download_for_chrome_pdf_viewer
-)
-
 # EOF

@@ -13,7 +13,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 __FILE__ = __file__
 
-async def click_center(page):
+async def click_center_async(page):
     from ..debugging import show_popup_and_capture_async
 
     await show_popup_and_capture_async(
@@ -26,8 +26,5 @@ async def click_center(page):
     await page.wait_for_timeout(1_000)
     return clicked
 
-
-# Backward compatibility alias
-click_center_async = click_center
 
 # EOF
