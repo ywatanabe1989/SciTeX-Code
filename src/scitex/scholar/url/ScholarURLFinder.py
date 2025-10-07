@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 15:25:29 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/ScholarURLFinder.py
+# Timestamp: "2025-10-08 01:45:50 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/ScholarURLFinder.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 ScholarURLFinder - Main entry point for URL operations
@@ -117,35 +121,43 @@ class ScholarURLFinder:
         logger.info(
             f"\n{'-'*40}\nScholarURLFinder finding PDF URLs for {doi}...\n{'-'*40}"
         )
-        
+
         # Step 3: Try PDF extraction from Publisher URL FIRST
         urls_pdf = []
-        
+
         if url_publisher:
             logger.debug(f"Trying PDF extraction from publisher URL first...")
             pdfs = await self._get_pdfs_from_url(url_publisher, doi)
             urls_pdf.extend(pdfs)
-            
+
             if urls_pdf:
-                logger.success(f"Found {len(urls_pdf)} PDFs from publisher URL - skipping OpenURL resolution")
+                logger.success(
+                    f"Found {len(urls_pdf)} PDFs from publisher URL - skipping OpenURL resolution"
+                )
                 # Skip OpenURL entirely - we have PDFs!
-                urls["url_openurl_query"] = f"https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi={doi}"
-                urls["url_openurl_resolved"] = "skipped"  # Skipped because PDFs found from publisher
-            
+                urls["url_openurl_query"] = (
+                    f"https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi={doi}"
+                )
+                urls["url_openurl_resolved"] = (
+                    "skipped"  # Skipped because PDFs found from publisher
+                )
+
         # Step 4: Only do OpenURL if no PDFs found from publisher
         if not urls_pdf:
             logger.info("No PDFs from publisher URL, resolving OpenURL...")
             openurl_results = await self._get_cached_openurl(doi)
             urls.update(openurl_results)
-            
+
             # Try PDF extraction from OpenURL resolved URL
             if urls.get("url_openurl_resolved"):
-                logger.debug(f"Trying PDF extraction from OpenURL resolved URL...")
+                logger.debug(
+                    f"Trying PDF extraction from OpenURL resolved URL..."
+                )
                 pdfs = await self._get_pdfs_from_url(
                     urls["url_openurl_resolved"], doi
                 )
                 urls_pdf.extend(pdfs)
-                
+
                 if pdfs:
                     logger.info(f"Found {len(pdfs)} PDFs from OpenURL")
 
@@ -271,6 +283,7 @@ class ScholarURLFinder:
         try:
             page = await self.get_page()
             await page.goto(url, wait_until="domcontentloaded", timeout=30_000)
+            # await page.goto(url, wait_until="networkidle", timeout=30_000)
 
             pdfs = await find_pdf_urls(page)
 
@@ -530,12 +543,28 @@ if __name__ == "__main__":
         # Get all URLs for a paper
         doi = "10.1016/j.cell.2025.07.007"
         doi = "10.1126/science.aao0702"
+        doi = "https://doi.org/10.1109/jbhi.2025.3556775"
         urls = await url_finder.find_urls(
             doi=doi,
         )
         pprint(urls)
 
     asyncio.run(main_async())
+
+
+# Navigation: https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=https://doi.org/10.1109/jbhi.2025.3556775 -> https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
+# INFO: Loaded 681 Zotero translators
+# INFO: Loaded Zotero JavaScript modules successfully
+# INFO: Executing Zotero translator: HighWire 2.0
+# INFO: Closed popup with selector: button.close
+# Translator error: ZU.fieldIsValidForType is not a function
+# Zotero Translator did not extract any URLs from https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
+# FAIL: Not found any PDF URLs from https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541
+# Screenshot saved: /home/ywatanabe/.scitex/scholar/workspace/screenshots/ScholarURLFinder/https:/doi.org/10.1109/jbhi.2025.3556775 - No PDFs Found-20251008_000358.png
+# {'url_doi': 'https://doi.org/10.1109/jbhi.2025.3556775',
+#  'url_openurl_query': 'https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=https://doi.org/10.1109/jbhi.2025.3556775',
+#  'url_openurl_resolved': 'https://ieeexplore.ieee.org/search/searchresult.jsp?searchWithin=%22Publication%20Number%22:6221020&searchWithin=%22Volume%22:29&searchWithin=%22Issue%22:8&searchWithin=%22Start%20Page%22:5541',
+#  'url_publisher': 'https://ieeexplore.ieee.org/document/10946758'}
 
 # python -m scitex.scholar.url.ScholarURLFinder
 

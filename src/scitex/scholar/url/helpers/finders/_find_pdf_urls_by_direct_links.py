@@ -17,7 +17,7 @@ from scitex import logging
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils import show_popup_message_async
 
-from .publisher_pdf_configs import PublisherPDFConfig
+from ._PublisherRules import PublisherRules
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,8 @@ async def find_pdf_urls_by_direct_links(
 
         # Filter URLs based on publisher-specific rules
         current_url = page.url
-        filtered_urls = PublisherPDFConfig.filter_pdf_urls(
+        publisher_rules = PublisherRules(config)
+        filtered_urls = publisher_rules.filter_pdf_urls(
             current_url, list(all_urls)
         )
 
@@ -80,7 +81,8 @@ async def _find_pdf_urls_by_href(
 
         # Merge with publisher-specific patterns
         current_url = page.url
-        merged_config = PublisherPDFConfig.merge_with_config(
+        publisher_rules = PublisherRules(config)
+        merged_config = publisher_rules.merge_with_config(
             current_url,
             config_deny_selectors,
             config_deny_classes,

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 15:34:31 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/finders/find_pdf_urls.py
+# Timestamp: "2025-10-08 01:44:54 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/find_pdf_urls.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/finders/find_pdf_urls.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 URL Finder Functions
@@ -23,14 +27,14 @@ from playwright.async_api import Page
 from scitex import logging
 from scitex.scholar import ScholarConfig
 
-from .find_pdf_urls_by_direct_links import find_pdf_urls_by_direct_links
-from .find_pdf_urls_by_publisher_patterns import (
+from ._find_pdf_urls_by_direct_links import find_pdf_urls_by_direct_links
+from ._find_pdf_urls_by_publisher_patterns import (
     find_pdf_urls_by_publisher_patterns,
 )
-from .find_pdf_urls_by_zotero_translators import (
+from ._find_pdf_urls_by_view_button import find_pdf_urls_by_navigation
+from ._find_pdf_urls_by_zotero_translators import (
     find_pdf_urls_by_zotero_translators,
 )
-from .find_pdf_urls_by_view_button import find_pdf_urls_by_navigation
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +66,10 @@ async def find_pdf_urls(
 
     # Strategy 3: Try navigation to PDF URLs (for ScienceDirect etc)
     # This captures the final PDF URL after redirects
-    if urls_pdf and any(domain in page.url.lower() for domain in ["sciencedirect.com", "cell.com", "elsevier.com"]):
+    if urls_pdf and any(
+        domain in page.url.lower()
+        for domain in ["sciencedirect.com", "cell.com", "elsevier.com"]
+    ):
         # We have PDF URLs but they might be intermediate endpoints
         # Try to navigate to get the final URL
         navigation_urls = await find_pdf_urls_by_navigation(page, config)
@@ -71,18 +78,21 @@ async def find_pdf_urls(
                 seen_urls.add(url)
                 # Replace existing URL if it's an intermediate one
                 for i, existing in enumerate(urls_pdf):
-                    if "/pdfft?" in existing["url"] and "pdf.sciencedirectassets.com" in url:
+                    if (
+                        "/pdfft?" in existing["url"]
+                        and "pdf.sciencedirectassets.com" in url
+                    ):
                         urls_pdf[i] = {"url": url, "source": "navigation"}
                         break
                 else:
                     urls_pdf.append({"url": url, "source": "navigation"})
 
-    # # Strategy 4: Check for publisher patterns
-    # pattern_urls = find_pdf_urls_by_publisher_patterns(page, base_url)
-    # for url in pattern_urls:
-    #     if url not in seen_urls:
-    #         seen_urls.add(url)
-    #         urls_pdf.append({"url": url, "source": "publisher_pattern"})
+    # Strategy 4: Check for publisher patterns
+    pattern_urls = find_pdf_urls_by_publisher_patterns(page, base_url)
+    for url in pattern_urls:
+        if url not in seen_urls:
+            seen_urls.add(url)
+            urls_pdf.append({"url": url, "source": "publisher_pattern"})
 
     if len(urls_pdf):
         logger.success(
