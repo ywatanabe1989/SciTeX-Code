@@ -31,7 +31,6 @@ from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (
     ScholarPDFDownloaderWithScreenshots,
 )
 from scitex.scholar.storage._LibraryManager import LibraryManager
-from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 
 logger = logging.getLogger(__name__)
 
@@ -557,23 +556,8 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                 await browser_manager.get_authenticated_browser_and_context_async()
             )
 
-            # Initialize authentication gateway for this worker
-            from scitex.scholar.auth.AuthenticationGateway import (
-                AuthenticationGateway,
-            )
-
-            auth_gateway = AuthenticationGateway(
-                auth_manager=self.auth_manager,
-                browser_manager=browser_manager,
-                config=self.config,
-            )
-
-            # Initialize downloaders for this worker
-            url_finder = ScholarURLFinder(
-                context=context, config=self.config, use_cache=True
-            )
-
-            # Use screenshot-enabled downloader if available
+            # Use screenshot-enabled downloader for this worker
+            # Authentication and URL finding already done by Scholar.py preprocessing
             pdf_downloader = ScholarPDFDownloaderWithScreenshots(
                 context=context,
                 config=self.config,
@@ -593,124 +577,110 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                         f"Worker {worker_id} [{i+1}/{len(papers)}]: Processing {title}..."
                     )
 
-                    # Get publisher-specific delays
-                    if doi:
-                        # NEW: Prepare authentication context BEFORE URL finding
-                        # This establishes publisher-specific cookies if needed
-                        url_context = await auth_gateway.prepare_context_async(
-                            doi=doi, context=context
+                    # Get PDF URLs from paper dict (already resolved by Scholar.py)
+                    pdf_urls = paper.get("pdf_urls", [])
+                    urls = paper.get("url_info", {})  # Full URL info for logging
+
+                    if pdf_urls:
+                        # Get rate limits for first URL
+                        first_url = (
+                            pdf_urls[0].get("url")
+                            if isinstance(pdf_urls[0], dict)
+                            else pdf_urls[0]
+                        )
+                        limits = self._get_publisher_limits(first_url)
+
+                        # Apply rate limiting delay
+                        await asyncio.sleep(
+                            limits["delay"] + random.uniform(0, 3)
+                        )  # Add jitter
+
+                        # Download PDF with URL info
+                        success = await self._download_single_pdf(
+                            paper,
+                            pdf_urls,
+                            pdf_downloader,
+                            project,
+                            library_dir,
+                            worker_id,
+                            url_info=urls,  # Pass all URL info including openurl_resolved
                         )
 
-                        # Find URLs for the DOI (using authenticated context)
-                        # The gateway has already visited OpenURL if authentication was needed
-                        urls = await url_finder.find_urls(doi)
-                        pdf_urls = urls.get("urls_pdf", [])
-
-                        if pdf_urls:
-                            # Get rate limits for first URL
-                            first_url = (
-                                pdf_urls[0].get("url")
-                                if isinstance(pdf_urls[0], dict)
-                                else pdf_urls[0]
+                        if success:
+                            self.stats["downloaded"] += 1
+                            logger.success(
+                                f"Worker {worker_id}: Downloaded {title}"
                             )
-                            limits = self._get_publisher_limits(first_url)
-
-                            # Apply rate limiting delay
-                            await asyncio.sleep(
-                                limits["delay"] + random.uniform(0, 3)
-                            )  # Add jitter
-
-                            # Download PDF with URL info
-                            success = await self._download_single_pdf(
-                                paper,
-                                pdf_urls,
-                                pdf_downloader,
-                                project,
-                                library_dir,
-                                worker_id,
-                                url_info=urls,  # Pass all URL info including openurl_resolved
-                            )
-
-                            if success:
-                                self.stats["downloaded"] += 1
-                                logger.success(
-                                    f"Worker {worker_id}: Downloaded {title}"
-                                )
-                            else:
-                                # Save URL info even when download failed
-                                self._save_url_info_only(
-                                    paper, urls, project, library_dir
-                                )
-                                self.stats["failed"] += 1
-
                         else:
-                            logger.warning(
-                                f"Worker {worker_id}: No PDF URLs found for {title}"
-                            )
-
-                            # Mark as attempted so it shows as failed (PDF_f) not pending (PDF_p)
-                            paper_id = (
-                                self.config.path_manager._generate_paper_id(
-                                    doi=doi
-                                )
-                            )
-                            master_dir = (
-                                self.config.path_manager.get_library_master_dir()
-                            )
-                            paper_dir = master_dir / paper_id
-                            paper_dir.mkdir(parents=True, exist_ok=True)
-                            attempted_marker = (
-                                paper_dir / ".download_attempted"
-                            )
-                            download_log = paper_dir / "download_log.txt"
-
-                            if not attempted_marker.exists():
-                                attempted_marker.touch()
-                                from datetime import datetime
-
-                                with open(attempted_marker, "w") as f:
-                                    f.write(
-                                        f"Download attempted at: {datetime.now().isoformat()}\n"
-                                    )
-
-                            # Write to download log
-                            if not download_log.exists():
-                                from datetime import datetime
-
-                                with open(download_log, "w") as f:
-                                    f.write(f"Download Log for {doi}\n")
-                                    f.write(f"{'=' * 60}\n")
-                                    f.write(
-                                        f"Started at: {datetime.now().isoformat()}\n"
-                                    )
-                                    f.write(f"Worker ID: {worker_id}\n")
-                                    f.write(f"Paper ID: {paper_id}\n")
-
-                                    # Log all URLs found by URL finder
-                                    f.write(f"\n{'=' * 60}\n")
-                                    f.write(f"URL FINDER RESULTS:\n")
-                                    f.write(f"{'=' * 60}\n")
-                                    for key, value in urls.items():
-                                        if value:
-                                            f.write(f"{key}: {value}\n")
-
-                                    f.write(f"\n{'=' * 60}\n")
-                                    f.write(f"STATUS: NO PDF URLS FOUND\n")
-                                    f.write(
-                                        f"The URL finder could not locate any PDF download links.\n"
-                                    )
-                                    f.write(f"{'=' * 60}\n")
-
-                            # Save URL info even when no PDF URLs found
+                            # Save URL info even when download failed
                             self._save_url_info_only(
                                 paper, urls, project, library_dir
                             )
                             self.stats["failed"] += 1
+
                     else:
                         logger.warning(
-                            f"Worker {worker_id}: No DOI for {title}"
+                            f"Worker {worker_id}: No PDF URLs found for {title}"
                         )
-                        self.stats["skipped"] += 1
+
+                        # Mark as attempted so it shows as failed (PDF_f) not pending (PDF_p)
+                        paper_id = (
+                            self.config.path_manager._generate_paper_id(
+                                doi=doi
+                            )
+                        )
+                        master_dir = (
+                            self.config.path_manager.get_library_master_dir()
+                        )
+                        paper_dir = master_dir / paper_id
+                        paper_dir.mkdir(parents=True, exist_ok=True)
+                        attempted_marker = (
+                            paper_dir / ".download_attempted"
+                        )
+                        download_log = paper_dir / "download_log.txt"
+
+                        if not attempted_marker.exists():
+                            attempted_marker.touch()
+                            from datetime import datetime
+
+                            with open(attempted_marker, "w") as f:
+                                f.write(
+                                    f"Download attempted at: {datetime.now().isoformat()}\n"
+                                )
+
+                        # Write to download log
+                        if not download_log.exists():
+                            from datetime import datetime
+
+                            with open(download_log, "w") as f:
+                                f.write(f"Download Log for {doi}\n")
+                                f.write(f"{'=' * 60}\n")
+                                f.write(
+                                    f"Started at: {datetime.now().isoformat()}\n"
+                                )
+                                f.write(f"Worker ID: {worker_id}\n")
+                                f.write(f"Paper ID: {paper_id}\n")
+
+                                # Log all URLs found by URL finder
+                                f.write(f"\n{'=' * 60}\n")
+                                f.write(f"URL FINDER RESULTS:\n")
+                                f.write(f"{'=' * 60}\n")
+                                for key, value in urls.items():
+                                    if value:
+                                        f.write(f"{key}: {value}\n")
+
+                                f.write(f"\n{'=' * 60}\n")
+                                f.write(f"STATUS: NO PDF URLS FOUND\n")
+                                f.write(
+                                    f"The URL finder could not locate any PDF download links.\n"
+                                )
+                                f.write(f"{'=' * 60}\n")
+
+                        # Save URL info even when no PDF URLs found
+                        self._save_url_info_only(
+                            paper, urls, project, library_dir
+                        )
+                        self.stats["failed"] += 1
 
                 except Exception as e:
                     logger.error(
@@ -748,11 +718,8 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                 await browser_manager.get_authenticated_browser_and_context_async()
             )
 
-            url_finder = ScholarURLFinder(
-                context=context, config=self.config, use_cache=True
-            )
-
-            # Use screenshot-enabled downloader if available
+            # Use screenshot-enabled downloader
+            # Authentication and URL finding already done by Scholar.py preprocessing
             pdf_downloader = ScholarPDFDownloaderWithScreenshots(
                 context=context,
                 config=self.config,
@@ -771,30 +738,28 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                         f"[{i+1}/{len(papers)}]: Processing {title}..."
                     )
 
-                    if doi:
-                        urls = await url_finder.find_urls(doi)
-                        pdf_urls = urls.get("urls_pdf", [])
+                    # Get PDF URLs from paper dict (already resolved by Scholar.py)
+                    pdf_urls = paper.get("pdf_urls", [])
+                    urls = paper.get("url_info", {})  # Full URL info for logging
 
-                        if pdf_urls:
-                            # Conservative delay for sequential mode
-                            await asyncio.sleep(10)
+                    if pdf_urls:
+                        # Conservative delay for sequential mode
+                        await asyncio.sleep(10)
 
-                            success = await self._download_single_pdf(
-                                paper,
-                                pdf_urls,
-                                pdf_downloader,
-                                project,
-                                library_dir,
-                                worker_id=0,
-                                url_info=urls,  # Pass all URL info including openurl_resolved
-                            )
+                        success = await self._download_single_pdf(
+                            paper,
+                            pdf_urls,
+                            pdf_downloader,
+                            project,
+                            library_dir,
+                            worker_id=0,
+                            url_info=urls,  # Pass all URL info including openurl_resolved
+                        )
 
-                            if success:
-                                self.stats["downloaded"] += 1
-                            else:
-                                self.stats["failed"] += 1
+                        if success:
+                            self.stats["downloaded"] += 1
                         else:
-                            self.stats["skipped"] += 1
+                            self.stats["failed"] += 1
                     else:
                         self.stats["skipped"] += 1
 

@@ -476,15 +476,36 @@ class Scholar:
 
             logger.info(f"Using parallel download for {len(dois)} DOIs")
 
-            # Prepare papers with metadata for parallel download
-            papers_with_metadata = []
+            # NEW ARCHITECTURE: Do auth + URL finding BEFORE parallel download
+            # This avoids workers competing for authentication and finding URLs multiple times
+            from scitex.scholar.auth.AuthenticationGateway import AuthenticationGateway
+            from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
+
+            # Get shared authenticated browser context
+            browser, context = (
+                await self._browser_manager.get_authenticated_browser_and_context_async()
+            )
+
+            # Initialize gateway and URL finder (shared, sequential processing)
+            auth_gateway = AuthenticationGateway(
+                auth_manager=self._auth_manager,
+                browser_manager=self._browser_manager,
+                config=self.config,
+            )
+            url_finder = ScholarURLFinder(
+                context=context,
+                config=self.config,
+                use_cache=True
+            )
+
+            # Prepare papers with URLs resolved (sequential, authenticated)
+            papers_with_urls = []
             for doi in dois:
                 try:
                     # Try to get existing metadata from library
                     paper_data = {"doi": doi}
 
                     # Check if paper already exists in library
-                    # Use PathManager for consistent ID generation
                     paper_id = self.config.path_manager._generate_paper_id(doi=doi)
                     library_dir = self.config.get_library_dir()
                     metadata_file = library_dir / "MASTER" / paper_id / "metadata.json"
@@ -495,21 +516,35 @@ class Scholar:
                             existing_metadata = json.load(f)
                             paper_data.update(existing_metadata)
 
-                    papers_with_metadata.append(paper_data)
-                except Exception as e:
-                    logger.debug(f"Could not load metadata for {doi}: {e}")
-                    papers_with_metadata.append({"doi": doi})
+                    # NEW: Prepare authentication BEFORE URL finding
+                    logger.info(f"Preparing authentication and URLs for {doi}")
+                    url_context = await auth_gateway.prepare_context_async(
+                        doi=doi, context=context
+                    )
 
-            # Initialize parallel downloader with auth_manager
+                    # Find URLs (using authenticated context)
+                    urls = await url_finder.find_urls(doi)
+
+                    # Add URLs to paper data
+                    paper_data["pdf_urls"] = urls.get("urls_pdf", [])
+                    paper_data["url_info"] = urls  # Full URL info for logging
+
+                    papers_with_urls.append(paper_data)
+                except Exception as e:
+                    logger.warning(f"Failed to prepare {doi}: {e}")
+                    # Still add paper but without URLs - worker will skip it
+                    papers_with_urls.append({"doi": doi, "pdf_urls": []})
+
+            # Initialize parallel downloader (NO auth_manager needed - auth already done)
             parallel_downloader = ScholarPDFDownloaderWithScreenshotsParallel(
                 config=self.config,
-                auth_manager=self._auth_manager,
+                auth_manager=self._auth_manager,  # Still pass for browser profile sync
                 use_parallel=True
             )
 
-            # Download in parallel
+            # Download in parallel (workers just download, no URL finding/auth)
             results = await parallel_downloader.download_batch(
-                papers_with_metadata,
+                papers_with_urls,  # Now includes pdf_urls!
                 project=self.project,
                 library_dir=self.config.get_library_dir()
             )
