@@ -522,7 +522,8 @@ class Scholar:
     async def _download_pdfs_sequential(
         self, dois: List[str], output_dir: Optional[Path] = None
     ) -> Dict[str, int]:
-        """Sequential PDF download with screenshot documentation."""
+        """Sequential PDF download with authentication gateway and screenshot documentation."""
+        from scitex.scholar.auth.AuthenticationGateway import AuthenticationGateway
         from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 
         # Try to use enhanced downloader with screenshots
@@ -538,6 +539,13 @@ class Scholar:
         # Get authenticated browser context
         browser, context = (
             await self._browser_manager.get_authenticated_browser_and_context_async()
+        )
+
+        # Initialize authentication gateway (NEW)
+        auth_gateway = AuthenticationGateway(
+            auth_manager=self._auth_manager,
+            browser_manager=self._browser_manager,
+            config=self.config,
         )
 
         # Initialize URL finder and PDF downloader
@@ -580,7 +588,14 @@ class Scholar:
             try:
                 logger.info(f"Processing DOI: {doi}")
 
-                # Step 1: Find URLs for the DOI
+                # NEW: Prepare authentication context BEFORE URL finding
+                # This establishes publisher-specific cookies if needed
+                url_context = await auth_gateway.prepare_context_async(
+                    doi=doi, context=context
+                )
+
+                # Step 1: Find URLs for the DOI (using authenticated context)
+                # The gateway has already visited OpenURL if authentication was needed
                 urls = await url_finder.find_urls(doi)
 
                 # Step 2: Get PDF URLs

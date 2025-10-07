@@ -61,27 +61,83 @@ class OpenURLResolver:
 
         for attempt in range(3):
             try:
+                # Visual: Navigating to OpenURL
+                await show_popup_message_async(
+                    page, f"OpenURL: Navigating to resolver for {doi[:30]}..."
+                )
                 await page.goto(
                     query, wait_until="domcontentloaded", timeout=60000
                 )
                 await show_popup_message_async(
-                    page, "Resolving authenticated URL by OpenURL..."
+                    page, f"OpenURL: Loaded resolver page at {page.url[:60]}"
                 )
-                await page.wait_for_timeout(3000)
 
+                # Visual: Waiting for page to stabilize
+                await show_popup_message_async(
+                    page, "OpenURL: Waiting for resolver to load (networkidle)..."
+                )
+                try:
+                    await page.wait_for_load_state("networkidle", timeout=15_000)
+                    await show_popup_message_async(
+                        page, "OpenURL: ✓ Resolver page ready"
+                    )
+                except Exception:
+                    await show_popup_message_async(
+                        page, "OpenURL: Page still loading, continuing..."
+                    )
+                await page.wait_for_timeout(1000)
+
+                # Visual: Finding publisher links
+                await show_popup_message_async(
+                    page, "OpenURL: Searching for publisher links..."
+                )
                 found_links = await self.finder.find_link_elements(page, doi)
+
                 if not found_links:
+                    await show_popup_message_async(
+                        page, "OpenURL: ✗ No publisher links found"
+                    )
+                    await page.wait_for_timeout(2000)
                     return None
 
-                for found_link in found_links:
+                # Visual: Found links
+                await show_popup_message_async(
+                    page, f"OpenURL: ✓ Found {len(found_links)} publisher link(s)"
+                )
+                await page.wait_for_timeout(1000)
+
+                # Visual: Try each publisher link
+                for i, found_link in enumerate(found_links, 1):
                     publisher = found_link.get("publisher")
                     link_element = found_link.get("link_element")
+
+                    await show_popup_message_async(
+                        page, f"OpenURL: Clicking {publisher} link ({i}/{len(found_links)})..."
+                    )
+
                     result = await click_and_wait(
                         link_element,
                         f"Clicking {publisher} link for {doi[:20]}...",
                     )
+
                     if result.get("success"):
-                        return result.get("final_url")
+                        final_url = result.get("final_url")
+                        await show_popup_message_async(
+                            page, f"OpenURL: ✓ SUCCESS! Landed at {final_url[:60]}"
+                        )
+                        await page.wait_for_timeout(2000)
+                        return final_url
+                    else:
+                        await show_popup_message_async(
+                            page, f"OpenURL: ✗ {publisher} link failed, trying next..."
+                        )
+                        await page.wait_for_timeout(1000)
+
+                # All links failed
+                await show_popup_message_async(
+                    page, "OpenURL: ✗ All publisher links failed"
+                )
+                await page.wait_for_timeout(2000)
                 return None
 
             except Exception as e:
@@ -90,12 +146,19 @@ class OpenURLResolver:
                     logger.warning(
                         f"OpenURL attempt {attempt + 1} failed: {e}, retrying in {wait_time}s"
                     )
+                    await show_popup_message_async(
+                        page, f"OpenURL: ✗ Attempt {attempt + 1} failed, retrying in {wait_time}s..."
+                    )
                     await page.wait_for_timeout(wait_time * 1000)
                     continue
                 else:
                     logger.error(
                         f"OpenURL resolution failed after 3 attempts: {e}"
                     )
+                    await show_popup_message_async(
+                        page, f"OpenURL: ✗ FAILED after 3 attempts: {str(e)[:80]}"
+                    )
+                    await page.wait_for_timeout(2000)
                     await take_screenshot(
                         page, "OpenURLResolver", f"{doi} - query not resolved"
                     )
