@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 08:11:51 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_wait_redirects.py
+# Timestamp: "2025-10-08 04:18:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -14,10 +14,12 @@ Enhanced redirect waiter that handles authentication endpoints properly.
 
 This version continues waiting even after receiving 200 status from auth endpoints,
 as they often perform client-side redirects.
+
+Auth patterns are loaded from Scholar config (authentication.auth_endpoint_patterns).
 """
 
 import asyncio
-from typing import Dict
+from typing import Dict, List
 from urllib.parse import urlparse
 
 from playwright.async_api import Page, Response
@@ -26,38 +28,76 @@ from scitex import logging
 
 logger = logging.getLogger(__name__)
 
-# Known authentication/intermediate endpoints that perform client-side redirects
-AUTH_ENDPOINTS = [
-    "auth.elsevier.com",
-    "login.elsevier.com",
-    "idp.nature.com",
-    "secure.jbs.elsevierhealth.com",
-    "go.openathens.net",
-    "login.openathens.net",
-    "shibboleth",
-    "saml",
-    "/ShibAuth/",
-    "/authenticate",
-    "/login",
-    "/signin",
-    "/sso/",
-]
+# Cache for config-loaded patterns
+_AUTH_ENDPOINTS: List[str] | None = None
+_ARTICLE_PATTERNS: List[str] | None = None
+
+
+def _load_auth_patterns() -> tuple[List[str], List[str]]:
+    """Load authentication patterns from Scholar config."""
+    global _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
+
+    if _AUTH_ENDPOINTS is not None and _ARTICLE_PATTERNS is not None:
+        return _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
+
+    try:
+        from ...config import get_config
+        config = get_config()
+        _AUTH_ENDPOINTS = config.get("authentication", {}).get("auth_endpoint_patterns", [])
+        _ARTICLE_PATTERNS = config.get("authentication", {}).get("article_url_patterns", [])
+
+        if not _AUTH_ENDPOINTS:
+            logger.warning("No auth_endpoint_patterns in config, using fallback")
+            _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
+        if not _ARTICLE_PATTERNS:
+            logger.warning("No article_url_patterns in config, using fallback")
+            _ARTICLE_PATTERNS = _get_fallback_article_patterns()
+
+    except Exception as e:
+        logger.warning(f"Failed to load patterns from config: {e}, using fallback")
+        _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
+        _ARTICLE_PATTERNS = _get_fallback_article_patterns()
+
+    return _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
+
+
+def _get_fallback_auth_patterns() -> List[str]:
+    """Fallback auth patterns if config fails."""
+    return [
+        "go.openathens.net", "login.openathens.net",
+        "auth.elsevier.com", "login.elsevier.com",
+        "idp.nature.com", "secure.jbs.elsevierhealth.com",
+        "shibboleth", "saml", "/ShibAuth/",
+        "/authenticate", "/login", "/signin", "/sso/",
+    ]
+
+
+def _get_fallback_article_patterns() -> List[str]:
+    """Fallback article patterns if config fails."""
+    return [
+        "/science/article/", "/articles/", "/content/",
+        "/full/", "/fulltext/", "/doi/full/", "/doi/abs/",
+        "/doi/pdf/", ".pdf",
+    ]
 
 
 def is_auth_endpoint(url: str) -> bool:
     """Check if URL is likely an authentication/intermediate endpoint."""
+    auth_patterns, _ = _load_auth_patterns()
     url_lower = url.lower()
     parsed = urlparse(url_lower)
 
     # Check hostname
-    for auth_pattern in AUTH_ENDPOINTS:
-        if parsed.hostname and auth_pattern in parsed.hostname:
-            return True
+    for auth_pattern in auth_patterns:
+        if not auth_pattern.startswith("/"):  # Hostname pattern
+            if parsed.hostname and auth_pattern in parsed.hostname:
+                return True
 
     # Check path
-    for auth_pattern in AUTH_ENDPOINTS:
-        if auth_pattern.startswith("/") and auth_pattern in parsed.path:
-            return True
+    for auth_pattern in auth_patterns:
+        if auth_pattern.startswith("/"):  # Path pattern
+            if auth_pattern in parsed.path:
+                return True
 
     return False
 
@@ -72,20 +112,10 @@ def is_final_article_url(url: str) -> bool:
     ):
         return False
 
-    indicators = [
-        "/science/article/",
-        "/articles/",
-        "/content/",
-        "/full/",
-        "/fulltext/",
-        "/doi/full/",
-        "/doi/abs/",
-        "/doi/pdf/",
-        ".pdf",
-    ]
-
+    _, article_patterns = _load_auth_patterns()
     url_lower = url.lower()
-    for indicator in indicators:
+
+    for indicator in article_patterns:
         if indicator in url_lower:
             return True
     return False

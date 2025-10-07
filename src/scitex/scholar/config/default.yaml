@@ -529,6 +529,39 @@ authentication:
   # Active authentication provider (openathens, ezproxy, shibboleth)
   active_provider: openathens
 
+  # Authentication endpoint patterns for redirect waiting
+  # These are intermediate endpoints that perform client-side redirects
+  auth_endpoint_patterns:
+    # OpenAthens
+    - "go.openathens.net"
+    - "login.openathens.net"
+    # Elsevier
+    - "auth.elsevier.com"
+    - "login.elsevier.com"
+    - "secure.jbs.elsevierhealth.com"
+    # Nature
+    - "idp.nature.com"
+    # Generic SSO patterns
+    - "shibboleth"
+    - "saml"
+    - "/ShibAuth/"
+    - "/authenticate"
+    - "/login"
+    - "/signin"
+    - "/sso/"
+
+  # Article URL indicators (for detecting final destination)
+  article_url_patterns:
+    - "/science/article/"
+    - "/articles/"
+    - "/content/"
+    - "/full/"
+    - "/fulltext/"
+    - "/doi/full/"
+    - "/doi/abs/"
+    - "/doi/pdf/"
+    - ".pdf"
+
   # Publishers requiring authentication (paywalled content)
   # Gateway will visit OpenURL to establish publisher-specific session cookies
   paywalled_publishers:

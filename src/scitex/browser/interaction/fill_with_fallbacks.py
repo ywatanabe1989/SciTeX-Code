@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:40:50 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_fill_with_fallbacks.py
+# Timestamp: "2025-10-08 04:13:32 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/interaction/fill_with_fallbacks.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/interaction/fill_with_fallbacks.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from playwright.async_api import Page
 
@@ -16,6 +20,8 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
+# 1. Main entry point
+# ---------------------------------------
 async def fill_with_fallbacks_async(
     page: Page, selector: str, value: str, method: str = "auto"
 ) -> bool:
@@ -42,6 +48,8 @@ async def fill_with_fallbacks_async(
     return False
 
 
+# 2. Helper functions
+# ---------------------------------------
 async def _fill_with_playwright(page: Page, selector: str, value: str) -> bool:
     try:
         await page.fill(selector, value, timeout=5000)
@@ -64,15 +72,15 @@ async def _fill_with_js(page: Page, selector: str, value: str) -> bool:
     try:
         result = await page.evaluate(
             """(selector, value) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                element.value = value;
-                element.dispatchEvent(new Event('input', { bubbles: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true }));
-                return 'success';
-            }
-            return 'element not found';
-        }""",
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.value = value;
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                    element.dispatchEvent(new Event('change', { bubbles: true }));
+                    return 'success';
+                }
+                return 'element not found';
+            }""",
             selector,
             value,
         )

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-23 11:09:38 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_with_fallbacks.py
+# Timestamp: "2025-10-08 04:13:38 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/interaction/click_with_fallbacks.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/interaction/click_with_fallbacks.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -16,6 +18,8 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
+# 1. Main entry point
+# ---------------------------------------
 async def click_with_fallbacks_async(
     page: Page, selector: str, method: str = "auto"
 ) -> bool:
@@ -44,6 +48,8 @@ async def click_with_fallbacks_async(
     return False
 
 
+# 2. Helper functions
+# ---------------------------------------
 async def _click_with_playwright(page: Page, selector: str) -> bool:
     try:
         await page.click(selector, timeout=5000)
@@ -64,13 +70,13 @@ async def _click_with_js(page: Page, selector: str) -> bool:
     try:
         result = await page.evaluate(
             """(selector) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                element.click();
-                return 'success';
-            }
-            return 'element not found';
-        }""",
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.click();
+                    return 'success';
+                }
+                return 'element not found';
+            }""",
             selector,
         )
         return result == "success"
