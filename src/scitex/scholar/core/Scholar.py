@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 08:10:58 (ywatanabe)"
+# Timestamp: "2025-10-08 09:11:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -31,8 +31,10 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
-
+from copy import deepcopy
 from scitex import logging
+
+import shutil
 
 # PDF extraction is now handled by scitex.io
 from scitex.errors import ScholarError
@@ -47,6 +49,8 @@ from scitex.scholar.engines.ScholarEngine import ScholarEngine
 from scitex.scholar.download.ScholarPDFDownloaderWithScreenshotsParallel import (
     ScholarPDFDownloaderWithScreenshotsParallel,
 )
+from scitex.scholar.auth.AuthenticationGateway import AuthenticationGateway
+from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 
 from .Papers import Papers
 
@@ -343,7 +347,6 @@ class Scholar:
         Creates a new Paper object with merged data to avoid modifying the original.
         """
         # Import here to avoid circular dependency
-        from copy import deepcopy
 
         enriched = deepcopy(paper)
 
@@ -540,33 +543,27 @@ class Scholar:
             # Use parallel downloader for multiple DOIs
             logger.info(f"Using parallel download for {len(dois)} DOIs")
 
-            # NEW ARCHITECTURE: Do auth + URL finding BEFORE parallel download
-            # This avoids workers competing for authentication and finding URLs multiple times
-            from scitex.scholar.auth.AuthenticationGateway import (
-                AuthenticationGateway,
-            )
-            from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
-
-            # Get shared authenticated browser context
-            browser, context = (
-                await self._browser_manager.get_authenticated_browser_and_context_async()
+            # NEW: Use parallel URL finder for faster preprocessing
+            from scitex.scholar.url.ScholarURLFinderParallel import (
+                ScholarURLFinderParallel,
             )
 
-            # Initialize gateway and URL finder (shared, sequential processing)
-            auth_gateway = AuthenticationGateway(
+            # Initialize parallel URL finder
+            url_finder_parallel = ScholarURLFinderParallel(
                 auth_manager=self._auth_manager,
                 browser_manager=self._browser_manager,
                 config=self.config,
             )
-            # url_finder = ScholarURLFinder(
-            #     context=context,
-            #     config=self.config,
-            #     use_cache=True
-            # )
 
-            # Prepare papers with URLs resolved (sequential, authenticated)
+            # Find URLs for all DOIs in parallel
+            logger.info(f"Finding URLs for {len(dois)} DOIs in parallel...")
+            url_results = await url_finder_parallel.find_urls_batch(
+                dois, use_cache=True
+            )
+
+            # Prepare papers with URLs resolved
             papers_with_urls = []
-            for doi in dois:
+            for doi, urls in zip(dois, url_results):
                 try:
                     # Try to get existing metadata from library
                     paper_data = {"doi": doi}
@@ -587,19 +584,7 @@ class Scholar:
                             existing_metadata = json.load(f)
                             paper_data.update(existing_metadata)
 
-                    # NEW: Prepare authentication BEFORE URL finding
-                    logger.info(f"Preparing authentication and URLs for {doi}")
-                    url_context = await auth_gateway.prepare_context_async(
-                        doi=doi, context=context
-                    )
-                    url_finder = ScholarURLFinder(
-                        context=context, config=self.config, use_cache=True
-                    )
-
-                    # Find URLs (using authenticated context)
-                    urls = await url_finder.find_urls(doi)
-
-                    # Add URLs to paper data
+                    # Add URLs to paper data (already found in parallel)
                     paper_data["pdf_urls"] = urls.get("urls_pdf", [])
                     paper_data["url_info"] = urls  # Full URL info for logging
 
@@ -638,18 +623,9 @@ class Scholar:
         from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 
         # Try to use enhanced downloader with screenshots
-        try:
-            from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (
-                ScholarPDFDownloaderWithScreenshots,
-            )
-
-            use_screenshots = True
-        except ImportError:
-            from scitex.scholar.download.ScholarPDFDownloader import (
-                ScholarPDFDownloader,
-            )
-
-            use_screenshots = False
+        from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (
+            ScholarPDFDownloaderWithScreenshots,
+        )
 
         results = {"downloaded": 0, "failed": 0, "errors": 0}
 
@@ -665,31 +641,15 @@ class Scholar:
             config=self.config,
         )
 
-        # Initialize URL finder and PDF downloader
-        url_finder = ScholarURLFinder(
-            context=context, config=self.config, use_cache=True
-        )
-
         # Use screenshot-enabled downloader if available
-        if use_screenshots:
-            pdf_downloader = ScholarPDFDownloaderWithScreenshots(
-                context=context,
-                config=self.config,
-                use_cache=True,
-                screenshot_interval=3.0,
-                capture_on_failure=True,
-                capture_during_success=True,  # Always capture for documentation
-            )
-        else:
-            pdf_downloader = ScholarPDFDownloader(
-                context=context, config=self.config, use_cache=True
-            )
-
-        # Get library paths
-        import json
-        import shutil
-        import hashlib
-        from datetime import datetime
+        pdf_downloader = ScholarPDFDownloaderWithScreenshots(
+            context=context,
+            config=self.config,
+            use_cache=True,
+            screenshot_interval=3.0,
+            capture_on_failure=True,
+            capture_during_success=True,  # Always capture for documentation
+        )
 
         library_dir = self.config.get_library_dir()
         master_dir = library_dir / "MASTER"
@@ -703,8 +663,16 @@ class Scholar:
 
                 # NEW: Prepare authentication context BEFORE URL finding
                 # This establishes publisher-specific cookies if needed
-                url_context = await auth_gateway.prepare_context_async(
+                _url_context = await auth_gateway.prepare_context_async(
                     doi=doi, context=context
+                )
+
+                _url_context = await auth_gateway.prepare_context_async(
+                    doi=doi, context=context
+                )
+                # Initialize URL finder and PDF downloader
+                url_finder = ScholarURLFinder(
+                    context=context, config=self.config, use_cache=True
                 )
 
                 # Step 1: Find URLs for the DOI (using authenticated context)
@@ -739,7 +707,7 @@ class Scholar:
                     )
 
                     # Try to download with screenshots if available
-                    if use_screenshots and hasattr(
+                    if hasattr(
                         pdf_downloader, "download_from_url_with_screenshots"
                     ):
                         # Generate paper ID for screenshot storage using PathManager
