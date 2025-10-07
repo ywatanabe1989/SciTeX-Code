@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:34:43 (ywatanabe)"
+# Timestamp: "2025-10-08 07:20:03 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/AuthenticationGateway.py
 # ----------------------------------------
 from __future__ import annotations
@@ -72,7 +72,7 @@ class AuthenticationGateway:
         self,
         auth_manager,  # ScholarAuthManager
         browser_manager,  # ScholarBrowserManager
-        config: ScholarConfig,
+        config: ScholarConfig = None,
     ):
         """
         Initialize authentication gateway.
@@ -84,7 +84,7 @@ class AuthenticationGateway:
         """
         self.auth_manager = auth_manager
         self.browser_manager = browser_manager
-        self.config = config
+        self.config = config or ScholarConfig()
         self._auth_cache: Dict[str, bool] = {}  # Cache visited gateways
 
     async def prepare_context_async(
@@ -206,8 +206,11 @@ class AuthenticationGateway:
             URLContext with requires_auth and auth_provider populated
         """
         # Get authenticated publishers from config
-        auth_config = self.config.get("authentication") or {}
-        paywalled_publishers = auth_config.get("paywalled_publishers") or []
+        # auth_config = self.config.get("authentication") or {}
+        # paywalled_publishers = auth_config.get("paywalled_publishers") or []
+        paywalled_publishers = self.config.resolve(
+            "paywalled_publishers", None, default=[]
+        )
 
         doi = url_context.doi or ""
 
@@ -244,8 +247,11 @@ class AuthenticationGateway:
             URLContext with requires_auth and auth_provider populated
         """
         # Get authenticated publishers from config
-        auth_config = self.config.get("authentication") or {}
-        paywalled_publishers = auth_config.get("paywalled_publishers") or []
+        # auth_config = self.config.get("authentication") or {}
+        # paywalled_publishers = auth_config.get("paywalled_publishers") or []
+        paywalled_publishers = self.config.resolve(
+            "paywalled_publishers", None, default=[]
+        )
 
         # Check if URL matches any paywalled publisher
         url_lower = (url_context.url or "").lower()
@@ -377,5 +383,77 @@ class AuthenticationGateway:
             return None
         finally:
             await page.close()
+
+
+async def main_async():
+    """
+    Demonstration of AuthenticationGateway usage.
+
+    Shows how to:
+    1. Initialize authentication components
+    2. Prepare authenticated browser context
+    3. Use the context for subsequent operations
+    """
+    from scitex.scholar.auth.ScholarAuthManager import ScholarAuthManager
+    from scitex.scholar.browser.ScholarBrowserManager import (
+        ScholarBrowserManager,
+    )
+    from scitex.scholar.config import ScholarConfig
+
+    # Initialize components
+    config = ScholarConfig()
+    auth_manager = ScholarAuthManager(config=config)
+    browser_manager = ScholarBrowserManager(
+        auth_manager=auth_manager, config=config
+    )
+
+    # Initialize gateway
+    gateway = AuthenticationGateway(
+        auth_manager=auth_manager,
+        browser_manager=browser_manager,
+        config=config,
+    )
+
+    # Example DOIs - one paywalled (IEEE), one open access
+    test_dois = [
+        "10.1109/JBHI.2024.1234567",  # IEEE (paywalled)
+        "10.1088/1741-2552/aaf92e",  # IOP Publishing (paywalled)
+        "10.1038/s41467-020-12345-6",  # Nature Communications (open access)
+    ]
+
+    # Get authenticated browser context
+    browser, context = (
+        await browser_manager.get_authenticated_browser_and_context_async()
+    )
+
+    try:
+        for doi in test_dois:
+            logger.info(f"\n{'='*60}")
+            logger.info(f"Testing DOI: {doi}")
+            logger.info(f"{'='*60}")
+
+            # Prepare authentication (this is the key operation)
+            url_context = await gateway.prepare_context_async(
+                doi=doi, context=context
+            )
+
+            # Show results
+            logger.info(f"Publisher URL: {url_context.url}")
+            logger.info(f"Requires auth: {url_context.requires_auth}")
+            logger.info(f"Auth provider: {url_context.auth_provider}")
+            logger.info(f"Gateway URL: {url_context.auth_gateway_url}")
+
+            # At this point, the browser context has publisher cookies
+            # You can now use it for URL finding or PDF download
+
+    finally:
+        await context.close()
+        await browser.close()
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(main_async())
 
 # EOF
