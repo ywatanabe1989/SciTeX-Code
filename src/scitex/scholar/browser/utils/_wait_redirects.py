@@ -117,9 +117,9 @@ async def wait_redirects(
     """
     if show_progress:
         try:
-            from ._show_popup_message_async import show_popup_message_async
+            from ._show_popup_and_capture_async import show_popup_and_capture_async
         except ImportError:
-            logger.warning("show_popup_message_async not available")
+            logger.warning("show_popup_and_capture_async not available")
             show_progress = False
 
     start_time = asyncio.get_event_loop().time()
@@ -166,7 +166,7 @@ async def wait_redirects(
         if show_progress and (300 <= status < 400 or is_auth_endpoint(url)):
             redirect_count += 1
             asyncio.create_task(
-                show_popup_message_async(
+                show_popup_and_capture_async(
                     page,
                     f"{'Auth' if is_auth_endpoint(url) else 'Redirect'} {redirect_count}: {url[:40]}...",
                     duration_ms=1000,
@@ -179,7 +179,7 @@ async def wait_redirects(
             logger.info(f"Found article page: {url[:80]}")
             if show_progress:
                 asyncio.create_task(
-                    show_popup_message_async(
+                    show_popup_and_capture_async(
                         page, f"Article found: {url[:40]}...", duration_ms=2000
                     )
                 )
@@ -201,7 +201,7 @@ async def wait_redirects(
                 )
                 if show_progress:
                     asyncio.create_task(
-                        show_popup_message_async(
+                        show_popup_and_capture_async(
                             page,
                             "Processing authentication...",
                             duration_ms=2000,
@@ -284,7 +284,7 @@ async def wait_redirects(
             timed_out = True
             logger.warning(f"Redirect wait timeout after {timeout}ms")
             if show_progress:
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Redirect timeout, finalizing...", duration_ms=1500
                 )
 

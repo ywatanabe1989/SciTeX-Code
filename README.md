@@ -1,7 +1,7 @@
 <!-- ---
-!-- Timestamp: 2025-06-21 13:51:19
+!-- Timestamp: 2025-10-08 03:58:58
 !-- Author: ywatanabe
-!-- File: /ssh:ywatanabe@sp:/home/ywatanabe/proj/SciTeX-Code/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/README.md
 !-- --- -->
 
 
@@ -37,8 +37,8 @@ pip install scitex
 
 ## Submodules
 
-| Category              | Submodule                                         | Description                      |
-|-----------------------|---------------------------------------------------|----------------------------------|
+| Category              | Submodule                                             | Description                      |
+|-----------------------|-------------------------------------------------------|----------------------------------|
 | **Fundamentals**      | [`scitex.gen`](./src/scitex/gen#readme)               | General utilities                |
 |                       | [`scitex.io`](./src/scitex/io#readme)                 | Input/Output operations          |
 |                       | [`scitex.utils`](./src/scitex/utils#readme)           | General utilities                |
@@ -57,6 +57,7 @@ pip install scitex
 | **Signal Processing** | [`scitex.dsp`](./src/scitex/dsp#readme)               | Digital Signal Processing        |
 | **Statistics**        | [`scitex.stats`](./src/scitex/stats#readme)           | Statistical analysis tools       |
 | **Literature**        | [`scitex.scholar`](./src/scitex/scholar#readme)       | Academic paper search & download |
+| **Browser**           | [`scitex.browser`](./src/scitex/browser#readme)       | Playwright automation utilities  |
 | **ETC**               | [`scitex.decorators`](./src/scitex/decorators#readme) | Function decorators              |
 |                       | [`scitex.gists`](./src/scitex/gists#readme)           | Code snippets                    |
 |                       | [`scitex.resource`](./src/scitex/resource#readme)     | Resource management              |
@@ -119,6 +120,36 @@ Enhanced PDF download workflow with enterprise-grade reliability:
 - **Pre-flight Checks**: System validation before attempting downloads
 - **Smart Retry Logic**: Exponential backoff with strategy rotation
 - **Enhanced Diagnostics**: Publisher-specific error solutions
+
+### 🌐 Browser Automation Utilities
+
+Reusable Playwright automation utilities organized by category:
+
+**Debugging** (`scitex.browser.debugging`)
+- `show_popup_and_capture_async`: Visual debugging with stacking messages and screenshots
+- `show_grid_async`: Coordinate grid overlay for element positioning
+- `highlight_element_async`: Visual element highlighting
+
+**PDF** (`scitex.browser.pdf`)
+- `detect_chrome_pdf_viewer_async`: Detect Chrome's PDF viewer
+- `click_download_for_chrome_pdf_viewer_async`: Download PDFs from Chrome viewer
+
+**Interaction** (`scitex.browser.interaction`)
+- `click_center_async`: Click center of viewport
+- `click_with_fallbacks_async`: Robust clicking with multiple strategies
+- `fill_with_fallbacks_async`: Form filling with fallbacks
+
+```python
+from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.pdf import detect_chrome_pdf_viewer_async
+
+# Visual debugging during automation
+await show_popup_and_capture_async(page, "Step 1: Loading page...")
+
+# PDF detection and download
+if await detect_chrome_pdf_viewer_async(page):
+    await click_download_for_chrome_pdf_viewer_async(page, "paper.pdf")
+```
 
 ### 📚 Scholar Module with Enhanced Search Capabilities
 

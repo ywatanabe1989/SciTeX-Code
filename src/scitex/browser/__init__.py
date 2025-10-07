@@ -5,48 +5,38 @@
 
 # Debugging utilities
 from .debugging import (
-    show_popup_and_capture,
-    show_grid,
+    show_popup_and_capture_async,
     show_grid_async,
-    highlight_element,
+    highlight_element_async,
 )
 
 # PDF utilities
 from .pdf import (
-    detect_chrome_pdf_viewer,
     detect_chrome_pdf_viewer_async,
-    click_download_for_chrome_pdf_viewer,
     click_download_for_chrome_pdf_viewer_async,
 )
 
 # Interaction utilities
 from .interaction import (
-    click_center,
     click_center_async,
-    click_and_wait,
-    click_with_fallbacks,
-    fill_with_fallbacks,
+    click_with_fallbacks_async,
+    fill_with_fallbacks_async,
 )
 
 __all__ = [
     # Debugging
-    "show_popup_and_capture",
-    "show_grid",
+    "show_popup_and_capture_async",
     "show_grid_async",
-    "highlight_element",
+    "highlight_element_async",
 
     # PDF
-    "detect_chrome_pdf_viewer",
     "detect_chrome_pdf_viewer_async",
-    "click_download_for_chrome_pdf_viewer",
     "click_download_for_chrome_pdf_viewer_async",
 
     # Interaction
-    "click_center",
     "click_center_async",
-    "click_and_wait",
-    "click_with_fallbacks",
-    "fill_with_fallbacks",
+    "click_with_fallbacks_async",
+    "fill_with_fallbacks_async",
 ]
 
 # EOF

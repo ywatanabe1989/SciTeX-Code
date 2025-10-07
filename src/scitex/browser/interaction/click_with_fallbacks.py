@@ -16,7 +16,7 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def click_with_fallbacks(
+async def click_with_fallbacks_async(
     page: Page, selector: str, method: str = "auto"
 ) -> bool:
     """Click element using multiple fallback methods."""

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:22:06 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/utils/_click_and_wait.py
+# Timestamp: "2025-10-08 04:08:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
 import os
@@ -51,16 +51,16 @@ async def click_and_wait(
             'timed_out': bool,
         }
     """
-    from ._highlight_element import highlight_element
-    from ._show_popup_message_async import show_popup_message_async
+    from scitex.browser.debugging import highlight_element_async
+    from ._show_popup_and_capture_async import show_popup_and_capture_async
     from ._wait_redirects import wait_redirects
 
     page = link.page
     context = page.context
 
     # Initial UI feedback
-    await show_popup_message_async(page, message, duration_ms=1500)
-    await highlight_element(link, 1000)
+    await show_popup_and_capture_async(page, message, duration_ms=1500)
+    await highlight_element_async(link, 1000)
 
     initial_url = page.url
     href = await link.get_attribute("href") or ""
@@ -95,7 +95,7 @@ async def click_and_wait(
 
         # Final feedback
         if result["success"]:
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page,
                 f"Complete: {result['final_url'][:40]}... "
                 f"({redirect_result['redirect_count']} redirects)",

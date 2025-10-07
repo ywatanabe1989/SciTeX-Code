@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 07:07:41 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/finders/find_pdf_urls_by_direct_links.py
+# Timestamp: "2025-10-08 03:34:39 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_direct_links.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_direct_links.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from typing import List
 
@@ -15,7 +19,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.scholar.browser.utils import show_popup_message_async
+from scitex.scholar.browser.utils import show_popup_and_capture_async
 
 from ._PublisherRules import PublisherRules
 
@@ -69,12 +73,8 @@ async def _find_pdf_urls_by_href(
         config = config or ScholarConfig()
 
         # Get deny patterns from config file
-        config_deny_selectors = config.resolve(
-            "deny_selectors", default=[]
-        )
-        config_deny_classes = config.resolve(
-            "deny_classes", default=[]
-        )
+        config_deny_selectors = config.resolve("deny_selectors", default=[])
+        config_deny_classes = config.resolve("deny_classes", default=[])
         config_deny_text_patterns = config.resolve(
             "deny_text_patterns", default=[]
         )
@@ -94,7 +94,7 @@ async def _find_pdf_urls_by_href(
         deny_classes = merged_config["deny_classes"]
         deny_text_patterns = merged_config["deny_text_patterns"]
 
-        await show_popup_message_async(
+        await show_popup_and_capture_async(
             page, "Finding PDF URLs by href selectors..."
         )
 

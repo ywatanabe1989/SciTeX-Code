@@ -24,25 +24,25 @@ scitex.browser/
 
 Visual debugging tools for browser automation workflows.
 
-**`show_popup_and_capture`** ⭐ *Special versatile function*
+**`show_popup_and_capture_async`** ⭐ *Special versatile function*
 - Displays stacking popup messages in browser
 - Automatically captures timestamped screenshots
 - Messages persist across page navigations
 - Creates complete visual timeline of automation workflow
 
-**`show_grid`**
+**`show_grid_async`**
 - Overlays coordinate grid on page
 - Helps with visual element positioning
 
-**`highlight_element`**
+**`highlight_element_async`**
 - Highlights specific page elements
 - Useful for debugging element selection
 
 #### Example
 ```python
-from scitex.browser.debugging import show_popup_and_capture
+from scitex.browser.debugging import show_popup_and_capture_async
 
-await show_popup_and_capture(
+await show_popup_and_capture_async(
     page,
     "OpenURL: ✓ Found publisher link",
     take_screenshot=True,
@@ -54,48 +54,43 @@ await show_popup_and_capture(
 
 Chrome PDF viewer interaction utilities.
 
-**`detect_chrome_pdf_viewer`**
+**`detect_chrome_pdf_viewer_async`**
 - Detects if Chrome's PDF viewer is loaded
 - Multiple detection methods for reliability
 
-**`click_download_for_chrome_pdf_viewer`**
+**`click_download_for_chrome_pdf_viewer_async`**
 - Clicks download button in Chrome PDF viewer
 - Handles download wait and file verification
 
 #### Example
 ```python
-from scitex.browser.pdf import detect_chrome_pdf_viewer, click_download_for_chrome_pdf_viewer
+from scitex.browser.pdf import detect_chrome_pdf_viewer_async, click_download_for_chrome_pdf_viewer_async
 
-if await detect_chrome_pdf_viewer(page):
-    success = await click_download_for_chrome_pdf_viewer(page, "paper.pdf")
+if await detect_chrome_pdf_viewer_async(page):
+    success = await click_download_for_chrome_pdf_viewer_async(page, "paper.pdf")
 ```
 
 ### 🖱️ Interaction (`scitex.browser.interaction`)
 
 Click, fill, and navigation utilities with robust fallback strategies.
 
-**`click_center`**
+**`click_center_async`**
 - Clicks center of viewport
 - Useful for dismissing popups
 
-**`click_and_wait`**
-- Clicks element and waits for navigation
-- Handles redirects and auth flows
-
-**`click_with_fallbacks`**
+**`click_with_fallbacks_async`**
 - Multiple click strategies (direct, JavaScript, dispatch)
 - Robust fallback chain
 
-**`fill_with_fallbacks`**
+**`fill_with_fallbacks_async`**
 - Multiple fill strategies
 - Handles various input types
 
 #### Example
 ```python
-from scitex.browser.interaction import click_and_wait, click_with_fallbacks
+from scitex.browser.interaction import click_with_fallbacks_async
 
-result = await click_and_wait(element, "Clicking login button...")
-await click_with_fallbacks(page, "#submit-button", "Submit")
+await click_with_fallbacks_async(page, "#submit-button", "Submit")
 ```
 
 ## Usage
@@ -103,31 +98,26 @@ await click_with_fallbacks(page, "#submit-button", "Submit")
 ### Direct Import (Recommended)
 ```python
 # Import from specific category
-from scitex.browser.debugging import show_popup_and_capture
-from scitex.browser.pdf import detect_chrome_pdf_viewer
-from scitex.browser.interaction import click_and_wait
+from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.pdf import detect_chrome_pdf_viewer_async
+from scitex.browser.interaction import click_center_async
 ```
 
 ### Top-Level Import
 ```python
 # Import from main browser module
 from scitex.browser import (
-    show_popup_and_capture,
-    detect_chrome_pdf_viewer,
-    click_and_wait,
+    show_popup_and_capture_async,
+    detect_chrome_pdf_viewer_async,
+    click_center_async,
 )
 ```
 
-## Backward Compatibility
+## Naming Convention
 
-All functions maintain backward compatibility with `_async` suffix aliases:
+All async functions use `_async` suffix consistently for clarity.
 
-```python
-from scitex.browser.debugging import show_grid_async  # Still works
-from scitex.browser.pdf import detect_chrome_pdf_viewer_async  # Still works
-```
-
-## Special Tool: `show_popup_and_capture`
+## Special Tool: `show_popup_and_capture_async`
 
 This function is particularly special and versatile:
 
@@ -140,9 +130,9 @@ This function is particularly special and versatile:
 ### Visual Timeline Example
 
 ```python
-await show_popup_and_capture(page, "Step 1: Loading page...")
-await show_popup_and_capture(page, "Step 2: Finding links...")
-await show_popup_and_capture(page, "✓ Step 3: Download complete!")
+await show_popup_and_capture_async(page, "Step 1: Loading page...")
+await show_popup_and_capture_async(page, "Step 2: Finding links...")
+await show_popup_and_capture_async(page, "✓ Step 3: Download complete!")
 ```
 
 Creates screenshots:

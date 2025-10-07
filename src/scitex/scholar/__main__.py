@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 23:54:11 (ywatanabe)"
+# Timestamp: "2025-10-08 00:17:02 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,7 +24,7 @@ from scitex import logging
 
 logger = logging.getLogger(__name__)
 
-from scholar.utils._cleanup_scholar_processes import cleanup_scholar_processes
+from .utils._cleanup_scholar_processes import cleanup_scholar_processes
 
 
 def create_parser():

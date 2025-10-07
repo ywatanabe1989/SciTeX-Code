@@ -15,7 +15,7 @@ src/scitex/scholar/browser/js/
 │   ├── show_grid.js
 │   └── progress_indicator.js
 ├── pdf/
-│   ├── detect_pdf_viewer.js
+│   ├── detect_chrome_pdf_viewer.js
 │   ├── extract_pdf_metadata.js
 │   └── monitor_pdf_download.js
 ├── navigation/
@@ -253,7 +253,7 @@ function createProgressIndicator(options = {}) {
 
 ## 2. PDF Utilities
 
-### `pdf/detect_pdf_viewer.js`
+### `pdf/detect_chrome_pdf_viewer.js`
 ```javascript
 // Comprehensive PDF viewer detection
 function detectPDFViewer() {
@@ -786,7 +786,7 @@ class JSLoader:
         return f"(function() {{ const params = {params_json}; {script} }})()"
 
 # Usage in your existing code
-async def show_popup_message_async(page, message: str, duration_ms: int = 5000):
+async def show_popup_and_capture_async(page, message: str, duration_ms: int = 5000):
     js_loader = JSLoader(Path(__file__).parent / "js")
     script = js_loader.load_with_params(
         "ui/popup_message.js",

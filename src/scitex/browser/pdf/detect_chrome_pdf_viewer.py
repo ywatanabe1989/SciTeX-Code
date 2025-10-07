@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:48:59 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/detect_pdf_viewer.py
+# Timestamp: "2025-10-08 04:07:59 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/detect_chrome_pdf_viewer.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/browser/pdf/detect_pdf_viewer.py"
+    "./src/scitex/browser/pdf/detect_chrome_pdf_viewer.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -18,7 +18,7 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def detect_chrome_pdf_viewer(page):
+async def detect_chrome_pdf_viewer_async(page):
     """
     Detect if Chrome PDF viewer is present on the page.
 
@@ -27,7 +27,8 @@ async def detect_chrome_pdf_viewer(page):
     NOTE: Caller should wait for networkidle BEFORE calling this function.
     This function does NOT wait for networkidle to avoid redundant waits.
     """
-    from .show_popup_and_capture import show_popup_and_capture
+
+    from ..debugging import show_popup_and_capture
 
     await show_popup_and_capture(page, "Detecting Chrome PDF Viewer...")
 

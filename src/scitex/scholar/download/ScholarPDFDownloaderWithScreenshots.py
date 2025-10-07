@@ -396,6 +396,13 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             await page.goto(pdf_url, wait_until="load", timeout=60000)
             await page.wait_for_timeout(3000)
 
+            # Log the actual URL after navigation (in case of redirects)
+            actual_url = page.url
+            logger.info(f"After navigation - Expected: {pdf_url}")
+            logger.info(f"After navigation - Actual: {actual_url}")
+            if actual_url != pdf_url:
+                logger.warning(f"URL redirect detected: {pdf_url} -> {actual_url}")
+
             # Check if PDF viewer loaded
             ss = await self._capture_screenshot_async(
                 page, "chrome_pdf_loaded", doi, paper_id
@@ -405,11 +412,11 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
 
             # Try download button
             from scitex.scholar.browser import (
-                click_download_button_from_chrome_pdf_viewer_async,
-                detect_pdf_viewer_async,
+                click_download_for_chrome_pdf_viewer_async,
+                detect_chrome_pdf_viewer_async,
             )
 
-            is_pdf_viewer = await detect_pdf_viewer_async(page)
+            is_pdf_viewer = await detect_chrome_pdf_viewer_async(page)
             if is_pdf_viewer:
                 await self._capture_screenshot_async(
                     page, "chrome_pdf_viewer_detected", doi, paper_id
@@ -426,7 +433,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                 page.on("download", handle_download)
 
                 # Click download
-                await click_download_button_from_chrome_pdf_viewer_async(page)
+                await click_download_for_chrome_pdf_viewer_async(page)
                 await page.wait_for_timeout(5000)
 
                 if download_path and download_path.exists():

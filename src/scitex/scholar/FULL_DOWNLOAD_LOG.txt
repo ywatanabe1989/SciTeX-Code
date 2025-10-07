@@ -1,0 +1,52 @@
+
+0
+/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/library/neurovista/
+├── bibliography.bib -> info/bibtex/merged.bib
+├── CC_000000-PDF_f-IF_000-2007-Schelter-Unknown -> ../MASTER/F45A8E5A
+├── CC_000000-PDF_f-IF_000-2023-Payne-Unknown -> ../MASTER/02452894
+├── CC_000000-PDF_f-IF_006-2025-Lu-IEEE-Journal-of-Biomedical-and -> ../MASTER/D7D3ADE9
+├── CC_000000-PDF_p-IF_003-2019-Baldassano-Journal-of-Neural-Engineering -> ../MASTER/36DA45DE
+├── CC_000000-PDF_p-IF_003-2024-Andrade-Frontiers-in-Neuroscience -> ../MASTER/5FEB60BC
+├── CC_000000-PDF_p-IF_003-2024-Yang-Clinical-Neurophysiology -> ../MASTER/6875476B
+├── CC_000001-PDF_p-IF_000-2022-Ahmad-2022-4th-Novel-Intelligent-and -> ../MASTER/39305E03
+├── CC_000001-PDF_p-IF_000-2022-Schroeder-arXiv-Cornell-University -> ../MASTER/F8448703
+├── CC_000001-PDF_p-IF_000-2023-Haderlein-ArXiv -> ../MASTER/C6961090
+├── CC_000001-PDF_p-IF_000-2025-Sirbu-ArXiv -> ../MASTER/D26B4E35
+├── CC_000001-PDF_s-IF_000-2021-Schroeder-arXiv-Cornell-University -> ../MASTER/62F2B887
+├── CC_000002-PDF_p-IF_000-2021-Dilorenzo-Surgical-Neurology-Internation -> ../MASTER/420BEE7F
+├── CC_000002-PDF_p-IF_003-2024-Chambers-Frontiers-in-Neuroscience -> ../MASTER/8E650A41
+├── CC_000003-PDF_f-IF_002-2022-Loscher-Frontiers-in-Veterinary-Scienc -> ../MASTER/AF2ECE5C
+├── CC_000004-PDF_p-IF_007-2022-Chen-Neurology -> ../MASTER/79D07D2F
+├── CC_000005-PDF_s-IF_000-2019-Dilorenzo-Surgical-Neurology-Internation -> ../MASTER/508BAEDC
+├── CC_000012-PDF_p-IF_004-2022-Schroeder-Brain-Communications -> ../MASTER/DCDE3DC7
+├── CC_000017-PDF_p-IF_002-2019-Dilorenzo-Brain-Sciences -> ../MASTER/4011B3A2
+├── CC_000036-PDF_p-IF_004-2022-Sladky-Brain-communications -> ../MASTER/5DE96505
+├── CC_000052-PDF_p-IF_003-2018-Karoly-PLoS-Computational-Biology -> ../MASTER/3F7B339B
+├── CC_000078-PDF_f-IF_002-2015-Brinkmann-PLoS-ONE -> ../MASTER/A8B89915
+├── CC_000085-PDF_p-IF_004-2020-Gregg-Brain-Communications -> ../MASTER/C74FDF10
+├── CC_000110-PDF_p-IF_002-2011-Davis-Epilepsy-Research -> ../MASTER/3ADFFF45
+├── CC_000113-PDF_p-IF_010-2017-Baldassano-Brain -> ../MASTER/1CC76612
+├── CC_000125-PDF_p-IF_002-2014-Howbert-PLoS-ONE -> ../MASTER/8A1B8E08
+├── CC_000178-PDF_p-IF_010-2018-Kuhlmann-Brain -> ../MASTER/BC643ED1
+├── CC_000195-PDF_p-IF_010-2017-Karoly-Brain -> ../MASTER/0F9573A8
+├── CC_000208-PDF_p-IF_014-2020-Maturana-Nature-Communications -> ../MASTER/95470ADC
+├── CC_000279-PDF_p-IF_009-2017-Kiral-Kornek-EBioMedicine -> ../MASTER/6375819C
+├── CC_000812-PDF_f-IF_000-2013-Cook-The-Lancet-Neurology -> ../MASTER/1CDA22A9
+└── info
+    ├── bibtex
+    │   ├── merged.bib
+    │   ├── neurovista.bib
+    │   └── neurovista_enriched.bib
+    ├── logs
+    │   └── download_20251008_004009.log
+    └── project_metadata.json
+
+34 directories, 6 files
+0
+~/.scitex/scholar/library/neurovista/
+└── info
+    └── bibtex
+        └── seizure_prediction_enriched.bib
+
+3 directories, 1 file
+0

@@ -16,7 +16,7 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-async def fill_with_fallbacks(
+async def fill_with_fallbacks_async(
     page: Page, selector: str, value: str, method: str = "auto"
 ) -> bool:
     """Fill element using multiple fallback methods."""

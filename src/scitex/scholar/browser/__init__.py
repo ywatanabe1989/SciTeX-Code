@@ -14,10 +14,10 @@ from .local.ScholarBrowserManager import ScholarBrowserManager
 # from .PlaywrightVision import PlaywrightVision
 from .utils import (
     click_center_async,
-    click_download_button_from_chrome_pdf_viewer_async,
-    detect_pdf_viewer_async,
+    click_download_for_chrome_pdf_viewer_async,
+    detect_chrome_pdf_viewer_async,
     show_grid_async,
-    show_popup_message_async,
+    show_popup_and_capture_async,
 )
 
 # from .remote._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
@@ -27,12 +27,12 @@ __all__ = [
     "ScholarBrowserManager",
     # "BrowserUtils",
     # "PlaywrightVision",
-    "show_popup_message_async",
+    "show_popup_and_capture_async",
     "click_center_async",
-    "click_download_button_from_chrome_pdf_viewer_async",
-    "detect_pdf_viewer_async",
+    "click_download_for_chrome_pdf_viewer_async",
+    "detect_chrome_pdf_viewer_async",
     "show_grid_async",
-    "show_popup_message_async",
+    "show_popup_and_capture_async",
     # "ZenRowsRemoteScholarBrowserManager",
     # "ZenRowsAPIBrowser",
 ]

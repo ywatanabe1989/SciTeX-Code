@@ -3,15 +3,14 @@
 # SciTeX Browser Debugging Utilities
 # ----------------------------------------
 
-from .show_popup_and_capture import show_popup_and_capture
-from .show_grid import show_grid, show_grid_async
-from .highlight_element import highlight_element
+from ._show_popup_and_capture import show_popup_and_capture_async
+from ._show_grid import show_grid_async
+from ._highlight_element import highlight_element_async
 
 __all__ = [
-    "show_popup_and_capture",
-    "show_grid",
-    "show_grid_async",  # Backward compatibility
-    "highlight_element",
+    "show_popup_and_capture_async",
+    "show_grid_async",
+    "highlight_element_async",
 ]
 
 # EOF

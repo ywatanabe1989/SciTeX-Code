@@ -236,7 +236,8 @@ class BibTeXHandler:
         """Handle enriched metadata from BibTeX fields."""
         if "citation_count" in fields:
             try:
-                paper.citation_count.total = int(fields["citation_count"])
+                citation_str = str(fields["citation_count"]).replace(",", "")
+                paper.citation_count.total = int(citation_str)
                 paper.citation_count.total_engines = fields.get(
                     "citation_count_source", "bibtex"
                 )

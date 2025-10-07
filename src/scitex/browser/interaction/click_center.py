@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-20 06:49:04 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/utils/click_center.py
+# Timestamp: "2025-10-08 04:05:49 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/interaction/click_center.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/interaction/click_center.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-async def click_center(page):
-    from . import show_popup_and_capture_async
+__FILE__ = __file__
 
-    await show_popup_and_capture_async(page, "Clicking the center of the page...")
+async def click_center(page):
+    from ..debugging import show_popup_and_capture_async
+
+    await show_popup_and_capture_async(
+        page, "Clicking the center of the page..."
+    )
     viewport_size = page.viewport_size
     center_x = viewport_size["width"] // 2
     center_y = viewport_size["height"] // 2
@@ -23,6 +29,5 @@ async def click_center(page):
 
 # Backward compatibility alias
 click_center_async = click_center
-
 
 # EOF

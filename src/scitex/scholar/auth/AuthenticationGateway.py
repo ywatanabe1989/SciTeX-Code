@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 02:30:00 (ywatanabe)"
+# Timestamp: "2025-10-08 03:34:43 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/AuthenticationGateway.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = "./src/scitex/scholar/auth/AuthenticationGateway.py"
+__FILE__ = (
+    "./src/scitex/scholar/auth/AuthenticationGateway.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
@@ -24,7 +26,8 @@ This keeps URL finders and PDF downloaders free of authentication logic.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
+
 from playwright.async_api import BrowserContext, Page
 
 from scitex import logging
@@ -41,6 +44,7 @@ class URLContext:
     This dataclass carries all information needed for URL resolution
     and PDF download, including authentication state.
     """
+
     doi: str
     title: Optional[str] = None
     url: Optional[str] = None  # Publisher landing page URL
@@ -84,10 +88,7 @@ class AuthenticationGateway:
         self._auth_cache: Dict[str, bool] = {}  # Cache visited gateways
 
     async def prepare_context_async(
-        self,
-        doi: str,
-        context: BrowserContext,
-        title: Optional[str] = None
+        self, doi: str, context: BrowserContext, title: Optional[str] = None
     ) -> URLContext:
         """
         Prepare URL context with authentication if needed.
@@ -112,7 +113,10 @@ class AuthenticationGateway:
         url_context = URLContext(doi=doi, title=title)
 
         # Step 1: Build OpenURL
-        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import OpenURLResolver
+        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import (
+            OpenURLResolver,
+        )
+
         resolver = OpenURLResolver(config=self.config)
         openurl = resolver._build_query(url_context.doi)
         url_context.auth_gateway_url = openurl
@@ -124,13 +128,17 @@ class AuthenticationGateway:
         # Step 3: If authentication needed, visit OpenURL and establish cookies
         # This also resolves to the publisher URL as a side effect
         if url_context.requires_auth:
-            publisher_url = await self._establish_authentication_async(url_context, context)
+            publisher_url = await self._establish_authentication_async(
+                url_context, context
+            )
             url_context.url = publisher_url or openurl
         else:
             # Step 4: For open access, just resolve to publisher URL
             page = await context.new_page()
             try:
-                publisher_url = await resolver.resolve_doi(url_context.doi, page)
+                publisher_url = await resolver.resolve_doi(
+                    url_context.doi, page
+                )
                 url_context.url = publisher_url
                 logger.debug(f"Resolved {url_context.doi} → {publisher_url}")
             except Exception as e:
@@ -142,9 +150,7 @@ class AuthenticationGateway:
         return url_context
 
     async def _resolve_publisher_url_async(
-        self,
-        url_context: URLContext,
-        context: BrowserContext
+        self, url_context: URLContext, context: BrowserContext
     ) -> URLContext:
         """
         Resolve DOI to publisher landing page URL.
@@ -159,7 +165,9 @@ class AuthenticationGateway:
         Returns:
             URLContext with url and auth_gateway_url populated
         """
-        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import OpenURLResolver
+        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import (
+            OpenURLResolver,
+        )
 
         resolver = OpenURLResolver(config=self.config)
 
@@ -182,7 +190,9 @@ class AuthenticationGateway:
 
         return url_context
 
-    def _check_auth_requirements_from_doi(self, url_context: URLContext) -> URLContext:
+    def _check_auth_requirements_from_doi(
+        self, url_context: URLContext
+    ) -> URLContext:
         """
         Determine if DOI requires authentication based on DOI prefix patterns.
 
@@ -259,9 +269,7 @@ class AuthenticationGateway:
         return url_context
 
     async def _establish_authentication_async(
-        self,
-        url_context: URLContext,
-        context: BrowserContext
+        self, url_context: URLContext, context: BrowserContext
     ) -> Optional[str]:
         """
         Establish authentication by visiting gateway URL and clicking through to publisher.
@@ -299,27 +307,30 @@ class AuthenticationGateway:
         # Check cache - avoid redundant visits
         cache_key = f"{url_context.doi}"
         if cache_key in self._auth_cache:
-            logger.debug(f"Authentication already established for {url_context.doi}")
+            logger.debug(
+                f"Authentication already established for {url_context.doi}"
+            )
             # Return cached URL if available
             return self._auth_cache.get(f"{cache_key}_url")
 
-        logger.info(
-            f"Establishing authentication via OpenURL"
-        )
+        logger.info(f"Establishing authentication via OpenURL")
         logger.debug(f"Gateway URL: {gateway_url}")
 
         # Visit OpenURL and click through to publisher
         # This uses the existing OpenURLResolver flow
-        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import OpenURLResolver
-        from scitex.scholar.browser.utils import show_popup_message_async
+        from scitex.scholar.browser.utils import show_popup_and_capture_async
+        from scitex.scholar.url.helpers.resolvers._OpenURLResolver import (
+            OpenURLResolver,
+        )
 
         resolver = OpenURLResolver(config=self.config)
         page = await context.new_page()
 
         try:
             # Show visual progress
-            await show_popup_message_async(
-                page, f"Auth Gateway: Establishing session for {url_context.doi[:50]}..."
+            await show_popup_and_capture_async(
+                page,
+                f"Auth Gateway: Establishing session for {url_context.doi[:50]}...",
             )
 
             # resolve_doi already does the full flow:
@@ -331,9 +342,12 @@ class AuthenticationGateway:
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
 
             if publisher_url:
-                logger.success(f"Authentication established at: {publisher_url}")
-                await show_popup_message_async(
-                    page, f"Auth Gateway: ✓ Session established at {publisher_url[:60]}"
+                logger.success(
+                    f"Authentication established at: {publisher_url}"
+                )
+                await show_popup_and_capture_async(
+                    page,
+                    f"Auth Gateway: ✓ Session established at {publisher_url[:60]}",
                 )
                 await page.wait_for_timeout(2000)
                 # Cache successful authentication
@@ -341,8 +355,10 @@ class AuthenticationGateway:
                 self._auth_cache[f"{cache_key}_url"] = publisher_url
                 return publisher_url
             else:
-                logger.warning("OpenURL resolution did not return publisher URL")
-                await show_popup_message_async(
+                logger.warning(
+                    "OpenURL resolution did not return publisher URL"
+                )
+                await show_popup_and_capture_async(
                     page, "Auth Gateway: ✗ Could not resolve to publisher URL"
                 )
                 await page.wait_for_timeout(2000)
@@ -351,7 +367,7 @@ class AuthenticationGateway:
         except Exception as e:
             logger.warning(f"Authentication setup failed: {e}")
             try:
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, f"Auth Gateway: ✗ EXCEPTION: {str(e)[:80]}"
                 )
                 await page.wait_for_timeout(2000)
@@ -361,6 +377,5 @@ class AuthenticationGateway:
             return None
         finally:
             await page.close()
-
 
 # EOF

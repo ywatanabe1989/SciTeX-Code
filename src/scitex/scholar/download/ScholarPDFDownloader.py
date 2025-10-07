@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 02:57:31 (ywatanabe)"
+# Timestamp: "2025-10-08 03:50:59 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -23,10 +23,10 @@ from scitex import logging
 from scitex.scholar import ScholarConfig, ScholarURLFinder
 from scitex.scholar.browser import (
     click_center_async,
-    click_download_button_from_chrome_pdf_viewer_async,
-    detect_pdf_viewer_async,
+    click_download_for_chrome_pdf_viewer_async,
+    detect_chrome_pdf_viewer_async,
     show_grid_async,
-    show_popup_message_async,
+    show_popup_and_capture_async,
 )
 from scitex.scholar.browser.local.utils._HumanBehavior import HumanBehavior
 
@@ -207,12 +207,12 @@ class ScholarPDFDownloader:
             page.on("download", handle_download)
 
             # Step 1: Navigate
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, f"Direct Download: Navigating to {pdf_url[:60]}..."
             )
             try:
                 await page.goto(pdf_url, wait_until="load", timeout=60_000)
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, f"Direct Download: Loaded at {page.url[:80]}"
                 )
             except Exception as ee:
@@ -220,13 +220,13 @@ class ScholarPDFDownloader:
                     logger.info(
                         "ERR_ABORTED detected - likely direct download"
                     )
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page,
                         "Direct Download: ERR_ABORTED (download may have started)",
                     )
                     await page.wait_for_timeout(5_000)
                 else:
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page, f"Direct Download: ✗ Error: {str(ee)[:80]}"
                     )
                     await page.wait_for_timeout(2000)
@@ -238,7 +238,7 @@ class ScholarPDFDownloader:
                 logger.success(
                     f"Direct download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
                 )
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page,
                     f"Direct Download: ✓ SUCCESS! Downloaded {size_MiB:.2f} MB",
                 )
@@ -247,7 +247,7 @@ class ScholarPDFDownloader:
                 return output_path
             else:
                 logger.debug("Direct download: No download event occurred")
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Direct Download: ✗ No download event occurred"
                 )
                 await page.wait_for_timeout(2000)
@@ -259,7 +259,7 @@ class ScholarPDFDownloader:
             logger.warn(f"Direct download failed: {ee}")
             if page is not None:
                 try:
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page, f"Direct Download: ✗ EXCEPTION: {str(ee)[:100]}"
                     )
                     await page.wait_for_timeout(2000)
@@ -278,7 +278,7 @@ class ScholarPDFDownloader:
 
             # Step 1: Navigate and wait for networkidle
             logger.debug("Chrome PDF: Navigating to URL...")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, f"Chrome PDF: Navigating to {pdf_url[:60]}..."
             )
             await HumanBehavior.random_delay_async(
@@ -287,47 +287,50 @@ class ScholarPDFDownloader:
             # Navigate and wait for initial networkidle
             await page.goto(pdf_url, wait_until="networkidle", timeout=60_000)
             logger.debug(f"Chrome PDF: Loaded page at {page.url}")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, f"Chrome PDF: Initial load at {page.url[:80]}"
             )
 
             # Step 2: Wait for PDF rendering and any post-load network activity
             logger.debug("Chrome PDF: Waiting for PDF rendering...")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: Waiting for PDF rendering (networkidle)..."
             )
             try:
                 # Wait for network to be fully idle (catches post-load PDF requests)
                 await page.wait_for_load_state("networkidle", timeout=30_000)
-                logger.success("Chrome PDF: Network idle, PDF should be rendered")
-                await show_popup_message_async(
+                logger.success(
+                    "Chrome PDF: Network idle, PDF should be rendered"
+                )
+                await show_popup_and_capture_async(
                     page, "Chrome PDF: ✓ Network idle, PDF rendered"
                 )
                 await page.wait_for_timeout(2000)
             except Exception as e:
                 logger.debug(f"Network idle timeout (non-fatal): {e}")
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Chrome PDF: Network still active, continuing anyway"
                 )
                 await page.wait_for_timeout(2000)
 
             # Step 2.5: Extra wait for PDF viewer iframe/embed to fully load
             # Chrome PDF viewer can take additional time to initialize
-            await show_popup_message_async(
-                page, "Chrome PDF: Waiting extra for PDF viewer to initialize (10s)..."
+            await show_popup_and_capture_async(
+                page,
+                "Chrome PDF: Waiting extra for PDF viewer to initialize (10s)...",
             )
             await page.wait_for_timeout(10000)  # Additional 10 seconds
 
             # Step 3: Detect PDF viewer
             logger.debug("Chrome PDF: Detecting PDF viewer...")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: Detecting PDF viewer..."
             )
-            if not await detect_pdf_viewer_async(page):
+            if not await detect_chrome_pdf_viewer_async(page):
                 logger.debug(
                     f"Chrome PDF: No PDF viewer detected at {page.url}"
                 )
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Chrome PDF: ✗ No PDF viewer detected!"
                 )
                 await page.wait_for_timeout(2000)  # Show message for 2s
@@ -338,48 +341,47 @@ class ScholarPDFDownloader:
             logger.info(
                 "Chrome PDF: PDF viewer detected, attempting download..."
             )
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: ✓ PDF viewer detected!"
             )
             await HumanBehavior.random_delay_async(1000, 2000, "viewing PDF")
 
             # Step 5: Show grid and click center
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: Showing grid overlay..."
             )
             await show_grid_async(page)
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: Clicking center of PDF..."
             )
             await click_center_async(page)
 
             # Step 6: Click download button
             logger.debug("Chrome PDF: Clicking download button...")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: Clicking download button..."
             )
-            is_downloaded = (
-                await click_download_button_from_chrome_pdf_viewer_async(
-                    page, output_path
-                )
+            is_downloaded = await click_download_for_chrome_pdf_viewer_async(
+                page, output_path
             )
 
             # Step 7: Wait for download to complete (use networkidle for patience)
             logger.debug("Chrome PDF: Waiting for download to complete...")
-            await show_popup_message_async(
-                page, "Chrome PDF: Waiting for download (networkidle up to 30s)..."
+            await show_popup_and_capture_async(
+                page,
+                "Chrome PDF: Waiting for download (networkidle up to 30s)...",
             )
             try:
                 # Wait for any download-related network activity to complete
                 await page.wait_for_load_state("networkidle", timeout=30_000)
                 logger.debug("Chrome PDF: Network idle after download click")
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Chrome PDF: ✓ Download network activity complete"
                 )
                 await page.wait_for_timeout(2000)
             except Exception as e:
                 logger.debug(f"Download networkidle timeout (non-fatal): {e}")
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, "Chrome PDF: Network timeout, checking file..."
                 )
                 await page.wait_for_timeout(2000)
@@ -391,7 +393,7 @@ class ScholarPDFDownloader:
                     logger.success(
                         f"Chrome PDF: Downloaded {file_size/1024:.1f}KB from {pdf_url}"
                     )
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page,
                         f"Chrome PDF: ✓ SUCCESS! Downloaded {file_size/1024:.1f}KB",
                     )
@@ -402,7 +404,7 @@ class ScholarPDFDownloader:
                     logger.warning(
                         f"Chrome PDF: File too small ({file_size} bytes), likely failed"
                     )
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page,
                         f"Chrome PDF: ✗ File too small ({file_size} bytes)",
                     )
@@ -410,7 +412,7 @@ class ScholarPDFDownloader:
                     await page.close()
                     return None
 
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Chrome PDF: ✗ Download did not complete"
             )
             await page.wait_for_timeout(2000)
@@ -433,7 +435,7 @@ class ScholarPDFDownloader:
             )
             if page:
                 try:
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page, f"Chrome PDF: ✗ EXCEPTION: {str(ee)[:100]}"
                     )
                     await page.wait_for_timeout(3000)  # Show error for 3s
@@ -452,7 +454,7 @@ class ScholarPDFDownloader:
             page = await self.context.new_page()
 
             # Step 1: Navigate
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, f"Response Body: Navigating to {pdf_url[:60]}..."
             )
 
@@ -469,7 +471,7 @@ class ScholarPDFDownloader:
                 pdf_url, wait_until="load", timeout=60_000
             )
 
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page,
                 f"Response Body: Loaded, waiting for auto-download (60s)...",
             )
@@ -481,7 +483,7 @@ class ScholarPDFDownloader:
                 logger.success(
                     f"Auto-download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
                 )
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page,
                     f"Response Body: ✓ Auto-download SUCCESS! {size_MiB:.2f} MB",
                 )
@@ -490,7 +492,7 @@ class ScholarPDFDownloader:
                 return output_path
 
             # Step 2: Check response
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page,
                 f"Response Body: Checking response (status: {response.status})...",
             )
@@ -499,7 +501,7 @@ class ScholarPDFDownloader:
                 logger.fail(
                     f"Page not reached: {pdf_url} (reason: {response.status})"
                 )
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page, f"Response Body: ✗ HTTP {response.status}"
                 )
                 await page.wait_for_timeout(2000)
@@ -507,7 +509,7 @@ class ScholarPDFDownloader:
                 return None
 
             # Step 3: Extract from response body
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page, "Response Body: Extracting PDF from response body..."
             )
             content = await response.body()
@@ -530,7 +532,7 @@ class ScholarPDFDownloader:
                 logger.success(
                     f"Response body download: from {pdf_url} to {output_path} ({size_MiB:.2f} MiB)"
                 )
-                await show_popup_message_async(
+                await show_popup_and_capture_async(
                     page,
                     f"Response Body: ✓ SUCCESS! Extracted {size_MiB:.2f} MB",
                 )
@@ -539,7 +541,7 @@ class ScholarPDFDownloader:
                 return output_path
 
             logger.info("Failed download from response body")
-            await show_popup_message_async(
+            await show_popup_and_capture_async(
                 page,
                 f"Response Body: ✗ Not PDF (type: {content_type}, size: {len(content)})",
             )
@@ -551,7 +553,7 @@ class ScholarPDFDownloader:
             logger.info(f"Failed download from response body: {ee}")
             if page is not None:
                 try:
-                    await show_popup_message_async(
+                    await show_popup_and_capture_async(
                         page, f"Response Body: ✗ EXCEPTION: {str(ee)[:100]}"
                     )
                     await page.wait_for_timeout(2000)

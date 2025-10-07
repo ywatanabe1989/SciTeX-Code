@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-07 18:22:11
+!-- Timestamp: 2025-10-08 00:44:11
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -10,15 +10,20 @@
 ## KEEP HONEST, DO NOT MAKE A LIE
 
 ``` bash
+
 run_neurovista_pipeline() {
+    local fresh_start=$1
     LOG_PATH="./FULL_DOWNLOAD_LOG.txt"
     echo > $LOG_PATH
+    NV_LIBRARY="$HOME/.scitex/scholar/library/neurovista/"
     
-    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l | tee -a $LOG_PATH    
-
-    # Start fresh
-    rm -rf ~/.scitex/scholar/library/* # for fresh start
-    rm -f ~/.scitex/scholar/cache/url_finder/*.json
+    if [ "$fresh_start" = "true" ]; then
+        rm -rf ~/.scitex/scholar/library/*
+        rm -f ~/.scitex/scholar/cache/url_finder/*.json
+    fi
+    
+    n_pdfs=$(tree "$NV_LIBRARY" 2>/dev/null | grep ".pdf$" | wc -l)
+    echo "$n_pdfs" | tee -a $LOG_PATH
     
     cd ~/proj/scitex_repo/src/scitex/scholar
     python -m scitex.scholar \
@@ -26,18 +31,16 @@ run_neurovista_pipeline() {
         --output data/neurovista_enriched.bib \
         --project neurovista \
         | tee -a $LOG_PATH
-
+    
     python -m scitex.scholar \
         --bibtex data/neurovista_enriched.bib \
         --project neurovista \
         --download \
         | tee -a $LOG_PATH
-
-
-    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | tee -a $LOG_PATH
-    tree ~/proj/scitex_repo/src/scitex/scholar/library/neurovista/ | grep ".pdf$" | wc -l | tee -a $LOG_PATH
     
-    
+    tree "$NV_LIBRARY" | tee -a $LOG_PATH
+    n_pdfs=$(tree "$NV_LIBRARY" 2>/dev/null | grep ".pdf$" | wc -l)
+    echo "$n_pdfs" | tee -a $LOG_PATH
 }
 
 run_neurovista_pipeline

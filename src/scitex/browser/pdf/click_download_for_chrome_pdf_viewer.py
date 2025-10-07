@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:51:13 (ywatanabe)"
+# Timestamp: "2025-10-08 04:07:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/click_download_for_chrome_pdf_viewer.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-from pathlib import Path
-from typing import Optional
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/pdf/click_download_for_chrome_pdf_viewer.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+from pathlib import Path
+
+__FILE__ = __file__
 
 from scitex import logging
 
 logger = logging.getLogger(__name__)
 
 
-async def click_download_for_chrome_pdf_viewer(
+async def click_download_for_chrome_pdf_viewer_async(
     page,
     output_path: Path | str,
 ) -> bool:
@@ -35,7 +39,7 @@ async def click_download_for_chrome_pdf_viewer(
         bool: True if download succeeded and file is valid (>1KB), False otherwise
 
     Example:
-        >>> await click_download_for_chrome_pdf_viewer(page, "paper.pdf")
+        >>> await click_download_for_chrome_pdf_viewer_async(page, "paper.pdf")
         True
 
     Note:
@@ -44,7 +48,7 @@ async def click_download_for_chrome_pdf_viewer(
         - Waits up to 120 seconds for download to start
         - Waits 10 seconds for download to complete after starting
     """
-    from scitex.browser.debugging import show_popup_and_capture
+    from ..debugging import show_popup_and_capture_async
 
     try:
         output_path = Path(output_path)
@@ -63,7 +67,7 @@ async def click_download_for_chrome_pdf_viewer(
         download = await download_info.value
 
         # Monitor download progress
-        await show_popup_and_capture(
+        await show_popup_and_capture_async(
             page, "Chrome PDF: Monitoring download progress..."
         )
 
