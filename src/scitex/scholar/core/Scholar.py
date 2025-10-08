@@ -95,6 +95,7 @@ class Scholar:
         config: Optional[Union[ScholarConfig, str, Path]] = None,
         project: Optional[str] = None,
         project_description: Optional[str] = None,
+        browser_mode: Optional[str] = None,
     ):
         """
         Initialize Scholar with configuration.
@@ -106,9 +107,13 @@ class Scholar:
                    - None (uses ScholarConfig.load() to find config)
             project: Default project name for operations
             project_description: Optional description for the project
+            browser_mode: Browser mode ('stealth', 'interactive', 'manual')
         """
 
         self.config = self._init_config(config)
+
+        # Store browser mode for later use
+        self.browser_mode = browser_mode or "stealth"
 
         # Set project and workspace
         self.project = self.config.resolve("project", project, "default")
@@ -1370,7 +1375,7 @@ class Scholar:
             self.__browser_manager = ScholarBrowserManager(
                 auth_manager=self._auth_manager,
                 chrome_profile_name="system",
-                browser_mode="stealth",
+                browser_mode=self.browser_mode,
             )
         return self.__browser_manager
 

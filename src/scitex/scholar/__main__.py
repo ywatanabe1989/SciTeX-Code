@@ -845,7 +845,7 @@ async def main_async():
     # Initialize Scholar
     from scitex.scholar.core.Scholar import Scholar
 
-    # Initialize Scholar with project and optional description
+    # Initialize Scholar with project, description, and browser mode
     scholar = (
         Scholar(
             project=args.project,
@@ -854,9 +854,10 @@ async def main_async():
                 if hasattr(args, "project_description")
                 else None
             ),
+            browser_mode=args.browser if hasattr(args, "browser") else "stealth",
         )
         if args.project
-        else Scholar()
+        else Scholar(browser_mode=args.browser if hasattr(args, "browser") else "stealth")
     )
 
     # Update symlinks when project is specified (ensures metadata is current)
