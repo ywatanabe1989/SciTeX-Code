@@ -274,9 +274,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
 
         # If failed and retry with screenshots is enabled
         if retry_with_screenshots and self.capture_on_failure:
-            logger.info(
-                f"Retrying download with screenshot documentation for {pdf_url}"
-            )
+            logger.info(f"Retrying with screenshots...", indent=6, c="grey")
 
             # Retry each method with screenshots
             methods = [
@@ -286,18 +284,13 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             ]
 
             for method_name, method_func in methods:
-                logger.info(
-                    f"Retrying with {method_name} method and screenshots"
-                )
                 result, method_screenshots = await method_func(
                     pdf_url, output_path, doi, paper_id
                 )
                 screenshot_paths.extend(method_screenshots)
 
                 if result:
-                    logger.success(
-                        f"Download succeeded with {method_name} method"
-                    )
+                    logger.success(f"Success with {method_name}", indent=6)
                     return result, screenshot_paths
 
         # All methods failed - capture final failure state

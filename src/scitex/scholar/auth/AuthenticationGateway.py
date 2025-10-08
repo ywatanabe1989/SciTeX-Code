@@ -319,8 +319,7 @@ class AuthenticationGateway:
             # Return cached URL if available
             return self._auth_cache.get(f"{cache_key}_url")
 
-        logger.info(f"Establishing authentication via OpenURL")
-        logger.debug(f"Gateway URL: {gateway_url}")
+        logger.info(f"Establishing auth via OpenURL", indent=5, c="grey")
 
         # Visit OpenURL and click through to publisher
         # This uses the existing OpenURLResolver flow
@@ -348,9 +347,7 @@ class AuthenticationGateway:
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
 
             if publisher_url:
-                logger.success(
-                    f"Authentication established at: {publisher_url}"
-                )
+                logger.success(f"Auth established", indent=6)
                 await show_popup_and_capture_async(
                     page,
                     f"Auth Gateway: ✓ Session established at {publisher_url[:60]}",
@@ -361,9 +358,7 @@ class AuthenticationGateway:
                 self._auth_cache[f"{cache_key}_url"] = publisher_url
                 return publisher_url
             else:
-                logger.warning(
-                    "OpenURL resolution did not return publisher URL"
-                )
+                logger.warning("OpenURL resolution failed", indent=6)
                 await show_popup_and_capture_async(
                     page, "Auth Gateway: ✗ Could not resolve to publisher URL"
                 )
@@ -371,7 +366,7 @@ class AuthenticationGateway:
                 return None
 
         except Exception as e:
-            logger.warning(f"Authentication setup failed: {e}")
+            logger.warning(f"Auth setup failed: {e}", indent=6)
             try:
                 await show_popup_and_capture_async(
                     page, f"Auth Gateway: ✗ EXCEPTION: {str(e)[:80]}"

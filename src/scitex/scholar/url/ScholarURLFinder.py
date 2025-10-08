@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 06:31:25 (ywatanabe)"
+# Timestamp: "2025-10-08 13:48:33 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from playwright.async_api import BrowserContext, Page
+from playwright.async_api import BrowserContext
 
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
@@ -33,7 +33,6 @@ from scitex.scholar.config import ScholarConfig
 from .helpers import (
     find_pdf_urls,
     normalize_doi_as_http,
-    resolve_openurl,
     resolve_publisher_url_by_navigating_to_doi_page,
 )
 
@@ -105,7 +104,7 @@ class ScholarURLFinder:
 
         # Check full results cache first
         if self.use_cache and doi in self._full_results_cache:
-            logger.info(f"Using cached full results for DOI: {doi}")
+            logger.info(f"Cached results for {doi}", indent=5, c="cyan")
             return self._full_results_cache[doi]
 
         urls = {}
@@ -118,21 +117,17 @@ class ScholarURLFinder:
         if url_publisher:
             urls["url_publisher"] = url_publisher
 
-        logger.info(
-            f"\n{'-'*40}\nScholarURLFinder finding PDF URLs for {doi}...\n{'-'*40}"
-        )
-
         # Step 3: Try PDF extraction from Publisher URL FIRST
         urls_pdf = []
 
         if url_publisher:
-            logger.debug(f"Trying PDF extraction from publisher URL first...")
             pdfs = await self._get_pdfs_from_url(url_publisher, doi)
             urls_pdf.extend(pdfs)
 
             if urls_pdf:
                 logger.success(
-                    f"Found {len(urls_pdf)} PDFs from publisher URL - skipping OpenURL resolution"
+                    f"Found {len(urls_pdf)} PDFs from publisher",
+                    indent=5
                 )
                 # Skip OpenURL entirely - we have PDFs!
                 urls["url_openurl_query"] = (
@@ -144,22 +139,19 @@ class ScholarURLFinder:
 
         # Step 4: Only do OpenURL if no PDFs found from publisher
         if not urls_pdf:
-            logger.info("No PDFs from publisher URL, resolving OpenURL...")
+            logger.info("Trying OpenURL resolution...", indent=5, c="grey")
             openurl_results = await self._get_cached_openurl(doi)
             urls.update(openurl_results)
 
             # Try PDF extraction from OpenURL resolved URL
             if urls.get("url_openurl_resolved"):
-                logger.debug(
-                    f"Trying PDF extraction from OpenURL resolved URL..."
-                )
                 pdfs = await self._get_pdfs_from_url(
                     urls["url_openurl_resolved"], doi
                 )
                 urls_pdf.extend(pdfs)
 
                 if pdfs:
-                    logger.info(f"Found {len(pdfs)} PDFs from OpenURL")
+                    logger.success(f"Found {len(pdfs)} PDFs from OpenURL", indent=5)
 
         if urls_pdf:
             # Deduplicate PDFs
@@ -429,6 +421,18 @@ if __name__ == "__main__":
             ScholarURLFinder,
         )
 
+        # Params
+        doi = "10.1016/j.cell.2025.07.007"
+        doi = "10.1126/science.aao0702"
+        doi = "https://doi.org/10.1109/jbhi.2025.3556775"
+        doi = "https://doi.org/10.1088/1741-2552/aaf92e"
+        doi = "https://doi.org/10.48550/arXiv.2309.09471"
+
+        doi = "10.1038/nature12373"  # https://www.nature.com/articles/nature12373.pdf
+        doi = "10.1126/science.1234567"  # https://www.science.org/doi/pdf/10.1126/science.1234567 # "https://www.science.org/doi/pdf/10.1126/science.1234567?download=true"
+        doi = "10.1371/journal.pone.0123456"  # https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0123456&type=printable # http://www.euro.who.int/document/e75518.pdf
+        doi = "10.48550/arxiv.2201.11600"  # https://arxiv.org/pdf/2201.11600 # https://arxiv.org/pdf/2201.11600.pdf
+
         # Initialize with authenticated browser context
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
@@ -440,14 +444,19 @@ if __name__ == "__main__":
             await browser_manager.get_authenticated_browser_and_context_async()
         )
 
+        from scitex.scholar.auth import AuthenticationGateway
+
+        auth_gateway = AuthenticationGateway(
+            auth_manager=auth_manager,
+            browser_manager=browser_manager,
+        )
+        _url_context = await auth_gateway.prepare_context_async(
+            doi=doi, context=context
+        )
+
         # Create URL handler
         url_finder = ScholarURLFinder(context, use_cache=False)
 
-        # Get all URLs for a paper
-        doi = "10.1016/j.cell.2025.07.007"
-        doi = "10.1126/science.aao0702"
-        doi = "https://doi.org/10.1109/jbhi.2025.3556775"
-        doi = "https://doi.org/10.1088/1741-2552/aaf92e"
         urls = await url_finder.find_urls(
             doi=doi,
         )
