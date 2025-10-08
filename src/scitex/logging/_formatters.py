@@ -19,14 +19,14 @@ import os
 import sys
 
 # Global format configuration via environment variable
-# Options: simple, detailed, debug, minimal
+# Options: default, minimal, detailed, debug, full
 # SCITEX_LOG_FORMAT=debug python script.py
-LOG_FORMAT = os.getenv("SCITEX_LOG_FORMAT", "simple")
+LOG_FORMAT = os.getenv("SCITEX_LOG_FORMAT", "default")
 
 # Available format templates
 FORMAT_TEMPLATES = {
     "minimal": "%(levelname)s: %(message)s",
-    "simple": "%(levelname)s: %(message)s",
+    "default": "%(levelname)s: %(message)s",
     "detailed": "%(levelname)s: [%(name)s] %(message)s",
     "debug": "%(levelname)s: [%(filename)s:%(lineno)d - %(funcName)s()] %(message)s",
     "full": "%(asctime)s - %(levelname)s: [%(filename)s:%(lineno)d - %(name)s.%(funcName)s()] %(message)s",
@@ -51,7 +51,7 @@ class SciTeXConsoleFormatter(logging.Formatter):
     def __init__(self, fmt=None):
         """Initialize with format from global config."""
         if fmt is None:
-            fmt = FORMAT_TEMPLATES.get(LOG_FORMAT, FORMAT_TEMPLATES["simple"])
+            fmt = FORMAT_TEMPLATES.get(LOG_FORMAT, FORMAT_TEMPLATES["default"])
         super().__init__(fmt)
 
     def format(self, record):

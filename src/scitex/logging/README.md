@@ -39,7 +39,7 @@ Control log format using the `SCITEX_LOG_FORMAT` environment variable:
 | Format     | Output Example                                                      | Use Case               |
 |------------|---------------------------------------------------------------------|------------------------|
 | `minimal`  | `INFO: message`                                                     | Minimal output         |
-| `simple`   | `INFO: message`                                                     | Default, clean output  |
+| `default`  | `INFO: message`                                                     | Default, clean output  |
 | `detailed` | `INFO: [module.name] message`                                       | Show module context    |
 | `debug`    | `INFO: [file.py:123 - func()] message`                              | Development, debugging |
 | `full`     | `2025-10-08 15:30:45 - INFO: [file.py:123 - module.func()] message` | Complete details       |
