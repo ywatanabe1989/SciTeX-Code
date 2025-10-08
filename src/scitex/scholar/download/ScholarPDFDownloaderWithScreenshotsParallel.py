@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 08:10:08 (ywatanabe)"
+# Timestamp: "2025-10-09 00:27:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshotsParallel.py
 # ----------------------------------------
 from __future__ import annotations
@@ -302,8 +302,10 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
         # Log stage clearly
         logger.info(
-            f"PDF Download: Starting for {len(papers_with_metadata)} papers ({self.n_workers} workers)",
-            sep="-", n_sep=50, indent=2
+            f"PDF Download: Starting for {len(papers_with_metadata)} papers ({self.max_workers} workers)",
+            sep="-",
+            n_sep=50,
+            indent=2,
         )
 
         # Setup logging to library
@@ -346,7 +348,7 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
         self.stats["total"] = len(papers_to_download)
         logger.info(
             f"Downloading {len(papers_to_download)} papers (skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)",
-            indent=3
+            indent=3,
         )
 
         # Analyze journals/publishers in the batch
@@ -606,8 +608,6 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                     pdf_downloader = ScholarPDFDownloaderWithScreenshots(
                         context=context,
                         config=self.config,
-                        use_cache=True,
-                        screenshot_interval=2.0,
                         capture_on_failure=True,
                         capture_during_success=True,  # Always capture screenshots for documentation
                     )
@@ -712,6 +712,9 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                                     f"The URL finder could not locate any PDF download links.\n"
                                 )
                                 f.write(f"{'=' * 60}\n")
+
+                        # Copy screenshots from global workspace to paper directory
+                        self._copy_screenshots_to_paper_dir(doi, paper_dir)
 
                         # Save URL info even when no PDF URLs found
                         self._save_url_info_only(
@@ -1226,6 +1229,73 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
         except Exception as e:
             logger.error(f"Failed to save to library: {e}")
             return False
+
+    def _copy_screenshots_to_paper_dir(
+        self, doi: str, paper_dir: Path
+    ) -> None:
+        """Copy screenshots from global workspace to paper directory."""
+        import shutil
+        from pathlib import Path
+
+        try:
+            # Create screenshots directory in paper directory
+            screenshots_dir = paper_dir / "screenshots"
+            screenshots_dir.mkdir(parents=True, exist_ok=True)
+
+            # Build DOI-based path in global workspace
+            # DOI format: "https://doi.org/10.2139/ssrn.5293145"
+            # Extract the DOI part after "https://doi.org/"
+            if doi.startswith("https://doi.org/"):
+                doi_part = doi.replace("https://doi.org/", "")
+            else:
+                doi_part = doi
+
+            # Split DOI to build directory structure (e.g., "10.2139/ssrn.5293145" -> "10.2139")
+            doi_prefix = (
+                doi_part.split("/")[0] if "/" in doi_part else doi_part
+            )
+
+            # Global workspace screenshot directory
+            workspace_dir = (
+                Path.home()
+                / ".scitex/scholar/workspace/screenshots/ScholarURLFinder"
+                / doi_prefix
+            )
+
+            if not workspace_dir.exists():
+                logger.debug(
+                    f"No screenshots found in workspace for DOI prefix: {doi_prefix}"
+                )
+                return
+
+            # Find screenshots matching this DOI
+            doi_normalized = doi_part.replace("/", ".").replace(":", ".")
+            copied_count = 0
+
+            for screenshot in workspace_dir.glob("*.png"):
+                # Check if filename contains this specific DOI
+                if (
+                    doi_normalized.lower() in screenshot.name.lower()
+                    or doi_part.replace("/", ".") in screenshot.name
+                ):
+                    dest = screenshots_dir / screenshot.name
+                    shutil.copy2(screenshot, dest)
+                    copied_count += 1
+                    logger.debug(f"Copied screenshot: {screenshot.name}")
+
+            if copied_count > 0:
+                logger.info(
+                    f"Copied {copied_count} screenshots to paper directory"
+                )
+            else:
+                logger.debug(
+                    f"No matching screenshots found for DOI: {doi_part}"
+                )
+
+        except Exception as e:
+            logger.warning(
+                f"Failed to copy screenshots to paper directory: {e}"
+            )
 
     def _save_url_info_only(
         self,

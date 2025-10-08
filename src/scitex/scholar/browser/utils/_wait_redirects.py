@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 05:07:31 (ywatanabe)"
+# Timestamp: "2025-10-09 00:34:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
@@ -144,9 +144,66 @@ def is_final_article_url(url: str) -> bool:
     return False
 
 
+def is_captcha_page(url: str) -> bool:
+    """Check if URL or page indicates a CAPTCHA challenge."""
+    url_lower = url.lower()
+
+    # Cloudflare CAPTCHA indicators
+    captcha_indicators = [
+        "__cf_chl_rt_tk=",  # Cloudflare challenge runtime token
+        "__cf_chl_tk=",  # Cloudflare challenge token
+        "/cdn-cgi/challenge-platform/",  # Cloudflare challenge page
+        "captcha",
+        "challenge",
+        "cf_clearance",
+    ]
+
+    return any(indicator in url_lower for indicator in captcha_indicators)
+
+
+async def detect_captcha_on_page(page: Page) -> bool:
+    """Detect if the current page shows a CAPTCHA challenge."""
+    try:
+        # Check URL first
+        if is_captcha_page(page.url):
+            return True
+
+        # Check for Cloudflare challenge elements
+        captcha_selectors = [
+            "#challenge-form",
+            ".cf-challenge",
+            "[data-ray]",  # Cloudflare Ray ID
+            "iframe[src*='captcha']",
+            "iframe[src*='recaptcha']",
+            "#cf-wrapper",
+        ]
+
+        for selector in captcha_selectors:
+            try:
+                element = await page.wait_for_selector(selector, timeout=500)
+                if element:
+                    return True
+            except:
+                continue
+
+        # Check page title
+        try:
+            title = await page.title()
+            if "challenge" in title.lower() or "captcha" in title.lower():
+                return True
+        except:
+            pass
+
+        return False
+
+    except Exception as e:
+        logger.debug(f"CAPTCHA detection error: {e}")
+        return False
+
+
 async def wait_redirects(
     page: Page,
-    timeout: int = 30_000,
+    timeout: int = 15_000,
     max_redirects: int = 30,
     show_progress: bool = True,
     track_chain: bool = True,
@@ -178,7 +235,7 @@ async def wait_redirects(
         await show_popup_and_capture_async(
             page,
             f"Waiting for redirects (max {timeout/1000:.0f}s)...",
-            duration_ms=timeout
+            duration_ms=timeout,
         )
 
     # Tracking variables
@@ -276,53 +333,217 @@ async def wait_redirects(
 
     async def _delayed_complete():
         """Set navigation complete after a short delay to catch final redirects."""
-        await asyncio.sleep(5)  # Increased from 2 to 5 seconds
+        await asyncio.sleep(2)  # Reduced from 5 to 2 seconds
         if not navigation_complete.is_set():
             navigation_complete.set()
 
     async def check_url_stability():
-        """Monitor URL changes even without network responses."""
+        """Monitor URL changes, network activity, and page state for robust completion."""
         stable_count = 0
         last_checked_url = page.url
+        last_dom_state = None
+        dom_stable_count = 0
+        captcha_detected = False
+        captcha_wait_start = None
 
         while not navigation_complete.is_set():
-            await asyncio.sleep(3)  # Increased from 1 to 3 seconds
-            current_url = page.url
+            try:
+                await asyncio.sleep(1)
+                current_url = page.url
+                current_time = asyncio.get_event_loop().time()
 
-            # Check if URL changed
-            if current_url != last_checked_url:
-                logger.debug(
-                    f"URL changed via client-side: {current_url[:80]}"
-                )
-                last_checked_url = current_url
-                stable_count = 0
+                # Calculate time since last network activity
+                time_since_activity = current_time - last_response_time
 
-                # Check if we reached an article
-                if is_final_article_url(current_url):
-                    found_article = True
-                    logger.info(f"Article URL detected: {current_url[:80]}")
-                    await asyncio.sleep(5)  # Increased from 2 to 5 seconds
-                    navigation_complete.set()
-                    break
-            else:
-                stable_count += 1
+                # Check for CAPTCHA
+                if not captcha_detected:
+                    captcha_detected = await detect_captcha_on_page(page)
+                    if captcha_detected:
+                        captcha_wait_start = current_time
+                        logger.warning(
+                            f"CAPTCHA detected on page: {current_url[:80]}"
+                        )
+                        if show_progress:
+                            from scitex.browser import (
+                                show_popup_and_capture_async,
+                            )
 
-            # If URL stable, complete with longer waits
-            if stable_count >= 8:  # Increased from 5 to 8 (24 seconds total)
-                if not is_auth_endpoint(current_url) or found_article:
-                    logger.debug(
-                        f"URL stable for 24s, completing: {current_url[:80]}"
+                            asyncio.create_task(
+                                show_popup_and_capture_async(
+                                    page,
+                                    "CAPTCHA detected - waiting for solver extension...",
+                                    duration_ms=5000,
+                                )
+                            )
+
+                # Check page load state
+                try:
+                    load_state = await page.evaluate(
+                        "() => document.readyState"
+                    )
+                    page_loaded = load_state == "complete"
+                except:
+                    page_loaded = False
+
+                # Check DOM stability (body exists and has content)
+                try:
+                    dom_state = await page.evaluate(
+                        """
+                        () => {
+                            const body = document.body;
+                            if (!body) return 'no-body';
+                            const links = document.querySelectorAll('a').length;
+                            const scripts = document.querySelectorAll('script').length;
+                            return `${body.childElementCount}-${links}-${scripts}`;
+                        }
+                    """
+                    )
+                    dom_changed = dom_state != last_dom_state
+                    if not dom_changed and last_dom_state:
+                        dom_stable_count += 1
+                    else:
+                        dom_stable_count = 0
+                    last_dom_state = dom_state
+                except:
+                    dom_state = None
+                    dom_stable_count = 0
+
+                # Check if URL changed
+                if current_url != last_checked_url:
+                    logger.debug(f"URL changed: {current_url[:80]}")
+                    last_checked_url = current_url
+                    stable_count = 0
+                    dom_stable_count = 0
+
+                    # Check if we reached an article
+                    if is_final_article_url(current_url):
+                        found_article = True
+                        logger.info(
+                            f"Article URL detected: {current_url[:80]}"
+                        )
+                        await asyncio.sleep(
+                            1
+                        )  # Short wait for final resources
+                        navigation_complete.set()
+                        break
+                else:
+                    stable_count += 1
+
+                # ROBUST COMPLETION LOGIC:
+                # Combine multiple signals: URL stability, network inactivity, page loaded, DOM stable
+
+                # CAPTCHA path: Wait much longer for CAPTCHA solver extension
+                if captcha_detected:
+                    captcha_wait_time = (
+                        current_time - captcha_wait_start
+                        if captcha_wait_start
+                        else 0
+                    )
+
+                    # Check if CAPTCHA is still present
+                    still_captcha = await detect_captcha_on_page(page)
+
+                    if not still_captcha:
+                        # CAPTCHA solved! Wait a bit for redirect
+                        logger.success(
+                            "CAPTCHA appears to be solved, waiting for redirect..."
+                        )
+                        if show_progress:
+                            from scitex.browser import (
+                                show_popup_and_capture_async,
+                            )
+
+                            asyncio.create_task(
+                                show_popup_and_capture_async(
+                                    page,
+                                    "CAPTCHA solved! Waiting for redirect...",
+                                    duration_ms=2000,
+                                )
+                            )
+                        await asyncio.sleep(
+                            3
+                        )  # Wait for redirect after CAPTCHA
+                        captcha_detected = False
+                        captcha_wait_start = None
+                        stable_count = 0
+                        dom_stable_count = 0
+                        continue
+
+                    # Give CAPTCHA solver up to 60 seconds
+                    if captcha_wait_time < 60:
+                        if (
+                            int(captcha_wait_time) % 10 == 0
+                            and captcha_wait_time > 0
+                        ):
+                            logger.info(
+                                f"CAPTCHA solver working... ({int(60 - captcha_wait_time)}s remaining)"
+                            )
+                        continue
+                    else:
+                        logger.warning(
+                            "CAPTCHA solver timeout (60s) - continuing anyway"
+                        )
+                        if show_progress:
+                            from scitex.browser import (
+                                show_popup_and_capture_async,
+                            )
+
+                            asyncio.create_task(
+                                show_popup_and_capture_async(
+                                    page,
+                                    "CAPTCHA solver timeout - manual intervention may be needed",
+                                    duration_ms=3000,
+                                )
+                            )
+                        captcha_detected = False  # Stop waiting for CAPTCHA
+
+                # Fast path: Everything stable and page loaded
+                if (
+                    stable_count >= 2
+                    and time_since_activity >= 2
+                    and page_loaded
+                    and dom_stable_count >= 2
+                ):
+                    if not is_auth_endpoint(current_url) or found_article:
+                        logger.debug(
+                            f"Complete: URL+network+DOM stable (2s), page loaded"
+                        )
+                        navigation_complete.set()
+                        break
+
+                # Medium path: URL and network stable for longer
+                elif stable_count >= 3 and time_since_activity >= 3:
+                    if not is_auth_endpoint(current_url) or found_article:
+                        logger.debug(f"Complete: URL+network stable (3s)")
+                        navigation_complete.set()
+                        break
+
+                # Auth page path: Wait longer for delayed redirects
+                elif stable_count >= 5 and time_since_activity >= 5:
+                    if is_auth_endpoint(current_url):
+                        # Extra check: make sure DOM is stable too
+                        if dom_stable_count >= 3:
+                            logger.debug(
+                                f"Complete: Auth page stable (5s) with stable DOM"
+                            )
+                            navigation_complete.set()
+                            break
+
+                # Timeout path: Absolute max wait (extended for potential CAPTCHA)
+                elif stable_count >= 30:
+                    logger.warning(
+                        f"Complete: Timeout (30s) - URL: {current_url[:80]}"
                     )
                     navigation_complete.set()
                     break
-            elif (
-                stable_count >= 20
-            ):  # Increased from 15 to 20 (60 seconds total)
-                logger.warning(
-                    f"Auth page stable for 60s, completing: {current_url[:80]}"
-                )
-                navigation_complete.set()
-                break
+
+            except Exception as e:
+                logger.debug(f"Error in stability check: {e}")
+                # On error, if we've waited a reasonable time, complete
+                if stable_count >= 5:
+                    logger.warning(f"Complete: Error after 5s - {str(e)[:50]}")
+                    navigation_complete.set()
+                    break
 
     # Set up response tracking
     page.on("response", track_response)

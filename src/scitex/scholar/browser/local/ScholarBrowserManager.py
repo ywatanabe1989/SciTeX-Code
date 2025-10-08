@@ -421,6 +421,14 @@ class ScholarBrowserManager(BrowserMixin):
             "--disable-component-extensions-with-background-pages",
         ]
 
+        # Disable "Restore pages?" popup and session restore dialogs
+        no_restore_args = [
+            "--disable-session-crashed-bubble",
+            "--disable-infobars",
+            "--no-first-run",
+            "--no-default-browser-check",
+        ]
+
         screenshot_args = [
             "--no-sandbox",
             "--disable-blink-features=AutomationControlled",
@@ -441,6 +449,7 @@ class ScholarBrowserManager(BrowserMixin):
             extension_args
             + stealth_args
             + no_welcome_args
+            + no_restore_args
             + pdf_download_args
             + screenshot_args
         )

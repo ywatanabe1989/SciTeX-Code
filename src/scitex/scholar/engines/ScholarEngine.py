@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 06:20:28 (ywatanabe)"
+# Timestamp: "2025-10-08 16:41:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -49,7 +49,7 @@ class ScholarEngine:
     ):
         self.config = config if config else ScholarConfig()
         self.engines = self.config.resolve("engines", engines)
-        self.use_cache = self.config.resolve("use_cache_search", use_cache)
+        self.use_cache = self.config.resolve("use_cache_engine", use_cache)
         self._engine_instances = {}
         self.rotation_manager = None
 
@@ -612,7 +612,7 @@ if __name__ == "__main__":
         # Query
         TITLE = "Attention is All You Need"
         TITLE = "Epileptic seizure forecasting with long short-term memory (LSTM) neural networks"
-        DOI = "10.1038/nature14539"
+        # DOI = "10.1038/nature14539"
 
         # Example: Unified Engine
         engine = ScholarEngine(use_cache=False)
@@ -623,10 +623,10 @@ if __name__ == "__main__":
             title=TITLE,
         )
 
-        # Search by DOI
-        outputs["metadata_by_doi"] = await engine.search_async(
-            doi=DOI,
-        )
+        # # Search by DOI
+        # outputs["metadata_by_doi"] = await engine.search_async(
+        #     doi=DOI,
+        # )
 
         for k, v in outputs.items():
             print("----------------------------------------")

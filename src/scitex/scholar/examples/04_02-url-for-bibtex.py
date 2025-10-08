@@ -48,8 +48,8 @@ import scitex as stx
 """Functions & Classes"""
 async def process_bibtex_urls(
     bibtex_path: str,
-    use_cache_engines: bool = True,
-    use_cache_url_finder: bool = False,
+    use_cache_engine: bool = True,
+    use_cache_url: bool = False,
     n_samples: int = None,
     browser_mode: str = "interactive",
 ) -> tuple:
@@ -59,9 +59,9 @@ async def process_bibtex_urls(
     ----------
     bibtex_path : str
         Path to BibTeX file
-    use_cache_engines : bool, default=True
+    use_cache_engine : bool, default=True
         Whether to use cache for search engines
-    use_cache_url_finder : bool, default=False
+    use_cache_url : bool, default=False
         Whether to use cache for URL finder
     n_samples : int, optional
         Number of samples to process
@@ -108,11 +108,11 @@ async def process_bibtex_urls(
     )
 
     print("🔧 Initializing components...")
-    engine = ScholarEngine(config=config, use_cache=use_cache_engines)
+    engine = ScholarEngine(config=config, use_cache=use_cache_engine)
     url_finder = ScholarURLFinder(
         context,
         config=config,
-        use_cache=use_cache_url_finder,
+        use_cache=use_cache_url,
     )
 
     print("=" * 50)
@@ -161,8 +161,8 @@ async def main_async(args) -> tuple:
 
     results = await process_bibtex_urls(
         bibtex_path=selected_path,
-        use_cache_engines=not args.no_cache_engines,
-        use_cache_url_finder=not args.no_cache_url_finder,
+        use_cache_engine=not args.no_cache_engines,
+        use_cache_url=not args.no_cache_url_finder,
         n_samples=args.n_samples,
         browser_mode=args.browser_mode,
     )

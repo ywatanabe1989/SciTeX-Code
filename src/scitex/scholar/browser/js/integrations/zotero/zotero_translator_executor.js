@@ -3,15 +3,21 @@
 
 async function executeZoteroTranslator(translatorCode, translatorLabel) {
     console.log(`Executing Zotero translator: ${translatorLabel}`);
-    
+
     // Setup Zotero environment
     const { items, urls } = await setupZoteroEnvironment();
-    
+
     let translatorError = null;
-    
+
     try {
-        // Step 1: Execute the translator code to define its functions/objects
-        eval(translatorCode);
+        // Step 1: Inject translator code into global scope using script tag
+        // This ensures the code runs in true global scope and all consts/functions are accessible
+        const script = document.createElement('script');
+        script.textContent = translatorCode;
+        document.head.appendChild(script);
+
+        // Wait a tiny bit for script to execute
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         // Step 2: INTELLIGENTLY FIND AND CALL THE CORRECT detectWeb/doWeb functions
         let detected = false;
@@ -76,10 +82,21 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
             };
         }
         
+        // Special handling for SSRN - just extract PDF URL directly to avoid hanging
+        if (translatorLabel === 'SSRN') {
+            console.log('Using simplified SSRN extraction (avoiding Embedded Metadata translator)');
+            const pdfLink = document.querySelector('a.primary[data-abstract-id]');
+            if (pdfLink && pdfLink.href) {
+                console.log('Found SSRN PDF link:', pdfLink.href);
+                urls.add(pdfLink.href);
+            } else {
+                console.warn('SSRN PDF download button not found');
+            }
+        }
         // Run doWeb if available and page is recognized
-        if (doWebFunction) {
+        else if (doWebFunction) {
             console.log(`Running doWeb on context: ${contextObject === window ? 'window' : 'object'}...`);
-            
+
             // Call doWeb with proper context
             const doWebPromise = doWebFunction.call(contextObject, document, window.location.href);
             const timeoutPromise = new Promise((resolve) => {
@@ -88,10 +105,10 @@ async function executeZoteroTranslator(translatorCode, translatorLabel) {
                     resolve();
                 }, 10000); // 10 second timeout for complex translators
             });
-            
+
             await Promise.race([doWebPromise, timeoutPromise]);
             console.log('doWeb phase completed');
-            
+
             // Give async operations time to complete
             await new Promise(resolve => setTimeout(resolve, 1000));
         } else {

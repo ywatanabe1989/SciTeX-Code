@@ -66,7 +66,7 @@ click_center = click_center_async
 ## Usage
 
 ```python
-from scitex.scholar.browser.utils import (
+from scitex.browser import (
     # Scholar-specific
     click_and_wait,
     wait_redirects,

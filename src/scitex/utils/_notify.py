@@ -150,7 +150,7 @@ if __name__ == "__main__":
 # # Example in shell
 # #!/bin/bash
 # # /home/ywatanabe/.dotfiles/.bin/notify
-# # Author: ywatanabe (ywatanabe@alumni.u-tokyo.ac.jp)
+# # Author: ywatanabe (ywatanabe@scitex.ai)
 # # Date: $(date +"%Y-%m-%d-%H-%M")
 
 # # LOG_FILE="${0%.sh}.log"

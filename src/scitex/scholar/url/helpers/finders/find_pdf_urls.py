@@ -32,9 +32,20 @@ from ._find_pdf_urls_by_publisher_patterns import (
     find_pdf_urls_by_publisher_patterns,
 )
 from ._find_pdf_urls_by_view_button import find_pdf_urls_by_navigation
-from ._find_pdf_urls_by_zotero_translators import (
-    find_pdf_urls_by_zotero_translators,
+
+# Python Zotero translators (primary)
+from ._find_pdf_urls_by_zotero_translators_python import (
+    find_pdf_urls_by_zotero_translators_python,
 )
+
+# JavaScript Zotero translators (fallback) - now points to JavaScript implementation
+try:
+    from ._find_pdf_urls_by_zotero_translators_javascript import (
+        find_pdf_urls_by_zotero_translators as find_pdf_urls_by_zotero_translators_js,
+    )
+except ImportError:
+    # Fallback if JavaScript version doesn't exist
+    find_pdf_urls_by_zotero_translators_js = None
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +54,7 @@ async def find_pdf_urls(
     page: Page, base_url: str = None, config: ScholarConfig = None
 ) -> List[Dict]:
     """Find PDF URLs in a web page using multiple strategies without double counts."""
-    from scitex.scholar.browser.utils import show_popup_and_capture_async
+    from scitex.browser import show_popup_and_capture_async
 
     config = config or ScholarConfig()
     if base_url is None:
@@ -56,21 +67,38 @@ async def find_pdf_urls(
         page, f"URL Finder: Finding PDFs at {base_url[:60]}..."
     )
 
-    # Strategy 1: Try Zotero translator FIRST (most reliable)
+    # Strategy 1: Try Python Zotero translators FIRST (most reliable, fastest)
     await show_popup_and_capture_async(
-        page, "URL Finder: Trying Zotero translators..."
+        page, "URL Finder: Trying Python Zotero translators..."
     )
-    translator_urls = await find_pdf_urls_by_zotero_translators(page, base_url)
-    for url in translator_urls:
+    translator_urls_py = await find_pdf_urls_by_zotero_translators_python(page, base_url)
+    for url in translator_urls_py:
         if url not in seen_urls:
             seen_urls.add(url)
-            urls_pdf.append({"url": url, "source": "zotero_translator"})
+            urls_pdf.append({"url": url, "source": "zotero_translator_python"})
 
-    if translator_urls:
+    if translator_urls_py:
         await show_popup_and_capture_async(
-            page, f"URL Finder: ✓ Zotero found {len(translator_urls)} URLs"
+            page, f"URL Finder: ✓ Python Zotero found {len(translator_urls_py)} URLs"
         )
         await page.wait_for_timeout(1000)
+    else:
+        # Fallback: Try JavaScript translators if Python ones don't find anything
+        if find_pdf_urls_by_zotero_translators_js:
+            await show_popup_and_capture_async(
+                page, "URL Finder: Trying JavaScript Zotero translators (fallback)..."
+            )
+            translator_urls_js = await find_pdf_urls_by_zotero_translators_js(page, base_url)
+            for url in translator_urls_js:
+                if url not in seen_urls:
+                    seen_urls.add(url)
+                    urls_pdf.append({"url": url, "source": "zotero_translator_js"})
+
+            if translator_urls_js:
+                await show_popup_and_capture_async(
+                    page, f"URL Finder: ✓ JS Zotero found {len(translator_urls_js)} URLs"
+                )
+                await page.wait_for_timeout(1000)
 
     # Strategy 2: Find direct PDF links (fallback if no translator)
     await show_popup_and_capture_async(

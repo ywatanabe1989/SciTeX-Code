@@ -99,8 +99,8 @@ class PathManager:
         subdirs = [
             self.cache_dir / "chrome",
             self.cache_dir / "auth",
-            self.cache_dir / "search",
-            self.cache_dir / "url_finder",
+            self.cache_dir / "engine",
+            self.cache_dir / "url",
             self.cache_dir / "pdf_downloader",
             self.workspace_dir / "downloads",
             self.workspace_dir / "logs",
@@ -562,17 +562,23 @@ class PathManager:
     ) -> Path:
         return self._ensure_directory(self.cache_dir / "auth")
 
+    def get_engine_cache_dir(
+        self,
+    ) -> Path:
+        return self._ensure_directory(self.cache_dir / "engine")
+
     def get_search_cache_dir(
         self,
     ) -> Path:
-        return self._ensure_directory(self.cache_dir / "search")
+        """DEPRECATED: Use get_engine_cache_dir() instead."""
+        return self.get_engine_cache_dir()
 
-    def get_url_finder_cache_dir(
+    def get_cache_url_dir(
         self,
     ) -> Path:
-        return self._ensure_directory(self.cache_dir / "url_finder")
+        return self._ensure_directory(self.cache_dir / "url")
 
-    def get_pdf_downloader_cache_dir(
+    def get_cache_dowload_dir(
         self,
     ) -> Path:
         return self._ensure_directory(self.cache_dir / "pdf_downloader")

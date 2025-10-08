@@ -1,7 +1,7 @@
 #!./env/bin/python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2024-04-22 23:54:02"
-# Author: Yusuke Watanabe (ywata1989@gmail.com)
+# Author: Yusuke Watanabe (ywatanabe@scitex.ai)
 
 """
 This script defines scitex.ml.utils.grid_search

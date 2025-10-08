@@ -12,12 +12,16 @@ __DIR__ = os.path.dirname(__FILE__)
 from .local.ScholarBrowserManager import ScholarBrowserManager
 # from .BrowserUtils import BrowserUtils
 # from .PlaywrightVision import PlaywrightVision
-from .utils import (
+from scitex.browser.interaction import (
     click_center_async,
-    click_download_for_chrome_pdf_viewer_async,
     close_popups_async,
-    detect_chrome_pdf_viewer_async,
     PopupHandler,
+)
+from scitex.browser.pdf import (
+    click_download_for_chrome_pdf_viewer_async,
+    detect_chrome_pdf_viewer_async,
+)
+from scitex.browser.debugging import (
     show_grid_async,
     show_popup_and_capture_async,
 )

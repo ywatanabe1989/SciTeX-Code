@@ -143,7 +143,7 @@
     - Contact
       ```markdown
       ## Contact
-      Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
+      Yusuke Watanabe (ywatanabe@scitex.ai)
       ```
 
   - Use tables if applicable

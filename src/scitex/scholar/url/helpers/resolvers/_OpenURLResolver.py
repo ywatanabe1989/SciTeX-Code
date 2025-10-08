@@ -16,11 +16,8 @@ from playwright.async_api import Locator, Page
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.scholar.browser.utils import (
-    click_and_wait,
-    show_popup_and_capture_async,
-    take_screenshot,
-)
+from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.scholar.browser.utils import click_and_wait
 
 from ._OpenURLLinkFinder import OpenURLLinkFinder
 

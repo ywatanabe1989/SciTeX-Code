@@ -25,7 +25,7 @@ scholar/
 ### 2. Environment Variable Updates
 - ✅ All environment variables now use `SCITEX_` prefix
 - ✅ Integrated with SciTeX warning system
-- ✅ Default email set to ywata1989@gmail.com
+- ✅ Default email set to ywatanabe@scitex.ai
 - ✅ Shows warnings when API keys are missing
 
 ### 3. Improved Documentation

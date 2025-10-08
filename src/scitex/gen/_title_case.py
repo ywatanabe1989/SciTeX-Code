@@ -1,7 +1,7 @@
 #!./env/bin/python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2024-04-24 15:05:34"
-# Author: Yusuke Watanabe (ywata1989@gmail.com)
+# Author: Yusuke Watanabe (ywatanabe@scitex.ai)
 
 
 """

@@ -323,7 +323,7 @@ class AuthenticationGateway:
 
         # Visit OpenURL and click through to publisher
         # This uses the existing OpenURLResolver flow
-        from scitex.scholar.browser.utils import show_popup_and_capture_async
+        from scitex.browser import show_popup_and_capture_async
         from scitex.scholar.url.helpers.resolvers._OpenURLResolver import (
             OpenURLResolver,
         )

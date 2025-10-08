@@ -24,7 +24,7 @@ from typing import Optional
 from playwright.async_api import Page
 
 from scitex import logging
-from scitex.scholar.browser.utils import show_popup_and_capture_async, take_screenshot
+from scitex.browser.debugging import show_popup_and_capture_async
 
 from ._OpenURLResolver import OpenURLResolver
 
@@ -52,10 +52,14 @@ async def resolve_publisher_url_by_navigating_to_doi_page(
         return url_publisher
     except Exception as e:
         logger.error(f"Publisher URL not resolved by navigating to {doi}: {e}")
-        await take_screenshot(
+        from pathlib import Path
+        screenshot_dir = Path.home() / ".scitex/scholar/workspace/screenshots"
+        await show_popup_and_capture_async(
             page,
-            "Resolve",
             f"{doi} - Publisher URL not resolved by navigating",
+            take_screenshot=True,
+            screenshot_category="Resolve",
+            screenshot_dir=screenshot_dir,
         )
         return None
 

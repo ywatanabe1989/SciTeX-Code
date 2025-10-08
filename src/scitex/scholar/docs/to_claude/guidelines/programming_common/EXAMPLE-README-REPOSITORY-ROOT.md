@@ -55,6 +55,6 @@ REFERENCES HERE
 ---
 
 ## 📧 Contact
-Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 <!-- EOF -->

@@ -16,7 +16,7 @@ from typing import Optional
 from playwright.async_api import Page, TimeoutError
 
 # from scitex.scholar.browser import BrowserUtils
-from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
+from scitex.browser.interaction import click_with_fallbacks_async, fill_with_fallbacks_async
 from scitex.scholar.config import ScholarConfig
 
 from ._BaseSSOAutomator import BaseSSOAutomator
@@ -118,7 +118,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
             # Use the proven working selector from your implementation
             username_selector = "input[name='identifier']"
 
-            success = await fill_with_fallbacks(
+            success = await fill_with_fallbacks_async(
                 page, username_selector, self.username
             )
             if not success:
@@ -129,7 +129,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
 
             # Click Next button using proven working selector and JavaScript click
             next_selector = "input.button-primary[value='Next']"
-            success = await click_with_fallbacks(page, next_selector)
+            success = await click_with_fallbacks_async(page, next_selector)
             if not success:
                 self.logger.error("Failed to click Next button")
                 return False
@@ -150,7 +150,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
             # Use the proven working selector for password
             password_selector = "input[name='credentials.passcode']"
 
-            success = await fill_with_fallbacks(
+            success = await fill_with_fallbacks_async(
                 page, password_selector, self.password
             )
             if not success:
@@ -161,7 +161,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
 
             # Click Verify button using proven working selector and JavaScript click
             verify_selector = "input[type='submit'][value='Verify']"
-            success = await click_with_fallbacks(page, verify_selector)
+            success = await click_with_fallbacks_async(page, verify_selector)
             if not success:
                 self.logger.error("Failed to click Verify button")
                 return False

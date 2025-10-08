@@ -1,4 +1,10 @@
 <!-- ---
+!-- Timestamp: 2025-10-09 10:10:21
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/path/README.md
+!-- --- -->
+
+<!-- ---
 !-- Timestamp: 2025-01-15 11:02:49
 !-- Author: ywatanabe
 !-- File: ./src/scitex/path/README.md
@@ -54,6 +60,9 @@ new_version = scitex.path.increment_version("file_v1.txt")  # Increments the ver
 - Managing versioned files and directories
 - Working with Git repositories programmatically
 
+## TODO
+- [ ] May utilizing `pathlib` will replace or enhance this module
+
 ## Contributing
 Contributions to improve `scitex.path` are welcome. Please submit pull requests or open issues on the GitHub repository.
 
@@ -61,6 +70,8 @@ Contributions to improve `scitex.path` are welcome. Please submit pull requests 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
-Yusuke Watanabe (ywata1989@gmail.com)
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 For more information and updates, please visit the [scitex GitHub repository](https://github.com/ywatanabe1989/scitex).
+
+<!-- EOF -->

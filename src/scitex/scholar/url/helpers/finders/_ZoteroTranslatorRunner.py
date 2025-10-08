@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File: _ZoteroTranslatorRunner_v03-clean.py
+# Timestamp: "2025-10-09 00:03:48 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/_ZoteroTranslatorRunner.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/finders/_ZoteroTranslatorRunner.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
@@ -28,32 +36,49 @@ class ZoteroTranslatorRunner:
 
     def __init__(self, translator_dir: Optional[Path] = None):
         """Initialize with translator directory."""
-        self.translator_dir = translator_dir or (Path(__file__).parent / "zotero_translators")
+        self.translator_dir = translator_dir or (
+            Path(__file__).parent / "zotero_translators"
+        )
         self._translators = self._load_translators()
-        
+
         # Initialize JSLoader for managing JavaScript files
-        js_base_dir = Path(__file__).parent.parent.parent.parent / "browser" / "js"
+        js_base_dir = (
+            Path(__file__).parent.parent.parent.parent / "browser" / "js"
+        )
         self.js_loader = JSLoader(js_base_dir)
-        
+
         # Pre-load essential Zotero JavaScript modules
         self._load_js_modules()
-    
+
     def _load_js_modules(self):
         """Load JavaScript modules using JSLoader."""
         try:
-            # Load Zotero environment and executor
-            self.zotero_env_js = self.js_loader.load("integrations/zotero/zotero_environment.js")
-            self.zotero_executor_js = self.js_loader.load("integrations/zotero/zotero_translator_executor.js")
-            
-            # Cache the combined JavaScript for injection
-            self.combined_zotero_js = self.zotero_env_js + "\n" + self.zotero_executor_js
-            
+            # Load Zotero environment, enhancements, and executor
+            self.zotero_env_js = self.js_loader.load(
+                "integrations/zotero/zotero_environment.js"
+            )
+            self.zotero_enhancements_js = self.js_loader.load(
+                "integrations/zotero/zotero_environment_enhancements.js"
+            )
+            self.zotero_executor_js = self.js_loader.load(
+                "integrations/zotero/zotero_translator_executor.js"
+            )
+
+            # Cache the combined JavaScript for injection (enhancements must come after environment)
+            self.combined_zotero_js = (
+                self.zotero_env_js
+                + "\n"
+                + self.zotero_enhancements_js
+                + "\n"
+                + self.zotero_executor_js
+            )
+
             logger.info("Loaded Zotero JavaScript modules successfully")
         except FileNotFoundError as e:
             logger.error(f"Failed to load JavaScript modules: {e}")
             # Fallback to inline JavaScript if files not found
             self.combined_zotero_js = self._get_fallback_js()
-    
+
     def _get_fallback_js(self) -> str:
         """Get minimal fallback JavaScript if files not found."""
         logger.warning("Using minimal fallback JavaScript")
@@ -73,7 +98,9 @@ class ZoteroTranslatorRunner:
         translators = {}
 
         if not self.translator_dir.exists():
-            logger.warning(f"Translator directory not found: {self.translator_dir}")
+            logger.warning(
+                f"Translator directory not found: {self.translator_dir}"
+            )
             return translators
 
         for js_file in self.translator_dir.glob("*.js"):
@@ -107,7 +134,9 @@ class ZoteroTranslatorRunner:
                 metadata = json.loads(metadata_str)
 
                 # Only keep web translators
-                if metadata.get("translatorType", 0) & 4 and metadata.get("target"):
+                if metadata.get("translatorType", 0) & 4 and metadata.get(
+                    "target"
+                ):
                     # Extract JavaScript code (after metadata)
                     js_code = "\n".join(lines[json_end_idx + 1 :]).lstrip()
 
@@ -133,23 +162,27 @@ class ZoteroTranslatorRunner:
         self.js_loader.clear_cache()
         self._load_js_modules()
         logger.info("Reloaded JavaScript modules")
-    
+
     def get_loaded_modules(self) -> list:
         """Get list of loaded JavaScript modules."""
         return self.js_loader.get_cached_scripts()
-    
+
     def find_translator_for_url(self, url: str) -> Optional[Dict]:
         """Find matching translator for URL."""
         for name, translator in self._translators.items():
             try:
                 if re.match(translator["target_regex"], url):
-                    logger.debug(f"URL matches translator: {translator['label']}")
+                    logger.debug(
+                        f"URL matches translator: {translator['label']}"
+                    )
                     return translator
             except:
                 continue
         return None
 
-    async def extract_urls_pdf_async(self, page: Page, capture_console: bool = True) -> List[str]:
+    async def extract_urls_pdf_async(
+        self, page: Page, capture_console: bool = True
+    ) -> List[str]:
         """Execute Zotero translator on page to extract PDF URLs."""
         url = page.url
         translator = self.find_translator_for_url(url)
@@ -158,35 +191,50 @@ class ZoteroTranslatorRunner:
             return []
 
         logger.info(f"Executing Zotero translator: {translator['label']}")
-        
+
+        # Show popup notification
+        try:
+            from scitex.browser import show_popup_and_capture_async
+
+            await show_popup_and_capture_async(
+                page,
+                f"Running Zotero Translator: {translator['label']}",
+                duration_ms=2000,
+            )
+        except Exception as e:
+            logger.debug(f"Could not show popup: {e}")
+
         # Capture console messages if requested
         console_messages = []
         if capture_console:
+
             def handle_console(msg):
                 console_messages.append(f"[{msg.type}] {msg.text}")
                 if msg.type in ["error", "warning"]:
                     logger.debug(f"Browser console: {msg.text}")
-            
+
             page.on("console", handle_console)
-        
+
         # Try to handle any popups before running translator
         try:
             # Check for cookie popup
-            cookie_button = await page.query_selector('button#onetrust-accept-btn-handler')
+            cookie_button = await page.query_selector(
+                "button#onetrust-accept-btn-handler"
+            )
             if cookie_button:
                 await cookie_button.click()
                 await page.wait_for_timeout(1000)
                 logger.info("Accepted cookies")
-            
+
             # Check for any other popups and close them
             close_selectors = [
                 'button[aria-label*="Close"]',
                 'button[aria-label*="close"]',
-                'button.close-button',
-                'button.close',
+                "button.close-button",
+                "button.close",
                 '[aria-label*="dismiss"]',
             ]
-            
+
             for selector in close_selectors:
                 try:
                     btn = await page.query_selector(selector)
@@ -199,68 +247,139 @@ class ZoteroTranslatorRunner:
                     continue
         except Exception as e:
             logger.debug(f"Popup handling: {e}")
-        
+
         try:
             # Inject the combined Zotero JavaScript environment
             await page.add_script_tag(content=self.combined_zotero_js)
-            
+
             # Prepare translator code for execution
-            # Use page.evaluate with arguments to avoid string interpolation issues
             translator_code = translator["code"]
             translator_label = translator["label"]
-            
-            # Execute the translator using the injected environment
-            try:
-                # Pass the translator code and label as a single argument object
-                result = await page.evaluate(
-                    '''
-                    async (params) => {
-                        return await executeZoteroTranslator(params.code, params.label);
+
+            # Special case: For SSRN, bypass translator execution and extract PDF URL directly
+            if translator_label == "SSRN":
+                logger.info("Using direct PDF URL extraction for SSRN (bypassing full translator)")
+                try:
+                    # Wait for the download button to appear (up to 5 seconds)
+                    try:
+                        await page.wait_for_selector('a.primary[data-abstract-id]', timeout=5000)
+                    except:
+                        pass  # Continue even if timeout
+
+                    pdf_url = await page.evaluate(
+                        """() => {
+                            const link = document.querySelector('a.primary[data-abstract-id]');
+                            return link ? link.href : null;
+                        }"""
+                    )
+                    if pdf_url:
+                        logger.success(f"Found SSRN PDF URL: {pdf_url}")
+                        result = {
+                            "success": True,
+                            "translator": translator_label,
+                            "urls": [pdf_url],
+                            "itemCount": 0,
+                            "error": None,
+                        }
+                    else:
+                        logger.warning("SSRN PDF download button not found on page")
+                        result = {
+                            "success": False,
+                            "translator": translator_label,
+                            "urls": [],
+                            "itemCount": 0,
+                            "error": "PDF download button not found",
+                        }
+                except Exception as e:
+                    logger.error(f"Error extracting SSRN PDF URL: {e}")
+                    result = {
+                        "success": False,
+                        "translator": translator_label,
+                        "urls": [],
+                        "itemCount": 0,
+                        "error": str(e),
                     }
-                    ''',
-                    {"code": translator_code, "label": translator_label}
-                )
-            except Exception as e:
-                # Log the detailed error
-                logger.error(f"Error executing translator JavaScript: {e}")
-                
-                # Check if it's a syntax error in the translator code
-                if "SyntaxError" in str(e):
-                    logger.error("Translator code may contain syntax errors or HTML content")
-                    
-                    # Try to understand what went wrong
-                    page_info = await page.evaluate('''
-                        () => ({
-                            url: window.location.href,
-                            title: document.title,
-                            hasZoteroEnv: typeof window.Zotero !== 'undefined',
-                            hasExecutor: typeof window.executeZoteroTranslator !== 'undefined'
-                        })
-                    ''')
-                    logger.debug(f"Page state: {page_info}")
-                
-                # Return error result
-                result = {
-                    "success": False,
-                    "translator": translator["label"],
-                    "urls": [],
-                    "error": str(e)
-                }
-            
+            # For other translators, execute normally
+            else:
+                # Execute translator directly using executor function with timeout
+                # This keeps the translator code in the same scope as detectWeb/doWeb calls
+                try:
+                    result = await asyncio.wait_for(
+                        page.evaluate(
+                            """
+                            async (args) => {
+                                return await executeZoteroTranslator(args.code, args.label);
+                            }
+                            """,
+                            {"code": translator_code, "label": translator_label},
+                        ),
+                        timeout=20.0,  # 20 second timeout for entire translator execution
+                    )
+                except asyncio.TimeoutError:
+                    # Translator execution timed out
+                    logger.warning(f"Translator {translator['label']} timed out after 20 seconds")
+                    result = {
+                        "success": False,
+                        "translator": translator["label"],
+                        "urls": [],
+                        "error": "Translator execution timed out",
+                    }
+                except Exception as e:
+                    # Log the detailed error
+                    logger.error(f"Error executing translator JavaScript: {e}")
+
+                    # Check if it's a syntax error in the translator code
+                    if "SyntaxError" in str(e):
+                        logger.error(
+                            "Translator code may contain syntax errors or HTML content"
+                        )
+
+                        # Try to understand what went wrong
+                        page_info = await page.evaluate(
+                            """
+                            () => ({
+                                url: window.location.href,
+                                title: document.title,
+                                hasZoteroEnv: typeof window.Zotero !== 'undefined',
+                                hasExecutor: typeof window.executeZoteroTranslator !== 'undefined'
+                            })
+                        """
+                        )
+                        logger.debug(f"Page state: {page_info}")
+
+                    # Return error result
+                    result = {
+                        "success": False,
+                        "translator": translator["label"],
+                        "urls": [],
+                        "error": str(e),
+                    }
+
             # Show console logs from translator execution
             if result.get("logs"):
                 for log_entry in result.get("logs", []):
-                    logger.debug(f"[Translator {log_entry.get('type')}] {log_entry.get('message')}")
+                    logger.debug(
+                        f"[Translator {log_entry.get('type')}] {log_entry.get('message')}"
+                    )
 
             if result.get("error"):
                 logger.error(f"Translator error: {result.get('error')}")
-                
+
             # Log important console messages if captured
             if capture_console and console_messages:
                 for msg in console_messages:
-                    if any(keyword in msg.lower() for keyword in ["error", "auth", "login", "denied", "ris"]):
+                    if any(
+                        keyword in msg.lower()
+                        for keyword in [
+                            "error",
+                            "auth",
+                            "login",
+                            "denied",
+                            "ris",
+                        ]
+                    ):
                         logger.debug(f"Console: {msg}")
-                
+
             if result.get("success") and result.get("urls"):
                 unique_urls = list(set(result.get("urls", [])))
                 logger.success(
@@ -301,56 +420,65 @@ async def find_urls_pdf_with_translator(page: Page) -> List[str]:
 async def main():
     """Demonstrate Zotero translator functionality."""
     import sys
-    
+
     # Get URL from command line or use default
-    test_url = sys.argv[1] if len(sys.argv) > 1 else "https://www.sciencedirect.com/science/article/pii/S1087079220300964"
-    
+    test_url = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else "https://www.sciencedirect.com/science/article/pii/S1087079220300964"
+    )
+
     print(f"🔍 Testing Zotero Translator Runner")
     print(f"URL: {test_url}")
     print("-" * 50)
-    
+
     async with async_playwright() as p:
         # Launch browser
         browser = await p.chromium.launch(headless=False)
         context = await browser.new_context()
         page = await context.new_page()
-        
+
         # Navigate to the URL
         print(f"📄 Navigating to {test_url}...")
         await page.goto(test_url, wait_until="domcontentloaded")
         await page.wait_for_timeout(3000)  # Wait for dynamic content
-        
+
         # Try to handle cookie acceptance popup if present
         try:
             # Common cookie accept button selectors for ScienceDirect
             cookie_selectors = [
-                'button#onetrust-accept-btn-handler',
+                "button#onetrust-accept-btn-handler",
                 'button[aria-label*="accept"]',
                 'button[id*="accept"]',
                 'button:has-text("Accept")',
                 'button:has-text("Accept all")',
                 'button:has-text("I agree")',
             ]
-            
+
             for selector in cookie_selectors:
                 try:
                     accept_button = await page.query_selector(selector)
                     if accept_button:
-                        print(f"🍪 Found cookie accept button with selector: {selector}")
+                        print(
+                            f"🍪 Found cookie accept button with selector: {selector}"
+                        )
                         await accept_button.click()
-                        await page.wait_for_timeout(1000)  # Wait for popup to close
+                        await page.wait_for_timeout(
+                            1000
+                        )  # Wait for popup to close
                         print("✅ Accepted cookies")
                         break
                 except:
                     continue
         except Exception as e:
             print(f"⚠️ No cookie popup found or already accepted: {e}")
-        
+
         # Check for any popups/modals and close them
         print("🔍 Checking for popups/modals...")
         try:
             # First check if any modal/overlay exists
-            popup_check = await page.evaluate("""
+            popup_check = await page.evaluate(
+                """
                 () => {
                     // Check for common modal/overlay selectors
                     const modalSelectors = [
@@ -364,7 +492,7 @@ async def main():
                         '[class*="popup"]',
                         '[class*="overlay"]'
                     ];
-                    
+
                     for (const selector of modalSelectors) {
                         try {
                             const elements = document.querySelectorAll(selector);
@@ -384,30 +512,33 @@ async def main():
                     }
                     return { found: false };
                 }
-            """)
-            
-            if popup_check.get('found'):
+            """
+            )
+
+            if popup_check.get("found"):
                 print(f"📢 Found popup: {popup_check.get('selector')}")
-                print(f"   Text preview: {popup_check.get('text', '')[:50]}...")
-                
+                print(
+                    f"   Text preview: {popup_check.get('text', '')[:50]}..."
+                )
+
                 # Try to close any popup found
                 close_selectors = [
                     'button[aria-label*="Close"]',
                     'button[aria-label*="close"]',
-                    'button.close-button',
-                    'button.close',
+                    "button.close-button",
+                    "button.close",
                     'button:has-text("No thanks")',
                     'button:has-text("Maybe later")',
                     'button:has-text("Skip")',
                     'button:has-text("Dismiss")',
                     '[aria-label*="dismiss"]',
-                    '.modal-close',
-                    '.popup-close',
-                    '.close-icon',
+                    ".modal-close",
+                    ".popup-close",
+                    ".close-icon",
                     'svg[class*="close"]',
-                    'button[class*="close"]'
+                    'button[class*="close"]',
                 ]
-                
+
                 for selector in close_selectors:
                     try:
                         close_button = await page.query_selector(selector)
@@ -421,13 +552,13 @@ async def main():
                         continue
             else:
                 print("✅ No popups detected")
-                
+
         except Exception as e:
             print(f"⚠️ Error checking for popups: {e}")
-        
+
         # Initialize translator runner
         runner = ZoteroTranslatorRunner()
-        
+
         # Check if translator matches
         translator = runner.find_translator_for_url(test_url)
         if translator:
@@ -436,12 +567,13 @@ async def main():
             print("❌ No matching translator found")
             await browser.close()
             return
-        
+
         # Set up console logging to capture translator debug output
         page.on("console", lambda msg: print(f"[Browser Console] {msg.text}"))
-        
+
         # Check page content before extraction
-        page_info = await page.evaluate("""
+        page_info = await page.evaluate(
+            """
             () => {
                 // Check for PDF-related elements that ScienceDirect translator looks for
                 const pdfElements = {
@@ -458,7 +590,7 @@ async def main():
                         .filter(url => url && !url.includes('#'))
                         .slice(0, 3)  // Just first 3 to avoid too much output
                 };
-                
+
                 return {
                     title: document.title,
                     url: window.location.href,
@@ -468,30 +600,33 @@ async def main():
                     pdfElements: pdfElements
                 };
             }
-        """)
+        """
+        )
         print(f"📄 Page info:")
         print(f"   Title: {page_info.get('title')}")
         print(f"   URL: {page_info.get('url')}")
         print(f"   Body length: {page_info.get('bodyLength')} chars")
         print(f"   Has content: {page_info.get('hasContent')}")
         print(f"   PDF elements found:")
-        for key, value in page_info.get('pdfElements', {}).items():
+        for key, value in page_info.get("pdfElements", {}).items():
             if value:
                 print(f"     {key}: {value}")
-        
+
         # Extract PDF URLs
         print("🔍 Extracting PDF URLs...")
         pdf_urls = await runner.extract_urls_pdf_async(page)
-        
+
         if pdf_urls:
             print(f"✅ Found {len(pdf_urls)} PDF URLs:")
             for url in pdf_urls:
                 print(f"  - {url}")
         else:
             print("❌ No PDF URLs found")
-        
+
         await browser.close()
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# EOF

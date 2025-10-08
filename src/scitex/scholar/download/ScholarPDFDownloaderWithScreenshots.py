@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 13:46:33 (ywatanabe)"
+# Timestamp: "2025-10-09 00:26:47 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshots.py
 # ----------------------------------------
 from __future__ import annotations
@@ -39,6 +39,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
         capture_on_failure: bool = True,
         capture_during_success: bool = True,  # Always capture for documentation
     ):
+        use_cache = config.resolve(
+            "use_cache_download", use_cache, default=False
+        )
         super().__init__(context, config, use_cache)
         self.screenshot_interval = screenshot_interval
         self.capture_on_failure = capture_on_failure
@@ -429,7 +432,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                 page.on("download", handle_download)
 
                 # Click download
-                await click_download_for_chrome_pdf_viewer_async(page, output_path)
+                await click_download_for_chrome_pdf_viewer_async(
+                    page, output_path
+                )
                 await page.wait_for_timeout(5000)
 
                 if download_path and download_path.exists():
@@ -705,7 +710,47 @@ async def download_pdf_with_screenshots(
 
 
 if __name__ == "__main__":
+    import argparse
     import asyncio
+
+    parser = argparse.ArgumentParser(
+        description="Download a PDF using DOI with authentication support"
+    )
+    parser.add_argument(
+        "--doi",
+        type=str,
+        required=True,
+        help="DOI of the paper (e.g., 10.1088/1741-2552/aaf92e)",
+    )
+    parser.add_argument(
+        "--pdf-url",
+        type=str,
+        help="Direct PDF URL (optional, will be found from DOI if not provided)",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="/tmp/downloaded_paper.pdf",
+        help="Output path for the PDF (default: /tmp/downloaded_paper.pdf)",
+    )
+    parser.add_argument(
+        "--browser-mode",
+        type=str,
+        choices=["stealth", "interactive", "manual"],
+        default="stealth",
+        help="Browser mode (default: stealth)",
+    )
+
+    args = parser.parse_args()
+
+    # Normalize DOI
+    DOI = (
+        args.doi
+        if args.doi.startswith("http")
+        else f"https://doi.org/{args.doi}"
+    )
+    PDF_URL = args.pdf_url
+    OUTPUT_PATH = args.output
 
     async def main_async():
         from scitex.scholar import (
@@ -715,25 +760,10 @@ if __name__ == "__main__":
         )
         from scitex.scholar.auth import AuthenticationGateway
 
-        # # Parameters
-        # PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
-        # OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
-
-        DOI = "https://doi.org/10.1088/1741-2552/aaf92e"
-        PDF_URL = (
-            "https://iopscience.iop.org/article/10.1088/1741-2552/aaf92e/pdf"
-        )
-        OUTPUT_PATH = "/tmp/JNE_PAPER.pdf"
-
-        DOI = "https://doi.org/10.48550/arXiv.2309.09471"
-        PDF_URL = "https://arxiv.org/pdf/2309.09471"
-        # PDF_URL = "https://arxiv.org/pdf/2309.09471.pdf"
-        OUTPUT_PATH = "/tmp/ARXIVE_PAPER.pdf"
-
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             chrome_profile_name="system",
-            browser_mode="stealth",
+            browser_mode=args.browser_mode,
             auth_manager=auth_manager,
             use_zenrows_proxy=False,
         )
@@ -747,13 +777,36 @@ if __name__ == "__main__":
         _url_context = await auth_gateway.prepare_context_async(
             doi=DOI, context=context
         )
+
+        # Find PDF URL if not provided
+        pdf_url = PDF_URL  # Copy from outer scope
+        if pdf_url is None:
+            logger.info(f"Finding PDF URL for DOI: {DOI}")
+            url_finder = ScholarURLFinder(context, use_cache=False)
+            urls = await url_finder.find_urls(doi=DOI)
+
+            if urls.get("urls_pdf"):
+                pdf_url = urls["urls_pdf"][0]["url"]
+                logger.info(f"Found PDF URL: {pdf_url}")
+            else:
+                logger.error(f"No PDF URL found for DOI: {DOI}")
+                return
+
+        # Initialize downloader
         pdf_downloader = ScholarPDFDownloaderWithScreenshots(context)
 
         # Main
+        logger.info(f"Downloading from: {pdf_url}")
+        logger.info(f"Output path: {OUTPUT_PATH}")
         saved_path = await pdf_downloader.download_from_url(
-            PDF_URL,
+            pdf_url,
             OUTPUT_PATH,
         )
+
+        if saved_path:
+            logger.success(f"PDF downloaded successfully: {saved_path}")
+        else:
+            logger.fail(f"Failed to download PDF")
 
     asyncio.run(main_async())
 

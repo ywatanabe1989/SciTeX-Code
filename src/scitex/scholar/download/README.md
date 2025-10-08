@@ -1,17 +1,12 @@
 <!-- ---
-!-- Timestamp: 2025-08-22 07:39:17
+!-- Timestamp: 2025-10-08 06:56:32
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/download/README.md
+!-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/README.md
 !-- --- -->
 
-## Science Direct
-● The key issue is that the authenticated PDF URLs (from pdf.sciencedirectassets.com) contain session-specific tokens that are
-  only valid within the browser context where they were generated. When you try to access them directly in a new session, they
-  redirect back to the publisher page.
 
-  The solution is to download the PDF within the same browser context where we obtained the URL. Let me check how the
-  ScholarPDFDownloader handles this:
-
+1. URL -> OpenAthens Auth -> Download <= This does not work. Authentication is on openathens.net and not on publisher page
+2. URL -> OpenURL -> Publisher-specific cache -> Publisher page (authenticated) -> Download
 
 ## Usage
 

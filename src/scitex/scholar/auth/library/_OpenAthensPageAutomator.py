@@ -17,7 +17,7 @@ from typing import Optional
 from playwright.async_api import BrowserContext, Page
 
 # from scitex.scholar.browser import BrowserUtils
-from scitex.scholar.browser.utils import click_with_fallbacks
+from scitex.browser.interaction import click_with_fallbacks_async
 from scitex.scholar.config import ScholarConfig
 
 from ..sso_automation._BaseSSOAutomator import BaseSSOAutomator
@@ -152,7 +152,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                         selector, timeout=2000
                     )
                     if element:
-                        success = await click_with_fallbacks(page, selector)
+                        success = await click_with_fallbacks_async(page, selector)
                         if success:
                             self.logger.info(
                                 f"Successfully clicked submit using: {selector}"

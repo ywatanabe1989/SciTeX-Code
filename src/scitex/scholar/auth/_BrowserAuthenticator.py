@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 from playwright.async_api import Page, async_playwright
 
 from scitex import logging
-from scitex.scholar.browser.utils import click_with_fallbacks, fill_with_fallbacks
+from scitex.browser.interaction import click_with_fallbacks_async, fill_with_fallbacks_async
 
 from ..browser.local._BrowserMixin import BrowserMixin
 
@@ -283,13 +283,13 @@ class BrowserAuthenticator(BrowserMixin):
 
     async def reliable_click_async(self, page: Page, selector: str) -> bool:
         """Perform reliable click using shared utility."""
-        return await click_with_fallbacks(page, selector)
+        return await click_with_fallbacks_async(page, selector)
 
     async def reliable_fill_async(
         self, page: Page, selector: str, value: str
     ) -> bool:
         """Perform reliable form fill using shared utility."""
-        return await fill_with_fallbacks(page, selector, value)
+        return await fill_with_fallbacks_async(page, selector, value)
 
     def display_login_instructions(
         self, email: Optional[str], timeout: int

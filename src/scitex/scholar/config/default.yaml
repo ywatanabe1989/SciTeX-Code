@@ -1,4 +1,4 @@
-# Timestamp: "2025-10-08 04:57:11 (ywatanabe)"
+# Timestamp: "2025-10-08 16:46:27 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -39,12 +39,12 @@ timeout: 60
 # ----------------------------------------
 # cache
 # ----------------------------------------
-# use_cache_search: ${SCITEX_SCHOLAR_USE_CACHE_SEARCH:-true}
-# use_cache_url_finder: ${SCITEX_SCHOLAR_USE_CACHE_URL_FINDER:-true}
-# use_cache_pdf_downloader: ${SCITEX_SCHOLAR_USE_CACHE_PDF_DOWNLOADER:-true}
-use_cache_search: ${SCITEX_SCHOLAR_USE_CACHE_SEARCH:-false}
-use_cache_url_finder: ${SCITEX_SCHOLAR_USE_CACHE_URL_FINDER:-false}
-use_cache_pdf_downloader: ${SCITEX_SCHOLAR_USE_CACHE_PDF_DOWNLOADER:-false}
+# use_cache_engine: ${SCITEX_SCHOLAR_USE_CACHE_ENGINE:-true}
+# use_cache_url: ${SCITEX_SCHOLAR_USE_CACHE_URL:-true}
+# use_cache_download: ${SCITEX_SCHOLAR_USE_CACHE_DOWNLOAD:-true}
+use_cache_engine: ${SCITEX_SCHOLAR_USE_CACHE_ENGINE:-false}
+use_cache_url: ${SCITEX_SCHOLAR_USE_CACHE_URL:-false}
+use_cache_download: ${SCITEX_SCHOLAR_USE_CACHE_DOWNLOAD:-false}
 
 
 # ----------------------------------------

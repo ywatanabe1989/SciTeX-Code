@@ -16,11 +16,8 @@ from playwright.async_api import Locator, Page
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.scholar.browser.utils import (
-    click_and_wait,
-    highlight_element,
-    take_screenshot,
-)
+from scitex.browser.debugging import highlight_element_async
+from scitex.scholar.browser.utils import click_and_wait
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +49,7 @@ class OpenURLLinkFinder:
                         href = await link_element.get_attribute("href")
                         if href not in seen_hrefs:
                             # logger.success(f"Found link elements for: {publisher}")
-                            await highlight_element(link_element, 500)
+                            await highlight_element_async(link_element, 500)
                             found_links.append(
                                 {
                                     "publisher": publisher,

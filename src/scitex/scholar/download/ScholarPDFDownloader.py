@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:50:59 (ywatanabe)"
+# Timestamp: "2025-10-08 08:06:34 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -44,9 +44,9 @@ class ScholarPDFDownloader:
         self.context = context
         self.url_finder = ScholarURLFinder(self.context, config=config)
         self.use_cache = self.config.resolve(
-            "use_cache_pdf_downloader", use_cache
+            "use_cache_download", use_cache
         )
-        self.cache_dir = self.config.get_pdf_downloader_cache_dir()
+        self.cache_dir = self.config.get_cache_dowload_dir()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         pass
@@ -582,6 +582,24 @@ if __name__ == "__main__":
         )
         from scitex.scholar.auth import AuthenticationGateway
 
+        # Test IEEE paper (requires authentication)
+        DOI = "10.1109/niles56402.2022.9942397"
+        PDF_URL = (
+            "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9942397"
+        )
+        OUTPUT_PATH = "/tmp/IEEE_PAPER.pdf"
+
+        DOI = "https://doi.org/10.1088/1741-2552/aaf92e"
+        PDF_URL = (
+            "https://iopscience.iop.org/article/10.1088/1741-2552/aaf92e/pdf"
+        )
+        OUTPUT_PATH = "/tmp/JNE_PAPER.pdf"
+
+        DOI = "10.1038/nature12373"
+        PDF_URL = "https://www.nature.com/articles/nature12373.pdf"
+        OUTPUT_PATH = "/tmp/NATURE_PAPER.pdf"
+
+        # Modules
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             chrome_profile_name="system",
@@ -593,41 +611,16 @@ if __name__ == "__main__":
         browser, context = (
             await browser_manager.get_authenticated_browser_and_context_async()
         )
-
-        # Initialize authentication gateway
-        config = ScholarConfig()
         auth_gateway = AuthenticationGateway(
             auth_manager=auth_manager,
             browser_manager=browser_manager,
-            config=config,
         )
-
-        pdf_downloader = ScholarPDFDownloader(context, config=config)
-
-        # Test IEEE paper (requires authentication)
-        DOI = "10.1109/niles56402.2022.9942397"
-        PDF_URL = (
-            "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9942397"
-        )
-        OUTPUT_PATH = "/tmp/IEEE_PAPER.pdf"
-
-        # logger.info(f"Testing IEEE paper download: {DOI}")
-
-        # NEW: Prepare authentication BEFORE download
-        # logger.info("Preparing authentication via gateway...")
-        url_context = await auth_gateway.prepare_context_async(
+        _url_context = await auth_gateway.prepare_context_async(
             doi=DOI, context=context
         )
-
-        # if url_context.requires_auth:
-        #     logger.success(
-        #         f"Authentication prepared for {url_context.auth_provider}"
-        #     )
-        # else:
-        #     logger.info("No authentication required")
+        pdf_downloader = ScholarPDFDownloader(context)
 
         # Now download with authenticated context
-        # logger.info("Downloading PDF...")
         saved_path = await pdf_downloader.download_from_url(
             PDF_URL,
             OUTPUT_PATH,

@@ -1,0 +1,5 @@
+original_pattern=ywata1989@gmail.com
+replacement=ywatanabe@scitex.ai
+target_dir=/home/ywatanabe/proj/scitex_repo
+timestamp=20251009_101109
+date=Thu Oct  9 10:11:09 AM AEDT 2025

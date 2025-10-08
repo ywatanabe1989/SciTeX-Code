@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 13:48:33 (ywatanabe)"
+# Timestamp: "2025-10-09 01:02:21 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -39,7 +39,7 @@ from .helpers import (
 logger = logging.getLogger(__name__)
 
 
-from scitex.scholar.browser.utils import take_screenshot
+from scitex.browser.debugging import show_popup_and_capture_async
 
 
 class ScholarURLFinder:
@@ -70,10 +70,10 @@ class ScholarURLFinder:
         self._page = None
 
         # Cache
-        self.use_cache = self.config.resolve("use_cache_url_finder", use_cache)
+        self.use_cache = self.config.resolve("use_cache_url", use_cache)
 
         # Use Scholar's URL finder cache directory
-        self.cache_dir = self.config.get_url_finder_cache_dir()
+        self.cache_dir = self.config.get_cache_url_dir()
         self.publisher_cache_file = self.cache_dir / "publisher_urls.json"
         self.openurl_cache_file = self.cache_dir / "openurl_resolved.json"
         self.full_results_cache_file = self.cache_dir / "full_results.json"
@@ -126,8 +126,7 @@ class ScholarURLFinder:
 
             if urls_pdf:
                 logger.success(
-                    f"Found {len(urls_pdf)} PDFs from publisher",
-                    indent=5
+                    f"Found {len(urls_pdf)} PDFs from publisher", indent=5
                 )
                 # Skip OpenURL entirely - we have PDFs!
                 urls["url_openurl_query"] = (
@@ -151,7 +150,9 @@ class ScholarURLFinder:
                 urls_pdf.extend(pdfs)
 
                 if pdfs:
-                    logger.success(f"Found {len(pdfs)} PDFs from OpenURL", indent=5)
+                    logger.success(
+                        f"Found {len(pdfs)} PDFs from OpenURL", indent=5
+                    )
 
         if urls_pdf:
             # Deduplicate PDFs
@@ -221,16 +222,30 @@ class ScholarURLFinder:
 
             # Take screenshot if no PDFs found
             if not pdfs:
-                await take_screenshot(
-                    page, "ScholarURLFinder", f"{doi} - No PDFs Found"
+                screenshot_dir = (
+                    Path.home() / ".scitex/scholar/workspace/screenshots"
+                )
+                await show_popup_and_capture_async(
+                    page,
+                    f"{doi} - No PDFs Found",
+                    take_screenshot=True,
+                    screenshot_category="ScholarURLFinder",
+                    screenshot_dir=screenshot_dir,
                 )
 
             return pdfs
         except Exception as e:
             # Take screenshot on error
             try:
-                await take_screenshot(
-                    page, "ScholarURLFinder", f"{doi} - Page Error"
+                screenshot_dir = (
+                    Path.home() / ".scitex/scholar/workspace/screenshots"
+                )
+                await show_popup_and_capture_async(
+                    page,
+                    f"{doi} - Page Error",
+                    take_screenshot=True,
+                    screenshot_category="ScholarURLFinder",
+                    screenshot_dir=screenshot_dir,
                 )
             except:
                 pass
@@ -254,18 +269,30 @@ class ScholarURLFinder:
 
                 # Take screenshot if no PDFs found
                 if not pdfs:
-                    await take_screenshot(
+                    screenshot_dir = (
+                        Path.home() / ".scitex/scholar/workspace/screenshots"
+                    )
+                    await show_popup_and_capture_async(
                         page,
-                        "ScholarURLFinder",
                         f"No PDFs from URL: {page_or_url[:50]}",
+                        take_screenshot=True,
+                        screenshot_category="ScholarURLFinder",
+                        screenshot_dir=screenshot_dir,
                     )
 
                 return pdfs
             except Exception as e:
                 logger.warning(f"Failed to load page: {e}")
                 try:
-                    await take_screenshot(
-                        page, "ScholarURLFinder", "Navigation Error"
+                    screenshot_dir = (
+                        Path.home() / ".scitex/scholar/workspace/screenshots"
+                    )
+                    await show_popup_and_capture_async(
+                        page,
+                        "Navigation Error",
+                        take_screenshot=True,
+                        screenshot_category="ScholarURLFinder",
+                        screenshot_dir=screenshot_dir,
                     )
                 except:
                     pass
@@ -279,15 +306,29 @@ class ScholarURLFinder:
 
                 # Take screenshot if no PDFs found
                 if not pdfs:
-                    await take_screenshot(
-                        page_or_url, "ScholarURLFinder", "No PDFs Page"
+                    screenshot_dir = (
+                        Path.home() / ".scitex/scholar/workspace/screenshots"
+                    )
+                    await show_popup_and_capture_async(
+                        page_or_url,
+                        "No PDFs Page",
+                        take_screenshot=True,
+                        screenshot_category="ScholarURLFinder",
+                        screenshot_dir=screenshot_dir,
                     )
                 return pdfs
             except Exception as e:
                 logger.error(f"Error finding PDF URLs: {e}")
                 try:
-                    await take_screenshot(
-                        page_or_url, "ScholarURLFinder", "PDF Search Error"
+                    screenshot_dir = (
+                        Path.home() / ".scitex/scholar/workspace/screenshots"
+                    )
+                    await show_popup_and_capture_async(
+                        page_or_url,
+                        "PDF Search Error",
+                        take_screenshot=True,
+                        screenshot_category="ScholarURLFinder",
+                        screenshot_dir=screenshot_dir,
                     )
                 except:
                     pass
@@ -409,6 +450,35 @@ class ScholarURLFinder:
         return results
 
 
+def parse_args():
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Find PDF URLs and resolve DOIs through various methods"
+    )
+    parser.add_argument(
+        "--doi",
+        type=str,
+        required=True,
+        help="DOI to resolve (e.g., 10.1038/nature12373)",
+    )
+    parser.add_argument(
+        "--browser-mode",
+        type=str,
+        choices=["interactive", "headless"],
+        default="interactive",
+        help="Browser mode (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--chrome-profile",
+        type=str,
+        default="system_worker_0",
+        help="Chrome profile name (default: %(default)s)",
+    )
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == "__main__":
     import asyncio
 
@@ -421,24 +491,13 @@ if __name__ == "__main__":
             ScholarURLFinder,
         )
 
-        # Params
-        doi = "10.1016/j.cell.2025.07.007"
-        doi = "10.1126/science.aao0702"
-        doi = "https://doi.org/10.1109/jbhi.2025.3556775"
-        doi = "https://doi.org/10.1088/1741-2552/aaf92e"
-        doi = "https://doi.org/10.48550/arXiv.2309.09471"
+        args = parse_args()
 
-        doi = "10.1038/nature12373"  # https://www.nature.com/articles/nature12373.pdf
-        doi = "10.1126/science.1234567"  # https://www.science.org/doi/pdf/10.1126/science.1234567 # "https://www.science.org/doi/pdf/10.1126/science.1234567?download=true"
-        doi = "10.1371/journal.pone.0123456"  # https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0123456&type=printable # http://www.euro.who.int/document/e75518.pdf
-        doi = "10.48550/arxiv.2201.11600"  # https://arxiv.org/pdf/2201.11600 # https://arxiv.org/pdf/2201.11600.pdf
-
-        # Initialize with authenticated browser context
         auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             auth_manager=auth_manager,
-            browser_mode="interactive",
-            chrome_profile_name="system",
+            browser_mode=args.browser_mode,
+            chrome_profile_name=args.chrome_profile,
         )
         browser, context = (
             await browser_manager.get_authenticated_browser_and_context_async()
@@ -451,19 +510,22 @@ if __name__ == "__main__":
             browser_manager=browser_manager,
         )
         _url_context = await auth_gateway.prepare_context_async(
-            doi=doi, context=context
+            doi=args.doi, context=context
         )
 
-        # Create URL handler
-        url_finder = ScholarURLFinder(context, use_cache=False)
-
+        url_finder = ScholarURLFinder(
+            context,
+            use_cache=False,
+            clear_cache=False,
+        )
         urls = await url_finder.find_urls(
-            doi=doi,
+            doi=args.doi,
         )
         pprint(urls)
 
     asyncio.run(main_async())
 
-# python -m scitex.scholar.url.ScholarURLFinder
+
+# python -m scitex.scholar.url.ScholarURLFinder --doi "10.2139/ssrn.5293145"
 
 # EOF

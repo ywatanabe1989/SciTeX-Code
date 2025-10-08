@@ -15,7 +15,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.scholar.browser.utils import show_popup_and_capture_async
+from scitex.browser import show_popup_and_capture_async
 
 logger = logging.getLogger(__name__)
 
