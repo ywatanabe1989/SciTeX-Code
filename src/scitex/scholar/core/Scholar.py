@@ -543,56 +543,74 @@ class Scholar:
             # Use parallel downloader for multiple DOIs
             logger.info(f"Using parallel download for {len(dois)} DOIs")
 
-            # NEW: Use parallel URL finder for faster preprocessing
-            from scitex.scholar.url.ScholarURLFinderParallel import (
-                ScholarURLFinderParallel,
-            )
-
-            # Initialize parallel URL finder
-            url_finder_parallel = ScholarURLFinderParallel(
-                auth_manager=self._auth_manager,
-                browser_manager=self._browser_manager,
-                config=self.config,
-            )
-
-            # Find URLs for all DOIs in parallel
-            logger.info(f"Finding URLs for {len(dois)} DOIs in parallel...")
-            url_results = await url_finder_parallel.find_urls_batch(
-                dois, use_cache=True
-            )
-
-            # Prepare papers with URLs resolved
+            # Prepare papers - check existing metadata first, only find URLs if needed
             papers_with_urls = []
-            for doi, urls in zip(dois, url_results):
+            dois_needing_urls = []
+            doi_to_index = {}  # Map DOI to original index for result matching
+
+            for i, doi in enumerate(dois):
                 try:
-                    # Try to get existing metadata from library
                     paper_data = {"doi": doi}
 
                     # Check if paper already exists in library
-                    paper_id = self.config.path_manager._generate_paper_id(
-                        doi=doi
-                    )
+                    paper_id = self.config.path_manager._generate_paper_id(doi=doi)
                     library_dir = self.config.get_library_dir()
-                    metadata_file = (
-                        library_dir / "MASTER" / paper_id / "metadata.json"
-                    )
+                    metadata_file = library_dir / "MASTER" / paper_id / "metadata.json"
 
+                    existing_pdf_urls = []
                     if metadata_file.exists():
                         import json
-
                         with open(metadata_file, "r") as f:
                             existing_metadata = json.load(f)
                             paper_data.update(existing_metadata)
+                            # Check for existing PDF URLs in metadata
+                            if "url" in existing_metadata and "pdfs" in existing_metadata.get("url", {}):
+                                existing_pdf_urls = existing_metadata["url"]["pdfs"]
+                            elif "pdf_urls" in existing_metadata:
+                                existing_pdf_urls = existing_metadata["pdf_urls"]
 
-                    # Add URLs to paper data (already found in parallel)
-                    paper_data["pdf_urls"] = urls.get("urls_pdf", [])
-                    paper_data["url_info"] = urls  # Full URL info for logging
+                    # Only find URLs if we don't have any from metadata
+                    if existing_pdf_urls:
+                        logger.info(f"Using {len(existing_pdf_urls)} existing PDF URLs for {doi}")
+                        paper_data["pdf_urls"] = existing_pdf_urls
+                        papers_with_urls.append(paper_data)
+                    else:
+                        # Need to find URLs for this DOI
+                        dois_needing_urls.append(doi)
+                        doi_to_index[doi] = i
+                        papers_with_urls.append(paper_data)  # Add placeholder
 
-                    papers_with_urls.append(paper_data)
                 except Exception as e:
-                    logger.warning(f"Failed to prepare {doi}: {e}")
-                    # Still add paper but without URLs - worker will skip it
+                    logger.warning(f"Failed to load metadata for {doi}: {e}")
+                    dois_needing_urls.append(doi)
+                    doi_to_index[doi] = i
                     papers_with_urls.append({"doi": doi, "pdf_urls": []})
+
+            # Only run URL finder if there are DOIs without URLs
+            if dois_needing_urls:
+                from scitex.scholar.url.ScholarURLFinderParallel import (
+                    ScholarURLFinderParallel,
+                )
+
+                logger.info(f"Finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs in parallel...")
+
+                url_finder_parallel = ScholarURLFinderParallel(
+                    auth_manager=self._auth_manager,
+                    browser_manager=self._browser_manager,
+                    config=self.config,
+                )
+
+                url_results = await url_finder_parallel.find_urls_batch(
+                    dois_needing_urls, use_cache=True
+                )
+
+                # Update papers with newly found URLs
+                for doi, urls in zip(dois_needing_urls, url_results):
+                    idx = doi_to_index[doi]
+                    papers_with_urls[idx]["pdf_urls"] = urls.get("urls_pdf", [])
+                    papers_with_urls[idx]["url_info"] = urls
+            else:
+                logger.success(f"All {len(dois)} DOIs already have PDF URLs in metadata - skipping URL finding")
 
             # Initialize parallel downloader (NO auth_manager needed - auth already done)
             parallel_downloader = ScholarPDFDownloaderWithScreenshotsParallel(
