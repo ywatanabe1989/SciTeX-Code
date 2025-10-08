@@ -150,6 +150,11 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
             "errors": {},
         }
 
+    @property
+    def name(self) -> str:
+        """Return class name for logging."""
+        return self.__class__.__name__
+
     def _get_optimal_worker_count(self, pdf_max_parallel=None) -> int:
         """Calculate optimal number of workers based on environment.
 
@@ -297,7 +302,7 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
         # Log stage clearly
         logger.info(
-            f"\n{'-'*40}\n{self.__class__.__name__} starting PDF download for {len(papers_with_metadata)} papers...\n{'-'*40}"
+            f"\n{'-'*40}\n{self.name} starting PDF download for {len(papers_with_metadata)} papers...\n{'-'*40}"
         )
 
         # Setup logging to library

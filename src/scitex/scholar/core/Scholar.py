@@ -592,8 +592,9 @@ class Scholar:
                     ScholarURLFinderParallel,
                 )
 
+                # Note: url_finder_parallel.name will be added after initialization
                 logger.info(
-                    f"\n{'-'*40}\nScholarURLFinderParallel finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs...\n{'-'*40}"
+                    f"\n{'-'*40}\nURL Finder: Finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs...\n{'-'*40}"
                 )
 
                 url_finder_parallel = ScholarURLFinderParallel(

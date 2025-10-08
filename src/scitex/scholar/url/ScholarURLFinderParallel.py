@@ -87,6 +87,11 @@ class ScholarURLFinderParallel:
             "errors": 0,
         }
 
+    @property
+    def name(self) -> str:
+        """Return class name for logging."""
+        return self.__class__.__name__
+
     def _get_publisher_limits(self, url: str) -> Dict[str, Any]:
         """Get rate limits for a publisher based on URL."""
         # Default limits
