@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 16:16:45 (ywatanabe)"
+# Timestamp: "2025-10-08 13:46:33 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshots.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,7 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """Enhanced PDF downloader with screenshot capture capabilities for debugging."""
 
 import asyncio
@@ -401,7 +402,9 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
             logger.info(f"After navigation - Expected: {pdf_url}")
             logger.info(f"After navigation - Actual: {actual_url}")
             if actual_url != pdf_url:
-                logger.warning(f"URL redirect detected: {pdf_url} -> {actual_url}")
+                logger.warning(
+                    f"URL redirect detected: {pdf_url} -> {actual_url}"
+                )
 
             # Check if PDF viewer loaded
             ss = await self._capture_screenshot_async(
@@ -433,7 +436,7 @@ class ScholarPDFDownloaderWithScreenshots(ScholarPDFDownloader):
                 page.on("download", handle_download)
 
                 # Click download
-                await click_download_for_chrome_pdf_viewer_async(page)
+                await click_download_for_chrome_pdf_viewer_async(page, output_path)
                 await page.wait_for_timeout(5000)
 
                 if download_path and download_path.exists():
@@ -717,21 +720,41 @@ if __name__ == "__main__":
             ScholarBrowserManager,
             ScholarURLFinder,
         )
+        from scitex.scholar.auth import AuthenticationGateway
 
+        # # Parameters
+        # PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
+        # OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
+
+        DOI = "https://doi.org/10.1088/1741-2552/aaf92e"
+        PDF_URL = (
+            "https://iopscience.iop.org/article/10.1088/1741-2552/aaf92e/pdf"
+        )
+        OUTPUT_PATH = "/tmp/JNE_PAPER.pdf"
+
+        DOI = "https://doi.org/10.48550/arXiv.2309.09471"
+        PDF_URL = "https://arxiv.org/pdf/2309.09471"
+        # PDF_URL = "https://arxiv.org/pdf/2309.09471.pdf"
+        OUTPUT_PATH = "/tmp/ARXIVE_PAPER.pdf"
+
+        auth_manager = ScholarAuthManager()
         browser_manager = ScholarBrowserManager(
             chrome_profile_name="system",
             browser_mode="stealth",
-            auth_manager=ScholarAuthManager(),
+            auth_manager=auth_manager,
             use_zenrows_proxy=False,
         )
         browser, context = (
             await browser_manager.get_authenticated_browser_and_context_async()
         )
+        auth_gateway = AuthenticationGateway(
+            auth_manager=auth_manager,
+            browser_manager=browser_manager,
+        )
+        _url_context = await auth_gateway.prepare_context_async(
+            doi=DOI, context=context
+        )
         pdf_downloader = ScholarPDFDownloaderWithScreenshots(context)
-
-        # Parameters
-        PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
-        OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
 
         # Main
         saved_path = await pdf_downloader.download_from_url(
