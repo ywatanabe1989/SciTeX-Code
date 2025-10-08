@@ -147,7 +147,8 @@ class ScholarURLFinderParallel:
             return []
 
         logger.info(
-            f"Finding URLs for {len(dois)} DOIs using {self.n_workers} parallel workers"
+            f"{self.name}: Finding URLs for {len(dois)} DOIs ({self.n_workers} workers)",
+            sep="-", n_sep=50, indent=2
         )
 
         # Split DOIs among workers
@@ -216,7 +217,8 @@ class ScholarURLFinderParallel:
         )
 
         logger.info(
-            f"Worker {worker_id} starting with {len(dois_with_indices)} DOIs"
+            f"Worker {worker_id} starting ({len(dois_with_indices)} DOIs)",
+            indent=3, c="grey"
         )
 
         # Create worker-specific Chrome profile for URL finding
@@ -260,7 +262,8 @@ class ScholarURLFinderParallel:
             for i, (original_idx, doi) in enumerate(dois_with_indices):
                 try:
                     logger.info(
-                        f"Worker {worker_id} [{i+1}/{len(dois_with_indices)}]: Finding URLs for {doi}"
+                        f"Worker {worker_id} [{i+1}/{len(dois_with_indices)}]: {doi}",
+                        indent=4
                     )
 
                     # Apply rate limiting delay with jitter
@@ -290,12 +293,14 @@ class ScholarURLFinderParallel:
                     if url_data.get("urls_pdf"):
                         self.stats["found"] += 1
                         logger.success(
-                            f"Worker {worker_id}: Found {len(url_data['urls_pdf'])} PDF URLs for {doi}"
+                            f"Found {len(url_data['urls_pdf'])} PDF URLs",
+                            indent=5
                         )
                     else:
                         self.stats["not_found"] += 1
                         logger.warning(
-                            f"Worker {worker_id}: No PDF URLs found for {doi}"
+                            f"No PDF URLs found",
+                            indent=5
                         )
 
                     results.append((original_idx, url_data))

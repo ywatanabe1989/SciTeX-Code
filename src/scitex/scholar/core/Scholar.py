@@ -541,7 +541,7 @@ class Scholar:
 
         if use_parallel and len(dois) > 1:
             # Use parallel downloader for multiple DOIs
-            logger.info(f"Using parallel download for {len(dois)} DOIs")
+            logger.info(f"PDF Download: Processing {len(dois)} DOIs in parallel", sep="=", n_sep=60)
 
             # Prepare papers - check existing metadata first, only find URLs if needed
             papers_with_urls = []
@@ -571,7 +571,7 @@ class Scholar:
 
                     # Only find URLs if we don't have any from metadata
                     if existing_pdf_urls:
-                        logger.info(f"Using {len(existing_pdf_urls)} existing PDF URLs for {doi}")
+                        logger.info(f"Using {len(existing_pdf_urls)} cached PDF URLs for {doi}", indent=1, c="cyan")
                         paper_data["pdf_urls"] = existing_pdf_urls
                         papers_with_urls.append(paper_data)
                     else:
@@ -592,9 +592,9 @@ class Scholar:
                     ScholarURLFinderParallel,
                 )
 
-                # Note: url_finder_parallel.name will be added after initialization
                 logger.info(
-                    f"\n{'-'*40}\nURL Finder: Finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs...\n{'-'*40}"
+                    f"URL Finding: Processing {len(dois_needing_urls)}/{len(dois)} DOIs",
+                    sep="-", n_sep=60, indent=1
                 )
 
                 url_finder_parallel = ScholarURLFinderParallel(
@@ -613,7 +613,7 @@ class Scholar:
                     papers_with_urls[idx]["pdf_urls"] = urls.get("urls_pdf", [])
                     papers_with_urls[idx]["url_info"] = urls
             else:
-                logger.success(f"All {len(dois)} DOIs already have PDF URLs in metadata - skipping URL finding")
+                logger.success(f"All {len(dois)} DOIs have cached PDF URLs - skipping URL finding", indent=1)
 
             # Initialize parallel downloader (NO auth_manager needed - auth already done)
             parallel_downloader = ScholarPDFDownloaderWithScreenshotsParallel(

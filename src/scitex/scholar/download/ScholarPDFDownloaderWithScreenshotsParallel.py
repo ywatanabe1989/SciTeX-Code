@@ -302,7 +302,8 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
         # Log stage clearly
         logger.info(
-            f"\n{'-'*40}\n{self.name} starting PDF download for {len(papers_with_metadata)} papers...\n{'-'*40}"
+            f"PDF Download: Starting for {len(papers_with_metadata)} papers ({self.n_workers} workers)",
+            sep="-", n_sep=50, indent=2
         )
 
         # Setup logging to library
@@ -338,14 +339,14 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
         )
 
         if not papers_to_download:
-            logger.info("All papers already have PDFs (status: PDF_s)")
+            logger.success("All papers already have PDFs", indent=3)
             return self.stats
 
         # Update stats with filtered count
         self.stats["total"] = len(papers_to_download)
         logger.info(
-            f"Filtered to {len(papers_to_download)} papers needing download "
-            f"(skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)"
+            f"Downloading {len(papers_to_download)} papers (skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)",
+            indent=3
         )
 
         # Analyze journals/publishers in the batch
