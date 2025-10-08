@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 18:17:34 (ywatanabe)"
+# Timestamp: "2025-10-08 08:10:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshotsParallel.py
 # ----------------------------------------
 from __future__ import annotations
@@ -23,8 +23,12 @@ from typing import Dict, List, Optional
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
+from scitex.scholar.auth import AuthenticationGateway, ScholarAuthManager
 from scitex.scholar.browser.local.ScholarBrowserManager import (
     ScholarBrowserManager,
+)
+from scitex.scholar.browser.local.utils._ChromeProfileManager import (
+    ChromeProfileManager,
 )
 from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (
@@ -76,37 +80,55 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
             delay_between_starts: Delay in seconds between starting workers (overrides config)
         """
         self.config = config or ScholarConfig()
-        self.auth_manager = auth_manager
+        self.auth_manager = auth_manager or ScholarAuthManager(config=config)
         self.library_manager = LibraryManager(config=self.config)
-
-        # Use cascade configuration: direct params > config > defaults
-        pdf_config = self.config.get("pdf_download") or {}
 
         # Ensure type conversion for numeric parameters
         self.max_workers = int(
-            max_workers
-            if max_workers is not None
-            else pdf_config.get(
-                "max_parallel", self._get_optimal_worker_count()
+            self.config.resolve(
+                "max_parallel",
+                max_workers,
+                default=self._get_optimal_worker_count(),
             )
         )
-        self.use_parallel = (
-            use_parallel
-            if use_parallel is not None
-            else pdf_config.get("use_parallel", True)
-        )
-        self.delay_between_starts = int(
-            delay_between_starts
-            if delay_between_starts is not None
-            else pdf_config.get(
-                "delay_between_starts", delay_between_starts
-            )  # 5
+
+        self.use_parallel = int(
+            self.config.resolve(
+                "use_parallel",
+                use_parallel,
+                default=True,
+            )
         )
 
-        # Additional config parameters
-        self.default_delay = pdf_config.get("default_delay", 10)
-        self.retry_attempts = pdf_config.get("retry_attempts", 3)
-        self.timeout = pdf_config.get("timeout", 60)
+        self.delay_between_starts = self.config.resolve(
+            "delay_between_starts",
+            None,
+            default=0.1,
+        )
+
+        self.default_delay = int(
+            self.config.resolve(
+                "default_delay",
+                None,
+                default=10,
+            )
+        )
+
+        self.retry_attempts = int(
+            self.config.resolve(
+                "retry_attempts",
+                None,
+                default=3,
+            )
+        )
+
+        self.timeout = int(
+            self.config.resolve(
+                "timeout",
+                None,
+                default=60,
+            )
+        )
 
         # Check authentication status
         self.has_auth = self._check_authentication()
@@ -165,7 +187,8 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                         expires = datetime.fromisoformat(expiry_str)
                         if expires > datetime.now():
                             logger.info(
-                                f"Found valid authentication session (expires in {(expires - datetime.now()).total_seconds() / 3600:.1f}h)"
+                                f"Found valid authentication session "
+                                f"(expires in {(expires - datetime.now()).total_seconds() / 3600:.1f}h)"
                             )
                             return True
                         else:
@@ -272,6 +295,11 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
         self.stats["total"] = len(papers_with_metadata)
 
+        # Log stage clearly
+        logger.info(
+            f"\n{'-'*40}\n{self.__class__.__name__} starting PDF download for {len(papers_with_metadata)} papers...\n{'-'*40}"
+        )
+
         # Setup logging to library
         library_dir = library_dir or self.config.get_library_dir()
         self.log_file_handler = None
@@ -311,7 +339,8 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
         # Update stats with filtered count
         self.stats["total"] = len(papers_to_download)
         logger.info(
-            f"Filtered to {len(papers_to_download)} papers needing download (skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)"
+            f"Filtered to {len(papers_to_download)} papers needing download "
+            f"(skipped {len(papers_with_metadata) - len(papers_to_download)} with existing PDFs)"
         )
 
         # Analyze journals/publishers in the batch
@@ -522,10 +551,6 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
         # Sync extensions and cookies from system profile to worker profile using rsync
         # Always sync to ensure completeness (rsync only copies changed files, so it's fast)
-        from scitex.scholar.browser.local.utils._ChromeProfileManager import (
-            ChromeProfileManager,
-        )
-
         profile_manager = ChromeProfileManager(
             worker_profile_name, config=self.config
         )
@@ -543,28 +568,16 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                 f"Worker {worker_id}: Profile sync failed, proceeding with empty profile"
             )
 
-        browser_manager = ScholarBrowserManager(
-            config=self.config,
-            auth_manager=self.auth_manager,
-            browser_mode="stealth",
-            chrome_profile_name=worker_profile_name,
-        )
-
         try:
+            browser_manager = ScholarBrowserManager(
+                config=self.config,
+                auth_manager=self.auth_manager,
+                browser_mode="stealth",
+                chrome_profile_name=worker_profile_name,
+            )
             # Get authenticated browser for this worker
             browser, context = (
                 await browser_manager.get_authenticated_browser_and_context_async()
-            )
-
-            # Use screenshot-enabled downloader for this worker
-            # Authentication and URL finding already done by Scholar.py preprocessing
-            pdf_downloader = ScholarPDFDownloaderWithScreenshots(
-                context=context,
-                config=self.config,
-                use_cache=True,
-                screenshot_interval=2.0,
-                capture_on_failure=True,
-                capture_during_success=True,  # Always capture screenshots for documentation
             )
 
             # Process papers assigned to this worker
@@ -573,13 +586,35 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                     doi = paper.get("doi")
                     title = paper.get("title", "Unknown")[:50]
 
+                    # Visit gateway and acquire publisher-specific authentication cookies
+                    auth_gateway = AuthenticationGateway(
+                        auth_manager=self.auth_manager,
+                        browser_manager=browser_manager,
+                    )
+                    _url_context = await auth_gateway.prepare_context_async(
+                        doi=doi, context=context
+                    )
+
+                    # Use screenshot-enabled downloader for this worker
+                    # Authentication and URL finding already done by Scholar.py preprocessing
+                    pdf_downloader = ScholarPDFDownloaderWithScreenshots(
+                        context=context,
+                        config=self.config,
+                        use_cache=True,
+                        screenshot_interval=2.0,
+                        capture_on_failure=True,
+                        capture_during_success=True,  # Always capture screenshots for documentation
+                    )
+
                     logger.info(
                         f"Worker {worker_id} [{i+1}/{len(papers)}]: Processing {title}..."
                     )
 
                     # Get PDF URLs from paper dict (already resolved by Scholar.py)
                     pdf_urls = paper.get("pdf_urls", [])
-                    urls = paper.get("url_info", {})  # Full URL info for logging
+                    urls = paper.get(
+                        "url_info", {}
+                    )  # Full URL info for logging
 
                     if pdf_urls:
                         # Get rate limits for first URL
@@ -624,19 +659,15 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                         )
 
                         # Mark as attempted so it shows as failed (PDF_f) not pending (PDF_p)
-                        paper_id = (
-                            self.config.path_manager._generate_paper_id(
-                                doi=doi
-                            )
+                        paper_id = self.config.path_manager._generate_paper_id(
+                            doi=doi
                         )
                         master_dir = (
                             self.config.path_manager.get_library_master_dir()
                         )
                         paper_dir = master_dir / paper_id
                         paper_dir.mkdir(parents=True, exist_ok=True)
-                        attempted_marker = (
-                            paper_dir / ".download_attempted"
-                        )
+                        attempted_marker = paper_dir / ".download_attempted"
                         download_log = paper_dir / "download_log.txt"
 
                         if not attempted_marker.exists():
@@ -718,21 +749,29 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
                 await browser_manager.get_authenticated_browser_and_context_async()
             )
 
-            # Use screenshot-enabled downloader
-            # Authentication and URL finding already done by Scholar.py preprocessing
-            pdf_downloader = ScholarPDFDownloaderWithScreenshots(
-                context=context,
-                config=self.config,
-                use_cache=True,
-                screenshot_interval=2.0,
-                capture_on_failure=True,
-                capture_during_success=True,  # Always capture screenshots for documentation
-            )
-
             for i, paper in enumerate(papers):
                 try:
                     doi = paper.get("doi")
                     title = paper.get("title", "Unknown")[:50]
+
+                    # Visit gateway and acquire publisher-specific authentication cookies
+                    auth_gateway = AuthenticationGateway(
+                        auth_manager=self.auth_manager,
+                        browser_manager=browser_manager,
+                    )
+                    _url_context = await auth_gateway.prepare_context_async(
+                        doi=doi, context=context
+                    )
+                    # Use screenshot-enabled downloader
+                    # Authentication and URL finding already done by Scholar.py preprocessing
+                    pdf_downloader = ScholarPDFDownloaderWithScreenshots(
+                        context=context,
+                        config=self.config,
+                        use_cache=True,
+                        screenshot_interval=2.0,
+                        capture_on_failure=True,
+                        capture_during_success=True,  # Always capture screenshots for documentation
+                    )
 
                     logger.info(
                         f"[{i+1}/{len(papers)}]: Processing {title}..."
@@ -740,7 +779,9 @@ class ScholarPDFDownloaderWithScreenshotsParallel:
 
                     # Get PDF URLs from paper dict (already resolved by Scholar.py)
                     pdf_urls = paper.get("pdf_urls", [])
-                    urls = paper.get("url_info", {})  # Full URL info for logging
+                    urls = paper.get(
+                        "url_info", {}
+                    )  # Full URL info for logging
 
                     if pdf_urls:
                         # Conservative delay for sequential mode
@@ -1402,25 +1443,15 @@ if __name__ == "__main__":
         )
 
         auth_manager = ScholarAuthManager()
-        # browser_manager = ScholarBrowserManager(
-        #     chrome_profile_name="system",
-        #     browser_mode="stealth",
-        #     auth_manager=ScholarAuthManager(),
-        #     use_zenrows_proxy=False,
-        # )
-        # browser, context = (
-        #     await browser_manager.get_authenticated_browser_and_context_async()
-        # )
-
         downloader = ScholarPDFDownloaderWithScreenshotsParallel(
             auth_manager=auth_manager, max_workers=3
         )
 
         # Test papers
         papers = [
-            # {"doi": "10.1038/nature12373", "title": "Test Paper 1"},
-            # {"doi": "10.1126/science.1234567", "title": "Test Paper 2"},
-            # {"doi": "10.1371/journal.pone.0123456", "title": "Test Paper 3"},
+            {"doi": "10.1038/nature12373", "title": "Test Paper 1"},
+            {"doi": "10.1126/science.1234567", "title": "Test Paper 2"},
+            {"doi": "10.1371/journal.pone.0123456", "title": "Test Paper 3"},
             {"doi": "10.48550/arxiv.2201.11600", "title": "Test Paper 4"},
         ]
 

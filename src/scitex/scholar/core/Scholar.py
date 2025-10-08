@@ -592,7 +592,9 @@ class Scholar:
                     ScholarURLFinderParallel,
                 )
 
-                logger.info(f"Finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs in parallel...")
+                logger.info(
+                    f"\n{'-'*40}\nScholarURLFinderParallel finding URLs for {len(dois_needing_urls)}/{len(dois)} DOIs...\n{'-'*40}"
+                )
 
                 url_finder_parallel = ScholarURLFinderParallel(
                     auth_manager=self._auth_manager,
