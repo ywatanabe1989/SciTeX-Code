@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 08:40:15 (ywatanabe)"
+# Timestamp: "2025-10-08 13:47:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinderParallel.py
 # ----------------------------------------
 from __future__ import annotations
@@ -217,7 +217,9 @@ class ScholarURLFinderParallel:
         # Create worker-specific Chrome profile for URL finding
         # Use "urlfinder_worker" prefix to avoid conflicts with PDF downloader workers
         worker_profile_name = f"urlfinder_worker_{worker_id}"
-        logger.info(f"Worker {worker_id}: Using profile: {worker_profile_name}")
+        logger.info(
+            f"Worker {worker_id}: Using profile: {worker_profile_name}"
+        )
 
         # Sync from system profile to get extensions and auth cookies
         profile_manager = ChromeProfileManager(
@@ -250,11 +252,6 @@ class ScholarURLFinderParallel:
                 await browser_manager.get_authenticated_browser_and_context_async()
             )
 
-            # Initialize URL finder for this worker
-            url_finder = ScholarURLFinder(
-                context=context, config=self.config, use_cache=use_cache
-            )
-
             for i, (original_idx, doi) in enumerate(dois_with_indices):
                 try:
                     logger.info(
@@ -264,6 +261,23 @@ class ScholarURLFinderParallel:
                     # Apply rate limiting delay with jitter
                     if i > 0:  # Skip delay for first DOI
                         await asyncio.sleep(2.0 + random.uniform(0, 1))
+
+                    from scitex.scholar.auth import AuthenticationGateway
+
+                    auth_gateway = AuthenticationGateway(
+                        auth_manager=self.auth_manager,
+                        browser_manager=browser_manager,
+                        config=self.config,
+                    )
+                    _url_context = await auth_gateway.prepare_context_async(
+                        doi=doi, context=context
+                    )
+                    # Initialize URL finder for this worker
+                    url_finder = ScholarURLFinder(
+                        context=context,
+                        config=self.config,
+                        use_cache=use_cache,
+                    )
 
                     # Find URLs
                     url_data = await url_finder.find_urls(doi)
