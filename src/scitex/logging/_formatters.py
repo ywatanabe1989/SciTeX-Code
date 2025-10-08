@@ -48,13 +48,26 @@ class SciTeXConsoleFormatter(logging.Formatter):
     }
     RESET = "\033[0m"
 
-    def __init__(self, fmt=None):
-        """Initialize with format from global config."""
+    def __init__(self, fmt=None, indent_width=2):
+        """
+        Initialize with format from global config.
+
+        Args:
+            fmt: Format template string
+            indent_width: Number of spaces per indent level (default: 2)
+        """
         if fmt is None:
             fmt = FORMAT_TEMPLATES.get(LOG_FORMAT, FORMAT_TEMPLATES["default"])
         super().__init__(fmt)
+        self.indent_width = indent_width
 
     def format(self, record):
+        # Apply indentation if specified in record
+        indent_level = getattr(record, 'indent', 0)
+        if indent_level > 0:
+            indent = " " * (indent_level * self.indent_width)
+            record.msg = f"{indent}{record.msg}"
+
         # Use parent formatter to apply template
         formatted = super().format(record)
 

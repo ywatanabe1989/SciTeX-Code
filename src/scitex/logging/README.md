@@ -28,6 +28,13 @@ logger.success("Operation completed successfully!")
 logger.fail("Operation failed")
 logger.warning("Warning message")
 logger.error("Error occurred")
+
+# With indentation for hierarchical logging
+logger.info("Starting batch process")
+logger.info("Processing item 1", indent=1)
+logger.info("Downloading PDF", indent=2)
+logger.success("Downloaded successfully", indent=2)
+logger.info("Processing item 2", indent=1)
 ```
 
 ## Log Formats
@@ -122,6 +129,78 @@ Use for operation failures (different from ERROR):
 ```python
 logger.fail("Download failed after 3 retries")
 logger.fail(f"Could not find PDF URLs for {doi}")
+```
+
+## Indentation
+
+Control message indentation for hierarchical logging:
+
+```python
+logger.info("Main process starting")
+logger.info("Step 1: Initialize", indent=1)
+logger.info("Loading config", indent=2)
+logger.success("Config loaded", indent=2)
+logger.info("Step 2: Execute", indent=1)
+logger.info("Running task", indent=2)
+logger.success("Task completed", indent=2)
+```
+
+**Output**:
+```
+INFO: Main process starting
+INFO:   Step 1: Initialize
+INFO:     Loading config
+SUCCESS:     Config loaded
+INFO:   Step 2: Execute
+INFO:     Running task
+SUCCESS:     Task completed
+```
+
+**Features**:
+- `indent=N` parameter on all log methods (debug, info, warning, error, critical, success, fail)
+- Default indent width: 2 spaces per level
+- Configurable via `SciTeXConsoleFormatter(indent_width=4)`
+- Works with all format templates
+
+## Separators
+
+Add visual separators around important messages:
+
+```python
+logger.info("Starting PDF Download", sep="-", n=40)
+logger.info("Processing batch 1", sep="=", n=60, indent=1)
+logger.success("Download Complete", sep="-", n=40)
+```
+
+**Output**:
+```
+----------------------------------------
+INFO: Starting PDF Download
+----------------------------------------
+
+============================================================
+INFO:   Processing batch 1
+============================================================
+
+----------------------------------------
+SUCCESS: Download Complete
+----------------------------------------
+```
+
+**Features**:
+- `sep=None` - No separator (default behavior)
+- `sep="-"` - Use dashes as separator
+- `n=40` - Number of separator characters (default: 40)
+- Works with `indent` for hierarchical decorated sections
+- Applies to all log methods
+
+**Combined Example**:
+```python
+logger.info("Main Process", sep="=", n=60)
+logger.info("Step 1: Authentication", sep="-", n=40, indent=1)
+logger.success("Authenticated", indent=2)
+logger.info("Step 2: Download", sep="-", n=40, indent=1)
+logger.success("Downloaded 10 PDFs", indent=2)
 ```
 
 ## Color Codes
