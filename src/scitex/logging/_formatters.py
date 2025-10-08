@@ -36,7 +36,7 @@ FORMAT_TEMPLATES = {
 class SciTeXConsoleFormatter(logging.Formatter):
     """Custom formatter with color support and configurable format."""
 
-    # ANSI color codes
+    # ANSI color codes for log levels
     COLORS = {
         "DEBU": "\033[30m",  # Black
         "INFO": "\033[30m",  # Black
@@ -46,6 +46,26 @@ class SciTeXConsoleFormatter(logging.Formatter):
         "ERRO": "\033[31m",  # Red
         "CRIT": "\033[35m",  # Magenta
     }
+
+    # Color name to ANSI code mapping
+    COLOR_NAMES = {
+        "black": "\033[30m",
+        "red": "\033[31m",
+        "green": "\033[32m",
+        "yellow": "\033[33m",
+        "blue": "\033[34m",
+        "magenta": "\033[35m",
+        "cyan": "\033[36m",
+        "white": "\033[37m",
+        "grey": "\033[90m",
+        "light_red": "\033[91m",
+        "light_green": "\033[92m",
+        "light_yellow": "\033[93m",
+        "light_blue": "\033[94m",
+        "light_magenta": "\033[95m",
+        "light_cyan": "\033[96m",
+    }
+
     RESET = "\033[0m"
 
     def __init__(self, fmt=None, indent_width=2):
@@ -72,10 +92,19 @@ class SciTeXConsoleFormatter(logging.Formatter):
         formatted = super().format(record)
 
         if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
-            levelname = record.levelname
-            if levelname in self.COLORS:
-                color = self.COLORS[levelname]
+            # Check for custom color override
+            custom_color = getattr(record, 'color', None)
+
+            if custom_color and custom_color in self.COLOR_NAMES:
+                # Use custom color
+                color = self.COLOR_NAMES[custom_color]
                 return f"{color}{formatted}{self.RESET}"
+            else:
+                # Use default color for log level
+                levelname = record.levelname
+                if levelname in self.COLORS:
+                    color = self.COLORS[levelname]
+                    return f"{color}{formatted}{self.RESET}"
 
         return formatted
 

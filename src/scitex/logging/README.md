@@ -167,9 +167,9 @@ SUCCESS:     Task completed
 Add visual separators around important messages:
 
 ```python
-logger.info("Starting PDF Download", sep="-", n=40)
-logger.info("Processing batch 1", sep="=", n=60, indent=1)
-logger.success("Download Complete", sep="-", n=40)
+logger.info("Starting PDF Download", sep="-", n_sep=40)
+logger.info("Processing batch 1", sep="=", n_sep=60, indent=1)
+logger.success("Download Complete", sep="-", n_sep=40)
 ```
 
 **Output**:
@@ -190,20 +190,22 @@ SUCCESS: Download Complete
 **Features**:
 - `sep=None` - No separator (default behavior)
 - `sep="-"` - Use dashes as separator
-- `n=40` - Number of separator characters (default: 40)
+- `n_sep=40` - Number of separator characters (default: 40)
 - Works with `indent` for hierarchical decorated sections
 - Applies to all log methods
 
 **Combined Example**:
 ```python
-logger.info("Main Process", sep="=", n=60)
-logger.info("Step 1: Authentication", sep="-", n=40, indent=1)
+logger.info("Main Process", sep="=", n_sep=60)
+logger.info("Step 1: Authentication", sep="-", n_sep=40, indent=1)
 logger.success("Authenticated", indent=2)
-logger.info("Step 2: Download", sep="-", n=40, indent=1)
+logger.info("Step 2: Download", sep="-", n_sep=40, indent=1)
 logger.success("Downloaded 10 PDFs", indent=2)
 ```
 
 ## Color Codes
+
+### Default Colors by Level
 
 Console output uses ANSI colors when connected to a TTY:
 
@@ -214,6 +216,33 @@ Console output uses ANSI colors when connected to a TTY:
 - **FAIL**: Light Red
 - **ERROR**: Red
 - **CRITICAL**: Magenta
+
+### Custom Color Override
+
+Temporarily override the default color for emphasis:
+
+```python
+logger.info("Normal info message")  # Black (default)
+logger.info("Important notice", c="cyan")  # Cyan
+logger.info("Critical info", c="red")  # Red
+logger.success("Already green by default")  # Green (default)
+logger.success("Extra emphasis", c="light_green")  # Light green
+```
+
+**Available Colors**:
+- Basic: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `grey`
+- Light variants: `light_red`, `light_green`, `light_yellow`, `light_blue`, `light_magenta`, `light_cyan`
+
+**Use Cases**:
+- Highlight critical information in INFO logs: `logger.info("msg", c="red")`
+- Distinguish subsections: `logger.info("Section A", c="cyan")`, `logger.info("Section B", c="magenta")`
+- Add emphasis without changing log level: `logger.info("Important", c="yellow")`
+
+**Combined with Other Features**:
+```python
+logger.info("Critical Section", sep="=", n_sep=60, c="red")
+logger.info("Subsection", sep="-", n_sep=40, indent=1, c="yellow")
+```
 
 ## Format Template Variables
 
