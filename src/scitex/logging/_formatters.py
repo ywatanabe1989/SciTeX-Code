@@ -15,11 +15,26 @@ __FILE__ = __file__
 """Custom formatters for SciTeX logging."""
 
 import logging
+import os
 import sys
+
+# Global format configuration via environment variable
+# Options: simple, detailed, debug, minimal
+# SCITEX_LOG_FORMAT=debug python script.py
+LOG_FORMAT = os.getenv("SCITEX_LOG_FORMAT", "simple")
+
+# Available format templates
+FORMAT_TEMPLATES = {
+    "minimal": "%(levelname)s: %(message)s",
+    "simple": "%(levelname)s: %(message)s",
+    "detailed": "%(levelname)s: [%(name)s] %(message)s",
+    "debug": "%(levelname)s: [%(filename)s:%(lineno)d - %(funcName)s()] %(message)s",
+    "full": "%(asctime)s - %(levelname)s: [%(filename)s:%(lineno)d - %(name)s.%(funcName)s()] %(message)s",
+}
 
 
 class SciTeXConsoleFormatter(logging.Formatter):
-    """Custom formatter with color support for terminal console."""
+    """Custom formatter with color support and configurable format."""
 
     # ANSI color codes
     COLORS = {
@@ -33,14 +48,23 @@ class SciTeXConsoleFormatter(logging.Formatter):
     }
     RESET = "\033[0m"
 
+    def __init__(self, fmt=None):
+        """Initialize with format from global config."""
+        if fmt is None:
+            fmt = FORMAT_TEMPLATES.get(LOG_FORMAT, FORMAT_TEMPLATES["simple"])
+        super().__init__(fmt)
+
     def format(self, record):
+        # Use parent formatter to apply template
+        formatted = super().format(record)
+
         if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
             levelname = record.levelname
             if levelname in self.COLORS:
                 color = self.COLORS[levelname]
-                message = record.getMessage()
-                return f"{color}{levelname}: {message}{self.RESET}"
-        return super().format(record)
+                return f"{color}{formatted}{self.RESET}"
+
+        return formatted
 
 
 class SciTeXFileFormatter(logging.Formatter):
@@ -53,6 +77,11 @@ class SciTeXFileFormatter(logging.Formatter):
         )
 
 
-__all__ = ["SciTeXConsoleFormatter", "SciTeXFileFormatter"]
+__all__ = [
+    "SciTeXConsoleFormatter",
+    "SciTeXFileFormatter",
+    "LOG_FORMAT",
+    "FORMAT_TEMPLATES",
+]
 
 # EOF
