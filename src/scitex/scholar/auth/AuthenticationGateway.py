@@ -137,10 +137,15 @@ class AuthenticationGateway:
             )
             url_context.url = publisher_url or openurl
         else:
-            # Step 4: For open access, just resolve to publisher URL
+            # Step 4: For open access, use direct DOI navigation (faster than OpenURL)
+            from scitex.scholar.url.helpers.resolvers._resolve_functions import (
+                resolve_publisher_url_by_navigating_to_doi_page,
+            )
+
             page = await context.new_page()
             try:
-                publisher_url = await resolver.resolve_doi(
+                # Try direct DOI navigation first (fast for open access)
+                publisher_url = await resolve_publisher_url_by_navigating_to_doi_page(
                     url_context.doi, page
                 )
                 url_context.url = publisher_url
@@ -148,10 +153,20 @@ class AuthenticationGateway:
                     f"{self.name}: Resolved {url_context.doi} → {publisher_url}"
                 )
             except Exception as e:
-                logger.warning(
-                    f"{self.name}: Failed to resolve DOI {url_context.doi}: {e}"
+                # Fallback to OpenURL resolver if direct navigation fails
+                logger.debug(
+                    f"{self.name}: Direct navigation failed, trying OpenURL: {e}"
                 )
-                url_context.url = openurl  # Fallback to OpenURL
+                try:
+                    publisher_url = await resolver.resolve_doi(
+                        url_context.doi, page
+                    )
+                    url_context.url = publisher_url
+                except Exception as openurl_error:
+                    logger.warning(
+                        f"{self.name}: Both methods failed for {url_context.doi}: {openurl_error}"
+                    )
+                    url_context.url = openurl  # Last resort fallback
             finally:
                 await page.close()
 

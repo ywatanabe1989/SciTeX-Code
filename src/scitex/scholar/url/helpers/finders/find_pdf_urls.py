@@ -178,26 +178,25 @@ async def find_pdf_urls(
         page, f"{func_name}: Finding PDFs at {base_url[:60]}..."
     )
 
-    strategies = {
-        "Zotero Translators": _apply_strategy_zotero,
-        "Direct Links": _apply_strategy_direct_links,
-        "Navigation": _apply_strategy_navigation,
-        "Publisher Patterns": _apply_strategy_publisher_patterns,
-    }
+    strategies = [
+        ("Zotero Translators", lambda: _apply_strategy_zotero(page, base_url, urls_pdf, seen_urls, func_name)),
+        ("Direct Links", lambda: _apply_strategy_direct_links(page, config, urls_pdf, seen_urls, func_name)),
+        ("Navigation", lambda: _apply_strategy_navigation(page, config, urls_pdf, seen_urls, func_name)),
+        ("Publisher Patterns", lambda: _apply_strategy_publisher_patterns(page, base_url, urls_pdf, seen_urls, func_name)),
+    ]
     strategies_tried = []
-    for strategy_str, strategy in strategies.items():
+    for strategy_str, strategy_func in strategies:
         try:
-            urls_pdf = await strategy(
-                page, base_url, urls_pdf, seen_urls, func_name
-            )
+            urls_pdf = await strategy_func()
             strategies_tried.append(strategy_str)
             if urls_pdf:
                 break
         except Exception as e:
             logger.warn(f"{func_name}: {str(e)}")
 
-    strategies_not_tried = list(set(strategies.keys()) - set(strategies_tried))
-    logger.success(f"Skippped {strategies_not_tried}")
+    all_strategy_names = [name for name, _ in strategies]
+    strategies_not_tried = list(set(all_strategy_names) - set(strategies_tried))
+    logger.success(f"Skipped {strategies_not_tried}")
 
     # await _log_final_results(page, urls_pdf, func_name)
 

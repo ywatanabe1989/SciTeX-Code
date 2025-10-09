@@ -98,9 +98,13 @@ async def find_pdf_urls_by_zotero_translators(
             logger.info(
                 f"{func_name}: Trying {matching_translator.LABEL} translator..."
             )
+            logger.debug(f"{func_name}: Page URL: {page.url}")
+            logger.debug(f"{func_name}: Translator target URL: {url}")
 
             # Extract PDF URLs using the translator
             pdf_urls = await matching_translator.extract_pdf_urls_async(page)
+
+            logger.debug(f"{func_name}: Translator returned: {pdf_urls}")
 
             if pdf_urls:
                 logger.success(
@@ -108,19 +112,20 @@ async def find_pdf_urls_by_zotero_translators(
                     c="green",
                 )
                 for i_pdf, pdf_url in enumerate(pdf_urls, 1):
-                    logger.debug(f"{func_name}  {i_pdf}. {pdf_url}")
+                    logger.info(f"{func_name}  {i_pdf}. {pdf_url}")
 
                 all_pdf_urls.extend(pdf_urls)
             else:
-                logger.debug(
-                    f"{func_name}: {matching_translator.LABEL} found no PDF URLs"
+                logger.warning(
+                    f"{func_name}: {matching_translator.LABEL} returned empty list - check if page loaded correctly"
                 )
 
         except Exception as e:
-            logger.warning(
-                f"{func_name}: {matching_translator.LABEL} extraction failed: {e}",
-                c="yellow",
+            logger.error(
+                f"{func_name}: {matching_translator.LABEL} extraction failed: {e}"
             )
+            import traceback
+            logger.debug(f"{func_name}: Traceback: {traceback.format_exc()}")
 
         # Remove duplicates while preserving order
         seen = set()
