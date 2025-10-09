@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 00:45:40 (ywatanabe)"
+# Timestamp: "2025-10-09 11:49:04 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/debugging/_show_popup_and_capture.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,6 +11,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
+from datetime import datetime
 from pathlib import Path
 
 from scitex import logging
@@ -67,6 +68,7 @@ async def show_popup_and_capture_async(
         Screenshot failures do not break the popup system. Messages persist
         across page navigations using a framenavigated event handler.
     """
+    logger.info(f"show_popup_and_capture_async: {message}")
     try:
         if page is None or page.is_closed():
             return False
@@ -258,8 +260,6 @@ async def show_popup_and_capture_async(
                 )
 
                 await page.wait_for_timeout(100)
-
-                from datetime import datetime
 
                 if screenshot_dir is None:
                     screenshot_base = (

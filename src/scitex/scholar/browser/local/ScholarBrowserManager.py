@@ -22,10 +22,9 @@ from scitex import logging
 from scitex.scholar.browser.utils import close_unwanted_pages
 from scitex.scholar.config import ScholarConfig
 
-from ._BrowserMixin import BrowserMixin
-from .utils._ChromeProfileManager import ChromeProfileManager
-from .utils._CookieAutoAcceptor import CookieAutoAcceptor
-from .utils._StealthManager import StealthManager
+from scitex.browser.core import BrowserMixin, ChromeProfileManager
+from scitex.browser.automation import CookieAutoAcceptor
+from scitex.browser.stealth import StealthManager
 
 logger = logging.getLogger(__name__)
 

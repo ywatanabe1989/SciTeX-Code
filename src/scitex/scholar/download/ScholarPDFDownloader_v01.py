@@ -28,7 +28,7 @@ from scitex.scholar.browser import (
     show_grid_async,
     show_popup_and_capture_async,
 )
-from scitex.scholar.browser.local.utils._HumanBehavior import HumanBehavior
+from scitex.browser.stealth import HumanBehavior
 
 logger = logging.getLogger(__name__)
 
