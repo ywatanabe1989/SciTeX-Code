@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 11:51:04 (ywatanabe)"
+# Timestamp: "2025-10-08 08:06:34 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,12 +11,9 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-import argparse
-
 __FILE__ = __file__
 import asyncio
 import hashlib
-import shutil
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -46,7 +43,9 @@ class ScholarPDFDownloader:
         self.config = config if config else ScholarConfig()
         self.context = context
         self.url_finder = ScholarURLFinder(self.context, config=config)
-        self.use_cache = self.config.resolve("use_cache_download", use_cache)
+        self.use_cache = self.config.resolve(
+            "use_cache_download", use_cache
+        )
         self.cache_dir = self.config.get_cache_dowload_dir()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -131,6 +130,7 @@ class ScholarPDFDownloader:
         self, pdf_url: str, output_path: Union[str, Path]
     ) -> Optional[Path]:
         """Main download method with caching support."""
+        import shutil
 
         if not pdf_url:
             logger.warn(f"PDF URL passed but not valid: {pdf_url}")
@@ -152,8 +152,8 @@ class ScholarPDFDownloader:
             return output_path
 
         try_download_methods = [
-            ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
             ("Direct Download", self._try_direct_download_async),
+            ("Chrome PDF", self._try_download_from_chrome_pdf_viewer_async),
             (
                 "From Response Body",
                 self._try_download_from_response_body_async,
@@ -165,6 +165,8 @@ class ScholarPDFDownloader:
             try:
                 is_downloaded = await method_func(pdf_url, output_path)
                 if is_downloaded:
+                    import shutil
+
                     shutil.copy2(output_path, cache_path)
                     logger.success(
                         f"Successfully downloaded via {method_name}"
@@ -185,6 +187,7 @@ class ScholarPDFDownloader:
 
     # 2. Download strategy implementations
     # ----------------------------------------
+
     async def _try_direct_download_async(
         self, pdf_url: str, output_path: Path
     ) -> Optional[Path]:
@@ -568,135 +571,68 @@ class ScholarPDFDownloader:
         return self.cache_dir / f"{url_hash}.pdf"
 
 
-async def main_async(args):
-    from scitex.scholar import (
-        ScholarAuthManager,
-        ScholarBrowserManager,
-        ScholarEngine,
-        ScholarURLFinder,
-    )
-    from scitex.scholar.auth import AuthenticationGateway
-
-    # ---------------------------------------
-    # Context Preparation
-    # ---------------------------------------
-    # Authenticated Browser and Context
-    auth_manager = ScholarAuthManager()
-    browser_manager = ScholarBrowserManager(
-        chrome_profile_name="system",
-        browser_mode=args.browser_mode,
-        auth_manager=auth_manager,
-        use_zenrows_proxy=False,
-    )
-    browser, context = (
-        await browser_manager.get_authenticated_browser_and_context_async()
-    )
-
-    # Authentication Gateway
-    auth_gateway = AuthenticationGateway(
-        auth_manager=auth_manager,
-        browser_manager=browser_manager,
-    )
-    _url_context = await auth_gateway.prepare_context_async(
-        doi=args.doi, context=context
-    )
-
-    # ---------------------------------------
-    # URL Finder
-    # ---------------------------------------
-    url_finder = ScholarURLFinder(context, use_cache=False)
-    urls = await url_finder.find_urls(doi=args.doi)
-    pdf_url = urls.get("urls_pdf", [])[0].get("url")
-
-    # ---------------------------------------
-    # Main: PDF Dowanlod
-    # ---------------------------------------
-    pdf_downloader = ScholarPDFDownloader(context)
-    await pdf_downloader.download_from_url(
-        pdf_url,
-        args.output,
-    )
-
-
-def main(args):
+if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(main_async(args))
+    async def main_async():
+        from scitex.scholar import (
+            ScholarAuthManager,
+            ScholarBrowserManager,
+            ScholarURLFinder,
+        )
+        from scitex.scholar.auth import AuthenticationGateway
 
-    return 0
+        # Test IEEE paper (requires authentication)
+        DOI = "10.1109/niles56402.2022.9942397"
+        PDF_URL = (
+            "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9942397"
+        )
+        OUTPUT_PATH = "/tmp/IEEE_PAPER.pdf"
 
+        DOI = "https://doi.org/10.1088/1741-2552/aaf92e"
+        PDF_URL = (
+            "https://iopscience.iop.org/article/10.1088/1741-2552/aaf92e/pdf"
+        )
+        OUTPUT_PATH = "/tmp/JNE_PAPER.pdf"
 
-def parse_args() -> argparse.Namespace:
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Download a PDF using DOI with authentication support"
-    )
-    parser.add_argument(
-        "--doi",
-        type=str,
-        required=True,
-        help="DOI of the paper (e.g., 10.1088/1741-2552/aaf92e)",
-    )
-    parser.add_argument(
-        "--output",
-        type=str,
-        default="/tmp/downloaded_paper.pdf",
-        help="Output path for the PDF (default: /tmp/downloaded_paper.pdf)",
-    )
-    parser.add_argument(
-        "--browser-mode",
-        type=str,
-        choices=["stealth", "interactive", "manual"],
-        default="stealth",
-        help="Browser mode (default: stealth)",
-    )
+        DOI = "10.1038/nature12373"
+        PDF_URL = "https://www.nature.com/articles/nature12373.pdf"
+        OUTPUT_PATH = "/tmp/NATURE_PAPER.pdf"
 
-    args = parser.parse_args()
-    return args
+        # Modules
+        auth_manager = ScholarAuthManager()
+        browser_manager = ScholarBrowserManager(
+            chrome_profile_name="system",
+            # browser_mode="stealth",
+            browser_mode="interactive",
+            auth_manager=auth_manager,
+            use_zenrows_proxy=False,
+        )
+        browser, context = (
+            await browser_manager.get_authenticated_browser_and_context_async()
+        )
+        auth_gateway = AuthenticationGateway(
+            auth_manager=auth_manager,
+            browser_manager=browser_manager,
+        )
+        _url_context = await auth_gateway.prepare_context_async(
+            doi=DOI, context=context
+        )
+        pdf_downloader = ScholarPDFDownloader(context)
 
+        # Now download with authenticated context
+        saved_path = await pdf_downloader.download_from_url(
+            PDF_URL,
+            OUTPUT_PATH,
+        )
 
-def run_main() -> None:
-    """Initialize scitex framework, run main function, and cleanup."""
-    global CONFIG, CC, sys, plt, rng
+        if saved_path:
+            logger.success(f"PDF downloaded to: {saved_path}")
+        else:
+            logger.fail("PDF download failed")
 
-    import sys
+    asyncio.run(main_async())
 
-    import matplotlib.pyplot as plt
-
-    import scitex as stx
-
-    args = parse_args()
-
-    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
-        sys,
-        plt,
-        args=args,
-        file=__FILE__,
-        sdir_suffix=None,
-        verbose=False,
-        agg=True,
-    )
-
-    exit_status = main(args)
-
-    stx.session.close(
-        CONFIG,
-        verbose=False,
-        notify=False,
-        message="",
-        exit_status=exit_status,
-    )
-
-
-if __name__ == "__main__":
-    run_main()
-
-"""
-python -m scitex.scholar.download.ScholarPDFDownloader \
-    --browser-mode interactive \
-    --doi "10.3389/fnins.2024.1417748"
-    --doi "10.1016/j.clinph.2024.09.017"
-
-"""
+# python -m download.ScholarPDFDownloader
 
 # EOF
