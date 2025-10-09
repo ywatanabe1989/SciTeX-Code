@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 15:11:42 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/resolvers/_OpenURLResolver.py
+# Timestamp: "2025-10-10 03:24:02 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/resolvers/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/resolvers/_OpenURLResolver.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 from typing import Optional
 from urllib.parse import quote
@@ -15,8 +19,8 @@ from urllib.parse import quote
 from playwright.async_api import Locator, Page
 
 from scitex import logging
+from scitex.browser.debugging import browser_logger
 from scitex.scholar import ScholarConfig
-from scitex.browser.debugging import show_popup_and_capture_async
 from scitex.scholar.browser.utils import click_and_wait
 
 from ._OpenURLLinkFinder import OpenURLLinkFinder
@@ -28,6 +32,7 @@ class OpenURLResolver:
     """Handles OpenURL resolution and authentication flow."""
 
     def __init__(self, config: ScholarConfig = None):
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
         self.resolver_url = self.config.resolve("openurl_resolver_url")
         self.finder = OpenURLLinkFinder(config=config)
@@ -48,58 +53,66 @@ class OpenURLResolver:
         if title:
             params.append(f"atitle={quote(title[:200])}")
 
-        return f"{self.resolver_url}?{'&'.join(params)}"
+        built_query = f"{self.resolver_url}?{'&'.join(params)}"
+        logger.info(f"{self.name}: Built query URL: {built_query}")
+        return built_query
 
     async def _resolve_query(
         self, query: str, page: Page, doi: str
     ) -> Optional[str]:
         """Resolve OpenURL query to final authenticated URL with retry."""
-        logger.info(f"OpenURLResolver query URL: {query}")
+        logger.info(f"{self.name}: Resolving query URL: {query}...")
 
         for attempt in range(3):
             try:
                 # Visual: Navigating to OpenURL
-                await show_popup_and_capture_async(
-                    page, f"OpenURL: Navigating to resolver for {doi[:30]}..."
+                await browser_logger.info(
+                    page,
+                    f"{self.name}: Navigating to resolver for {doi[:30]}...",
                 )
                 await page.goto(
                     query, wait_until="domcontentloaded", timeout=60000
                 )
-                await show_popup_and_capture_async(
-                    page, f"OpenURL: Loaded resolver page at {page.url[:60]}"
+                await browser_logger.info(
+                    page,
+                    f"{self.name}: Loaded resolver page at {page.url[:60]}",
                 )
 
                 # Visual: Waiting for page to stabilize
-                await show_popup_and_capture_async(
-                    page, "OpenURL: Waiting for resolver to load (networkidle)..."
+                await browser_logger.info(
+                    page,
+                    f"{self.name}: Waiting for resolver to load (networkidle)...",
                 )
                 try:
-                    await page.wait_for_load_state("networkidle", timeout=15_000)
-                    await show_popup_and_capture_async(
-                        page, "OpenURL: ✓ Resolver page ready"
+                    await page.wait_for_load_state(
+                        "networkidle", timeout=15_000
+                    )
+                    await browser_logger.info(
+                        page, f"{self.name}: ✓ Resolver page ready"
                     )
                 except Exception:
-                    await show_popup_and_capture_async(
-                        page, "OpenURL: Page still loading, continuing..."
+                    await browser_logger.info(
+                        page, f"{self.name}: Page still loading, continuing..."
                     )
                 await page.wait_for_timeout(1000)
 
                 # Visual: Finding publisher links
-                await show_popup_and_capture_async(
-                    page, "OpenURL: Searching for publisher links..."
+                await browser_logger.info(
+                    page, f"{self.name}: Searching for publisher links..."
                 )
                 found_links = await self.finder.find_link_elements(page, doi)
 
                 if not found_links:
-                    await show_popup_and_capture_async(
-                        page, "OpenURL: ✗ No publisher links found"
+                    await browser_logger.info(
+                        page, f"{self.name}: No publisher links found"
                     )
                     await page.wait_for_timeout(2000)
                     return None
 
                 # Visual: Found links
-                await show_popup_and_capture_async(
-                    page, f"OpenURL: ✓ Found {len(found_links)} publisher link(s)"
+                await browser_logger.info(
+                    page,
+                    f"{self.name}: Found {len(found_links)} publisher link(s)",
                 )
                 await page.wait_for_timeout(1000)
 
@@ -108,8 +121,9 @@ class OpenURLResolver:
                     publisher = found_link.get("publisher")
                     link_element = found_link.get("link_element")
 
-                    await show_popup_and_capture_async(
-                        page, f"OpenURL: Clicking {publisher} link ({i}/{len(found_links)})..."
+                    await browser_logger.info(
+                        page,
+                        f"{self.name}: Clicking {publisher} link ({i}/{len(found_links)})...",
                     )
 
                     result = await click_and_wait(
@@ -119,20 +133,22 @@ class OpenURLResolver:
 
                     if result.get("success"):
                         final_url = result.get("final_url")
-                        await show_popup_and_capture_async(
-                            page, f"OpenURL: ✓ SUCCESS! Landed at {final_url[:60]}"
+                        await browser_logger.info(
+                            page,
+                            f"{self.name}: ✓ SUCCESS! Landed at {final_url[:60]}",
                         )
                         await page.wait_for_timeout(2000)
                         return final_url
                     else:
-                        await show_popup_and_capture_async(
-                            page, f"OpenURL: ✗ {publisher} link failed, trying next..."
+                        await browser_logger.info(
+                            page,
+                            f"{self.name}: ✗ {publisher} link failed, trying next...",
                         )
                         await page.wait_for_timeout(1000)
 
                 # All links failed
-                await show_popup_and_capture_async(
-                    page, "OpenURL: ✗ All publisher links failed"
+                await browser_logger.info(
+                    page, f"{self.name}: ✗ All publisher links failed"
                 )
                 await page.wait_for_timeout(2000)
                 return None
@@ -143,8 +159,9 @@ class OpenURLResolver:
                     logger.warning(
                         f"OpenURL attempt {attempt + 1} failed: {e}, retrying in {wait_time}s"
                     )
-                    await show_popup_and_capture_async(
-                        page, f"OpenURL: ✗ Attempt {attempt + 1} failed, retrying in {wait_time}s..."
+                    await browser_logger.info(
+                        page,
+                        f"{self.name}: ✗ Attempt {attempt + 1} failed, retrying in {wait_time}s...",
                     )
                     await page.wait_for_timeout(wait_time * 1000)
                     continue
@@ -152,54 +169,15 @@ class OpenURLResolver:
                     logger.error(
                         f"OpenURL resolution failed after 3 attempts: {e}"
                     )
-                    await show_popup_and_capture_async(
-                        page, f"OpenURL: ✗ FAILED after 3 attempts: {str(e)[:80]}"
+                    await browser_logger.info(
+                        page,
+                        f"{self.name}: ✗ FAILED after 3 attempts: {str(e)[:80]}",
                     )
                     await page.wait_for_timeout(2000)
-                    await take_screenshot(
-                        page, "OpenURLResolver", f"{doi} - query not resolved"
+                    await browser_logger.info(
+                        page, f"{self.name}: f{doi} - query not resolved"
                     )
                     return None
-
-    # async def _resolve_query(
-    #     self, query: str, page: Page, doi: str
-    # ) -> Optional[str]:
-    #     """Resolve OpenURL query to final authenticated URL."""
-    #     logger.info(f"OpenURLResolver query URL: {query}")
-    #     try:
-    #         await page.goto(
-    #             query, wait_until="domcontentloaded", timeout=60000
-    #         )
-    #         await show_popup_and_capture_async(
-    #             page, "Resolving authenticated URL by OpenURL..."
-    #         )
-    #         await page.wait_for_timeout(3000)
-
-    #         # Use find_link_element to get a Locator object
-    #         found_links = await self.finder.find_link_elements(page, doi)
-
-    #         if not found_links:
-    #             return None
-
-    #         for found_link in found_links:
-
-    #             publisher = found_link.get("publisher")
-    #             link_element = found_link.get("link_element")
-
-    #             result = await click_and_wait(
-    #                 link_element,
-    #                 f"Clicking {publisher} link for {doi[:20]}...",
-    #             )
-    #             if result.get("success"):
-    #                 return result.get("final_url")
-
-    #     except Exception as e:
-    #         logger.error(f"OpenURL resolution failed: {e}")
-    #         await take_screenshot(
-    #             page, "OpenURLResolver", f"{doi} - query not resolved"
-    #         )
-
-    #     return None
 
 
 if __name__ == "__main__":

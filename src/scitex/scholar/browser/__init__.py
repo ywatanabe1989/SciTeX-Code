@@ -10,8 +10,6 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 from .local.ScholarBrowserManager import ScholarBrowserManager
-# from .BrowserUtils import BrowserUtils
-# from .PlaywrightVision import PlaywrightVision
 from scitex.browser.interaction import (
     click_center_async,
     close_popups_async,
@@ -23,25 +21,18 @@ from scitex.browser.pdf import (
 )
 from scitex.browser.debugging import (
     show_grid_async,
-    show_popup_and_capture_async,
+    browser_logger,
 )
-
-# from .remote._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
-# from .remote._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
 __all__ = [
     "ScholarBrowserManager",
-    # "BrowserUtils",
-    # "PlaywrightVision",
     "click_center_async",
     "click_download_for_chrome_pdf_viewer_async",
     "close_popups_async",
     "detect_chrome_pdf_viewer_async",
     "PopupHandler",
     "show_grid_async",
-    "show_popup_and_capture_async",
-    # "ZenRowsRemoteScholarBrowserManager",
-    # "ZenRowsAPIBrowser",
+    "browser_logger",
 ]
 
 # EOF

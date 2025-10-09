@@ -42,6 +42,7 @@ class PubMedEngine(BaseDOIEngine):
 
     def __init__(self, email: str = "research@example.com"):
         super().__init__()  # Initialize base class to access utilities
+        self.name = self.__class__.__name__
         self.email = email
         self._session = None
 

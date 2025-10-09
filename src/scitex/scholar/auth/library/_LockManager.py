@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 22:46:59 (ywatanabe)"
+# Timestamp: "2025-10-10 00:41:18 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_LockManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -45,6 +45,7 @@ class LockManager:
             lock_file: Path to the lock file
             max_wait_seconds: Maximum time to wait for lock acquisition
         """
+        self.name = self.__class__.__name__
         self.lock_file = lock_file
         self.max_wait_seconds = max_wait_seconds
         self._lock_fd: Optional[int] = None
@@ -60,7 +61,7 @@ class LockManager:
             LockError: If lock acquisition fails unexpectedly
         """
         if self._is_locked:
-            logger.warn("Lock already acquired")
+            logger.warn("{self.name}: Lock already acquired")
             return True
 
         start_time = time.time()
@@ -68,14 +69,14 @@ class LockManager:
         while time.time() - start_time < self.max_wait_seconds:
             if await self._try_acquire_lock_async():
                 self._is_locked = True
-                logger.info("Acquired authentication lock")
+                logger.info(f"{self.name}: Acquired authentication lock")
                 return True
 
-            logger.debug("Waiting for authentication lock...")
+            logger.debug(f"{self.name}: Waiting for authentication lock...")
             await asyncio.sleep(2)
 
         logger.error(
-            f"Could not acquire authentication lock after {self.max_wait_seconds} seconds"
+            f"{self.name}: Could not acquire authentication lock after {self.max_wait_seconds} seconds"
         )
         return False
 
@@ -97,10 +98,10 @@ class LockManager:
                 pass
 
             self._is_locked = False
-            logger.debug("Released authentication lock")
+            logger.debug(f"{self.name}: Released authentication lock")
 
         except Exception as e:
-            logger.warn(f"Error releasing lock: {e}")
+            logger.warn(f"{self.name}: Error releasing lock: {e}")
 
     def is_locked(self) -> bool:
         """Check if lock is currently held."""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 22:45:56 (ywatanabe)"
+# Timestamp: "2025-10-10 00:37:47 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_AuthenticationStrategyResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -81,6 +81,7 @@ class AuthenticationStrategyResolver:
 
     def __init__(self, config: Optional[ScholarConfig] = None):
         """Initialize resolver with configuration."""
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
 
     def resolve_strategy(
@@ -101,7 +102,7 @@ class AuthenticationStrategyResolver:
         Returns:
             AuthenticationStrategy with the recommended approach
         """
-        logger.info("Resolving authentication strategy...")
+        logger.info(f"{self.name}: Resolving authentication strategy...")
 
         # Get email from config if not provided
         if not openathens_email:
@@ -111,7 +112,7 @@ class AuthenticationStrategyResolver:
 
         if not openathens_email:
             logger.warn(
-                "No email provided - defaulting to manual authentication"
+                f"{self.name}: No email provided - defaulting to manual authentication"
             )
             return AuthenticationStrategy(
                 method=AuthenticationMethod.MANUAL,
@@ -159,7 +160,7 @@ class AuthenticationStrategyResolver:
         )
 
         logger.info(
-            f"Resolving strategy for known institution: {institution_name}"
+            f"{self.name}: Resolving strategy for known institution: {institution_name}"
         )
 
         # Determine primary method based on preferences and capabilities
@@ -220,7 +221,7 @@ class AuthenticationStrategyResolver:
         """Resolve strategy for unknown institution."""
 
         logger.info(
-            f"Resolving strategy for unknown institution: {email_domain}"
+            f"{self.name}: Resolving strategy for unknown institution: {email_domain}"
         )
 
         # For unknown institutions, try OpenAthens first as it's most generic
@@ -268,7 +269,9 @@ class AuthenticationStrategyResolver:
             "openathens_redirects_to_sso": openathens_redirects_to_sso,
             "sso_automator": sso_automator,
         }
-        logger.info(f"Added institution configuration: {name} ({domain})")
+        logger.info(
+            f"{self.name}: Added institution configuration: {name} ({domain})"
+        )
 
 
 if __name__ == "__main__":

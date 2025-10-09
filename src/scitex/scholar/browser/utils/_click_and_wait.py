@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 05:14:22 (ywatanabe)"
+# Timestamp: "2025-10-10 03:24:09 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
@@ -26,6 +26,7 @@ async def click_and_wait(
     link: Locator,
     message: str = "Clicking link...",
     wait_redirects_options: Optional[Dict] = None,
+    func_name="click_and_wait",
 ) -> dict:
     """
     Click link with visual feedback and wait for redirect chain to complete.
@@ -56,8 +57,8 @@ async def click_and_wait(
         }
     """
     from scitex.browser.debugging import (
+        browser_logger,
         highlight_element_async,
-        show_popup_and_capture_async,
     )
 
     from ._wait_redirects import wait_redirects
@@ -66,13 +67,13 @@ async def click_and_wait(
     context = page.context
 
     # Initial UI feedback
-    await show_popup_and_capture_async(page, message, duration_ms=1500)
+    await browser_logger.info(page, message, duration_ms=1500)
     await highlight_element_async(link, 1000)
 
     initial_url = page.url
     href = await link.get_attribute("href") or ""
     text = await link.inner_text() or ""
-    logger.debug(f"Clicking: '{text[:30]}' -> {href[:50]}")
+    logger.debug(f"{func_name,} Clicking: '{text[:30]}' -> {href[:50]}")
 
     try:
         # Handle potential new page opening
@@ -83,7 +84,7 @@ async def click_and_wait(
                 new_page = await new_page_info.value
                 page = new_page
                 new_page_opened = True
-                logger.debug("New page opened, switching context")
+                logger.debug(f"{func_name} New page opened, switching context")
         except:
             await link.click()
 
@@ -102,7 +103,7 @@ async def click_and_wait(
 
         # Final feedback
         if result["success"]:
-            await show_popup_and_capture_async(
+            await browser_logger.info(
                 page,
                 f"Complete: {result['final_url'][:40]}... "
                 f"({redirect_result['redirect_count']} redirects)",
@@ -112,12 +113,12 @@ async def click_and_wait(
                 f"Navigation: {initial_url} -> {result['final_url']}"
             )
         else:
-            logger.warning("Navigation failed or no change")
+            logger.warning(f"{func_name}: Navigation failed or no change")
 
         return result
 
     except Exception as e:
-        logger.error(f"Click and wait failed: {e}")
+        logger.error(f"{func_name}: Click and wait failed: {e}")
         return {
             "success": False,
             "final_url": initial_url,

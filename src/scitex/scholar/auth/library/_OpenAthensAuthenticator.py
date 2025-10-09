@@ -172,13 +172,13 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             # Check if another process authenticated while we were waiting
             await self._ensure_session_loaded_async()
             if await self.is_authenticated_async():
-                logger.info("Another process authenticated successfully")
+                logger.info(f"{self.name}: Another process authenticated successfully")
                 return self.session_manager.create_auth_response()
             raise
 
     async def _perform_browser_authentication_async(self) -> dict:
         """Perform OpenAthens authentication with automatic SSO automation."""
-        logger.info("Starting OpenAthens authentication")
+        logger.info(f"{self.name}: Starting OpenAthens authentication")
         if self.email:
             logger.info(f"Account: {self.email}")
 
@@ -250,7 +250,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
 
         # Quick local checks
         if not self.session_manager.has_valid_session_data():
-            logger.debug("No cookies or session expiry found")
+            logger.debug(f"{self.name}: No cookies or session expiry found")
             return False
 
         if self.session_manager.is_session_expired():
@@ -301,16 +301,16 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         if clear_cache:
             self.cache_manager.clear_cache()
 
-        logger.info("Logged out from OpenAthens")
+        logger.info(f"{self.name}: Logged out from OpenAthens")
 
     def _display_login_instructions(self) -> None:
         """Display simple login instructions to user."""
-        logger.info("OpenAthens Authentication")
-        logger.info("This will automatically:")
-        logger.info("1. Fill in your institutional email")
-        logger.info("2. Select your institution")
-        logger.info("3. Handle institution SSO if needed")
-        logger.info("4. Manual completion if automation fails")
+        logger.info(f"{self.name}: OpenAthens Authentication")
+        logger.info(f"{self.name}: This will automatically:")
+        logger.info(f"{self.name}: 1. Fill in your institutional email")
+        logger.info(f"{self.name}: 2. Select your institution")
+        logger.info(f"{self.name}: 3. Handle institution SSO if needed")
+        logger.info(f"{self.name}: 4. Manual completion if automation fails")
 
         if self.email:
             logger.info(f"Account: {self.email}")
@@ -344,7 +344,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             )
 
             if not to_email:
-                logger.debug("No email address configured for notifications")
+                logger.debug(f"{self.name}: No email address configured for notifications")
                 return
 
             subject = "SciTeX Scholar: OpenAthens Authentication Required"
@@ -388,7 +388,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
                     f"User intervention notification sent to {to_email}"
                 )
             else:
-                logger.debug("Failed to send user intervention notification")
+                logger.debug(f"{self.name}: Failed to send user intervention notification")
 
         except Exception as e:
             logger.debug(f"Failed to send user intervention notification: {e}")
@@ -546,7 +546,7 @@ if __name__ == "__main__":
                         "Already authenticated! Using cached session."
                     )
                     session_info = await auth.get_session_info_async()
-                    logger.info("Current session details:")
+                    logger.info(f"{self.name}: Current session details:")
                     for key, value in session_info.items():
                         if key != "cookies":  # Don't log sensitive data
                             logger.info(f"  {key}: {value}")
@@ -557,10 +557,10 @@ if __name__ == "__main__":
                     )
             except Exception as e:
                 logger.debug(f"Session check failed: {e}")
-                logger.info("Proceeding with authentication...")
+                logger.info(f"{self.name}: Proceeding with authentication...")
 
         if args.manual:
-            logger.info("Manual mode requested - automation will be skipped")
+            logger.info(f"{self.name}: Manual mode requested - automation will be skipped")
             # Temporarily disable automation by removing SSO automator
             auth.browser_authenticator.sso_automator = None
 
@@ -569,8 +569,8 @@ if __name__ == "__main__":
             result = await auth.authenticate_async(force=args.force)
 
             if result:
-                logger.success("Authentication completed successfully!")
-                logger.info("Session details:")
+                logger.success(f"{self.name}: Authentication completed successfully!")
+                logger.info(f"{self.name}: Session details:")
                 session_info = await auth.get_session_info_async()
                 for key, value in session_info.items():
                     if key != "cookies":  # Don't log sensitive cookie data
@@ -580,17 +580,17 @@ if __name__ == "__main__":
                 if "cookies" in result:
                     logger.info(f"  cookies_count: {len(result['cookies'])}")
             else:
-                logger.error("Authentication failed")
+                logger.error(f"{self.name}: Authentication failed")
 
         except Exception as e:
             logger.error(f"Authentication error: {e}")
 
             # Show helpful information for debugging
-            logger.info("Troubleshooting tips:")
-            logger.info("1. Check your institutional email configuration")
-            logger.info("2. Verify your institution has OpenAthens access")
-            logger.info("3. Try with --manual flag for manual authentication")
-            logger.info("4. Try with --force flag to ignore cache")
+            logger.info(f"{self.name}: Troubleshooting tips:")
+            logger.info(f"{self.name}: 1. Check your institutional email configuration")
+            logger.info(f"{self.name}: 2. Verify your institution has OpenAthens access")
+            logger.info(f"{self.name}: 3. Try with --manual flag for manual authentication")
+            logger.info(f"{self.name}: 4. Try with --force flag to ignore cache")
 
             return 1
 

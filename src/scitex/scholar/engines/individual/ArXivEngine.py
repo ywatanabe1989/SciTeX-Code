@@ -40,6 +40,7 @@ class ArXivEngine(BaseDOIEngine):
 
     def __init__(self, email: str = "research@example.com"):
         super().__init__()
+        self.name = self.__class__.__name__
         self.email = email
         self.base_url = "http://export.arxiv.org/api/query"
 

@@ -1,1 +1,0 @@
-../../SAGE Journals.js

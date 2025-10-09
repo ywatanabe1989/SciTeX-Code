@@ -24,7 +24,7 @@ scitex.browser/
 
 Visual debugging tools for browser automation workflows.
 
-**`show_popup_and_capture_async`** ⭐ *Special versatile function*
+**`browser_logger`** ⭐ *Special versatile function*
 - Displays stacking popup messages in browser
 - Automatically captures timestamped screenshots
 - Messages persist across page navigations
@@ -40,9 +40,9 @@ Visual debugging tools for browser automation workflows.
 
 #### Example
 ```python
-from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.debugging import browser_logger
 
-await show_popup_and_capture_async(
+await browser_logger.info(
     page,
     "OpenURL: ✓ Found publisher link",
     take_screenshot=True,
@@ -114,7 +114,7 @@ await click_with_fallbacks_async(page, "#submit-button", "Submit")
 ### Direct Import (Recommended)
 ```python
 # Import from specific category
-from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.debugging import browser_logger
 from scitex.browser.pdf import detect_chrome_pdf_viewer_async
 from scitex.browser.interaction import click_center_async
 ```
@@ -123,7 +123,7 @@ from scitex.browser.interaction import click_center_async
 ```python
 # Import from main browser module
 from scitex.browser import (
-    show_popup_and_capture_async,
+    browser_logger,
     detect_chrome_pdf_viewer_async,
     click_center_async,
 )
@@ -133,7 +133,7 @@ from scitex.browser import (
 
 All async functions use `_async` suffix consistently for clarity.
 
-## Special Tool: `show_popup_and_capture_async`
+## Special Tool: `browser_logger`
 
 This function is particularly special and versatile:
 
@@ -146,9 +146,9 @@ This function is particularly special and versatile:
 ### Visual Timeline Example
 
 ```python
-await show_popup_and_capture_async(page, "Step 1: Loading page...")
-await show_popup_and_capture_async(page, "Step 2: Finding links...")
-await show_popup_and_capture_async(page, "✓ Step 3: Download complete!")
+await browser_logger.info(page, "Step 1: Loading page...")
+await browser_logger.info(page, "Step 2: Finding links...")
+await browser_logger.info(page, "✓ Step 3: Download complete!")
 ```
 
 Creates screenshots:

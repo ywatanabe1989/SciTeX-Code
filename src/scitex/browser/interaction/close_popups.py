@@ -371,16 +371,16 @@ async def close_popups_async(
 async def ensure_no_popups_async(page: Page, check_interval_ms: int = 1000) -> bool:
     """
     Ensure no popups are blocking the page.
-    
+
     Args:
         page: Playwright page object
         check_interval_ms: Interval to check for popups
-        
+
     Returns:
         True if page is clear of popups
     """
     handler = PopupHandler(page)
-    
+
     # Check multiple times
     for _ in range(3):
         popups = await handler.detect_popups()
@@ -389,7 +389,98 @@ async def ensure_no_popups_async(page: Page, check_interval_ms: int = 1000) -> b
             await page.wait_for_timeout(check_interval_ms)
         else:
             return True
-    
+
     # Final check
     final_popups = await handler.detect_popups()
     return len(final_popups) == 0
+
+
+def main(args):
+    """Demonstrate PopupHandler functionality."""
+    import asyncio
+    from playwright.async_api import async_playwright
+
+    async def demo():
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=False)
+            page = await browser.new_page()
+
+            logger.info("PopupHandler: Starting demo")
+
+            # Navigate to a page with popups
+            await page.goto("https://www.springer.com", timeout=30000)
+            await asyncio.sleep(2)
+
+            # Demonstrate popup handling
+            handler = PopupHandler(page)
+
+            logger.info("Detecting popups...")
+            popups = await handler.detect_popups()
+            logger.info(f"Found {len(popups)} popup(s)")
+
+            logger.info("Handling popups...")
+            handled = await handler.handle_all_popups()
+            logger.success(f"Successfully handled {handled} popup(s)")
+
+            # Verify page is clear
+            is_clear = await ensure_no_popups_async(page)
+            if is_clear:
+                logger.success("Page is clear of popups")
+            else:
+                logger.warning("Some popups may still be present")
+
+            logger.success("PopupHandler demonstration complete")
+
+            await asyncio.sleep(2)
+            await browser.close()
+
+    asyncio.run(demo())
+    return 0
+
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="Popup handler demo")
+    return parser.parse_args()
+
+
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    import scitex as stx
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.interaction.close_popups
+
+# EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 22:46:13 (ywatanabe)"
+# Timestamp: "2025-10-10 00:36:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_BrowserAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -23,9 +23,11 @@ from typing import Any, Dict, List, Optional
 from playwright.async_api import Page, async_playwright
 
 from scitex import logging
-from scitex.browser.interaction import click_with_fallbacks_async, fill_with_fallbacks_async
-
-from ..browser.local._BrowserMixin import BrowserMixin
+from scitex.browser.core import BrowserMixin
+from scitex.browser.interaction import (
+    click_with_fallbacks_async,
+    fill_with_fallbacks_async,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +46,7 @@ class BrowserAuthenticator(BrowserMixin):
             sso_automator: Optional SSO automator instance for institution-specific handling
         """
         super().__init__(mode=mode)
+        self.name = self.__class__.__name__
         self.timeout = timeout
         self.sso_automator = sso_automator
 
@@ -73,12 +76,14 @@ class BrowserAuthenticator(BrowserMixin):
         # await self.cookie_acceptor.inject_auto_acceptor_async(context)
         page = await context.new_page()
 
-        logger.info(f"Navigating to: {url}")
+        logger.info(f"{self.name}: Navigating to: {url}")
         await page.goto(url, wait_until="domcontentloaded")
 
         # Check for cookie banner and warn if present
         if await self.cookie_acceptor.check_cookie_banner_exists_async(page):
-            logger.warn("Cookie banner detected - may need manual acceptance")
+            logger.warn(
+                "{self.name}: Cookie banner detected - may need manual acceptance"
+            )
 
         return page
 
@@ -106,7 +111,9 @@ class BrowserAuthenticator(BrowserMixin):
             # Track SSO navigation
             if self._is_sso_page(current_url):
                 seen_sso_page = True
-                logger.debug(f"Detected SSO/login page: {current_url}")
+                logger.debug(
+                    f"{self.name}: Detected SSO/login page: {current_url}"
+                )
 
             # Handle different authentication flows based on current URL
             automation_attempted = False
@@ -116,7 +123,7 @@ class BrowserAuthenticator(BrowserMixin):
                 current_url
             ):
                 logger.debug(
-                    "OpenAthens page detected - attempting automation"
+                    f"{self.name}: OpenAthens page detected - attempting automation"
                 )
                 automation_attempted = True
 
@@ -133,13 +140,17 @@ class BrowserAuthenticator(BrowserMixin):
                         )
                         if oa_success:
                             logger.success(
-                                "OpenAthens page automation completed"
+                                f"{self.name}: OpenAthens page automation completed"
                             )
                             openathens_automated = True
                         else:
-                            logger.warn("OpenAthens page automation failed")
+                            logger.warn(
+                                f"{self.name}: OpenAthens page automation failed"
+                            )
                 except Exception as e:
-                    logger.warn(f"OpenAthens automation failed: {e}")
+                    logger.warn(
+                        f"{self.name}: OpenAthens automation failed: {e}"
+                    )
 
             # Priority 2: Institution-specific SSO automation (if available and on SSO page)
             elif self.sso_automator and self.sso_automator.is_sso_page(
@@ -147,7 +158,7 @@ class BrowserAuthenticator(BrowserMixin):
             ):
                 institution_name = self.sso_automator.get_institution_name()
                 logger.info(
-                    f"{institution_name} SSO detected - attempting automation"
+                    f"{self.name}: {institution_name} SSO detected - attempting automation"
                 )
                 automation_attempted = True
 
@@ -156,15 +167,17 @@ class BrowserAuthenticator(BrowserMixin):
                 )
                 if sso_success:
                     logger.success(
-                        f"{institution_name} SSO automation completed"
+                        f"{self.name}: {institution_name} SSO automation completed"
                     )
                 else:
-                    logger.warn(f"{institution_name} SSO automation failed")
+                    logger.warn(
+                        f"{self.name}: {institution_name} SSO automation failed"
+                    )
 
             # Priority 3: Generic automation attempt for unknown SSO pages
             elif self._is_sso_page(current_url) and not automation_attempted:
                 logger.info(
-                    "Generic SSO page detected - attempting basic automation"
+                    f"{self.name}: Generic SSO page detected - attempting basic automation"
                 )
                 automation_attempted = True
 
@@ -173,18 +186,24 @@ class BrowserAuthenticator(BrowserMixin):
                         await self._attempt_generic_sso_automation(page)
                     )
                     if generic_success:
-                        logger.success("Generic SSO automation completed")
+                        logger.success(
+                            f"{self.name}: Generic SSO automation completed"
+                        )
                     else:
-                        logger.info("Generic SSO automation not applicable")
+                        logger.info(
+                            f"{self.name}: Generic SSO automation not applicable"
+                        )
                 except Exception as e:
-                    logger.debug(f"Generic SSO automation failed: {e}")
+                    logger.debug(
+                        f"{self.name}: Generic SSO automation failed: {e}"
+                    )
 
             # If automation was attempted but we're still on the same page,
             # it likely failed and requires manual intervention
             if automation_attempted and elapsed_time > 30:
                 if elapsed_time % 30 == 0:  # Show message every 30 seconds
                     logger.info(
-                        "Automation completed - waiting for manual completion if needed"
+                        f"{self.name}: Automation completed - waiting for manual completion if needed"
                     )
 
             # Check for success
@@ -193,19 +212,23 @@ class BrowserAuthenticator(BrowserMixin):
                     page, seen_sso_page, elapsed_time
                 ):
                     logger.info(
-                        f"Login successful detected at URL: {current_url}"
+                        f"{self.name}: Login successful detected at URL: {current_url}"
                     )
-                    logger.success("Login detected! Capturing session...")
+                    logger.success(
+                        "{self.name}: Login detected! Capturing session..."
+                    )
                     return True
 
             # Show progress
             if elapsed_time % 10 == 0 and elapsed_time > 0:
-                logger.info(f"Waiting for login... ({elapsed_time}s elapsed)")
+                logger.info(
+                    f"{self.name}: Waiting for login... ({elapsed_time}s elapsed)"
+                )
 
             await asyncio.sleep(check_interval)
             elapsed_time += check_interval
 
-        logger.error("Login timeout - please try again")
+        logger.error(f"{self.name}: Login timeout - please try again")
         return False
 
     async def verify_authentication_async(
@@ -250,17 +273,19 @@ class BrowserAuthenticator(BrowserMixin):
 
                 if is_authenticate_async:
                     logger.success(
-                        f"Verified live authentication at {current_url}"
+                        f"{self.name}: Verified live authentication at {current_url}"
                     )
                 else:
                     logger.debug(
-                        f"Authentication verification failed at {current_url}"
+                        f"{self.name}: Authentication verification failed at {current_url}"
                     )
 
                 return is_authenticate_async
 
         except Exception as e:
-            logger.error(f"Authentication verification failed: {e}")
+            logger.error(
+                f"{self.name}: Authentication verification failed: {e}"
+            )
             return False
         finally:
             # Restore original mode setting
@@ -300,23 +325,27 @@ class BrowserAuthenticator(BrowserMixin):
             email: User email to display
             timeout: Timeout to display
         """
-        logger.info("OpenAthens Authentication Required")
-        logger.info("MyAthens login page is opening...")
+        logger.info(f"{self.name}: OpenAthens Authentication Required")
+        logger.info(f"{self.name}: MyAthens login page is opening...")
         if email:
-            logger.info(f"Account: {email}")
-        logger.info("Please complete the login process:")
-        logger.info("1. Enter your institutional email")
-        logger.info("2. Click your institution when it appears")
-        logger.info("3. Complete login on your institution's page")
-        logger.info("4. You'll be redirected back to OpenAthens when done")
-        logger.info(f"5. Timeout is {timeout} seconds")
-        logger.info("6. Close the window after successful login")
+            logger.info(f"{self.name}: Account: {email}")
+        logger.info(f"{self.name}: Please complete the login process:")
+        logger.info(f"{self.name}: 1. Enter your institutional email")
+        logger.info(f"{self.name}: 2. Click your institution when it appears")
+        logger.info(
+            f"{self.name}: 3. Complete login on your institution's page"
+        )
+        logger.info(
+            f"{self.name}: 4. You'll be redirected back to OpenAthens when done"
+        )
+        logger.info(f"{self.name}: 5. Timeout is {timeout} seconds")
+        logger.info(f"{self.name}: 6. Close the window after successful login")
 
         # Show environment variables
-        logger.debug("OpenAthens Environment Variables:")
+        logger.debug(f"{self.name}: OpenAthens Environment Variables:")
         for key, value in os.environ.items():
             if "SCITEX_SCHOLAR_OPENATHENS" in key:
-                logger.debug(f"  {key}: {value}")
+                logger.debug(f"{self.name}:   {key}: {value}")
 
     def _is_sso_page(self, url: str) -> bool:
         """Check if URL indicates SSO/login page."""

@@ -13,7 +13,7 @@ class JCRImpactFactorEngine:
 
     def __init__(self):
         """Initialize with JCR database path."""
-        self.name = "JCR Impact Factor"
+        self.name = self.__class__.__name__
 
         # Path to the JCR database
         self.db_path = Path(__file__).parent.parent / "externals" / "impact_factor_jcr" / "impact_factor" / "data" / "impact_factor.sqlite3"

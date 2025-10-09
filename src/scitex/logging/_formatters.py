@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 05:01:13 (ywatanabe)"
+# Timestamp: "2025-10-10 01:12:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_formatters.py
 # ----------------------------------------
 from __future__ import annotations
@@ -15,7 +15,6 @@ __FILE__ = __file__
 """Custom formatters for SciTeX logging."""
 
 import logging
-import os
 import sys
 
 # Global format configuration via environment variable
@@ -39,7 +38,7 @@ class SciTeXConsoleFormatter(logging.Formatter):
     # ANSI color codes for log levels
     COLORS = {
         "DEBU": "\033[30m",  # Black
-        "INFO": "\033[30m",  # Black
+        "INFO": "\033[90m",  # Grey
         "SUCC": "\033[32m",  # Green
         "WARN": "\033[33m",  # Yellow
         "FAIL": "\033[91m",  # Light Red
@@ -83,7 +82,7 @@ class SciTeXConsoleFormatter(logging.Formatter):
 
     def format(self, record):
         # Apply indentation if specified in record
-        indent_level = getattr(record, 'indent', 0)
+        indent_level = getattr(record, "indent", 0)
         if indent_level > 0:
             indent = " " * (indent_level * self.indent_width)
             record.msg = f"{indent}{record.msg}"
@@ -93,7 +92,7 @@ class SciTeXConsoleFormatter(logging.Formatter):
 
         if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
             # Check for custom color override
-            custom_color = getattr(record, 'color', None)
+            custom_color = getattr(record, "color", None)
 
             if custom_color and custom_color in self.COLOR_NAMES:
                 # Use custom color

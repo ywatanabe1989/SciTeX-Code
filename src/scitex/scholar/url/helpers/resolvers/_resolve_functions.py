@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-19 13:17:53 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/resolvers/_resolve_functions.py
+# Timestamp: "2025-10-10 03:24:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/resolvers/_resolve_functions.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/resolvers/_resolve_functions.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import re
 
@@ -24,7 +28,7 @@ from typing import Optional
 from playwright.async_api import Page
 
 from scitex import logging
-from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.debugging import browser_logger
 
 from ._OpenURLResolver import OpenURLResolver
 
@@ -32,31 +36,37 @@ logger = logging.getLogger(__name__)
 
 
 async def resolve_publisher_url_by_navigating_to_doi_page(
-    doi: str, page: Page
+    doi: str,
+    page: Page,
+    func_name="resolve_publisher_url_by_navigating_to_doi_page",
 ) -> Optional[str]:
     """Resolve DOI to publisher URL by following redirects."""
     url_doi = f"https://doi.org/{doi}" if not doi.startswith("http") else doi
 
-    await show_popup_and_capture_async(
-        page, "Finding Publisher URL by Navigating to DOI page..."
+    await browser_logger.info(
+        page,
+        f"{func_name}: Finding Publisher URL by Navigating to DOI page...",
     )
 
     try:
-        logger.info(f"Resolving DOI: {doi}")
+        logger.info(f"{func_name}: Resolving DOI: {doi}")
         await page.goto(url_doi, wait_until="domcontentloaded", timeout=30000)
         await asyncio.sleep(2)
         url_publisher = page.url
         logger.success(
-            f"Resolved Publisher URL by navigation: {doi}   ->   {url_publisher}"
+            f"{func_name}: Resolved Publisher URL by navigation: {doi}   ->   {url_publisher}"
         )
         return url_publisher
     except Exception as e:
-        logger.error(f"Publisher URL not resolved by navigating to {doi}: {e}")
+        logger.error(
+            f"{func_name}: Publisher URL not resolved by navigating to {doi}: {e}"
+        )
         from pathlib import Path
+
         screenshot_dir = Path.home() / ".scitex/scholar/workspace/screenshots"
-        await show_popup_and_capture_async(
+        await browser_logger.info(
             page,
-            f"{doi} - Publisher URL not resolved by navigating",
+            f"{func_name}: {doi} - Publisher URL not resolved by navigating",
             take_screenshot=True,
             screenshot_category="Resolve",
             screenshot_dir=screenshot_dir,

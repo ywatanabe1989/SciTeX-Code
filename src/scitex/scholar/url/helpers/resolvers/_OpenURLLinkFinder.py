@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 21:42:27 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/resolvers/_OpenURLLinkFinder.py
+# Timestamp: "2025-10-10 02:00:31 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/resolvers/_OpenURLLinkFinder.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/resolvers/_OpenURLLinkFinder.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import asyncio
 from typing import List
@@ -15,8 +19,8 @@ from typing import List
 from playwright.async_api import Locator, Page
 
 from scitex import logging
-from scitex.scholar import ScholarConfig
 from scitex.browser.debugging import highlight_element_async
+from scitex.scholar import ScholarConfig
 from scitex.scholar.browser.utils import click_and_wait
 
 logger = logging.getLogger(__name__)
@@ -26,12 +30,13 @@ class OpenURLLinkFinder:
     """Finds full-text links on resolver pages by publisher name."""
 
     def __init__(self, config: ScholarConfig = None):
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
 
     async def find_link_elements(self, page: Page, doi: str) -> List[Locator]:
         """Find and highlight publisher text on the page."""
         try:
-            logger.info(f"Finding links from {page.url}")
+            logger.info(f"{self.name}: Finding links from {page.url}")
 
             openurl_available_from_patterns = self.config.resolve(
                 "openurl_available_from_patterns", None
@@ -58,20 +63,22 @@ class OpenURLLinkFinder:
                             )
                             seen_hrefs.add(href)
                 except Exception as e:
-                    logger.debug(f"Could not find {publisher}: {e}")
+                    logger.debug(
+                        f"{self.name}: Could not find {publisher}: {e}"
+                    )
 
             if found_links:
                 publishers = [
                     found_link.get("publisher") for found_link in found_links
                 ]
                 logger.success(
-                    f"Found {len(publishers)} link elements for: {', '.join(publishers)}"
+                    f"{self.name}: Found {len(publishers)} link elements for: {', '.join(publishers)}"
                 )
                 return found_links
 
         except Exception as e:
             logger.fail(
-                f"OpenURLLinkFinder did not find any urls from {page.url}: {e}"
+                f"{self.name}: Did not find any urls from {page.url}: {e}"
             )
             return []
 

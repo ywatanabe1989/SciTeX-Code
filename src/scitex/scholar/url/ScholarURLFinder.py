@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 19:57:32 (ywatanabe)"
+# Timestamp: "2025-10-10 03:25:26 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,7 +37,7 @@ from .helpers import (
 logger = logging.getLogger(__name__)
 
 
-from scitex.browser.debugging import show_popup_and_capture_async
+from scitex.browser.debugging import browser_logger
 
 
 class ScholarURLFinder:
@@ -60,6 +60,7 @@ class ScholarURLFinder:
         clear_cache=False,
     ):
         """Initialize URL handler."""
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
         self.openurl_resolver_url = self.config.resolve(
             "openurl_resolver_url", openurl_resolver_url
@@ -102,7 +103,9 @@ class ScholarURLFinder:
 
         # Check full results cache first
         if self.use_cache and doi in self._full_results_cache:
-            logger.info(f"Cached results for {doi}", indent=5, c="cyan")
+            logger.info(
+                f"{self.name}: Cached results for {doi}",
+            )
             return self._full_results_cache[doi]
 
         urls = {}
@@ -124,7 +127,7 @@ class ScholarURLFinder:
 
             if urls_pdf:
                 logger.success(
-                    f"Found {len(urls_pdf)} PDFs from publisher", indent=5
+                    f"{self.name}: Found {len(urls_pdf)} PDFs from publisher",
                 )
                 # Skip OpenURL entirely - we have PDFs!
                 urls["url_openurl_query"] = (
@@ -136,7 +139,9 @@ class ScholarURLFinder:
 
         # Step 4: Only do OpenURL if no PDFs found from publisher
         if not urls_pdf:
-            logger.info("Trying OpenURL resolution...", indent=5, c="grey")
+            logger.info(
+                f"{self.name}: Trying OpenURL resolution...",
+            )
             openurl_results = await self._get_cached_openurl(doi)
             urls.update(openurl_results)
 
@@ -149,7 +154,7 @@ class ScholarURLFinder:
 
                 if pdfs:
                     logger.success(
-                        f"Found {len(pdfs)} PDFs from OpenURL", indent=5
+                        f"{self.name}: Found {len(pdfs)} PDFs from OpenURL",
                     )
 
         if urls_pdf:
@@ -189,7 +194,9 @@ class ScholarURLFinder:
                     result = await self.find_urls(doi=doi)
                 batch_results.append(result or {})
             except Exception as e:
-                logger.debug(f"Batch URL finding error for DOI {doi}: {e}")
+                logger.debug(
+                    f"{self.name}: Batch URL finding error for DOI {doi}: {e}"
+                )
                 batch_results.append({})
 
         n_dois = len(dois)
@@ -197,7 +204,7 @@ class ScholarURLFinder:
             n_found = sum(
                 1 for result in batch_results if result.get("urls_pdf")
             )
-            msg = f"Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
+            msg = f"{self.name}: Found {n_found}/{n_dois} PDFs (= {100. * n_found / n_dois:.1f}%)"
             if n_found == n_dois:
                 logger.success(msg)
             else:
@@ -223,7 +230,7 @@ class ScholarURLFinder:
                 screenshot_dir = (
                     Path.home() / ".scitex/scholar/workspace/screenshots"
                 )
-                await show_popup_and_capture_async(
+                await browser_logger.info(
                     page,
                     f"{doi} - No PDFs Found",
                     take_screenshot=True,
@@ -238,7 +245,7 @@ class ScholarURLFinder:
                 screenshot_dir = (
                     Path.home() / ".scitex/scholar/workspace/screenshots"
                 )
-                await show_popup_and_capture_async(
+                await browser_logger.info(
                     page,
                     f"{doi} - Page Error",
                     take_screenshot=True,
@@ -247,14 +254,16 @@ class ScholarURLFinder:
                 )
             except:
                 pass
-            logger.error(f"Error getting PDFs from {url}: {e}")
+            logger.error(f"{self.name}: Error getting PDFs from {url}: {e}")
             return []
 
     async def find_pdf_urls_async(self, page_or_url) -> List[Dict]:
         """Find PDF URLs from a page or URL."""
         if isinstance(page_or_url, str):
             if not self.context:
-                logger.error("Browser context required to navigate to URL")
+                logger.error(
+                    f"{self.name}: Browser context required to navigate to URL"
+                )
                 return []
 
             page = await self.context.new_page()
@@ -270,7 +279,7 @@ class ScholarURLFinder:
                     screenshot_dir = (
                         Path.home() / ".scitex/scholar/workspace/screenshots"
                     )
-                    await show_popup_and_capture_async(
+                    await browser_logger.info(
                         page,
                         f"No PDFs from URL: {page_or_url[:50]}",
                         take_screenshot=True,
@@ -280,12 +289,12 @@ class ScholarURLFinder:
 
                 return pdfs
             except Exception as e:
-                logger.warning(f"Failed to load page: {e}")
+                logger.warning(f"{self.name}: Failed to load page: {e}")
                 try:
                     screenshot_dir = (
                         Path.home() / ".scitex/scholar/workspace/screenshots"
                     )
-                    await show_popup_and_capture_async(
+                    await browser_logger.info(
                         page,
                         "Navigation Error",
                         take_screenshot=True,
@@ -307,7 +316,7 @@ class ScholarURLFinder:
                     screenshot_dir = (
                         Path.home() / ".scitex/scholar/workspace/screenshots"
                     )
-                    await show_popup_and_capture_async(
+                    await browser_logger.info(
                         page_or_url,
                         "No PDFs Page",
                         take_screenshot=True,
@@ -316,12 +325,12 @@ class ScholarURLFinder:
                     )
                 return pdfs
             except Exception as e:
-                logger.error(f"Error finding PDF URLs: {e}")
+                logger.error(f"{self.name}: Error finding PDF URLs: {e}")
                 try:
                     screenshot_dir = (
                         Path.home() / ".scitex/scholar/workspace/screenshots"
                     )
-                    await show_popup_and_capture_async(
+                    await browser_logger.info(
                         page_or_url,
                         "PDF Search Error",
                         take_screenshot=True,
@@ -350,10 +359,12 @@ class ScholarURLFinder:
             with open(metadata_path, "w") as f:
                 json.dump(metadata, f, indent=2, default=str)
 
-            logger.success(f"Updated metadata: {metadata_path.parent.name}")
+            logger.success(
+                f"{self.name}: Updated metadata: {metadata_path.parent.name}"
+            )
             return True
         except Exception as e:
-            logger.error(f"Failed to update metadata: {e}")
+            logger.error(f"{self.name}: Failed to update metadata: {e}")
             return False
 
     def get_urls_from_metadata(self, metadata_path: Path) -> Dict:
@@ -363,7 +374,7 @@ class ScholarURLFinder:
                 metadata = json.load(f)
             return metadata.get("urls", {})
         except Exception as e:
-            logger.error(f"Failed to read metadata: {e}")
+            logger.error(f"{self.name}: Failed to read metadata: {e}")
             return {}
 
     # Cache methods
@@ -378,7 +389,7 @@ class ScholarURLFinder:
         for cache_file in cache_files:
             if cache_file.exists():
                 cache_file.unlink()
-                logger.info(f"Cleared cache: {cache_file.name}")
+                logger.info(f"{self.name}: Cleared cache: {cache_file.name}")
 
     def _load_cache(self, cache_file: Path) -> dict:
         """Load cache from file."""
@@ -397,13 +408,17 @@ class ScholarURLFinder:
             with open(cache_file, "w") as f:
                 json.dump(cache_data, f, indent=2)
         except Exception as e:
-            logger.warning(f"Failed to save cache {cache_file}: {e}")
+            logger.warning(
+                f"{self.name}: Failed to save cache {cache_file}: {e}"
+            )
 
     async def _get_cached_publisher_url(self, doi: str) -> Optional[str]:
         """Get publisher URL with persistent caching."""
 
         if self.use_cache and doi in self._publisher_cache:
-            logger.debug(f"Using cached publisher URL for DOI: {doi}")
+            logger.debug(
+                f"{self.name}: Using cached publisher URL for DOI: {doi}"
+            )
             return self._publisher_cache[doi]
 
         page = await self.get_page()

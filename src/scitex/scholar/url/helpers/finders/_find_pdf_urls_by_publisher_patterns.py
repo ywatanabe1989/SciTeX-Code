@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-19 12:00:17 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/url/helpers/finders/find_pdf_urls_by_publisher_patterns.py
+# Timestamp: "2025-10-10 01:33:13 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_publisher_patterns.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_publisher_patterns.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import re
 from typing import List
@@ -17,7 +21,9 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 
-def find_pdf_urls_by_publisher_patterns(page, url: str) -> List[str]:
+def find_pdf_urls_by_publisher_patterns(
+    page, url: str, func_name: str = "find_pdf_urls_by_publisher_patterns"
+) -> List[str]:
     """Generate PDF URLs based on publisher patterns."""
 
     urls_pdf = []
@@ -72,7 +78,9 @@ def find_pdf_urls_by_publisher_patterns(page, url: str) -> List[str]:
             doi = doi_match.group(1)
             # Alternative PDF locations for IOP
             urls_pdf.append(f"https://iopscience.iop.org/article/{doi}/pdf")
-            urls_pdf.append(f"https://iopscience.iop.org/article/{doi}/pdf/metrics")
+            urls_pdf.append(
+                f"https://iopscience.iop.org/article/{doi}/pdf/metrics"
+            )
 
     # MDPI
     elif "mdpi.com" in url and "/htm" in url:
@@ -136,11 +144,11 @@ def find_pdf_urls_by_publisher_patterns(page, url: str) -> List[str]:
 
     if len(urls_pdf) > 0:
         logger.success(
-            f"Publisher-specific pattern matching found {len(urls_pdf)} PDF URLs from {url}"
+            f"{func_name}: Publisher-specific pattern matching found {len(urls_pdf)} PDF URLs from {url}"
         )
     else:
         logger.warning(
-            f"Publisher-specific patterns did not match any PDF URLs from {url}"
+            f"{func_name}: Publisher-specific patterns did not match any PDF URLs from {url}"
         )
 
     return urls_pdf

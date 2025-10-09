@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-07 22:45:24 (ywatanabe)"
+# Timestamp: "2025-10-10 00:41:41 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_EZProxyAuthenticator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -93,6 +93,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                 "debug_mode": debug_mode,
             }
         )
+        self.name = self.__class__.__name__
 
         self.proxy_url = proxy_url
         self.username = username
@@ -145,9 +146,9 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         self._cookies = data.get("cookies", {})
                         self._full_cookies = data.get("full_cookies", [])
                         self._session_expiry = expiry
-                        logger.info("Loaded existing EZProxy session")
+                        logger.info(f"{self.name}: Loaded existing EZProxy session")
                     else:
-                        logger.info("Existing EZProxy session expired")
+                        logger.info(f"{self.name}: Existing EZProxy session expired")
                         self.session_file.unlink()
             except Exception as e:
                 logger.warn(f"Failed to load session: {e}")
@@ -165,7 +166,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                 }
                 with open(self.session_file, "w") as f:
                     json.dump(data, f, indent=2)
-                logger.info("Saved EZProxy session")
+                logger.info(f"{self.name}: Saved EZProxy session")
             except Exception as e:
                 logger.warn(f"Failed to save session: {e}")
 
@@ -191,7 +192,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
 
         # Check existing session
         if not force and await self.is_authenticate_async():
-            logger.info("Using existing EZProxy session")
+            logger.info(f"{self.name}: Using existing EZProxy session")
             return {
                 "cookies": self._cookies,
                 "full_cookies": self._full_cookies,
@@ -265,7 +266,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                         await page.wait_for_load_state("networkidle")
 
                         # Handle SSO authentication (institution-specific)
-                        logger.info("Redirected to institutional SSO")
+                        logger.info(f"{self.name}: Redirected to institutional SSO")
                         # This would need institution-specific handling
 
                 # Wait for authentication to complete
@@ -306,7 +307,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                 # Save session
                 self._save_session_async()
 
-                logger.info("EZProxy authentication successful")
+                logger.info(f"{self.name}: EZProxy authentication successful")
                 return {
                     "cookies": self._cookies,
                     "full_cookies": self._full_cookies,
@@ -334,7 +335,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
 
         # Check if session is expired
         if datetime.now() > self._session_expiry:
-            logger.info("EZProxy session expired")
+            logger.info(f"{self.name}: EZProxy session expired")
             return False
 
         # If requested, verify session is still valid
@@ -368,7 +369,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
                     await browser.close()
 
                     if not is_valid:
-                        logger.info("EZProxy session no longer valid")
+                        logger.info(f"{self.name}: EZProxy session no longer valid")
                         self._cookies = {}
                         self._full_cookies = []
                         self._session_expiry = None
@@ -402,7 +403,7 @@ class EZProxyAuthenticator(BaseAuthenticator):
         if self.session_file.exists():
             self.session_file.unlink()
 
-        logger.info("Logged out from EZProxy")
+        logger.info(f"{self.name}: Logged out from EZProxy")
 
     async def get_session_info_async(self) -> Dict[str, Any]:
         """Get information about current session."""

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 08:08:37 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_StealthManager.py
+# Timestamp: "2025-10-10 00:50:44 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/stealth/StealthManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/stealth/StealthManager.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import asyncio
 import random
@@ -37,6 +41,7 @@ class StealthManager:
         viewport_size: tuple = None,
         spoof_dimension: bool = False,
     ):
+        self.name = self.__class__.__name__
         self.viewport_size = viewport_size
         self.spoof_dimension = spoof_dimension
 
@@ -52,7 +57,9 @@ class StealthManager:
             # "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
         ]
         user_agent = random.choice(user_agents)
-        logger.debug(f"User Agent randomly selected: {user_agent}")
+        logger.debug(
+            f"{self.name}: User Agent randomly selected: {user_agent}"
+        )
         return user_agent
 
     def get_random_viewport(self) -> dict:
@@ -62,7 +69,7 @@ class StealthManager:
                 "height": self.viewport_size[1],
             }
             logger.debug(
-                f"Viewport defined as specified in Stealth Manager initiation: {viewport}"
+                f"{self.name}: Viewport defined as specified in Stealth Manager initiation: {viewport}"
             )
             return viewport
 
@@ -70,7 +77,7 @@ class StealthManager:
             # viewport = {"width": 1, "height": 1}
             viewport = {"width": 1920, "height": 1080}
             logger.debug(
-                f"Viewport defined as spoof_dimension passed during Stealth Manager initiation: {viewport}"
+                f"{self.name}: Viewport defined as spoof_dimension passed during Stealth Manager initiation: {viewport}"
             )
             return viewport
 
@@ -83,7 +90,9 @@ class StealthManager:
                     {"width": 1280, "height": 720},
                 ]
             )
-            logger.debug(f"Viewport randomly selected: {viewport}")
+            logger.debug(
+                f"{self.name}: Viewport randomly selected: {viewport}"
+            )
             return viewport
 
     def get_stealth_options(self) -> dict:
@@ -197,7 +206,7 @@ class StealthManager:
             # 1x1 window completely off-screen for true invisibility
             stealth_args.extend(["--window-size=1,1", "--window-position=0,0"])
             logger.debug(
-                "Invisible mode: Window set to 1x1 at position 0,0 (off-screen)"
+                f"{self.name}: Invisible mode: Window set to 1x1 at position 0,0 (off-screen)"
             )
         else:
             # Standard window or custom size
@@ -215,7 +224,9 @@ class StealthManager:
         else:
             config_desc = "Default (1920x1080)"
 
-        logger.debug(f"Browser window configuration: {config_desc}")
+        logger.debug(
+            f"{self.name}: Browser window configuration: {config_desc}"
+        )
         return stealth_args
 
     def get_network_evasion_headers(self) -> dict:
@@ -239,149 +250,13 @@ class StealthManager:
             "X-Real-IP": f"{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}",
         }
 
-    # def get_advanced_stealth_options(self) -> dict:
-    #     """Get comprehensive stealth options for maximum evasion."""
-    #     base_options = self.get_stealth_options()
-    #     base_options.update(
-    #         {
-    #             "extra_http_headers": self.get_network_evasion_headers(),
-    #             "bypass_csp": True,
-    #             "ignore_default_args": ["--enable-automation"],
-    #             "geolocation": {
-    #                 "latitude": 40.7128,
-    #                 "longitude": -74.0060,
-    #             },  # NYC coordinates
-    #             "timezone_id": "America/New_York",
-    #             "locale": "en-US",
-    #             "permissions": ["geolocation", "notifications"],
-    #         }
-    #     )
-    #     return base_options
-
-    # async def inject_stealth_scripts(self, page: Page):
-    #     """Inject JavaScript to override browser fingerprinting detection."""
-    #     logger.debug(
-    #         "Injecting advanced stealth scripts for Cloudflare evasion"
-    #     )
-
-    #     stealth_script = """
-    #     // Override WebDriver detection
-    #     Object.defineProperty(navigator, 'webdriver', {
-    #         get: () => undefined,
-    #     });
-
-    #     // Override automation flags
-    #     window.chrome = {
-    #         runtime: {},
-    #         webstore: {},
-    #         app: {},
-    #         csi: function() {},
-    #         loadTimes: function() {},
-    #     };
-
-    #     // Override plugin detection
-    #     Object.defineProperty(navigator, 'plugins', {
-    #         get: () => [1, 2, 3, 4, 5].map(i => ({
-    #             filename: `plugin${i}.dll`,
-    #             description: `Plugin ${i}`,
-    #             name: `Plugin ${i}`,
-    #             length: 0,
-    #             item: () => null,
-    #             namedItem: () => null,
-    #         })),
-    #     });
-
-    #     // Override languages
-    #     Object.defineProperty(navigator, 'languages', {
-    #         get: () => ['en-US', 'en'],
-    #     });
-
-    #     // Override permissions
-    #     const originalQuery = window.navigator.permissions.query;
-    #     window.navigator.permissions.query = (parameters) => (
-    #         parameters.name === 'notifications' ?
-    #             Promise.resolve({ state: Notification.permission }) :
-    #             originalQuery(parameters)
-    #     );
-
-    #     // Override screen properties to match common resolutions
-    #     Object.defineProperty(screen, 'width', { get: () => 1920 });
-    #     Object.defineProperty(screen, 'height', { get: () => 1080 });
-    #     Object.defineProperty(screen, 'availWidth', { get: () => 1920 });
-    #     Object.defineProperty(screen, 'availHeight', { get: () => 1040 });
-    #     Object.defineProperty(screen, 'colorDepth', { get: () => 24 });
-    #     Object.defineProperty(screen, 'pixelDepth', { get: () => 24 });
-
-    #     // Spoof timezone
-    #     Intl.DateTimeFormat.prototype.resolvedOptions = function() {
-    #         return { timeZone: 'America/New_York' };
-    #     };
-
-    #     // Override canvas fingerprinting
-    #     const getContext = HTMLCanvasElement.prototype.getContext;
-    #     HTMLCanvasElement.prototype.getContext = function(type) {
-    #         if (type === '2d') {
-    #             const context = getContext.call(this, type);
-    #             const originalFillText = context.fillText;
-    #             context.fillText = function() {
-    #                 // Add slight randomization to avoid consistent fingerprints
-    #                 arguments[1] += Math.random() * 0.1;
-    #                 arguments[2] += Math.random() * 0.1;
-    #                 return originalFillText.apply(this, arguments);
-    #             };
-    #             return context;
-    #         }
-    #         return getContext.call(this, type);
-    #     };
-
-    #     // Override WebGL fingerprinting
-    #     const getParameter = WebGLRenderingContext.prototype.getParameter;
-    #     WebGLRenderingContext.prototype.getParameter = function(parameter) {
-    #         if (parameter === 37445) return 'Intel Inc.'; // UNMASKED_VENDOR_WEBGL
-    #         if (parameter === 37446) return 'Intel(R) HD Graphics 630'; // UNMASKED_RENDERER_WEBGL
-    #         return getParameter.call(this, parameter);
-    #     };
-
-    #     // Console log suppression (avoid debug traces)
-    #     const originalLog = console.log;
-    #     console.log = function() {
-    #         if (arguments[0] && typeof arguments[0] === 'string') {
-    #             if (arguments[0].includes('DevTools') || arguments[0].includes('automation')) {
-    #                 return;
-    #             }
-    #         }
-    #         return originalLog.apply(this, arguments);
-    #     };
-
-    #     // Mouse movement simulation (appear more human)
-    #     let lastMouseMove = Date.now();
-    #     document.addEventListener('mousemove', () => {
-    #         lastMouseMove = Date.now();
-    #     });
-
-    #     // Simulate human-like behavior
-    #     setTimeout(() => {
-    #         if (Date.now() - lastMouseMove > 30000) {
-    #             const event = new MouseEvent('mousemove', {
-    #                 view: window,
-    #                 bubbles: true,
-    #                 cancelable: true,
-    #                 clientX: Math.random() * window.innerWidth,
-    #                 clientY: Math.random() * window.innerHeight
-    #             });
-    #             document.dispatchEvent(event);
-    #         }
-    #     }, 30000 + Math.random() * 10000);
-    #     """
-
-    #     await page.add_init_script(stealth_script)
-    #     logger.debug("Advanced stealth scripts injected successfully")
-
     async def add_human_behavior_async(self, page: Page):
         """Add human-like behavior patterns to avoid detection."""
         # Random delay before starting interactions
         delay = random.uniform(2, 5)
-        logger.debug(f"Adding human behavior delay: {delay:.2f} seconds")
+        logger.debug(
+            f"{self.name}: Adding human behavior delay: {delay:.2f} seconds"
+        )
         await asyncio.sleep(delay)
 
         # Simulate scrolling behavior
@@ -396,13 +271,13 @@ class StealthManager:
             )
             await asyncio.sleep(random.uniform(1, 3))
         except Exception as e:
-            logger.debug(f"Human behavior simulation failed: {e}")
+            logger.debug(f"{self.name}: Human behavior simulation failed: {e}")
 
     async def handle_cloudflare_challenge_async(
         self, page: Page, max_wait: int = 45
     ):
         """Enhanced Cloudflare challenge detection and handling."""
-        logger.debug("Checking for Cloudflare challenge...")
+        logger.debug(f"{self.name}: Checking for Cloudflare challenge...")
 
         cloudflare_indicators = [
             "Just a moment",
@@ -429,11 +304,11 @@ class StealthManager:
             )
 
             if not is_challenge:
-                logger.debug("No Cloudflare challenge detected")
+                logger.debug(f"{self.name}: No Cloudflare challenge detected")
                 return True
 
             logger.debug(
-                "Cloudflare challenge detected, waiting for completion..."
+                f"{self.name}: Cloudflare challenge detected, waiting for completion..."
             )
 
             # Add human-like behavior during challenge
@@ -467,11 +342,15 @@ class StealthManager:
             # Additional wait to ensure page is fully loaded
             await asyncio.sleep(random.uniform(2, 4))
 
-            logger.debug("Cloudflare challenge passed successfully")
+            logger.debug(
+                f"{self.name}: Cloudflare challenge passed successfully"
+            )
             return True
 
         except Exception as e:
-            logger.warn(f"Cloudflare challenge handling timeout or error: {e}")
+            logger.warn(
+                f"{self.name}: Cloudflare challenge handling timeout or error: {e}"
+            )
 
             # Try to detect if we're still on challenge page
             try:
@@ -483,12 +362,12 @@ class StealthManager:
 
                 if still_challenged:
                     logger.error(
-                        "Still on Cloudflare challenge page after timeout"
+                        f"{self.name}: Still on Cloudflare challenge page after timeout"
                     )
                     return False
                 else:
                     logger.debug(
-                        "Challenge may have completed despite timeout"
+                        f"{self.name}: Challenge may have completed despite timeout"
                     )
                     return True
 
@@ -831,7 +710,9 @@ class StealthManager:
         The script is bulletproof and handles all dimension-related APIs that
         bot detectors commonly check.
         """
-        logger.debug("stealth_manager.get_dimension_spoofing_script called.")
+        logger.debug(
+            f"{self.name}: stealth_manager.get_dimension_spoofing_script called."
+        )
         if not self.spoof_dimension:
             return ""
 
@@ -1049,6 +930,7 @@ class StealthManager:
 def main(args):
     """Demonstrate StealthManager functionality."""
     import asyncio
+
     from playwright.async_api import async_playwright
 
     async def demo():
@@ -1080,15 +962,42 @@ def main(args):
 def parse_args():
     """Parse command line arguments."""
     import argparse
+
     parser = argparse.ArgumentParser(description="StealthManager demo")
     return parser.parse_args()
 
 
-def run_main():
-    """Run main function."""
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    import scitex as stx
+
     args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
     exit_status = main(args)
-    return exit_status
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
 
 
 if __name__ == "__main__":

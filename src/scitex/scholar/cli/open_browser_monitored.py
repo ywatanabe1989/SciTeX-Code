@@ -43,6 +43,7 @@ class DownloadMonitor(FileSystemEventHandler):
             library_manager: LibraryManager instance for organizing files
             config: Scholar configuration
         """
+        self.name = self.__class__.__name__
         self.paper_id_map = paper_id_map
         self.library_manager = library_manager
         self.config = config

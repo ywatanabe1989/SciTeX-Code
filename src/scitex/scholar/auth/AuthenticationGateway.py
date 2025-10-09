@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 07:20:03 (ywatanabe)"
+# Timestamp: "2025-10-10 03:24:07 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/AuthenticationGateway.py
 # ----------------------------------------
 from __future__ import annotations
@@ -67,6 +67,10 @@ class AuthenticationGateway:
     This gateway sits between Scholar and URL/Download operations,
     preparing authentication transparently before content access.
     """
+
+    @property
+    def name(self):
+        return self.__class__.__name__
 
     def __init__(
         self,
@@ -140,9 +144,13 @@ class AuthenticationGateway:
                     url_context.doi, page
                 )
                 url_context.url = publisher_url
-                logger.debug(f"Resolved {url_context.doi} → {publisher_url}")
+                logger.debug(
+                    f"{self.name}: Resolved {url_context.doi} → {publisher_url}"
+                )
             except Exception as e:
-                logger.warning(f"Failed to resolve DOI {url_context.doi}: {e}")
+                logger.warning(
+                    f"{self.name}: Failed to resolve DOI {url_context.doi}: {e}"
+                )
                 url_context.url = openurl  # Fallback to OpenURL
             finally:
                 await page.close()
@@ -181,9 +189,13 @@ class AuthenticationGateway:
         try:
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
             url_context.url = publisher_url
-            logger.debug(f"Resolved {url_context.doi} → {publisher_url}")
+            logger.debug(
+                f"{self.name}: Resolved {url_context.doi} → {publisher_url}"
+            )
         except Exception as e:
-            logger.warning(f"Failed to resolve DOI {url_context.doi}: {e}")
+            logger.warning(
+                f"{self.name}: Failed to resolve DOI {url_context.doi}: {e}"
+            )
             url_context.url = openurl  # Fallback to OpenURL
         finally:
             await page.close()
@@ -223,7 +235,7 @@ class AuthenticationGateway:
                         "preferred_provider", "openathens"
                     )
                     logger.info(
-                        f"Authentication required for {publisher_config.get('name')} "
+                        f"{self.name}: Authentication required for {publisher_config.get('name')} "
                         f"(DOI prefix: {prefix}, provider: {url_context.auth_provider})"
                     )
                     return url_context
@@ -265,7 +277,7 @@ class AuthenticationGateway:
                         "preferred_provider", "openathens"
                     )
                     logger.info(
-                        f"Authentication required for {publisher_config.get('name')} "
+                        f"{self.name}: Authentication required for {publisher_config.get('name')} "
                         f"(provider: {url_context.auth_provider})"
                     )
                     return url_context
@@ -307,23 +319,27 @@ class AuthenticationGateway:
         gateway_url = url_context.auth_gateway_url
 
         if not gateway_url:
-            logger.warning("No gateway URL available for authentication")
+            logger.warning(
+                f"{self.name}: No gateway URL available for authentication"
+            )
             return None
 
         # Check cache - avoid redundant visits
         cache_key = f"{url_context.doi}"
         if cache_key in self._auth_cache:
             logger.debug(
-                f"Authentication already established for {url_context.doi}"
+                f"{self.name}: Authentication already established for {url_context.doi}"
             )
             # Return cached URL if available
             return self._auth_cache.get(f"{cache_key}_url")
 
-        logger.info(f"Establishing auth via OpenURL", indent=5, c="grey")
+        logger.info(
+            f"{self.name}: Establishing auth via OpenURL",
+        )
 
         # Visit OpenURL and click through to publisher
         # This uses the existing OpenURLResolver flow
-        from scitex.browser import show_popup_and_capture_async
+        from scitex.browser import browser_logger
         from scitex.scholar.url.helpers.resolvers._OpenURLResolver import (
             OpenURLResolver,
         )
@@ -333,9 +349,9 @@ class AuthenticationGateway:
 
         try:
             # Show visual progress
-            await show_popup_and_capture_async(
+            await browser_logger.info(
                 page,
-                f"Auth Gateway: Establishing session for {url_context.doi[:50]}...",
+                f"{self.name}: Establishing session for {url_context.doi[:50]}...",
             )
 
             # resolve_doi already does the full flow:
@@ -347,10 +363,10 @@ class AuthenticationGateway:
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
 
             if publisher_url:
-                logger.success(f"Auth established", indent=6)
-                await show_popup_and_capture_async(
+                logger.success(f"{self.name}: Auth established")
+                await browser_logger.info(
                     page,
-                    f"Auth Gateway: ✓ Session established at {publisher_url[:60]}",
+                    f"{self.name}: ✓ Session established at {publisher_url[:60]}",
                 )
                 await page.wait_for_timeout(2000)
                 # Cache successful authentication
@@ -358,18 +374,18 @@ class AuthenticationGateway:
                 self._auth_cache[f"{cache_key}_url"] = publisher_url
                 return publisher_url
             else:
-                logger.warning("OpenURL resolution failed", indent=6)
-                await show_popup_and_capture_async(
-                    page, "Auth Gateway: ✗ Could not resolve to publisher URL"
+                logger.warning(f"{self.name}: OpenURL resolution failed")
+                await browser_logger.info(
+                    page, f"{self.name}: ✗ Could not resolve to publisher URL"
                 )
                 await page.wait_for_timeout(2000)
                 return None
 
         except Exception as e:
-            logger.warning(f"Auth setup failed: {e}", indent=6)
+            logger.warning(f"{self.name}: Auth setup failed: {e}")
             try:
-                await show_popup_and_capture_async(
-                    page, f"Auth Gateway: ✗ EXCEPTION: {str(e)[:80]}"
+                await browser_logger.info(
+                    page, f"{self.name}: ✗ EXCEPTION: {str(e)[:80]}"
                 )
                 await page.wait_for_timeout(2000)
             except:

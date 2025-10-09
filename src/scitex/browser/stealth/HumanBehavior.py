@@ -286,11 +286,37 @@ def parse_args():
     return parser.parse_args()
 
 
-def run_main():
-    """Run main function."""
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    import scitex as stx
+
     args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
     exit_status = main(args)
-    return exit_status
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
 
 
 if __name__ == "__main__":

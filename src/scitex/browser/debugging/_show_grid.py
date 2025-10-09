@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 04:09:51 (ywatanabe)"
+# Timestamp: "2025-10-10 00:27:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/debugging/_show_grid.py
 # ----------------------------------------
 from __future__ import annotations
@@ -13,11 +13,36 @@ __DIR__ = os.path.dirname(__FILE__)
 
 __FILE__ = __file__
 
+"""
+Functionalities:
+  - Displays a coordinate grid overlay on a webpage for debugging layout
+  - Shows major grid lines every 100px and minor lines every 20px
+  - Demonstrates grid overlay when run standalone
 
-async def show_grid_async(page):
-    from ._show_popup_and_capture import show_popup_and_capture_async
+Dependencies:
+  - packages:
+    - playwright
 
-    await show_popup_and_capture_async(page, "Showing Grid...")
+IO:
+  - input-files:
+    - None
+  - output-files:
+    - None
+"""
+
+"""Imports"""
+import argparse
+
+import scitex as stx
+from scitex import logging
+
+logger = logging.getLogger(__name__)
+
+"""Functions & Classes"""
+async def show_grid_async(page, func_name: str = "show_grid_async"):
+    from ._browser_logger import browser_logger
+
+    await browser_logger.info(page, f"{func_name}: Showing Grid...", func_name=func_name)
     await page.evaluate(
         """() => {
         const canvas = document.createElement('canvas');
@@ -64,5 +89,57 @@ async def show_grid_async(page):
     }"""
     )
 
+
+def main(args):
+    logger.info("Grid overlay utility - use show_grid_async() in your code")
+    return 0
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    import scitex as stx
+
+    parser = argparse.ArgumentParser(
+        description="Grid overlay utility for debugging"
+    )
+    args = parser.parse_args()
+    return args
+
+
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    import scitex as stx
+
+    args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+
+if __name__ == "__main__":
+    run_main()
 
 # EOF

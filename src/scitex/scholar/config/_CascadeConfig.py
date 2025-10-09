@@ -49,6 +49,7 @@ class CascadeConfig:
     ]
 
     def __init__(self, config_dict=None, env_prefix="", auto_uppercase=True):
+        self.name = self.__class__.__name__
         self.config_dict = config_dict or {}
         self.env_prefix = env_prefix
         self.auto_uppercase = auto_uppercase

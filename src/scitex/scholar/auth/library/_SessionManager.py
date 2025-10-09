@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-03 02:43:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/_SessionManager.py
+# Timestamp: "2025-10-10 00:46:53 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_SessionManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/library/_SessionManager.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """Session management for authentication providers.
 
@@ -29,13 +33,14 @@ class SessionManager:
 
     def __init__(self, default_expiry_hours: int = 8):
         """Initialize session manager.
-        
+
         Args:
             default_expiry_hours: Default session expiry time in hours
         """
+        self.name = self.__class__.__name__
         self.default_expiry_hours = default_expiry_hours
         self.reset_session()
-        
+
         # Live verification cache
         self._last_live_verified_at: Optional[float] = None
         self._live_verification_cache_seconds = 300  # 5 minutes
@@ -47,13 +52,13 @@ class SessionManager:
         self._session_expiry: Optional[datetime] = None
 
     def set_session_data(
-        self, 
-        cookies: Dict[str, str], 
-        full_cookies: List[Dict[str, Any]], 
-        expiry: Optional[datetime] = None
+        self,
+        cookies: Dict[str, str],
+        full_cookies: List[Dict[str, Any]],
+        expiry: Optional[datetime] = None,
     ) -> None:
         """Set session data from authentication.
-        
+
         Args:
             cookies: Simple cookie name-value pairs
             full_cookies: Full cookie objects with all attributes
@@ -61,7 +66,9 @@ class SessionManager:
         """
         self._cookies = cookies
         self._full_cookies = full_cookies
-        self._session_expiry = expiry or datetime.now() + timedelta(hours=self.default_expiry_hours)
+        self._session_expiry = expiry or datetime.now() + timedelta(
+            hours=self.default_expiry_hours
+        )
 
     def has_valid_session_data(self) -> bool:
         """Check if session has basic required data."""
@@ -90,7 +97,11 @@ class SessionManager:
         return {
             "has_cookies": bool(self._cookies),
             "cookie_count": len(self._cookies),
-            "expiry": self._session_expiry.isoformat() if self._session_expiry else None,
+            "expiry": (
+                self._session_expiry.isoformat()
+                if self._session_expiry
+                else None
+            ),
             "expired": self.is_session_expired(),
             "time_remaining": self._get_time_remaining(),
         }
@@ -102,10 +113,10 @@ class SessionManager:
 
         now = datetime.now()
         remaining = self._session_expiry - now
-        
+
         if remaining.total_seconds() <= 0:
             return " (expired)"
-            
+
         hours = int(remaining.total_seconds() // 3600)
         minutes = int((remaining.total_seconds() % 3600) // 60)
         return f" (expires in {hours}h {minutes}m)"
@@ -114,11 +125,11 @@ class SessionManager:
         """Get time remaining until expiry."""
         if not self._session_expiry:
             return None
-            
+
         remaining = self._session_expiry - datetime.now()
         if remaining.total_seconds() <= 0:
             return {"hours": 0, "minutes": 0, "seconds": 0}
-            
+
         return {
             "hours": int(remaining.total_seconds() // 3600),
             "minutes": int((remaining.total_seconds() % 3600) // 60),
@@ -133,7 +144,7 @@ class SessionManager:
         """Check if live verification is needed (cache expired)."""
         if self._last_live_verified_at is None:
             return True
-            
+
         elapsed = time.time() - self._last_live_verified_at
         return elapsed >= self._live_verification_cache_seconds
 
@@ -144,6 +155,5 @@ class SessionManager:
             "simple_cookies": self._cookies,
             "expiry": self._session_expiry,
         }
-
 
 # EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 13:47:13 (ywatanabe)"
+# Timestamp: "2025-10-10 02:11:45 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinderParallel.py
 # ----------------------------------------
 from __future__ import annotations
@@ -148,7 +148,8 @@ class ScholarURLFinderParallel:
 
         logger.info(
             f"{self.name}: Finding URLs for {len(dois)} DOIs ({self.n_workers} workers)",
-            sep="-", n_sep=50, indent=2
+            sep="-",
+            n_sep=50,
         )
 
         # Split DOIs among workers
@@ -217,15 +218,15 @@ class ScholarURLFinderParallel:
         )
 
         logger.info(
-            f"Worker {worker_id} starting ({len(dois_with_indices)} DOIs)",
-            indent=3, c="grey"
+            f"{self.name}: Worker {worker_id} starting ({len(dois_with_indices)} DOIs)",
+            c="grey",
         )
 
         # Create worker-specific Chrome profile for URL finding
         # Use "urlfinder_worker" prefix to avoid conflicts with PDF downloader workers
         worker_profile_name = f"urlfinder_worker_{worker_id}"
         logger.info(
-            f"Worker {worker_id}: Using profile: {worker_profile_name}"
+            f"{self.name}: Worker {worker_id}: Using profile: {worker_profile_name}"
         )
 
         # Sync from system profile to get extensions and auth cookies
@@ -237,10 +238,12 @@ class ScholarURLFinderParallel:
         )
 
         if sync_success:
-            logger.success(f"Worker {worker_id}: Profile synced from system")
+            logger.success(
+                f"{self.name}: Worker {worker_id}: Profile synced from system"
+            )
         else:
             logger.warning(
-                f"Worker {worker_id}: Profile sync failed, using empty profile"
+                f"{self.name}: Worker {worker_id}: Profile sync failed, using empty profile"
             )
 
         results = []
@@ -262,8 +265,7 @@ class ScholarURLFinderParallel:
             for i, (original_idx, doi) in enumerate(dois_with_indices):
                 try:
                     logger.info(
-                        f"Worker {worker_id} [{i+1}/{len(dois_with_indices)}]: {doi}",
-                        indent=4
+                        f"{self.name}: Worker {worker_id} [{i+1}/{len(dois_with_indices)}]: {doi}",
                     )
 
                     # Apply rate limiting delay with jitter
@@ -293,21 +295,17 @@ class ScholarURLFinderParallel:
                     if url_data.get("urls_pdf"):
                         self.stats["found"] += 1
                         logger.success(
-                            f"Found {len(url_data['urls_pdf'])} PDF URLs",
-                            indent=5
+                            f"{self.name}: Found {len(url_data['urls_pdf'])} PDF URLs",
                         )
                     else:
                         self.stats["not_found"] += 1
-                        logger.warning(
-                            f"No PDF URLs found",
-                            indent=5
-                        )
+                        logger.warning(f"{self.name}: No PDF URLs found")
 
                     results.append((original_idx, url_data))
 
                 except Exception as e:
                     logger.error(
-                        f"Worker {worker_id}: Failed to find URLs for {doi}: {e}"
+                        f"{self.name}: Worker {worker_id}: Failed to find URLs for {doi}: {e}"
                     )
                     self.stats["errors"] += 1
                     results.append((original_idx, {}))
@@ -316,29 +314,31 @@ class ScholarURLFinderParallel:
             await browser_manager.close()
 
         except Exception as e:
-            logger.error(f"Worker {worker_id}: Failed to initialize: {e}")
+            logger.error(
+                f"{self.name}: Worker {worker_id}: Failed to initialize: {e}"
+            )
             # Return empty results for all assigned DOIs
             for original_idx, doi in dois_with_indices:
                 results.append((original_idx, {}))
                 self.stats["errors"] += 1
 
         logger.info(
-            f"Worker {worker_id} completed: {len(results)}/{len(dois_with_indices)} DOIs processed"
+            f"{self.name}: Worker {worker_id} completed: {len(results)}/{len(dois_with_indices)} DOIs processed"
         )
         return results
 
     def _log_statistics(self, total: int):
         """Log final statistics."""
-        logger.info(f"\n{'='*60}")
-        logger.info("URL Finding Statistics:")
-        logger.info(f"  Total DOIs: {total}")
-        logger.info(f"  URLs Found: {self.stats['found']}")
-        logger.info(f"  Not Found: {self.stats['not_found']}")
-        logger.info(f"  Errors: {self.stats['errors']}")
+        logger.info(f"\n{self.name}: {'='*60}")
+        logger.info(f"{self.name}: URL Finding Statistics:")
+        logger.info(f"{self.name}: Total DOIs: {total}")
+        logger.info(f"{self.name}: URLs Found: {self.stats['found']}")
+        logger.info(f"{self.name}: Not Found: {self.stats['not_found']}")
+        logger.info(f"{self.name}: Errors: {self.stats['errors']}")
 
         if total > 0:
             success_rate = (self.stats["found"] / total) * 100
-            logger.info(f"  Success Rate: {success_rate:.1f}%")
+            logger.info(f"{self.name}:   Success Rate: {success_rate:.1f}%")
 
         logger.info(f"{'='*60}\n")
 

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-10 09:29:00 (ywatanabe)"
+# Timestamp: "2025-10-10 00:39:14 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_AuthCacheManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/library/_AuthCacheManager.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """Cache management for authentication sessions.
 
@@ -44,6 +48,8 @@ class AuthCacheManager:
             config: ScholarConfig instance for path management
             email: User email for validation
         """
+        self.name = self.__class__.__name__
+
         self.cache_name = cache_name
         self.config = config
         self.email = email
@@ -82,11 +88,11 @@ class AuthCacheManager:
 
             # Set secure permissions
             os.chmod(self.cache_file, 0o600)
-            logger.success(f"Session saved to: {self.cache_file}")
+            logger.success(f"{self.name}: Session saved to: {self.cache_file}")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to save session cache: {e}")
+            logger.error(f"{self.name}: Failed to save session cache: {e}")
             return False
 
     async def load_session_async(
@@ -101,7 +107,9 @@ class AuthCacheManager:
             True if loaded successfully, False otherwise
         """
         if not self.cache_file.exists():
-            logger.debug(f"No session cache found at {self.cache_file}")
+            logger.debug(
+                f"{self.name}: No session cache found at {self.cache_file}"
+            )
             return False
 
         try:
@@ -114,14 +122,14 @@ class AuthCacheManager:
 
             self._populate_session_manager(session_manager, cache_data)
             logger.success(
-                f"Loaded session from cache ({self.cache_file}): "
+                f"{self.name}: Loaded session from cache ({self.cache_file}): "
                 f"{len(session_manager.get_cookies())} cookies"
                 f"{session_manager.format_expiry_info()}"
             )
             return True
 
         except Exception as e:
-            logger.error(f"Failed to load session cache: {e}")
+            logger.error(f"{self.name}: Failed to load session cache: {e}")
             return False
 
     def clear_cache(self) -> bool:
@@ -133,10 +141,12 @@ class AuthCacheManager:
         try:
             if self.cache_file.exists():
                 self.cache_file.unlink()
-                logger.info(f"Cleared cache file: {self.cache_file}")
+                logger.info(
+                    f"{self.name}: Cleared cache file: {self.cache_file}"
+                )
             return True
         except Exception as e:
-            logger.error(f"Failed to clear cache: {e}")
+            logger.error(f"{self.name}: Failed to clear cache: {e}")
             return False
 
     def get_cache_file(self) -> Path:
@@ -166,7 +176,7 @@ class AuthCacheManager:
             with open(self.cache_file, "r") as f:
                 return json.load(f)
         except Exception as e:
-            logger.error(f"Failed to read cache file: {e}")
+            logger.error(f"{self.name}: Failed to read cache file: {e}")
             return None
 
     def _validate_cache_data(self, cache_data: Dict[str, Any]) -> bool:
@@ -174,7 +184,7 @@ class AuthCacheManager:
         # Skip encrypted files
         if "encrypted" in cache_data:
             logger.warn(
-                "Found encrypted session file - please re-authenticate_async"
+                f"{self.name}: Found encrypted session file - please re-authenticate_async"
             )
             return False
 
@@ -183,7 +193,7 @@ class AuthCacheManager:
             cached_email = cache_data.get("email", "")
             if cached_email and cached_email.lower() != self.email.lower():
                 logger.debug(
-                    f"Email mismatch: cached={cached_email}, current={self.email}"
+                    f"{self.name}: Email mismatch: cached={cached_email}, current={self.email}"
                 )
                 return False
 

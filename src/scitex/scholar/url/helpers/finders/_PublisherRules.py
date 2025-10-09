@@ -15,6 +15,7 @@ class PublisherRules:
     """Access publisher-specific PDF extraction rules from config."""
 
     def __init__(self, config: ScholarConfig = None):
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
 
     def get_config_for_url(self, url: str) -> Dict:

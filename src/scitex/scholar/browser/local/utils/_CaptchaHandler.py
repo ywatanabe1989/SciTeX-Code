@@ -21,6 +21,7 @@ class CaptchaHandler:
     """Automatically handles CAPTCHA and 'I am not a robot' popups."""
 
     def __init__(self):
+        self.name = self.__class__.__name__
         self.captcha_texts = [
             "I'm not a robot",
             "I am not a robot",

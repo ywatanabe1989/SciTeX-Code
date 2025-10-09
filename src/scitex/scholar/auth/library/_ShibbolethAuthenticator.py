@@ -173,9 +173,9 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                         self._full_cookies = data.get("full_cookies", [])
                         self._session_expiry = expiry
                         self._saml_attributes = data.get("saml_attributes", {})
-                        logger.info("Loaded existing Shibboleth session")
+                        logger.info(f"{self.name}: Loaded existing Shibboleth session")
                     else:
-                        logger.info("Existing Shibboleth session expired")
+                        logger.info(f"{self.name}: Existing Shibboleth session expired")
                         self.session_file.unlink()
             except Exception as e:
                 logger.warn(f"Failed to load session: {e}")
@@ -194,7 +194,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 }
                 with open(self.session_file, "w") as f:
                     json.dump(data, f, indent=2)
-                logger.info("Saved Shibboleth session")
+                logger.info(f"{self.name}: Saved Shibboleth session")
             except Exception as e:
                 logger.warn(f"Failed to save session: {e}")
 
@@ -229,7 +229,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
 
         # Check existing session
         if not force and await self.is_authenticate_async():
-            logger.info("Using existing Shibboleth session")
+            logger.info(f"{self.name}: Using existing Shibboleth session")
             return {
                 "cookies": self._cookies,
                 "full_cookies": self._full_cookies,
@@ -307,7 +307,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                 # Save session
                 self._save_session_async()
                 
-                logger.info("Shibboleth authentication successful")
+                logger.info(f"{self.name}: Shibboleth authentication successful")
                 return {
                     "cookies": self._cookies,
                     "full_cookies": self._full_cookies,
@@ -355,7 +355,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         if not is_wayf:
             return False
             
-        logger.info("Detected WAYF/Discovery Service page")
+        logger.info(f"{self.name}: Detected WAYF/Discovery Service page")
         
         # Try to find institution selector
         if self.institution:
@@ -386,14 +386,14 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                     
         # If automated selection fails, might need manual intervention
         if self.debug_mode:
-            logger.info("Please select your institution manually")
+            logger.info(f"{self.name}: Please select your institution manually")
             await asyncio.sleep(30)  # Give time for manual selection
             
         return False
 
     async def _handle_idp_login_async(self, page: Page) -> None:
         """Handle login at the Identity Provider."""
-        logger.info("Handling IdP login page")
+        logger.info(f"{self.name}: Handling IdP login page")
         
         # Get credentials
         if not self.username:
@@ -481,7 +481,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
             
         # Check if session is expired
         if datetime.now() > self._session_expiry:
-            logger.info("Shibboleth session expired")
+            logger.info(f"{self.name}: Shibboleth session expired")
             return False
             
         # If requested, verify session is still valid
@@ -509,7 +509,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
                     await browser.close()
                     
                     if not is_valid:
-                        logger.info("Shibboleth session no longer valid")
+                        logger.info(f"{self.name}: Shibboleth session no longer valid")
                         self._cookies = {}
                         self._full_cookies = []
                         self._session_expiry = None
@@ -566,7 +566,7 @@ class ShibbolethAuthenticator(BaseAuthenticator):
         if self.session_file.exists():
             self.session_file.unlink()
             
-        logger.info("Logged out from Shibboleth")
+        logger.info(f"{self.name}: Logged out from Shibboleth")
 
     async def get_session_info_async(self) -> Dict[str, Any]:
         """Get information about current session."""

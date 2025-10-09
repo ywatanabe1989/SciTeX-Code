@@ -15,7 +15,7 @@ from playwright.async_api import Page
 
 from scitex import logging
 from scitex.scholar import ScholarConfig
-from scitex.browser import show_popup_and_capture_async
+from scitex.browser import browser_logger
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ async def find_supplementary_urls(
     page: Page, config: ScholarConfig = None
 ) -> List[Dict]:
     """Find supplementary material URLs in a web page."""
-    await show_popup_and_capture_async(page, "Finding Supplementary URLs...")
+    await browser_logger.info(page, "Finding Supplementary URLs...")
 
     config = config or ScholarConfig()
     supplementary_selectors = config.resolve(

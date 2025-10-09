@@ -26,6 +26,7 @@ logger = getLogger(__name__)
 
 class ScholarConfig:
     def __init__(self, config_path: Optional[Union[str, Path]] = None):
+        self.name = self.__class__.__name__
         if config_path and Path(config_path).exists():
             config_data = self.load_yaml(config_path)
         else:

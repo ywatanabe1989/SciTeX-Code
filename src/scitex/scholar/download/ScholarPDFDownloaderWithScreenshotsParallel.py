@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 00:27:08 (ywatanabe)"
+# Timestamp: "2025-10-09 22:56:50 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloaderWithScreenshotsParallel.py
 # ----------------------------------------
 from __future__ import annotations
@@ -22,13 +22,15 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from scitex import logging
+
+# from scitex.scholar.browser.local.utils._ChromeProfileManager import (
+#     ChromeProfileManager,
+# )
+from scitex.browser.core import ChromeProfileManager
 from scitex.scholar import ScholarConfig
 from scitex.scholar.auth import AuthenticationGateway, ScholarAuthManager
 from scitex.scholar.browser.local.ScholarBrowserManager import (
     ScholarBrowserManager,
-)
-from scitex.scholar.browser.local.utils._ChromeProfileManager import (
-    ChromeProfileManager,
 )
 from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
 from scitex.scholar.download.ScholarPDFDownloaderWithScreenshots import (

@@ -5,7 +5,7 @@
 
 # Debugging utilities
 from .debugging import (
-    show_popup_and_capture_async,
+    browser_logger,
     show_grid_async,
     highlight_element_async,
 )
@@ -28,7 +28,7 @@ from .interaction import (
 
 __all__ = [
     # Debugging
-    "show_popup_and_capture_async",
+    "browser_logger",
     "show_grid_async",
     "highlight_element_async",
 

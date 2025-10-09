@@ -52,6 +52,7 @@ class URLDOIExtractor:
 
     def __init__(self):
         """Initialize the URL DOI extractor."""
+        self.name = self.__class__.__name__
         self.compiled_patterns = [
             re.compile(pattern, re.IGNORECASE)
             for pattern in self.DOI_URL_PATTERNS

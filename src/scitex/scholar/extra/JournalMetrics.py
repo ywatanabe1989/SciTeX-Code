@@ -40,6 +40,7 @@ class JournalMetrics:
 
     def __init__(self, cache_size: int = 1000):
         """Initialize with optional cache size."""
+        self.name = self.__class__.__name__
         self.factor_instance = Factor()
         self.get_metrics = lru_cache(maxsize=cache_size)(
             self._get_metrics_uncached

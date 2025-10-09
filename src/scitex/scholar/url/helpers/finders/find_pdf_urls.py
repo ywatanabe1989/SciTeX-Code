@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:34:40 (ywatanabe)"
+# Timestamp: "2025-10-10 03:24:04 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/find_pdf_urls.py
 # ----------------------------------------
 from __future__ import annotations
@@ -11,20 +11,12 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-__FILE__ = __file__
-
-"""
-URL Finder Functions
-
-Simple functions to find/extract URLs from web pages and metadata.
-No classes, just functions that do one thing well.
-"""
-
 from typing import Dict, List
 
 from playwright.async_api import Page
 
 from scitex import logging
+from scitex.browser import browser_logger
 from scitex.scholar import ScholarConfig
 
 from ._find_pdf_urls_by_direct_links import find_pdf_urls_by_direct_links
@@ -32,161 +24,183 @@ from ._find_pdf_urls_by_publisher_patterns import (
     find_pdf_urls_by_publisher_patterns,
 )
 from ._find_pdf_urls_by_view_button import find_pdf_urls_by_navigation
-
-# Python Zotero translators (primary)
-from ._find_pdf_urls_by_zotero_translators_python import (
-    find_pdf_urls_by_zotero_translators_python,
+from ._find_pdf_urls_by_zotero_translators import (
+    find_pdf_urls_by_zotero_translators,
 )
-
-# JavaScript Zotero translators (fallback) - now points to JavaScript implementation
-try:
-    from ._find_pdf_urls_by_zotero_translators_javascript import (
-        find_pdf_urls_by_zotero_translators as find_pdf_urls_by_zotero_translators_js,
-    )
-except ImportError:
-    # Fallback if JavaScript version doesn't exist
-    find_pdf_urls_by_zotero_translators_js = None
 
 logger = logging.getLogger(__name__)
 
 
-async def find_pdf_urls(
-    page: Page, base_url: str = None, config: ScholarConfig = None
-) -> List[Dict]:
-    """Find PDF URLs in a web page using multiple strategies without double counts."""
-    from scitex.browser import show_popup_and_capture_async
-
-    config = config or ScholarConfig()
-    if base_url is None:
-        base_url = page.url
-
-    urls_pdf = []
-    seen_urls = set()
-
-    await show_popup_and_capture_async(
-        page, f"URL Finder: Finding PDFs at {base_url[:60]}..."
-    )
-
-    # Strategy 1: Try Python Zotero translators FIRST (most reliable, fastest)
-    await show_popup_and_capture_async(
-        page, "URL Finder: Trying Python Zotero translators..."
-    )
-    translator_urls_py = await find_pdf_urls_by_zotero_translators_python(page, base_url)
-    for url in translator_urls_py:
+async def _add_urls_to_collection(
+    urls: List[str], source_name: str, urls_pdf: List[Dict], seen_urls: set
+) -> None:
+    for url in urls:
         if url not in seen_urls:
             seen_urls.add(url)
-            urls_pdf.append({"url": url, "source": "zotero_translator_python"})
+            urls_pdf.append({"url": url, "source": source_name})
 
-    if translator_urls_py:
-        await show_popup_and_capture_async(
-            page, f"URL Finder: ✓ Python Zotero found {len(translator_urls_py)} URLs"
-        )
-        await page.wait_for_timeout(1000)
-    else:
-        # Fallback: Try JavaScript translators if Python ones don't find anything
-        if find_pdf_urls_by_zotero_translators_js:
-            await show_popup_and_capture_async(
-                page, "URL Finder: Trying JavaScript Zotero translators (fallback)..."
-            )
-            translator_urls_js = await find_pdf_urls_by_zotero_translators_js(page, base_url)
-            for url in translator_urls_js:
-                if url not in seen_urls:
-                    seen_urls.add(url)
-                    urls_pdf.append({"url": url, "source": "zotero_translator_js"})
 
-            if translator_urls_js:
-                await show_popup_and_capture_async(
-                    page, f"URL Finder: ✓ JS Zotero found {len(translator_urls_js)} URLs"
-                )
-                await page.wait_for_timeout(1000)
-
-    # Strategy 2: Find direct PDF links (fallback if no translator)
-    await show_popup_and_capture_async(
-        page, "URL Finder: Checking direct PDF links..."
+async def _apply_strategy_zotero(
+    page: Page,
+    base_url: str,
+    urls_pdf: List[Dict],
+    seen_urls: set,
+    func_name: str,
+) -> None:
+    await browser_logger.info(
+        page,
+        f"{func_name}: 1/4 Finding PDF URLs by Python Zotero translators...",
     )
-    direct_links = await find_pdf_urls_by_direct_links(page, config)
-    for url in direct_links:
-        if url not in seen_urls:
-            seen_urls.add(url)
-            urls_pdf.append({"url": url, "source": "direct_link"})
-
-    if direct_links:
-        await show_popup_and_capture_async(
-            page, f"URL Finder: ✓ Direct links found {len(direct_links)} URLs"
-        )
-        await page.wait_for_timeout(1000)
-
-    # Strategy 3: Try navigation to PDF URLs (for ScienceDirect etc)
-    # This captures the final PDF URL after redirects
-    if urls_pdf and any(
-        domain in page.url.lower()
-        for domain in ["sciencedirect.com", "cell.com", "elsevier.com"]
-    ):
-        await show_popup_and_capture_async(
-            page, "URL Finder: Navigating to resolve redirects..."
-        )
-        # We have PDF URLs but they might be intermediate endpoints
-        # Try to navigate to get the final URL
-        navigation_urls = await find_pdf_urls_by_navigation(page, config)
-        for url in navigation_urls:
-            if url not in seen_urls:
-                seen_urls.add(url)
-                # Replace existing URL if it's an intermediate one
-                for i, existing in enumerate(urls_pdf):
-                    if (
-                        "/pdfft?" in existing["url"]
-                        and "pdf.sciencedirectassets.com" in url
-                    ):
-                        urls_pdf[i] = {"url": url, "source": "navigation"}
-                        break
-                else:
-                    urls_pdf.append({"url": url, "source": "navigation"})
-
-    # Strategy 4: Check for publisher patterns
-    await show_popup_and_capture_async(
-        page, "URL Finder: Checking publisher patterns..."
+    translator_urls = await find_pdf_urls_by_zotero_translators(
+        page, base_url, func_name
     )
-    pattern_urls = find_pdf_urls_by_publisher_patterns(page, base_url)
-    for url in pattern_urls:
-        if url not in seen_urls:
-            seen_urls.add(url)
-            urls_pdf.append({"url": url, "source": "publisher_pattern"})
+    await _add_urls_to_collection(
+        translator_urls, "zotero_translator", urls_pdf, seen_urls
+    )
 
-    if pattern_urls:
-        await show_popup_and_capture_async(
-            page, f"URL Finder: ✓ Patterns found {len(pattern_urls)} URLs"
-        )
-        await page.wait_for_timeout(1000)
-
-    # Final result
-    if len(urls_pdf):
-        logger.success(
-            f"Found {len(urls_pdf)} unique PDF URLs from {page.url}"
-        )
-        await show_popup_and_capture_async(
+    if translator_urls:
+        await browser_logger.info(
             page,
-            f"URL Finder: ✓ SUCCESS! Found {len(urls_pdf)} PDF URLs total",
+            f"{func_name}: ✓ Python Zotero found {len(translator_urls)} URLs ({translator_urls})",
         )
-        await page.wait_for_timeout(2000)
-    else:
-        logger.fail(f"Not found any PDF URLs from {page.url}")
-        await show_popup_and_capture_async(
-            page, "URL Finder: ✗ No PDF URLs found"
-        )
-        await page.wait_for_timeout(2000)
-
-    source_counts = {}
-    for item in urls_pdf:
-        source = item["source"]
-        source_counts[source] = source_counts.get(source, 0) + 1
-
-    for source, count in source_counts.items():
-        logger.info(f"  - {source}: {count} URLs")
+        await page.wait_for_timeout(1000)
 
     return urls_pdf
 
 
-# This downloaded PDF immediately
-# https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2013.00084/pdf
+async def _apply_strategy_direct_links(
+    page: Page,
+    config: ScholarConfig,
+    urls_pdf: List[Dict],
+    seen_urls: set,
+    func_name: str,
+) -> None:
+
+    await browser_logger.info(
+        page, f"{func_name}: 2/4 Finding PDF URLs by Direct PDF Links..."
+    )
+    direct_links = await find_pdf_urls_by_direct_links(page, config, func_name)
+    await _add_urls_to_collection(
+        direct_links, "direct_link", urls_pdf, seen_urls
+    )
+
+    if direct_links:
+        await browser_logger.info(
+            page, f"{func_name}: ✓ Direct links found {len(direct_links)} URLs"
+        )
+        await page.wait_for_timeout(1000)
+
+    return urls_pdf
+
+
+async def _apply_strategy_navigation(
+    page: Page,
+    config: ScholarConfig,
+    urls_pdf: List[Dict],
+    seen_urls: set,
+    func_name: str,
+) -> None:
+
+    await browser_logger.info(
+        page, f"{func_name}: 3/4 Finding PDF URLs by Navigation..."
+    )
+
+    elsevier_domains = ["sciencedirect.com", "cell.com", "elsevier.com"]
+    if not any(domain in page.url.lower() for domain in elsevier_domains):
+        return urls_pdf
+
+    navigation_urls = await find_pdf_urls_by_navigation(
+        page, config, func_name
+    )
+
+    for url in navigation_urls:
+        if url not in seen_urls:
+            seen_urls.add(url)
+
+            replaced = False
+            for ii, existing in enumerate(urls_pdf):
+                if (
+                    "/pdfft?" in existing["url"]
+                    and "pdf.sciencedirectassets.com" in url
+                ):
+                    urls_pdf[ii] = {"url": url, "source": "navigation"}
+                    replaced = True
+                    break
+
+            if not replaced:
+                urls_pdf.append({"url": url, "source": "navigation"})
+
+    return urls_pdf
+
+
+async def _apply_strategy_publisher_patterns(
+    page: Page,
+    base_url: str,
+    urls_pdf: List[Dict],
+    seen_urls: set,
+    func_name: str,
+) -> None:
+
+    await browser_logger.info(
+        page, f"{func_name}: 4/4 Finding PDF URLs by Publisher Patterns..."
+    )
+    pattern_urls = find_pdf_urls_by_publisher_patterns(
+        page, base_url, func_name
+    )
+    await _add_urls_to_collection(
+        pattern_urls, "publisher_pattern", urls_pdf, seen_urls
+    )
+
+    if pattern_urls:
+        await browser_logger.info(
+            page, f"{func_name}: ✓ Patterns found {len(pattern_urls)} URLs"
+        )
+        await page.wait_for_timeout(1000)
+
+    return urls_pdf
+
+
+async def find_pdf_urls(
+    page: Page,
+    base_url: str = None,
+    config: ScholarConfig = None,
+    func_name="find_pdf_urls",
+) -> List[Dict]:
+
+    func_name = "find_pdf_urls"
+    config = config or ScholarConfig()
+    base_url = base_url or page.url
+
+    urls_pdf = []
+    seen_urls = set()
+
+    await browser_logger.info(
+        page, f"{func_name}: Finding PDFs at {base_url[:60]}..."
+    )
+
+    strategies = {
+        "Zotero Translators": _apply_strategy_zotero,
+        "Direct Links": _apply_strategy_direct_links,
+        "Navigation": _apply_strategy_navigation,
+        "Publisher Patterns": _apply_strategy_publisher_patterns,
+    }
+    strategies_tried = []
+    for strategy_str, strategy in strategies.items():
+        try:
+            urls_pdf = await strategy(
+                page, base_url, urls_pdf, seen_urls, func_name
+            )
+            strategies_tried.append(strategy_str)
+            if urls_pdf:
+                break
+        except Exception as e:
+            logger.warn(f"{func_name}: {str(e)}")
+
+    strategies_not_tried = list(set(strategies.keys()) - set(strategies_tried))
+    logger.success(f"Skippped {strategies_not_tried}")
+
+    # await _log_final_results(page, urls_pdf, func_name)
+
+    return urls_pdf
 
 # EOF

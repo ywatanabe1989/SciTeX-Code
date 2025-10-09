@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-08 23:20:43
+!-- Timestamp: 2025-10-10 01:01:58
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -11,6 +11,14 @@
 ## Until screenshots created here, YOU MUST NOT SAY IT IS FIXED
 ## YOU CAN RUN FRESH ANYTIME
 
+
+## Implement this logging style to all classes
+``` python
+# in def __init__(...):
+self.name = self.__class__.__name__
+
+logger.xxx(f"{self.name}: ...")
+```
 
 ``` bash
 run_neurovista_pipeline() {

@@ -30,6 +30,7 @@ class URLDOIEngine(BaseDOIEngine):
 
     def __init__(self, email: str = "research@example.com"):
         super().__init__(email)
+        self.name = self.__class__.__name__
         self.api_key = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
 
         self.ieee_patterns = [

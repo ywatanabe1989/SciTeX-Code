@@ -86,7 +86,7 @@ class ZenRowsBrowserManager(BrowserMixin):
             self._shared_browser is None
             or not self._shared_browser.is_connected()
         ):
-            logger.debug("Launching browser with ZenRows proxy...")
+            logger.debug(f"{self.name}: Launching browser with ZenRows proxy...")
 
             if self._shared_playwright is None:
                 self._shared_playwright = await async_playwright().start()
@@ -109,7 +109,7 @@ class ZenRowsBrowserManager(BrowserMixin):
             self._shared_browser = (
                 await self._shared_playwright.chromium.launch(**launch_options)
             )
-            logger.success("Launched browser with ZenRows proxy")
+            logger.success(f"{self.name}: Launched browser with ZenRows proxy")
 
         return self._shared_browser
 

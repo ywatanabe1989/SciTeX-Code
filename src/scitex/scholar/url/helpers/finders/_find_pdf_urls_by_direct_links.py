@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 03:34:39 (ywatanabe)"
+# Timestamp: "2025-10-10 03:24:05 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_direct_links.py
 # ----------------------------------------
 from __future__ import annotations
@@ -18,8 +18,8 @@ from typing import List
 from playwright.async_api import Page
 
 from scitex import logging
+from scitex.browser import browser_logger
 from scitex.scholar import ScholarConfig
-from scitex.browser import show_popup_and_capture_async
 
 from ._PublisherRules import PublisherRules
 
@@ -27,7 +27,9 @@ logger = logging.getLogger(__name__)
 
 
 async def find_pdf_urls_by_direct_links(
-    page: Page, config: ScholarConfig = None
+    page: Page,
+    config: ScholarConfig = None,
+    func_name: str = "find_pdf_urls_by_direct_links",
 ) -> List[str]:
     """Find direct PDF links in the page."""
     config = config or ScholarConfig()
@@ -35,10 +37,12 @@ async def find_pdf_urls_by_direct_links(
     try:
         all_urls = set()
 
-        dropdown_urls = await _find_pdf_urls_from_dropdown(page, config)
+        dropdown_urls = await _find_pdf_urls_from_dropdown(
+            page, config, func_name
+        )
         all_urls.update(dropdown_urls)
 
-        href_urls = await _find_pdf_urls_by_href(page, config)
+        href_urls = await _find_pdf_urls_by_href(page, config, func_name)
         all_urls.update(href_urls)
 
         # Filter URLs based on publisher-specific rules
@@ -51,22 +55,23 @@ async def find_pdf_urls_by_direct_links(
         # Log if we filtered out many URLs (like the 35 from ScienceDirect)
         if len(all_urls) > len(filtered_urls):
             logger.info(
-                f"Filtered {len(all_urls)} URLs down to {len(filtered_urls)} valid PDFs"
+                f"{func_name}: Filtered {len(all_urls)} URLs down to {len(filtered_urls)} valid PDFs"
             )
 
         return filtered_urls
     except Exception as e:
-        logger.error(f"Error finding PDF URLs: {e}")
+        logger.error(f"{func_name}: Error finding PDF URLs: {e}")
         return []
 
 
 async def _find_pdf_urls_by_href(
     page: Page,
+    config: ScholarConfig = None,
+    func_name: str = "_find_pdf_urls_by_href",
     deny_selectors: List[str] = None,
     deny_classes: List[str] = None,
     deny_text_patterns: List[str] = None,
     download_selectors: List[str] = None,
-    config: ScholarConfig = None,
 ) -> List[str]:
     """Find PDF URLs from href attributes using configured selectors."""
     try:
@@ -94,8 +99,8 @@ async def _find_pdf_urls_by_href(
         deny_classes = merged_config["deny_classes"]
         deny_text_patterns = merged_config["deny_text_patterns"]
 
-        await show_popup_and_capture_async(
-            page, "Finding PDF URLs by href selectors..."
+        await browser_logger.info(
+            page, f"{func_name}: Finding PDF URLs by href selectors..."
         )
 
         # Use merged download selectors (config + publisher-specific)
@@ -229,12 +234,14 @@ async def _find_pdf_urls_by_href(
 
         return static_urls
     except Exception as e:
-        logger.info(e)
+        logger.info(f"{func_name}: {str(e)}")
         return []
 
 
 async def _find_pdf_urls_from_dropdown(
-    page: Page, config: ScholarConfig = None
+    page: Page,
+    config: ScholarConfig = None,
+    func_name: str = "_find_pdf_urls_from_dropdown",
 ) -> List[str]:
     try:
         config = config or ScholarConfig()
@@ -262,7 +269,7 @@ async def _find_pdf_urls_from_dropdown(
 
         return pdf_urls
     except Exception as e:
-        logger.info(e)
+        logger.info(f"{func_name}: {str(e)}")
         return []
 
 # EOF

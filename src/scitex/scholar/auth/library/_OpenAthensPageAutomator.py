@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:43:52 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
+# Timestamp: "2025-10-10 00:46:07 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/library/_OpenAthensPageAutomator.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """OpenAthens page automation for institutional email entry and selection."""
 
@@ -69,10 +73,14 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
     async def perform_login_async(self, page: Page) -> bool:
         """Perform OpenAthens email entry and institution selection."""
         try:
-            self.logger.info("Starting OpenAthens page automation")
+            self.logger.info(
+                f"{self.name}: Starting OpenAthens page automation"
+            )
 
             if not self.openathens_email:
-                self.logger.error("No OpenAthens email configured")
+                self.logger.error(
+                    f"{self.name}: No OpenAthens email configured"
+                )
                 return False
 
             # Step 1: Enter institutional email
@@ -91,7 +99,9 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
             return success
 
         except Exception as e:
-            self.logger.error(f"OpenAthens page automation failed: {e}")
+            self.logger.error(
+                f"{self.name}: OpenAthens page automation failed: {e}"
+            )
             await self._take_debug_screenshot_async(page)
             return False
 
@@ -99,7 +109,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
         """Enter institutional email in OpenAthens form."""
         try:
             self.logger.info(
-                f"Entering institutional email: {self.openathens_email}"
+                f"{self.name}: Entering institutional email: {self.openathens_email}"
             )
 
             # The correct selector from Puppeteer testing
@@ -109,22 +119,28 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
             try:
                 await page.wait_for_selector(email_selector, timeout=10000)
                 await page.fill(email_selector, self.openathens_email)
-                self.logger.info("Successfully filled OpenAthens email field")
+                self.logger.info(
+                    f"{self.name}: Successfully filled OpenAthens email field"
+                )
 
                 # Press Enter to trigger the search/autocomplete
                 await page.press(email_selector, "Enter")
-                self.logger.info("Pressed Enter to trigger institution search")
+                self.logger.info(
+                    f"{self.name}: Pressed Enter to trigger institution search"
+                )
 
                 # Wait for institution dropdown to appear
                 await page.wait_for_timeout(2000)
                 return True
 
             except Exception as e:
-                self.logger.error(f"Failed to fill email field: {e}")
+                self.logger.error(
+                    f"{self.name}: Failed to fill email field: {e}"
+                )
                 return False
 
         except Exception as e:
-            self.logger.error(f"Failed to enter email: {e}")
+            self.logger.error(f"{self.name}: Failed to enter email: {e}")
             return False
 
     async def _submit_email_form_async(self, page: Page) -> bool:
@@ -152,10 +168,12 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                         selector, timeout=2000
                     )
                     if element:
-                        success = await click_with_fallbacks_async(page, selector)
+                        success = await click_with_fallbacks_async(
+                            page, selector
+                        )
                         if success:
                             self.logger.info(
-                                f"Successfully clicked submit using: {selector}"
+                                f"{self.name}: Successfully clicked submit using: {selector}"
                             )
                             await page.wait_for_timeout(1000)
                             return True
@@ -163,78 +181,20 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                     continue
 
             self.logger.info(
-                "No explicit submit button found, assuming form submitted automatically"
+                f"{self.name}: No explicit submit button found, assuming form submitted automatically"
             )
             return True
 
         except Exception as e:
-            self.logger.error(f"Failed to submit email form: {e}")
+            self.logger.error(f"{self.name}: Failed to submit email form: {e}")
             return False
-
-    # async def _select_institution_async(self, page) -> bool:
-    #     """Select institution from the list that appears (generic for any institution)."""
-    #     try:
-    #         self.logger.info("Waiting for institution selection to appear...")
-
-    #         # Wait for institution dropdown to appear
-    #         institution_selector = ".wayfinder-item"
-
-    #         try:
-    #             # Wait for any institution option to appear
-    #             await page.wait_for_selector(
-    #                 institution_selector, timeout=10000
-    #             )
-    #             self.logger.info("Found institution dropdown options")
-
-    #             # Get all available institution options
-    #             institution_elements = await page.query_selector_all(
-    #                 institution_selector
-    #             )
-
-    #             if len(institution_elements) == 1:
-    #                 # Only one option available, click it
-    #                 await institution_elements[0].click()
-    #                 institution_text = await institution_elements[
-    #                     0
-    #                 ].text_content()
-    #                 self.logger.success(
-    #                     f"Selected institution: {institution_text.strip()}"
-    #                 )
-
-    #             elif len(institution_elements) > 1:
-    #                 # Multiple options - try to find best match based on email domain
-    #                 selected = await self._select_best_institution_match(
-    #                     page, institution_elements
-    #                 )
-    #                 if not selected:
-    #                     # If no good match, select the first one
-    #                     await institution_elements[0].click()
-    #                     institution_text = await institution_elements[
-    #                         0
-    #                     ].text_content()
-    #                     self.logger.info(
-    #                         f"Selected first available institution: {institution_text.strip()}"
-    #                     )
-    #             else:
-    #                 self.logger.error("No institution options found")
-    #                 return False
-
-    #             # Wait a moment for redirect to start
-    #             await page.wait_for_timeout(2000)
-    #             return True
-
-    #         except Exception as e:
-    #             self.logger.error(f"Failed to click institution option: {e}")
-    #             return False
-
-    #     except Exception as e:
-    #         self.logger.error(f"Failed to select institution: {e}")
-    #         return False
 
     async def _select_institution_async(self, page) -> bool:
         """Select institution from the list that appears (generic for any institution)."""
         try:
-            self.logger.info("Waiting for institution selection to appear...")
+            self.logger.info(
+                f"{self.name}: Waiting for institution selection to appear..."
+            )
 
             institution_selector = ".wayfinder-item"
             await page.wait_for_selector(institution_selector, timeout=10000)
@@ -249,7 +209,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                 institution_text = await institution_elements[0].text_content()
                 await institution_elements[0].click()
                 self.logger.success(
-                    f"Selected institution: {institution_text.strip()}"
+                    f"{self.name}: Selected institution: {institution_text.strip()}"
                 )
             elif len(institution_elements) > 1:
                 selected = await self._select_best_institution_match(
@@ -262,17 +222,19 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                     ].text_content()
                     await institution_elements[0].click()
                     self.logger.info(
-                        f"Selected first available institution: {institution_text.strip()}"
+                        f"{self.name}: Selected first available institution: {institution_text.strip()}"
                     )
             else:
-                self.logger.error("No institution options found")
+                self.logger.error(f"{self.name}: No institution options found")
                 return False
 
             await page.wait_for_timeout(2000)
             return True
 
         except Exception as e:
-            self.logger.error(f"Failed to select institution: {e}")
+            self.logger.error(
+                f"{self.name}: Failed to select institution: {e}"
+            )
             return False
 
     async def _select_best_institution_match(
@@ -307,7 +269,7 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                     if any(keyword in text_lower for keyword in keywords):
                         await element.click()
                         self.logger.success(
-                            f"Selected matched institution: {text.strip()}"
+                            f"{self.name}: Selected matched institution: {text.strip()}"
                         )
                         return True
 
@@ -318,20 +280,22 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
                     if "university" in text.lower():
                         await element.click()
                         self.logger.info(
-                            f"Selected university institution: {text.strip()}"
+                            f"{self.name}: Selected university institution: {text.strip()}"
                         )
                         return True
 
             return False
 
         except Exception as e:
-            self.logger.error(f"Failed to match institution: {e}")
+            self.logger.error(f"{self.name}: Failed to match institution: {e}")
             return False
 
     async def _wait_for_institution_redirect_async(self, page) -> bool:
         """Wait for redirect to institution SSO page."""
         try:
-            self.logger.info("Waiting for redirect to institution SSO...")
+            self.logger.info(
+                f"{self.name}: Waiting for redirect to institution SSO..."
+            )
 
             # Wait for URL to change away from OpenAthens
             for i in range(30):  # Wait up to 30 seconds
@@ -339,17 +303,19 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
 
                 if not self.is_sso_page(current_url):
                     self.logger.success(
-                        f"Redirected to institution SSO: {current_url[:50]}..."
+                        f"{self.name}: Redirected to institution SSO: {current_url[:50]}..."
                     )
                     return True
 
                 await page.wait_for_timeout(1000)
 
-            self.logger.error("Timeout waiting for institution redirect")
+            self.logger.error(
+                f"{self.name}: Timeout waiting for institution redirect"
+            )
             return False
 
         except Exception as e:
-            self.logger.error(f"Failed waiting for redirect: {e}")
+            self.logger.error(f"{self.name}: Failed waiting for redirect: {e}")
             return False
 
     async def _take_debug_screenshot_async(self, page: Page):
@@ -366,9 +332,11 @@ class OpenAthensPageAutomator(BaseSSOAutomator):
             )
             screenshot_path.parent.mkdir(parents=True, exist_ok=True)
             await page.screenshot(path=str(screenshot_path))
-            self.logger.debug(f"Debug screenshot: {screenshot_path}")
+            self.logger.debug(
+                f"{self.name}: Debug screenshot: {screenshot_path}"
+            )
         except Exception as e:
-            self.logger.debug(f"Screenshot failed: {e}")
+            self.logger.debug(f"{self.name}: Screenshot failed: {e}")
 
 
 if __name__ == "__main__":

@@ -10,8 +10,27 @@ __FILE__ = "./src/scitex/scholar/browser/remote/_CaptchaHandler.py"
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-"""Captcha handler for browser automation using 2Captcha service."""
+"""
+Functionalities:
+  - Handles CAPTCHA solving using 2Captcha service
+  - Detects and solves Cloudflare, reCAPTCHA, and hCaptcha challenges
+  - Provides automated CAPTCHA resolution for browser automation
+  - Demonstrates captcha handling when run standalone
 
+Dependencies:
+  - packages:
+    - playwright
+    - aiohttp
+
+IO:
+  - input-files:
+    - None
+  - output-files:
+    - None
+"""
+
+"""Imports"""
+import argparse
 import asyncio
 import time
 from typing import Optional, Dict, Any, Union
@@ -23,6 +42,8 @@ from scitex import logging
 from scitex.errors import ScholarError
 
 logger = logging.getLogger(__name__)
+
+"""Functions & Classes"""
 
 
 class CaptchaHandler:

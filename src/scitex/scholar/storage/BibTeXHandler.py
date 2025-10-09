@@ -21,6 +21,7 @@ class BibTeXHandler:
     """Handles BibTeX parsing and conversion to Paper objects."""
 
     def __init__(self, project: str = None, config=None):
+        self.name = self.__class__.__name__
         self.project = project
         self.config = config
 

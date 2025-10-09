@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 01:07:12 (ywatanabe)"
+# Timestamp: "2025-10-10 01:34:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/helpers/finders/_find_pdf_urls_by_view_button.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,7 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
 """
 Find PDF URLs by navigating to PDF links and following redirects.
 
@@ -29,7 +30,9 @@ logger = logging.getLogger(__name__)
 
 
 async def find_pdf_urls_by_navigation(
-    page: Page, config: ScholarConfig = None
+    page: Page,
+    config: ScholarConfig = None,
+    func_name: str = "find_pdf_urls_by_navigation",
 ) -> List[str]:
     """
     Find PDF URLs by navigating to PDF links and capturing final URLs.
@@ -81,14 +84,18 @@ async def find_pdf_urls_by_navigation(
 
                             href = urljoin(page.url, href)
                         pdf_href = href
-                        logger.info(f"Found PDF link: {href[:80]}...")
+                        logger.info(
+                            f"{func_name}: Found PDF link: {href[:80]}..."
+                        )
                         break
             except Exception as e:
-                logger.debug(f"Error checking selector {selector}: {e}")
+                logger.debug(
+                    f"{func_name}: Error checking selector {selector}: {e}"
+                )
                 continue
 
         if not pdf_href:
-            logger.debug("No PDF links found on page")
+            logger.debug(f"{func_name}: No PDF links found on page")
             return []
 
         # Navigate to PDF URL in a new page to capture final URL
@@ -97,7 +104,7 @@ async def find_pdf_urls_by_navigation(
 
         try:
             logger.info(
-                "Navigating to PDF URL to capture final destination..."
+                f"{func_name}: Navigating to PDF URL to capture final destination..."
             )
             new_page = await context.new_page()
 
@@ -123,8 +130,10 @@ async def find_pdf_urls_by_navigation(
             # Check again for final URL
             final_url = new_page.url
 
-            logger.info(f"Redirect complete after {len(redirect_chain)} steps")
-            logger.info(f"Final URL: {final_url[:80]}...")
+            logger.info(
+                f"{func_name}: Redirect complete after {len(redirect_chain)} steps"
+            )
+            logger.info(f"{func_name}: Final URL: {final_url[:80]}...")
 
             # Check if final URL is a PDF
             if any(
@@ -138,14 +147,16 @@ async def find_pdf_urls_by_navigation(
                 ]
             ):
                 pdf_urls.append(final_url)
-                logger.success(f"Captured final PDF URL via navigation")
+                logger.success(
+                    f"{func_name}: Captured final PDF URL via navigation"
+                )
             else:
                 logger.debug(
-                    f"Final URL doesn't appear to be a PDF: {final_url}"
+                    f"{func_name}: Final URL doesn't appear to be a PDF: {final_url}"
                 )
 
         except Exception as e:
-            logger.error(f"Error navigating to PDF: {e}")
+            logger.error(f"{func_name}: Error navigating to PDF: {e}")
         finally:
             if new_page:
                 try:
@@ -156,11 +167,13 @@ async def find_pdf_urls_by_navigation(
         return pdf_urls
 
     except Exception as e:
-        logger.error(f"Error finding PDFs via navigation: {e}")
+        logger.error(f"{func_name}: Error finding PDFs via navigation: {e}")
         return []
 
 
-async def find_pdf_url_from_sciencedirect_api(page: Page) -> Optional[str]:
+async def find_pdf_url_from_sciencedirect_api(
+    page: Page, func_name="find_pdf_url_from_sciencedirect_api"
+) -> Optional[str]:
     """
     Extract PDF URL from ScienceDirect page using their JavaScript context.
 
@@ -208,7 +221,7 @@ async def find_pdf_url_from_sciencedirect_api(page: Page) -> Optional[str]:
 
         if pdf_info:
             logger.info(
-                f"Found PDF info from page context: {pdf_info[:80]}..."
+                f"{func_name}: Found PDF info from page context: {pdf_info[:80]}..."
             )
             return pdf_info
 

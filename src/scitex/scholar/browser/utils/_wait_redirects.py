@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-09 00:34:00 (ywatanabe)"
+# Timestamp: "2025-10-10 03:24:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,7 +37,9 @@ _AUTH_ENDPOINTS: List[str] | None = None
 _ARTICLE_PATTERNS: List[str] | None = None
 
 
-def _load_auth_patterns() -> tuple[List[str], List[str]]:
+def _load_auth_patterns(
+    func_name="_load_auth_patterns",
+) -> tuple[List[str], List[str]]:
     """Load authentication patterns from Scholar config."""
     global _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
 
@@ -53,16 +55,18 @@ def _load_auth_patterns() -> tuple[List[str], List[str]]:
 
         if not _AUTH_ENDPOINTS:
             logger.warning(
-                "No auth_endpoint_patterns in config, using fallback"
+                f"{func_name}: No auth_endpoint_patterns in config, using fallback"
             )
             _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
         if not _ARTICLE_PATTERNS:
-            logger.warning("No article_url_patterns in config, using fallback")
+            logger.warning(
+                f"{func_name}: No article_url_patterns in config, using fallback"
+            )
             _ARTICLE_PATTERNS = _get_fallback_article_patterns()
 
     except Exception as e:
         logger.warning(
-            f"Failed to load patterns from config: {e}, using fallback"
+            f"{func_name}: Failed to load patterns from config: {e}, using fallback"
         )
         _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
         _ARTICLE_PATTERNS = _get_fallback_article_patterns()
@@ -70,7 +74,9 @@ def _load_auth_patterns() -> tuple[List[str], List[str]]:
     return _AUTH_ENDPOINTS, _ARTICLE_PATTERNS
 
 
-def _get_fallback_auth_patterns() -> List[str]:
+def _get_fallback_auth_patterns(
+    func_name="_get_fallback_auth_patterns",
+) -> List[str]:
     """Fallback auth patterns if config fails."""
     return [
         "go.openathens.net",
@@ -161,7 +167,9 @@ def is_captcha_page(url: str) -> bool:
     return any(indicator in url_lower for indicator in captcha_indicators)
 
 
-async def detect_captcha_on_page(page: Page) -> bool:
+async def detect_captcha_on_page(
+    page: Page, func_name="detect_captcha_on_page"
+) -> bool:
     """Detect if the current page shows a CAPTCHA challenge."""
     try:
         # Check URL first
@@ -197,7 +205,7 @@ async def detect_captcha_on_page(page: Page) -> bool:
         return False
 
     except Exception as e:
-        logger.debug(f"CAPTCHA detection error: {e}")
+        logger.debug(f"{func_name}: CAPTCHA detection error: {e}")
         return False
 
 
@@ -209,6 +217,7 @@ async def wait_redirects(
     track_chain: bool = True,
     wait_for_idle: bool = True,
     auth_aware: bool = True,  # New parameter
+    func_name="wait_redirects",
 ) -> Dict:
     """
     Wait for redirect chain to complete, handling authentication endpoints.
@@ -226,13 +235,13 @@ async def wait_redirects(
         dict with redirect information
     """
     if show_progress:
-        from scitex.browser import show_popup_and_capture_async
+        from scitex.browser import browser_logger
 
     start_time = asyncio.get_event_loop().time()
     start_url = page.url
 
     if show_progress:
-        await show_popup_and_capture_async(
+        await browser_logger.info(
             page,
             f"Waiting for redirects (max {timeout/1000:.0f}s)...",
             duration_ms=timeout,
@@ -273,13 +282,13 @@ async def wait_redirects(
                 }
             )
 
-        logger.debug(f"Response: {url[:80]} ({status})")
+        logger.debug(f"{func_name}: Response: {url[:80]} ({status})")
 
         # Show progress if enabled
         if show_progress and (300 <= status < 400 or is_auth_endpoint(url)):
             redirect_count += 1
             asyncio.create_task(
-                show_popup_and_capture_async(
+                browser_logger.info(
                     page,
                     f"{'Auth' if is_auth_endpoint(url) else 'Redirect'} {redirect_count}: {url[:40]}...",
                     duration_ms=1000,
@@ -289,10 +298,10 @@ async def wait_redirects(
         # Check if we reached final article
         if is_final_article_url(url) and 200 <= status < 300:
             found_article = True
-            logger.info(f"Found article page: {url[:80]}")
+            logger.info(f"{func_name}: Found article page: {url[:80]}")
             if show_progress:
                 asyncio.create_task(
-                    show_popup_and_capture_async(
+                    browser_logger.info(
                         page, f"Article found: {url[:40]}...", duration_ms=2000
                     )
                 )
@@ -303,20 +312,22 @@ async def wait_redirects(
         if 300 <= status < 400:
             redirect_count += 1
             if redirect_count >= max_redirects:
-                logger.warning(f"Max redirects ({max_redirects}) reached")
+                logger.warning(
+                    f"{func_name}: Max redirects ({max_redirects}) reached"
+                )
                 navigation_complete.set()
 
         elif 200 <= status < 300:
             # For auth endpoints, continue waiting
             if auth_aware and is_auth_endpoint(url):
                 logger.debug(
-                    f"Auth endpoint reached, continuing to wait: {url[:80]}"
+                    f"{func_name}: Auth endpoint reached, continuing to wait: {url[:80]}"
                 )
                 if show_progress:
                     asyncio.create_task(
-                        show_popup_and_capture_async(
+                        browser_logger.info(
                             page,
-                            "Processing authentication...",
+                            f"{func_name}: Processing authentication...",
                             duration_ms=2000,
                         )
                     )
@@ -326,7 +337,7 @@ async def wait_redirects(
                 asyncio.create_task(_delayed_complete())
 
         elif status >= 400:
-            logger.warning(f"Error response: {status} for {url}")
+            logger.warning(f"{func_name}: Error response: {status} for {url}")
             navigation_complete.set()
 
         last_url = url
@@ -361,17 +372,17 @@ async def wait_redirects(
                     if captcha_detected:
                         captcha_wait_start = current_time
                         logger.warning(
-                            f"CAPTCHA detected on page: {current_url[:80]}"
+                            f"{func_name}: CAPTCHA detected on page: {current_url[:80]}"
                         )
                         if show_progress:
                             from scitex.browser import (
-                                show_popup_and_capture_async,
+                                browser_logger,
                             )
 
                             asyncio.create_task(
-                                show_popup_and_capture_async(
+                                browser_logger.info(
                                     page,
-                                    "CAPTCHA detected - waiting for solver extension...",
+                                    f"{func_name}: CAPTCHA detected - waiting for solver extension...",
                                     duration_ms=5000,
                                 )
                             )
@@ -410,7 +421,9 @@ async def wait_redirects(
 
                 # Check if URL changed
                 if current_url != last_checked_url:
-                    logger.debug(f"URL changed: {current_url[:80]}")
+                    logger.debug(
+                        f"{func_name}: URL changed: {current_url[:80]}"
+                    )
                     last_checked_url = current_url
                     stable_count = 0
                     dom_stable_count = 0
@@ -419,7 +432,7 @@ async def wait_redirects(
                     if is_final_article_url(current_url):
                         found_article = True
                         logger.info(
-                            f"Article URL detected: {current_url[:80]}"
+                            f"{func_name}: Article URL detected: {current_url[:80]}"
                         )
                         await asyncio.sleep(
                             1
@@ -446,17 +459,17 @@ async def wait_redirects(
                     if not still_captcha:
                         # CAPTCHA solved! Wait a bit for redirect
                         logger.success(
-                            "CAPTCHA appears to be solved, waiting for redirect..."
+                            f"{func_name}: CAPTCHA appears to be solved, waiting for redirect..."
                         )
                         if show_progress:
                             from scitex.browser import (
-                                show_popup_and_capture_async,
+                                browser_logger,
                             )
 
                             asyncio.create_task(
-                                show_popup_and_capture_async(
+                                browser_logger.info(
                                     page,
-                                    "CAPTCHA solved! Waiting for redirect...",
+                                    f"{func_name}: CAPTCHA solved! Waiting for redirect...",
                                     duration_ms=2000,
                                 )
                             )
@@ -476,22 +489,22 @@ async def wait_redirects(
                             and captcha_wait_time > 0
                         ):
                             logger.info(
-                                f"CAPTCHA solver working... ({int(60 - captcha_wait_time)}s remaining)"
+                                f"{func_name}: CAPTCHA solver working... ({int(60 - captcha_wait_time)}s remaining)"
                             )
                         continue
                     else:
                         logger.warning(
-                            "CAPTCHA solver timeout (60s) - continuing anyway"
+                            f"{func_name}: CAPTCHA solver timeout (60s) - continuing anyway"
                         )
                         if show_progress:
                             from scitex.browser import (
-                                show_popup_and_capture_async,
+                                browser_logger,
                             )
 
                             asyncio.create_task(
-                                show_popup_and_capture_async(
+                                browser_logger.info(
                                     page,
-                                    "CAPTCHA solver timeout - manual intervention may be needed",
+                                    f"{func_name}: CAPTCHA solver timeout - manual intervention may be needed",
                                     duration_ms=3000,
                                 )
                             )
@@ -506,7 +519,7 @@ async def wait_redirects(
                 ):
                     if not is_auth_endpoint(current_url) or found_article:
                         logger.debug(
-                            f"Complete: URL+network+DOM stable (2s), page loaded"
+                            f"{func_name}: Complete: URL+network+DOM stable (2s), page loaded"
                         )
                         navigation_complete.set()
                         break
@@ -514,7 +527,9 @@ async def wait_redirects(
                 # Medium path: URL and network stable for longer
                 elif stable_count >= 3 and time_since_activity >= 3:
                     if not is_auth_endpoint(current_url) or found_article:
-                        logger.debug(f"Complete: URL+network stable (3s)")
+                        logger.debug(
+                            f"{func_name}: Complete: URL+network stable (3s)"
+                        )
                         navigation_complete.set()
                         break
 
@@ -524,7 +539,7 @@ async def wait_redirects(
                         # Extra check: make sure DOM is stable too
                         if dom_stable_count >= 3:
                             logger.debug(
-                                f"Complete: Auth page stable (5s) with stable DOM"
+                                f"{func_name}: Complete: Auth page stable (5s) with stable DOM"
                             )
                             navigation_complete.set()
                             break
@@ -532,16 +547,18 @@ async def wait_redirects(
                 # Timeout path: Absolute max wait (extended for potential CAPTCHA)
                 elif stable_count >= 30:
                     logger.warning(
-                        f"Complete: Timeout (30s) - URL: {current_url[:80]}"
+                        f"{func_name}: Complete: Timeout (30s) - URL: {current_url[:80]}"
                     )
                     navigation_complete.set()
                     break
 
             except Exception as e:
-                logger.debug(f"Error in stability check: {e}")
+                logger.debug(f"{func_name}: Error in stability check: {e}")
                 # On error, if we've waited a reasonable time, complete
                 if stable_count >= 5:
-                    logger.warning(f"Complete: Error after 5s - {str(e)[:50]}")
+                    logger.warning(
+                        f"{func_name}: Complete: Error after 5s - {str(e)[:50]}"
+                    )
                     navigation_complete.set()
                     break
 
@@ -559,10 +576,14 @@ async def wait_redirects(
             )
         except asyncio.TimeoutError:
             timed_out = True
-            logger.warning(f"Redirect wait timeout after {timeout}ms")
+            logger.warning(
+                f"{func_name}: Redirect wait timeout after {timeout}ms"
+            )
             if show_progress:
-                await show_popup_and_capture_async(
-                    page, "Redirect timeout, finalizing...", duration_ms=1500
+                await browser_logger.info(
+                    page,
+                    f"{func_name}: Redirect timeout, finalizing...",
+                    duration_ms=1500,
                 )
 
         # Cancel stability checker
@@ -576,7 +597,7 @@ async def wait_redirects(
                     "networkidle", timeout=idle_timeout
                 )
             except:
-                logger.debug("Network idle wait failed")
+                logger.debug(f"{func_name}: Network idle wait failed")
 
         # Calculate results
         end_time = asyncio.get_event_loop().time()
@@ -607,25 +628,25 @@ async def wait_redirects(
         # Log results
         if success:
             logger.success(
-                f"Redirects complete: {start_url[:40]} -> {final_url[:40]} "
+                f"{func_name}: Redirects complete: {start_url[:40]} -> {final_url[:40]} "
                 f"({redirect_count} redirects, {total_time_ms:.0f}ms)"
             )
         elif result.get("stopped_at_auth"):
             logger.warning(
-                f"Stopped at auth endpoint: {final_url[:80]} "
+                f"{func_name}: Stopped at auth endpoint: {final_url[:80]} "
                 f"(after {redirect_count} redirects, {total_time_ms:.0f}ms)"
             )
         elif timed_out:
             logger.warning(
-                f"Redirect wait timed out after {total_time_ms:.0f}ms"
+                f"{func_name}: Redirect wait timed out after {total_time_ms:.0f}ms"
             )
         else:
-            logger.debug("No redirects detected")
+            logger.debug(f"{func_name}: No redirects detected")
 
         return result
 
     except Exception as e:
-        logger.error(f"Wait redirects failed: {e}")
+        logger.error(f"{func_name}: Wait redirects failed: {e}")
         end_time = asyncio.get_event_loop().time()
         return {
             "success": False,

@@ -27,7 +27,7 @@ Closes unwanted browser pages during paper downloads.
 ### `_take_screenshot.py` (Deprecated)
 Takes timestamped screenshots for debugging paper download flows.
 
-**Note**: Consider using `scitex.browser.debugging.show_popup_and_capture_async` instead, which provides both visual popup feedback AND screenshots in one call.
+**Note**: Consider using `scitex.browser.debugging.browser_logger` instead, which provides both visual popup feedback AND screenshots in one call.
 
 ### `JSLoader.py`
 Loads JavaScript utilities for browser automation.
@@ -37,7 +37,7 @@ Loads JavaScript utilities for browser automation.
 These utilities are imported from `scitex.browser` for convenience:
 
 **From `scitex.browser.debugging`:**
-- `show_popup_and_capture_async` - Visual debugging with screenshots
+- `browser_logger` - Visual debugging with screenshots
 - `show_grid_async` - Coordinate grid overlay
 - `highlight_element_async` - Element highlighting
 
@@ -57,7 +57,7 @@ These utilities are imported from `scitex.browser` for convenience:
 Old names without `_async` suffix still work:
 ```python
 # These all work in Scholar module
-show_popup_and_capture = show_popup_and_capture_async
+browser_logger = browser_logger
 detect_chrome_pdf_viewer = detect_chrome_pdf_viewer_async
 click_center = click_center_async
 # etc.
@@ -72,7 +72,7 @@ from scitex.browser import (
     wait_redirects,
 
     # Universal (re-exported from scitex.browser)
-    show_popup_and_capture_async,
+    browser_logger,
     detect_chrome_pdf_viewer_async,
 )
 

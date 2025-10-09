@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-16 01:57:11 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/browser/local/utils/_CookieAutoAcceptor.py
+# Timestamp: "2025-10-10 03:24:14 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/automation/CookieHandler.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/browser/automation/CookieHandler.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import json
 
@@ -22,6 +26,7 @@ class CookieAutoAcceptor:
     """Automatically handles cookie consent banners on web pages."""
 
     def __init__(self):
+        self.name = self.__class__.__name__
         self.cookie_texts = [
             "Accept all cookies",
             "Accept All",
@@ -46,13 +51,14 @@ class CookieAutoAcceptor:
 
     async def inject_auto_acceptor_async(self, context):
         """Inject auto-acceptor script into browser context."""
-        logger.warn("Use get_auto_acceptor_script instead")
+        logger.warn(f"{self.name}: Use get_auto_acceptor_script instead")
         script = self.get_auto_acceptor_script()
         await context.add_init_script(script)
 
     def get_auto_acceptor_script(
         self,
     ):
+        logger.info(f"{self.name}: Loaded cookie acception script")
         return f"""
         (() => {{
             const cookieTexts = {json.dumps(self.cookie_texts)};
@@ -100,42 +106,6 @@ class CookieAutoAcceptor:
         }})();
         """
 
-    # async def accept_cookies_async(
-    #     self, page: Page, wait_seconds: float = 2
-    # ) -> bool:
-    #     """Try to automatically accept cookies on the page.
-
-    #     Returns:
-    #         True if cookies were accepted, False otherwise
-    #     """
-    #     await asyncio.sleep(wait_seconds)
-
-    #     # Try text-based selection first
-    #     for text in self.cookie_texts:
-    #         try:
-    #             button = page.locator(f"button:has-text('{text}')").first
-    #             if await button.is_visible():
-    #                 await button.click()
-    #                 logger.debug(f"Clicked cookie button with text: {text}")
-    #                 await asyncio.sleep(1)
-    #                 return True
-    #         except:
-    #             continue
-
-    #     # Try common selectors
-    #     for selector in self.selectors:
-    #         try:
-    #             element = page.locator(selector).first
-    #             if await element.is_visible():
-    #                 await element.click()
-    #                 logger.debug(f"Clicked cookie element: {selector}")
-    #                 await asyncio.sleep(1)
-    #                 return True
-    #         except:
-    #             continue
-
-    #     return False
-
     async def check_cookie_banner_exists_async(self, page: Page) -> bool:
         """Check if a cookie banner is still visible."""
         try:
@@ -149,7 +119,10 @@ class CookieAutoAcceptor:
 def main(args):
     """Demonstrate CookieAutoAcceptor functionality."""
     import asyncio
+
     from playwright.async_api import async_playwright
+
+    from ..debugging import browser_logger
 
     async def demo():
         acceptor = CookieAutoAcceptor()
@@ -162,15 +135,37 @@ def main(args):
             await context.add_init_script(acceptor.get_auto_acceptor_script())
 
             page = await context.new_page()
+
+            # Show demo progress with verbose mode
+            await browser_logger.info(
+                page, "CookieAutoAcceptor: Starting demo", verbose=True
+            )
+
             await page.goto("https://www.springer.com", timeout=30000)
 
             # Wait to see cookie acceptance in action
+            await browser_logger.info(
+                page, "Waiting for cookie banner detection...", verbose=True
+            )
             await asyncio.sleep(5)
 
             # Check if banner still exists
-            banner_exists = await acceptor.check_cookie_banner_exists_async(page)
-            print(f"✓ Cookie banner exists: {banner_exists}")
-            print("✓ Auto-acceptor demo complete")
+            banner_exists = await acceptor.check_cookie_banner_exists_async(
+                page
+            )
+
+            await browser_logger.info(
+                page,
+                f"✓ Cookie banner exists: {banner_exists}",
+                verbose=True,
+            )
+
+            await browser_logger.info(
+                page, "✓ Auto-acceptor demo complete", verbose=True
+            )
+
+            logger.info(f"Cookie banner exists: {banner_exists}")
+            logger.success("Auto-acceptor demo complete")
 
             await browser.close()
 
@@ -181,15 +176,42 @@ def main(args):
 def parse_args():
     """Parse command line arguments."""
     import argparse
+
     parser = argparse.ArgumentParser(description="CookieAutoAcceptor demo")
     return parser.parse_args()
 
 
-def run_main():
-    """Run main function."""
+def run_main() -> None:
+    """Initialize scitex framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt, rng
+
+    import sys
+
+    import matplotlib.pyplot as plt
+
+    import scitex as stx
+
     args = parse_args()
+
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
+        sys,
+        plt,
+        args=args,
+        file=__FILE__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
     exit_status = main(args)
-    return exit_status
+
+    stx.session.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
 
 
 if __name__ == "__main__":
