@@ -146,18 +146,55 @@ class CookieAutoAcceptor:
             return False
 
 
-# # Usage
-# ### Cookie Auto-Acceptance
-# ```python
-# from scitex.scholar.browser import CookieAutoAcceptor
+def main(args):
+    """Demonstrate CookieAutoAcceptor functionality."""
+    import asyncio
+    from playwright.async_api import async_playwright
 
-# acceptor = CookieAutoAcceptor()
+    async def demo():
+        acceptor = CookieAutoAcceptor()
 
-# # Inject into browser context
-# await acceptor.inject_auto_acceptor_async(context)
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=False)
+            context = await browser.new_context()
 
-# # Manual acceptance on page
-# success = await acceptor.accept_cookies_async(page)
-# ```
+            # Inject auto-acceptor
+            await context.add_init_script(acceptor.get_auto_acceptor_script())
+
+            page = await context.new_page()
+            await page.goto("https://www.springer.com", timeout=30000)
+
+            # Wait to see cookie acceptance in action
+            await asyncio.sleep(5)
+
+            # Check if banner still exists
+            banner_exists = await acceptor.check_cookie_banner_exists_async(page)
+            print(f"✓ Cookie banner exists: {banner_exists}")
+            print("✓ Auto-acceptor demo complete")
+
+            await browser.close()
+
+    asyncio.run(demo())
+    return 0
+
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="CookieAutoAcceptor demo")
+    return parser.parse_args()
+
+
+def run_main():
+    """Run main function."""
+    args = parse_args()
+    exit_status = main(args)
+    return exit_status
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.automation.CookieHandler
 
 # EOF

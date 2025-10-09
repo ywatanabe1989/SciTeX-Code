@@ -354,19 +354,55 @@ class ChromeProfileManager:
             return False
 
 
-if __name__ == "__main__":
+def main(args):
+    """Demonstrate ChromeProfileManager functionality."""
     import asyncio
 
-    # manager = ChromeProfileManager("extension")
-    manager = ChromeProfileManager("system")
+    async def demo():
+        manager = ChromeProfileManager("system")
 
-    asyncio.run(
-        manager.install_extensions_manually_if_not_installed_async(
-            verbose=True
-        )
-    )
+        # Check extensions
+        print("Checking system profile extensions...")
+        all_installed = manager.check_extensions_installed(verbose=True)
+
+        if not all_installed:
+            print("\nInstalling missing extensions...")
+            await manager.install_extensions_manually_if_not_installed_async(
+                verbose=True
+            )
+
+        # Demo profile sync
+        print("\nChecking profile sync capability...")
+        test_profile = ChromeProfileManager("test_profile")
+        success = test_profile.sync_from_profile("system")
+        if success:
+            print("✓ Profile sync test complete")
+        else:
+            print("✓ Profile sync skipped (source profile not ready)")
+
+        print("✓ Demo complete")
+
+    asyncio.run(demo())
+    return 0
 
 
-# python -m scitex.scholar.browser.local.utils._ChromeProfileManager
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="ChromeProfileManager demo")
+    return parser.parse_args()
+
+
+def run_main():
+    """Run main function."""
+    args = parse_args()
+    exit_status = main(args)
+    return exit_status
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.core.ProfileManager
 
 # EOF

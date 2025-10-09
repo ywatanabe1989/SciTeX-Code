@@ -12,8 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 import aiohttp
 from playwright.async_api import Browser, async_playwright
 
-from .utils._CaptchaHandler import CaptchaHandler
-from .utils._CookieAutoAcceptor import CookieAutoAcceptor
+from scitex.browser.automation import CookieAutoAcceptor
 
 
 class BrowserMixin:
@@ -39,7 +38,6 @@ class BrowserMixin:
         assert mode in ["interactive", "stealth"]
 
         self.cookie_acceptor = CookieAutoAcceptor()
-        self.captcha_handler = CaptchaHandler()
         self.mode = mode
         self.contexts = []
         self.pages = []
@@ -254,48 +252,49 @@ class BrowserMixin:
         await self.close_session()
 
 
-if __name__ == "__main__":
+def main(args):
+    """Demonstrate BrowserMixin functionality."""
     import asyncio
+    from scitex.browser.core import BrowserMixin
 
-    async def main():
-        from scitex.scholar.browser.local._BrowserMixin import BrowserMixin
+    class DemoBrowser(BrowserMixin):
+        async def scrape_async(self, url):
+            page = await self.new_page(url)
+            return await page.content()
 
-        class MyBrowser(BrowserMixin):
-            async def scrape_async(self, url):
-                page = await self.new_page(url)
-                return await page.content()
+    async def demo():
+        browser = DemoBrowser(mode="interactive")
 
-        # Usage
-        browser = MyBrowser()
+        # Scrape a page
+        content = await browser.scrape_async("https://example.com")
+        print(f"✓ Fetched {len(content)} bytes")
+        print(f"✓ Open tabs: {len(browser.pages)}")
 
-        # Interactive mode with tab management
-        browser.interactive()  # Human-friendly viewport
-        content1 = await browser.scrape_async("https://example.com")
-
-        # Switch to stealth mode
-        browser.stealth()  # Minimal viewport for bot detection avoidance
-        content2 = await browser.scrape_async("https://example.com")
-        content3 = await browser.scrape_async("https://google.com")
-
-        # Browser now has 3 tabs open
-        print(f"Open tabs: {len(browser.pages)}")
-
-        #
-        await browser.show_async()  # Make interactive (1280x720)
-        await browser.hide_async()  # Make stealth (1x1)
-
-        # Access specific pages
-        first_page = browser.pages[0]
-        await first_page.screenshot(path="screenshot.png")
-
-        # Close specific tab
-        await browser.close_page(0)
-
-        # Close all tabs
+        # Close
         await browser.close_all_pages()
+        print("✓ Demo complete")
 
-    asyncio.run(main())
+    asyncio.run(demo())
+    return 0
 
-#  python -m scitex.scholar.browser.local._BrowserMixin
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="BrowserMixin demo")
+    return parser.parse_args()
+
+
+def run_main():
+    """Run main function."""
+    args = parse_args()
+    exit_status = main(args)
+    return exit_status
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.core.BrowserMixin
 
 # EOF

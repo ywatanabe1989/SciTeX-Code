@@ -239,35 +239,63 @@ class HumanBehavior:
         await HumanBehavior.scroll_async(page, "up", random.randint(100, 300))
 
 
-# Example usage
-if __name__ == "__main__":
+def main(args):
+    """Demonstrate HumanBehavior functionality."""
+    import asyncio
+    from playwright.async_api import async_playwright
+
     async def demo():
-        from playwright.async_api import async_playwright
-        
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
-            
+
             # Navigate with human behavior
             await page.goto("https://www.google.com")
-            
+            print("✓ Navigated to page")
+
             # Simulate human reading the page
             await HumanBehavior.reading_delay_async(500)
-            
+            print("✓ Reading delay complete")
+
             # Random mouse movements
             await HumanBehavior.random_mouse_movement_async(page)
-            
+            print("✓ Random mouse movements complete")
+
             # Type in search box
-            search_box = await page.locator('input[name="q"]')
-            if search_box:
+            search_box = page.locator('input[name="q"]')
+            count = await search_box.count()
+            if count > 0:
                 await HumanBehavior.type_text_async(
                     page,
                     selector='input[name="q"]',
-                    text="test search query"
+                    text="test search"
                 )
-            
+                print("✓ Human-like typing complete")
+
+            print("✓ Demo complete")
             await browser.close()
-    
+
     asyncio.run(demo())
+    return 0
+
+
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="HumanBehavior demo")
+    return parser.parse_args()
+
+
+def run_main():
+    """Run main function."""
+    args = parse_args()
+    exit_status = main(args)
+    return exit_status
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.stealth.HumanBehavior
 
 # EOF

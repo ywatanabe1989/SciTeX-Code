@@ -1046,116 +1046,54 @@ class StealthManager:
             await self.human_delay_async(50, 200)
 
 
-if __name__ == "__main__":
+def main(args):
+    """Demonstrate StealthManager functionality."""
     import asyncio
-
     from playwright.async_api import async_playwright
 
-    async def main():
-        """Example usage of StealthManager for bot detection evasion."""
+    async def demo():
         stealth_manager = StealthManager()
 
         async with async_playwright() as p:
-            # Launch browser with stealth args only
             browser = await p.chromium.launch(
-                headless=False,  # Use visible mode to see the effect
+                headless=False,
                 args=stealth_manager.get_stealth_options_additional(),
             )
 
-            # Create context with stealth options (browser context options)
             stealth_options = stealth_manager.get_stealth_options()
-            context_options = {
-                "viewport": stealth_options["viewport"],
-                "user_agent": stealth_options["user_agent"],
-                "extra_http_headers": stealth_options["extra_http_headers"],
-                "ignore_https_errors": stealth_options["ignore_https_errors"],
-                "java_script_enabled": stealth_options["java_script_enabled"],
-                # "permissions": [
-                #     "geolocation",
-                #     "notifications",
-                #     "camera",
-                #     "microphone",
-                # ],
-                # "geolocation": {
-                #     "latitude": -37.7819337,
-                #     "longitude": 144.8741606,
-                # },
-            }
-            context = await browser.new_context(**context_options)
-            # context = await browser.new_context(
-            #     viewport=stealth_options["viewport"],
-            #     user_agent=stealth_options["user_agent"],
-            #     extra_http_headers=stealth_options["extra_http_headers"],
-            #     ignore_https_errors=stealth_options["ignore_https_errors"],
-            #     java_script_enabled=stealth_options["java_script_enabled"],
-            #     "permissions": ["geolocation", "notifications", "camera", "microphone"],
-            #     "geolocation": {"latitude": -37.7819337, "longitude": 144.8741606},
-            # )
-
-            # Inject stealth scripts
+            context = await browser.new_context(**stealth_options)
             await context.add_init_script(stealth_manager.get_init_script())
 
-            # Create a new page
             page = await context.new_page()
-
-            # Test 1: Bot detection site
-            print("Testing stealth on bot detection site...")
-            await page.goto(
-                "https://bot.sannysoft.com/",
-                wait_until="domcontentloaded",
-                timeout=30000,
-            )
+            await page.goto("https://bot.sannysoft.com/", timeout=30000)
             await stealth_manager.human_delay_async(2000, 3000)
 
-            # Take screenshot
-            await page.screenshot(path="/tmp/stealth_test_results.png")
-            print("Screenshot saved as /tmp/stealth_test_results.png")
+            await page.screenshot(path="/tmp/stealth_test.png")
+            print("✓ Stealth test complete: /tmp/stealth_test.png")
 
-            # Test 2: Human-like interactions
-            print("\nTesting human-like behavior...")
-            await page.goto(
-                "https://www.google.com",
-                wait_until="domcontentloaded",
-                timeout=30000,
-            )
-
-            # Human-like mouse movement
-            await stealth_manager.human_mouse_move_async(page)
-
-            # Human-like scrolling
-            await stealth_manager.human_scroll_async(page)
-
-            # Human-like typing
-            search_box = 'textarea[name="q"], input[name="q"]'
-            if await page.locator(search_box).count() > 0:
-                await stealth_manager.human_type_async(
-                    page, search_box, "playwright stealth mode"
-                )
-                print("Typed search query with human-like delays")
-
-            # Test 3: Check fingerprint
-            await page.goto(
-                "https://fingerprintjs.github.io/fingerprintjs/",
-                wait_until="domcontentloaded",
-            )
-            await stealth_manager.human_delay_async(3000, 4000)
-
-            # Extract some detection results
-            try:
-                visitor_id = await page.locator(".visitor-id").inner_text()
-                print(f"\nFingerprint visitor ID: {visitor_id}")
-            except:
-                print("\nCould not extract fingerprint data")
-
-            # Clean up
             await browser.close()
 
-        print("\nStealth manager test completed!")
+    asyncio.run(demo())
+    return 0
 
-    # Run the example
-    asyncio.run(main())
 
-# Test on `https://bot.sannysoft.com/` to see current detection rate.
-# python -m scitex.scholar.browser.local.utils._StealthManager
+def parse_args():
+    """Parse command line arguments."""
+    import argparse
+    parser = argparse.ArgumentParser(description="StealthManager demo")
+    return parser.parse_args()
+
+
+def run_main():
+    """Run main function."""
+    args = parse_args()
+    exit_status = main(args)
+    return exit_status
+
+
+if __name__ == "__main__":
+    run_main()
+
+# python -m scitex.browser.stealth.StealthManager
 
 # EOF
