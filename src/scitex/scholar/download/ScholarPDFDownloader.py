@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 01:10:08 (ywatanabe)"
+# Timestamp: "2025-10-11 03:08:35 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -476,6 +476,8 @@ if __name__ == "__main__":
 python -m scitex.scholar.download.ScholarPDFDownloader \
     --browser-mode interactive \
     --doi "10.1016/j.clinph.2024.09.017"
+
+# This seems calling URL Resolution on OpenURL twice
 
     --doi "10.3389/fnins.2024.1417748"
     --doi "10.1016/j.clinph.2024.09.017"
