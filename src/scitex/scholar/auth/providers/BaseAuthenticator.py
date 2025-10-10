@@ -115,7 +115,7 @@ class BaseAuthenticator(ABC):
 
     def __repr__(self) -> str:
         """Detailed representation of provider."""
-        return f"<{self.name}Authenticator(config={self.config})>"
+        return f"{self.name}Authenticator(config={self.config})>"
 
 
 if __name__ == "__main__":

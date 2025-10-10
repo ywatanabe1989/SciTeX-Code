@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 00:37:31 (ywatanabe)"
+# Timestamp: "2025-10-11 07:53:19 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/core/ChromeProfileManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -65,7 +65,7 @@ class ChromeProfileManager:
         # assert profile_name in self.AVAILABLE_PROFILE_NAMES
 
         self.profile_name = profile_name
-        self.profile_dir = self.config.get_chrome_cache_dir(profile_name)
+        self.profile_dir = self.config.get_cache_chrome_dir(profile_name)
         logger.debug(
             f"{self.name}: profile_name={self.profile_name}, profile_dir={self.profile_dir}"
         )
@@ -115,7 +115,7 @@ class ChromeProfileManager:
 
             all_installed = installed_count == len(self.EXTENSIONS)
             if all_installed:
-                logger.info(
+                logger.debug(
                     f"{self.name}: All {installed_count}/{len(self.EXTENSIONS)} extensions installed"
                 )
             else:
@@ -280,7 +280,7 @@ class ChromeProfileManager:
         """
         import time
 
-        source_profile_dir = self.config.get_chrome_cache_dir(
+        source_profile_dir = self.config.get_cache_chrome_dir(
             source_profile_name
         )
 

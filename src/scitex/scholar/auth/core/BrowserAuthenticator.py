@@ -215,7 +215,7 @@ class BrowserAuthenticator(BrowserMixin):
                         f"{self.name}: Login successful detected at URL: {current_url}"
                     )
                     logger.success(
-                        "{self.name}: Login detected! Capturing session..."
+                        f"{self.name}: Login detected! Capturing session..."
                     )
                     return True
 

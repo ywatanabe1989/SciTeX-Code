@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 03:24:09 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_click_and_wait.py
+# Timestamp: "2025-10-11 07:52:48 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/browser/utils/_click_and_wait.py"
+    "./src/scitex/scholar/browser/utils/click_and_wait.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -105,12 +105,12 @@ async def click_and_wait(
         if result["success"]:
             await browser_logger.info(
                 page,
-                f"Complete: {result['final_url'][:40]}... "
+                f"{func_name}: Complete: {result['final_url'][:40]}... "
                 f"({redirect_result['redirect_count']} redirects)",
                 duration_ms=2000,
             )
-            logger.success(
-                f"Navigation: {initial_url} -> {result['final_url']}"
+            logger.debug(
+                f"{func_name}: Navigation: {initial_url} -> {result['final_url']}"
             )
         else:
             logger.warning(f"{func_name}: Navigation failed or no change")

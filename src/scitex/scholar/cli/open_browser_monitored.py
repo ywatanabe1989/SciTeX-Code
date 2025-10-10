@@ -275,9 +275,9 @@ def open_browser_with_monitoring(
 
     # Get browser profile
     if profile:
-        profile_dir = config.path_manager.get_chrome_cache_dir(profile)
+        profile_dir = config.path_manager.get_cache_chrome_dir(profile)
     else:
-        profile_dir = config.path_manager.get_chrome_cache_dir("system")
+        profile_dir = config.path_manager.get_cache_chrome_dir("system")
 
     profile_dir.mkdir(parents=True, exist_ok=True)
 

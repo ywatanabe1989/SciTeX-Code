@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 04:29:14 (ywatanabe)"
+# Timestamp: "2025-10-11 07:51:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
@@ -336,7 +336,7 @@ async def wait_redirects(
                 asyncio.create_task(
                     browser_logger.debug(
                         page,
-                        f"{func_name}: Article found: {url[:40]}...",
+                        f"{func_name}: Article found and still waiting: {url[:40]}...",
                         duration_ms=2000,
                     )
                 )
@@ -372,7 +372,7 @@ async def wait_redirects(
                 asyncio.create_task(_delayed_complete())
 
         elif status >= 400:
-            logger.warning(f"{func_name}: Error response: {status} for {url}")
+            logger.debug(f"{func_name}: Error response: {status} for {url}")
             navigation_complete.set()
 
         last_url = url

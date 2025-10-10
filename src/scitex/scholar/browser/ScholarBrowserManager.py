@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 20:41:59 (ywatanabe)"
+# Timestamp: "2025-10-11 07:53:46 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/ScholarBrowserManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -323,7 +323,7 @@ class ScholarBrowserManager(BrowserMixin):
                 timeout=5,
             )
             if result.returncode == 0:
-                logger.info(
+                logger.debug(
                     f"{self.name}: Xvfb display :{self.display} is running"
                 )
                 return True

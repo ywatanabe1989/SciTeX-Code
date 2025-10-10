@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 00:24:17 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/utils/lock.py
+# Timestamp: "2025-10-11 07:35:36 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/utils/AuthLockManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/auth/utils/lock.py"
+    "./src/scitex/scholar/auth/utils/AuthLockManager.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -61,7 +61,7 @@ class AuthLockManager:
             AuthLockError: If lock acquisition fails unexpectedly
         """
         if self._is_locked:
-            logger.warning("{self.name}: Lock already acquired")
+            logger.warning(f"{self.name}: Lock already acquired")
             return True
 
         start_time = time.time()
@@ -72,7 +72,9 @@ class AuthLockManager:
                 logger.info(f"{self.name}: Acquired authentication lock")
                 return True
 
-            logger.debug(f"{self.name}: Waiting for authentication lock...")
+            logger.info(
+                f"{self.name}: Waiting for authentication lock ({self.lock_file})..."
+            )
             await asyncio.sleep(2)
 
         logger.error(

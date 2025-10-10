@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 06:55:10 (ywatanabe)"
+# Timestamp: "2025-10-11 06:47:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -47,7 +47,9 @@ from scitex.scholar.storage import LibraryManager
 from scitex.scholar.storage import ScholarLibrary
 from scitex.scholar.engines.ScholarEngine import ScholarEngine
 from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
-from scitex.scholar.auth.core.AuthenticationGateway import AuthenticationGateway
+from scitex.scholar.auth.core.AuthenticationGateway import (
+    AuthenticationGateway,
+)
 from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
 
 # from scitex.scholar.url.ScholarURLFinderParallel import ScholarURLFinderParallel
@@ -126,7 +128,7 @@ class Scholar:
 
         # Set project and workspace
         self.project = self.config.resolve("project", project, "default")
-        self.get_workspace_dir() = self.config.path_manager.get_workspace_dir()
+        self.workspace_dir = self.config.path_manager.get_workspace_dir()
 
         # Auto-create project directory if it doesn't exist
         if project:
@@ -491,8 +493,10 @@ class Scholar:
         # Step 1: Resolve publisher URL
         page = await context.new_page()
         try:
-            url_publisher = await resolve_publisher_url_by_navigating_to_doi_page(
-                doi, page
+            url_publisher = (
+                await resolve_publisher_url_by_navigating_to_doi_page(
+                    doi, page
+                )
             )
             urls["url_publisher"] = url_publisher
         finally:
@@ -614,9 +618,7 @@ class Scholar:
                         storage_path.mkdir(parents=True, exist_ok=True)
 
                         # Move PDF to MASTER library
-                        pdf_filename = (
-                            f"DOI_{doi.replace('/', '_').replace(':', '_')}.pdf"
-                        )
+                        pdf_filename = f"DOI_{doi.replace('/', '_').replace(':', '_')}.pdf"
                         master_pdf_path = storage_path / pdf_filename
                         shutil.move(str(temp_pdf_path), str(master_pdf_path))
 
@@ -637,12 +639,18 @@ class Scholar:
                         metadata["pdf_path"] = str(
                             master_pdf_path.relative_to(library_dir)
                         )
-                        metadata["pdf_downloaded_at"] = datetime.now().isoformat()
-                        metadata["pdf_size_bytes"] = master_pdf_path.stat().st_size
+                        metadata["pdf_downloaded_at"] = (
+                            datetime.now().isoformat()
+                        )
+                        metadata["pdf_size_bytes"] = (
+                            master_pdf_path.stat().st_size
+                        )
                         metadata["updated_at"] = datetime.now().isoformat()
 
                         with open(metadata_file, "w") as f:
-                            json.dump(metadata, f, indent=2, ensure_ascii=False)
+                            json.dump(
+                                metadata, f, indent=2, ensure_ascii=False
+                            )
 
                         # Update symlink using LibraryManager
                         if self.project not in ["master", "MASTER"]:
@@ -1623,7 +1631,9 @@ class Scholar:
         logger.info(f"\nStage 2: Checking/finding PDF URLs...")
         if not self._library_manager.has_urls(paper_id):
             logger.info(f"Finding PDF URLs for DOI: {doi}")
-            browser, context = await self._browser_manager.get_authenticated_browser_and_context_async()
+            browser, context = (
+                await self._browser_manager.get_authenticated_browser_and_context_async()
+            )
             try:
                 url_finder = ScholarURLFinder(context, config=self.config)
                 urls = await url_finder.find_pdf_urls(doi)
@@ -1634,16 +1644,22 @@ class Scholar:
             finally:
                 await self._browser_manager.close()
         else:
-            logger.info(f"PDF URLs already in storage ({len(paper.metadata.url.pdfs)} URLs)")
+            logger.info(
+                f"PDF URLs already in storage ({len(paper.metadata.url.pdfs)} URLs)"
+            )
 
         # Stage 3: Check/download PDF
         logger.info(f"\nStage 3: Checking/downloading PDF...")
         if not self._library_manager.has_pdf(paper_id):
             logger.info(f"Downloading PDF...")
             if paper.metadata.url.pdfs:
-                browser, context = await self._browser_manager.get_authenticated_browser_and_context_async()
+                browser, context = (
+                    await self._browser_manager.get_authenticated_browser_and_context_async()
+                )
                 try:
-                    downloader = ScholarPDFDownloader(context, config=self.config)
+                    downloader = ScholarPDFDownloader(
+                        context, config=self.config
+                    )
 
                     pdf_url = (
                         paper.metadata.url.pdfs[0]["url"]
@@ -1652,10 +1668,14 @@ class Scholar:
                     )
                     temp_path = storage_path / "main.pdf"
 
-                    result = await downloader.download_from_url(pdf_url, temp_path, doi=doi)
+                    result = await downloader.download_from_url(
+                        pdf_url, temp_path, doi=doi
+                    )
                     if result and result.exists():
                         paper.metadata.path.pdfs.append(str(result))
-                        self._library_manager.save_paper_incremental(paper_id, paper)
+                        self._library_manager.save_paper_incremental(
+                            paper_id, paper
+                        )
                         logger.success(f"Downloaded PDF, saved to storage")
                     else:
                         logger.warning(f"Failed to download PDF")
@@ -1692,7 +1712,9 @@ class Scholar:
 
         See process_paper_async() for full documentation.
         """
-        return asyncio.run(self.process_paper_async(title=title, doi=doi, project=project))
+        return asyncio.run(
+            self.process_paper_async(title=title, doi=doi, project=project)
+        )
 
     # =========================================================================
     # PIPELINE METHODS (Phase 3) - Parallel Papers Processing
@@ -1743,6 +1765,7 @@ class Scholar:
             papers_list = []
             for doi in papers:
                 from scitex.scholar.core.Paper import Paper
+
                 p = Paper()
                 p.metadata.set_doi(doi)
                 papers_list.append(p)
@@ -1750,7 +1773,9 @@ class Scholar:
 
         total = len(papers)
         logger.info(f"\n{'='*60}")
-        logger.info(f"Processing {total} papers (max_concurrent={max_concurrent})")
+        logger.info(
+            f"Processing {total} papers (max_concurrent={max_concurrent})"
+        )
         logger.info(f"Project: {project}")
         logger.info(f"{'='*60}\n")
 
@@ -2053,7 +2078,9 @@ if __name__ == "__main__":
         # Demonstrate configuration access
         print("7. Configuration Management:")
         print(f"   ⚙️  Scholar directory: {scholar.config.paths.scholar_dir}")
-        print(f"   ⚙️  Library directory: {scholar.config.get_library_project_dir()}")
+        print(
+            f"   ⚙️  Library directory: {scholar.config.get_library_project_dir()}"
+        )
         print(
             f"   ⚙️  Debug mode: {scholar.config.resolve('debug_mode', default=False)}"
         )

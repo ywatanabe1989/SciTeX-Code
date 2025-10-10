@@ -56,12 +56,12 @@ def demonstrate_basic_paths(config) -> None:
     print("=== Basic Directory Paths ===")
     print(f"Scholar base directory: {config.paths.scholar_dir}")
     print(f"Cache directory: {config.get_cache_file('example', 'search')}")
-    print(f"Auth cache: {config.get_auth_cache_dir()}")
-    print(f"Chrome cache (system): {config.get_chrome_cache_dir('system')}")
+    print(f"Auth cache: {config.get_cache_auth_dir()}")
+    print(f"Chrome cache (system): {config.get_cache_chrome_dir('system')}")
     print(f"Downloads: {config.get_library_downloads_dir()}")
-    print(f"Screenshots: {config.get_screenshots_dir()}")
+    print(f"Screenshots: {config.get_workspace_screenshots_dir()}")
     print(
-        f"Screenshots (category): {config.get_screenshots_dir('test_category')}"
+        f"Screenshots (category): {config.get_workspace_screenshots_dir('test_category')}"
     )
     print()
 

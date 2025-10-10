@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 06:42:08 (ywatanabe)"
+# Timestamp: "2025-10-11 07:37:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/core/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -42,10 +42,12 @@ PATH_STRUCTURE = {
     # Cache
     "cache_dir": "cache",
     "cache_auth_dir": "cache/auth",
+    "cache_auth_json": "cache/auth/{auth_name}.json",
+    "cache_auth_json_lock": "cache/auth/{auth_name}.json.lock",
     "cache_chrome_dir": "cache/chrome",
     "cache_engine_dir": "cache/engine",
     "cache_url_dir": "cache/url",
-    "cache_pdf_downloader_dir": "cache/pdf_downloader",
+    "cache_download_dir": "cache/pdf_downloader",
     # Library
     "library_dir": "library",
     "library_downloads_dir": "library/downloads",  # STAGING
@@ -151,6 +153,18 @@ class PathManager:
         """cache/auth"""
         return self._ensure_directory(self.dirs["cache_auth_dir"])
 
+    def get_cache_auth_json(self, auth_name) -> Path:
+        """cache/auth/{auth_name}.json"""
+        return self.scholar_dir / PATH_STRUCTURE["cache_auth_json"].format(
+            auth_name=auth_name
+        )
+
+    def get_cache_auth_json_lock(self, auth_name) -> Path:
+        """cache/auth/{auth_name}.json.lock"""
+        return self.scholar_dir / PATH_STRUCTURE[
+            "cache_auth_json_lock"
+        ].format(auth_name=auth_name)
+
     def get_cache_chrome_dir(self, profile_name: str) -> Path:
         """cache/chrome/{profile_name}"""
         return self._ensure_directory(
@@ -165,26 +179,9 @@ class PathManager:
         """cache/url"""
         return self._ensure_directory(self.dirs["cache_url_dir"])
 
-    def get_cache_pdf_downloader_dir(self) -> Path:
+    def get_cache_download_dir(self) -> Path:
         """cache/pdf_downloader"""
-        return self._ensure_directory(self.dirs["cache_pdf_downloader_dir"])
-
-    # Deprecated aliases
-    def get_auth_cache_dir(self) -> Path:
-        """DEPRECATED"""
-        return self.get_cache_auth_dir()
-
-    def get_chrome_cache_dir(self, profile_name: str) -> Path:
-        """DEPRECATED"""
-        return self.get_cache_chrome_dir(profile_name)
-
-    def get_engine_cache_dir(self) -> Path:
-        """DEPRECATED"""
-        return self.get_cache_engine_dir()
-
-    def get_cache_dowload_dir(self) -> Path:
-        """DEPRECATED"""
-        return self.get_cache_pdf_downloader_dir()
+        return self._ensure_directory(self.dirs["cache_download_dir"])
 
     # ========================================
     # Library Directories
@@ -268,23 +265,6 @@ class PathManager:
             return self._ensure_directory(
                 self.dirs["workspace_screenshots_dir"]
             )
-
-    # yes | rename.sh --clean-backups
-    # rename.sh get_library_downloads_dir get_library_downloads_dir . -n
-
-    #
-    # Deprecated aliases
-    def get_library_downloads_dir(self) -> Path:
-        """DEPRECATED: Use get_library_downloads_dir()"""
-        return self.get_library_downloads_dir()
-
-    def get_screenshots_dir(self, category: Optional[str] = None) -> Path:
-        """DEPRECATED"""
-        return self.get_workspace_screenshots_dir(category)
-
-    def get_workspace_dir(self) -> Path:
-        """workspace"""
-        return self.get_workspace_dir()
 
     # ========================================
     # Helper Methods

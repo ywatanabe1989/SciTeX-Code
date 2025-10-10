@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 03:24:02 (ywatanabe)"
+# Timestamp: "2025-10-11 07:52:38 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/gateway/_OpenURLResolver.py
 # ----------------------------------------
 from __future__ import annotations
@@ -54,32 +54,32 @@ class OpenURLResolver:
             params.append(f"atitle={quote(title[:200])}")
 
         built_query = f"{self.resolver_url}?{'&'.join(params)}"
-        logger.info(f"{self.name}: Built query URL: {built_query}")
+        logger.debug(f"{self.name}: Built query URL: {built_query}")
         return built_query
 
     async def _resolve_query(
         self, query: str, page: Page, doi: str
     ) -> Optional[str]:
         """Resolve OpenURL query to final authenticated URL with retry."""
-        logger.info(f"{self.name}: Resolving query URL: {query}...")
+        logger.debug(f"{self.name}: Resolving query URL: {query}...")
 
         for attempt in range(3):
             try:
                 # Visual: Navigating to OpenURL
-                await browser_logger.info(
+                await browser_logger.debug(
                     page,
                     f"{self.name}: Navigating to resolver for {doi[:30]}...",
                 )
                 await page.goto(
                     query, wait_until="domcontentloaded", timeout=60000
                 )
-                await browser_logger.info(
+                await browser_logger.debug(
                     page,
                     f"{self.name}: Loaded resolver page at {page.url[:60]}",
                 )
 
                 # Visual: Waiting for page to stabilize
-                await browser_logger.info(
+                await browser_logger.debug(
                     page,
                     f"{self.name}: Waiting for resolver to load (networkidle)...",
                 )
@@ -87,7 +87,7 @@ class OpenURLResolver:
                     await page.wait_for_load_state(
                         "networkidle", timeout=15_000
                     )
-                    await browser_logger.info(
+                    await browser_logger.debug(
                         page, f"{self.name}: ✓ Resolver page ready"
                     )
                 except Exception:
@@ -110,7 +110,7 @@ class OpenURLResolver:
                     return None
 
                 # Visual: Found links
-                await browser_logger.info(
+                await browser_logger.debug(
                     page,
                     f"{self.name}: Found {len(found_links)} publisher link(s)",
                 )
@@ -121,7 +121,7 @@ class OpenURLResolver:
                     publisher = found_link.get("publisher")
                     link_element = found_link.get("link_element")
 
-                    await browser_logger.info(
+                    await browser_logger.debug(
                         page,
                         f"{self.name}: Clicking {publisher} link ({i}/{len(found_links)})...",
                     )
@@ -133,9 +133,9 @@ class OpenURLResolver:
 
                     if result.get("success"):
                         final_url = result.get("final_url")
-                        await browser_logger.info(
+                        await browser_logger.success(
                             page,
-                            f"{self.name}: ✓ SUCCESS! Landed at {final_url[:60]}",
+                            f"{self.name}: ✓ Landed at {final_url[:60]}",
                         )
                         await page.wait_for_timeout(2000)
                         return final_url

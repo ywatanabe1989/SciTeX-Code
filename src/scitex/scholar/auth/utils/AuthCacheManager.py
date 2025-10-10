@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 00:25:26 (ywatanabe)"
+# Timestamp: "2025-10-11 07:54:32 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/utils/AuthCacheManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -27,6 +27,7 @@ from typing import Any, Dict, Optional
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
 
+from .AuthLockManager import AuthLockManager
 from .SessionManager import SessionManager
 
 logger = logging.getLogger(__name__)
@@ -49,47 +50,38 @@ class AuthCacheManager:
             email: User email for validation
         """
         self.name = self.__class__.__name__
+        self.config = config or ScholarConfig()
 
         self.cache_name = cache_name
-        self.config = config
+        self.cache_json = self.config.get_cache_auth_json(self.cache_name)
+        self.cache_json_lock = self.config.get_cache_auth_json_lock(
+            self.cache_name
+        )
+        self.cache_dir = self.config.get_cache_auth_dir()
+        os.chmod(self.cache_dir, 0o700)
+
         self.email = email
-        self.cache_file, self.lock_file = self._setup_cache_files()
 
-    def _setup_cache_files(self) -> tuple[Path, Path]:
-        """Setup cache and lock files using the config manager."""
-        # Use simple, clear cache file structure: cache/auth/{cache_name}.json
-        cache_file = self.config.paths.get_cache_file(self.cache_name, "auth")
-
-        # Set proper permissions for auth directory
-        auth_dir = cache_file.parent
-        os.chmod(auth_dir, 0o700)
-
-        # Create lock file path using config manager
-        lock_file = self.config.paths.get_lock_file(cache_file)
-
-        return cache_file, lock_file
+        self.lock_manager = AuthLockManager(self.cache_json_lock)
 
     async def save_session_async(
         self, session_manager: SessionManager
     ) -> bool:
-        """Save session data to cache file.
-
-        Args:
-            session_manager: SessionManager containing session data
-
-        Returns:
-            True if saved successfully, False otherwise
-        """
+        """Save session data to cache file with file locking."""
         try:
-            cache_data = self._create_cache_data(session_manager)
+            # Acquire lock before writing
+            async with self.lock_manager:
+                cache_data = self._create_cache_data(session_manager)
 
-            with open(self.cache_file, "w") as f:
-                json.dump(cache_data, f, indent=2)
+                with open(self.cache_json, "w") as f:
+                    json.dump(cache_data, f, indent=2)
 
-            # Set secure permissions
-            os.chmod(self.cache_file, 0o600)
-            logger.success(f"{self.name}: Session saved to: {self.cache_file}")
-            return True
+                # Set secure permissions
+                os.chmod(self.cache_json, 0o600)
+                logger.success(
+                    f"{self.name}: Session saved to: {self.cache_json}"
+                )
+                return True
 
         except Exception as e:
             logger.error(f"{self.name}: Failed to save session cache: {e}")
@@ -98,51 +90,42 @@ class AuthCacheManager:
     async def load_session_async(
         self, session_manager: SessionManager
     ) -> bool:
-        """Load session data from cache file.
-
-        Args:
-            session_manager: SessionManager to populate with data
-
-        Returns:
-            True if loaded successfully, False otherwise
-        """
-        if not self.cache_file.exists():
+        """Load session data from cache file with file locking."""
+        if not Path(self.cache_json).exists():
             logger.debug(
-                f"{self.name}: No session cache found at {self.cache_file}"
+                f"{self.name}: No session cache found at {self.cache_json}"
             )
             return False
 
         try:
-            cache_data = self._load_cache_data()
-            if not cache_data:
-                return False
+            # Acquire lock before reading
+            async with self.lock_manager:
+                cache_data = self._load_cache_data()
+                if not cache_data:
+                    return False
 
-            if not self._validate_cache_data(cache_data):
-                return False
+                if not self._validate_cache_data(cache_data):
+                    return False
 
-            self._populate_session_manager(session_manager, cache_data)
-            logger.success(
-                f"{self.name}: Loaded session from cache ({self.cache_file}): "
-                f"{len(session_manager.get_cookies())} cookies"
-                f"{session_manager.format_expiry_info()}"
-            )
-            return True
+                self._populate_session_manager(session_manager, cache_data)
+                logger.success(
+                    f"{self.name}: Loaded session ({self.cache_json}): "
+                    f"{len(session_manager.get_cookies())} cookies"
+                    f"{session_manager.format_expiry_info()}"
+                )
+                return True
 
         except Exception as e:
             logger.error(f"{self.name}: Failed to load session cache: {e}")
             return False
 
     def clear_cache(self) -> bool:
-        """Clear cache file.
-
-        Returns:
-            True if cleared successfully, False otherwise
-        """
+        """Clear cache file."""
         try:
-            if self.cache_file.exists():
-                self.cache_file.unlink()
+            if self.cache_json.exists():
+                self.cache_json.unlink()
                 logger.info(
-                    f"{self.name}: Cleared cache file: {self.cache_file}"
+                    f"{self.name}: Cleared cache file: {self.cache_json}"
                 )
             return True
         except Exception as e:
@@ -151,11 +134,11 @@ class AuthCacheManager:
 
     def get_cache_file(self) -> Path:
         """Get cache file path."""
-        return self.cache_file
+        return self.cache_json
 
     def get_lock_file(self) -> Path:
         """Get lock file path."""
-        return self.lock_file
+        return self.cache_json_lock
 
     def _create_cache_data(
         self, session_manager: SessionManager
@@ -173,7 +156,7 @@ class AuthCacheManager:
     def _load_cache_data(self) -> Optional[Dict[str, Any]]:
         """Load cache data from file."""
         try:
-            with open(self.cache_file, "r") as f:
+            with open(self.cache_json, "r") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"{self.name}: Failed to read cache file: {e}")
