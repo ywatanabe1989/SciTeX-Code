@@ -675,7 +675,7 @@ class LibraryManager:
         with open(unresolved_file, "w") as file_:
             json.dump(unresolved_info, file_, indent=2, ensure_ascii=False)
 
-        logger.warn(f"Saved unresolved entry: {unresolved_file.name}")
+        logger.warning(f"Saved unresolved entry: {unresolved_file.name}")
 
     async def resolve_and_create_library_structure_async(
         self,

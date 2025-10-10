@@ -51,7 +51,7 @@ async def fill_with_fallbacks_async(
     }
 
     if verbose:
-        await browser_logger.info(
+        await browser_logger.debug(
             page, f"Attempting fill: {selector}", verbose=verbose
         )
 
@@ -61,14 +61,14 @@ async def fill_with_fallbacks_async(
             if success:
                 logger.debug(f"Fill successful with {method_name}: {selector}")
                 if verbose:
-                    await browser_logger.info(
+                    await browser_logger.debug(
                         page, f"✓ Fill successful ({method_name}): {selector}", verbose=verbose
                     )
                 return True
 
     logger.error(f"All fill methods failed for {selector}")
     if verbose:
-        await browser_logger.info(
+        await browser_logger.debug(
             page, f"✗ All fill methods failed: {selector}", verbose=verbose
         )
     return False
@@ -126,14 +126,14 @@ def main(args):
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Fill with Fallbacks: Starting demo", verbose=True
             )
 
             # Navigate to a page with input fields
             await page.goto("https://www.google.com", timeout=30000)
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Testing fill with fallbacks...", verbose=True
             )
 
@@ -150,7 +150,7 @@ def main(args):
             else:
                 logger.warning("Fill demonstration: no input element found")
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "✓ Demo complete", verbose=True
             )
 

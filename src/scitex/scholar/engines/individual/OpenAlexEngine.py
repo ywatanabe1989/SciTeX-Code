@@ -86,7 +86,7 @@ class OpenAlexEngine(BaseDOIEngine):
             )
 
         except Exception as exc:
-            logger.warn(f"OpenAlex DOI search error: {exc}")
+            logger.warning(f"OpenAlex DOI search error: {exc}")
             return self._create_minimal_metadata(
                 doi=doi,
                 return_as=return_as,
@@ -144,7 +144,7 @@ class OpenAlexEngine(BaseDOIEngine):
             )
 
         except Exception as exc:
-            logger.warn(f"OpenAlex metadata error: {exc}")
+            logger.warning(f"OpenAlex metadata error: {exc}")
             return self._create_minimal_metadata(
                 title=title,
                 year=year,

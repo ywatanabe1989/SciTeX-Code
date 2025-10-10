@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 02:18:04 (ywatanabe)"
+# Timestamp: "2025-10-11 00:37:31 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/core/ChromeProfileManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -108,13 +108,8 @@ class ChromeProfileManager:
         if verbose:
             for key, ext_info in self.EXTENSIONS.items():
                 ext_id = ext_info["id"]
-                # if status.get(key, False):
-                #     # logger.info(
-                #     #     f"{self.name}: Found {ext_info['name']} ({ext_id}) installed"
-                #     # )
-                # else:
                 if not status.get(key, False):
-                    logger.warn(
+                    logger.warning(
                         f"{self.name}: {ext_info['name']} ({ext_id}) not installed"
                     )
 
@@ -124,7 +119,7 @@ class ChromeProfileManager:
                     f"{self.name}: All {installed_count}/{len(self.EXTENSIONS)} extensions installed"
                 )
             else:
-                logger.warn(
+                logger.warning(
                     f"{self.name}: Only {installed_count}/{len(self.EXTENSIONS)} extensions installed"
                 )
 
@@ -193,7 +188,7 @@ class ChromeProfileManager:
             "--disable-dev-shm-usage",
         ]
         chrome_cmd_str = " ".join(chrome_cmd)
-        logger.warn(f"Chrome command: {chrome_cmd_str}")
+        logger.info(f"Chrome command: {chrome_cmd_str}")
 
         # Add extension URLs
         for ext_info in self.EXTENSIONS.values():
@@ -243,7 +238,7 @@ class ChromeProfileManager:
             logger.success("Extension installation complete!")
             return True
         else:
-            logger.warn("Extension installation may be incomplete")
+            logger.warning("Extension installation may be incomplete")
             return False
 
     async def handle_runtime_extension_dialogs_async(self, page):
@@ -264,7 +259,7 @@ class ChromeProfileManager:
                 element = await page.query_selector(selector)
                 if element:
                     await element.click()
-                    logger.success(f"Clicked dialog: {selector}")
+                    logger.debug(f"Clicked dialog: {selector}")
                     return True
 
             return False
@@ -298,7 +293,7 @@ class ChromeProfileManager:
         # Create target profile directory if needed
         self.profile_dir.mkdir(parents=True, exist_ok=True)
 
-        logger.info(
+        logger.debug(
             f"Syncing profile: {self.profile_name} ← {source_profile_name}"
         )
         logger.debug(f"  Source: {source_profile_dir}")

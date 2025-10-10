@@ -114,7 +114,7 @@ class ArXivEngine(BaseDOIEngine):
                 return_as=return_as,
             )
         except Exception as exc:
-            logger.warn(f"ArXiv DOI search error: {exc}")
+            logger.warning(f"ArXiv DOI search error: {exc}")
             return self._create_minimal_metadata(
                 doi=doi,
                 return_as=return_as,
@@ -218,7 +218,7 @@ class ArXivEngine(BaseDOIEngine):
             )
 
         except Exception as exc:
-            logger.warn(f"ArXiv metadata error: {exc}")
+            logger.warning(f"ArXiv metadata error: {exc}")
             return self._create_minimal_metadata(
                 title=title,
                 year=year,
@@ -243,7 +243,7 @@ class ArXivEngine(BaseDOIEngine):
             doi = doi_link.get("href").split("doi.org/")[-1]
             return doi
         except Exception as e:
-            logger.warn(f"DOI not scraped from {url_publisher}\n{str(e)}")
+            logger.warning(f"DOI not scraped from {url_publisher}\n{str(e)}")
 
     @retry(
         stop=stop_after_attempt(3),

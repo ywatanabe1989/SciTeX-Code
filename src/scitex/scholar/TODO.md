@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-10 01:01:58
+!-- Timestamp: 2025-10-10 19:02:48
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -10,15 +10,6 @@
 ## KEEP HONEST, DO NOT MAKE A LIE
 ## Until screenshots created here, YOU MUST NOT SAY IT IS FIXED
 ## YOU CAN RUN FRESH ANYTIME
-
-
-## Implement this logging style to all classes
-``` python
-# in def __init__(...):
-self.name = self.__class__.__name__
-
-logger.xxx(f"{self.name}: ...")
-```
 
 ``` bash
 run_neurovista_pipeline() {
@@ -68,5 +59,13 @@ run_neurovista_pipeline
   1. Pydantic Validation Error - *_engines fields are stored as strings instead of lists:
     - "doi_engines": "ScholarURLFinder" ❌
     - Should be: "doi_engines": ["ScholarURLFinder"] ✅
+
+
+## Manual Mode
+- [ ] Shows "Stop Automation" button on browser all the time
+  - [ ] Responsive visual feedback and instructions
+- [ ] When the button pressed, automation stops
+  - [ ] On the other hand, another automation - download monitoring - starts.
+  - [ ] When download detected, correctly verify, move, and rename saved PDF to the library just as the automation system does.
 
 <!-- EOF -->

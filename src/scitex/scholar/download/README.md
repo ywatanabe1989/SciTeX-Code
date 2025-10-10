@@ -31,7 +31,7 @@ async def main_async():
 
     # Parameters
     PDF_URL = "https://www.science.org/cms/asset/b9925b7f-c841-48d1-a90c-1631b7cff596/pap.pdf"
-    OUTPUT_PATH = "/tmp/hippocampal_ripples-by-stealth.pdf"
+    OUTPUT_PATH = "~/.scitex/scholar/downloads/hippocampal_ripples-by-stealth.pdf"
 
     # Main
     saved_path = await pdf_downloader.download_from_url(

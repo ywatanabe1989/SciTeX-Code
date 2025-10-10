@@ -27,10 +27,10 @@ from scitex import logging
 from scitex.errors import AuthenticationError
 from scitex.scholar.config import ScholarConfig
 
-from .library._BaseAuthenticator import BaseAuthenticator
-from .library._EZProxyAuthenticator import EZProxyAuthenticator
-from .library._OpenAthensAuthenticator import OpenAthensAuthenticator
-from .library._ShibbolethAuthenticator import ShibbolethAuthenticator
+from .providers.BaseAuthenticator import BaseAuthenticator
+from .providers.EZProxyAuthenticator import EZProxyAuthenticator
+from .providers.OpenAthensAuthenticator import OpenAthensAuthenticator
+from .providers.ShibbolethAuthenticator import ShibbolethAuthenticator
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ class ScholarAuthManager:
         self.active_provider: Optional[str] = None
 
         if not any([email_openathens, email_ezproxy, email_shibboleth]):
-            logger.warn(
+            logger.warning(
                 f"{self.name}: "
                 "No authentication provider configured. "
                 "Set SCITEX_SCHOLAR_OPENATHENS_EMAIL or other provider email."
@@ -271,7 +271,7 @@ class ScholarAuthManager:
                 await provider.logout_async()
                 logger.success(f"{self.name}: Logged out from {provider}")
             except Exception as e:
-                logger.warn(
+                logger.warning(
                     f"{self.name}: Error logging out from {provider}: {e}"
                 )
 

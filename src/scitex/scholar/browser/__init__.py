@@ -9,7 +9,7 @@ __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-from .local.ScholarBrowserManager import ScholarBrowserManager
+from .ScholarBrowserManager import ScholarBrowserManager
 from scitex.browser.interaction import (
     click_center_async,
     close_popups_async,

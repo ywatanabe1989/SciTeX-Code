@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 03:24:14 (ywatanabe)"
+# Timestamp: "2025-10-11 00:41:46 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/automation/CookieHandler.py
 # ----------------------------------------
 from __future__ import annotations
@@ -51,14 +51,14 @@ class CookieAutoAcceptor:
 
     async def inject_auto_acceptor_async(self, context):
         """Inject auto-acceptor script into browser context."""
-        logger.warn(f"{self.name}: Use get_auto_acceptor_script instead")
+        logger.warning(f"{self.name}: Use get_auto_acceptor_script instead")
         script = self.get_auto_acceptor_script()
         await context.add_init_script(script)
+        logger.debug(f"{self.name}: Injected auto-acceptor script")
 
     def get_auto_acceptor_script(
         self,
     ):
-        logger.info(f"{self.name}: Loaded cookie acception script")
         return f"""
         (() => {{
             const cookieTexts = {json.dumps(self.cookie_texts)};
@@ -109,10 +109,13 @@ class CookieAutoAcceptor:
     async def check_cookie_banner_exists_async(self, page: Page) -> bool:
         """Check if a cookie banner is still visible."""
         try:
-            return await page.locator(
+            exists = await page.locator(
                 ".cookie-banner, [class*='cookie']"
             ).first.is_visible()
+            logger.debug(f"{self.name}: Cookie banner exists: {exists}")
+            return exists
         except:
+            logger.debug(f"{self.name}: Cookie banner not found")
             return False
 
 
@@ -128,43 +131,22 @@ def main(args):
         acceptor = CookieAutoAcceptor()
 
         async with async_playwright() as p:
+            logger.info("Starting demo")
             browser = await p.chromium.launch(headless=False)
             context = await browser.new_context()
 
-            # Inject auto-acceptor
             await context.add_init_script(acceptor.get_auto_acceptor_script())
 
             page = await context.new_page()
 
-            # Show demo progress with verbose mode
-            await browser_logger.info(
-                page, "CookieAutoAcceptor: Starting demo", verbose=True
-            )
-
+            logger.info("Navigating to https://www.springer.com")
             await page.goto("https://www.springer.com", timeout=30000)
 
-            # Wait to see cookie acceptance in action
-            await browser_logger.info(
-                page, "Waiting for cookie banner detection...", verbose=True
-            )
+            logger.debug("Waiting for cookie banner detection")
             await asyncio.sleep(5)
 
-            # Check if banner still exists
-            banner_exists = await acceptor.check_cookie_banner_exists_async(
-                page
-            )
+            banner_exists = await acceptor.check_cookie_banner_exists_async(page)
 
-            await browser_logger.info(
-                page,
-                f"✓ Cookie banner exists: {banner_exists}",
-                verbose=True,
-            )
-
-            await browser_logger.info(
-                page, "✓ Auto-acceptor demo complete", verbose=True
-            )
-
-            logger.info(f"Cookie banner exists: {banner_exists}")
             logger.success("Auto-acceptor demo complete")
 
             await browser.close()

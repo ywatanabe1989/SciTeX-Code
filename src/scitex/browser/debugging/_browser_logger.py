@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 03:35:53 (ywatanabe)"
+# Timestamp: "2025-10-11 01:18:11 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/debugging/_browser_logger.py
 # ----------------------------------------
 from __future__ import annotations
@@ -118,6 +118,22 @@ async def log_page_async(
     # Log to terminal
     log_func = getattr(logger, level, logger.info)
     log_func(f"    {func_name} - {message}")
+
+    # Check if this log level would actually be shown
+    level_numeric = {
+        "debug": 10,
+        "info": 20,
+        "success": 25,
+        "warning": 30,
+        "warn": 30,
+        "error": 40,
+        "fail": 40,
+    }
+    current_level_value = level_numeric.get(level, 20)
+    effective_level = logger.getEffectiveLevel()
+    should_take_screenshot = take_screenshot and (
+        current_level_value >= effective_level
+    )
 
     # If verbose is False, skip all visual feedback and screenshots
     if not verbose:
@@ -279,7 +295,7 @@ async def log_page_async(
             page.on("framenavigated", restore_popups_on_load)
             page._scitex_popup_handler_added = True
 
-        if take_screenshot:
+        if should_take_screenshot:
             try:
                 await page.evaluate(
                     """
@@ -327,30 +343,40 @@ async def log_page_async(
 
                 screenshot_path.mkdir(parents=True, exist_ok=True)
 
-                # Remove emojis and special characters, keep only alphanumeric, spaces, hyphens, underscores
+                # Remove emojis and special characters, keep only alphanumeric, spaces, hyphens, underscores, dots
                 clean_message = "".join(
                     (
                         c
                         if c.isascii()
-                        and (c.isalnum() or c in (" ", "-", "_"))
+                        and (c.isalnum() or c in (" ", "-", "_", "."))
                         else "_"
                     )
                     for c in message
-                ).strip("_")[:100]
+                )
+                # Replace multiple spaces with single space, then replace spaces with underscores
+                import re
+
+                clean_message = re.sub(r"\s+", " ", clean_message)
+                clean_message = clean_message.replace(" ", "_")
+                clean_message = clean_message.strip("_")[:100]
 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]
-                screenshot_filename = f"{timestamp}_{clean_message}.png"
+                level_upper = level.upper()
+                screenshot_filename = (
+                    f"{timestamp}-{level_upper}-{clean_message}.png"
+                )
                 screenshot_full_path = screenshot_path / screenshot_filename
 
                 await page.screenshot(
                     path=str(screenshot_full_path),
                     full_page=False,
                 )
-                logger.info(
-                    f"    {func_name} - Screenshot: {screenshot_filename}"
+                log_func(
+                    f"    {func_name} - Screenshot: {screenshot_filename}",
+                    c="grey",
                 )
             except Exception as e:
-                logger.debug(
+                log_func(
                     f"    {func_name} - Screenshot failed: {screenshot_filename}\n{e}"
                 )
 
@@ -407,6 +433,7 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Internal log method."""
         return await log_page_async(
@@ -421,6 +448,7 @@ class BrowserLogger:
             screenshot_dir=screenshot_dir or self.screenshot_dir,
             verbose=self.verbose,
             level=level,
+            func_name=func_name,
         )
 
     async def debug(
@@ -430,6 +458,7 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log debug message (grey border)."""
         return await self._log(
@@ -439,6 +468,7 @@ class BrowserLogger:
             duration_ms,
             take_screenshot,
             screenshot_dir,
+            func_name,
         )
 
     async def info(
@@ -448,10 +478,17 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log info message (cyan/teal border)."""
         return await self._log(
-            page, "info", message, duration_ms, take_screenshot, screenshot_dir
+            page,
+            "info",
+            message,
+            duration_ms,
+            take_screenshot,
+            screenshot_dir,
+            func_name,
         )
 
     async def success(
@@ -461,6 +498,7 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log success message (green border)."""
         return await self._log(
@@ -470,6 +508,7 @@ class BrowserLogger:
             duration_ms,
             take_screenshot,
             screenshot_dir,
+            func_name,
         )
 
     async def warning(
@@ -479,6 +518,7 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log warning message (yellow border)."""
         return await self._log(
@@ -488,6 +528,26 @@ class BrowserLogger:
             duration_ms,
             take_screenshot,
             screenshot_dir,
+            func_name,
+        )
+
+    async def warn(
+        self,
+        page,
+        message: str,
+        duration_ms: int = None,
+        take_screenshot: bool = None,
+        screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
+    ):
+        """Log warning message (yellow border)."""
+        return await self.warning(
+            page,
+            message,
+            duration_ms,
+            take_screenshot,
+            screenshot_dir,
+            func_name,
         )
 
     async def error(
@@ -497,6 +557,7 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log error message (red border)."""
         return await self._log(
@@ -506,6 +567,7 @@ class BrowserLogger:
             duration_ms,
             take_screenshot,
             screenshot_dir,
+            func_name,
         )
 
     async def fail(
@@ -515,10 +577,17 @@ class BrowserLogger:
         duration_ms: int = None,
         take_screenshot: bool = None,
         screenshot_dir: Path | str = None,
+        func_name: str = "BrowserLogger",
     ):
         """Log fail message (red border)."""
         return await self._log(
-            page, "fail", message, duration_ms, take_screenshot, screenshot_dir
+            page,
+            "fail",
+            message,
+            duration_ms,
+            take_screenshot,
+            screenshot_dir,
+            func_name,
         )
 
 

@@ -77,6 +77,11 @@ async def click_download_for_chrome_pdf_viewer_async(
     """
     try:
         output_path = Path(output_path)
+
+        # Ensure .pdf extension
+        if not str(output_path).endswith(".pdf"):
+            output_path = Path(str(output_path) + ".pdf")
+
         viewport = page.viewport_size
         viewport_width = viewport["width"]
         viewport_height = viewport["height"]
@@ -86,10 +91,9 @@ async def click_download_for_chrome_pdf_viewer_async(
         download_button_y = int(viewport_height * 0.03)
 
         if verbose:
-            await browser_logger.info(
+            await browser_logger.debug(
                 page,
                 f"{func_name}: Clicking PDF download button...",
-                verbose=verbose,
             )
 
         # Click download button and wait for download to start
@@ -100,10 +104,9 @@ async def click_download_for_chrome_pdf_viewer_async(
 
         # Monitor download progress
         if verbose:
-            await browser_logger.info(
+            await browser_logger.debug(
                 page,
                 f"{func_name}: Monitoring download progress...",
-                verbose=verbose,
             )
 
         download_path = await download.path()
@@ -129,7 +132,7 @@ async def click_download_for_chrome_pdf_viewer_async(
 
 
 def main(args):
-    logger.info(
+    logger.debug(
         "Chrome PDF download utility - use click_download_for_chrome_pdf_viewer_async() in your code"
     )
     return 0

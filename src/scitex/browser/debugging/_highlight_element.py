@@ -88,7 +88,7 @@ async def highlight_element_async(element: Locator, duration_ms: int = 1_000, fu
 
 
 def main(args):
-    logger.info("Element highlighting utility - use highlight_element_async() in your code")
+    logger.debug("Element highlighting utility - use highlight_element_async() in your code")
     return 0
 
 

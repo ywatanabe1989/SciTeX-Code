@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 01:12:58 (ywatanabe)"
+# Timestamp: "2025-10-11 00:17:43 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_formatters.py
 # ----------------------------------------
 from __future__ import annotations
@@ -37,7 +37,7 @@ class SciTeXConsoleFormatter(logging.Formatter):
 
     # ANSI color codes for log levels
     COLORS = {
-        "DEBU": "\033[30m",  # Black
+        "DEBU": "\033[90m",  # Grey
         "INFO": "\033[90m",  # Grey
         "SUCC": "\033[32m",  # Green
         "WARN": "\033[33m",  # Yellow

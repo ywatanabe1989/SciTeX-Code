@@ -260,7 +260,7 @@ class ScholarEngine:
             if found_count == n_total:
                 logger.success(msg)
             else:
-                logger.warn(msg)
+                logger.warning(msg)
                 for query, error in failed_queries:
                     logger.fail(f"Failed query '{query}': {error}")
 

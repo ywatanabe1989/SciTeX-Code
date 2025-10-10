@@ -109,7 +109,7 @@ class URLDOIEngine(BaseDOIEngine):
             if return_as == "json":
                 return json.dumps(metadata, indent=2)
         except Exception as exc:
-            logger.warn(f"URL DOI search error: {exc}")
+            logger.warning(f"URL DOI search error: {exc}")
             return None
 
     def _search_by_url(
@@ -264,7 +264,7 @@ class URLDOIEngine(BaseDOIEngine):
                 return_as=return_as,
             )
         except Exception as exc:
-            logger.warn(f"URL DOI extraction error: {exc}")
+            logger.warning(f"URL DOI extraction error: {exc}")
             return self._create_minimal_metadata(
                 title=title,
                 year=year,

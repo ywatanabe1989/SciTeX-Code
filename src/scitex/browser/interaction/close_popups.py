@@ -179,7 +179,7 @@ class PopupHandler:
             detected = popup_info
             
             if detected:
-                logger.info(f"Detected {len(detected)} popup(s)")
+                logger.debug(f"Detected {len(detected)} popup(s)")
                 for popup in detected[:3]:  # Log first 3
                     logger.debug(f"  - Type: {popup['type']}, Text preview: {popup['text'][:50]}...")
             
@@ -274,7 +274,7 @@ class PopupHandler:
                     logger.debug("No popups detected")
                 break
             
-            logger.info(f"Attempt {attempt + 1}: Found {len(popups)} popup(s)")
+            logger.debug(f"Attempt {attempt + 1}: Found {len(popups)} popup(s)")
             
             # Handle each popup
             for popup in popups:
@@ -405,7 +405,7 @@ def main(args):
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
 
-            logger.info("PopupHandler: Starting demo")
+            logger.debug("PopupHandler: Starting demo")
 
             # Navigate to a page with popups
             await page.goto("https://www.springer.com", timeout=30000)
@@ -414,11 +414,11 @@ def main(args):
             # Demonstrate popup handling
             handler = PopupHandler(page)
 
-            logger.info("Detecting popups...")
+            logger.debug("Detecting popups...")
             popups = await handler.detect_popups()
-            logger.info(f"Found {len(popups)} popup(s)")
+            logger.debug(f"Found {len(popups)} popup(s)")
 
-            logger.info("Handling popups...")
+            logger.debug("Handling popups...")
             handled = await handler.handle_all_popups()
             logger.success(f"Successfully handled {handled} popup(s)")
 

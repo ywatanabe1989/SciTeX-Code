@@ -9,7 +9,7 @@ You can now test downloading papers one by one using command-line arguments:
 ```bash
 python -m scitex.scholar.download.ScholarPDFDownloaderWithScreenshots \
     --doi "10.1088/1741-2552/aaf92e" \
-    --output /tmp/my_paper.pdf
+    --output ~/.scitex/scholar/downloads/my_paper.pdf
 ```
 
 ### With Browser Mode
@@ -37,14 +37,14 @@ python -m scitex.scholar.download.ScholarPDFDownloaderWithScreenshots \
 python -m scitex.scholar.download.ScholarPDFDownloaderWithScreenshots \
     --doi "10.48550/arXiv.2309.09471" \
     --pdf-url "https://arxiv.org/pdf/2309.09471" \
-    --output /tmp/arxiv_paper.pdf
+    --output ~/.scitex/scholar/downloads/arxiv_paper.pdf
 ```
 
 ## Arguments
 
 - `--doi` (required): DOI of the paper (with or without https://doi.org/ prefix)
 - `--pdf-url` (optional): Direct PDF URL. If not provided, will be found automatically from DOI
-- `--output` (optional): Output path for the PDF (default: /tmp/downloaded_paper.pdf)
+- `--output` (optional): Output path for the PDF (default: ~/.scitex/scholar/downloads/downloaded_paper.pdf)
 - `--browser-mode` (optional): Browser mode - stealth/interactive/manual (default: stealth)
 
 ## Test Script

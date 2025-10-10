@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 async def show_grid_async(page, func_name: str = "show_grid_async"):
     from ._browser_logger import browser_logger
 
-    await browser_logger.info(page, f"{func_name}: Showing Grid...", func_name=func_name)
+    await browser_logger.debug(page, f"{func_name}: Showing Grid...")
     await page.evaluate(
         """() => {
         const canvas = document.createElement('canvas');
@@ -91,7 +91,7 @@ async def show_grid_async(page, func_name: str = "show_grid_async"):
 
 
 def main(args):
-    logger.info("Grid overlay utility - use show_grid_async() in your code")
+    logger.debug("Grid overlay utility - use show_grid_async() in your code")
     return 0
 
 

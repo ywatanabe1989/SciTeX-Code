@@ -38,7 +38,7 @@ async def detect_chrome_pdf_viewer_async(page, verbose: bool = False):
     from ..debugging import browser_logger
 
     if verbose:
-        await browser_logger.info(page, "Detecting Chrome PDF Viewer...", verbose=verbose)
+        await browser_logger.debug(page, "Detecting Chrome PDF Viewer...")
 
     # Try multiple detection methods
     detected = await page.evaluate(
@@ -91,12 +91,12 @@ async def detect_chrome_pdf_viewer_async(page, verbose: bool = False):
     if detected:
         logger.debug("PDF viewer detected")
         if verbose:
-            await browser_logger.info(page, "✓ PDF viewer elements found!", verbose=verbose)
+            await browser_logger.success(page, "✓ PDF viewer elements found!")
         return True
     else:
         logger.debug("PDF viewer not detected")
         if verbose:
-            await browser_logger.info(page, "✗ No PDF viewer elements found", verbose=verbose)
+            await browser_logger.debug(page, "✗ No PDF viewer elements found")
         return False
 
 
@@ -111,7 +111,7 @@ def main(args):
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "PDF Detection: Starting demo", verbose=True
             )
 
@@ -119,7 +119,7 @@ def main(args):
             test_pdf_url = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
             await page.goto(test_pdf_url, timeout=30000)
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Waiting for page to load...", verbose=True
             )
 
@@ -131,9 +131,9 @@ def main(args):
             if detected:
                 logger.success("PDF viewer detected successfully")
             else:
-                logger.info("No PDF viewer detected (this may be expected)")
+                logger.debug("No PDF viewer detected (this may be expected)")
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "✓ Demo complete", verbose=True
             )
 

@@ -254,9 +254,9 @@ import asyncio
 import pytest
 from playwright.async_api import Page, Browser, async_playwright
 
-# Assuming your runner is in a structure like: scitex.scholar.url.helpers.finders
-# Adjust the import path according to your project structure.
-from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# Note: ZoteroTranslatorRunner is now deprecated. Use the Python-based zotero_translators instead.
+# Old location (deprecated): from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# New location: Use scitex.scholar.url.strategies.zotero_translators for Python-based implementation
 
 # --- Test Cases ---
 # A curated list of URLs that represent different publishers and translator patterns.
@@ -387,9 +387,9 @@ import asyncio
 import pytest
 from playwright.async_api import Page, Browser, async_playwright
 
-# Assuming your runner is in a structure like: scitex.scholar.url.helpers.finders
-# Adjust the import path according to your project structure.
-from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# Note: ZoteroTranslatorRunner is now deprecated. Use the Python-based zotero_translators instead.
+# Old location (deprecated): from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# New location: Use scitex.scholar.url.strategies.zotero_translators for Python-based implementation
 
 # --- Test Cases ---
 # A curated list of URLs that represent different publishers and translator patterns.
@@ -613,11 +613,12 @@ import json
 import re
 from playwright.async_api import Page, Browser, async_playwright
 
-# Adjust the import path according to your project structure.
-from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# Note: ZoteroTranslatorRunner is now deprecated. Use the Python-based zotero_translators instead.
+# Old location (deprecated): from scitex.scholar.url.helpers.finders._ZoteroTranslatorRunner import ZoteroTranslatorRunner
+# New location: Use scitex.scholar.url.strategies.zotero_translators for Python-based implementation
 
 # --- Constants ---
-TRANSLATORS_DIR = os.path.join(os.path.dirname(__file__), '..', 'src', 'scitex', 'scholar', 'url', 'helpers', 'finders', 'zotero_translators')
+TRANSLATORS_DIR = os.path.join(os.path.dirname(__file__), '..', 'src', 'scitex', 'scholar', 'url', 'strategies', 'zotero_translators')
 
 # --- Test Case Discovery ---
 

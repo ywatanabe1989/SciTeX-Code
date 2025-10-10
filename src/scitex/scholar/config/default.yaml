@@ -1,4 +1,4 @@
-# Timestamp: "2025-10-08 16:46:27 (ywatanabe)"
+# Timestamp: "2025-10-10 06:48:18 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -42,9 +42,9 @@ timeout: 60
 # use_cache_engine: ${SCITEX_SCHOLAR_USE_CACHE_ENGINE:-true}
 # use_cache_url: ${SCITEX_SCHOLAR_USE_CACHE_URL:-true}
 # use_cache_download: ${SCITEX_SCHOLAR_USE_CACHE_DOWNLOAD:-true}
-use_cache_engine: ${SCITEX_SCHOLAR_USE_CACHE_ENGINE:-false}
-use_cache_url: ${SCITEX_SCHOLAR_USE_CACHE_URL:-false}
-use_cache_download: ${SCITEX_SCHOLAR_USE_CACHE_DOWNLOAD:-false}
+# use_cache_engine: ${SCITEX_SCHOLAR_USE_CACHE_ENGINE:-false}
+# use_cache_url: ${SCITEX_SCHOLAR_USE_CACHE_URL:-false}
+# use_cache_download: ${SCITEX_SCHOLAR_USE_CACHE_DOWNLOAD:-false}
 
 
 # ----------------------------------------
@@ -81,6 +81,13 @@ capture_screenshots: ${SCITEX_SCHOLAR_CAPTURE_SCREENSHOTS:-true}
 # browser:
 # ----------------------------------------
 chrome_profile_name: ${SCITEX_SCHOLAR_CHROME_PROFILE_NAME:-null}
+
+# Unwanted page URL patterns to close automatically
+unwanted_pages_expressions:
+  - "chrome-extension://"
+  - "pbapi.xyz"
+  - "options.html"
+  - "newtab"
 
 # ----------------------------------------
 # URL Finder

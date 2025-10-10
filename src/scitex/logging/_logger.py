@@ -36,37 +36,37 @@ class SciTeXLogger(logging.Logger):
 
         self._log(level, message, args, **kwargs)
 
-    def debug(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def debug(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log a debug message with optional indent, separator, and color."""
         if self.isEnabledFor(logging.DEBUG):
             self._log_with_indent(logging.DEBUG, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def info(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def info(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log an info message with optional indent, separator, and color."""
         if self.isEnabledFor(logging.INFO):
             self._log_with_indent(logging.INFO, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def warning(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def warning(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log a warning message with optional indent, separator, and color."""
         if self.isEnabledFor(logging.WARNING):
             self._log_with_indent(logging.WARNING, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def error(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def error(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log an error message with optional indent, separator, and color."""
         if self.isEnabledFor(logging.ERROR):
             self._log_with_indent(logging.ERROR, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def critical(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def critical(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log a critical message with optional indent, separator, and color."""
         if self.isEnabledFor(logging.CRITICAL):
             self._log_with_indent(logging.CRITICAL, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def success(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def success(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log a success message with optional indent, separator, and color."""
         if self.isEnabledFor(SUCCESS):
             self._log_with_indent(SUCCESS, message, indent, sep, n_sep, c, *args, **kwargs)
 
-    def fail(self, message, indent=0, sep=None, n_sep=40, c=None, *args, **kwargs):
+    def fail(self, message, *args, indent=0, sep=None, n_sep=40, c=None, **kwargs):
         """Log a failure message with optional indent, separator, and color."""
         if self.isEnabledFor(FAIL):
             self._log_with_indent(FAIL, message, indent, sep, n_sep, c, *args, **kwargs)

@@ -48,7 +48,7 @@ async def click_with_fallbacks_async(
     }
 
     if verbose:
-        await browser_logger.info(
+        await browser_logger.debug(
             page, f"Attempting click: {selector}", verbose=verbose
         )
 
@@ -60,7 +60,7 @@ async def click_with_fallbacks_async(
                     f"Click successful with {method_name}: {selector}"
                 )
                 if verbose:
-                    await browser_logger.info(
+                    await browser_logger.debug(
                         page,
                         f"✓ Click successful ({method_name}): {selector}",
                         verbose=verbose,
@@ -69,7 +69,7 @@ async def click_with_fallbacks_async(
 
     logger.error(f"All click methods failed for {selector}")
     if verbose:
-        await browser_logger.info(
+        await browser_logger.debug(
             page, f"✗ All click methods failed: {selector}", verbose=verbose
         )
     return False
@@ -124,7 +124,7 @@ def main(args):
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Click with Fallbacks: Starting demo", verbose=True
             )
 
@@ -132,7 +132,7 @@ def main(args):
             await page.goto("https://example.com", timeout=30000)
 
             # Demonstrate clicking with verbose feedback
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Testing click with fallbacks...", verbose=True
             )
 
@@ -148,7 +148,7 @@ def main(args):
                     "Click demonstration: no clickable element found"
                 )
 
-            await browser_logger.info(page, "✓ Demo complete", verbose=True)
+            await browser_logger.debug(page, "✓ Demo complete", verbose=True)
 
             await asyncio.sleep(2)
             await browser.close()

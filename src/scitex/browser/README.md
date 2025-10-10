@@ -42,7 +42,7 @@ Visual debugging tools for browser automation workflows.
 ```python
 from scitex.browser.debugging import browser_logger
 
-await browser_logger.info(
+await browser_logger.debug(
     page,
     "OpenURL: ✓ Found publisher link",
     take_screenshot=True,
@@ -146,9 +146,9 @@ This function is particularly special and versatile:
 ### Visual Timeline Example
 
 ```python
-await browser_logger.info(page, "Step 1: Loading page...")
-await browser_logger.info(page, "Step 2: Finding links...")
-await browser_logger.info(page, "✓ Step 3: Download complete!")
+await browser_logger.debug(page, "Step 1: Loading page...")
+await browser_logger.debug(page, "Step 2: Finding links...")
+await browser_logger.debug(page, "✓ Step 3: Download complete!")
 ```
 
 Creates screenshots:

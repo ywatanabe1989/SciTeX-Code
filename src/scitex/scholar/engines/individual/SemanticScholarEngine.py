@@ -126,7 +126,7 @@ class SemanticScholarEngine(BaseDOIEngine):
         except requests.ConnectionError:
             raise
         except Exception as exc:
-            logger.warn(f"Semantic Scholar DOI search error: {exc}")
+            logger.warning(f"Semantic Scholar DOI search error: {exc}")
             return self._create_minimal_metadata(
                 doi=doi,
                 return_as=return_as,
@@ -213,7 +213,7 @@ class SemanticScholarEngine(BaseDOIEngine):
         except requests.ConnectionError:
             raise
         except Exception as exc:
-            logger.warn(f"Semantic Scholar metadata error: {exc}")
+            logger.warning(f"Semantic Scholar metadata error: {exc}")
             return self._create_minimal_metadata(
                 title=title,
                 year=year,
@@ -251,7 +251,7 @@ class SemanticScholarEngine(BaseDOIEngine):
                 raise requests.ConnectionError("Rate limit exceeded")
 
             if response.status_code == 404:
-                logger.warn(
+                logger.warning(
                     f"Semantic Scholar Corpus ID not found: {corpus_id}"
                 )
                 return None
@@ -262,7 +262,7 @@ class SemanticScholarEngine(BaseDOIEngine):
         except requests.ConnectionError:
             raise
         except Exception as exc:
-            logger.warn(f"Semantic Scholar Corpus ID search error: {exc}")
+            logger.warning(f"Semantic Scholar Corpus ID search error: {exc}")
             return self._create_minimal_metadata(
                 corpus_id=corpus_id,
                 return_as=return_as,

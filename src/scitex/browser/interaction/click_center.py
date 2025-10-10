@@ -51,7 +51,7 @@ async def click_center_async(
     from ..debugging import browser_logger
 
     if verbose:
-        await browser_logger.info(
+        await browser_logger.debug(
             page,
             f"{func_name}: Clicking the center of the page...",
             verbose=verbose,
@@ -80,7 +80,7 @@ def main(args):
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
 
-            await browser_logger.info(
+            await browser_logger.debug(
                 page, "Click Center: Starting demo", verbose=True
             )
 
@@ -91,7 +91,7 @@ def main(args):
 
             logger.success("Click center demonstration complete")
 
-            await browser_logger.info(page, "✓ Demo complete", verbose=True)
+            await browser_logger.debug(page, "✓ Demo complete", verbose=True)
 
             await asyncio.sleep(2)
             await browser.close()

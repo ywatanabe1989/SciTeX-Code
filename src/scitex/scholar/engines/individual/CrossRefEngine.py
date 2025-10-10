@@ -74,7 +74,7 @@ class CrossRefEngine(BaseDOIEngine):
             item = data.get("message", {})
             return self._extract_metadata_from_item(item, return_as)
         except Exception as exc:
-            logger.warn(f"CrossRef DOI search error: {exc}")
+            logger.warning(f"CrossRef DOI search error: {exc}")
             return self._create_minimal_metadata(
                 doi=doi,
                 return_as=return_as,
@@ -128,7 +128,7 @@ class CrossRefEngine(BaseDOIEngine):
             )
 
         except Exception as exc:
-            logger.warn(f"CrossRef metadata error: {exc}")
+            logger.warning(f"CrossRef metadata error: {exc}")
             return self._create_minimal_metadata(
                 title=title,
                 year=year,
