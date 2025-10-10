@@ -41,9 +41,7 @@ class PubMedEngine(BaseDOIEngine):
     """PubMed DOI engine - free, no API key required."""
 
     def __init__(self, email: str = "research@example.com"):
-        super().__init__()  # Initialize base class to access utilities
-        self.name = self.__class__.__name__
-        self.email = email
+        super().__init__(email)  # Initialize base class to access utilities
         self._session = None
 
     @property

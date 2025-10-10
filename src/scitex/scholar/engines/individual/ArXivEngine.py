@@ -39,9 +39,7 @@ class ArXivEngine(BaseDOIEngine):
     """ArXiv engine for open access papers."""
 
     def __init__(self, email: str = "research@example.com"):
-        super().__init__()
-        self.name = self.__class__.__name__
-        self.email = email
+        super().__init__(email)
         self.base_url = "http://export.arxiv.org/api/query"
 
     def _get_user_agent(self) -> str:

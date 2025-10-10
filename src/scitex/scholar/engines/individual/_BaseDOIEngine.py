@@ -44,7 +44,6 @@ class BaseDOIEngine(ABC):
 
     def __init__(self, email: str = "research@example.com"):
         """Initialize base engine."""
-        self.name = self.__class__.__name__
         self.email = email
         self.rate_limit_handler = None  # Will be injected by SingleDOIResolver
         self.last_request_time = 0.0

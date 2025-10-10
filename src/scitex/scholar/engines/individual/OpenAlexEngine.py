@@ -26,7 +26,6 @@ class OpenAlexEngine(BaseDOIEngine):
 
     def __init__(self, email: str = "research@example.com"):
         super().__init__(email)
-        self.name = self.__class__.__name__
         self.base_url = "https://api.openalex.org/works"
 
     @property
