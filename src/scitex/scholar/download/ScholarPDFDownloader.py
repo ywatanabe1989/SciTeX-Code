@@ -365,8 +365,15 @@ async def main_async(args):
     # Step 1: URL Resolution (separate from downloading)
     # ---------------------------------------
     url_finder = ScholarURLFinder(context)
-    urls = await url_finder.find_pdf_urls(args.doi)
-    pdf_urls = [entry["url"] for entry in urls.get("url_pdf", [])]
+    urls = await url_finder.find_pdf_urls(args.doi)  # Returns List[Dict]
+
+    # Extract URL strings from list of dicts
+    pdf_urls = []
+    for entry in urls:
+        if isinstance(entry, dict):
+            pdf_urls.append(entry.get("url"))
+        elif isinstance(entry, str):
+            pdf_urls.append(entry)
 
     if not pdf_urls:
         logger.error(f"No PDF URLs found for DOI: {args.doi}")
