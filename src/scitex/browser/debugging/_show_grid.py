@@ -45,42 +45,51 @@ async def show_grid_async(page, func_name: str = "show_grid_async"):
     await browser_logger.debug(page, f"{func_name}: Showing Grid...")
     await page.evaluate(
         """() => {
+        // Remove existing grid if present
+        const existingGrid = document.getElementById('scitex-debug-grid');
+        if (existingGrid) {
+            existingGrid.remove();
+        }
+
         const canvas = document.createElement('canvas');
+        canvas.id = 'scitex-debug-grid';
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
         canvas.style.width = '100%';
         canvas.style.height = '100%';
         canvas.style.pointerEvents = 'none';
-        canvas.style.zIndex = '9999';
+        canvas.style.zIndex = '9998';  // Below popups (9999) but above content
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const ctx = canvas.getContext('2d');
         ctx.font = '12px Arial';
 
+        // Vertical lines
         for (let xx = 0; xx < canvas.width; xx += 20) {
-            ctx.strokeStyle = xx % 100 === 0 ? 'red' : '#ffcccc';
-            ctx.lineWidth = xx % 100 === 0 ? 1 : 0.5;
+            ctx.strokeStyle = xx % 100 === 0 ? 'rgba(255, 0, 0, 0.8)' : 'rgba(255, 0, 0, 0.2)';
+            ctx.lineWidth = xx % 100 === 0 ? 2 : 1;
             ctx.beginPath();
             ctx.moveTo(xx, 0);
             ctx.lineTo(xx, canvas.height);
             ctx.stroke();
             if (xx % 100 === 0) {
-                ctx.fillStyle = 'red';
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
                 ctx.fillText(xx, xx + 5, 15);
             }
         }
 
+        // Horizontal lines
         for (let yy = 0; yy < canvas.height; yy += 20) {
-            ctx.strokeStyle = yy % 100 === 0 ? 'red' : '#ffcccc';
-            ctx.lineWidth = yy % 100 === 0 ? 1 : 0.5;
+            ctx.strokeStyle = yy % 100 === 0 ? 'rgba(255, 0, 0, 0.8)' : 'rgba(255, 0, 0, 0.2)';
+            ctx.lineWidth = yy % 100 === 0 ? 2 : 1;
             ctx.beginPath();
             ctx.moveTo(0, yy);
             ctx.lineTo(canvas.width, yy);
             ctx.stroke();
             if (yy % 100 === 0) {
-                ctx.fillStyle = 'red';
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
                 ctx.fillText(yy, 5, yy + 15);
             }
         }
