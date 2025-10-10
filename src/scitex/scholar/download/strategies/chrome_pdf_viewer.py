@@ -40,6 +40,15 @@ async def try_download_chrome_pdf_viewer_async(
 
         page = await context.new_page()
 
+        # Get browser's download directory and capture files before download
+        from scitex.scholar.config import ScholarConfig
+        import time
+        config = ScholarConfig()
+        browser_downloads_dir = config.get_library_downloads_dir()
+        files_before = set(browser_downloads_dir.glob("*")) if browser_downloads_dir.exists() else set()
+        download_start_time = time.time()
+        logger.info(f"{downloader_name}: Monitoring {browser_downloads_dir} ({len(files_before)} files)")
+
         # Step 1: Navigate and wait for networkidle
         await browser_logger.debug(
             page, f"{downloader_name}: Chrome PDF: Navigating to URL..."
@@ -127,6 +136,12 @@ async def try_download_chrome_pdf_viewer_async(
         await browser_logger.success(
             page, f"{downloader_name}: Chrome PDF: ✓ PDF viewer detected!"
         )
+
+        # Wait for PDF to fully render for visual feedback (especially in interactive mode)
+        await browser_logger.info(
+            page, f"{downloader_name}: Chrome PDF: Waiting for PDF to render (5s)..."
+        )
+        await page.wait_for_timeout(5000)  # 5 seconds for visual confirmation
         await human.random_delay_async(1000, 2000, page=page)
 
         # Step 5: Show grid and click center
@@ -183,36 +198,95 @@ async def try_download_chrome_pdf_viewer_async(
             await page.wait_for_timeout(2000)
 
         # Step 8: Check if file was actually downloaded
+        # Check browser download directory for new files (even if Playwright event didn't fire)
+        files_after = set(browser_downloads_dir.glob("*")) if browser_downloads_dir.exists() else set()
+        new_files = files_after - files_before
+        download_duration = time.time() - download_start_time
+
+        logger.info(f"{downloader_name}: Checking download result...")
+        logger.info(f"  is_downloaded (Playwright): {is_downloaded}")
+        logger.info(f"  output_path: {output_path}")
+        logger.info(f"  Files before: {len(files_before)}")
+        logger.info(f"  Files after: {len(files_after)}")
+        logger.info(f"  New files: {len(new_files)}")
+
+        if new_files:
+            # Found new file(s) in download directory
+            downloaded_file = max(new_files, key=lambda p: p.stat().st_mtime)
+            file_size = downloaded_file.stat().st_size
+            file_size_mb = file_size / (1024 * 1024)
+
+            logger.success(f"{downloader_name}: Found downloaded file: {downloaded_file.name}")
+            logger.info(f"  Size: {file_size_mb:.2f} MB")
+            logger.info(f"  Duration: {download_duration:.1f}s")
+            logger.info(f"  Location: {downloaded_file}")
+
+            if file_size > 1000:  # At least 1KB
+                # Rename to desired output filename
+                import shutil
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(downloaded_file), str(output_path))
+
+                await browser_logger.success(
+                    page,
+                    f"{downloader_name}: ✓ Downloaded {file_size_mb:.2f} MB in {download_duration:.1f}s",
+                )
+                await browser_logger.success(
+                    page,
+                    f"{downloader_name}: ✓ Saved to: {str(output_path)}",
+                )
+                logger.success(f"Downloaded PDF: {output_path} ({file_size_mb:.2f} MB)")
+                await page.wait_for_timeout(3000)
+                await page.close()
+                return output_path
+
         if is_downloaded and output_path.exists():
             file_size = output_path.stat().st_size
+            file_size_mb = file_size / (1024 * 1024)
             if file_size > 1000:  # At least 1KB
                 await browser_logger.success(
                     page,
-                    f"{downloader_name}: Chrome PDF: Downloaded {file_size/1024:.1f}KB from {str(pdf_url)}",
+                    f"{downloader_name}: ✓ Downloaded {file_size_mb:.2f} MB",
                 )
                 await browser_logger.success(
                     page,
-                    f"{downloader_name}: Chrome PDF: SUCCESS Downloaded {file_size/1024:.1f}KB",
+                    f"{downloader_name}: ✓ Saved to: {str(output_path)}",
                 )
-                await page.wait_for_timeout(2000)  # Show success for 2s
+                logger.success(f"Downloaded PDF: {output_path} ({file_size_mb:.2f} MB)")
+                await page.wait_for_timeout(3000)  # Show success for 3s
                 await page.close()
                 return output_path
             else:
                 await browser_logger.warning(
                     page,
-                    f"{downloader_name}: Chrome PDF: File too small {str(file_size)} bytes likely failed",
+                    f"{downloader_name}: ✗ File too small: {file_size} bytes",
                 )
-                await browser_logger.warning(
-                    page,
-                    f"{downloader_name}: Chrome PDF: File too small {str(file_size)} bytes",
-                )
+                logger.warning(f"{downloader_name}: Download failed - file too small: {file_size} bytes")
                 await page.wait_for_timeout(2000)
                 await page.close()
                 return None
+        elif output_path.exists():
+            # File exists but is_downloaded is False - still check file
+            file_size = output_path.stat().st_size
+            file_size_mb = file_size / (1024 * 1024)
+            if file_size > 1000:
+                await browser_logger.success(
+                    page,
+                    f"{downloader_name}: ✓ File found: {file_size_mb:.2f} MB",
+                )
+                await browser_logger.success(
+                    page,
+                    f"{downloader_name}: ✓ Saved to: {str(output_path)}",
+                )
+                logger.success(f"Downloaded PDF: {output_path} ({file_size_mb:.2f} MB)")
+                await page.wait_for_timeout(3000)
+                await page.close()
+                return output_path
 
-        await browser_logger.info(
-            page, f"{downloader_name}: Chrome PDF: ✗ Download did not complete"
+        await browser_logger.warning(
+            page, f"{downloader_name}: ✗ Download did not complete"
         )
+        logger.warning(f"{downloader_name}: Download did not complete (is_downloaded={is_downloaded}, exists={output_path.exists()})")
         await page.wait_for_timeout(2000)
         await page.close()
 

@@ -136,7 +136,7 @@ async def handle_project_operations(args, scholar):
         papers = scholar.load_project(args.project)
 
         # Count PDF statuses by checking symlinks
-        library_dir = scholar.config.get_library_dir()
+        library_dir = scholar.config.get_library_project_dir()
         project_dir = library_dir / args.project
 
         # Count different PDF statuses from symlinks

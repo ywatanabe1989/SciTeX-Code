@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 00:33:25 (ywatanabe)"
+# Timestamp: "2025-10-11 04:38:44 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
@@ -24,8 +24,8 @@ from playwright.async_api import BrowserContext, Page
 
 from scitex import logging
 from scitex.browser.debugging import browser_logger
-from scitex.scholar.config import PublisherRules, ScholarConfig
 from scitex.scholar.auth.gateway import OpenURLResolver
+from scitex.scholar.config import PublisherRules, ScholarConfig
 
 # Import strategies
 from .strategies import (
@@ -211,14 +211,20 @@ class ScholarURLFinder:
         if doi:
             logger.info(f"{self.name}: Detected DOI: {doi}")
             async with self._managed_page() as page:
-                resolved_url = await self.openurl_resolver.resolve_doi(doi, page)
+                resolved_url = await self.openurl_resolver.resolve_doi(
+                    doi, page
+                )
                 if resolved_url:
-                    logger.info(f"{self.name}: Resolved DOI to: {resolved_url}")
+                    logger.info(
+                        f"{self.name}: Resolved DOI to: {resolved_url}"
+                    )
                     url = resolved_url
                 else:
                     # Fallback to direct DOI URL (works for open access papers like arXiv)
                     url = f"https://doi.org/{doi}"
-                    logger.info(f"{self.name}: OpenURL failed, using direct DOI URL: {url}")
+                    logger.info(
+                        f"{self.name}: OpenURL failed, using direct DOI URL: {url}"
+                    )
 
         logger.info(f"{self.name}: Finding PDFs from URL: {url}")
 
@@ -297,7 +303,11 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Find PDF URLs from a publisher page or DOI"
     )
-    parser.add_argument("--url", required=True, help="URL or DOI to search for PDFs (e.g., 'https://...' or '10.1038/...' or 'doi:10.1038/...')")
+    parser.add_argument(
+        "--url",
+        required=True,
+        help="URL or DOI to search for PDFs (e.g., 'https://...' or '10.1038/...' or 'doi:10.1038/...')",
+    )
     parser.add_argument(
         "--browser-mode",
         choices=["interactive", "stealth"],
@@ -355,6 +365,15 @@ python -m scitex.scholar.url.ScholarURLFinder \
 python -m scitex.scholar.url.ScholarURLFinder \
 	--url "doi:10.3389/fnins.2024.1472747" \
 	--browser-mode stealth
+
+# No doi prefix
+python -m scitex.scholar.url.ScholarURLFinder \
+	--url "10.1016/j.clinph.2024.09.017" \
+	--browser-mode stealth
+
+# Found 1 PDF URLs:
+# [{'source': 'zotero_translator',
+#   'url': 'https://www.sciencedirect.com/science/article/pii/S1388245724002761/pdfft?download=true'}]
 """
 
 # EOF

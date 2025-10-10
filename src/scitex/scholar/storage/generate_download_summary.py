@@ -41,7 +41,7 @@ def generate_download_summary(
     """
     config = ScholarConfig()
     master_dir = config.path_manager.get_library_master_dir()
-    project_dir = config.path_manager.get_library_dir(project)
+    project_dir = config.path_manager.get_library_project_dir(project)
 
     logger.debug(f"Master dir: {master_dir}")
     logger.debug(f"Project dir: {project_dir}")

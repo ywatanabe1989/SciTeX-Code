@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 20:42:40 (ywatanabe)"
+# Timestamp: "2025-10-11 06:45:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/ScholarConfig.py
 # ----------------------------------------
 from __future__ import annotations
@@ -113,7 +113,7 @@ class ScholarConfig:
         return cls(path)
 
     # Path Management ----------------------------------------
-    def _setup_path_manager(self):
+    def _setup_path_manager(self, scholar_dir=None):
         scholar_dir = self.cascade.resolve("scholar_dir", default="~/.scitex")
         base_path = Path(scholar_dir).expanduser() / "scholar"
         self.path_manager = PathManager(scholar_dir=base_path)

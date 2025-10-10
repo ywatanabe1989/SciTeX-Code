@@ -1,4 +1,4 @@
-# Timestamp: "2025-10-10 06:48:18 (ywatanabe)"
+# Timestamp: "2025-10-11 05:19:50 (ywatanabe)"
 # File: ./src/scitex/scholar/config/default.yaml
 
 # ----------------------------------------
@@ -35,6 +35,8 @@ delay_between_starts: 0.1
 default_delay: 10
 retry_attempts: 3
 timeout: 60
+# Note: Download directory is fixed at {scholar_dir}/library/downloads/
+# Use get_library_downloads_dir() to access it
 
 # ----------------------------------------
 # cache

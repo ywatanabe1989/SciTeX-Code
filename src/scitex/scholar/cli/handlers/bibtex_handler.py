@@ -105,7 +105,7 @@ async def handle_bibtex_operations(args, scholar):
     # Save BibTeX files to project's info directory if needed
     if args.project:
         # Save BibTeX files to the project's info/bibtex directory
-        library_dir = scholar.config.get_library_dir()
+        library_dir = scholar.config.get_library_project_dir()
         project_bibtex_dir = library_dir / args.project / "info" / "bibtex"
         project_bibtex_dir.mkdir(parents=True, exist_ok=True)
 

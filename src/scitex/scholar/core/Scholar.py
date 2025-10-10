@@ -126,7 +126,7 @@ class Scholar:
 
         # Set project and workspace
         self.project = self.config.resolve("project", project, "default")
-        self.workspace_dir = self.config.path_manager.workspace_dir
+        self.get_workspace_dir() = self.config.path_manager.get_workspace_dir()
 
         # Auto-create project directory if it doesn't exist
         if project:
@@ -145,7 +145,7 @@ class Scholar:
         )
 
         # Show user-friendly initialization message with library location
-        library_path = self.config.get_library_dir()
+        library_path = self.config.get_library_project_dir()
         if project:
             project_path = library_path / project
             logger.info(
@@ -595,7 +595,7 @@ class Scholar:
 
             # Process results and organize in library
             stats = {"downloaded": 0, "failed": 0, "errors": 0}
-            library_dir = self.config.get_library_dir()
+            library_dir = self.config.get_library_project_dir()
             master_dir = library_dir / "MASTER"
             master_dir.mkdir(parents=True, exist_ok=True)
 
@@ -715,7 +715,7 @@ class Scholar:
     #         for doi, result in zip([dois, results]):
     #             paper_data = {"doi": doi}
     #             paper_id = self.config.path_manager._generate_paper_id(doi=doi)
-    #             library_dir = self.config.get_library_dir()
+    #             library_dir = self.config.get_library_project_dir()
     #             metadata_file = (
     #                 library_dir / "MASTER" / paper_id / "metadata.json"
     #             )
@@ -752,7 +752,7 @@ class Scholar:
     #                 paper_id = self.config.path_manager._generate_paper_id(
     #                     doi=doi
     #                 )
-    #                 library_dir = self.config.get_library_dir()
+    #                 library_dir = self.config.get_library_project_dir()
     #                 metadata_file = (
     #                     library_dir / "MASTER" / paper_id / "metadata.json"
     #                 )
@@ -895,7 +895,7 @@ class Scholar:
             config=self.config,
         )
 
-        library_dir = self.config.get_library_dir()
+        library_dir = self.config.get_library_project_dir()
         master_dir = library_dir / "MASTER"
         project_dir = library_dir / self.project
         master_dir.mkdir(parents=True, exist_ok=True)
@@ -1170,7 +1170,7 @@ class Scholar:
 
         logger.info(f"Loading papers from project: {project_name}")
 
-        library_dir = self.config.get_library_dir()
+        library_dir = self.config.get_library_project_dir()
         project_dir = library_dir / project_name
 
         if not project_dir.exists():
@@ -1354,7 +1354,7 @@ class Scholar:
         Returns:
             Path to the project directory
         """
-        project_dir = self.config.get_library_dir() / project
+        project_dir = self.config.get_library_project_dir() / project
         info_dir = project_dir / "info"
 
         # Create project and info directories
@@ -1418,7 +1418,7 @@ class Scholar:
         Returns:
             List of project information dictionaries
         """
-        library_dir = self.config.get_library_dir()
+        library_dir = self.config.get_library_project_dir()
         projects = []
 
         for item in library_dir.iterdir():
@@ -1465,7 +1465,7 @@ class Scholar:
                 len(list(master_dir.glob("*"))) if master_dir.exists() else 0
             ),
             "projects": projects,
-            "library_path": str(self.config.get_library_dir()),
+            "library_path": str(self.config.get_library_project_dir()),
             "master_path": str(master_dir),
         }
 
@@ -1490,7 +1490,7 @@ class Scholar:
             Dictionary with backup information
         """
         backup_path = Path(backup_path)
-        library_path = self.config.get_library_dir()
+        library_path = self.config.get_library_project_dir()
 
         if not library_path.exists():
             raise ScholarError("Library directory does not exist")
@@ -1913,7 +1913,7 @@ if __name__ == "__main__":
         )
         print(f"✓ Scholar initialized")
         print(f"  Project: {scholar.project}")
-        print(f"  Workspace: {scholar.workspace_dir}")
+        print(f"  Workspace: {scholar.get_workspace_dir()}")
         print()
 
         # Demonstrate project management
@@ -2053,7 +2053,7 @@ if __name__ == "__main__":
         # Demonstrate configuration access
         print("7. Configuration Management:")
         print(f"   ⚙️  Scholar directory: {scholar.config.paths.scholar_dir}")
-        print(f"   ⚙️  Library directory: {scholar.config.get_library_dir()}")
+        print(f"   ⚙️  Library directory: {scholar.config.get_library_project_dir()}")
         print(
             f"   ⚙️  Debug mode: {scholar.config.resolve('debug_mode', default=False)}"
         )

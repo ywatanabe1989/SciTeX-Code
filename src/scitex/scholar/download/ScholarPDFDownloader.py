@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 03:08:35 (ywatanabe)"
+# Timestamp: "2025-10-11 04:35:08 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -270,7 +270,7 @@ class ScholarPDFDownloader:
 
         # Get directories from config
         temp_downloads_dir = self.config.get_library_downloads_dir()
-        final_pdfs_dir = self.config.get_library_pdfs_dir()
+        final_pdfs_dir = self.config.get_library_master_dir()
 
         # Extract DOI from URL if not provided
         if not doi and "doi.org/" in pdf_url:
@@ -357,7 +357,7 @@ async def main_async(args):
         auth_manager=auth_manager,
         browser_manager=browser_manager,
     )
-    _url_context = await auth_gateway.prepare_context_async(
+    url_context = await auth_gateway.prepare_context_async(
         doi=args.doi, context=context
     )
 
@@ -365,7 +365,19 @@ async def main_async(args):
     # Step 1: URL Resolution (separate from downloading)
     # ---------------------------------------
     url_finder = ScholarURLFinder(context)
-    urls = await url_finder.find_pdf_urls(args.doi)  # Returns List[Dict]
+
+    # Use the resolved URL from auth_gateway to avoid duplicate OpenURL resolution
+    resolved_url = url_context.url if url_context else None
+    if resolved_url:
+        logger.info(
+            f"{__name__}: Using resolved URL from auth_gateway: {resolved_url}"
+        )
+        urls = await url_finder.find_pdf_urls(resolved_url)
+    else:
+        logger.info(f"{__name__}: No resolved URL, using DOI: {args.doi}")
+        urls = await url_finder.find_pdf_urls(
+            args.doi
+        )  # Will resolve DOI internally
 
     # Extract URL strings from list of dicts
     pdf_urls = []
@@ -421,13 +433,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=str,
-        default="~/.scitex/scholar/downloads/downloaded_paper.pdf",
-        help="Output path for the PDF (default: ~/.scitex/scholar/downloads/downloaded_paper.pdf)",
+        default="~/.scitex/scholar/library/downloads/downloaded_paper.pdf",
+        help="Output path for the PDF (default: ~/.scitex/scholar/library/downloads/downloaded_paper.pdf)",
     )
     parser.add_argument(
         "--browser-mode",
         type=str,
-        choices=["stealth", "interactive", "manual"],
+        choices=["stealth", "interactive"],
         default="stealth",
         help="Browser mode (default: stealth)",
     )

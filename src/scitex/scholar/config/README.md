@@ -16,7 +16,7 @@ Example can be seen at `./config/default.yaml`
 config = ScholarConfig()
 api_key = config.cascade.resolve("semantic_scholar_api_key")
 is_debug = config.cascade.resolve("debug_mode", type=bool)
-download_dir = config.path_manager.get_downloads_dir()
+download_dir = config.path_manager.get_library_downloads_dir()
 ```
 
 ## Modules

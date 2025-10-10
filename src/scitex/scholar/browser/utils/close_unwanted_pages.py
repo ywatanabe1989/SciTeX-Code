@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 23:57:55 (ywatanabe)"
+# Timestamp: "2025-10-11 04:19:46 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/close_unwanted_pages.py
 # ----------------------------------------
 from __future__ import annotations
@@ -33,11 +33,12 @@ async def close_unwanted_pages(
         "chrome-extension://",
         "pbapi.xyz",
         "options.html",
-        "newtab",
+        # "newtab",
     ]
 
+    await asyncio.sleep(delay_sec)
+
     for attempt in range(max_attempts):
-        await asyncio.sleep(delay_sec)
 
         try:
             # Get current pages first to avoid stale references

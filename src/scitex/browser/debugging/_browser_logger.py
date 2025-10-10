@@ -139,13 +139,19 @@ async def log_page_async(
     if not verbose:
         return True
 
+    # Check if we should show popup based on logging level
+    # Only show popup if message level >= effective logging level
+    should_show_popup = current_level_value >= effective_level
+
     # Get border color for popup based on level
     border_color = _POPUP_COLORS.get(level, _POPUP_COLORS["info"])
     try:
         if page is None or page.is_closed():
             return False
 
-        await page.evaluate(
+        # Only show popup if level is high enough
+        if should_show_popup:
+            await page.evaluate(
             f"""
 () => {{
     if (!window._scitexMessages) {{
@@ -233,18 +239,18 @@ async def log_page_async(
     }}, {duration_ms});
 }}
 """
-        )
+            )
 
-        if not hasattr(page, "_scitex_popup_handler_added"):
+            if not hasattr(page, "_scitex_popup_handler_added"):
 
-            async def restore_popups_on_load(frame):
-                """Re-inject popup container and messages after page navigation"""
-                if frame == page.main_frame:
-                    try:
-                        await page.wait_for_load_state(
-                            "domcontentloaded", timeout=5000
-                        )
-                        await page.evaluate(
+                async def restore_popups_on_load(frame):
+                    """Re-inject popup container and messages after page navigation"""
+                    if frame == page.main_frame:
+                        try:
+                            await page.wait_for_load_state(
+                                "domcontentloaded", timeout=5000
+                            )
+                            await page.evaluate(
                             """
 () => {
     if (window._scitexMessages && window._scitexMessages.length > 0) {
@@ -288,12 +294,12 @@ async def log_page_async(
     }
 }
 """
-                        )
-                    except Exception:
-                        pass
+                            )
+                        except Exception:
+                            pass
 
-            page.on("framenavigated", restore_popups_on_load)
-            page._scitex_popup_handler_added = True
+                page.on("framenavigated", restore_popups_on_load)
+                page._scitex_popup_handler_added = True
 
         if should_take_screenshot:
             try:

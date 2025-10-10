@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-10 06:24:21 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/_wait_redirects.py
+# Timestamp: "2025-10-11 04:29:14 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/wait_redirects.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/browser/utils/_wait_redirects.py"
+    "./src/scitex/scholar/browser/utils/wait_redirects.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -66,7 +66,7 @@ def _load_auth_patterns(
 
     except Exception as e:
         logger.warning(
-            f"{func_name}: Failed to load patterns from config: {e}, using fallback"
+            f"{func_name}: Failed to load patterns from config: {str(e)}, using fallback"
         )
         _AUTH_ENDPOINTS = _get_fallback_auth_patterns()
         _ARTICLE_PATTERNS = _get_fallback_article_patterns()
@@ -191,7 +191,7 @@ async def detect_captcha_on_page(
                 element = await page.wait_for_selector(selector, timeout=500)
                 if element:
                     return True
-            except:
+            except Exception:
                 continue
 
         # Check page title
@@ -199,13 +199,13 @@ async def detect_captcha_on_page(
             title = await page.title()
             if "challenge" in title.lower() or "captcha" in title.lower():
                 return True
-        except:
+        except Exception:
             pass
 
         return False
 
     except Exception as e:
-        logger.debug(f"{func_name}: CAPTCHA detection error: {e}")
+        logger.debug(f"{func_name}: CAPTCHA detection error: {str(e)}")
         return False
 
 
@@ -246,6 +246,39 @@ async def wait_redirects(
             f"{func_name}: Waiting for redirects (max {timeout/1000:.0f}s)...",
             duration_ms=timeout,
         )
+
+    # Countdown timer task
+    async def show_countdown():
+        """Show countdown timer in popup with ASCII progress bar."""
+        if not show_progress:
+            return
+
+        timeout_sec = timeout / 1000
+        start = asyncio.get_event_loop().time()
+
+        while not navigation_complete.is_set():
+            elapsed = asyncio.get_event_loop().time() - start
+            remaining = max(0, timeout_sec - elapsed)
+
+            if remaining <= 0:
+                break
+
+            # Create simple ASCII progress bar
+            progress = elapsed / timeout_sec
+            bar_length = 20
+            filled = int(progress * bar_length)
+            bar = "█" * filled + "░" * (bar_length - filled)
+
+            # Update every 2 seconds
+            await asyncio.sleep(2)
+
+            if not navigation_complete.is_set():
+                await browser_logger.debug(
+                    page,
+                    f"{func_name}: [{bar}] {remaining:.0f}s",
+                    duration_ms=2500,
+                    take_screenshot=False,
+                )
 
     # Tracking variables
     redirect_chain = [] if track_chain else None
@@ -288,7 +321,7 @@ async def wait_redirects(
         if show_progress and (300 <= status < 400 or is_auth_endpoint(url)):
             redirect_count += 1
             asyncio.create_task(
-                browser_logger.info(
+                browser_logger.debug(
                     page,
                     f"{func_name}: {'Auth' if is_auth_endpoint(url) else 'Redirect'} {redirect_count}: {url[:40]}...",
                     duration_ms=1000,
@@ -298,10 +331,10 @@ async def wait_redirects(
         # Check if we reached final article
         if is_final_article_url(url) and 200 <= status < 300:
             found_article = True
-            logger.info(f"{func_name}: Found article page: {url[:80]}")
+            logger.debug(f"{func_name}: Found article page: {url[:80]}")
             if show_progress:
                 asyncio.create_task(
-                    browser_logger.info(
+                    browser_logger.debug(
                         page,
                         f"{func_name}: Article found: {url[:40]}...",
                         duration_ms=2000,
@@ -359,9 +392,10 @@ async def wait_redirects(
         captcha_detected = False
         captcha_wait_start = None
 
+        await asyncio.sleep(1)
+
         while not navigation_complete.is_set():
             try:
-                await asyncio.sleep(1)
                 current_url = page.url
                 current_time = asyncio.get_event_loop().time()
 
@@ -567,8 +601,9 @@ async def wait_redirects(
     # Set up response tracking
     page.on("response", track_response)
 
-    # Start URL stability checker
+    # Start URL stability checker and countdown timer
     stability_task = asyncio.create_task(check_url_stability())
+    countdown_task = asyncio.create_task(show_countdown())
 
     try:
         # Wait for navigation to complete
@@ -588,8 +623,9 @@ async def wait_redirects(
                     duration_ms=1500,
                 )
 
-        # Cancel stability checker
+        # Cancel stability checker and countdown
         stability_task.cancel()
+        countdown_task.cancel()
 
         # Wait for network idle if requested
         if wait_for_idle and not timed_out:
@@ -663,7 +699,34 @@ async def wait_redirects(
         try:
             page.remove_listener("response", track_response)
             stability_task.cancel()
+            countdown_task.cancel()
         except:
             pass
+
+
+# INFO:     BrowserLogger - OpenURLResolver: Navigating to resolver for 10.1016/j.clinph.2024.09.017...
+# INFO:     BrowserLogger - Screenshot: 20251011_042805_692-INFO-OpenURLResolver__Navigating_to_resolver_for_10.1016_j.clinph.2024.09.017....png
+# WARN: OpenURL attempt 1 failed: Page.goto: Page crashed
+# Call log:
+#   - navigating to "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=10.1016/j.clinph.2024.09.017", waiting until "domcontentloaded"
+# , retrying in 2s
+# INFO:     BrowserLogger - OpenURLResolver: ✗ Attempt 1 failed, retrying in 2s...
+# INFO:     BrowserLogger - OpenURLResolver: Navigating to resolver for 10.1016/j.clinph.2024.09.017...
+# WARN: OpenURL attempt 2 failed: Page.goto: Page crashed
+# Call log:
+#   - navigating to "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=10.1016/j.clinph.2024.09.017", waiting until "domcontentloaded"
+# , retrying in 4s
+# INFO:     BrowserLogger - OpenURLResolver: ✗ Attempt 2 failed, retrying in 4s...
+# INFO:     BrowserLogger - OpenURLResolver: Navigating to resolver for 10.1016/j.clinph.2024.09.017...
+# ERRO: OpenURL resolution failed after 3 attempts: Page.goto: Page crashed
+# Call log:
+#   - navigating to "https://unimelb.hosted.exlibrisgroup.com/sfxlcl41?doi=10.1016/j.clinph.2024.09.017", waiting until "domcontentloaded"
+
+# INFO:     BrowserLogger - OpenURLResolver: ✗ FAILED after 3 attempts: Page.goto: Page crashed
+# Call log:
+#   - navigating to "https://unimelb.hosted.exli
+# INFO:     BrowserLogger - OpenURLResolver: f10.1016/j.clinph.2024.09.017 - query not resolved
+# WARN: AuthenticationGateway: OpenURL resolution failed
+# INFO:     BrowserLogger - AuthenticationGateway: ✗ Could not resolve to publisher URL
 
 # EOF

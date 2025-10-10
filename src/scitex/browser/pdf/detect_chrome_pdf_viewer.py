@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 04:07:59 (ywatanabe)"
+# Timestamp: "2025-10-11 03:47:51 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/browser/pdf/detect_chrome_pdf_viewer.py
 # ----------------------------------------
 from __future__ import annotations
@@ -12,13 +12,16 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 __FILE__ = __file__
-
 from scitex import logging
+
+from ..debugging import browser_logger
 
 logger = logging.getLogger(__name__)
 
 
-async def detect_chrome_pdf_viewer_async(page, verbose: bool = False):
+async def detect_chrome_pdf_viewer_async(
+    page, verbose: bool = False, func_name="detect_chrome_pdf_viewer_async"
+):
     """
     Detect if Chrome PDF viewer is present on the page.
 
@@ -35,10 +38,10 @@ async def detect_chrome_pdf_viewer_async(page, verbose: bool = False):
         bool: True if PDF viewer detected, False otherwise
     """
 
-    from ..debugging import browser_logger
-
     if verbose:
-        await browser_logger.debug(page, "Detecting Chrome PDF Viewer...")
+        await browser_logger.debug(
+            page, f"{func_name}: Detecting Chrome PDF Viewer..."
+        )
 
     # Try multiple detection methods
     detected = await page.evaluate(
@@ -89,21 +92,25 @@ async def detect_chrome_pdf_viewer_async(page, verbose: bool = False):
     )
 
     if detected:
-        logger.debug("PDF viewer detected")
         if verbose:
-            await browser_logger.success(page, "✓ PDF viewer elements found!")
+            await browser_logger.success(
+                page, f"{func_name}: ✓ PDF viewer elements found!"
+            )
         return True
     else:
-        logger.debug("PDF viewer not detected")
         if verbose:
-            await browser_logger.debug(page, "✗ No PDF viewer elements found")
+            await browser_logger.debug(
+                page, f"{func_name}: ✗ No PDF viewer elements found"
+            )
         return False
 
 
 def main(args):
     """Demonstrate detect_chrome_pdf_viewer functionality."""
     import asyncio
+
     from playwright.async_api import async_playwright
+
     from ..debugging import browser_logger
 
     async def demo():
@@ -133,9 +140,7 @@ def main(args):
             else:
                 logger.debug("No PDF viewer detected (this may be expected)")
 
-            await browser_logger.debug(
-                page, "✓ Demo complete", verbose=True
-            )
+            await browser_logger.debug(page, "✓ Demo complete", verbose=True)
 
             await asyncio.sleep(2)
             await browser.close()
@@ -147,6 +152,7 @@ def main(args):
 def parse_args():
     """Parse command line arguments."""
     import argparse
+
     parser = argparse.ArgumentParser(description="PDF viewer detection demo")
     return parser.parse_args()
 

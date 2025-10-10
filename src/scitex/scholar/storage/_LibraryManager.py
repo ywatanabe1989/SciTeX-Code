@@ -43,7 +43,7 @@ class LibraryManager:
         """Initialize library manager."""
         self.config = config or ScholarConfig()
         self.project = self.config.resolve("project", project)
-        self.library_master_dir = self.config.get_library_dir() / "MASTER"
+        self.library_master_dir = self.config.get_library_project_dir() / "MASTER"
         self.single_doi_resolver = single_doi_resolver
         self._source_filename = "papers"
         self.dedup_manager = DeduplicationManager(config=self.config)
@@ -1356,7 +1356,7 @@ class LibraryManager:
         """
 
         try:
-            project_dir = self.config.path_manager.get_library_dir(project)
+            project_dir = self.config.path_manager.get_library_project_dir(project)
             symlink_path = project_dir / readable_name
 
             # Extract the master ID from the target path to find old symlinks
@@ -1414,7 +1414,7 @@ class LibraryManager:
     ) -> Optional[Path]:
         """Create info/papers_bib/pac.bib structure."""
         try:
-            project_dir = self.config.path_manager.get_library_dir(project)
+            project_dir = self.config.path_manager.get_library_project_dir(project)
             info_dir = project_dir / "info" / f"{bibtex_source_filename}_bib"
             info_dir.mkdir(parents=True, exist_ok=True)
 

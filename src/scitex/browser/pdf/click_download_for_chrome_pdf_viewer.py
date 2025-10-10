@@ -102,15 +102,27 @@ async def click_download_for_chrome_pdf_viewer_async(
 
         download = await download_info.value
 
-        # Monitor download progress
+        # Monitor download progress with real-time updates
         if verbose:
-            await browser_logger.debug(
+            await browser_logger.info(
                 page,
-                f"{func_name}: Monitoring download progress...",
+                f"{func_name}: Download started, monitoring progress...",
             )
 
+        # Wait for download to complete and get final path
         download_path = await download.path()
-        await page.wait_for_timeout(10_000)  # Wait for download to complete
+
+        # Show download completion
+        if download_path:
+            temp_size = Path(download_path).stat().st_size if Path(download_path).exists() else 0
+            size_mb = temp_size / (1024 * 1024)
+            if verbose:
+                await browser_logger.success(
+                    page,
+                    f"{func_name}: Download complete! Size: {size_mb:.2f} MB",
+                )
+
+        await page.wait_for_timeout(2_000)  # Brief pause to show completion message
 
         if download_path:
             # Save download to specified path
