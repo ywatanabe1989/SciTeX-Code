@@ -216,8 +216,9 @@ class ScholarURLFinder:
                     logger.info(f"{self.name}: Resolved DOI to: {resolved_url}")
                     url = resolved_url
                 else:
-                    logger.warning(f"{self.name}: Failed to resolve DOI: {doi}")
-                    return []
+                    # Fallback to direct DOI URL (works for open access papers like arXiv)
+                    url = f"https://doi.org/{doi}"
+                    logger.info(f"{self.name}: OpenURL failed, using direct DOI URL: {url}")
 
         logger.info(f"{self.name}: Finding PDFs from URL: {url}")
 
