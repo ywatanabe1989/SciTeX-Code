@@ -48,9 +48,10 @@ async def try_download_chrome_pdf_viewer_async(
             page,
             f"{downloader_name}: Chrome PDF: Navigating to {str(pdf_url)[:60]}...",
         )
-        await HumanBehavior.random_delay_async(
-            1000, 2000, "before navigation"
-        )
+        # Create HumanBehavior instance for delays
+        human = HumanBehavior()
+        await human.random_delay_async(1000, 2000, page=page)
+
         # Navigate and wait for initial networkidle
         await page.goto(str(pdf_url), wait_until="networkidle", timeout=60_000)
         await browser_logger.debug(
@@ -126,7 +127,7 @@ async def try_download_chrome_pdf_viewer_async(
         await browser_logger.success(
             page, f"{downloader_name}: Chrome PDF: ✓ PDF viewer detected!"
         )
-        await HumanBehavior.random_delay_async(1000, 2000, "viewing PDF")
+        await human.random_delay_async(1000, 2000, page=page)
 
         # Step 5: Show grid and click center
         await browser_logger.info(
