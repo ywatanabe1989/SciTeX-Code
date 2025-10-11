@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-08 16:41:41 (ywatanabe)"
+# Timestamp: "2025-10-11 20:39:13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/engines/ScholarEngine.py
 # ----------------------------------------
 from __future__ import annotations
@@ -10,6 +10,8 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+import scitex as stx
 
 __FILE__ = __file__
 
@@ -72,10 +74,9 @@ class ScholarEngine:
         """Load cache from file."""
         if self.use_cache and self.cache_file.exists():
             try:
-                import json
-
-                with open(self.cache_file, "r") as f:
-                    self._cache = json.load(f)
+                # with open(self.cache_file, "r") as f:
+                #     self._cache = json.load(f)
+                self._cache = stx.io.load(self.cache_file)
             except:
                 self._cache = {}
         else:
@@ -85,10 +86,9 @@ class ScholarEngine:
         """Save cache to file."""
         if self.use_cache:
             try:
-                import json
-
-                with open(self.cache_file, "w") as f:
-                    json.dump(self._cache, f, indent=2)
+                # with open(self.cache_file, "w") as f:
+                #     json.dump(self._cache, f, indent=2)
+                stx.io.save(self._cache, self.cache_file)
             except Exception as e:
                 logger.warning(f"Failed to save engine cache: {e}")
 
@@ -102,61 +102,6 @@ class ScholarEngine:
 
         param_str = json.dumps(params, sort_keys=True)
         return hashlib.md5(param_str.encode()).hexdigest()
-
-    # # Working but not showing fail message, at least when cache is enabled
-    # async def search_async(
-    #     self, title: str = None, doi: str = None, **kwargs
-    # ) -> Dict[str, Dict]:
-    #     """Search all engines and return combined results."""
-    #     # Check cache first
-    #     cache_key = self._get_cache_key(title, doi, **kwargs)
-    #     if self.use_cache and cache_key in self._cache:
-    #         logger.debug(f"Using cached search result")
-    #         return self._cache[cache_key]
-
-    #     self._last_query_title = title
-    #     self._attempted_engines = set()
-
-    #     if self.rotation_manager:
-    #         paper_info = {"title": title, **kwargs}
-    #         engine_order = self.rotation_manager.get_optimal_engine_order(
-    #             paper_info, self.engines, max_engines=len(self.engines)
-    #         )
-    #     else:
-    #         engine_order = self.engines
-
-    #     tasks = []
-    #     for engine_name in engine_order:
-    #         engine = self._get_engine(engine_name)
-    #         if engine:
-    #             self._attempted_engines.add(engine_name)
-    #             task = self._search_engine_with_timeout(
-    #                 engine, engine_name, title, doi, **kwargs
-    #             )
-    #             tasks.append(task)
-
-    #     results = await asyncio.gather(*tasks, return_exceptions=True)
-
-    #     engine_results = {}
-    #     for ii, (engine_name, result) in enumerate(zip(engine_order, results)):
-    #         if isinstance(result, Exception):
-    #             logger.fail(f"Error from {engine_name}: {result}")
-    #             # when cache is enabled this seems not shown
-    #             continue
-    #         if result:
-    #             print(
-    #                 f"{engine_name} returned title: {result.get('basic', {}).get('title', 'N/A')}"
-    #             )
-    #             engine_results[engine_name] = result
-
-    #     combined_result = self._combine_metadata(engine_results)
-
-    #     # Cache result
-    #     if self.use_cache and combined_result:
-    #         self._cache[cache_key] = combined_result
-    #         self._save_cache()
-
-    #     return combined_result
 
     async def search_async(
         self, title: str = None, doi: str = None, **kwargs

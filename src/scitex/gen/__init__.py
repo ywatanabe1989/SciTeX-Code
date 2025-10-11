@@ -40,7 +40,6 @@ running2finished = _deprecated_running2finished
 
 from ._symlink import symlink
 from ._symlog import symlog
-from ._tee import Tee, main, tee
 from ._title2path import title2path
 from ._title_case import main, title_case
 from ._to_even import to_even
@@ -85,9 +84,6 @@ __all__ = [
     "keys2npa",
     "less",
     "list_packages",
-    "main",
-    "main",
-    "main",
     "mat2dict",
     "mat2npa",
     "mat2npy",
