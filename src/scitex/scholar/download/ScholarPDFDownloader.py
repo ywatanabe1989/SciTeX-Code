@@ -179,37 +179,16 @@ class ScholarPDFDownloader:
         await self.context.add_init_script(button_script)
         logger.info(f"{self.name}: Manual mode button injected into browser context (appears on ALL pages)")
 
-        # Open PDF page
-        pdf_page = await self.context.new_page()
-
-        try:
-            logger.info(f"{self.name}: Opening PDF URL: {pdf_url[:80]}...")
-            await pdf_page.goto(pdf_url, timeout=30000, wait_until='domcontentloaded')
-            logger.info(f"{self.name}: PDF page opened - Press 'M' key for manual mode")
-
-            # Start monitoring for manual mode activation (keyboard press or click)
-            # NO timeout here - user can activate manual mode anytime
-            from scitex.scholar.download.strategies.manual_download_utils import (
-                wait_for_manual_mode_activation_async,
-            )
-
-            button_task = asyncio.create_task(
-                wait_for_manual_mode_activation_async(
-                    pdf_page,
-                    stop_event,
-                    timeout_sec=0,  # No timeout - wait forever for user to press M
-                )
-            )
-
-        except Exception as e:
-            logger.warning(f"{self.name}: Could not open PDF page: {e}")
-            button_task = None
-            # Continue anyway - automation might work on a different page
+        # Create manual mode monitoring (will be used if user presses 'M')
+        button_task = None
+        pdf_page = None
 
         # Define download strategies with their names
         async def chrome_pdf_wrapper(url, path):
-            # Don't create new page - reuse pdf_page
-            return None  # Skip chrome PDF since we already opened the page
+            # Chrome PDF strategy creates its own page
+            return await try_download_chrome_pdf_viewer_async(
+                self.context, url, path, self.name
+            )
 
         async def direct_download_wrapper(url, path):
             return await try_download_direct_async(
@@ -262,11 +241,12 @@ class ScholarPDFDownloader:
                     # Success! Clean up
                     if button_task:
                         button_task.cancel()
-                    await pdf_page.close()
+                    if pdf_page:
+                        await pdf_page.close()
                     logger.success(
                         f"{self.name}: Successfully downloaded via {method_name}"
                     )
-                    return output_path
+                    return is_downloaded  # Return the actual path from the strategy
                 else:
                     logger.debug(
                         f"{self.name}: {method_name} returned None (failed or not applicable)"
@@ -289,7 +269,11 @@ class ScholarPDFDownloader:
             if button_task:
                 button_task.cancel()
 
-            # Use the pdf_page we opened at the start
+            # Open page for manual download if not already open
+            if not pdf_page:
+                pdf_page = await self.context.new_page()
+                await pdf_page.goto(pdf_url, timeout=30000, wait_until='domcontentloaded')
+
             result = await self._handle_manual_download_async(
                 pdf_page,
                 pdf_url,
@@ -299,10 +283,11 @@ class ScholarPDFDownloader:
             await pdf_page.close()
             return result
 
-        # All methods failed - clean up and close pdf_page
+        # All methods failed - clean up
         if button_task:
             button_task.cancel()
-        await pdf_page.close()
+        if pdf_page:
+            await pdf_page.close()
         logger.fail(f"{self.name}: All download methods failed for {pdf_url}")
         return None
 

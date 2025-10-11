@@ -378,7 +378,7 @@ async def log_page_async(
                     full_page=False,
                 )
                 log_func(
-                    f"    {func_name} - Screenshot: {screenshot_filename}",
+                    f"    {func_name} - Screenshot: {screenshot_full_path}",
                     c="grey",
                 )
             except Exception as e:

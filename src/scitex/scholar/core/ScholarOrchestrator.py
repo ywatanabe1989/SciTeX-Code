@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 12:14:56 (ywatanabe)"
+# Timestamp: "2025-10-11 13:16:48 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/ScholarOrchestrator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -147,6 +147,7 @@ class ScholarOrchestrator:
             paper: Paper object to update
             metadata_dict: Dictionary from ScholarEngine.search_async()
         """
+
         # Helper to safely update field with engine tracking and type conversion
         def update_field(section, field_name, value, engines):
             if value is not None:
@@ -160,7 +161,9 @@ class ScholarOrchestrator:
                     try:
                         value = int(value)
                     except (ValueError, TypeError):
-                        logger.warning(f"{self.name}: Could not convert year '{value}' to int")
+                        logger.warning(
+                            f"{self.name}: Could not convert year '{value}' to int"
+                        )
                         return
 
                 # Citation counts should be integers
@@ -168,7 +171,9 @@ class ScholarOrchestrator:
                     try:
                         value = int(value)
                     except (ValueError, TypeError):
-                        logger.warning(f"{self.name}: Could not convert citation count '{value}' to int")
+                        logger.warning(
+                            f"{self.name}: Could not convert citation count '{value}' to int"
+                        )
                         return
 
                 try:
@@ -176,42 +181,95 @@ class ScholarOrchestrator:
                     setattr(section_obj, field_name, value)
                     setattr(section_obj, f"{field_name}_engines", engines)
                 except Exception as e:
-                    logger.warning(f"{self.name}: Could not set {section}.{field_name}: {e}")
+                    logger.warning(
+                        f"{self.name}: Could not set {section}.{field_name}: {e}"
+                    )
 
         # ID section
         if "id" in metadata_dict:
             id_data = metadata_dict["id"]
-            for field in ["doi", "arxiv_id", "pmid", "corpus_id", "semantic_id", "ieee_id", "scholar_id"]:
+            for field in [
+                "doi",
+                "arxiv_id",
+                "pmid",
+                "corpus_id",
+                "semantic_id",
+                "ieee_id",
+                "scholar_id",
+            ]:
                 if field in id_data:
-                    update_field("id", field, id_data[field], id_data.get(f"{field}_engines", []))
+                    update_field(
+                        "id",
+                        field,
+                        id_data[field],
+                        id_data.get(f"{field}_engines", []),
+                    )
 
         # Basic section
         if "basic" in metadata_dict:
             basic_data = metadata_dict["basic"]
-            for field in ["title", "authors", "year", "abstract", "keywords", "type"]:
+            for field in [
+                "title",
+                "authors",
+                "year",
+                "abstract",
+                "keywords",
+                "type",
+            ]:
                 if field in basic_data:
-                    update_field("basic", field, basic_data[field], basic_data.get(f"{field}_engines", []))
+                    update_field(
+                        "basic",
+                        field,
+                        basic_data[field],
+                        basic_data.get(f"{field}_engines", []),
+                    )
 
         # Citation count section
         if "citation_count" in metadata_dict:
             cc_data = metadata_dict["citation_count"]
             for field in ["total"] + [str(year) for year in range(2015, 2026)]:
                 if field in cc_data:
-                    update_field("citation_count", field, cc_data[field], cc_data.get(f"{field}_engines", []))
+                    update_field(
+                        "citation_count",
+                        field,
+                        cc_data[field],
+                        cc_data.get(f"{field}_engines", []),
+                    )
 
         # Publication section
         if "publication" in metadata_dict:
             pub_data = metadata_dict["publication"]
-            for field in ["journal", "short_journal", "impact_factor", "issn", "volume", "issue", "first_page", "last_page", "pages", "publisher"]:
+            for field in [
+                "journal",
+                "short_journal",
+                "impact_factor",
+                "issn",
+                "volume",
+                "issue",
+                "first_page",
+                "last_page",
+                "pages",
+                "publisher",
+            ]:
                 if field in pub_data:
-                    update_field("publication", field, pub_data[field], pub_data.get(f"{field}_engines", []))
+                    update_field(
+                        "publication",
+                        field,
+                        pub_data[field],
+                        pub_data.get(f"{field}_engines", []),
+                    )
 
         # URL section
         if "url" in metadata_dict:
             url_data = metadata_dict["url"]
             for field in ["doi", "publisher", "arxiv", "corpus_id"]:
                 if field in url_data:
-                    update_field("url", field, url_data[field], url_data.get(f"{field}_engines", []))
+                    update_field(
+                        "url",
+                        field,
+                        url_data[field],
+                        url_data.get(f"{field}_engines", []),
+                    )
 
         logger.debug(f"{self.name}: Merged metadata into Paper object")
 
@@ -279,13 +337,17 @@ class ScholarOrchestrator:
             from scitex.scholar.engines import ScholarEngine
 
             engine = ScholarEngine()
-            metadata_dict = await engine.search_async(doi=paper.metadata.id.doi)
+            metadata_dict = await engine.search_async(
+                doi=paper.metadata.id.doi
+            )
 
             if metadata_dict:
                 # Merge engine results into paper metadata
                 self._merge_metadata_into_paper(paper, metadata_dict)
                 io.save_metadata()
-                logger.success(f"{self.name}: Metadata enriched from search engines")
+                logger.success(
+                    f"{self.name}: Metadata enriched from search engines"
+                )
             else:
                 # Fallback: save basic metadata
                 paper.metadata.basic.title = "Pending metadata resolution"
@@ -305,12 +367,16 @@ class ScholarOrchestrator:
                 from scitex.scholar.engines import ScholarEngine
 
                 engine = ScholarEngine()
-                metadata_dict = await engine.search_async(doi=paper.metadata.id.doi)
+                metadata_dict = await engine.search_async(
+                    doi=paper.metadata.id.doi
+                )
 
                 if metadata_dict:
                     self._merge_metadata_into_paper(paper, metadata_dict)
                     io.save_metadata()
-                    logger.success(f"{self.name}: Metadata enriched from search engines")
+                    logger.success(
+                        f"{self.name}: Metadata enriched from search engines"
+                    )
 
         # Step 6: Setup browser (needed for both URL finding and downloading)
         browser_manager = None
@@ -342,21 +408,24 @@ class ScholarOrchestrator:
         if not paper.metadata.url.pdfs:
             logger.info(f"{self.name}: Finding PDF URLs...")
 
-            # Get authenticated URL
+            # TESTING: Re-enable OpenURL with debug logging to find crash cause
             auth_gateway = AuthenticationGateway(
                 auth_manager=auth_manager,
                 browser_manager=browser_manager,
             )
-            url_context = await auth_gateway.prepare_context_async(
-                doi=paper.metadata.id.doi,
-                context=context,
-            )
+            try:
+                url_context = await auth_gateway.prepare_context_async(
+                    doi=paper.metadata.id.doi,
+                    context=context,
+                )
+                publisher_url = url_context.url if url_context else paper.metadata.id.doi
+            except Exception as e:
+                logger.warning(f"{self.name}: Auth gateway failed: {e}")
+                publisher_url = paper.metadata.id.doi
 
             # Find PDF URLs
             url_finder = ScholarURLFinder(context)
-            urls = await url_finder.find_pdf_urls(
-                url_context.url if url_context else paper.metadata.id.doi
-            )
+            urls = await url_finder.find_pdf_urls(publisher_url)
 
             paper.metadata.url.pdfs = urls
             paper.metadata.url.pdfs_engines = ["ScholarURLFinder"]
@@ -382,52 +451,101 @@ class ScholarOrchestrator:
 
             logger.info(f"{self.name}: PDF URL: {pdf_url}")
 
-            uuid_file = await downloader.download_from_url(
+            # Get authenticated cookies
+            auth_gateway = AuthenticationGateway(
+                auth_manager=auth_manager,
+                browser_manager=browser_manager,
+            )
+            try:
+                # Might not be available in Gateway
+                url_context = await auth_gateway.prepare_context_async(
+                    doi=paper.metadata.id.doi,
+                    context=context,
+                )
+            except Exception as e:
+                logger.warn(str(e))
+
+            # Try downloading to MASTER directory first (Chrome PDF saves directly)
+            temp_pdf_path = io.paper_dir / "temp.pdf"
+            downloaded_file = await downloader.download_from_url(
                 pdf_url,
-                output_path=io.paper_dir / "temp.pdf",
+                output_path=temp_pdf_path,
                 doi=paper.metadata.id.doi,
             )
 
-            if uuid_file:
-                io.save_pdf(uuid_file)
-                # Save metadata to update path.pdfs field
-                io.save_metadata()
+            if downloaded_file:
+                # Check if file was downloaded to MASTER/temp.pdf or downloads/UUID
+                if downloaded_file == temp_pdf_path and temp_pdf_path.exists():
+                    # Chrome PDF downloaded directly to MASTER - just rename
+                    import shutil
+                    main_pdf = io.get_pdf_path()
+                    shutil.move(str(temp_pdf_path), str(main_pdf))
+                    # Update paper metadata
+                    paper.metadata.path.pdfs = [str(main_pdf)]
+                    paper.container.pdf_size_bytes = main_pdf.stat().st_size
+                    io.save_metadata()
+                    logger.success(f"{self.name}: PDF downloaded directly to MASTER")
+                else:
+                    # UUID file from downloads directory - use normal flow
+                    io.save_pdf(downloaded_file)
+                    io.save_metadata()
                 logger.success(f"{self.name}: PDF downloaded and saved")
                 logger.info(f"{self.name}: Updated metadata.path.pdfs")
             else:
                 # Check if PDF was manually downloaded to downloads directory
-                logger.warning(f"{self.name}: Automated download returned None")
-                logger.info(f"{self.name}: Checking downloads directory for manual downloads...")
+                logger.warning(
+                    f"{self.name}: Automated download returned None"
+                )
+                logger.info(
+                    f"{self.name}: Checking downloads directory for manual downloads..."
+                )
 
                 from scitex.scholar import ScholarConfig
+
                 config = ScholarConfig()
                 downloads_dir = config.get_library_downloads_dir()
 
                 # Find recent PDFs (last 10 minutes)
                 import time
+
                 current_time = time.time()
                 recent_pdfs = []
                 for pdf_path in downloads_dir.glob("*"):
-                    if pdf_path.is_file() and pdf_path.stat().st_size > 100_000:  # > 100KB
+                    if (
+                        pdf_path.is_file()
+                        and pdf_path.stat().st_size > 100_000
+                    ):  # > 100KB
                         age_seconds = current_time - pdf_path.stat().st_mtime
                         if age_seconds < 600:  # 10 minutes
                             recent_pdfs.append((pdf_path, age_seconds))
 
                 if recent_pdfs:
                     # Use most recent PDF
-                    recent_pdfs.sort(key=lambda x: x[1])  # Sort by age (ascending)
+                    recent_pdfs.sort(
+                        key=lambda x: x[1]
+                    )  # Sort by age (ascending)
                     latest_pdf = recent_pdfs[0][0]
-                    logger.info(f"{self.name}: Found recent PDF: {latest_pdf.name} ({latest_pdf.stat().st_size / 1e6:.2f} MB)")
-                    logger.info(f"{self.name}: Assuming this is the manually downloaded PDF")
+                    logger.info(
+                        f"{self.name}: Found recent PDF: {latest_pdf.name} ({latest_pdf.stat().st_size / 1e6:.2f} MB)"
+                    )
+                    logger.info(
+                        f"{self.name}: Assuming this is the manually downloaded PDF"
+                    )
 
                     # Save to MASTER directory
                     io.save_pdf(latest_pdf)
                     io.save_metadata()
-                    logger.success(f"{self.name}: Manually downloaded PDF saved to MASTER")
+                    logger.success(
+                        f"{self.name}: Manually downloaded PDF saved to MASTER"
+                    )
                     logger.info(f"{self.name}: Updated metadata.path.pdfs")
                 else:
-                    logger.warning(f"{self.name}: No recent PDFs found in downloads directory")
-                    logger.warning(f"{self.name}: PDF download incomplete - manual intervention required")
+                    logger.warning(
+                        f"{self.name}: No recent PDFs found in downloads directory"
+                    )
+                    logger.warning(
+                        f"{self.name}: PDF download incomplete - manual intervention required"
+                    )
         elif io.has_pdf():
             logger.info(f"{self.name}: PDF already exists, skipping download")
 
