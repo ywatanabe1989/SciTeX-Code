@@ -191,7 +191,7 @@ class PopupHandler:
     async def handle_cookie_popup(self) -> bool:
         """
         Handle cookie consent popups.
-        
+
         Returns:
             True if handled, False otherwise
         """
@@ -199,6 +199,12 @@ class PopupHandler:
             try:
                 button = await self.page.query_selector(selector)
                 if button and await button.is_visible():
+                    # IMPORTANT: Skip SciTeX manual control buttons
+                    is_scitex_control = await button.get_attribute('data-scitex-no-auto-click')
+                    if is_scitex_control:
+                        logger.debug(f"Skipping SciTeX control button: {selector}")
+                        continue
+
                     await button.click()
                     logger.success(f"Accepted cookies with selector: {selector}")
                     await self.page.wait_for_timeout(1000)
@@ -207,16 +213,16 @@ class PopupHandler:
             except Exception as e:
                 logger.debug(f"Cookie selector {selector} failed: {e}")
                 continue
-        
+
         return False
 
     async def close_popup(self, popup_info: Optional[Dict] = None) -> bool:
         """
         Close a popup using various strategies.
-        
+
         Args:
             popup_info: Optional popup information from detect_popups
-            
+
         Returns:
             True if closed, False otherwise
         """
@@ -225,6 +231,12 @@ class PopupHandler:
             try:
                 button = await self.page.query_selector(selector)
                 if button and await button.is_visible():
+                    # IMPORTANT: Skip SciTeX manual control buttons
+                    is_scitex_control = await button.get_attribute('data-scitex-no-auto-click')
+                    if is_scitex_control:
+                        logger.debug(f"Skipping SciTeX control button: {selector}")
+                        continue
+
                     await button.click()
                     logger.success(f"Closed popup with selector: {selector}")
                     await self.page.wait_for_timeout(500)

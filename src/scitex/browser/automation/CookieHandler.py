@@ -69,7 +69,11 @@ class CookieAutoAcceptor:
                 for (const text of cookieTexts) {{
                     const buttons = Array.from(document.querySelectorAll('button, a'));
                     const match = buttons.find(btn =>
-                        btn.textContent.trim().toLowerCase() === text.toLowerCase()
+                        btn.textContent.trim().toLowerCase() === text.toLowerCase() &&
+                        !btn.hasAttribute('data-scitex-no-auto-click') &&  // SKIP SciTeX buttons!
+                        !btn.closest('[data-scitex-no-auto-click]') &&  // SKIP if inside SciTeX container!
+                        btn.id !== 'stop-automation-btn' &&  // SKIP manual download button by ID!
+                        !btn.id.includes('scitex')  // SKIP any scitex-related button
                     );
                     if (match && match.offsetParent !== null) {{
                         match.click();
@@ -83,6 +87,14 @@ class CookieAutoAcceptor:
                     try {{
                         const elements = document.querySelectorAll(selector);
                         for (const elem of elements) {{
+                            // SKIP SciTeX buttons!
+                            if (elem.hasAttribute('data-scitex-no-auto-click') ||
+                                elem.closest('[data-scitex-no-auto-click]') ||
+                                elem.id === 'stop-automation-btn' ||  // SKIP by ID!
+                                elem.id.includes('scitex')) {{  // SKIP any scitex ID
+                                continue;
+                            }}
+
                             if (elem.offsetParent !== null) {{
                                 elem.click();
                                 console.log('Auto-accepted cookies:', selector);

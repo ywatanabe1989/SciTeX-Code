@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 04:19:46 (ywatanabe)"
+# Timestamp: "2025-10-11 10:14:47 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/close_unwanted_pages.py
 # ----------------------------------------
 from __future__ import annotations
@@ -22,7 +22,7 @@ from scitex.browser.debugging import browser_logger
 
 async def close_unwanted_pages(
     context: BrowserContext,
-    delay_sec=3,
+    delay_sec=1,
     max_attempts: int = 20,
     func_name="close_unwanted_pages",
 ):

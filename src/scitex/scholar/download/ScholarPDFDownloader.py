@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 04:35:08 (ywatanabe)"
+# Timestamp: "2025-10-11 07:56:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -137,7 +137,11 @@ class ScholarPDFDownloader:
         output_path: Union[str, Path],
         doi: Optional[str] = None,
     ) -> Optional[Path]:
-        """Main download method with manual override support."""
+        """Main download method with manual override support.
+
+        Shows manual download button immediately - if clicked, switches to manual mode.
+        Otherwise tries automated download strategies.
+        """
 
         if not pdf_url:
             logger.warning(
@@ -158,24 +162,54 @@ class ScholarPDFDownloader:
             content_type="main",
         )
 
-        # Create stop event and show button
+        # Create stop event for manual mode
         stop_event = asyncio.Event()
-        control_page = await self.context.new_page()
 
-        # Start stop automation button task (non-blocking)
-        button_task = asyncio.create_task(
-            show_stop_automation_button_async(
-                control_page,
-                stop_event,
-                target_filename,
-            )
+        # Add manual mode flag to context (shared across all strategies)
+        self.context._scitex_is_manual_mode = False  # Flag strategies can check
+        self.context._scitex_manual_mode_event = stop_event  # Event for internal monitoring
+
+        # Inject manual mode button script into ALL pages in this context
+        # This ensures button appears on every page, even after redirects
+        from scitex.scholar.download.strategies.manual_download_utils import (
+            get_manual_button_init_script,
         )
+
+        button_script = get_manual_button_init_script(target_filename)
+        await self.context.add_init_script(button_script)
+        logger.info(f"{self.name}: Manual mode button injected into browser context (appears on ALL pages)")
+
+        # Open PDF page
+        pdf_page = await self.context.new_page()
+
+        try:
+            logger.info(f"{self.name}: Opening PDF URL: {pdf_url[:80]}...")
+            await pdf_page.goto(pdf_url, timeout=30000, wait_until='domcontentloaded')
+            logger.info(f"{self.name}: PDF page opened - Press 'M' key for manual mode")
+
+            # Start monitoring for manual mode activation (keyboard press or click)
+            # NO timeout here - user can activate manual mode anytime
+            from scitex.scholar.download.strategies.manual_download_utils import (
+                wait_for_manual_mode_activation_async,
+            )
+
+            button_task = asyncio.create_task(
+                wait_for_manual_mode_activation_async(
+                    pdf_page,
+                    stop_event,
+                    timeout_sec=0,  # No timeout - wait forever for user to press M
+                )
+            )
+
+        except Exception as e:
+            logger.warning(f"{self.name}: Could not open PDF page: {e}")
+            button_task = None
+            # Continue anyway - automation might work on a different page
 
         # Define download strategies with their names
         async def chrome_pdf_wrapper(url, path):
-            return await try_download_chrome_pdf_viewer_async(
-                self.context, url, path, self.name
-            )
+            # Don't create new page - reuse pdf_page
+            return None  # Skip chrome PDF since we already opened the page
 
         async def direct_download_wrapper(url, path):
             return await try_download_direct_async(
@@ -188,9 +222,9 @@ class ScholarPDFDownloader:
             )
 
         async def manual_fallback_wrapper(url, path):
-            return await try_download_manual_async(
-                self.context, url, path, self.name, self.config
-            )
+            # Don't run manual download in the loop - it's handled separately after
+            # if stop_event is set
+            return None
 
         try_download_methods = [
             ("Chrome PDF", chrome_pdf_wrapper),
@@ -200,21 +234,35 @@ class ScholarPDFDownloader:
         ]
 
         for method_name, method_func in try_download_methods:
-            # Check if user stopped automation
+            # Check if user activated manual mode - STOP ALL AUTOMATION IMMEDIATELY
             if stop_event.is_set():
                 logger.info(
-                    f"{self.name}: Automation stopped by user - switching to manual mode"
+                    f"{self.name}: User activated manual mode - stopping all automation"
                 )
                 break
 
             logger.info(f"{self.name}: Trying method: {method_name}")
-            try:
-                is_downloaded = await method_func(pdf_url, output_path)
-                if is_downloaded:
-                    # Success! Remove button and close control page
-                    await control_page.close()
-                    button_task.cancel()
 
+            # Pass stop_event to strategies so they can check it periodically
+            try:
+                # Check before starting
+                if stop_event.is_set():
+                    logger.info(f"{self.name}: Manual mode activated, skipping {method_name}")
+                    break
+
+                # Run the method - it should check stop_event periodically
+                is_downloaded = await method_func(pdf_url, output_path)
+
+                # Check after completing
+                if stop_event.is_set():
+                    logger.info(f"{self.name}: Manual mode activated during {method_name}")
+                    break
+
+                if is_downloaded:
+                    # Success! Clean up
+                    if button_task:
+                        button_task.cancel()
+                    await pdf_page.close()
                     logger.success(
                         f"{self.name}: Successfully downloaded via {method_name}"
                     )
@@ -231,21 +279,30 @@ class ScholarPDFDownloader:
                     f"{self.name}: Traceback: {traceback.format_exc()}"
                 )
 
-        # If user stopped automation, handle manual download
+        # If user chose manual download or all automation failed
         if stop_event.is_set():
+            # Set context flag so all strategies know we're in manual mode
+            self.context._scitex_is_manual_mode = True
+
+            logger.info(f"{self.name}: User chose manual download - starting monitoring")
+            # Cancel button task
+            if button_task:
+                button_task.cancel()
+
+            # Use the pdf_page we opened at the start
             result = await self._handle_manual_download_async(
-                control_page,
+                pdf_page,
                 pdf_url,
                 output_path,
                 doi=doi,
             )
-            await control_page.close()
-            button_task.cancel()
+            await pdf_page.close()
             return result
 
-        # All methods failed
-        await control_page.close()
-        button_task.cancel()
+        # All methods failed - clean up and close pdf_page
+        if button_task:
+            button_task.cancel()
+        await pdf_page.close()
         logger.fail(f"{self.name}: All download methods failed for {pdf_url}")
         return None
 
@@ -269,8 +326,10 @@ class ScholarPDFDownloader:
         """
 
         # Get directories from config
+        # IMPORTANT: Manual download should ONLY save to downloads dir
+        # MASTER organization (8-digit IDs) is handled by storage module
         temp_downloads_dir = self.config.get_library_downloads_dir()
-        final_pdfs_dir = self.config.get_library_master_dir()
+        final_pdfs_dir = self.config.get_library_downloads_dir()  # NOT MASTER!
 
         # Extract DOI from URL if not provided
         if not doi and "doi.org/" in pdf_url:
@@ -278,16 +337,28 @@ class ScholarPDFDownloader:
 
         await browser_logger.info(
             page,
-            f"{self.name}: Starting manual download monitoring...",
+            f"{self.name}: Manual download mode activated",
+        )
+
+        # Page is already navigated to PDF URL (done in download_from_url)
+        # Just show instructions
+        await browser_logger.info(
+            page,
+            f"{self.name}: Please download the PDF manually from this page",
         )
 
         # Run complete manual download workflow (without showing button again)
         # The button was already shown and clicked to trigger this
         monitor = DownloadMonitorAndSync(temp_downloads_dir, final_pdfs_dir)
 
-        # Monitor for new download
+        # Create logger function for progress reporting (must be sync, not async)
+        def log_progress(msg: str):
+            logger.info(f"{self.name}: {msg}")
+
+        # Monitor for new download with progress reporting (10 minutes)
         temp_file = await monitor.monitor_for_new_download_async(
-            timeout_sec=120,  # 2 minutes to download
+            timeout_sec=600,  # 10 minutes to download
+            logger_func=log_progress,
         )
 
         if not temp_file:
@@ -299,33 +370,35 @@ class ScholarPDFDownloader:
 
         await browser_logger.success(
             page,
-            f"{self.name}: Detected new PDF: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
+            f"{self.name}: Detected PDF: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
         )
 
-        # Sync to final destination
-        final_path = monitor.sync_to_final_destination(
-            temp_file,
-            doi=doi,
-            url=pdf_url,
-            content_type="main",
-            sequence_index=None,
-        )
+        # Keep UUID filename as-is in downloads directory
+        # Orchestration layer will handle metadata extraction and MASTER organization
+
+        # Save minimal metadata header (DOI only - no PDF parsing)
+        if doi:
+            import json
+            metadata_file = temp_file.parent / f"{temp_file.name}.meta.json"
+            metadata = {
+                "doi": doi,
+                "pdf_url": pdf_url,
+                "pdf_file": temp_file.name,
+            }
+            with open(metadata_file, 'w') as f:
+                json.dump(metadata, f, indent=2)
 
         await browser_logger.success(
             page,
-            f"{self.name}: Synced to library: {final_path.name}",
+            f"{self.name}: Manual download complete - saved in downloads/",
         )
 
-        # Copy to requested output path
-        if final_path and final_path.exists():
-            shutil.copy2(str(final_path), str(output_path))
-            await browser_logger.success(
-                page,
-                f"{self.name}: Manual download complete: {output_path.name}",
-            )
-            return output_path
+        logger.info(f"{self.name}: PDF: {temp_file}")
+        if doi:
+            logger.info(f"{self.name}: DOI: {doi} (saved in {temp_file.name}.meta.json)")
 
-        return None
+        # Return the UUID file path (in downloads directory)
+        return temp_file
 
 
 async def main_async(args):
@@ -488,6 +561,11 @@ if __name__ == "__main__":
 python -m scitex.scholar.download.ScholarPDFDownloader \
     --browser-mode interactive \
     --doi "10.1016/j.clinph.2024.09.017"
+
+python -m scitex.scholar.download.ScholarPDFDownloader \
+    --browser-mode interactive \
+    --doi "10.1212/wnl.0000000000200348"
+
 
 # This seems calling URL Resolution on OpenURL twice
 

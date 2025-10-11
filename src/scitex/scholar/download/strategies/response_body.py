@@ -20,6 +20,11 @@ async def try_download_response_body_async(
     downloader_name: str = "ScholarPDFDownloader",
 ) -> Optional[Path]:
     """Download PDF from HTTP response body."""
+    # Check if manual mode is active - skip immediately
+    if hasattr(context, '_scitex_is_manual_mode') and context._scitex_is_manual_mode:
+        logger.info(f"{downloader_name}: Response Body: Skipping (manual mode active)")
+        return None
+
     page = None
     try:
         page = await context.new_page()
@@ -35,11 +40,18 @@ async def try_download_response_body_async(
         )
 
         download_path = None
+        download_handler_active = True
 
         async def handle_download(download):
             nonlocal download_path
-            await download.save_as(output_path)
-            download_path = output_path
+            # Only handle downloads if NOT in manual mode
+            if hasattr(context, '_scitex_is_manual_mode') and context._scitex_is_manual_mode:
+                logger.info(f"{downloader_name}: Response Body: Ignoring download (manual mode active)")
+                return
+
+            if download_handler_active:
+                await download.save_as(output_path)
+                download_path = output_path
 
         page.on("download", handle_download)
 
@@ -51,7 +63,22 @@ async def try_download_response_body_async(
             page,
             f"{downloader_name}: Response Body: Loaded, waiting for auto-download (60s)...",
         )
-        await page.wait_for_timeout(60_000)
+
+        # Wait for download, but check for manual mode activation every second
+        for i in range(60):
+            # Check if manual mode was activated - ABORT IMMEDIATELY
+            if hasattr(context, '_scitex_is_manual_mode') and context._scitex_is_manual_mode:
+                logger.info(f"{downloader_name}: Response Body: Manual mode activated, aborting")
+                download_handler_active = False  # Disable handler
+                page.remove_listener("download", handle_download)  # Remove listener
+                await page.close()
+                return None
+
+            await page.wait_for_timeout(1000)  # Wait 1 second
+
+            # Check if download already happened
+            if download_path and download_path.exists():
+                break
 
         # Check if auto-download occurred
         if download_path and download_path.exists():

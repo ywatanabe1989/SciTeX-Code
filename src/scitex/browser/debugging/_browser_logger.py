@@ -165,8 +165,8 @@ async def log_page_async(
         container.style.cssText = `
             position: fixed;
             top: 10px;
-            right: 10px;
-            z-index: 2147483647;
+            left: 10px;
+            z-index: 2147483646;
             display: flex;
             flex-direction: column;
             gap: 8px;
