@@ -220,7 +220,7 @@ class PaperIO:
     # Load Methods
     # ========================================
     def load_metadata(self) -> Paper:
-        """Load Paper from metadata.json
+        """Load Paper from metadata.json and update internal reference.
 
         Returns:
             Paper object
@@ -233,6 +233,8 @@ class PaperIO:
             data = json.load(f)
 
         paper = Paper.from_dict(data)
+        # Update internal reference so save_metadata() uses the loaded paper
+        self.paper = paper
         logger.info(f"{self.name}: Loaded metadata: {path}")
         return paper
 

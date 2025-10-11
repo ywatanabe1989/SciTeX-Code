@@ -355,9 +355,10 @@ class ScholarPDFDownloader:
         def log_progress(msg: str):
             logger.info(f"{self.name}: {msg}")
 
-        # Monitor for new download with progress reporting (10 minutes)
+        # Monitor for new download with progress reporting (2 minutes)
+        # Long timeouts cause process accumulation - keep it short
         temp_file = await monitor.monitor_for_new_download_async(
-            timeout_sec=600,  # 10 minutes to download
+            timeout_sec=120,  # 2 minutes to download
             logger_func=log_progress,
         )
 

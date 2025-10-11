@@ -58,7 +58,7 @@ class ScholarEngine:
 
     def _setup_cache(self, clear_cache=False):
         """Setup cache directory and files."""
-        self.cache_dir = self.config.get_search_cache_dir()
+        self.cache_dir = self.config.path_manager.get_cache_engine_dir()
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.cache_file = self.cache_dir / "search_results.json"
 

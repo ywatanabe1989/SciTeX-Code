@@ -87,9 +87,9 @@ async def try_download_manual_async(
         log_progress(f"Monitoring {downloads_dir} for new PDFs...")
         log_progress("Please download the PDF manually from the browser")
 
-        # Monitor for download (10 minutes timeout)
+        # Monitor for download (2 minutes timeout to prevent process accumulation)
         temp_file = await monitor.monitor_for_new_download_async(
-            timeout_sec=600,  # 10 minutes
+            timeout_sec=120,  # 2 minutes
             check_interval_sec=1.0,
             logger_func=log_progress,
         )
