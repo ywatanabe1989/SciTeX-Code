@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 11:23:24 (ywatanabe)"
+# Timestamp: "2025-10-11 20:52:28 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/core/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -60,10 +60,11 @@ PATH_STRUCTURE = {
     "library_master_paper_dir": "library/MASTER/{paper_id}",
     "library_master_paper_screenshots_dir": "library/MASTER/{paper_id}/screenshots",
     # Individual Entry
-    "entry_name": "PDF-{pdf_state}-CC-{citation_count:06d}_IF-{impact_factor_of_the_journal:03d}_{year:04d}_{first_author}_{journal_name}",
-    "library_project_entry_dir": "library/{project_name}/{entry_name}",
-    "library_project_entry_metadata_json": "library/{project_name}/{entry_name}/metadata.json",
-    "library_project_entry_logs_dir": "library/{project_name}/{entry_name}/logs",
+    "library_project_entry_dirname": "PDF-{pdf_state}-CC-{citation_count:06d}_IF-{impact_factor_of_the_journal:03d}_{year:04d}_{first_author}_{journal_name}",
+    "library_project_entry_dir": "library/{project_name}/{entry_dir_name}",
+    "library_project_entry_pdf_fname": "{first_author}-{year:04d}-{journal_name}.pdf",
+    "library_project_entry_metadata_json": "library/{project_name}/{entry_dir_name}/metadata.json",
+    "library_project_entry_logs_dir": "library/{project_name}/{entry_dir_name}/logs",
     # Workspace
     "workspace_dir": "workspace",
     "workspace_logs_dir": "workspace/logs",
@@ -246,6 +247,63 @@ class PathManager:
         """library/MASTER/{paper_id}/screenshots"""
         path_template = PATH_STRUCTURE["library_master_paper_screenshots_dir"]
         relative_path = path_template.format(paper_id=paper_id)
+        return self._ensure_directory(self.scholar_dir / relative_path)
+
+    # ========================================
+    # Entry Directories, Paths, and Names
+    # ========================================
+    def get_library_project_entry_dirname(
+        self,
+        pdf_state: str,
+        citation_count: int,
+        impact_factor_of_the_journal: int,
+        year: int,
+        first_author: str,
+        journal_name: str,
+    ) -> str:
+        """Format entry directory name using PATH_STRUCTURE template."""
+        first_author = self._sanitize_filename(first_author)
+        journal_name = self._sanitize_filename(journal_name)
+        return PATH_STRUCTURE["library_project_entry_dirname"].format(
+            pdf_state=pdf_state,
+            citation_count=citation_count,
+            impact_factor_of_the_journal=impact_factor_of_the_journal,
+            year=year,
+            first_author=first_author,
+            journal_name=journal_name,
+        )
+
+    def get_library_project_entry_pdf_fname(
+        self, first_author: str, year: int, journal_name: str
+    ) -> str:
+        """Format PDF filename using PATH_STRUCTURE template."""
+        first_author = self._sanitize_filename(first_author)
+        journal_name = self._sanitize_filename(journal_name)
+        return PATH_STRUCTURE["library_project_entry_pdf_fname"].format(
+            first_author=first_author,
+            year=year,
+            journal_name=journal_name,
+        )
+
+    def get_library_project_entry_dir(self, project: str, entry_dir_name: str) -> Path:
+        """library/{project_name}/{entry_dir_name}"""
+        project = self._sanitize_collection_name(project)
+        path_template = PATH_STRUCTURE["library_project_entry_dir"]
+        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
+        return self._ensure_directory(self.scholar_dir / relative_path)
+
+    def get_library_project_entry_metadata_json(self, project: str, entry_dir_name: str) -> Path:
+        """library/{project_name}/{entry_dir_name}/metadata.json"""
+        project = self._sanitize_collection_name(project)
+        path_template = PATH_STRUCTURE["library_project_entry_metadata_json"]
+        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
+        return self.scholar_dir / relative_path
+
+    def get_library_project_entry_logs_dir(self, project: str, entry_dir_name: str) -> Path:
+        """library/{project_name}/{entry_dir_name}/logs"""
+        project = self._sanitize_collection_name(project)
+        path_template = PATH_STRUCTURE["library_project_entry_logs_dir"]
+        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
         return self._ensure_directory(self.scholar_dir / relative_path)
 
     # ========================================
