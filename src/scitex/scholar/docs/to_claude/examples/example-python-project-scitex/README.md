@@ -150,6 +150,6 @@ For example,
 ```
 
 ## Contact
-Yusuke Watanabe (ywatanabe@scitex.ai)
+Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
 <!-- EOF -->

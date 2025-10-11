@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 07:37:11 (ywatanabe)"
+# Timestamp: "2025-10-11 11:23:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/core/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -59,6 +59,11 @@ PATH_STRUCTURE = {
     "library_project_screenshots_dir": "library/{project_name}/screenshots",
     "library_master_paper_dir": "library/MASTER/{paper_id}",
     "library_master_paper_screenshots_dir": "library/MASTER/{paper_id}/screenshots",
+    # Individual Entry
+    "entry_name": "PDF-{pdf_state}-CC-{citation_count:06d}_IF-{impact_factor_of_the_journal:03d}_{year:04d}_{first_author}_{journal_name}",
+    "library_project_entry_dir": "library/{project_name}/{entry_name}",
+    "library_project_entry_metadata_json": "library/{project_name}/{entry_name}/metadata.json",
+    "library_project_entry_logs_dir": "library/{project_name}/{entry_name}/logs",
     # Workspace
     "workspace_dir": "workspace",
     "workspace_logs_dir": "workspace/logs",

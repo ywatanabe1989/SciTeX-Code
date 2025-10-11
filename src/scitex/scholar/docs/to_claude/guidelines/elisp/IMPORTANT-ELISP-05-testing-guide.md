@@ -38,7 +38,7 @@ Check loadability in THE ENTRY FILE OF THE ENTRY OF UMBRELLA DIRECTORY.
 ;;; Author: ywatanabe
 ;;; Timestamp: <2025-02-10 20:39:59>
 ;;; File: /home/ywatanabe/proj/llemacs/llemacs.el/tests/01-01-core-base/test-lle-base.el
-;;; Copyright (C) 2024-2025 Yusuke Watanabe (ywatanabe@scitex.ai)
+;;; Copyright (C) 2024-2025 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
 (ert-deftest test-lle-base-loadable
     ()
@@ -82,7 +82,7 @@ Check loadability in THE ENTRY FILE OF THE ENTRY OF UMBRELLA DIRECTORY.
 ;;; Timestamp: <2025-05-10 17:02:51>
 ;;; File: /home/ywatanabe/proj/llemacs/llemacs.el/tests/01-01-core-base/test-lle-base-restart.el
 
-;;; Copyright (C) 2025 Yusuke Watanabe (ywatanabe@scitex.ai)
+;;; Copyright (C) 2025 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
 (require 'ert)
 

@@ -51,8 +51,42 @@ class AuthLockManager:
         self._lock_fd: Optional[int] = None
         self._is_locked = False
 
+    def _is_lock_stale(self, max_age_seconds: int = 600) -> bool:
+        """Check if lock file is stale (older than max_age).
+
+        A stale lock indicates a crashed process that didn't clean up.
+
+        Args:
+            max_age_seconds: Maximum age before considering lock stale (default: 10 min)
+
+        Returns:
+            True if lock exists and is stale
+        """
+        if not self.lock_file.exists():
+            return False
+
+        lock_age = time.time() - self.lock_file.stat().st_mtime
+        return lock_age > max_age_seconds
+
+    def _clean_stale_lock(self) -> bool:
+        """Remove stale lock file.
+
+        Returns:
+            True if stale lock was removed
+        """
+        if self._is_lock_stale():
+            try:
+                self.lock_file.unlink()
+                logger.warning(f"{self.name}: Removed stale lock file: {self.lock_file}")
+                return True
+            except Exception as e:
+                logger.error(f"{self.name}: Could not remove stale lock: {e}")
+        return False
+
     async def acquire_lock_async(self) -> bool:
         """Acquire the file lock with timeout.
+
+        Automatically cleans stale locks before attempting acquisition.
 
         Returns:
             True if lock acquired, False if timeout
@@ -64,6 +98,10 @@ class AuthLockManager:
             logger.warning(f"{self.name}: Lock already acquired")
             return True
 
+        # Clean stale lock before attempting
+        if self._clean_stale_lock():
+            logger.info(f"{self.name}: Cleaned stale lock, retrying acquisition")
+
         start_time = time.time()
 
         while time.time() - start_time < self.max_wait_seconds:
@@ -71,6 +109,12 @@ class AuthLockManager:
                 self._is_locked = True
                 logger.info(f"{self.name}: Acquired authentication lock")
                 return True
+
+            # Check for stale lock every 10 seconds
+            if (time.time() - start_time) % 10 < 2:
+                if self._clean_stale_lock():
+                    logger.info(f"{self.name}: Cleaned stale lock during wait")
+                    continue
 
             logger.info(
                 f"{self.name}: Waiting for authentication lock ({self.lock_file})..."

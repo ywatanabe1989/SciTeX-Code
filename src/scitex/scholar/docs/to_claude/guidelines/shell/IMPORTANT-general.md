@@ -17,7 +17,7 @@
 ```bash
 #!/bin/bash
 # script-name.sh
-# Author: ywatanabe (ywatanabe@scitex.ai)
+# Author: ywatanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 # Date: $(date +"%Y-%m-%d-%H-%M")
 
 LOG_FILE=".$0.log" # Hided and intensional extension of .sh.log

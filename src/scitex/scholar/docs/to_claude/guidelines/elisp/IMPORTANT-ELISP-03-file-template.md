@@ -16,7 +16,7 @@ DO INCLUDE headers like:
 ;;; Timestamp: <2025-05-12 21:39:05>
 ;;; File: /home/ywatanabe/.emacs.d/lisp/sample-package/hw-utils/hw-utils.el
 
-;;; Copyright (C) 2025 Yusuke Watanabe (ywatanabe@scitex.ai)
+;;; Copyright (C) 2025 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 ```
 
 #### Headers We Do Not Use
