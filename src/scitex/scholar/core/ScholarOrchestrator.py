@@ -586,7 +586,10 @@ class ScholarOrchestrator:
 def main(args):
     """Run single paper pipeline"""
 
-    orchestrator = ScholarOrchestrator(browser_mode=args.browser_mode)
+    orchestrator = ScholarOrchestrator(
+        browser_mode=args.browser_mode,
+        chrome_profile=args.chrome_profile
+    )
 
     # Run pipeline
     paper = asyncio.run(
@@ -625,6 +628,12 @@ def parse_args() -> argparse.Namespace:
         choices=["stealth", "interactive"],
         default="interactive",
         help="Browser mode (default: interactive)",
+    )
+    parser.add_argument(
+        "--chrome-profile",
+        type=str,
+        default="system",
+        help="Chrome profile name (default: system, parallel workers: system_worker_0-7)",
     )
     args = parser.parse_args()
     return args
