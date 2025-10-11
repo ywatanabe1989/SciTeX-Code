@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 13:16:48 (ywatanabe)"
+# Timestamp: "2025-10-11 20:18:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/ScholarOrchestrator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -52,7 +52,9 @@ logger = logging.getLogger(__name__)
 class ScholarOrchestrator:
     """Orchestrates full paper acquisition pipeline"""
 
-    def __init__(self, browser_mode: str = "interactive", chrome_profile: str = "system"):
+    def __init__(
+        self, browser_mode: str = "interactive", chrome_profile: str = "system"
+    ):
         self.name = self.__class__.__name__
         self.browser_mode = browser_mode
         self.chrome_profile = chrome_profile
@@ -82,9 +84,9 @@ class ScholarOrchestrator:
         # PDF status: 0p=pending, 1r=running, 2f=failed, 3s=successful
         pdf_files = list(io.paper_dir.glob("*.pdf"))
         if pdf_files:
-            pdf_status = "3s"  # Successful
+            pdf_status = "3s"
         else:
-            pdf_status = "0p"  # Pending
+            pdf_status = "0p"
 
         citation_count = paper.metadata.citation_count.total or 0
         impact_factor = int(paper.metadata.publication.impact_factor or 0)
@@ -276,13 +278,13 @@ class ScholarOrchestrator:
 
     async def process_single_paper(
         self,
-        query: str,
+        doi_or_title: str,
         project: Optional[str] = None,
     ) -> Paper:
-        """Process single paper from query to complete storage.
+        """Process single paper from query (DOI or Title) to complete storage.
 
         Pipeline:
-        1. Resolve DOI (if query is title)
+        1. Resolve DOI (if doi_or_title is title)
         2. Create Paper object with 8-digit ID
         3. Resolve metadata (ScholarEngine.search_async)
         4. Find PDF URLs
@@ -292,17 +294,17 @@ class ScholarOrchestrator:
         8. Link to project (if specified)
 
         Args:
-            query: DOI or title string
+            doi_or_title: DOI or title string
             project: Optional project name for symlinking
 
         Returns:
             Complete Paper object
         """
-        logger.info(f"{self.name}: Processing query: {query}")
+        logger.info(f"{self.name}: Processing Query: {doi_or_title}")
 
-        # Step 1: Determine if query is DOI or title
-        is_doi = query.strip().startswith("10.")
-        doi = query.strip() if is_doi else None
+        # Step 1: Determine if doi_or_title is DOI or title
+        is_doi = doi_or_title.strip().startswith("10.")
+        doi = doi_or_title.strip() if is_doi else None
 
         # Step 2: Create Paper
         paper = Paper()
@@ -312,14 +314,25 @@ class ScholarOrchestrator:
             paper.metadata.id.doi = doi
             paper.metadata.id.doi_engines = ["user_input"]
         else:
-            logger.info(f"{self.name}: Title query: {query}")
-            # TODO: Use ScholarEngine.search_async to resolve DOI from title
-            logger.warning(
-                f"{self.name}: Title-based search not yet implemented"
-            )
-            raise NotImplementedError(
-                "Title-based search requires ScholarEngine integration"
-            )
+            logger.info(f"{self.name}: Title Query: {doi_or_title}")
+
+            # Use ScholarEngine to resolve DOI from title
+            from scitex.scholar.engines import ScholarEngine
+
+            engine = ScholarEngine()
+            metadata_dict = await engine.search_async(title=doi_or_title)
+
+            if metadata_dict and metadata_dict.get("id", {}).get("doi"):
+                doi = metadata_dict["id"]["doi"]
+                paper.metadata.id.doi = doi
+                paper.metadata.id.doi_engines = metadata_dict["id"].get("doi_engines", ["ScholarEngine"])
+                logger.success(f"{self.name}: Resolved DOI from title: {doi}")
+
+                # Merge other metadata while we have it
+                self._merge_metadata_into_paper(paper, metadata_dict)
+            else:
+                logger.error(f"{self.name}: Could not resolve DOI from title: {doi_or_title}")
+                raise ValueError(f"No DOI found for title: {doi_or_title}")
 
         # Step 3: Generate 8-digit library ID
         paper_id = self._generate_paper_id(paper.metadata.id.doi)
@@ -359,7 +372,7 @@ class ScholarOrchestrator:
                 )
         else:
             logger.info(f"{self.name}: Metadata exists, loading...")
-            paper = io.load_metadata()  # This now updates io.paper internally
+            paper = io.load_metadata()
 
             # Check if metadata needs enrichment (title is "Pending metadata resolution")
             if paper.metadata.basic.title == "Pending metadata resolution":
@@ -394,7 +407,9 @@ class ScholarOrchestrator:
             )
             from scitex.scholar.auth import AuthenticationGateway
 
-            logger.info(f"{self.name}: Setting up browser (profile: {self.chrome_profile})...")
+            logger.info(
+                f"{self.name}: Setting up browser (profile: {self.chrome_profile})..."
+            )
             auth_manager = ScholarAuthManager()
             browser_manager = ScholarBrowserManager(
                 chrome_profile_name=self.chrome_profile,
@@ -419,7 +434,9 @@ class ScholarOrchestrator:
                     doi=paper.metadata.id.doi,
                     context=context,
                 )
-                publisher_url = url_context.url if url_context else paper.metadata.id.doi
+                publisher_url = (
+                    url_context.url if url_context else paper.metadata.id.doi
+                )
             except Exception as e:
                 logger.warning(f"{self.name}: Auth gateway failed: {e}")
                 publisher_url = paper.metadata.id.doi
@@ -479,13 +496,16 @@ class ScholarOrchestrator:
                 if downloaded_file == temp_pdf_path and temp_pdf_path.exists():
                     # Chrome PDF downloaded directly to MASTER - just rename
                     import shutil
+
                     main_pdf = io.get_pdf_path()
                     shutil.move(str(temp_pdf_path), str(main_pdf))
                     # Update paper metadata
                     paper.metadata.path.pdfs = [str(main_pdf)]
                     paper.container.pdf_size_bytes = main_pdf.stat().st_size
                     io.save_metadata()
-                    logger.success(f"{self.name}: PDF downloaded directly to MASTER")
+                    logger.success(
+                        f"{self.name}: PDF downloaded directly to MASTER"
+                    )
                 else:
                     # UUID file from downloads directory - use normal flow
                     io.save_pdf(downloaded_file)
@@ -515,16 +535,14 @@ class ScholarOrchestrator:
                     if (
                         pdf_path.is_file()
                         and pdf_path.stat().st_size > 100_000
-                    ):  # > 100KB
+                    ):
                         age_seconds = current_time - pdf_path.stat().st_mtime
-                        if age_seconds < 600:  # 10 minutes
+                        if age_seconds < 600:
                             recent_pdfs.append((pdf_path, age_seconds))
 
                 if recent_pdfs:
                     # Use most recent PDF
-                    recent_pdfs.sort(
-                        key=lambda x: x[1]
-                    )  # Sort by age (ascending)
+                    recent_pdfs.sort(key=lambda x: x[1])
                     latest_pdf = recent_pdfs[0][0]
                     logger.info(
                         f"{self.name}: Found recent PDF: {latest_pdf.name} ({latest_pdf.stat().st_size / 1e6:.2f} MB)"
@@ -587,14 +605,13 @@ def main(args):
     """Run single paper pipeline"""
 
     orchestrator = ScholarOrchestrator(
-        browser_mode=args.browser_mode,
-        chrome_profile=args.chrome_profile
+        browser_mode=args.browser_mode, chrome_profile=args.chrome_profile
     )
 
     # Run pipeline
     paper = asyncio.run(
         orchestrator.process_single_paper(
-            query=args.query,
+            doi_or_title=args.doi_or_title,
             project=args.project,
         )
     )
@@ -611,7 +628,7 @@ def parse_args() -> argparse.Namespace:
         description="Orchestrate full paper acquisition pipeline"
     )
     parser.add_argument(
-        "--query",
+        "--doi-or-title",
         type=str,
         required=True,
         help="DOI or paper title",
@@ -626,13 +643,14 @@ def parse_args() -> argparse.Namespace:
         "--browser-mode",
         type=str,
         choices=["stealth", "interactive"],
-        default="interactive",
+        default="stealth",
         help="Browser mode (default: interactive)",
     )
     parser.add_argument(
         "--chrome-profile",
         type=str,
-        default="system",
+        required=True,
+        # default="system",
         help="Chrome profile name (default: system, parallel workers: system_worker_0-7)",
     )
     args = parser.parse_args()
@@ -679,12 +697,14 @@ if __name__ == "__main__":
 Usage:
     # With DOI
     python -m scitex.scholar.core.ScholarOrchestrator \
-        --query "10.1212/wnl.0000000000200348" \
-        --project pac
+        --doi-or-title "10.1212/wnl.0000000000200348" \
+        --project pac \
+        --browser-mode stealth \
+        --chrome-profile system
 
     # With title (not yet implemented)
     python -m scitex.scholar.orchestrate \
-        --query "Seizure Forecasting by High-Frequency Activity" \
+        --doi_or_title "Seizure Forecasting by High-Frequency Activity" \
         --project pac
 """
 
