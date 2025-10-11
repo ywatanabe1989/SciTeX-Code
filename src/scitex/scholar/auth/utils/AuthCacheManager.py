@@ -27,7 +27,6 @@ from typing import Any, Dict, Optional
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
 
-from .AuthLockManager import AuthLockManager
 from .SessionManager import SessionManager
 
 logger = logging.getLogger(__name__)
@@ -54,34 +53,27 @@ class AuthCacheManager:
 
         self.cache_name = cache_name
         self.cache_json = self.config.get_cache_auth_json(self.cache_name)
-        self.cache_json_lock = self.config.get_cache_auth_json_lock(
-            self.cache_name
-        )
         self.cache_dir = self.config.get_cache_auth_dir()
         os.chmod(self.cache_dir, 0o700)
 
         self.email = email
 
-        self.lock_manager = AuthLockManager(self.cache_json_lock)
-
     async def save_session_async(
         self, session_manager: SessionManager
     ) -> bool:
-        """Save session data to cache file with file locking."""
+        """Save session data to cache file."""
         try:
-            # Acquire lock before writing
-            async with self.lock_manager:
-                cache_data = self._create_cache_data(session_manager)
+            cache_data = self._create_cache_data(session_manager)
 
-                with open(self.cache_json, "w") as f:
-                    json.dump(cache_data, f, indent=2)
+            with open(self.cache_json, "w") as f:
+                json.dump(cache_data, f, indent=2)
 
-                # Set secure permissions
-                os.chmod(self.cache_json, 0o600)
-                logger.success(
-                    f"{self.name}: Session saved to: {self.cache_json}"
-                )
-                return True
+            # Set secure permissions
+            os.chmod(self.cache_json, 0o600)
+            logger.success(
+                f"{self.name}: Session saved to: {self.cache_json}"
+            )
+            return True
 
         except Exception as e:
             logger.error(f"{self.name}: Failed to save session cache: {e}")
@@ -90,7 +82,7 @@ class AuthCacheManager:
     async def load_session_async(
         self, session_manager: SessionManager
     ) -> bool:
-        """Load session data from cache file with file locking."""
+        """Load session data from cache file."""
         if not Path(self.cache_json).exists():
             logger.debug(
                 f"{self.name}: No session cache found at {self.cache_json}"
@@ -98,22 +90,20 @@ class AuthCacheManager:
             return False
 
         try:
-            # Acquire lock before reading
-            async with self.lock_manager:
-                cache_data = self._load_cache_data()
-                if not cache_data:
-                    return False
+            cache_data = self._load_cache_data()
+            if not cache_data:
+                return False
 
-                if not self._validate_cache_data(cache_data):
-                    return False
+            if not self._validate_cache_data(cache_data):
+                return False
 
-                self._populate_session_manager(session_manager, cache_data)
-                logger.success(
-                    f"{self.name}: Loaded session ({self.cache_json}): "
-                    f"{len(session_manager.get_cookies())} cookies"
-                    f"{session_manager.format_expiry_info()}"
-                )
-                return True
+            self._populate_session_manager(session_manager, cache_data)
+            logger.success(
+                f"{self.name}: Loaded session ({self.cache_json}): "
+                f"{len(session_manager.get_cookies())} cookies"
+                f"{session_manager.format_expiry_info()}"
+            )
+            return True
 
         except Exception as e:
             logger.error(f"{self.name}: Failed to load session cache: {e}")

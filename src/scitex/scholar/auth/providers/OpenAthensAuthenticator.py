@@ -150,11 +150,10 @@ class OpenAthensAuthenticator(BaseAuthenticator):
             )
             return self.session_manager.create_auth_response()
 
-        # Use lock to prevent concurrent authentication
-        lock_manager = AuthLockManager(self.cache_manager.get_lock_file())
-
+        # No lock needed - workers read cached auth concurrently
+        # Only one worker should authenticate at a time, but if cache is valid,
+        # all workers skip this section
         try:
-            async with lock_manager:
                 # Double-check session after acquiring lock
                 await self._ensure_session_loaded_async()
                 if not force and await self.is_authenticate_async():

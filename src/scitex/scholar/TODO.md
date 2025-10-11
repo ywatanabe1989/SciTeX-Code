@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-11 13:36:59
+!-- Timestamp: 2025-10-11 19:58:40
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -48,6 +48,11 @@
 - [ ] When one pdf downloading strategy succeeds, skip the rest of strategies
 - [ ] Authentication gateway should be used for both url finding and pdf downloading
   - [ ] I am not sure they can share across pages if context is the same
+
+- [ ] Parallel execution
+  - [ ] May auth lock not needed?
+  - [ ] Just read auth cookies enough for each worker (chrome profile)?
+  - [ ] Is interactive mode still available in parallel mode? (we would like to demonstrate this visually)
 
 <!-- ``` bash
  !-- run_neurovista_pipeline() {
