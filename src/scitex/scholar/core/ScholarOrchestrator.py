@@ -52,9 +52,10 @@ logger = logging.getLogger(__name__)
 class ScholarOrchestrator:
     """Orchestrates full paper acquisition pipeline"""
 
-    def __init__(self, browser_mode: str = "interactive"):
+    def __init__(self, browser_mode: str = "interactive", chrome_profile: str = "system"):
         self.name = self.__class__.__name__
         self.browser_mode = browser_mode
+        self.chrome_profile = chrome_profile
 
     def _link_to_project(
         self, paper: Paper, project: str, io: PaperIO
@@ -393,10 +394,10 @@ class ScholarOrchestrator:
             )
             from scitex.scholar.auth import AuthenticationGateway
 
-            logger.info(f"{self.name}: Setting up browser...")
+            logger.info(f"{self.name}: Setting up browser (profile: {self.chrome_profile})...")
             auth_manager = ScholarAuthManager()
             browser_manager = ScholarBrowserManager(
-                chrome_profile_name="system",
+                chrome_profile_name=self.chrome_profile,
                 browser_mode=self.browser_mode,
                 auth_manager=auth_manager,
             )
