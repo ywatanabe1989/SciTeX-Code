@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 20:18:29 (ywatanabe)"
+# Timestamp: "2025-10-11 20:42:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/ScholarOrchestrator.py
 # ----------------------------------------
 from __future__ import annotations
@@ -325,13 +325,17 @@ class ScholarOrchestrator:
             if metadata_dict and metadata_dict.get("id", {}).get("doi"):
                 doi = metadata_dict["id"]["doi"]
                 paper.metadata.id.doi = doi
-                paper.metadata.id.doi_engines = metadata_dict["id"].get("doi_engines", ["ScholarEngine"])
+                paper.metadata.id.doi_engines = metadata_dict["id"].get(
+                    "doi_engines", ["ScholarEngine"]
+                )
                 logger.success(f"{self.name}: Resolved DOI from title: {doi}")
 
                 # Merge other metadata while we have it
                 self._merge_metadata_into_paper(paper, metadata_dict)
             else:
-                logger.error(f"{self.name}: Could not resolve DOI from title: {doi_or_title}")
+                logger.error(
+                    f"{self.name}: Could not resolve DOI from title: {doi_or_title}"
+                )
                 raise ValueError(f"No DOI found for title: {doi_or_title}")
 
         # Step 3: Generate 8-digit library ID
@@ -494,18 +498,18 @@ class ScholarOrchestrator:
             if downloaded_file:
                 # Check if file was downloaded to MASTER/temp.pdf or downloads/UUID
                 if downloaded_file == temp_pdf_path and temp_pdf_path.exists():
-                    # Chrome PDF downloaded directly to MASTER - just rename
+                    # Chrome PDF downloaded directly to MASTER - rename to main.pdf
                     import shutil
 
                     main_pdf = io.get_pdf_path()
+                    logger.info(f"{self.name}: Renaming temp.pdf → main.pdf")
                     shutil.move(str(temp_pdf_path), str(main_pdf))
                     # Update paper metadata
                     paper.metadata.path.pdfs = [str(main_pdf)]
                     paper.container.pdf_size_bytes = main_pdf.stat().st_size
                     io.save_metadata()
-                    logger.success(
-                        f"{self.name}: PDF downloaded directly to MASTER"
-                    )
+                    logger.success(f"{self.name}: PDF saved as: {main_pdf.name}")
+                    logger.info(f"{self.name}: Location: {main_pdf.parent}")
                 else:
                     # UUID file from downloads directory - use normal flow
                     io.save_pdf(downloaded_file)
@@ -702,10 +706,13 @@ Usage:
         --browser-mode stealth \
         --chrome-profile system
 
-    # With title (not yet implemented)
-    python -m scitex.scholar.orchestrate \
-        --doi_or_title "Seizure Forecasting by High-Frequency Activity" \
-        --project pac
+    # With Title
+    python -m scitex.scholar.core.ScholarOrchestrator \
+        --doi-or-title "Epileptic seizure forecasting with long short-term memory (LSTM) neural networks" \
+        --project pac \
+        --browser-mode stealth \
+        --chrome-profile system
+
 """
 
 # EOF
