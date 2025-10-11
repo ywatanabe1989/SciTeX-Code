@@ -48,6 +48,7 @@ warnings.warn(
 
 import logging as _logging
 
+from ._Tee import Tee, tee
 # Import modular components
 from ._levels import SUCCESS, FAIL, DEBUG, INFO, WARNING, ERROR, CRITICAL
 from ._logger import SciTeXLogger, setup_logger_class
@@ -67,6 +68,7 @@ from ._print_capture import (
     disable_print_capture,
     is_print_capture_enabled
 )
+from ._context import log_to_file
 
 # Re-export standard logging functions for compatibility
 getLogger = _logging.getLogger
@@ -110,6 +112,11 @@ __all__ = [
     # Configuration (minimal set)
     'configure',
     'get_log_path',
+    'Tee',
+    'tee',
+
+    # Context managers
+    'log_to_file',
 ]
 
 # EOF

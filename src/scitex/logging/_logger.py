@@ -71,6 +71,25 @@ class SciTeXLogger(logging.Logger):
         if self.isEnabledFor(FAIL):
             self._log_with_indent(FAIL, message, indent, sep, n_sep, c, *args, **kwargs)
 
+    def to(self, file_path, level=None, mode='w'):
+        """Context manager to temporarily log to a specific file.
+
+        Usage:
+            logger = logging.getLogger(__name__)
+            with logger.to("/path/to/file.log"):
+                logger.info("This goes to both console and file.log")
+
+        Args:
+            file_path: Path to log file
+            level: Logging level (default: DEBUG)
+            mode: File mode ('w' for overwrite, 'a' for append)
+
+        Returns:
+            Context manager
+        """
+        from ._context import log_to_file
+        return log_to_file(file_path, level=level or logging.DEBUG, mode=mode)
+
 
 def setup_logger_class():
     """Setup the custom logger class."""

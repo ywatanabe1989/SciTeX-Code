@@ -330,7 +330,8 @@ class ChromeProfileManager:
 
             for line in stats_lines:
                 if "Number of regular files transferred:" in line:
-                    transferred_files = int(line.split(":")[1].strip())
+                    # Remove commas from number (e.g., "3,301" -> "3301")
+                    transferred_files = int(line.split(":")[1].strip().replace(",", ""))
                 elif "Total transferred file size:" in line:
                     size_str = line.split(":")[1].strip().split()[0]
                     total_size = int(size_str.replace(",", ""))

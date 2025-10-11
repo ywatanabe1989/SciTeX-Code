@@ -88,9 +88,47 @@ class PaperIO:
         """Get path to metadata.json"""
         return self.paper_dir / "metadata.json"
 
-    def get_pdf_path(self) -> Path:
-        """Get path to main.pdf"""
-        return self.paper_dir / "main.pdf"
+    def get_pdf_path(self, suffix: str = None) -> Path:
+        """Get formatted PDF path using PathManager template.
+
+        Returns path like: MASTER/{paper_id}/{FirstAuthor}-{year}-{Journal}.pdf
+        If suffix provided: {FirstAuthor}-{year}-{Journal}-{suffix}.pdf
+        """
+        from scitex.scholar import ScholarConfig
+
+        config = ScholarConfig()
+
+        # Extract metadata for formatting
+        first_author = (
+            self.paper.metadata.basic.authors[0].split()[-1]
+            if self.paper.metadata.basic.authors
+            else "Unknown"
+        )
+        year = self.paper.metadata.basic.year or 0
+        journal_name = (
+            self.paper.metadata.publication.short_journal
+            or self.paper.metadata.publication.journal
+            or "Unknown"
+        )
+
+        # Normalize journal name: remove spaces and special chars
+        journal_name = "".join(
+            c for c in journal_name if c.isalnum()
+        )
+
+        # Get formatted PDF name from PathManager
+        pdf_name = config.path_manager.get_library_project_entry_pdf_fname(
+            first_author=first_author,
+            year=year,
+            journal_name=journal_name,
+        )
+
+        # Add suffix if provided (for duplicate PDFs)
+        if suffix:
+            name, ext = pdf_name.rsplit('.', 1)
+            pdf_name = f"{name}-{suffix}.{ext}"
+
+        return self.paper_dir / pdf_name
 
     def get_text_path(self) -> Path:
         """Get path to content.txt"""
@@ -158,8 +196,8 @@ class PaperIO:
         return self.get_metadata_path().exists()
 
     def has_pdf(self) -> bool:
-        """Check if main.pdf exists"""
-        return self.get_pdf_path().exists()
+        """Check if any PDF exists in paper directory"""
+        return len(list(self.paper_dir.glob("*.pdf"))) > 0
 
     def has_content(self) -> bool:
         """Check if content.txt exists"""

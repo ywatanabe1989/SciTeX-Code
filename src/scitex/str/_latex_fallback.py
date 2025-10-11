@@ -36,12 +36,21 @@ import functools
 import re
 from typing import Any, Callable, Dict
 
-from scitex import logging
-
 # matplotlib imports moved to functions that need them
 
-# Configure logging
-logger = logging.getLogger(__name__)
+# Delay logging import to avoid circular dependency
+# scitex.logging imports _Tee which imports scitex.str which imports this file
+def _get_logger():
+    """Get logger lazily to avoid circular import."""
+    from scitex import logging
+    return logging.getLogger(__name__)
+
+# Use property-like access for logger
+class _LoggerProxy:
+    def __getattr__(self, name):
+        return getattr(_get_logger(), name)
+
+logger = _LoggerProxy()
 
 # Global state for LaTeX capability
 _latex_available = None
