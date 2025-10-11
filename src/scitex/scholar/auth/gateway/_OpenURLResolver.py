@@ -65,23 +65,9 @@ class OpenURLResolver:
 
         for attempt in range(3):
             try:
-                # DEBUG: Check page status before navigation
-                logger.info(f"DEBUG [{self.name}]: BEFORE page.goto()")
-                logger.info(f"  Page is closed: {page.is_closed()}")
-                logger.info(f"  Query URL: {query[:80]}")
-                logger.info(f"  Attempt: {attempt + 1}/3")
-
-                # Visual: Navigating to OpenURL
-                await browser_logger.debug(
-                    page,
-                    f"{self.name}: Navigating to resolver for {doi[:30]}...",
-                )
-
-                logger.info(f"DEBUG [{self.name}]: CALLING page.goto()...")
                 await page.goto(
                     query, wait_until="domcontentloaded", timeout=60000
                 )
-                logger.info(f"DEBUG [{self.name}]: AFTER page.goto() SUCCESS")
                 await browser_logger.debug(
                     page,
                     f"{self.name}: Loaded resolver page at {page.url[:60]}",

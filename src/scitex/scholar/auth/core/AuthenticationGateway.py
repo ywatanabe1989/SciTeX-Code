@@ -360,46 +360,10 @@ class AuthenticationGateway:
         )
 
         resolver = OpenURLResolver(config=self.config)
-
-        # DEBUG: Check context status before creating page
-        logger.info(f"DEBUG [{self.name}]: BEFORE context.new_page()")
-        logger.info(f"  Context type: {type(context)}")
-        try:
-            # Check if context has pages
-            pages = context.pages
-            logger.info(f"  Existing pages in context: {len(pages)}")
-        except Exception as e:
-            logger.info(f"  Could not check pages: {e}")
-
-        logger.info(f"DEBUG [{self.name}]: CREATING new page...")
         page = await context.new_page()
-        logger.info(f"DEBUG [{self.name}]: Page created successfully")
-        logger.info(f"  Page is closed: {page.is_closed()}")
 
         try:
-            # DEBUG: Check before browser_logger
-            logger.info(f"DEBUG [{self.name}]: BEFORE browser_logger.info()")
-            logger.info(f"  Page is closed: {page.is_closed()}")
-
-            # Show visual progress
-            await browser_logger.info(
-                page,
-                f"{self.name}: Establishing session for {url_context.doi[:50]}...",
-            )
-
-            # DEBUG: Check after browser_logger
-            logger.info(f"DEBUG [{self.name}]: AFTER browser_logger.info()")
-            logger.info(f"  Page is closed: {page.is_closed()}")
-
-            # resolve_doi already does the full flow:
-            # 1. Visits OpenURL
-            # 2. Finds publisher link
-            # 3. Clicks link
-            # 4. Waits for publisher page to load
-            # This establishes the publisher cookies
-            logger.info(f"DEBUG [{self.name}]: CALLING resolver.resolve_doi()...")
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
-            logger.info(f"DEBUG [{self.name}]: resolver.resolve_doi() RETURNED: {publisher_url}")
 
             if publisher_url:
                 logger.success(f"{self.name}: Auth established")
