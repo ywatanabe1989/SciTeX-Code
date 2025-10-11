@@ -62,70 +62,25 @@ class ScholarOrchestrator:
     def _link_to_project(
         self, paper: Paper, project: str, io: PaperIO
     ) -> Path:
-        """Create human-readable symlink in project directory.
-
-        Uses entry_name template from PathManager (PATH_STRUCTURE):
-        PDF-{pdf_state}-CC-{citation_count:06d}_IF-{impact_factor_of_the_journal:03d}_{year:04d}_{first_author}_{journal_name}
-
-        Args:
-            paper: Paper object
-            project: Project name
-            io: PaperIO instance
-
-        Returns:
-            Path to created symlink
-        """
+        """Create human-readable symlink in project directory."""
         from scitex.scholar import ScholarConfig
 
         config = ScholarConfig()
         project_dir = config.path_manager.get_library_project_dir(project)
 
-        # Build entry name using LibraryManager format
-        # PDF status: 0p=pending, 1r=running, 2f=failed, 3s=successful
-        pdf_files = list(io.paper_dir.glob("*.pdf"))
-        if pdf_files:
-            pdf_status = "3s"
-        else:
-            pdf_status = "0p"
-
-        citation_count = paper.metadata.citation_count.total or 0
-        impact_factor = int(paper.metadata.publication.impact_factor or 0)
-        year = paper.metadata.basic.year or 0
-        first_author = (
-            paper.metadata.basic.authors[0].split()[-1]
-            if paper.metadata.basic.authors
-            else "Unknown"
-        )
-        journal_name = (
-            paper.metadata.publication.short_journal
-            or paper.metadata.publication.journal
-            or "Unknown"
-        )
-
-        # Sanitize for filename (alphanumeric + hyphens, like LibraryManager)
-        journal_name = "".join(
-            c for c in journal_name if c.isalnum() or c in " "
-        ).replace(" ", "-")[:30]
-        first_author = "".join(
-            c for c in first_author if c.isalnum() or c == "-"
-        )[:20]
-
-        # Use LibraryManager format: PDF-{status}_CC-{cc:06d}_IF-{if:03d}_{year:04d}_{author}_{journal}
-        entry_name = f"PDF-{pdf_status}_CC-{citation_count:06d}_IF-{impact_factor:03d}_{year:04d}_{first_author}_{journal_name}"
+        # Get formatted entry name from PaperIO
+        entry_name = io.get_entry_name_for_project()
 
         # Create symlink
         symlink_path = project_dir / entry_name
         target_path = Path("../MASTER") / paper.container.library_id
 
-        # Remove existing symlink if present
         if symlink_path.exists() or symlink_path.is_symlink():
             symlink_path.unlink()
 
         symlink_path.symlink_to(target_path)
         logger.success(f"{self.name}: Created symlink: {project}/{entry_name}")
-        logger.info(
-            f"{self.name}: Points to: MASTER/{paper.container.library_id}"
-        )
+        logger.info(f"{self.name}: Points to: MASTER/{paper.container.library_id}")
 
         return symlink_path
 

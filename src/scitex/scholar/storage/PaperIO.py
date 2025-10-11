@@ -112,6 +112,44 @@ class PaperIO:
         screenshots_dir.mkdir(exist_ok=True)
         return screenshots_dir
 
+    def get_entry_name_for_project(self) -> str:
+        """Generate entry/symlink name using PathManager format.
+
+        Returns formatted name like:
+        PDF-3s_CC-000113_IF-010_2017_Baldassano_Brain
+        """
+        from scitex.scholar import ScholarConfig
+
+        config = ScholarConfig()
+
+        # Determine PDF status
+        pdf_status = "3s" if self.has_pdf() else "0p"
+
+        # Extract metadata
+        citation_count = self.paper.metadata.citation_count.total or 0
+        impact_factor = int(self.paper.metadata.publication.impact_factor or 0)
+        year = self.paper.metadata.basic.year or 0
+        first_author = (
+            self.paper.metadata.basic.authors[0].split()[-1]
+            if self.paper.metadata.basic.authors
+            else "Unknown"
+        )
+        journal_name = (
+            self.paper.metadata.publication.short_journal
+            or self.paper.metadata.publication.journal
+            or "Unknown"
+        )
+
+        # Use PathManager to format
+        return config.path_manager.get_library_project_entry_dirname(
+            pdf_state=pdf_status,
+            citation_count=citation_count,
+            impact_factor_of_the_journal=impact_factor,
+            year=year,
+            first_author=first_author,
+            journal_name=journal_name,
+        )
+
     # ========================================
     # Check Methods
     # ========================================
