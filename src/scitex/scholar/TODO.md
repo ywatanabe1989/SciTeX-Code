@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-13 09:49:47
+!-- Timestamp: 2025-10-13 09:50:27
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -9,11 +9,11 @@
 ## Release Preparation
 
 ### Config System
-- [ ] Organize in separated yaml files while keeping current codebase working
+- [ ] Organize ./config/default.yaml in separated yaml files while ensuring current codebase works
 
 ### Documentation and Examples
-- [ ] Create demonstration video/tutorial
 - [ ] Update README.md files to reflect current codebase
+- [ ] Create demonstration video/tutorial
 - [ ] Revise and restructure ./examples for current implementation
 - [ ] Update CLI and __main__.py interfaces
 
