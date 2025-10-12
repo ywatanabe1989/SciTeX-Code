@@ -60,13 +60,12 @@ class TimeSeriesSlidingWindowSplit(BaseCrossValidator):
 
     Parameters
     ----------
-    window_size : int, optional
-        Size of training window (ignored if expanding_window=True or n_splits is set).
-        Required if n_splits is None.
-    step_size : int, optional
+    window_size : int
+        Size of training window (ignored if expanding_window=True)
+    step_size : int
         Step between windows (overridden if overlapping_tests=False)
-    test_size : int, optional
-        Size of test window. Required if n_splits is None.
+    test_size : int
+        Size of test window
     gap : int, default=0
         Number of samples to skip between train and test windows
     val_ratio : float, default=0.0
@@ -83,10 +82,6 @@ class TimeSeriesSlidingWindowSplit(BaseCrossValidator):
         If True, balance classes in training sets by randomly undersampling
         the majority class to match the minority class count. Temporal order
         is maintained. Requires y labels in split().
-    n_splits : int, optional
-        Number of splits to generate. If specified, window_size and test_size
-        are automatically calculated to create exactly n_splits folds.
-        Cannot be used together with manual window_size/test_size specification.
 
     Examples
     --------
@@ -108,47 +103,22 @@ class TimeSeriesSlidingWindowSplit(BaseCrossValidator):
     ... )
     >>> for train_idx, test_idx in swcv.split(X, y, timestamps):
     ...     print(f"Train: {len(train_idx)}, Test: {len(test_idx)}")  # Train grows!
-    >>>
-    >>> # Using n_splits (automatically calculates window and test sizes)
-    >>> swcv = TimeSeriesSlidingWindowSplit(
-    ...     n_splits=5, gap=0, expanding_window=True, undersample=True
-    ... )
-    >>> for train_idx, test_idx in swcv.split(X, y, timestamps):
-    ...     print(f"Train: {len(train_idx)}, Test: {len(test_idx)}")
     """
 
     def __init__(
         self,
-        window_size: Optional[int] = None,
+        window_size: int,
         step_size: Optional[int] = None,
-        test_size: Optional[int] = None,
+        test_size: int = 10,
         gap: int = 0,
         val_ratio: float = 0.0,
         random_state: Optional[int] = None,
         overlapping_tests: bool = False,
         expanding_window: bool = False,
         undersample: bool = False,
-        n_splits: Optional[int] = None,
     ):
-        # Handle n_splits mode vs manual mode
-        if n_splits is not None:
-            # n_splits mode: automatically calculate window_size and test_size
-            self.n_splits_mode = True
-            self._n_splits = n_splits
-            # Use placeholder values, will be calculated in split()
-            self.window_size = window_size if window_size is not None else 50
-            self.test_size = test_size if test_size is not None else 10
-        else:
-            # Manual mode: require window_size and test_size
-            if window_size is None or test_size is None:
-                raise ValueError(
-                    "Either n_splits OR (window_size AND test_size) must be specified"
-                )
-            self.n_splits_mode = False
-            self._n_splits = None
-            self.window_size = window_size
-            self.test_size = test_size
-
+        self.window_size = window_size
+        self.test_size = test_size
         self.gap = gap
         self.val_ratio = val_ratio
         self.random_state = random_state
@@ -156,6 +126,8 @@ class TimeSeriesSlidingWindowSplit(BaseCrossValidator):
         self.overlapping_tests = overlapping_tests
         self.expanding_window = expanding_window
         self.undersample = undersample
+        self.n_splits_mode = False
+        self._n_splits = None
 
         # Handle step_size logic
         if not overlapping_tests:
@@ -503,10 +475,7 @@ class TimeSeriesSlidingWindowSplit(BaseCrossValidator):
 
                 # Split train/val from the expanding window
                 if val_size > 0:
-                    # Calculate validation size dynamically based on current expanding window
-                    # This ensures val_ratio is respected across all folds as window expands
-                    current_val_size = int(train_val_end_pos * self.val_ratio)
-                    train_end_pos = train_val_end_pos - current_val_size
+                    train_end_pos = train_val_end_pos - val_size
                     train_indices = sorted_indices[0:train_end_pos]
                     val_indices = sorted_indices[
                         train_end_pos:train_val_end_pos

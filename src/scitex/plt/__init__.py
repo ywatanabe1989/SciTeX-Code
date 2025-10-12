@@ -58,6 +58,50 @@ def tight_layout(**kwargs):
         warnings.filterwarnings("ignore", message="The figure layout has changed to tight")
         plt.tight_layout(**kwargs)
 
+
+def colorbar(mappable=None, cax=None, ax=None, **kwargs):
+    """
+    Create a colorbar, automatically unwrapping SciTeX AxisWrapper objects.
+
+    This function handles both regular matplotlib axes and SciTeX AxisWrapper
+    objects transparently, making it a drop-in replacement for plt.colorbar().
+
+    Parameters
+    ----------
+    mappable : ScalarMappable, optional
+        The image, contour set, etc. to which the colorbar applies.
+        If None, uses the current image.
+    cax : Axes, optional
+        Axes into which the colorbar will be drawn.
+    ax : Axes or AxisWrapper or list thereof, optional
+        Parent axes from which space for the colorbar will be stolen.
+        If None, uses current axes.
+    **kwargs
+        Additional keyword arguments passed to matplotlib.pyplot.colorbar()
+
+    Returns
+    -------
+    Colorbar
+        The created colorbar object
+    """
+    import matplotlib.pyplot as plt
+
+    # Unwrap ax if it's a SciTeX AxisWrapper
+    if ax is not None:
+        if hasattr(ax, '__iter__') and not isinstance(ax, str):
+            # Handle list/array of axes
+            ax = [a._axis_mpl if hasattr(a, '_axis_mpl') else a for a in ax]
+        else:
+            # Single axis
+            ax = ax._axis_mpl if hasattr(ax, '_axis_mpl') else ax
+
+    # Unwrap cax if provided
+    if cax is not None:
+        cax = cax._axis_mpl if hasattr(cax, '_axis_mpl') else cax
+
+    # Call matplotlib's colorbar with unwrapped axes
+    return plt.colorbar(mappable=mappable, cax=cax, ax=ax, **kwargs)
+
 __all__ = [
     "termplot",
     "subplots",

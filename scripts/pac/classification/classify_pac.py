@@ -12,11 +12,10 @@ from typing import Dict, Any, Optional, Tuple
 import argparse
 
 # Import SciTeX modules
-from scitex.ai.classification import SingleTaskClassificationReporter
+from scitex.ai.classification import SingleTaskClassificationReporter, TimeSeriesSlidingWindowSplit
 from scitex.logging import getLogger
 
 # Import ML libraries
-from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
@@ -26,7 +25,7 @@ from sklearn.linear_model import LogisticRegression
 logger = getLogger(__name__)
 
 
-def load_pac_data(data_path: Optional[Path] = None) -> Tuple[np.ndarray, np.ndarray, Dict[str, Any]]:
+def load_pac_data(data_path: Optional[Path] = None) -> Tuple[np.ndarray, np.ndarray, np.ndarray, Dict[str, Any]]:
     """
     Load PAC data for classification.
 
@@ -41,18 +40,20 @@ def load_pac_data(data_path: Optional[Path] = None) -> Tuple[np.ndarray, np.ndar
         Features
     y : np.ndarray
         Labels
+    timestamps : np.ndarray
+        Timestamps for time series ordering
     metadata : Dict
         Data metadata
     """
     logger.info("Loading PAC data...")
 
-    # For demo, generate synthetic PAC-like data
+    # For demo, generate synthetic PAC-like data with imbalanced classes
     # In real use, load actual PAC features here
     n_samples = 500
     n_features = 100  # e.g., frequency bands × time windows
-    n_classes = 3  # e.g., low/medium/high coupling
+    n_classes = 2  # Binary classification for better undersampling demo
 
-    # Generate synthetic PAC features
+    # Generate synthetic PAC features with class imbalance
     from sklearn.datasets import make_classification
     X, y = make_classification(
         n_samples=n_samples,
@@ -60,12 +61,16 @@ def load_pac_data(data_path: Optional[Path] = None) -> Tuple[np.ndarray, np.ndar
         n_informative=30,
         n_redundant=20,
         n_classes=n_classes,
+        weights=[0.8, 0.2],  # Imbalanced: 80% class 0, 20% class 1
         class_sep=1.5,
         random_state=42
     )
 
+    # Generate timestamps (simulating temporal ordering)
+    timestamps = np.arange(n_samples)
+
     # Define meaningful class names for PAC
-    class_names = ['Low_Coupling', 'Medium_Coupling', 'High_Coupling'][:n_classes]
+    class_names = ['Normal', 'Abnormal_Coupling']
 
     # Create metadata with proper class names
     metadata = {
@@ -80,7 +85,7 @@ def load_pac_data(data_path: Optional[Path] = None) -> Tuple[np.ndarray, np.ndar
     logger.info(f"Classes: {metadata['class_names']}")
     logger.info(f"Class distribution: {np.bincount(y)}")
 
-    return X, y, metadata
+    return X, y, timestamps, metadata
 
 
 def preprocess_features(
@@ -226,6 +231,7 @@ def calculate_pac_specific_metrics(
 def run_pac_classification(
     X: np.ndarray,
     y: np.ndarray,
+    timestamps: np.ndarray,
     metadata: Dict[str, Any],
     model_name: str = 'svm',
     n_folds: int = 5,
@@ -233,10 +239,11 @@ def run_pac_classification(
     **model_kwargs
 ) -> Dict[str, Any]:
     """
-    Run PAC classification experiment.
+    Run PAC classification experiment with time series CV.
 
     This is the main entry point focusing on PAC-specific research logic.
     General classification handling is delegated to SingleTaskClassificationReporter.
+    Uses TimeSeriesSlidingWindowSplit with expanding window and undersampling.
 
     Parameters
     ----------
@@ -244,6 +251,8 @@ def run_pac_classification(
         Feature matrix
     y : np.ndarray
         Labels
+    timestamps : np.ndarray
+        Timestamps for temporal ordering
     metadata : Dict[str, Any]
         Dataset metadata
     model_name : str
@@ -281,17 +290,34 @@ def run_pac_classification(
         'model_type': model_name,
         'cross_validation': {
             'n_folds': n_folds,
-            'strategy': 'StratifiedKFold',
-            'shuffle': True,
+            'strategy': 'TimeSeriesSlidingWindowSplit',
+            'expanding_window': True,
+            'undersampling': True,
             'random_state': 42
         }
     }
     reporter.save(experiment_metadata, "experiment/metadata.json")
 
-    # Cross-validation
-    cv = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=42)
+    # Time series cross-validation with expanding window and undersampling
+    # Calculate appropriate window sizes based on n_folds
+    n_samples = len(X)
+    test_size = n_samples // (n_folds + 1)  # Reserve data for each fold
+    window_size = test_size * 2  # Start with 2x test size
 
-    for fold, (train_idx, test_idx) in enumerate(cv.split(X, y)):
+    cv = TimeSeriesSlidingWindowSplit(
+        window_size=window_size,
+        test_size=test_size,
+        step_size=test_size,  # Non-overlapping folds
+        gap=0,
+        expanding_window=True,  # Training set grows over time
+        undersample=True,  # Balance classes in training
+        overlapping_tests=False,
+        random_state=42
+    )
+
+    logger.info(f"Time Series CV: window={window_size}, test={test_size}, expanding+undersample")
+
+    for fold, (train_idx, test_idx) in enumerate(cv.split(X, y, timestamps)):
         logger.info(f"Fold {fold + 1}/{n_folds}")
 
         # Split data
@@ -384,8 +410,8 @@ def main():
 
     args = parser.parse_args()
 
-    # Load PAC data
-    X, y, metadata = load_pac_data(args.data_path)
+    # Load PAC data with timestamps
+    X, y, timestamps, metadata = load_pac_data(args.data_path)
 
     # Preprocess if requested
     if args.preprocess:
@@ -398,9 +424,9 @@ def main():
         )
         metadata['preprocessing'] = preprocessing_info
 
-    # Run classification
+    # Run classification with time series CV
     results = run_pac_classification(
-        X, y, metadata,
+        X, y, timestamps, metadata,
         model_name=args.model,
         n_folds=args.n_folds,
         output_dir=args.output_dir

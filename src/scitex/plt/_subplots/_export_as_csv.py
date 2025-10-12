@@ -15,13 +15,13 @@ import numpy as np
 import pandas as pd
 from scitex.pd import to_xyz
 
-from ._export_as_csv_formatters import (_format_bar, _format_barh,
-                                        _format_boxplot, _format_contour,
-                                        _format_errorbar, _format_eventplot,
-                                        _format_fill, _format_fill_between,
-                                        _format_hist, _format_imshow,
-                                        _format_imshow2d, _format_plot,
-                                        _format_plot_box,
+from ._export_as_csv_formatters import (_format_annotate, _format_bar,
+                                        _format_barh, _format_boxplot,
+                                        _format_contour, _format_errorbar,
+                                        _format_eventplot, _format_fill,
+                                        _format_fill_between, _format_hist,
+                                        _format_imshow, _format_imshow2d,
+                                        _format_plot, _format_plot_box,
                                         _format_plot_conf_mat,
                                         _format_plot_ecdf, _format_plot_fillv,
                                         _format_plot_heatmap,
@@ -108,7 +108,9 @@ def export_as_csv(history_records):
         return pd.DataFrame()
 
     try:
-        df = pd.concat(dfs, axis=1)
+        # Reset index for each dataframe to avoid alignment issues
+        dfs_reset = [df.reset_index(drop=True) for df in dfs]
+        df = pd.concat(dfs_reset, axis=1)
         return df
     except Exception as e:
         warnings.warn(f"Failed to combine plotting records: {e}")
@@ -170,6 +172,8 @@ def format_record(record):
         return _format_violinplot(id, tracked_dict, kwargs)
     elif method == "text":
         return _format_text(id, tracked_dict, kwargs)
+    elif method == "annotate":
+        return _format_annotate(id, tracked_dict, kwargs)
 
     # Custom plotting functions
     elif method == "plot_box":

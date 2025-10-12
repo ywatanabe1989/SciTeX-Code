@@ -10,6 +10,22 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import pandas as pd
 
+def _make_column_name(id, suffix, method="barh"):
+    """Create column name with method descriptor, avoiding duplication.
+
+    For example:
+    - id="barh_0", suffix="x" -> "barh_0_barh_x"
+    - id="plot_5", suffix="x" -> "plot_5_barh_x"
+    """
+    # Check if method name is already in the ID
+    id_parts = id.rsplit('_', 1)
+    if len(id_parts) == 2 and id_parts[0].endswith(method):
+        # Method already in ID, don't duplicate
+        return f"{id}_{suffix}"
+    else:
+        # Method not in ID, add it for clarity
+        return f"{id}_{method}_{suffix}"
+
 def _format_barh(id, tracked_dict, kwargs):
     """Format data from a barh call."""
     # Check if tracked_dict is empty or not a dictionary
@@ -36,12 +52,13 @@ def _format_barh(id, tracked_dict, kwargs):
         # Not enough arguments
         return pd.DataFrame()
 
+    # Use helper to create descriptive column names without duplication
     df = pd.DataFrame(
-        {f"{id}_barh_y": x, f"{id}_barh_x": y}
+        {_make_column_name(id, "y"): x, _make_column_name(id, "x"): y}
     )  # Swap x/y for barh
 
     if xerr is not None:
         if isinstance(xerr, (int, float)):
             xerr = pd.Series(xerr, name="xerr")
-        df[f"{id}_barh_xerr"] = xerr
+        df[_make_column_name(id, "xerr")] = xerr
     return df
