@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-13 09:03:58 (ywatanabe)"
+# Timestamp: "2025-10-13 09:05:52 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/pipelines/ScholarPipelineSingle.py
 # ----------------------------------------
 from __future__ import annotations
