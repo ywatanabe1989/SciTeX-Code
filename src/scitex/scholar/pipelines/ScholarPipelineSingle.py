@@ -445,16 +445,17 @@ class ScholarPipelineSingle:
             journal_name=journal_name,
         )
 
-        # Create symlink using scitex.path.symlink (handles logging)
-        import scitex as stx
-
+        # Create relative symlink directly
         symlink_path = project_dir / entry_name
         target_path = Path("../MASTER") / paper.container.library_id
 
-        # Use scitex.path.symlink - target is already relative, don't recalculate
-        stx.path.symlink(
-            src=target_path, dst=symlink_path, overwrite=True, relative=False
-        )
+        # Remove existing symlink if present
+        if symlink_path.exists() or symlink_path.is_symlink():
+            symlink_path.unlink()
+
+        # Create symlink with relative path (don't resolve to absolute)
+        symlink_path.symlink_to(target_path)
+        logger.success(f"{self.name}: Created symlink: {project}/{entry_name}")
 
         return symlink_path
 
