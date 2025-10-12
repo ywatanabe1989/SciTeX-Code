@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 07:52:48 (ywatanabe)"
+# Timestamp: "2025-10-13 06:01:49 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/utils/click_and_wait.py
 # ----------------------------------------
 from __future__ import annotations
@@ -113,7 +113,7 @@ async def click_and_wait(
                 f"{func_name}: Navigation: {initial_url} -> {result['final_url']}"
             )
         else:
-            logger.warning(f"{func_name}: Navigation failed or no change")
+            logger.info(f"{func_name}: Navigation failed or no change")
 
         return result
 

@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 08:21:45 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/06_find_and_download.py
+# Timestamp: "2025-10-13 07:26:24 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/06_find_and_download.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/examples/06_find_and_download.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 Integrated example: Find PDF URL and download immediately.
@@ -29,7 +33,10 @@ logger = logging.getLogger(__name__)
 
 
 async def find_and_download_pdf(
-    doi: str, output_dir: str = "/tmp", browser_mode: str = "stealth"
+    doi: str,
+    output_dir: str = "/tmp",
+    browser_mode: str = "stealth",
+    func_name="find_and_download_pdf",
 ) -> Path:
     """
     Find PDF URL and download it immediately in the same session.
@@ -43,10 +50,10 @@ async def find_and_download_pdf(
         ScholarURLFinder,
     )
 
-    logger.info(f"Processing DOI: {doi}")
+    logger.info(f"{func_name}: Processing DOI: {doi}")
 
     # Initialize browser with authentication
-    logger.info(f"Initializing browser ({browser_mode} mode)...")
+    logger.info(f"{func_name}: Initializing browser ({browser_mode} mode)...")
     auth_manager = ScholarAuthManager()
     browser_manager = ScholarBrowserManager(
         auth_manager=auth_manager,
@@ -58,14 +65,14 @@ async def find_and_download_pdf(
     )
 
     # Find PDF URLs
-    logger.info("Finding PDF URLs...")
+    logger.info(f"{func_name}: Finding PDF URLs...")
     url_finder = ScholarURLFinder(context, use_cache=False)
     urls = await url_finder.find_urls(doi=doi)
 
     # Extract PDF URLs - handle both old and new structure
     pdf_urls = urls.get("urls_pdf", urls.get("url_pdf", []))
     if not pdf_urls:
-        logger.error(f"No PDF URLs found for DOI: {doi}")
+        logger.error(f"{func_name}: No PDF URLs found for DOI: {doi}")
         return None
 
     # Get the best PDF URL (prefer navigation source for authenticated URLs)
@@ -87,10 +94,10 @@ async def find_and_download_pdf(
         else:
             best_pdf_url = pdf_urls[0]
 
-    logger.info(f"Found PDF URL: {best_pdf_url[:80]}...")
+    logger.info(f"{func_name}: Found PDF URL: {best_pdf_url[:80]}...")
 
     # Download PDF immediately in the same context
-    logger.info("Downloading PDF...")
+    logger.info(f"{func_name}: Downloading PDF...")
     pdf_downloader = ScholarPDFDownloader(context)
 
     # Create output filename from DOI
@@ -103,9 +110,9 @@ async def find_and_download_pdf(
     )
 
     if saved_path:
-        logger.success(f"Downloaded PDF to: {saved_path}")
+        logger.success(f"{func_name}: Downloaded PDF to: {saved_path}")
     else:
-        logger.error("Failed to download PDF")
+        logger.error(f"{func_name}: Failed to download PDF")
 
     # Clean up
     await browser.close()

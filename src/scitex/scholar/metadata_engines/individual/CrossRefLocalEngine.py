@@ -239,7 +239,7 @@ class CrossRefLocalEngine(BaseDOIEngine):
 if __name__ == "__main__":
     from pprint import pprint
 
-    from scitex.scholar.engines.individual import CrossRefLocalEngine
+    from scitex.scholar.metadata_engines.individual import CrossRefLocalEngine
 
     TITLE = "deep learning"
     DOI = "10.1001/.387"

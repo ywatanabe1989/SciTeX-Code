@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-22 07:19:03 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_configs.py
+# Timestamp: "2025-10-11 23:54:07 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_configs.py
 # ----------------------------------------
+from __future__ import annotations
 import os
-
-__FILE__ = "/ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_configs.py"
+__FILE__ = (
+    "./src/scitex/io/_load_configs.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-
-THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/io/_load_configs.py"
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Time-stamp: "2025-02-27 11:09:00 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/io/_load_configs.py
 
 from pathlib import Path
 from typing import Optional, Union
 
 from ..dict import DotDict
-from ._load import load
 from ._glob import glob
+from ._load import load
 
 
-def load_configs(IS_DEBUG=None, show=False, verbose=False, config_dir: Optional[Union[str, Path]] = None):
+def load_configs(
+    IS_DEBUG=None,
+    show=False,
+    verbose=False,
+    config_dir: Optional[Union[str, Path]] = None,
+):
     """Load YAML configuration files from specified directory.
 
     Parameters
@@ -65,7 +66,7 @@ def load_configs(IS_DEBUG=None, show=False, verbose=False, config_dir: Optional[
             config_dir = "./config"
         elif isinstance(config_dir, Path):
             config_dir = str(config_dir)
-        
+
         # Set debug mode
         debug_config_path = f"{config_dir}/IS_DEBUG.yaml"
         IS_DEBUG = (

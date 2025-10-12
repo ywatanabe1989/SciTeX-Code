@@ -48,6 +48,7 @@ from ._load_modules._zarr import _load_zarr
 
 def load(
     lpath: Union[str, Path],
+    ext: str = None,
     show: bool = False,
     verbose: bool = False,
     cache: bool = True,
@@ -62,6 +63,10 @@ def load(
     ----------
     lpath : Union[str, Path]
         The path to the file to be loaded. Can be a string or pathlib.Path object.
+    ext : str, optional
+        File extension to use for loading. If None, automatically detects from filename.
+        Useful for files without extensions (e.g., UUID-named files).
+        Examples: 'pdf', 'json', 'csv'
     show : bool, optional
         If True, display additional information during loading. Default is False.
     verbose : bool, optional
@@ -98,6 +103,8 @@ def load(
     >>> data = load('data.csv')
     >>> image = load('image.png')
     >>> model = load('model.pth')
+    >>> # Load file without extension (e.g., UUID PDF)
+    >>> pdf = load('f2694ccb-1b6f-4994-add8-5111fd4d52f1', ext='pdf')
     """
 
     # Don't use clean_path as it breaks relative paths like ./file.txt
@@ -218,13 +225,19 @@ def load(
         "set": _load_eeg_data,
     }
 
-    ext = lpath.split(".")[-1] if "." in lpath else ""
+    # Determine extension: use explicit ext parameter or detect from filename
+    if ext is not None:
+        # Use explicitly provided extension (strip leading dot if present)
+        detected_ext = ext.lstrip('.')
+    else:
+        # Auto-detect from filename
+        detected_ext = lpath.split(".")[-1] if "." in lpath else ""
 
     # Special handling for numpy files with caching
-    if cache and ext in ["npy", "npz"]:
+    if cache and detected_ext in ["npy", "npz"]:
         return load_npy_cached(lpath, **kwargs)
 
-    loader = preserve_doc(loaders_dict.get(ext, _load_txt))
+    loader = preserve_doc(loaders_dict.get(detected_ext, _load_txt))
 
     try:
         result = loader(lpath, **kwargs)

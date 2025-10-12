@@ -50,7 +50,6 @@ class BaseDOIEngine(ABC):
         self._request_count = 0
 
         # Lazy-loaded utilities - will be initialized when first accessed
-        self._text_normalizer = None
         self._url_doi_extractor = None
         self._pubmed_converter = None
         self._session = None
@@ -81,10 +80,8 @@ class BaseDOIEngine(ABC):
 
     @property
     def text_normalizer(self):
-        """Get TextNormalizer utility with lazy loading."""
-        if self._text_normalizer is None:
-            self._text_normalizer = TextNormalizer(ascii_fallback=False)
-        return self._text_normalizer
+        """Get TextNormalizer utility (class-based, no instantiation needed)."""
+        return TextNormalizer
 
     @property
     def url_doi_extractor(self):
@@ -404,10 +401,10 @@ class BaseDOIEngine(ABC):
         """
         Check if two titles match using the enhanced TextNormalizer utility.
 
-        DEPRECATED: Use self.text_normalizer.is_title_match() directly in new code.
+        DEPRECATED: Use self.text_normalizer.is_likely_same_title() directly in new code.
         This method is kept for backward compatibility.
         """
-        return self.text_normalizer.is_title_match(title1, title2, threshold)
+        return self.text_normalizer.is_likely_same_title(title1, title2, threshold)
 
     def _create_minimal_metadata(
         self,

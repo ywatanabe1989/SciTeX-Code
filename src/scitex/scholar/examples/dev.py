@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 from scitex.scholar import ScholarAuthManager
 from scitex.scholar import ScholarBrowserManager
 from scitex.scholar import ScholarURLFinder
-from scitex.scholar.url.helpers._find_functions import (
+from scitex.scholar.url_finder.helpers._find_functions import (
     _find_pdf_urls_by_zotero_translators,
 )
 

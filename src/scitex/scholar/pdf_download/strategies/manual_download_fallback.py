@@ -10,7 +10,7 @@ from playwright.async_api import BrowserContext
 from scitex import logging
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser import browser_logger
-from scitex.scholar.download.strategies.manual_download_utils import (
+from scitex.scholar.pdf_download.strategies.manual_download_utils import (
     complete_manual_download_workflow_async,
     DownloadMonitorAndSync,
 )

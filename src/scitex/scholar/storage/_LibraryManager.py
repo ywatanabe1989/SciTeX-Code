@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional
 
 from scitex import logging
 from scitex.scholar.config import ScholarConfig
-from scitex.scholar.engines.utils import BASE_STRUCTURE, standardize_metadata
+from scitex.scholar.metadata_engines.utils import BASE_STRUCTURE, standardize_metadata
 from scitex.scholar.storage._DeduplicationManager import DeduplicationManager
 from scitex.scholar.utils import TextNormalizer
 
@@ -43,7 +43,7 @@ class LibraryManager:
         """Initialize library manager."""
         self.config = config or ScholarConfig()
         self.project = self.config.resolve("project", project)
-        self.library_master_dir = self.config.get_library_project_dir() / "MASTER"
+        self.library_master_dir = self.config.path_manager.get_library_master_dir()
         self.single_doi_resolver = single_doi_resolver
         self._source_filename = "papers"
         self.dedup_manager = DeduplicationManager(config=self.config)
@@ -1168,13 +1168,10 @@ class LibraryManager:
         else:
             year_str = "0000"
 
-        # Clean journal name (replace spaces with hyphens)
+        # Clean journal name using PathManager (single source of truth)
         journal_clean = "Unknown"
         if journal:
-            # Keep alphanumeric and spaces, then replace spaces with hyphens
-            journal_clean = "".join(
-                c for c in journal if c.isalnum() or c in " "
-            ).replace(" ", "-")[:30]
+            journal_clean = self.config.path_manager._sanitize_filename(journal)[:30]
             if not journal_clean:
                 journal_clean = "Unknown"
 

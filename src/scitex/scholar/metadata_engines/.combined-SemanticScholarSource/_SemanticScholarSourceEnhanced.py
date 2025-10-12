@@ -63,13 +63,13 @@ class SemanticScholarSourceEnhanced(BaseDOISource):
     def _is_title_match(self, query_title: str, paper_title: str, threshold: float = 0.8) -> bool:
         """Enhanced title matching using TextNormalizer utility."""
         # Use the advanced TextNormalizer from utils
-        is_match = self.text_normalizer.is_title_match(query_title, paper_title, threshold)
-        
+        is_match = self.text_normalizer.is_likely_same_title(query_title, paper_title, threshold)
+
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f"Title match result: {is_match} (threshold: {threshold})")
             logger.debug(f"Query: {query_title}")
             logger.debug(f"Paper: {paper_title}")
-        
+
         return is_match
 
     @retry(

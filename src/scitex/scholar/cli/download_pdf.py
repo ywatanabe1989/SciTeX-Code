@@ -23,7 +23,7 @@ import sys
 
 from scitex import logging
 from scitex.scholar.core import Paper
-from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
+from scitex.scholar.pdf_download.ScholarPDFDownloader import ScholarPDFDownloader
 
 logger = logging.getLogger(__name__)
 

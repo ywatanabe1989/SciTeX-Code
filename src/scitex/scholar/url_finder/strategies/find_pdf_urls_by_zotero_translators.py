@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 01:19:51 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/strategies/find_pdf_urls_by_zotero_translators.py
+# Timestamp: "2025-10-13 06:32:08 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url_finder/strategies/find_pdf_urls_by_zotero_translators.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/url/strategies/find_pdf_urls_by_zotero_translators.py"
+    "./src/scitex/scholar/url_finder/strategies/find_pdf_urls_by_zotero_translators.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -28,7 +28,7 @@ Features:
 - Type safety
 
 Usage:
-    from scitex.scholar.url.strategies import find_pdf_urls_by_zotero_translators
+    from scitex.scholar.url_finder.strategies import find_pdf_urls_by_zotero_translators
 
     pdf_urls = await find_pdf_urls_by_zotero_translators(page, url)
 """
@@ -87,7 +87,7 @@ async def find_pdf_urls_by_zotero_translators(
         matching_translator = registry.get_translator_for_url(url)
 
         if not matching_translator:
-            await browser_logger.warning(
+            await browser_logger.info(
                 page, f"{func_name}: No Python translator matches URL: {url}"
             )
             return []

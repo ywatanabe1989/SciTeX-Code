@@ -240,3 +240,14 @@ tk
 # Note: Removed packages that don't exist on PyPI:
 # - nphash (doesn't exist)
 # ============================================
+
+# ============================================
+# Scholar
+# ============================================
+lxml
+click
+openpyxl
+pygments
+webrequests
+sql_manager
+requests

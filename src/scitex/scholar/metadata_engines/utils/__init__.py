@@ -10,7 +10,8 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 from ._PubMedConverter import PubMedConverter, pmid2doi
-from ._TextNormalizer import TextNormalizer
+# Import TextNormalizer from central location
+from scitex.scholar.utils.text import TextNormalizer
 from ._URLDOIExtractor import URLDOIExtractor
 from ._standardize_metadata import standardize_metadata, BASE_STRUCTURE
 from ._metadata2bibtex import metadata2bibtex

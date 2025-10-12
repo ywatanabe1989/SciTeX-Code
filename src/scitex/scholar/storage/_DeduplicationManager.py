@@ -20,8 +20,8 @@ class DeduplicationManager:
     def __init__(self, config: ScholarConfig = None):
         self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
-        self.library_dir = self.config.get_library_project_dir()
-        self.master_dir = self.library_dir / "MASTER"
+        self.library_dir = self.config.path_manager.library_dir
+        self.master_dir = self.config.path_manager.get_library_master_dir()
 
     def find_duplicate_papers(self) -> Dict[str, List[Path]]:
         """Find all duplicate papers in MASTER library.

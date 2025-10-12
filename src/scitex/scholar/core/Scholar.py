@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 06:47:13 (ywatanabe)"
+# Timestamp: "2025-10-13 07:38:57 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -45,18 +45,18 @@ from scitex.browser.debugging import browser_logger
 from scitex.scholar.browser import ScholarBrowserManager
 from scitex.scholar.storage import LibraryManager
 from scitex.scholar.storage import ScholarLibrary
-from scitex.scholar.engines.ScholarEngine import ScholarEngine
-from scitex.scholar.download.ScholarPDFDownloader import ScholarPDFDownloader
+from scitex.scholar.metadata_engines.ScholarEngine import ScholarEngine
+from scitex.scholar.pdf_download.ScholarPDFDownloader import (
+    ScholarPDFDownloader,
+)
 from scitex.scholar.auth.core.AuthenticationGateway import (
     AuthenticationGateway,
 )
-from scitex.scholar.url.ScholarURLFinder import ScholarURLFinder
-
-# from scitex.scholar.url.ScholarURLFinderParallel import ScholarURLFinderParallel
+from scitex.scholar.url_finder.ScholarURLFinder import ScholarURLFinder
 
 import asyncio
 import nest_asyncio
-from scitex.scholar.engines.JCRImpactFactorEngine import JCRImpactFactorEngine
+from scitex.scholar.impact_factor.ImpactFactorEngine import ImpactFactorEngine
 
 from .Papers import Papers
 
@@ -277,7 +277,7 @@ class Scholar:
         """
         try:
             # Try JCR database first (fast)
-            jcr_engine = JCRImpactFactorEngine()
+            jcr_engine = ImpactFactorEngine()
             papers = jcr_engine.enrich_papers(papers)
             return papers
         except Exception as e:
@@ -677,207 +677,6 @@ class Scholar:
         finally:
             # Always close browser
             await self._browser_manager.close()
-
-    # COMMENTED OUT - Old parallel implementation
-    # async def download_pdfs_from_dois_async_OLD(
-    #     self,
-    #     dois: List[str],
-    #     output_dir: Optional[Path] = None,
-    #     max_parallel: int = None,
-    #     use_parallel: Optional[bool] = None,
-    # ) -> Dict[str, int]:
-    #     """Download PDFs for given DOIs with optional parallel processing.
-
-    #     Args:
-    #         dois: List of DOI strings
-    #         output_dir: Output directory (uses config default if None)
-    #         use_parallel: Whether to use parallel downloads (None = auto from config)
-
-    #     Returns:
-    #         Dictionary with download statistics
-    #     """
-    #     # Check if parallel download should be used
-    #     max_parallel = self.config.resolve(
-    #         "max_parallel", max_parallel, default=4
-    #     )
-    #     # pdf_config = self.config.get("pdf_download") or {}
-    #     # use_parallel = (
-    #     #     use_parallel
-    #     #     if use_parallel is not None
-    #     #     else pdf_config.get("use_parallel", True)
-    #     # )
-
-    #     if max_parallel and len(dois) > 1:
-    #         # Use parallel downloader for multiple DOIs
-    #         logger.info(
-    #             f"{self.name}: PDF Download: Processing {len(dois)} DOIs in parallel",
-    #             sep="=",
-    #             n_sep=60,
-    #         )
-
-    #         pdf_downloader = ScholarPDFDownloader(self.context)
-    #         results = await pdf_downloader.download_from_dois(
-    #             dois,
-    #             output_dir,
-    #         )
-    #         for doi, result in zip([dois, results]):
-    #             paper_data = {"doi": doi}
-    #             paper_id = self.config.path_manager._generate_paper_id(doi=doi)
-    #             library_dir = self.config.get_library_project_dir()
-    #             metadata_file = (
-    #                 library_dir / "MASTER" / paper_id / "metadata.json"
-    #             )
-
-    #             if metadata_file.exists():
-    #                 import json
-
-    #                 with open(metadata_file, "r") as f:
-    #                     existing_metadata = json.load(f)
-    #                     paper_data.update(existing_metadata)
-    #                     # Check for existing PDF URLs in metadata
-    #                     if (
-    #                         "url" in existing_metadata
-    #                         and "pdfs" in existing_metadata.get("url", {})
-    #                     ):
-    #                         existing_pdf_urls = existing_metadata["url"][
-    #                             "pdfs"
-    #                         ]
-    #                     elif "pdf_urls" in existing_metadata:
-    #                         existing_pdf_urls = existing_metadata[
-    #                             "pdf_urls"
-    #                         ]
-
-    #         # Prepare papers - check existing metadata first, only find URLs if needed
-    #         papers_with_urls = []
-    #         dois_needing_urls = []
-    #         doi_to_index = {}  # Map DOI to original index for result matching
-
-    #         for i, doi in enumerate(dois):
-    #             try:
-    #                 paper_data = {"doi": doi}
-
-    #                 # Check if paper already exists in library
-    #                 paper_id = self.config.path_manager._generate_paper_id(
-    #                     doi=doi
-    #                 )
-    #                 library_dir = self.config.get_library_project_dir()
-    #                 metadata_file = (
-    #                     library_dir / "MASTER" / paper_id / "metadata.json"
-    #                 )
-
-    #                 existing_pdf_urls = []
-    #                 if metadata_file.exists():
-    #                     import json
-
-    #                     with open(metadata_file, "r") as f:
-    #                         existing_metadata = json.load(f)
-    #                         paper_data.update(existing_metadata)
-    #                         # Check for existing PDF URLs in metadata
-    #                         if (
-    #                             "url" in existing_metadata
-    #                             and "pdfs" in existing_metadata.get("url", {})
-    #                         ):
-    #                             existing_pdf_urls = existing_metadata["url"][
-    #                                 "pdfs"
-    #                             ]
-    #                         elif "pdf_urls" in existing_metadata:
-    #                             existing_pdf_urls = existing_metadata[
-    #                                 "pdf_urls"
-    #                             ]
-
-    #                 # Only find URLs if we don't have any from metadata
-    #                 if existing_pdf_urls:
-    #                     logger.info(
-    #                         f"{self.name}: Using {len(existing_pdf_urls)} cached PDF URLs for {doi}",
-    #                         indent=1,
-    #                         c="cyan",
-    #                     )
-    #                     paper_data["pdf_urls"] = existing_pdf_urls
-    #                     papers_with_urls.append(paper_data)
-    #                 else:
-    #                     # Need to find URLs for this DOI
-    #                     dois_needing_urls.append(doi)
-    #                     doi_to_index[doi] = i
-    #                     papers_with_urls.append(paper_data)  # Add placeholder
-
-    #             except Exception as e:
-    #                 logger.warning(f"Failed to load metadata for {doi}: {e}")
-    #                 dois_needing_urls.append(doi)
-    #                 doi_to_index[doi] = i
-    #                 papers_with_urls.append({"doi": doi, "pdf_urls": []})
-
-    #         # Only run URL finder if there are DOIs without URLs
-    #         if dois_needing_urls:
-    #             logger.info(
-    #                 f"URL Finding: Processing {len(dois_needing_urls)}/{len(dois)} DOIs",
-    #                 sep="-",
-    #                 n_sep=60,
-    #                 indent=1,
-    #             )
-
-    #             url_finder_parallel = ScholarURLFinderParallel(
-    #                 auth_manager=self._auth_manager,
-    #                 browser_manager=self._browser_manager,
-    #                 config=self.config,
-    #             )
-
-    #             url_results = await url_finder_parallel.find_urls_batch(
-    #                 dois_needing_urls
-    #             )
-
-    #             # Update papers with newly found URLs
-    #             for doi, urls in zip(dois_needing_urls, url_results):
-    #                 idx = doi_to_index[doi]
-    #                 papers_with_urls[idx]["pdf_urls"] = urls.get(
-    #                     "urls_pdf", []
-    #                 )
-    #                 papers_with_urls[idx]["url_info"] = urls
-    #         else:
-    #             logger.success(
-    #                 f"{self.name}: All {len(dois)} DOIs have cached PDF URLs - skipping URL finding",
-    #                 indent=1,
-    #             )
-
-    #         # Get authenticated browser context for parallel downloads
-    #         browser, context = (
-    #             await self._browser_manager.get_authenticated_browser_and_context_async()
-    #         )
-
-    #         try:
-    #             # Initialize simple downloader with built-in parallel support
-    #             downloader = ScholarPDFDownloader(
-    #                 context=context,
-    #                 config=self.config,
-    #             )
-
-    #             # Use download_from_dois for parallel downloads (has built-in semaphore)
-    #             max_concurrent = pdf_config.get("max_concurrent", 3)
-    #             results = await downloader.download_from_dois(
-    #                 dois=dois,
-    #                 output_dir="/tmp/",
-    #                 max_concurrent=max_concurrent,
-    #             )
-
-    #             # Convert results to expected format
-    #             # results is List[List[Path]] where each inner list is downloads for one DOI
-    #             # Count exceptions as errors
-    #             errors = sum(1 for r in results if isinstance(r, Exception))
-    #             successful = sum(
-    #                 1 for r in results if r and not isinstance(r, Exception)
-    #             )
-    #             failed = len(results) - successful - errors
-
-    #             return {
-    #                 "downloaded": successful,
-    #                 "failed": failed,
-    #                 "errors": errors,
-    #             }
-    #         finally:
-    #             # Always close browser, even on exception
-    #             await self._browser_manager.close()
-    #     else:
-    #         # Use sequential download for single DOI or when parallel disabled
-    #         return await self._download_pdfs_sequential(dois, output_dir)
 
     async def _download_pdfs_sequential(
         self, dois: List[str], output_dir: Optional[Path] = None

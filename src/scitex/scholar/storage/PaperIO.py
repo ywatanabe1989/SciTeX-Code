@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 11:00:00 (ywatanabe)"
+# Timestamp: "2025-10-11 23:45:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/storage/PaperIO.py
 # ----------------------------------------
 from __future__ import annotations
@@ -70,6 +70,7 @@ class PaperIO:
 
         if base_dir is None:
             from scitex.scholar import ScholarConfig
+
             config = ScholarConfig()
             base_dir = config.get_library_master_dir()
 
@@ -111,21 +112,17 @@ class PaperIO:
             or "Unknown"
         )
 
-        # Normalize journal name: remove spaces and special chars
-        journal_name = "".join(
-            c for c in journal_name if c.isalnum()
-        )
-
-        # Get formatted PDF name from PathManager
+        # Normalize journal name using PathManager (single source of truth)
+        # This delegates to PathManager._sanitize_filename() which replaces spaces/dots with hyphens
         pdf_name = config.path_manager.get_library_project_entry_pdf_fname(
             first_author=first_author,
             year=year,
-            journal_name=journal_name,
+            journal_name=journal_name,  # Will be sanitized by PathManager
         )
 
         # Add suffix if provided (for duplicate PDFs)
         if suffix:
-            name, ext = pdf_name.rsplit('.', 1)
+            name, ext = pdf_name.rsplit(".", 1)
             pdf_name = f"{name}-{suffix}.{ext}"
 
         return self.paper_dir / pdf_name
@@ -154,14 +151,14 @@ class PaperIO:
         """Generate entry/symlink name using PathManager format.
 
         Returns formatted name like:
-        PDF-3s_CC-000113_IF-010_2017_Baldassano_Brain
+        PDF-01_CC-000113_IF-010_2017_Baldassano_Brain
         """
         from scitex.scholar import ScholarConfig
 
         config = ScholarConfig()
 
-        # Determine PDF status
-        pdf_status = "3s" if self.has_pdf() else "0p"
+        # Count PDFs in directory
+        n_pdfs = len(list(self.paper_dir.glob("*.pdf")))
 
         # Extract metadata
         citation_count = self.paper.metadata.citation_count.total or 0
@@ -178,11 +175,11 @@ class PaperIO:
             or "Unknown"
         )
 
-        # Use PathManager to format
+        # Use PathManager to format (single source of truth)
         return config.path_manager.get_library_project_entry_dirname(
-            pdf_state=pdf_status,
+            n_pdfs=n_pdfs,
             citation_count=citation_count,
-            impact_factor_of_the_journal=impact_factor,
+            impact_factor=impact_factor,
             year=year,
             first_author=first_author,
             journal_name=journal_name,
@@ -217,7 +214,7 @@ class PaperIO:
             Path to saved metadata.json
         """
         path = self.get_metadata_path()
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             json.dump(self.paper.to_dict(), f, indent=2)
         logger.info(f"{self.name}: Saved metadata: {path}")
         return path
@@ -255,7 +252,7 @@ class PaperIO:
             Path to content.txt
         """
         path = self.get_text_path()
-        with open(path, 'w', encoding='utf-8') as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write(text)
         logger.info(f"{self.name}: Saved text: {path}")
         return path
@@ -270,7 +267,7 @@ class PaperIO:
             Path to tables.json
         """
         path = self.get_tables_path()
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             json.dump(tables, f, indent=2)
         logger.info(f"{self.name}: Saved {len(tables)} tables: {path}")
         return path
@@ -287,7 +284,7 @@ class PaperIO:
         """
         images_dir = self.get_images_dir()
         path = images_dir / filename
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             f.write(image_data)
         logger.info(f"{self.name}: Saved image: {path}")
         return path
@@ -305,7 +302,7 @@ class PaperIO:
         if not path.exists():
             raise FileNotFoundError(f"Metadata not found: {path}")
 
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             data = json.load(f)
 
         paper = Paper.from_dict(data)
@@ -324,7 +321,7 @@ class PaperIO:
         if not path.exists():
             raise FileNotFoundError(f"Text not found: {path}")
 
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             text = f.read()
         logger.info(f"{self.name}: Loaded text: {path}")
         return text
@@ -339,7 +336,7 @@ class PaperIO:
         if not path.exists():
             raise FileNotFoundError(f"Tables not found: {path}")
 
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             tables = json.load(f)
         logger.info(f"{self.name}: Loaded {len(tables)} tables: {path}")
         return tables
@@ -351,11 +348,21 @@ class PaperIO:
         """Get status of all expected files
 
         Returns:
-            Dictionary of filename: exists
+            Dictionary of actual filename: exists (shows real PDF name if exists)
         """
+        # Get actual PDF filename using PathManager getter
+        pdf_files = list(self.paper_dir.glob("*.pdf"))
+        if pdf_files:
+            # Show actual PDF filename
+            pdf_key = pdf_files[0].name
+        else:
+            # Show expected PDF filename from PathManager
+            expected_pdf = self.get_pdf_path()
+            pdf_key = expected_pdf.name
+
         return {
             "metadata.json": self.has_metadata(),
-            "main.pdf": self.has_pdf(),
+            pdf_key: self.has_pdf(),  # Shows actual PDF filename
             "content.txt": self.has_content(),
             "tables.json": self.has_tables(),
             "images/": self.get_images_dir().exists(),
@@ -400,7 +407,9 @@ def main(args):
     if not io.has_pdf():
         logger.info("No PDF found (would download here)")
     else:
-        logger.success(f"PDF exists: {io.get_pdf_path().stat().st_size / 1e6:.2f} MB")
+        logger.success(
+            f"PDF exists: {io.get_pdf_path().stat().st_size / 1e6:.2f} MB"
+        )
 
     # Status
     status = io.get_all_files()
@@ -457,4 +466,3 @@ if __name__ == "__main__":
     run_main()
 
 # EOF
-

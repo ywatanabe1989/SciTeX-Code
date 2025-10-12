@@ -128,7 +128,7 @@ class BrowserAuthenticator(BrowserMixin):
                 automation_attempted = True
 
                 try:
-                    from ..automation.OpenAthensSSOAutomator import (
+                    from ..sso.OpenAthensSSOAutomator import (
                         OpenAthensSSOAutomator,
                     )
 

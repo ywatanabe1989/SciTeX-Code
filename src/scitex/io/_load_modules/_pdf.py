@@ -127,12 +127,12 @@ def _load_pdf(lpath: str, mode: str = "full", **kwargs) -> Any:
     output_dir = kwargs.get("output_dir", None)
     table_settings = kwargs.get("table_settings", {})
 
-    # Validate file
-    if not lpath.endswith(".pdf"):
-        raise ValueError("File must have .pdf extension")
-
+    # Validate file exists
     if not os.path.exists(lpath):
         raise FileNotFoundError(f"PDF file not found: {lpath}")
+
+    # Extension validation removed - handled by load() function
+    # This allows loading files without extensions when ext='pdf' is specified
 
     # Select backend based on mode and availability
     backend = _select_backend(mode, backend)

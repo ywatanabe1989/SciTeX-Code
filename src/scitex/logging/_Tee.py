@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 22:17:03 (ywatanabe)"
+# Timestamp: "2025-10-13 07:12:49 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_Tee.py
 # ----------------------------------------
 from __future__ import annotations
@@ -57,7 +57,7 @@ class Tee:
                 # Show where logs are being saved using scitex logging
                 logger = _get_logger()
                 stream_name = "stderr" if stream is sys.stderr else "stdout"
-                logger.info(f"Tee [{stream_name}]: {log_path}")
+                logger.debug(f"Tee [{stream_name}]: {log_path}")
         except Exception as e:
             printc(f"Failed to open log file {log_path}: {e}", c="red")
             self._log_file = None
@@ -100,7 +100,7 @@ class Tee:
                 if self.verbose:
                     # Use lazy logger to avoid circular import
                     logger = _get_logger()
-                    logger.info(f"Tee: Closed log file: {self._log_path}")
+                    logger.debug(f"Tee: Closed log file: {self._log_path}")
                 self._log_file = None  # Prevent double-close
             except Exception:
                 pass

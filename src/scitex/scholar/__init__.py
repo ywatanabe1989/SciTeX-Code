@@ -22,9 +22,9 @@ Quick Start:
 from scitex.scholar.config import ScholarConfig
 from scitex.scholar.auth import ScholarAuthManager
 from scitex.scholar.browser import ScholarBrowserManager
-from scitex.scholar.engines import ScholarEngine
-from scitex.scholar.url import ScholarURLFinder
-from scitex.scholar.download import ScholarPDFDownloader
+from scitex.scholar.metadata_engines import ScholarEngine
+from scitex.scholar.url_finder import ScholarURLFinder
+from scitex.scholar.pdf_download import ScholarPDFDownloader
 from scitex.scholar.storage import ScholarLibrary
 from scitex.scholar.core import Paper, Papers, Scholar
 from . import utils

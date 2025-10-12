@@ -1,125 +1,133 @@
 <!-- ---
-!-- Timestamp: 2025-10-11 21:48:33
+!-- Timestamp: 2025-10-13 05:26:37
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
 
-## !!!IMPORTANT!!! 
-## When you claim something, especially after source code updates, always run this by yourself and verify the improvement
-## DO NOT MAKE ANY CONCLUSIONS WITHOUT ANY EVIDENCE
-## KEEP HONEST, DO NOT MAKE A LIE
-## Until screenshots created here, YOU MUST NOT SAY IT IS FIXED
-## YOU CAN RUN FRESH ANYTIME
+# Scholar Module TODO
 
-<!-- - [ ] Apply full pipeline `./core/ScholarOchestrator.py` to the entries in `/home/ywatanabe/proj/scitex_repo/src/scitex/scholar/data/neurovista.bib`, with their DOIs as project neurovista
- !-- - [ ] I will not handle manual download so that we can check sucess rate -->
+## Release Preparation
 
-## Zotero translators
-- [ ] Zotero translators for major publishers will work.
-  - [ ] However, we need to implement `~/proj/zotero-translators-python`, which is installed via editable mode, `pip install -e`
-  - [ ] The corresponding javascript code are authentic community-implementations
-  - [ ] We need to translate the zotero translators writtein in Javascript into Python script
+### Adjustment
+- [ ] Style of Journal Names should be normalized
+  - [ ] NG: PDF-00_CC-000000_IF-000_2025_Lu_IEEE J. Biomed. Health Inform -> ../MASTER/D7D3ADE9
+  - [ ] OK: PDF-00_CC-000000_IF-000_2025_Lu_IEEE-J.-Biomed.-Health-Inform -> ../MASTER/D7D3ADE9
+  - [ ] NG: Andrade-2024-FrontNeurosci.pdf
+  - [ ] OK: Andrade-2024-Front-Neurosci.pdf
+  - [ ] Fix them: in /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/core/_PathManager.py and use them throught the codebase when these names needed; keep one source of truth 
+    def get_library_project_entry_dirname(
+        self,
+        n_pdfs: int,
+        citation_count: int,
+        impact_factor: int,
+        year: int,
+        first_author: str,
+        journal_name: str,
+    ) -> str:
+        """Format entry directory name using PATH_STRUCTURE template.
 
-## Parallel Pipeline
-- [ ] Running entries can be in parallel. However, we need to care about auth lock. (this is really suspicious)
-- [ ] When running multiple chrome instances, WE HAVE TO USE DIFFERENT PROFILES TO AVOID CRASHES.
-- [ ] For chrome profile name we can specify the following profiles, which are stored in `~/.scitex/scholar/cache/chrome/`:
-     - system
-     - system_worker_0
-     - system_worker_1
-     - system_worker_2
-     - system_worker_3
-     - system_worker_4
-     - system_worker_5
-     - system_worker_6
-     - system_worker_7
+        Args:
+            n_pdfs: Number of PDF files (0, 1, 2, ...)
+            citation_count: Total citation count
+            impact_factor: Journal impact factor
+            year: Publication year
+            first_author: First author last name
+            journal_name: Journal name
 
-- [ ] 4 workers by default
-- [ ] Rsync from system; they use rsync so that every time of syncronization is effective withtout complexity
-- [ ] Location: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core:
-  -rw-r--r--  1 ywatanabe ywatanabe    0 Oct 11 21:37 ScholarPipelineParallel.py
-- [ ] Delegate to ScholarPipelineSingle.py
-- [ ] API: DOIs/titles/Papers collection, all acceptable but you can separate into two methods
-- [ ] Context: browsers must use their own context
-- [ ] Auth: before workers spawned, first, auth verification needed (otherwise, we need to authenticate multiple times...) 
+        Returns:
+            Formatted directory name
+        """
+        first_author = self._sanitize_filename(first_author)
+        journal_name = self._sanitize_filename(journal_name)
+        return PATH_STRUCTURE["library_project_entry_dirname"].format(
+            n_pdfs=n_pdfs,
+            citation_count=citation_count,
+            impact_factor=impact_factor,
+            year=year,
+            first_author=first_author,
+            journal_name=journal_name,
+        )
 
-## BibTeX pipeline
-- [ ] Location: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core:
-  -rw-r--r--  1 ywatanabe ywatanabe    0 Oct 11 21:38 ScholarPipelineBibTeX.py
-- [ ] Delegate to ./storage/BibTeXHandler.py and the ScholarPipelineParallel
+    def get_library_project_entry_pdf_fname(
+        self, first_author: str, year: int, journal_name: str
+    ) -> str:
+        """Format PDF filename using PATH_STRUCTURE template."""
+        first_author = self._sanitize_filename(first_author)
+        journal_name = self._sanitize_filename(journal_name)
+        return PATH_STRUCTURE["library_project_entry_pdf_fname"].format(
+            first_author=first_author,
+            year=year,
+            journal_name=journal_name,
+        )
 
-## Debugging
-- [ ] Debug mode available (`$ stx_set_loglevel debug`)
-- [ ] Step-by-step debugging `./url/ScholarURLFinder.py`
-- [ ] Simple debugging `./pdf/ScholarPDFDownloader.py`
-- [ ] Screenshots, terminal logs
+- [ ] `info` dir needed for each project
+  - [ ] /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/library/neurovista/info
+  - [ ] info/bibliography/xxx.bib
+  - [ ] info/bibliography/yyy.bib
+  - [ ] info/bibliography/merged.bib
+  - [ ] info/neurovista.bib -> bibliography/merged.bib
+  - [ ] Use the logic of /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/cli/handlers/bibtex_handler.py
+    - [ ] Also, please implement this to "all pipelines"
+      - [ ] Sometimes, this is created from imported bibtex files
+      - [ ] Sometimes, we need to implement this from all entries in the project for expooooortinggg
+  - [ ] The logic should be implemented in /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/storage/BibTeXHandler.py and reused throught the project to keep single truth
+  - [ ] What are differences between BibliographyManager and BibTeXHandler?
 
-## Implementation requests
-- [ ] Screenshot paths should be logged in full path. Update `browser_logger`
-- [ ] When one pdf downloading strategy succeeds, skip the rest of strategies
-- [ ] Authentication gateway should be used for both url finding and pdf downloading
-  - [ ] I am not sure they can share across pages if context is the same
+- [ ] Organize pipelines and keep single source of truth
+  - [ ] core/*Pipeline*.py
+  - [ ] pipelines/*.py
+    - [ ] Which are the primary, centralized pipelines?
+  - [ ] __main__.py
+  - [ ] cli/*.py
+    - [ ] This must delegate to actual implementations to keep readability
 
-- [ ] Parallel execution
-  - [ ] May auth lock not needed?
-  - [ ] Just read auth cookies enough for each worker (chrome profile)?
-  - [ ] Is interactive mode still available in parallel mode? (we would like to demonstrate this visually)
+### Configuration System
+- [ ] Organize configuration YAML files
+  - [ ] Split into categorized configuration files
+  - [ ] Implement hierarchical configuration structure
+  - [ ] Reference: src/scitex/io/_load_configs.py
 
-<!-- ``` bash
- !-- run_neurovista_pipeline() {
- !--     local fresh_start=$1
- !--     LOG_PATH="./FULL_DOWNLOAD_LOG.txt"
- !--     echo $LOG_PATH > $LOG_PATH
- !--     NV_LIBRARY="$HOME/.scitex/scholar/library/neurovista/"
- !--     
- !--     if [ "$fresh_start" = "true" ]; then
- !--         rm -rf ~/.scitex/scholar/library/*
- !--         rm -rf ~/.scitex/scholar/cache/{engine,url,download}
- !--     fi
- !--     
- !--     n_pdfs=$(tree "$NV_LIBRARY" 2>/dev/null | grep ".pdf$" | wc -l)
- !--     echo "$n_pdfs PDFs found" 2>&1 | ctee.sh -a $LOG_PATH 2>&1
- !--     
- !--     cd ~/proj/scitex_repo/src/scitex/scholar
- !--     python -m scitex.scholar \
- !--         --bibtex data/neurovista.bib \
- !--         --output data/neurovista_enriched.bib \
- !--         --project neurovista \
- !--         --browser interactive \
- !--          2>&1 | ctee.sh -a $LOG_PATH 2>&1
- !--     
- !--     python -m scitex.scholar \
- !--         --bibtex data/neurovista_enriched.bib \
- !--         --project neurovista \
- !--         --browser interactive \
- !--         --download \
- !--          2>&1 | ctee.sh -a $LOG_PATH 2>&1
- !-- 
- !--     python -m scitex.scholar \
- !--         --project neurovista \
- !--         --list
- !-- 
- !--     tree "$NV_LIBRARY"  2>&1 | ctee.sh -a $LOG_PATH 2>&1
- !--     n_pdfs=$(tree "$NV_LIBRARY" 2>/dev/null | grep ".pdf$" | wc -l)
- !--     echo "$n_pdfs PDFs found" 2>&1 | ctee.sh -a $LOG_PATH 2>&1
- !-- }
- !-- 
- !-- run_neurovista_pipeline
- !-- # run_neurovista_pipeline true
- !-- ```
- !-- 
- !-- - [ ] DOI Engines as list
- !-- 
- !--   1. Pydantic Validation Error - *_engines fields are stored as strings instead of lists:
- !--     - "doi_engines": "ScholarURLFinder" ❌
- !--     - Should be: "doi_engines": ["ScholarURLFinder"] ✅
- !-- 
- !-- 
- !-- ## Manual Mode
- !-- - [ ] Shows "Stop Automation" button on browser all the time
- !--   - [ ] Responsive visual feedback and instructions
- !-- - [ ] When the button pressed, automation stops
- !--   - [ ] On the other hand, another automation - download monitoring - starts.
- !--   - [ ] When download detected, correctly verify, move, and rename saved PDF to the library just as the automation system does. -->
+### Documentation and Examples
+- [ ] Create demonstration video/tutorial
+- [ ] Update README.md files to reflect current codebase
+- [ ] Revise and restructure ./examples for current implementation
+- [ ] Update CLI and __main__.py interfaces
+
+### Known Limitations
+- [ ] Document JCR data requirement in impact_factor module
+- [ ] Add fallback mechanisms for users without JCR access
+
+## Testing and Quality Assurance
+
+### Failure Analysis
+- [ ] Implement comprehensive failure analysis system
+- [ ] Identify unsupported journals and publishers
+- [ ] Determine which translators require improvement
+- [ ] Collect and organize screenshots/logs for debugging
+
+### Debugging Tools
+- [ ] Ensure debug mode functionality (`$ stx_set_loglevel debug`)
+- [ ] Implement step-by-step debugging for ScholarURLFinder
+- [ ] Enhance debugging output for ScholarPDFDownloader
+- [ ] Improve screenshot and terminal log collection
+
+## Zotero compatibility
+
+### Implementation Status
+- [ ] Complete Zotero translator support for major publishers
+- [ ] Develop Python port of zotero-translators (installed via `pip install -e`)
+- [ ] Translate community-maintained JavaScript translators to Python
+- [ ] Maintain compatibility with authentic community implementations
+
+### Move zotero translator into this module
+- [ ] whether to include `zotero_translator` as a keyword
+- [ ] Zotero importing/exporting for compatibility
+- [ ] Zotero database
+  - [ ] We have pure zotero library at ~/Zotero/
+  - [ ] So, we can check/implement compatibility layers
+- [ ] Positioning scholar module as "Zotero Enhancer" would collect attraction easily
+
+### SciTeX Cloud
+- [ ] Expose scitex scholar usable in web (https://scitex.ai; django; ~/proj/scitex-cloud)
 
 <!-- EOF -->

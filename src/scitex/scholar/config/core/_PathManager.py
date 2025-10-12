@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 20:52:28 (ywatanabe)"
+# Timestamp: "2025-10-13 05:03:58 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/config/core/_PathManager.py
 # ----------------------------------------
 from __future__ import annotations
@@ -60,7 +60,7 @@ PATH_STRUCTURE = {
     "library_master_paper_dir": "library/MASTER/{paper_id}",
     "library_master_paper_screenshots_dir": "library/MASTER/{paper_id}/screenshots",
     # Individual Entry
-    "library_project_entry_dirname": "PDF-{pdf_state}-CC-{citation_count:06d}_IF-{impact_factor_of_the_journal:03d}_{year:04d}_{first_author}_{journal_name}",
+    "library_project_entry_dirname": "PDF-{n_pdfs:02d}_CC-{citation_count:06d}_IF-{impact_factor:03d}_{year:04d}_{first_author}_{journal_name}",
     "library_project_entry_dir": "library/{project_name}/{entry_dir_name}",
     "library_project_entry_pdf_fname": "{first_author}-{year:04d}-{journal_name}.pdf",
     "library_project_entry_metadata_json": "library/{project_name}/{entry_dir_name}/metadata.json",
@@ -254,20 +254,32 @@ class PathManager:
     # ========================================
     def get_library_project_entry_dirname(
         self,
-        pdf_state: str,
+        n_pdfs: int,
         citation_count: int,
-        impact_factor_of_the_journal: int,
+        impact_factor: int,
         year: int,
         first_author: str,
         journal_name: str,
     ) -> str:
-        """Format entry directory name using PATH_STRUCTURE template."""
+        """Format entry directory name using PATH_STRUCTURE template.
+
+        Args:
+            n_pdfs: Number of PDF files (0, 1, 2, ...)
+            citation_count: Total citation count
+            impact_factor: Journal impact factor
+            year: Publication year
+            first_author: First author last name
+            journal_name: Journal name
+
+        Returns:
+            Formatted directory name
+        """
         first_author = self._sanitize_filename(first_author)
         journal_name = self._sanitize_filename(journal_name)
         return PATH_STRUCTURE["library_project_entry_dirname"].format(
-            pdf_state=pdf_state,
+            n_pdfs=n_pdfs,
             citation_count=citation_count,
-            impact_factor_of_the_journal=impact_factor_of_the_journal,
+            impact_factor=impact_factor,
             year=year,
             first_author=first_author,
             journal_name=journal_name,
@@ -285,25 +297,37 @@ class PathManager:
             journal_name=journal_name,
         )
 
-    def get_library_project_entry_dir(self, project: str, entry_dir_name: str) -> Path:
+    def get_library_project_entry_dir(
+        self, project: str, entry_dir_name: str
+    ) -> Path:
         """library/{project_name}/{entry_dir_name}"""
         project = self._sanitize_collection_name(project)
         path_template = PATH_STRUCTURE["library_project_entry_dir"]
-        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
+        relative_path = path_template.format(
+            project_name=project, entry_dir_name=entry_dir_name
+        )
         return self._ensure_directory(self.scholar_dir / relative_path)
 
-    def get_library_project_entry_metadata_json(self, project: str, entry_dir_name: str) -> Path:
+    def get_library_project_entry_metadata_json(
+        self, project: str, entry_dir_name: str
+    ) -> Path:
         """library/{project_name}/{entry_dir_name}/metadata.json"""
         project = self._sanitize_collection_name(project)
         path_template = PATH_STRUCTURE["library_project_entry_metadata_json"]
-        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
+        relative_path = path_template.format(
+            project_name=project, entry_dir_name=entry_dir_name
+        )
         return self.scholar_dir / relative_path
 
-    def get_library_project_entry_logs_dir(self, project: str, entry_dir_name: str) -> Path:
+    def get_library_project_entry_logs_dir(
+        self, project: str, entry_dir_name: str
+    ) -> Path:
         """library/{project_name}/{entry_dir_name}/logs"""
         project = self._sanitize_collection_name(project)
         path_template = PATH_STRUCTURE["library_project_entry_logs_dir"]
-        relative_path = path_template.format(project_name=project, entry_dir_name=entry_dir_name)
+        relative_path = path_template.format(
+            project_name=project, entry_dir_name=entry_dir_name
+        )
         return self._ensure_directory(self.scholar_dir / relative_path)
 
     # ========================================
@@ -333,21 +357,36 @@ class PathManager:
     # Helper Methods
     # ========================================
     def _sanitize_filename(self, filename: str) -> str:
-        """Sanitize filename."""
+        """Sanitize filename by replacing spaces and dots with hyphens.
+
+        This is the single source of truth for filename normalization.
+        Examples:
+            "IEEE J. Biomed. Health Inform" -> "IEEE-J-Biomed-Health-Inform"
+            "Front. Neurosci" -> "Front-Neurosci"
+            "Nature Reviews" -> "Nature-Reviews"
+        """
+        # Remove forbidden patterns first
         for pattern in self.constraints.forbidden_filename_patterns:
             filename = re.sub(pattern, "", filename)
 
-        filename = re.sub(
-            f"[^{self.constraints.allowed_filename_chars}]", "_", filename
-        )
+        # Replace spaces and dots with hyphens (normalize separators)
+        filename = filename.replace(" ", "-").replace(".", "-")
+
+        # Remove any characters not allowed (alphanumeric, dash, underscore)
+        filename = re.sub(r"[^a-zA-Z0-9._-]", "", filename)
+
+        # Collapse multiple hyphens/underscores into single ones
+        filename = re.sub(r"-{2,}", "-", filename)
         filename = re.sub(r"_{2,}", "_", filename)
 
+        # Truncate if too long
         if len(filename) > self.constraints.max_filename_length:
             name, ext = os.path.splitext(filename)
             max_name_len = self.constraints.max_filename_length - len(ext)
             filename = name[:max_name_len] + ext
 
-        filename = filename.strip("._")
+        # Strip leading/trailing separators
+        filename = filename.strip("._-")
 
         if not filename:
             filename = f"unnamed_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
