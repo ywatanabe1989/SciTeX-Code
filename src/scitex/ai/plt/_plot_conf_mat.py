@@ -189,14 +189,13 @@ def plot_conf_mat(
         assert set(sorted_labels) == set(labels)
         cm = cm.reindex(index=sorted_labels, columns=sorted_labels)
 
-    # NOTE: Using matplotlib.pyplot.subplots() directly instead of stx.plt.subplots()
-    # because make_axes_locatable() has compatibility issues with AxisWrapper
-    # See: scitex/plt/KNOWN_ISSUES.md
+    # Use stx.plt.subplots() for CSV export functionality
+    # The AxisWrapper provides export_as_csv method for automatic data export
     import matplotlib.pyplot as mpl_plt
     import scitex as stx
 
     if ax is None:
-        fig, ax = mpl_plt.subplots()
+        fig, ax = stx.plt.subplots()
     else:
         fig = ax.get_figure()
     res = sns.heatmap(
@@ -242,14 +241,18 @@ def plot_conf_mat(
     dx = width_orig - width_tgt
 
     if colorbar:
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.1)
-        cax = scitex.plt.ax.shift(cax, dx=-dx * 2.54, dy=0)
-        fig.add_axes(cax)
+        # Extract underlying matplotlib axes if wrapped by SciTeX
+        ax_mpl = ax._axis_mpl if hasattr(ax, '_axis_mpl') else ax
+
+        divider = make_axes_locatable(ax_mpl)
+        cax = divider.append_axes("right", size="5%", pad=0.15)
+
+        # Get the underlying figure
+        fig_mpl = fig._fig_mpl if hasattr(fig, '_fig_mpl') else fig
 
         vmax = np.array(cm).max().astype(int)
         norm = matplotlib.colors.Normalize(vmin=0, vmax=vmax)
-        cbar = fig.colorbar(
+        cbar = fig_mpl.colorbar(
             matplotlib.cm.ScalarMappable(norm=norm, cmap="Blues"),
             cax=cax,
         )

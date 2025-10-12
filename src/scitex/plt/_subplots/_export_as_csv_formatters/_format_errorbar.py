@@ -12,6 +12,25 @@ import numpy as np
 import pandas as pd
 import scitex
 
+def _make_column_name(id, suffix):
+    """Create column name, avoiding duplication if method name is already in id.
+
+    For example:
+    - id="errorbar_0", suffix="x" -> "errorbar_0_x"
+    - id="errorbar_0", suffix="errorbar_x" -> "errorbar_0_x" (not errorbar_0_errorbar_x)
+    """
+    # Extract method name from suffix if present
+    parts = suffix.split('_')
+    # Get the method name from id (everything before the last underscore+number)
+    id_parts = id.rsplit('_', 1)
+    if len(id_parts) == 2:
+        method_from_id = id_parts[0]
+        # If suffix starts with the same method name, remove it
+        if parts[0] == method_from_id.split('_')[-1]:
+            suffix = '_'.join(parts[1:])
+
+    return f"{id}_{suffix}"
+
 def _format_errorbar(id, tracked_dict, kwargs):
     """Format data from an errorbar call."""
     # Check if tracked_dict is empty or not a dictionary
@@ -33,25 +52,25 @@ def _format_errorbar(id, tracked_dict, kwargs):
             try:
                 import scitex.pd
 
-                data = {f"{id}_errorbar_x": x, f"{id}_errorbar_y": y}
+                data = {_make_column_name(id, "x"): x, _make_column_name(id, "y"): y}
 
                 if xerr is not None:
                     if isinstance(xerr, (list, tuple)) and len(xerr) == 2:
                         # Asymmetric error
-                        data[f"{id}_errorbar_xerr_neg"] = xerr[0]
-                        data[f"{id}_errorbar_xerr_pos"] = xerr[1]
+                        data[_make_column_name(id, "xerr_neg")] = xerr[0]
+                        data[_make_column_name(id, "xerr_pos")] = xerr[1]
                     else:
                         # Symmetric error
-                        data[f"{id}_errorbar_xerr"] = xerr
+                        data[_make_column_name(id, "xerr")] = xerr
 
                 if yerr is not None:
                     if isinstance(yerr, (list, tuple)) and len(yerr) == 2:
                         # Asymmetric error
-                        data[f"{id}_errorbar_yerr_neg"] = yerr[0]
-                        data[f"{id}_errorbar_yerr_pos"] = yerr[1]
+                        data[_make_column_name(id, "yerr_neg")] = yerr[0]
+                        data[_make_column_name(id, "yerr_pos")] = yerr[1]
                     else:
                         # Symmetric error
-                        data[f"{id}_errorbar_yerr"] = yerr
+                        data[_make_column_name(id, "yerr")] = yerr
 
                 # Use scitex.pd.force_df to handle different length arrays
                 df = scitex.pd.force_df(data)
@@ -88,29 +107,29 @@ def _format_errorbar(id, tracked_dict, kwargs):
                 y_padded = pad_to_length(y, max_len)
 
                 data = {
-                    f"{id}_errorbar_x": x_padded,
-                    f"{id}_errorbar_y": y_padded,
+                    _make_column_name(id, "x"): x_padded,
+                    _make_column_name(id, "y"): y_padded,
                 }
 
                 if xerr is not None:
                     if isinstance(xerr, (list, tuple)) and len(xerr) == 2:
                         xerr_neg_padded = pad_to_length(xerr[0], max_len)
                         xerr_pos_padded = pad_to_length(xerr[1], max_len)
-                        data[f"{id}_errorbar_xerr_neg"] = xerr_neg_padded
-                        data[f"{id}_errorbar_xerr_pos"] = xerr_pos_padded
+                        data[_make_column_name(id, "xerr_neg")] = xerr_neg_padded
+                        data[_make_column_name(id, "xerr_pos")] = xerr_pos_padded
                     else:
                         xerr_padded = pad_to_length(xerr, max_len)
-                        data[f"{id}_errorbar_xerr"] = xerr_padded
+                        data[_make_column_name(id, "xerr")] = xerr_padded
 
                 if yerr is not None:
                     if isinstance(yerr, (list, tuple)) and len(yerr) == 2:
                         yerr_neg_padded = pad_to_length(yerr[0], max_len)
                         yerr_pos_padded = pad_to_length(yerr[1], max_len)
-                        data[f"{id}_errorbar_yerr_neg"] = yerr_neg_padded
-                        data[f"{id}_errorbar_yerr_pos"] = yerr_pos_padded
+                        data[_make_column_name(id, "yerr_neg")] = yerr_neg_padded
+                        data[_make_column_name(id, "yerr_pos")] = yerr_pos_padded
                     else:
                         yerr_padded = pad_to_length(yerr, max_len)
-                        data[f"{id}_errorbar_yerr"] = yerr_padded
+                        data[_make_column_name(id, "yerr")] = yerr_padded
 
                 return pd.DataFrame(data)
         except Exception as e:

@@ -1002,7 +1002,15 @@ class MatplotlibPlotMixin:
 
         # Track image data
         if len(args) >= 1:
-            tracked_dict = {"imshow_df": pd.DataFrame(args[0])}
+            # Create DataFrame with unique column names to avoid duplicates
+            img_data = args[0]
+            if hasattr(img_data, 'shape') and len(img_data.shape) == 2:
+                n_rows, n_cols = img_data.shape
+                # Use column names like "col_0", "col_1", etc. instead of just integers
+                df = pd.DataFrame(img_data, columns=[f"col_{i}" for i in range(n_cols)])
+            else:
+                df = pd.DataFrame(args[0])
+            tracked_dict = {"imshow_df": df}
             self._track(track, id, method_name, tracked_dict, None)
 
         return result

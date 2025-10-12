@@ -406,6 +406,7 @@ def save(
             spath_final,
             verbose=verbose,
             symlink_from_cwd=symlink_from_cwd,
+            symlink_to=symlink_to,
             dry_run=dry_run,
             no_csv=no_csv,
             **kwargs,
@@ -470,6 +471,7 @@ def _save(
     symlink_from_cwd=False,
     dry_run=False,
     no_csv=False,
+    symlink_to=None,
     **kwargs,
 ):
     # Don't use object's own save method - use consistent handlers
@@ -482,12 +484,13 @@ def _save(
     # Try dispatch dictionary first for O(1) lookup
     if ext in _FILE_HANDLERS:
         # Check if handler needs special parameters
-        if ext in [".png", ".jpg", ".jpeg", ".gif", ".tiff", ".tif", ".svc"]:
+        if ext in [".png", ".jpg", ".jpeg", ".gif", ".tiff", ".tif", ".svg", ".pdf"]:
             _FILE_HANDLERS[ext](
                 obj,
                 spath,
                 no_csv=no_csv,
                 symlink_from_cwd=symlink_from_cwd,
+                symlink_to=symlink_to,
                 dry_run=dry_run,
                 **kwargs,
             )
@@ -595,7 +598,7 @@ def _save_separate_legends(
 
 
 def _handle_image_with_csv(
-    obj, spath, no_csv=False, symlink_from_cwd=False, dry_run=False, **kwargs
+    obj, spath, no_csv=False, symlink_from_cwd=False, dry_run=False, symlink_to=None, **kwargs
 ):
     """Handle image file saving with optional CSV export."""
     if dry_run:
@@ -631,6 +634,7 @@ def _handle_image_with_csv(
                         # Ensure parent directory exists (should already exist from image save)
                         _os.makedirs(_os.path.dirname(csv_path), exist_ok=True)
                         # Save directly using _save to avoid path doubling
+                        # Don't pass image-specific kwargs to CSV save
                         _save(
                             csv_data,
                             csv_path,
@@ -638,8 +642,13 @@ def _handle_image_with_csv(
                             symlink_from_cwd=False,  # Will handle symlink manually
                             dry_run=dry_run,
                             no_csv=True,
-                            **kwargs,
                         )
+
+                        # Create symlink_to for CSV if it was specified for the image
+                        if symlink_to:
+                            csv_symlink_to = _os.path.splitext(symlink_to)[0] + ".csv"
+                            _symlink_to(csv_path, csv_symlink_to, True)
+
                         # Create symlink for CSV manually if needed
                         if symlink_from_cwd:
                             # Get the relative path from the original specified path
@@ -684,6 +693,7 @@ def _handle_image_with_csv(
                             ext_wo_dot, "csv"
                         ).replace(".csv", "_for_sigmaplot.csv")
                         # Save directly using _save to avoid path doubling
+                        # Don't pass image-specific kwargs to CSV save
                         _save(
                             sigmaplot_data,
                             csv_sigmaplot_path,
@@ -691,8 +701,13 @@ def _handle_image_with_csv(
                             symlink_from_cwd=False,  # Will handle symlink manually
                             dry_run=dry_run,
                             no_csv=True,
-                            **kwargs,
                         )
+
+                        # Create symlink_to for SigmaPlot CSV if it was specified for the image
+                        if symlink_to:
+                            csv_sigmaplot_symlink_to = _os.path.splitext(symlink_to)[0] + "_for_sigmaplot.csv"
+                            _symlink_to(csv_sigmaplot_path, csv_sigmaplot_symlink_to, True)
+
                         # Create symlink for SigmaPlot CSV manually if needed
                         if symlink_from_cwd:
                             csv_cwd = (

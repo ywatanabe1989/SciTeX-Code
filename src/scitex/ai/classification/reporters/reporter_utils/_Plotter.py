@@ -778,48 +778,30 @@ class Plotter:
             return None
 
         try:
-            # Extract importance values
+            # Extract importance values if wrapped in dict
             if isinstance(feature_importance, dict):
                 importance = feature_importance.get('importance', feature_importance.get('value'))
                 if importance is None:
-                    return None
+                    importance = feature_importance  # Assume dict is {feature: importance}
             else:
                 importance = feature_importance
 
-            importance = np.array(importance)
+            # Delegate to centralized plotting function
+            from scitex.ml.plt import plot_feature_importance as plot_fi
 
-            # Create feature names if not provided
-            if feature_names is None:
-                feature_names = [f'Feature {i}' for i in range(len(importance))]
-
-            # Sort by importance
-            indices = np.argsort(importance)[::-1][:top_n]
-            sorted_importance = importance[indices]
-            sorted_names = [feature_names[i] for i in indices]
-
-            # Create horizontal bar plot
-            fig, ax = plt.subplots(figsize=(10, max(6, top_n * 0.3)))
-            y_pos = np.arange(len(sorted_names))
-
-            ax.barh(y_pos, sorted_importance, align='center', alpha=0.7, color='steelblue')
-            ax.set_yticks(y_pos)
-            ax.set_yticklabels(sorted_names)
-            ax.invert_yaxis()  # Top feature at top
-            ax.set_xlabel('Importance')
-            ax.set_title(title)
-            ax.grid(True, alpha=0.3, axis='x')
-
-            plt.tight_layout()
-
-            if save_path:
-                from scitex.io import save as stx_io_save
-                stx_io_save(fig, save_path, verbose=verbose or self.verbose, use_caller_path=False)
-
-            plt.close(fig)
+            fig = plot_fi(
+                importance=importance,
+                feature_names=feature_names,
+                top_n=top_n,
+                title=title,
+                spath=save_path,
+            )
             return fig
 
         except Exception as e:
             warnings.warn(f"Failed to create feature importance plot: {e}", UserWarning)
+            import traceback
+            traceback.print_exc()
             return None
 
     def create_cv_aggregation_plot(
