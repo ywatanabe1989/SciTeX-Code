@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-07-31 22:34:29 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/browser/remote/__init__.py
-# ----------------------------------------
-from __future__ import annotations
-import os
-__FILE__ = __file__
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
-# Remote browser managers for ZenRows services
+"""
+Remote Browser Services
 
-from ._ZenRowsRemoteScholarBrowserManager import ZenRowsRemoteScholarBrowserManager
+This module contains components for working with remote browser services
+and third-party browser automation platforms.
+"""
 
-__all__ = ["ZenRowsRemoteScholarBrowserManager"]
+from .CaptchaHandler import CaptchaHandler
+from .ZenRowsProxyManager import ZenRowsProxyManager
+from .ZenRowsBrowserManager import ZenRowsBrowserManager
+
+__all__ = [
+    "CaptchaHandler",
+    "ZenRowsProxyManager",
+    "ZenRowsBrowserManager",
+]
 
 # EOF

@@ -2,7 +2,7 @@
 name: TestDeveloperAgent
 description: MUST BE USED. Creates specification-based, meaningful tests. No responsibilities on running tests.
 color: blue
-model: opus
+model: sonnet
 ---
 
 ## Roles:

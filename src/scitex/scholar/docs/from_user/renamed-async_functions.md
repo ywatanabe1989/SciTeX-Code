@@ -394,7 +394,7 @@ File: auth/BrowserUtils.py
   72   5     async def reliable_click_async(page: Page, selector: str) -> bool:
  109   5     async def wait_for_element_async(page: Page, selector: str, timeout: int = 5000) -> bool:
 
-File: auth/_LockManager.py
+File: auth/_AuthLockManager.py
   53   5     async def acquire_lock_async(self) -> bool:
   80   5     async def release_lock_async(self) -> None:
  107   5     async def _try_acquire_lock_async(self) -> bool:

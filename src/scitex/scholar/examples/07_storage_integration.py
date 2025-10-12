@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-22 15:22:00 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/examples/07_storage_integration.py
+# Timestamp: "2025-10-07 09:55:15 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/examples/07_storage_integration.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/examples/07_storage_integration.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 Functionalities:
@@ -34,7 +38,6 @@ Output:
 """Imports"""
 import argparse
 import asyncio
-from pprint import pprint
 
 import scitex as stx
 
@@ -45,131 +48,141 @@ import scitex as stx
 """Functions & Classes"""
 async def demonstrate_paper_storage() -> None:
     """Demonstrate individual Paper storage capabilities."""
-    from scitex.scholar.core import Paper
-    from scitex.scholar.config import ScholarConfig
-    
-    config = ScholarConfig()
-    
+    from pathlib import Path
+
+    from scitex.scholar.core.Paper import Paper
+    from scitex.scholar.storage import ScholarLibrary
+
     print("=== Paper Storage Demo ===")
-    
-    # Create a sample paper
-    paper = Paper(
-        title="Enhanced Storage Integration for Scientific Literature Management",
-        authors=["Claude AI", "SciTeX Team"],
-        journal="Nature AI Research", 
-        year=2025,
-        doi="10.1038/nature.ai.2025.001",
-        abstract="This paper demonstrates enhanced storage integration capabilities for scientific literature management systems.",
-        project="storage_demo",
-        config=config
+
+    # Create a sample paper with Pydantic structure
+    paper = Paper()
+    paper.metadata.basic.title = (
+        "Enhanced Storage Integration for Scientific Literature Management"
     )
-    
-    print(f"Created paper: {paper}")
-    
-    # Save to library
-    library_id = paper.save_to_library()
-    print(f"Saved to library with ID: {library_id}")
-    
-    # Create another paper and load from library
-    paper2 = Paper.from_library(library_id, config)
-    print(f"Loaded from library: {paper2}")
-    
+    paper.metadata.basic.authors = ["Claude AI", "SciTeX Team"]
+    paper.metadata.basic.year = 2025
+    paper.metadata.basic.abstract = "This paper demonstrates enhanced storage integration capabilities for scientific literature management systems."
+    paper.metadata.publication.journal = "Nature AI Research"
+    paper.metadata.publication.impact_factor = 42.778
+    paper.metadata.citation_count.total = 1234
+    paper.metadata.set_doi(
+        "10.1038/nature.ai.2025.001"
+    )  # Auto-syncs DOI and URL
+    paper.container.projects = ["storage_demo"]
+
+    print(f"Created paper with title: {paper.metadata.basic.title}")
+    print(f"DOI: {paper.metadata.id.doi}")
+    print(f"DOI URL (auto-synced): {paper.metadata.url.doi}")
+    print(f"Impact Factor: {paper.metadata.publication.impact_factor}")
+    print(f"Citation Count: {paper.metadata.citation_count.total}")
+
+    # Save to library using project name
+    library = ScholarLibrary(project="storage_demo")
+    library_id = library.save_paper(paper=paper)
+    print(f"✓ Saved to library with ID: {library_id}")
+
+    # Verify saved location
+    master_dir = Path.home() / ".scitex/scholar/library/MASTER" / library_id
+    if master_dir.exists():
+        print(f"✓ Paper stored at: {master_dir}")
+        metadata_file = master_dir / "metadata.json"
+        if metadata_file.exists():
+            print(f"✓ Metadata file exists: {metadata_file}")
+
     print()
 
 
 async def demonstrate_papers_collection() -> None:
     """Demonstrate Papers collection project management."""
-    from scitex.scholar.core import Paper, Papers
-    from scitex.scholar.config import ScholarConfig
-    
-    config = ScholarConfig()
+    from pathlib import Path
+
+    from scitex.scholar.core.Paper import Paper
+    from scitex.scholar.core.Papers import Papers
+    from scitex.scholar.storage import ScholarLibrary
+
     project = "storage_demo"
-    
+
     print("=== Papers Collection Demo ===")
-    
-    # Create a collection of papers
-    papers_data = [
-        {
-            "title": "Deep Learning for Scientific Literature Analysis",
-            "authors": ["Alice Researcher", "Bob Scholar"],
-            "journal": "AI Journal",
-            "year": 2024,
-            "doi": "10.1000/ai.2024.001"
-        },
-        {
-            "title": "Automated PDF Processing with Machine Learning",
-            "authors": ["Charlie Data", "Diana Code"],
-            "journal": "Data Science Review",
-            "year": 2024,
-            "doi": "10.1000/ds.2024.002"
-        },
-        {
-            "title": "Metadata Enrichment for Academic Papers",
-            "authors": ["Eve Meta", "Frank Info"],
-            "journal": "Information Systems",
-            "year": 2025,
-            "doi": "10.1000/is.2025.001"
-        }
-    ]
-    
-    papers_list = [
-        Paper(project=project, config=config, **data) 
-        for data in papers_data
-    ]
-    
-    collection = Papers(papers_list, project=project, config=config)
+
+    # Create a collection of papers using Pydantic structure
+    papers_list = []
+
+    # Paper 1
+    p1 = Paper()
+    p1.metadata.basic.title = (
+        "Deep Learning for Scientific Literature Analysis"
+    )
+    p1.metadata.basic.authors = ["Alice Researcher", "Bob Scholar"]
+    p1.metadata.basic.year = 2024
+    p1.metadata.publication.journal = "AI Journal"
+    p1.metadata.set_doi("10.1000/ai.2024.001")
+    p1.container.projects = [project]
+    papers_list.append(p1)
+
+    # Paper 2
+    p2 = Paper()
+    p2.metadata.basic.title = "Automated PDF Processing with Machine Learning"
+    p2.metadata.basic.authors = ["Charlie Data", "Diana Code"]
+    p2.metadata.basic.year = 2024
+    p2.metadata.publication.journal = "Data Science Review"
+    p2.metadata.set_doi("10.1000/ds.2024.002")
+    p2.container.projects = [project]
+    papers_list.append(p2)
+
+    # Paper 3
+    p3 = Paper()
+    p3.metadata.basic.title = "Metadata Enrichment for Academic Papers"
+    p3.metadata.basic.authors = ["Eve Meta", "Frank Info"]
+    p3.metadata.basic.year = 2025
+    p3.metadata.publication.journal = "Information Systems"
+    p3.metadata.set_doi("10.1000/is.2025.001")
+    p3.container.projects = [project]
+    papers_list.append(p3)
+
+    collection = Papers(papers_list)
     print(f"Created collection with {len(collection)} papers")
-    
-    # Save to library
-    save_results = collection.save_to_library()
-    print(f"Library save results: {save_results}")
-    
-    # Get project statistics
-    stats = collection.get_project_statistics()
-    print("Project statistics:")
-    pprint(stats)
-    
-    # Create project symlinks
-    symlink_results = collection.create_project_symlinks()
-    print(f"Symlink creation results: {symlink_results}")
-    
-    # Sync with library
-    sync_results = collection.sync_with_library()
-    print(f"Library sync results: {sync_results}")
-    
+
+    # Save to library - using Path is also supported
+    library_dir = Path.home() / ".scitex/scholar/library"
+    library = ScholarLibrary(library_dir)
+    saved_ids = []
+    for paper in collection:
+        library_id = library.save_paper(paper=paper)
+        saved_ids.append(library_id)
+
+    print(f"Saved {len(saved_ids)} papers to library")
+
     print()
 
 
 async def demonstrate_scholar_global() -> None:
     """Demonstrate Scholar global library management."""
-    from scitex.scholar.core import Scholar
-    
+    from pathlib import Path
+
     print("=== Scholar Global Management Demo ===")
-    
-    scholar = Scholar(project="storage_demo")
-    
-    # Create a new project
-    new_project_dir = scholar.create_project(
-        "test_project", 
-        description="Test project for storage integration demo"
-    )
-    print(f"Created project at: {new_project_dir}")
-    
-    # List all projects
-    projects = scholar.list_projects()
-    print("Available projects:")
-    for project in projects:
-        print(f"  - {project['name']}: {project.get('description', 'No description')}")
-    
-    # Get library statistics
-    library_stats = scholar.get_library_statistics()
-    print("Library statistics:")
-    pprint(library_stats)
-    
-    # Search across projects
-    search_results = scholar.search_across_projects("learning")
-    print(f"Search results for 'learning': {len(search_results)} papers found")
-    
+
+    library_dir = Path.home() / ".scitex/scholar/library"
+
+    # List projects by checking library directory structure
+    if library_dir.exists():
+        projects = [
+            d
+            for d in library_dir.iterdir()
+            if d.is_dir() and d.name != "MASTER" and not d.name.startswith(".")
+        ]
+        print(f"Available projects ({len(projects)}):")
+        for project in projects:
+            # Count symlinks in each project
+            symlinks = [f for f in project.iterdir() if f.is_symlink()]
+            print(f"  - {project.name}: {len(symlinks)} papers")
+
+    # Count papers in MASTER storage
+    master_dir = library_dir / "MASTER"
+    if master_dir.exists():
+        paper_count = len([d for d in master_dir.iterdir() if d.is_dir()])
+        print(f"\n✓ Total papers in MASTER storage: {paper_count}")
+
     print()
 
 
@@ -177,15 +190,15 @@ async def main_async(args) -> bool:
     """Main async function for storage integration demo."""
     print("🗄️  Scholar Storage Integration Demo")
     print("=" * 50)
-    
+
     try:
         await demonstrate_paper_storage()
         await demonstrate_papers_collection()
         await demonstrate_scholar_global()
-        
+
         print("✅ Storage integration demo completed successfully")
         return True
-        
+
     except Exception as e:
         print(f"❌ Demo failed: {e}")
         return False
@@ -217,7 +230,7 @@ def run_main() -> None:
 
     args = parse_args()
 
-    CONFIG, sys.stdout, sys.stderr, plt, CC = stx.session.start(
+    CONFIG, sys.stdout, sys.stderr, plt, CC, rng = stx.session.start(
         sys,
         plt,
         args=args,

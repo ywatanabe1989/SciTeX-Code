@@ -11,9 +11,6 @@ __DIR__ = os.path.dirname(__FILE__)
 
 """Modular logging utilities for SciTeX.
 
-⚠️  DEPRECATED: This module is deprecated. Use `scitex.logging` instead.
-    The `scitex.logging` module will be removed in a future version.
-
 This module provides enhanced logging capabilities with both console and file output,
 ensuring consistent logging across the SciTeX package.
 
@@ -51,6 +48,7 @@ warnings.warn(
 
 import logging as _logging
 
+from ._Tee import Tee, tee
 # Import modular components
 from ._levels import SUCCESS, FAIL, DEBUG, INFO, WARNING, ERROR, CRITICAL
 from ._logger import SciTeXLogger, setup_logger_class
@@ -70,14 +68,32 @@ from ._print_capture import (
     disable_print_capture,
     is_print_capture_enabled
 )
+from ._context import log_to_file
 
 # Re-export standard logging functions for compatibility
 getLogger = _logging.getLogger
 basicConfig = _logging.basicConfig
 disable = _logging.disable
 
+level_by_env = os.getenv("SCITEX_LOGGING_LEVEL", "INFO").upper()
+level_map = {
+    "DEBU": DEBUG,
+    "DEBUG": DEBUG,
+    "INFO": INFO,
+    "WARN": WARNING,
+    "WARNING": WARNING,
+    "ERRO": ERROR,
+    "ERROR": ERROR,
+    "CRIT": CRITICAL,
+    "CRITICAL": CRITICAL,
+    "SUCC": SUCCESS,
+    "SUCCESS": SUCCESS,
+    "FAIL": FAIL,
+}
+level = level_map.get(level_by_env, INFO)
+
 # Auto-configure logging on import with file logging enabled, print capture disabled by default
-configure(level=INFO, enable_file=True, enable_console=True, capture_prints=False)
+configure(level=level, enable_file=True, enable_console=True, capture_prints=False)
 
 # Export only essential public functions - minimal API
 __all__ = [
@@ -96,6 +112,11 @@ __all__ = [
     # Configuration (minimal set)
     'configure',
     'get_log_path',
+    'Tee',
+    'tee',
+
+    # Context managers
+    'log_to_file',
 ]
 
 # EOF

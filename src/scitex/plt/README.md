@@ -1643,7 +1643,7 @@ This represents the **complete automation of scientific workflow** from experime
 ---
 
 ## Contact
-Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 **SciTeX Ecosystem**: Revolutionizing scientific computing for the AI age 🚀
 

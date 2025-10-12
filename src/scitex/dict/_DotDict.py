@@ -251,6 +251,60 @@ class DotDict:
         # Return a sorted list of the combined unique names
         return sorted(list(standard_attrs.union(data_keys)))
 
+    # --- Comparison Methods ---
+
+    def __eq__(self, other):
+        """Check equality. Supports comparison with dict, DotDict, and scalar values."""
+        if isinstance(other, DotDict):
+            return self._data == other._data
+        elif isinstance(other, dict):
+            return self._data == other
+        else:
+            # For scalar comparison, compare against empty/falsy
+            return False
+
+    def __ne__(self, other):
+        """Check inequality."""
+        return not self.__eq__(other)
+
+    def __lt__(self, other):
+        """Less than comparison - delegate to _data or handle scalars."""
+        if isinstance(other, (int, float)):
+            # If comparing to scalar, treat empty as 0
+            if len(self._data) == 0:
+                return 0 < other
+            # If single numeric value in total field, use it
+            if "total" in self._data and isinstance(self._data["total"], (int, float)):
+                return self._data["total"] < other
+            # Otherwise not comparable
+            return NotImplemented
+        return NotImplemented
+
+    def __le__(self, other):
+        """Less than or equal."""
+        return self.__lt__(other) or self.__eq__(other)
+
+    def __gt__(self, other):
+        """Greater than comparison - delegate to _data or handle scalars."""
+        if isinstance(other, (int, float)):
+            # If comparing to scalar, treat empty as 0
+            if len(self._data) == 0:
+                return 0 > other
+            # If single numeric value in total field, use it
+            if "total" in self._data and isinstance(self._data["total"], (int, float)):
+                return self._data["total"] > other
+            # Otherwise not comparable
+            return NotImplemented
+        return NotImplemented
+
+    def __ge__(self, other):
+        """Greater than or equal."""
+        return self.__gt__(other) or self.__eq__(other)
+
+    def __bool__(self):
+        """Truth value testing. Empty DotDict is False, non-empty is True."""
+        return len(self._data) > 0
+
 
 # Example Usage:
 if __name__ == "__main__":

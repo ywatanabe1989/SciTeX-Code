@@ -434,7 +434,7 @@ class LibraryCacheManager:
     #         readable_name = self._generate_readable_name(
     #             authors, year, journal
     #         )
-    #         project_dir = self.config.path_manager.get_library_dir(
+    #         project_dir = self.config.path_manager.get_library_project_dir(
     #             self.project
     #         )
     #         symlink_path = project_dir / readable_name
@@ -476,7 +476,7 @@ class LibraryCacheManager:
             readable_name = self._generate_readable_name(
                 authors, year, journal
             )
-            project_dir = self.config.path_manager.get_library_dir(
+            project_dir = self.config.path_manager.get_library_project_dir(
                 self.project
             )
             symlink_path = project_dir / readable_name
@@ -562,7 +562,7 @@ class LibraryCacheManager:
         """
         try:
             collection_name = project_name or self.project
-            collection_dir = self.config.path_manager.get_library_dir(
+            collection_dir = self.config.path_manager.get_library_project_dir(
                 collection_name
             )
 
@@ -636,7 +636,7 @@ class LibraryCacheManager:
         """
         try:
             collection_name = project_name or self.project
-            collection_dir = self.config.get_library_info_dir(collection_name)
+            collection_dir = self.config.get_library_project_info_dir(collection_name)
 
             # Copy BibTeX file to collection directory
             bibtex_source = Path(bibtex_path)

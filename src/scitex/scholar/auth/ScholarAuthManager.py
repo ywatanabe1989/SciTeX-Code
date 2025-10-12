@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-21 14:28:44 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/auth/ScholarAuthManager.py
+# Timestamp: "2025-10-10 00:48:00 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/auth/ScholarAuthManager.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/scholar/auth/ScholarAuthManager.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 """
 Authentication manager for coordinating multiple authentication providers.
@@ -23,10 +27,10 @@ from scitex import logging
 from scitex.errors import AuthenticationError
 from scitex.scholar.config import ScholarConfig
 
-from .library._BaseAuthenticator import BaseAuthenticator
-from .library._EZProxyAuthenticator import EZProxyAuthenticator
-from .library._OpenAthensAuthenticator import OpenAthensAuthenticator
-from .library._ShibbolethAuthenticator import ShibbolethAuthenticator
+from .providers.BaseAuthenticator import BaseAuthenticator
+from .providers.EZProxyAuthenticator import EZProxyAuthenticator
+from .providers.OpenAthensAuthenticator import OpenAthensAuthenticator
+from .providers.ShibbolethAuthenticator import ShibbolethAuthenticator
 
 logger = logging.getLogger(__name__)
 
@@ -61,13 +65,15 @@ class ScholarAuthManager:
             config: ScholarConfig instance (creates new if None)
         """
         # Initialize config
+        self.name = self.__class__.__name__
         self.config = config or ScholarConfig()
         self.auth_session = None
         self.providers: Dict[str, BaseAuthenticator] = {}
         self.active_provider: Optional[str] = None
 
         if not any([email_openathens, email_ezproxy, email_shibboleth]):
-            logger.warn(
+            logger.warning(
+                f"{self.name}: "
                 "No authentication provider configured. "
                 "Set SCITEX_SCHOLAR_OPENATHENS_EMAIL or other provider email."
             )
@@ -118,7 +124,7 @@ class ScholarAuthManager:
                     self.active_provider = name
                     return True
 
-        logger.debug("Not authenticate_async.")
+        logger.debug(f"{self.name}: Not authenticate_async.")
         return False
 
     async def authenticate_async(
@@ -140,7 +146,9 @@ class ScholarAuthManager:
         if self.auth_session and provider_name:
             self.active_provider = provider_name
 
-        logger.success(f"Authentication succeeded by {provider_name}.")
+        logger.success(
+            f"{self.name}: Authentication succeeded by {provider_name}."
+        )
 
         return self.auth_session
 
@@ -216,7 +224,7 @@ class ScholarAuthManager:
         ]
 
         logger.debug(
-            f"Filtered to {len(filtered_cookies)} essential cookies for {self.active_provider}"
+            f"{self.name}: Filtered to {len(filtered_cookies)} essential cookies for {self.active_provider}"
         )
         return filtered_cookies
 
@@ -231,7 +239,9 @@ class ScholarAuthManager:
         self.providers[name] = provider
         if not self.active_provider:
             self.active_provider = name
-        logger.debug(f"Registered authentication provider: {name}")
+        logger.debug(
+            f"{self.name}: Registered authentication provider: {name}"
+        )
 
     def set_active_provider(self, name: str) -> None:
         """Set the active authentication provider."""
@@ -241,7 +251,9 @@ class ScholarAuthManager:
                 f"Available providers: {list(self.providers.keys())}"
             )
         self.active_provider = name
-        logger.debug(f"Set active authentication provider: {name}")
+        logger.debug(
+            f"{self.name}: Set active authentication provider: {name}"
+        )
 
     def get_active_provider(self) -> Optional[BaseAuthenticator]:
         """Get the currently active provider."""
@@ -257,9 +269,11 @@ class ScholarAuthManager:
         for provider in self.providers.values():
             try:
                 await provider.logout_async()
-                logger.success(f"Logged out from {provider}")
+                logger.success(f"{self.name}: Logged out from {provider}")
             except Exception as e:
-                logger.warn(f"Error logging out from {provider}: {e}")
+                logger.warning(
+                    f"{self.name}: Error logging out from {provider}: {e}"
+                )
 
         self.active_provider = None
         self.auth_session = None

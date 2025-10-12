@@ -207,7 +207,7 @@ __all__ = [
 # #     compatibility_map = {
 # #         'search_sync': 'search',
 # #         'build_index': 'Scholar()._index_local_pdfs',
-# #         'get_scholar_dir': 'Scholar().workspace_dir',
+# #         'get_scholar_dir': 'Scholar().get_workspace_dir()',
 # #         'LocalSearchEngine': 'Scholar',
 # #         'VectorSearchEngine': 'Scholar',
 # #         'ScholarPDFDownloader': 'Scholar',

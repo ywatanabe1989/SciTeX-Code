@@ -142,6 +142,6 @@ Contributions to improve `scitex.dsp` are welcome. Please submit pull requests o
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
-Yusuke Watanabe (ywata1989@gmail.com)
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 For more information and updates, please visit the [scitex GitHub repository](https://github.com/ywatanabe1989/scitex).

@@ -56,12 +56,12 @@ def demonstrate_basic_paths(config) -> None:
     print("=== Basic Directory Paths ===")
     print(f"Scholar base directory: {config.paths.scholar_dir}")
     print(f"Cache directory: {config.get_cache_file('example', 'search')}")
-    print(f"Auth cache: {config.get_auth_cache_dir()}")
-    print(f"Chrome cache (system): {config.get_chrome_cache_dir('system')}")
-    print(f"Downloads: {config.get_downloads_dir()}")
-    print(f"Screenshots: {config.get_screenshots_dir()}")
+    print(f"Auth cache: {config.get_cache_auth_dir()}")
+    print(f"Chrome cache (system): {config.get_cache_chrome_dir('system')}")
+    print(f"Downloads: {config.get_library_downloads_dir()}")
+    print(f"Screenshots: {config.get_workspace_screenshots_dir()}")
     print(
-        f"Screenshots (category): {config.get_screenshots_dir('test_category')}"
+        f"Screenshots (category): {config.get_workspace_screenshots_dir('test_category')}"
     )
     print()
 
@@ -75,8 +75,8 @@ def demonstrate_library_system(config) -> None:
         Configuration instance
     """
     print("=== Library System ===")
-    print(f"Library base: {config.get_library_dir()}")
-    print(f"Project library: {config.get_library_dir('my_project')}")
+    print(f"Library base: {config.get_library_project_dir()}")
+    print(f"Project library: {config.get_library_project_dir('my_project')}")
     print(f"Master storage: {config.get_library_master_dir()}")
 
     storage_path, readable_name, paper_id = (
@@ -161,13 +161,13 @@ def demonstrate_advanced_features(config) -> None:
     progress_file = config.paths.get_doi_resolution_progress_path()
     print(f"Auto-generated progress file: {progress_file}")
 
-    bibtex_dir = config.get_project_bibtex_dir("example_project")
+    bibtex_dir = config.get_library_project_info_bibtex_dir("example_project")
     print(f"Project BibTeX directory: {bibtex_dir}")
 
     unresolved_dir = config.get_unresolved_entries_dir("example_project")
     print(f"Unresolved entries: {unresolved_dir}")
 
-    logs_dir = config.get_project_logs_dir("example_project")
+    logs_dir = config.get_library_project_logs_dir("example_project")
     print(f"Project logs: {logs_dir}")
     print()
 

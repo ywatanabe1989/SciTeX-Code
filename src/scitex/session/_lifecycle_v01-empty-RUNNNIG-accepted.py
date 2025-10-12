@@ -390,7 +390,7 @@ def start(
     if sys is not None:
         flush(sys)
         # Lazy import to avoid circular dependency
-        from ..gen._tee import tee
+        from ..logging._Tee import tee
         sys.stdout, sys.stderr = tee(sys, sdir=sdir, verbose=verbose)
         CONFIGS["sys"] = sys
         

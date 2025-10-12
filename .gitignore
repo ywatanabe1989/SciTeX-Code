@@ -281,6 +281,10 @@ docs/to_claude
 
 **/*_back
 
+# Renaming
+**/.rename_backups
+**/.rename_backups
+
 data/*
 
 **RUNNING**
@@ -851,3 +855,5 @@ ide-extensions/
 src/scitex/docs
 .dev
 .dev
+docs/from_agents
+**/.rename_backups

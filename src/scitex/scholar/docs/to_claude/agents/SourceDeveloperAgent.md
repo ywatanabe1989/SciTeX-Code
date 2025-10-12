@@ -2,7 +2,7 @@
 name: SourceDeveloperAgent
 description: MUST BE USED. Implements code understanding specification intent
 color: green
-model: opus
+model: sonnet
 ---
 
 ## Roles:

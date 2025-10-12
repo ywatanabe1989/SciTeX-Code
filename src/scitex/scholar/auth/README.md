@@ -39,7 +39,7 @@ sequenceDiagram
     participant OpenAthensAuthenticator
     participant SessionManager
     participant AuthCacheManager
-    participant LockManager
+    participant AuthLockManager
     participant BrowserAuthenticator
 
     User->>ScholarAuthManager: authenticate_async(force=False)
@@ -48,8 +48,8 @@ sequenceDiagram
     alt Session is valid
         ScholarAuthManager-->>User: returns success
     else Session is invalid or force=True
-        ScholarAuthManager->>LockManager: acquire_lock_async()
-        LockManager-->>ScholarAuthManager: lock acquired
+        ScholarAuthManager->>AuthLockManager: acquire_lock_async()
+        AuthLockManager-->>ScholarAuthManager: lock acquired
         ScholarAuthManager->>AuthCacheManager: load_session_async()
         AuthCacheManager-->>ScholarAuthManager: returns cached session if available
         alt Cached session is valid
@@ -76,7 +76,7 @@ sequenceDiagram
                 ScholarAuthManager-->>User: returns failure
             end
         end
-        ScholarAuthManager->>LockManager: release_lock_async()
+        ScholarAuthManager->>AuthLockManager: release_lock_async()
     end
 ```
 

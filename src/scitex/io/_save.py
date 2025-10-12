@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-09-24 14:07:02 (ywatanabe)"
-# File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
+# Timestamp: "2025-10-07 21:22:27 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/_save.py
 # ----------------------------------------
 from __future__ import annotations
 import os
-__FILE__ = __file__
+__FILE__ = (
+    "./src/scitex/io/_save.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+__FILE__ = __file__
 
 import warnings
 
@@ -38,12 +42,29 @@ from ..path._getsize import getsize
 from ..str._clean_path import clean_path
 from ..str._color_text import color_text
 from ..str._readable_bytes import readable_bytes
+
 # Import save functions from the new modular structure
-from ._save_modules import (save_catboost, save_csv, save_excel, save_hdf5,
-                            save_html, save_image, save_joblib, save_json,
-                            save_matlab, save_mp4, save_npy, save_npz,
-                            save_pickle, save_pickle_compressed, save_text,
-                            save_tex, save_torch, save_yaml, save_zarr)
+from ._save_modules import (
+    save_catboost,
+    save_csv,
+    save_excel,
+    save_hdf5,
+    save_html,
+    save_image,
+    save_joblib,
+    save_json,
+    save_matlab,
+    save_mp4,
+    save_npy,
+    save_npz,
+    save_pickle,
+    save_pickle_compressed,
+    save_tex,
+    save_text,
+    save_torch,
+    save_yaml,
+    save_zarr,
+)
 from ._save_modules._bibtex import save_bibtex
 
 logger = logging.getLogger()
@@ -302,7 +323,9 @@ def save(
                 if use_caller_path:
                     # Smart path detection: skip internal scitex library frames
                     script_path = None
-                    scitex_src_path = _os.path.join(_os.path.dirname(__file__), "..", "..")
+                    scitex_src_path = _os.path.join(
+                        _os.path.dirname(__file__), "..", ".."
+                    )
                     scitex_src_path = _os.path.abspath(scitex_src_path)
 
                     # Walk through the call stack from caller to find the first non-scitex frame
@@ -392,6 +415,8 @@ def save(
         # Symbolic links
         _symlink(spath, spath_cwd, symlink_from_cwd, verbose)
         _symlink_to(spath_final, symlink_to, verbose)
+        return Path(spath)
+        # return True
 
     except Exception as e:
         logger.error(
@@ -401,6 +426,7 @@ def save(
             f"Debug: specified_path type = {type(specified_path)}\n"
             f"Debug: specified_path = {specified_path}"
         )
+        return False
 
 
 def _symlink(spath, spath_cwd, symlink_from_cwd, verbose):
@@ -692,8 +718,10 @@ def _handle_image_with_csv(
                             _symlink(csv_sigmaplot_path, csv_cwd, True, True)
         except Exception as e:
             import warnings
+
             warnings.warn(f"CSV export failed: {e}")
             import traceback
+
             traceback.print_exc()
 
 

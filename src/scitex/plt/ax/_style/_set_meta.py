@@ -1,7 +1,7 @@
 #!./env/bin/python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2025-06-04 11:35:00 (ywatanabe)"
-# Author: Yusuke Watanabe (ywata1989@gmail.com)
+# Author: Yusuke Watanabe (ywatanabe@scitex.ai)
 
 """
 Scientific metadata management for figures with YAML export.

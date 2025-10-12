@@ -290,6 +290,6 @@ When contributing to the AI module:
 
 ## Contact
 
-Yusuke Watanabe (ywata1989@gmail.com)
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 For more information and updates, please visit the [scitex GitHub repository](https://github.com/ywatanabe1989/scitex).

@@ -52,7 +52,7 @@ if results['downloaded_files']:
         print(f"  {doi} -> {path}")
 
 # Access your PDFs
-pdf_dir = scholar.workspace_dir / "pdfs"
+pdf_dir = scholar.get_workspace_dir() / "pdfs"
 print(f"\nAll PDFs are in: {pdf_dir}")
 
 # Example: Search and download specific DOIs

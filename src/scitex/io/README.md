@@ -1,12 +1,12 @@
 <!-- ---
-!-- Timestamp: 2025-07-02 07:37:27
+!-- Timestamp: 2025-10-09 04:18:23
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/io/README.md
 !-- --- -->
 
-# SciTeX IO Module
+# SciTeX I/O Module
 
-The `scitex.io` module provides convenient functions for loading, saving, caching, and managing files and data in various formats. This guide will introduce some of the key functions.
+Files in Windows/MacOS can be opened by licking without specifying software to open. This io module enables such experiences with automatic format detection from file extension, making standardized coding available: `stx.io.load("path/to/file.ext")` and `stx.io.save(obj, "path/to/file.ext")`
 
 ## Loading Data
 
@@ -14,13 +14,16 @@ The `load` function allows you to read data from various file formats. It automa
 
 ### Supported Formats
 
-- **Tabular Data**: `.csv`, `.tsv`, `.xls`, `.xlsx`, `.xlsm`, `.xlsb`
-- **Configuration Files**: `.json`, `.yaml`, `.yml`
-- **Serialized Objects**: `.pkl`, `.joblib`, `.npy`, `.npz`, `.hdf5`
-- **Machine Learning Models**: `.pth`, `.pt`, `.cbm`
-- **Text and Documents**: `.txt`, `.md`, `.pdf`, `.docx`, `.xml`
-- **Images**: `.jpg`, `.png`, `.tiff`, `.tif`
-- **EEG Data**: `.vhdr`, `.vmrk`, `.edf`, `.bdf`, `.gdf`, `.cnt`, `.egi`, `.eeg`, `.set`
+- **Tabular Data**: `.csv`, `.tsv`, `.xls`, `.xlsx`, `.xlsm`, `.xlsb`, `.parquet`
+- **Configuration**: `.json`, `.yaml`, `.yml`
+- **Serialization**: `.pkl`, `.joblib`
+- **Scientific Arrays**: `.npy`, `.npz`, `.hdf5`, `.h5`, `.zarr`, `.nc` (NetCDF), `.mat` (MATLAB), `.con`
+- **ML/DL Models**: `.pth`, `.pt` (PyTorch), `.cbm` (CatBoost)
+- **Documents**: `.txt`, `.log`, `.md`, `.pdf`, `.docx`, `.xml`, `.bib` (BibTeX)
+- **Images**: `.jpg`, `.png`, `.tiff`, `.tif`, `.gif`
+- **Video**: `.mp4`
+- **EEG**: `.vhdr`, `.vmrk`, `.edf`, `.bdf`, `.gdf`, `.cnt`, `.egi`, `.eeg`, `.set`
+- **Database**: `.db` (SQLite3)
 
 ### Example Usage
 
@@ -86,6 +89,10 @@ scitex.io.save(data, 'data.json')
 text = "Hello, World!"
 scitex.io.save(text, 'hello.txt')
 ```
+
+
+
+<summary>Advanced Usage</summary>
 
 ## Caching Data
 
@@ -198,7 +205,108 @@ fig = px.bar(x=['A', 'B', 'C'], y=[1, 3, 2])
 scitex.io.save(fig, 'bar_chart.png')
 ```
 
+## HDF5 and Zarr Exploration
+
+The module includes specialized explorers for hierarchical data formats:
+
+```python
+from scitex.io import H5Explorer, ZarrExplorer, has_h5_key, has_zarr_key
+
+# HDF5 exploration
+with H5Explorer("data.h5") as h5:
+    h5.tree()                          # Display hierarchy
+    data = h5["group/dataset"]         # Access data
+    attrs = h5.get_attrs("dataset")    # Get attributes
+
+# Check for specific keys
+if has_h5_key("data.h5", "experiments/run_001"):
+    data = scitex.io.load("data.h5", key="experiments/run_001")
+
+# Zarr exploration
+with ZarrExplorer("data.zarr") as zarr:
+    zarr.tree()
+    data = zarr["array"]
+```
+
+## Advanced Caching
+
+The module provides a sophisticated caching system for expensive I/O operations:
+
+```python
+from scitex.io import configure_cache, get_cache_info, clear_load_cache
+
+# Configure cache settings
+configure_cache(max_size_mb=500, ttl_seconds=3600)
+
+# Load with caching (default: enabled)
+data = scitex.io.load("large_file.h5", cache=True)  # First: disk read
+data = scitex.io.load("large_file.h5", cache=True)  # Second: cached
+
+# Check cache status
+info = get_cache_info()
+print(f"Cached items: {info['size']}, Hits: {info['hits']}")
+
+# Clear cache when needed
+clear_load_cache()
+```
+
+## Decorator-Based Caching
+
+```python
+from scitex.io import cache
+
+@cache(cache_dir=".cache")
+def expensive_computation(x):
+    data = scitex.io.load("large_dataset.h5")
+    return process(data, x)
+
+# First call: computes and caches
+result = expensive_computation(42)
+
+# Subsequent calls with same args: instant from cache
+result = expensive_computation(42)
+```
+
+</details>
+
+<details>
+
+<summary>For Developers</summary>
+
+## Module Structure
+
+```
+scitex.io/
+├── _load.py              # Universal load function
+├── _save.py              # Universal save function
+├── _cache.py             # Caching decorator
+├── _load_cache.py        # Load caching system
+├── _load_configs.py      # Config file loading
+├── _glob.py              # Pattern matching
+├── _reload.py            # Module reloading
+├── _flush.py             # Output flushing
+├── _load_modules/        # Format-specific loaders
+│   ├── _H5Explorer.py    # HDF5 exploration
+│   ├── _ZarrExplorer.py  # Zarr exploration
+│   ├── _bibtex.py        # BibTeX loader
+│   └── ...               # Other format loaders
+└── _save_modules/        # Format-specific savers
+    ├── _save_bibtex.py
+    ├── _save_csv.py
+    └── ...
+```
+
+</details>
+
+
+## See Also
+
+- [Root README](../../../README.md) - Project overview
+- [Examples](../../../examples/01_scitex_io.ipynb) - I/O tutorial notebook
+- Documentation: https://scitex.readthedocs.io/io
+
 ## Contact
-Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp
+
+Yusuke Watanabe (ywatanabe@scitex.ai)
 
 <!-- EOF -->

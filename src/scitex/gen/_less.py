@@ -5,7 +5,7 @@
 #!./env/bin/python3
 # -*- coding: utf-8 -*-
 # Time-stamp: "2024-04-21 12:05:35"
-# Author: Yusuke Watanabe (ywata1989@gmail.com)
+# Author: Yusuke Watanabe (ywatanabe@scitex.ai)
 
 """
 This script does XYZ.

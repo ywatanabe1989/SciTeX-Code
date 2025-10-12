@@ -1,93 +1,87 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-08-18 23:50:41 (ywatanabe)"
-# File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/__main__.py
-# ----------------------------------------
-from __future__ import annotations
-import os
-__FILE__ = __file__
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/__main__.py
 
-import argparse
+"""Scholar CLI entry point.
+
+Minimal entry point with clear separation of concerns:
+- Argument parsing: cli/_CentralArgumentParser.py
+- Argument definitions: cli/_argument_groups.py
+- Business logic: cli/handlers/*.py
+- Routing: this file (minimal)
+"""
+
+from __future__ import annotations
+
 import asyncio
+import os
 import sys
+
+__FILE__ = "./src/scitex/scholar/__main__.py"
+__DIR__ = os.path.dirname(__FILE__)
+
+from scitex import logging
+
+from .cli._CentralArgumentParser import CentralArgumentParser
+from .cli.handlers import (
+    handle_bibtex_operations,
+    handle_doi_operations,
+    handle_project_operations,
+)
+from .core.Scholar import Scholar
+from .utils._cleanup_scholar_processes import cleanup_scholar_processes
+
+logger = logging.getLogger(__name__)
+
+
+async def main_async():
+    """Main async entry point."""
+    # Parse arguments using centralized parser
+    args = CentralArgumentParser.parse_args()
+
+    # Handle stop command (no Scholar needed)
+    if args.stop_download:
+        cleanup_scholar_processes()
+        return 0
+
+    # Determine browser mode
+    browser_mode = (
+        args.browser if hasattr(args, "browser") else "stealth"
+    )
+
+    # Initialize Scholar
+    if args.project:
+        scholar = Scholar(
+            project=args.project,
+            project_description=(
+                args.project_description
+                if hasattr(args, "project_description")
+                else None
+            ),
+            browser_mode=browser_mode,
+        )
+    else:
+        scholar = Scholar(browser_mode=browser_mode)
+
+    # Route to appropriate handler based on input source
+    if args.bibtex:
+        return await handle_bibtex_operations(args, scholar)
+    elif args.doi or args.dois:
+        return await handle_doi_operations(args, scholar)
+    elif args.project:
+        return await handle_project_operations(args, scholar)
+    else:
+        logger.error("No operation specified. Use --help for usage.")
+        return 1
 
 
 def main():
-    from .cli._CentralArgumentParser import CentralArgumentParser
-
-    parsers, descriptions = CentralArgumentParser.get_command_parsers()
-
-    parser = argparse.ArgumentParser(
-        prog="python -m scitex.scholar",
-        description="SciTeX Scholar - Academic paper management tools",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-
-    subparsers = parser.add_subparsers(dest="command")
-    for cmd_name, cmd_parser in parsers.items():
-        description = descriptions.get(cmd_name, "")
-        subparsers.add_parser(
-            cmd_name, parents=[cmd_parser], add_help=False, help=description
-        )
-
-    if len(sys.argv) == 1:
-        parser = argparse.ArgumentParser(prog="python -m scitex.scholar")
-        parser.print_help()
-        return
-
-    command = sys.argv[1] if len(sys.argv) > 1 else None
-
-    # if args.command == "resolve-and-enrich":
-    #     from .cli.resolve_and_enrich import main as enhanced_main
-
-    #     original_argv = sys.argv
-    #     sys.argv = ["resolve-and-enrich"] + remaining
-    #     try:
-    #         enhanced_main()
-    #     finally:
-    #         sys.argv = original_argv
-
-    if command == "chrome":
-        from .cli.chrome import main_async as chrome_main_async
-
-        original_argv = sys.argv
-        sys.argv = sys.argv[1:]  # Pass all args after command name
-        try:
-            asyncio.run(chrome_main_async())
-        finally:
-            sys.argv = original_argv
-
-    elif command == "bibtex" or command == "--bibtex":
-        from .cli.bibtex import main as bibtex_main
-
-        original_argv = sys.argv
-        # Handle both "bibtex" and "--bibtex" as commands
-        if command == "--bibtex":
-            sys.argv = ["bibtex", "--bibtex"] + sys.argv[2:]
-        else:
-            sys.argv = sys.argv[1:]  # Pass all args after command name
-        try:
-            bibtex_main()
-        finally:
-            sys.argv = original_argv
-
-    # elif args.command == "download":
-    #     from .cli.download_pdf import main as download_main
-
-    #     original_argv = sys.argv
-    #     sys.argv = ["download"] + remaining
-    #     try:
-    #         download_main()
-    #     finally:
-    #         sys.argv = original_argv
-
-    else:
-        parser.print_help()
+    """Synchronous entry point."""
+    return asyncio.run(main_async())
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
+
 
 # EOF
