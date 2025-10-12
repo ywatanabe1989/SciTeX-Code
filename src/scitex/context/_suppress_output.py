@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-05-01 09:11:04 (ywatanabe)"
+# Timestamp: "2025-10-13 08:18:37 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/context/_suppress_output.py
 # ----------------------------------------
+from __future__ import annotations
 import os
-
-__FILE__ = "./src/scitex/context/_suppress_output.py"
+__FILE__ = (
+    "./src/scitex/context/_suppress_output.py"
+)
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 

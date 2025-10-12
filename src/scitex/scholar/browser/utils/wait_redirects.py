@@ -494,7 +494,7 @@ async def wait_redirects(
 
                     if not still_captcha:
                         # CAPTCHA solved! Wait a bit for redirect
-                        logger.success(
+                        logger.info(
                             f"{func_name}: CAPTCHA appears to be solved, waiting for redirect..."
                         )
                         if show_progress:
@@ -665,7 +665,7 @@ async def wait_redirects(
 
         # Log results
         if success:
-            logger.success(
+            logger.info(
                 f"{func_name}: Redirects complete: {start_url[:40]} -> {final_url[:40]} "
                 f"({redirect_count} redirects, {total_time_ms:.0f}ms)"
             )

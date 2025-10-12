@@ -240,7 +240,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
 
             if push_buttons:
                 await push_buttons[0].click()
-                self.logger.success(
+                self.logger.info(
                     "Push notification requested - check your device"
                 )
 
@@ -290,7 +290,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
                 try:
                     # Check if moved away from SSO
                     if not self.is_sso_page(page.url):
-                        self.logger.success(
+                        self.logger.info(
                             "Login successful - redirected away from SSO"
                         )
                         return True
@@ -300,7 +300,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
                         'input[name="prompt"], .chat-interface, .dashboard, .main-content'
                     )
                     if success_elements:
-                        self.logger.success(
+                        self.logger.info(
                             "Login successful - found success elements"
                         )
                         return True
@@ -310,7 +310,7 @@ class UniversityOfMelbourneSSOAutomator(BaseSSOAutomator):
                     if "Execution context was destroyed" in str(context_error):
                         await page.wait_for_timeout(2000)
                         if not self.is_sso_page(page.url):
-                            self.logger.success(
+                            self.logger.info(
                                 "Login successful - context destroyed due to navigation"
                             )
                             return True

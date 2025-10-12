@@ -146,7 +146,7 @@ class ScholarAuthManager:
         if self.auth_session and provider_name:
             self.active_provider = provider_name
 
-        logger.success(
+        logger.info(
             f"{self.name}: Authentication succeeded by {provider_name}."
         )
 
@@ -269,7 +269,7 @@ class ScholarAuthManager:
         for provider in self.providers.values():
             try:
                 await provider.logout_async()
-                logger.success(f"{self.name}: Logged out from {provider}")
+                logger.info(f"{self.name}: Logged out from {provider}")
             except Exception as e:
                 logger.warning(
                     f"{self.name}: Error logging out from {provider}: {e}"

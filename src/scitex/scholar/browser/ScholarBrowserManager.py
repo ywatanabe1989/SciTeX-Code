@@ -476,7 +476,7 @@ class ScholarBrowserManager(BrowserMixin):
                 cookies = await self.auth_manager.get_auth_cookies_async()
                 if cookies:
                     await self._persistent_context.add_cookies(cookies)
-                    logger.success(
+                    logger.info(
                         f"{self.name}: Loaded {len(cookies)} authentication cookies into persistent browser context"
                     )
                 else:
@@ -505,7 +505,7 @@ class ScholarBrowserManager(BrowserMixin):
             await page.screenshot(
                 path=path, timeout=timeout_sec * 1000, full_page=full_page
             )
-            logger.success(f"{self.name}: Saved: {path}")
+            logger.info(f"{self.name}: Saved: {path}")
         except Exception as e:
             logger.fail(f"{self.name}: Screenshot failed for {path}: {e}")
 

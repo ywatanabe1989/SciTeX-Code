@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-10-13 08:00:08 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/pdf_download/strategies/manual_download_fallback.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/pdf_download/strategies/manual_download_fallback.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 """Manual Download Fallback Strategy"""
 
 from pathlib import Path
@@ -11,8 +21,8 @@ from scitex import logging
 from scitex.scholar import ScholarConfig
 from scitex.scholar.browser import browser_logger
 from scitex.scholar.pdf_download.strategies.manual_download_utils import (
-    complete_manual_download_workflow_async,
     DownloadMonitorAndSync,
+    complete_manual_download_workflow_async,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,7 +32,7 @@ async def try_download_manual_async(
     context: BrowserContext,
     pdf_url: str,
     output_path: Path,
-    downloader_name: str = "ScholarPDFDownloader",
+    func_name: str = "try_download_manual_async",
     config: ScholarConfig = None,
     doi: Optional[str] = None,
 ) -> Optional[Path]:
@@ -38,7 +48,7 @@ async def try_download_manual_async(
         context: Browser context
         pdf_url: URL of the PDF to download
         output_path: Where to save the final PDF
-        downloader_name: Name for logging
+        func_name: Name for logging
         config: Scholar configuration
         doi: Optional DOI for filename generation
 
@@ -54,14 +64,14 @@ async def try_download_manual_async(
 
         await browser_logger.info(
             page,
-            f"{downloader_name}: Opening PDF for manual download...",
+            f"{func_name}: Opening PDF for manual download...",
         )
 
-        await page.goto(pdf_url, timeout=30000, wait_until='domcontentloaded')
+        await page.goto(pdf_url, timeout=30000, wait_until="domcontentloaded")
 
         await browser_logger.info(
             page,
-            f"{downloader_name}: Please download the PDF manually from this page",
+            f"{func_name}: Please download the PDF manually from this page",
         )
 
         # Setup monitoring
@@ -71,7 +81,7 @@ async def try_download_manual_async(
 
         # Progress logger
         def log_progress(msg: str):
-            logger.info(f"{downloader_name}: {msg}")
+            logger.info(f"{func_name}: {msg}")
 
         # Extract DOI from URL if not provided
         if not doi and "doi.org/" in pdf_url:
@@ -79,7 +89,8 @@ async def try_download_manual_async(
         elif not doi and "/doi/" in pdf_url:
             # Try to extract DOI from URL like /doi/10.1212/...
             import re
-            match = re.search(r'/doi/(10\.\d+/[^\s?#]+)', pdf_url)
+
+            match = re.search(r"/doi/(10\.\d+/[^\s?#]+)", pdf_url)
             if match:
                 doi = match.group(1)
 
@@ -97,15 +108,15 @@ async def try_download_manual_async(
         if not temp_file:
             await browser_logger.error(
                 page,
-                f"{downloader_name}: No new PDF detected in 120 seconds",
+                f"{func_name}: No new PDF detected in 120 seconds",
             )
-            logger.error(f"{downloader_name}: Download monitoring timeout")
+            logger.error(f"{func_name}: Download monitoring timeout")
             await page.close()
             return None
 
-        await browser_logger.success(
+        await browser_logger.info(
             page,
-            f"{downloader_name}: Detected: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
+            f"{func_name}: Detected: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
         )
 
         # Sync to library
@@ -116,23 +127,24 @@ async def try_download_manual_async(
             content_type="main",
         )
 
-        await browser_logger.success(
+        await browser_logger.info(
             page,
-            f"{downloader_name}: Synced to library: {final_path.name}",
+            f"{func_name}: Synced to library: {final_path.name}",
         )
 
         # Copy to requested output path
         if final_path and final_path.exists():
             import shutil
+
             output_path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(str(final_path), str(output_path))
 
-            await browser_logger.success(
+            await browser_logger.info(
                 page,
-                f"{downloader_name}: Manual download complete!",
+                f"{func_name}: Manual download complete!",
             )
 
-            logger.success(f"{downloader_name}: Manual download saved to {output_path}")
+            logger.info(f"{func_name}: Manual download saved to {output_path}")
             await page.close()
             return output_path
 
@@ -140,17 +152,16 @@ async def try_download_manual_async(
         return None
 
     except Exception as e:
-        logger.error(f"{downloader_name}: Manual download failed: {e}")
+        logger.error(f"{func_name}: Manual download failed: {e}")
         if page:
             try:
                 await browser_logger.error(
                     page,
-                    f"{downloader_name}: Error: {type(e).__name__}",
+                    f"{func_name}: Error: {type(e).__name__}",
                 )
                 await page.close()
             except Exception:
                 pass
         return None
-
 
 # EOF

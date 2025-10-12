@@ -145,7 +145,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         """
         # Check if we have a valid session
         if not force and await self.is_authenticate_async():
-            logger.success(
+            logger.info(
                 f"Using existing OpenAthens session{self.session_manager.format_expiry_info()}"
             )
             return self.session_manager.create_auth_response()
@@ -228,7 +228,7 @@ class OpenAthensAuthenticator(BaseAuthenticator):
         # Save to cache
         await self.cache_manager.save_session_async(self.session_manager)
 
-        logger.success(
+        logger.info(
             f"OpenAthens authentication successful{self.session_manager.format_expiry_info()}"
         )
 
@@ -385,7 +385,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
             )
 
             if success:
-                logger.success(
+                logger.info(
                     f"User intervention notification sent to {to_email}"
                 )
             else:
@@ -444,7 +444,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
                 message=message,
             )
 
-            logger.success(
+            logger.info(
                 f"Authentication success notification sent to {to_email}"
             )
 
@@ -545,7 +545,7 @@ if __name__ == "__main__":
             try:
                 is_authenticated = await auth.is_authenticated_async()
                 if is_authenticated:
-                    logger.success(
+                    logger.info(
                         "Already authenticated! Using cached session."
                     )
                     session_info = await auth.get_session_info_async()
@@ -574,7 +574,7 @@ if __name__ == "__main__":
             result = await auth.authenticate_async(force=args.force)
 
             if result:
-                logger.success(
+                logger.info(
                     f"{self.name}: Authentication completed successfully!"
                 )
                 logger.info(f"{self.name}: Session details:")

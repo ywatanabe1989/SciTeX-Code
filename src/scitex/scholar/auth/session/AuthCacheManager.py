@@ -70,7 +70,7 @@ class AuthCacheManager:
 
             # Set secure permissions
             os.chmod(self.cache_json, 0o600)
-            logger.success(
+            logger.info(
                 f"{self.name}: Session saved to: {self.cache_json}"
             )
             return True
@@ -98,7 +98,7 @@ class AuthCacheManager:
                 return False
 
             self._populate_session_manager(session_manager, cache_data)
-            logger.success(
+            logger.info(
                 f"{self.name}: Loaded session ({self.cache_json}): "
                 f"{len(session_manager.get_cookies())} cookies"
                 f"{session_manager.format_expiry_info()}"

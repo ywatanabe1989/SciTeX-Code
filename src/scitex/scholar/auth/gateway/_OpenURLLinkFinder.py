@@ -53,7 +53,7 @@ class OpenURLLinkFinder:
                     if await link_element.count() > 0:
                         href = await link_element.get_attribute("href")
                         if href not in seen_hrefs:
-                            # logger.success(f"Found link elements for: {publisher}")
+                            # logger.info(f"Found link elements for: {publisher}")
                             await highlight_element_async(link_element, 500)
                             found_links.append(
                                 {
@@ -71,7 +71,7 @@ class OpenURLLinkFinder:
                 publishers = [
                     found_link.get("publisher") for found_link in found_links
                 ]
-                logger.success(
+                logger.info(
                     f"{self.name}: Found {len(publishers)} link elements for: {', '.join(publishers)}"
                 )
                 return found_links

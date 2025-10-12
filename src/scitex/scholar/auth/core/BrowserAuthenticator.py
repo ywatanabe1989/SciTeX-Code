@@ -139,7 +139,7 @@ class BrowserAuthenticator(BrowserMixin):
                             page
                         )
                         if oa_success:
-                            logger.success(
+                            logger.info(
                                 f"{self.name}: OpenAthens page automation completed"
                             )
                             openathens_automated = True
@@ -166,7 +166,7 @@ class BrowserAuthenticator(BrowserMixin):
                     await self.sso_automator.handle_sso_redirect_async(page)
                 )
                 if sso_success:
-                    logger.success(
+                    logger.info(
                         f"{self.name}: {institution_name} SSO automation completed"
                     )
                 else:
@@ -186,7 +186,7 @@ class BrowserAuthenticator(BrowserMixin):
                         await self._attempt_generic_sso_automation(page)
                     )
                     if generic_success:
-                        logger.success(
+                        logger.info(
                             f"{self.name}: Generic SSO automation completed"
                         )
                     else:
@@ -214,7 +214,7 @@ class BrowserAuthenticator(BrowserMixin):
                     logger.info(
                         f"{self.name}: Login successful detected at URL: {current_url}"
                     )
-                    logger.success(
+                    logger.info(
                         f"{self.name}: Login detected! Capturing session..."
                     )
                     return True
@@ -272,7 +272,7 @@ class BrowserAuthenticator(BrowserMixin):
                 await browser.close()
 
                 if is_authenticate_async:
-                    logger.success(
+                    logger.info(
                         f"{self.name}: Verified live authentication at {current_url}"
                     )
                 else:

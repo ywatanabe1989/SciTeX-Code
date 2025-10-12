@@ -366,7 +366,7 @@ class AuthenticationGateway:
             publisher_url = await resolver.resolve_doi(url_context.doi, page)
 
             if publisher_url:
-                logger.success(f"{self.name}: Auth established")
+                logger.info(f"{self.name}: Auth established")
                 await browser_logger.info(
                     page,
                     f"{self.name}: ✓ Session established at {publisher_url[:60]}",

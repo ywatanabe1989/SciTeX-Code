@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-13 07:16:00 (ywatanabe)"
+# Timestamp: "2025-10-13 07:54:07 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/pdf_download/ScholarPDFDownloader.py
 # ----------------------------------------
 from __future__ import annotations
@@ -85,7 +85,7 @@ class ScholarPDFDownloader:
             max_concurrent: Maximum number of concurrent downloads (default: 3)
 
         Returns:
-            List of paths to successfully downloaded PDFs
+            List of paths to suffcessfully downloaded PDFs
         """
         output_dir = output_dir or self.output_dir
 
@@ -107,7 +107,7 @@ class ScholarPDFDownloader:
                 )
                 result = await self.download_from_url(url, path)
                 if result:
-                    logger.success(f"{self.name}: Downloaded to {result}")
+                    logger.info(f"{self.name}: Downloaded to {result}")
                 return result
 
         tasks = [
@@ -117,7 +117,7 @@ class ScholarPDFDownloader:
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        # Filter successful downloads
+        # Filter suffcessful downloads
         saved_paths = []
         for result in results:
             if isinstance(result, Exception):
@@ -125,8 +125,8 @@ class ScholarPDFDownloader:
             elif result:
                 saved_paths.append(result)
 
-        logger.success(
-            f"{self.name}: Downloaded {len(saved_paths)}/{len(pdf_urls)} PDFs successfully"
+        logger.info(
+            f"{self.name}: Downloaded {len(saved_paths)}/{len(pdf_urls)} PDFs suffcessfully"
         )
         return saved_paths
 
@@ -247,13 +247,13 @@ class ScholarPDFDownloader:
                     break
 
                 if is_downloaded:
-                    # Success! Clean up
+                    # Clean up
                     if button_task:
                         button_task.cancel()
                     if pdf_page:
                         await pdf_page.close()
-                    logger.success(
-                        f"{self.name}: Successfully downloaded via {method_name}"
+                    logger.info(
+                        f"{self.name}: Suffcessfully downloaded via {method_name}"
                     )
                     return is_downloaded  # Return the actual path from the strategy
                 else:
@@ -367,7 +367,7 @@ class ScholarPDFDownloader:
             )
             return None
 
-        await browser_logger.success(
+        await browser_logger.info(
             page,
             f"{self.name}: Detected PDF: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
         )
@@ -388,7 +388,7 @@ class ScholarPDFDownloader:
             with open(metadata_file, "w") as f:
                 json.dump(metadata, f, indent=2)
 
-        await browser_logger.success(
+        await browser_logger.info(
             page,
             f"{self.name}: Manual download complete - saved in downloads/",
         )

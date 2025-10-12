@@ -211,7 +211,7 @@ class OpenAthensSSOAutomator(BaseSSOAutomator):
                 # Get text BEFORE clicking
                 institution_text = await institution_elements[0].text_content()
                 await institution_elements[0].click()
-                self.logger.success(
+                self.logger.info(
                     f"{self.name}: Selected institution: {institution_text.strip()}"
                 )
             elif len(institution_elements) > 1:
@@ -271,7 +271,7 @@ class OpenAthensSSOAutomator(BaseSSOAutomator):
 
                     if any(keyword in text_lower for keyword in keywords):
                         await element.click()
-                        self.logger.success(
+                        self.logger.info(
                             f"{self.name}: Selected matched institution: {text.strip()}"
                         )
                         return True
@@ -305,7 +305,7 @@ class OpenAthensSSOAutomator(BaseSSOAutomator):
                 current_url = page.url
 
                 if not self.is_sso_page(current_url):
-                    self.logger.success(
+                    self.logger.info(
                         f"{self.name}: Redirected to institution SSO: {current_url[:50]}..."
                     )
                     return True

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-11 04:38:44 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url/ScholarURLFinder.py
+# Timestamp: "2025-10-13 07:54:47 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/url_finder/ScholarURLFinder.py
 # ----------------------------------------
 from __future__ import annotations
 import os
 __FILE__ = (
-    "./src/scitex/scholar/url/ScholarURLFinder.py"
+    "./src/scitex/scholar/url_finder/ScholarURLFinder.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -145,7 +145,7 @@ class ScholarURLFinder:
 
                 if urls:
                     result = self._as_pdf_dicts(urls, strategy["source_label"])
-                    await browser_logger.success(
+                    await browser_logger.info(
                         page,
                         f"{self.name}: ✓ {strategy['name']} found {len(result)} URLs",
                     )

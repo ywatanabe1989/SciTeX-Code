@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Timestamp: "2025-10-13 08:03:29 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/pdf_download/strategies/manual_download_utils.py
+# ----------------------------------------
+from __future__ import annotations
+import os
+__FILE__ = (
+    "./src/scitex/scholar/pdf_download/strategies/manual_download_utils.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
+
 """Manual Download Utilities
 
 This module provides shared utilities for manual download workflows:
@@ -10,9 +21,9 @@ This module provides shared utilities for manual download workflows:
 
 import asyncio
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
-from datetime import datetime
 
 from playwright.async_api import Page
 
@@ -21,6 +32,12 @@ from scitex.browser.debugging import browser_logger
 
 class FlexibleFilenameGenerator:
     """Generate flexible filenames for PDFs with DOI-based naming."""
+
+    @property
+    def name(
+        self,
+    ):
+        return self.__class__.__name__
 
     @staticmethod
     def sanitize_doi(doi: str) -> str:
@@ -59,8 +76,11 @@ class FlexibleFilenameGenerator:
         elif url:
             # Use domain and path as fallback
             from urllib.parse import urlparse
+
             parsed = urlparse(url)
-            base = f"{parsed.netloc}_{parsed.path}".replace("/", "_").replace(".", "_")
+            base = f"{parsed.netloc}_{parsed.path}".replace("/", "_").replace(
+                ".", "_"
+            )
             base = re.sub(r'[<>:"|?*]', "", base)
         else:
             # Last resort: timestamp-based
@@ -158,7 +178,9 @@ class DownloadMonitorAndSync:
         progress_interval = 10.0  # Report progress every 10 seconds
 
         if logger_func:
-            logger_func(f"Monitoring {self.temp_dir} for new downloads (timeout: {timeout_sec}s)")
+            logger_func(
+                f"{self.name}: Monitoring {self.temp_dir} for new downloads (timeout: {timeout_sec}s)"
+            )
 
         while True:
             elapsed = asyncio.get_event_loop().time() - start_time
@@ -166,15 +188,20 @@ class DownloadMonitorAndSync:
 
             if elapsed > timeout_sec:
                 if logger_func:
-                    logger_func("Download monitoring timeout - no new PDF detected")
+                    logger_func(
+                        f"{self.name}: Download monitoring timeout - no new PDF detected"
+                    )
                 return None
 
             # Report progress periodically
-            if logger_func and (elapsed - last_progress_time) >= progress_interval:
+            if (
+                logger_func
+                and (elapsed - last_progress_time) >= progress_interval
+            ):
                 current_file_count = len(self._get_current_files())
                 logger_func(
-                    f"Still waiting for download... ({remaining:.0f}s remaining, "
-                    f"{current_file_count} files in directory)"
+                    f"{self.name}: Still waiting for download... ({remaining:.0f}s remaining, "
+                    f"{self.name}: {current_file_count} files in directory)"
                 )
                 last_progress_time = elapsed
 
@@ -188,23 +215,31 @@ class DownloadMonitorAndSync:
 
                 # Log detection
                 if logger_func:
-                    logger_func(f"Detected new file: {filename}, checking if complete...")
+                    logger_func(
+                        f"{self.name}: Detected new file: {filename}, checking if complete..."
+                    )
 
                 # Check if it's a stable file first
                 if not self._is_file_stable(file_path):
                     if logger_func:
-                        logger_func(f"  File still downloading, waiting...")
+                        logger_func(
+                            f"{self.name}:   File still downloading, waiting..."
+                        )
                     continue
 
                 # Check if it's a valid PDF (by magic number, not extension)
                 if self._is_pdf_file(file_path):
                     if logger_func:
                         size_mb = file_path.stat().st_size / 1e6
-                        logger_func(f"Found valid PDF: {filename} ({size_mb:.2f} MB)")
+                        logger_func(
+                            f"{self.name}: Found valid PDF: {filename} ({size_mb:.2f} MB)"
+                        )
                     return file_path
                 else:
                     if logger_func:
-                        logger_func(f"  File is not a PDF, skipping: {filename}")
+                        logger_func(
+                            f"{self.name}:   File is not a PDF, skipping: {filename}"
+                        )
 
             # Wait before next check
             await asyncio.sleep(check_interval_sec)
@@ -254,6 +289,7 @@ class DownloadMonitorAndSync:
 
         # Move file
         import shutil
+
         shutil.move(str(temp_file), str(final_path))
 
         return final_path
@@ -375,7 +411,8 @@ async def wait_for_manual_mode_activation_async(
         stop_event.set()
 
         # Update button to monitoring state
-        await page.evaluate("""
+        await page.evaluate(
+            """
             () => {
                 const button = document.getElementById('scitex-manual-button');
                 if (button) {
@@ -385,7 +422,8 @@ async def wait_for_manual_mode_activation_async(
                     button.style.cursor = 'default';
                 }
             }
-        """)
+        """
+        )
 
     except Exception as e:
         pass
@@ -410,14 +448,18 @@ async def show_stop_automation_button_async(
     try:
         # Log that we're about to show the button
         from scitex import logging
+
         logger = logging.getLogger(__name__)
-        logger.info(f"show_stop_automation_button_async: Injecting manual download button on page")
+        logger.info(
+            f"show_stop_automation_button_async: Injecting manual download button on page"
+        )
 
         # Wait a moment for page to be ready
         await page.wait_for_timeout(500)
 
         # Inject button overlay - wait for body to be ready first
-        await page.evaluate(f"""
+        await page.evaluate(
+            f"""
         () => {{
             console.log('SciTeX: Injecting manual download controls...');
 
@@ -515,9 +557,12 @@ async def show_stop_automation_button_async(
 
             console.log('SciTeX: Manual mode button injected at MIDDLE-RIGHT!');
         }}
-    """)
+    """
+        )
 
-        logger.info(f"show_stop_automation_button_async: Button injected, waiting for user click...")
+        logger.info(
+            f"show_stop_automation_button_async: Button injected, waiting for user click..."
+        )
 
         # Show browser notification that button is ready
         await browser_logger.info(
@@ -526,7 +571,9 @@ async def show_stop_automation_button_async(
         )
 
     except Exception as e:
-        logger.error(f"show_stop_automation_button_async: Failed to inject button: {e}")
+        logger.error(
+            f"show_stop_automation_button_async: Failed to inject button: {e}"
+        )
         return
 
     # Wait for DOUBLE-CLICK (no timeout - always available)
@@ -546,7 +593,8 @@ async def show_stop_automation_button_async(
         stop_event.set()
 
         # Update button to show monitoring state
-        await page.evaluate("""
+        await page.evaluate(
+            """
             () => {
                 const button = document.getElementById('scitex-manual-button');
                 if (button) {
@@ -556,7 +604,8 @@ async def show_stop_automation_button_async(
                     button.style.cursor = 'default';
                 }
             }
-        """)
+        """
+        )
 
     except Exception as e:
         # Button was removed or page closed
@@ -580,7 +629,8 @@ async def show_manual_download_button_async(
         True if button clicked, False if timeout
     """
     # Inject button overlay
-    await page.evaluate(f"""
+    await page.evaluate(
+        f"""
         () => {{
             // Create overlay container
             const overlay = document.createElement('div');
@@ -638,7 +688,8 @@ async def show_manual_download_button_async(
                 button.style.transform = 'scale(1)';
             }});
         }}
-    """)
+    """
+    )
 
     # Wait for button click with timeout
     try:
@@ -650,12 +701,16 @@ async def show_manual_download_button_async(
         await page.click("#manual-download-confirm")
 
         # Remove overlay
-        await page.evaluate("() => { document.getElementById('manual-download-overlay')?.remove(); }")
+        await page.evaluate(
+            "() => { document.getElementById('manual-download-overlay')?.remove(); }"
+        )
 
         return True
     except Exception:
         # Timeout or error
-        await page.evaluate("() => { document.getElementById('manual-download-overlay')?.remove(); }")
+        await page.evaluate(
+            "() => { document.getElementById('manual-download-overlay')?.remove(); }"
+        )
         return False
 
 
@@ -746,7 +801,7 @@ async def complete_manual_download_workflow_async(
         )
         return None
 
-    await browser_logger.success(
+    await browser_logger.info(
         page,
         f"Detected new PDF: {temp_file.name} ({temp_file.stat().st_size / 1e6:.1f} MB)",
         func_name="complete_manual_download_workflow",
@@ -761,7 +816,7 @@ async def complete_manual_download_workflow_async(
         sequence_index=sequence_index,
     )
 
-    await browser_logger.success(
+    await browser_logger.info(
         page,
         f"Synced to library: {final_path.name}",
         func_name="complete_manual_download_workflow",
@@ -885,8 +940,11 @@ async def wait_for_manual_mode_activation_async(
     """
     try:
         from scitex import logging
+
         logger = logging.getLogger(__name__)
-        logger.info("wait_for_manual_mode_activation_async: Waiting for button click...")
+        logger.info(
+            "wait_for_manual_mode_activation_async: Waiting for button click..."
+        )
 
         # Wait for button to be activated (clicked)
         timeout_ms = timeout_sec * 1000 if timeout_sec > 0 else 0
@@ -895,25 +953,32 @@ async def wait_for_manual_mode_activation_async(
             timeout=timeout_ms,
         )
 
-        logger.info("wait_for_manual_mode_activation_async: Button clicked! Setting stop event...")
+        logger.info(
+            "wait_for_manual_mode_activation_async: Button clicked! Setting stop event..."
+        )
 
         # Set stop event
         stop_event.set()
 
-        logger.info(f"wait_for_manual_mode_activation_async: stop_event.is_set() = {stop_event.is_set()}")
+        logger.info(
+            f"wait_for_manual_mode_activation_async: stop_event.is_set() = {stop_event.is_set()}"
+        )
 
         # Close all browser_logger popups
-        await page.evaluate("""
+        await page.evaluate(
+            """
             () => {
                 const popupContainer = document.getElementById('_scitex_popup_container');
                 if (popupContainer) {
                     popupContainer.remove();
                 }
             }
-        """)
+        """
+        )
 
         # Update button to show monitoring
-        await page.evaluate("""
+        await page.evaluate(
+            """
             () => {
                 const button = document.getElementById('scitex-manual-button');
                 if (button) {
@@ -922,11 +987,10 @@ async def wait_for_manual_mode_activation_async(
                     button.style.border = '3px solid #506b7a';
                 }
             }
-        """)
+        """
+        )
 
     except Exception as e:
         pass
 
-
 # EOF
-

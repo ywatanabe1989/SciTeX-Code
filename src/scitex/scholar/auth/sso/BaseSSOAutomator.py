@@ -248,7 +248,7 @@ class BaseSSOAutomator(ABC):
             )
 
             if success:
-                self.logger.success(f"User notification sent: {event_type}")
+                self.logger.info(f"User notification sent: {event_type}")
             else:
                 self.logger.warning(
                     f"Failed to send user notification: {event_type}"

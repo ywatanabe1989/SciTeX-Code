@@ -226,7 +226,7 @@ Title: "Epileptic seizure forecasting with long short-term memory (LSTM) neural 
 ```
 
 Results:
-- ✅ Stage 0: Resolved DOI from title: `10.48550/arXiv.2309.09471`
+- ✅ Stage 0: DOI resolved from title: `10.48550/arXiv.2309.09471`
 - ✅ Stage 1: Loaded metadata from storage (paper exists)
 - ✅ Stage 2: Found PDF URL: `https://arxiv.org/pdf/2309.09471.pdf` (via Zotero)
 - ⏸️ Stage 3: Download needs more debugging (manual mode)

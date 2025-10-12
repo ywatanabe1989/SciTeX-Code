@@ -40,7 +40,7 @@ async def main_async():
     )
 
     if saved_path:
-        logger.success(f"PDF downloaded successfully to: {saved_path}")
+        logger.info(f"PDF downloaded suffcessfully to: {saved_path}")
     else:
         logger.error("Failed to download PDF")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-13 08:28:11 (ywatanabe)"
+# Timestamp: "2025-10-13 08:26:07 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/pipelines/ScholarPipelineSingle.py
 # ----------------------------------------
 from __future__ import annotations
@@ -656,7 +656,7 @@ class ScholarPipelineSingle:
                 logger.info(f"  {'✓' if exists else '✗'} {filename}")
 
             # Return both paper and symlink path for main() to display
-            return paper, symlink_path
+            return paper
 
 
 def main(args):
@@ -667,7 +667,7 @@ def main(args):
     )
 
     # Run pipeline (returns tuple of paper and symlink_path)
-    paper, symlink_path = asyncio.run(
+    paper = asyncio.run(
         pipeline_single.process_single_paper(
             doi_or_title=args.doi_or_title,
             project=args.project,

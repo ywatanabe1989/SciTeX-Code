@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-10-13 07:38:57 (ywatanabe)"
+# Timestamp: "2025-10-13 08:11:40 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/core/Scholar.py
 # ----------------------------------------
 from __future__ import annotations
@@ -154,7 +154,9 @@ class Scholar:
                 f"Scholar initialized with project '{project}' at {project_path}"
             )
         else:
-            logger.info(f"Scholar initialized (library: {library_path})")
+            logger.info(
+                f"{self.name}: Scholar initialized (library: {library_path})"
+            )
 
     # ----------------------------------------
     # Enrichers
@@ -187,12 +189,12 @@ class Scholar:
                 enriched_paper = self._merge_enrichment_data(paper, results)
                 enriched_list.append(enriched_paper)
                 title = paper.metadata.basic.title or "No title"
-                logger.info(f"Enriched: {title[:50]}...")
+                logger.info(f"{self.name}: Enriched: {title[:50]}...")
 
             except Exception as e:
                 title = paper.metadata.basic.title or "No title"
                 logger.warning(
-                    f"Failed to enrich paper '{title[:50]}...': {e}"
+                    f"{self.name}: Failed to enrich paper '{title[:50]}...': {e}"
                 )
                 enriched_list.append(
                     paper
@@ -247,12 +249,12 @@ class Scholar:
                 enriched_paper = self._merge_enrichment_data(paper, results)
                 enriched_list.append(enriched_paper)
                 title = paper.metadata.basic.title or "No title"
-                logger.info(f"Enriched: {title[:50]}...")
+                logger.info(f"{self.name}: Enriched: {title[:50]}...")
 
             except Exception as e:
                 title = paper.metadata.basic.title or "No title"
                 logger.warning(
-                    f"Failed to enrich paper '{title[:50]}...': {e}"
+                    f"{self.name}: Failed to enrich paper '{title[:50]}...': {e}"
                 )
                 enriched_list.append(
                     paper
@@ -282,7 +284,7 @@ class Scholar:
             return papers
         except Exception as e:
             logger.debug(
-                f"JCR engine unavailable: {e}, falling back to calculation method"
+                f"{self.name}: JCR engine unavailable: {e}, falling back to calculation method"
             )
 
         return papers
@@ -434,7 +436,7 @@ class Scholar:
         # Load papers from project library
         papers = self.load_project(self.project)
         logger.info(
-            f"Enriching {len(papers)} papers in project '{self.project}'"
+            f"{self.name}: Enriching {len(papers)} papers in project '{self.project}'"
         )
 
         # Enrich the papers
@@ -660,15 +662,19 @@ class Scholar:
                             )
 
                         logger.success(
-                            f"Downloaded and organized PDF for {doi}: {master_pdf_path}"
+                            f"{self.name}: Downloaded and organized PDF for {doi}: {master_pdf_path}"
                         )
                         stats["downloaded"] += 1
                     else:
-                        logger.warning(f"No PDF downloaded for DOI: {doi}")
+                        logger.warning(
+                            f"{self.name}: No PDF downloaded for DOI: {doi}"
+                        )
                         stats["failed"] += 1
 
                 except Exception as e:
-                    logger.error(f"Failed to organize PDF for {doi}: {e}")
+                    logger.error(
+                        f"{self.name}: Failed to organize PDF for {doi}: {e}"
+                    )
                     stats["errors"] += 1
                     stats["failed"] += 1
 
@@ -710,7 +716,7 @@ class Scholar:
 
         for doi in dois:
             try:
-                logger.info(f"Processing DOI: {doi}")
+                logger.info(f"{self.name}: Processing DOI: {doi}")
 
                 # NEW: Prepare authentication context BEFORE URL finding
                 # This establishes publisher-specific cookies if needed
@@ -725,7 +731,9 @@ class Scholar:
                 pdf_urls = urls.get("urls_pdf", [])
 
                 if not pdf_urls:
-                    logger.warning(f"No PDF URLs found for DOI: {doi}")
+                    logger.warning(
+                        f"{self.name}: No PDF URLs found for DOI: {doi}"
+                    )
                     results["failed"] += 1
                     continue
 
@@ -836,7 +844,7 @@ class Scholar:
                         with open(metadata_file, "r") as f:
                             metadata = json.load(f)
                         logger.debug(
-                            f"Loaded existing metadata for {paper_id}"
+                            f"{self.name}: Loaded existing metadata for {paper_id}"
                         )
                     else:
                         # Create new minimal metadata only if none exists
@@ -871,7 +879,7 @@ class Scholar:
                     with open(metadata_file, "w") as f:
                         json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-                    # Update symlink using LibraryManager (generates proper PDF status prefix)
+                    # Update symlink using LibraryManager
                     if self.project not in ["master", "MASTER"]:
                         self._library_manager.update_symlink(
                             master_storage_path=storage_path,
@@ -882,22 +890,22 @@ class Scholar:
                     downloaded_path.unlink()
 
                     logger.success(
-                        f"Downloaded PDF for {doi}: MASTER/{paper_id}/{pdf_filename}"
+                        f"{self.name}: Downloaded PDF for {doi}: MASTER/{paper_id}/{pdf_filename}"
                     )
                     results["downloaded"] += 1
                 else:
                     logger.warning(
-                        f"Failed to download any PDF for DOI: {doi}"
+                        f"{self.name}: Failed to download any PDF for DOI: {doi}"
                     )
                     results["failed"] += 1
 
             except Exception as e:
-                logger.error(f"Failed to process {doi}: {e}")
+                logger.error(f"{self.name}: Failed to process {doi}: {e}")
                 results["errors"] += 1
                 results["failed"] += 1
 
         await self._browser_manager.close()
-        logger.info(f"PDF download complete: {results}")
+        logger.info(f"{self.name}: PDF download complete: {results}")
         return results
 
     def download_pdfs_from_dois(
@@ -944,11 +952,13 @@ class Scholar:
         ]
 
         if not dois:
-            logger.warning("No papers with DOIs found in BibTeX input")
+            logger.warning(
+                f"{self.name}: No papers with DOIs found in BibTeX input"
+            )
             return {"downloaded": 0, "failed": 0, "errors": 0}
 
         logger.info(
-            f"Found {len(dois)} papers with DOIs out of {len(papers)} total papers"
+            f"{self.name}: Found {len(dois)} papers with DOIs out of {len(papers)} total papers"
         )
 
         # Download PDFs using DOI method
@@ -975,13 +985,17 @@ class Scholar:
         from ..core.Paper import Paper
         import json
 
-        logger.info(f"Loading papers from project: {project_name}")
+        logger.info(
+            f"{self.name}: Loading papers from project: {project_name}"
+        )
 
         library_dir = self.config.get_library_project_dir()
         project_dir = library_dir / project_name
 
         if not project_dir.exists():
-            logger.warning(f"Project directory does not exist: {project_dir}")
+            logger.warning(
+                f"{self.name}: Project directory does not exist: {project_dir}"
+            )
             return Papers([], project=project_name)
 
         papers = []
@@ -1007,11 +1021,11 @@ class Scholar:
                             papers.append(paper)
                         except Exception as e:
                             logger.warning(
-                                f"Failed to load metadata from {metadata_file}: {e}"
+                                f"{self.name}: Failed to load metadata from {metadata_file}: {e}"
                             )
 
         logger.info(
-            f"Loaded {len(papers)} papers from project: {project_name}"
+            f"{self.name}: Loaded {len(papers)} papers from project: {project_name}"
         )
         return Papers(papers, project=project_name)
 
@@ -1062,7 +1076,7 @@ class Scholar:
         # For now, return empty Papers until search is implemented
         from ..core.Papers import Papers
 
-        logger.info(f"Searching library for: {query}")
+        logger.info(f"{self.name}: Searching library for: {query}")
         return Papers([], project=project or self.project)
 
     def search_across_projects(
@@ -1100,7 +1114,9 @@ class Scholar:
                 ]
                 all_papers.extend(matching_papers)
             except Exception as e:
-                logger.debug(f"Failed to search project {project}: {e}")
+                logger.debug(
+                    f"{self.name}: Failed to search project {project}: {e}"
+                )
 
         return Papers(all_papers, config=self.config, project="search_results")
 
@@ -1122,9 +1138,11 @@ class Scholar:
                 paper_id = self._library.save_paper(paper)
                 saved_ids.append(paper_id)
             except Exception as e:
-                logger.warning(f"Failed to save paper: {e}")
+                logger.warning(f"{self.name}: Failed to save paper: {e}")
 
-        logger.info(f"Saved {len(saved_ids)}/{len(papers)} papers to library")
+        logger.info(
+            f"{self.name}: Saved {len(saved_ids)}/{len(papers)} papers to library"
+        )
         return saved_ids
 
     def save_papers_as_bibtex(
@@ -1167,7 +1185,9 @@ class Scholar:
         # Create project and info directories
         if not project_dir.exists():
             project_dir.mkdir(parents=True, exist_ok=True)
-            logger.info(f"Auto-created project directory: {project}")
+            logger.info(
+                f"{self.name}: Auto-created project directory: {project}"
+            )
 
         # Ensure info directory exists
         info_dir.mkdir(parents=True, exist_ok=True)
@@ -1181,7 +1201,9 @@ class Scholar:
         # Move existing metadata file if it exists in old location
         if old_metadata_file.exists() and not metadata_file.exists():
             shutil.move(str(old_metadata_file), str(metadata_file))
-            logger.info(f"Moved project metadata to info directory")
+            logger.info(
+                f"{self.name}: Moved project metadata to info directory"
+            )
 
         # Create metadata file if it doesn't exist
         if not metadata_file.exists():
@@ -1197,7 +1219,7 @@ class Scholar:
                 json.dump(metadata, f, indent=2)
 
             logger.info(
-                f"Created project metadata in info directory: {project}"
+                f"{self.name}: Created project metadata in info directory: {project}"
             )
 
         return project_dir
@@ -1306,7 +1328,7 @@ class Scholar:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_dir = backup_path / f"scholar_library_backup_{timestamp}"
 
-        logger.info(f"Creating library backup at {backup_dir}")
+        logger.info(f"{self.name}: Creating library backup at {backup_dir}")
         shutil.copytree(library_path, backup_dir)
 
         # Create backup metadata
@@ -1325,7 +1347,7 @@ class Scholar:
             json.dump(backup_info, f, indent=2)
 
         logger.info(
-            f"Library backup completed: {backup_info['size_mb']:.2f} MB"
+            f"{self.name}: Library backup completed: {backup_info['size_mb']:.2f} MB"
         )
         return backup_info
 
@@ -1475,27 +1497,35 @@ class Scholar:
                         self._library_manager.save_paper_incremental(
                             paper_id, paper
                         )
-                        logger.success(f"Downloaded PDF, saved to storage")
+                        logger.success(
+                            f"{self.name}: Downloaded PDF, saved to storage"
+                        )
                     else:
-                        logger.warning(f"Failed to download PDF")
+                        logger.warning(f"{self.name}: Failed to download PDF")
                 finally:
                     await self._browser_manager.close()
             else:
-                logger.warning(f"No PDF URLs available for download")
+                logger.warning(
+                    f"{self.name}: No PDF URLs available for download"
+                )
         else:
-            logger.info(f"PDF already in storage")
+            logger.info(f"{self.name}: PDF already in storage")
 
         # Stage 4: Update project symlinks
         if project and project not in ["master", "MASTER"]:
-            logger.info(f"\nStage 4: Updating project symlinks...")
+            logger.info(
+                f"{self.name}: \nStage 4: Updating project symlinks..."
+            )
             self._library_manager.update_symlink(
                 master_storage_path=storage_path,
                 project=project,
             )
-            logger.success(f"Updated symlink in project: {project}")
+            logger.success(
+                f"{self.name}: Updated symlink in project: {project}"
+            )
 
         logger.info(f"\n{'='*60}")
-        logger.success(f"Paper processing complete")
+        logger.success(f"{self.name}: Paper processing complete")
         logger.info(f"{'='*60}\n")
 
         return paper
@@ -1571,12 +1601,12 @@ class Scholar:
             papers = Papers(papers_list, project=project, config=self.config)
 
         total = len(papers)
-        logger.info(f"\n{'='*60}")
+        logger.info(f"{self.name}: \n{'='*60}")
         logger.info(
-            f"Processing {total} papers (max_concurrent={max_concurrent})"
+            f"{self.name}: Processing {total} papers (max_concurrent={max_concurrent})"
         )
-        logger.info(f"Project: {project}")
-        logger.info(f"{'='*60}\n")
+        logger.info(f"{self.name}: Project: {project}")
+        logger.info(f"{self.name}: {'='*60}\n")
 
         # Use semaphore for controlled parallelism
         semaphore = asyncio.Semaphore(max_concurrent)
@@ -1584,17 +1614,19 @@ class Scholar:
         async def process_with_semaphore(paper, index):
             """Process one paper with semaphore control."""
             async with semaphore:
-                logger.info(f"\n[{index}/{total}] Starting paper...")
+                logger.info(
+                    f"{self.name}: \n[{index}/{total}] Starting paper..."
+                )
                 try:
                     result = await self.process_paper_async(
                         title=paper.metadata.basic.title,
                         doi=paper.metadata.id.doi,
                         project=project,
                     )
-                    logger.success(f"[{index}/{total}] Completed")
+                    logger.success(f"{self.name}: [{index}/{total}] Completed")
                     return result
                 except Exception as e:
-                    logger.error(f"[{index}/{total}] Failed: {e}")
+                    logger.error(f"{self.name}: [{index}/{total}] Failed: {e}")
                     return None
 
         # Create tasks for all papers
@@ -1611,19 +1643,21 @@ class Scholar:
         errors = 0
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                logger.error(f"Paper {i+1} raised exception: {result}")
+                logger.error(
+                    f"{self.name}: Paper {i+1} raised exception: {result}"
+                )
                 errors += 1
             elif result is not None:
                 processed_papers.append(result)
 
         # Summary
-        logger.info(f"\n{'='*60}")
-        logger.info(f"Batch Processing Complete")
-        logger.info(f"  Total: {total}")
-        logger.info(f"  Successful: {len(processed_papers)}")
-        logger.info(f"  Failed: {total - len(processed_papers)}")
-        logger.info(f"  Errors: {errors}")
-        logger.info(f"{'='*60}\n")
+        logger.info(f"{self.name}: \n{'='*60}")
+        logger.info(f"{self.name}: Batch Processing Complete")
+        logger.info(f"{self.name}:   Total: {total}")
+        logger.info(f"{self.name}:   Successful: {len(processed_papers)}")
+        logger.info(f"{self.name}:   Failed: {total - len(processed_papers)}")
+        logger.info(f"{self.name}:   Errors: {errors}")
+        logger.info(f"{self.name}: {'='*60}\n")
 
         return Papers(processed_papers, project=project, config=self.config)
 

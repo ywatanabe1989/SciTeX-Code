@@ -53,7 +53,7 @@ async def resolve_publisher_url_by_navigating_to_doi_page(
         await page.goto(url_doi, wait_until="domcontentloaded", timeout=30000)
         await asyncio.sleep(2)
         url_publisher = page.url
-        logger.success(
+        logger.info(
             f"{func_name}: Resolved Publisher URL by navigation: {doi}   ->   {url_publisher}"
         )
         return url_publisher

@@ -128,7 +128,7 @@ class OpenURLResolver:
 
                     if result.get("success"):
                         final_url = result.get("final_url")
-                        await browser_logger.success(
+                        await browser_logger.info(
                             page,
                             f"{self.name}: ✓ Landed at {final_url[:60]}",
                         )
