@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-10-13 09:50:27
+!-- Timestamp: 2025-10-13 09:53:31
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/TODO.md
 !-- --- -->
@@ -12,28 +12,16 @@
 - [ ] Organize ./config/default.yaml in separated yaml files while ensuring current codebase works
 
 ### Documentation and Examples
+Currently, `./pipelines` works perfectly. Now, we need:
 - [ ] Update README.md files to reflect current codebase
-- [ ] Create demonstration video/tutorial
 - [ ] Revise and restructure ./examples for current implementation
 - [ ] Update CLI and __main__.py interfaces
-
-### Known Limitations
-- [ ] Document JCR data requirement in impact_factor module
-- [ ] Add fallback mechanisms for users without JCR access
-
-## Testing and Quality Assurance
+- [ ] Create demonstration video/tutorial
 
 ### Failure Analysis
-- [ ] Implement comprehensive failure analysis system
 - [ ] Identify unsupported journals and publishers
 - [ ] Determine which translators require improvement
 - [ ] Collect and organize screenshots/logs for debugging
-
-### Debugging Tools
-- [ ] Ensure debug mode functionality (`$ stx_set_loglevel debug`)
-- [ ] Implement step-by-step debugging for ScholarURLFinder
-- [ ] Enhance debugging output for ScholarPDFDownloader
-- [ ] Improve screenshot and terminal log collection
 
 ## Zotero compatibility
 
